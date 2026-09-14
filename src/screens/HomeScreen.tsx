@@ -24,7 +24,7 @@ type SourceKind = 'art' | 'quote' | 'custom';
 export function HomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [duration, setDuration] = useState<number>(15);
-  const [customText, setCustomText] = useState('');
+  const [customText, setCustomText] = useState('15');
   const [isCustomDuration, setIsCustomDuration] = useState(false);
 
   const [sourceKind, setSourceKind] = useState<SourceKind>('art');
@@ -32,7 +32,14 @@ export function HomeScreen() {
   const [selectedQuote, setSelectedQuote] = useState<Quote>(QUOTES[0]);
   const [customUri, setCustomUri] = useState<string | null>(null);
 
-  const grid = useMemo(() => gridForDuration(duration), [duration]);
+  const effectiveDuration = useMemo(() => {
+    if (!isCustomDuration) return duration;
+    const parsed = parseInt(customText, 10);
+    if (Number.isNaN(parsed) || parsed <= 0) return duration;
+    return Math.min(180, parsed);
+  }, [isCustomDuration, customText, duration]);
+
+  const grid = useMemo(() => gridForDuration(effectiveDuration), [effectiveDuration]);
 
   const pickCustomImage = async () => {
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -79,18 +86,11 @@ export function HomeScreen() {
       return;
     }
     const config: SessionConfig = {
-      durationMinutes: duration,
+      durationMinutes: effectiveDuration,
       image,
       grid,
     };
     navigation.navigate('ActiveSession', { config });
-  };
-
-  const applyCustomDuration = () => {
-    const parsed = parseInt(customText, 10);
-    if (!Number.isNaN(parsed) && parsed > 0) {
-      setDuration(Math.min(180, parsed));
-    }
   };
 
   return (
@@ -132,10 +132,8 @@ export function HomeScreen() {
             placeholderTextColor={colors.textFaint}
             value={customText}
             onChangeText={setCustomText}
-            onEndEditing={applyCustomDuration}
-            onSubmitEditing={applyCustomDuration}
           />
-          <Text style={styles.customDurationHint}>{duration} min selected</Text>
+          <Text style={styles.customDurationHint}>{effectiveDuration} min selected</Text>
         </View>
       )}
 
