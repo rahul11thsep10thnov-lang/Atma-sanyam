@@ -56,3 +56,17 @@ To regenerate the placeholder art pack:
 ```bash
 node scripts/generatePlaceholderArt.js
 ```
+
+## Testing on a real device
+
+`npm start` prints a QR code — scan it with the [Expo Go](https://expo.dev/go) app on
+your phone (same Wi-Fi network, or run `npm start -- --tunnel` if it isn't).
+
+For an installable build (useful for testing `expo-image-picker`, backgrounding, and
+notifications outside of Expo Go), `eas.json` is preconfigured — run:
+
+```bash
+npx eas-cli login          # one-time, needs an Expo account
+npx eas-cli build:configure
+npx eas-cli build --profile preview --platform android   # or ios
+```
