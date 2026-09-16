@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, StyleSheet, Switch, Text, View, Pressable } from 'react-native';
-import { colors } from '../theme/colors';
+import { colors, radius, spacing, typography, buttonHeight } from '../theme/colors';
 import { useSettings } from '../context/SettingsContext';
 import { clearHistory } from '../storage/history';
 import { requestNotificationPermissionsAsync } from '../notifications/safeNotifications';
@@ -78,29 +78,30 @@ export function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.background, paddingHorizontal: 20, paddingTop: 24 },
-  title: { fontSize: 26, fontWeight: '800', color: colors.text, marginBottom: 24 },
+  screen: { flex: 1, backgroundColor: colors.background, paddingHorizontal: spacing.screenPadding, paddingTop: 24 },
+  title: { ...typography.heading, color: colors.text, marginBottom: 24 },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    padding: 16,
+    backgroundColor: colors.card,
+    borderRadius: radius.card,
+    padding: spacing.cardPadding,
     marginBottom: 14,
     borderWidth: 1,
     borderColor: colors.border,
   },
   rowText: { flex: 1, paddingRight: 12 },
-  rowLabel: { color: colors.text, fontWeight: '700', fontSize: 15 },
-  rowHint: { color: colors.textMuted, fontSize: 12, marginTop: 4 },
+  rowLabel: { ...typography.title, color: colors.text },
+  rowHint: { ...typography.caption, color: colors.textSecondary, marginTop: 4 },
   dangerBtn: {
     marginTop: 24,
-    borderRadius: 16,
-    paddingVertical: 14,
+    height: buttonHeight,
+    borderRadius: radius.card,
+    justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.danger,
   },
-  dangerBtnText: { color: colors.danger, fontWeight: '700' },
+  dangerBtnText: { ...typography.title, color: colors.danger },
 });

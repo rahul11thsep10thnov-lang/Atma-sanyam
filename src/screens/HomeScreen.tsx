@@ -12,7 +12,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { colors } from '../theme/colors';
+import { colors, radius, spacing, typography, buttonHeight } from '../theme/colors';
 import { DURATION_PRESETS, gridForDuration } from '../utils/grid';
 import { ART_PACK } from '../data/artPacks';
 import { QUOTES, paletteForQuote } from '../data/quotes';
@@ -129,7 +129,7 @@ export function HomeScreen() {
             style={styles.customInput}
             keyboardType="number-pad"
             placeholder="Minutes"
-            placeholderTextColor={colors.textFaint}
+            placeholderTextColor={colors.textSecondary}
             value={customText}
             onChangeText={setCustomText}
           />
@@ -220,39 +220,46 @@ export function HomeScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
-  content: { padding: 20, paddingBottom: 48 },
-  title: { fontSize: 30, fontWeight: '800', color: colors.text, marginTop: 12 },
-  subtitle: { fontSize: 14, color: colors.textMuted, marginTop: 4, marginBottom: 24 },
-  sectionLabel: { fontSize: 13, fontWeight: '700', color: colors.textMuted, marginBottom: 10, textTransform: 'uppercase', letterSpacing: 0.5 },
+  content: { padding: spacing.screenPadding, paddingBottom: 48 },
+  title: { ...typography.heading, color: colors.text, marginTop: 12 },
+  subtitle: { ...typography.body, color: colors.textSecondary, marginTop: 4, marginBottom: 24 },
+  sectionLabel: {
+    ...typography.caption,
+    fontWeight: '700',
+    color: colors.textSecondary,
+    marginBottom: 10,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 8 },
   chip: {
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 20,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
   },
   chipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
-  chipText: { color: colors.textMuted, fontWeight: '600' },
-  chipTextActive: { color: colors.background },
+  chipText: { ...typography.body, color: colors.textSecondary, fontWeight: '600' },
+  chipTextActive: { color: colors.card },
   customDurationRow: { marginTop: 10, marginBottom: 4 },
   customInput: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
+    backgroundColor: colors.card,
+    borderRadius: radius.card,
     borderWidth: 1,
     borderColor: colors.border,
-    paddingHorizontal: 14,
+    paddingHorizontal: spacing.cardPadding,
     paddingVertical: 10,
     color: colors.text,
   },
-  customDurationHint: { color: colors.textFaint, marginTop: 6, fontSize: 12 },
-  gridHint: { color: colors.textFaint, fontSize: 12, marginTop: 4, marginBottom: 24 },
+  customDurationHint: { ...typography.caption, color: colors.textSecondary, marginTop: 6 },
+  gridHint: { ...typography.caption, color: colors.textSecondary, marginTop: 4, marginBottom: 24 },
   artRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginBottom: 24 },
   artThumbWrap: {
     width: 84,
     height: 84,
-    borderRadius: 14,
+    borderRadius: radius.card,
     overflow: 'hidden',
     borderWidth: 2,
     borderColor: 'transparent',
@@ -260,39 +267,42 @@ const styles = StyleSheet.create({
   artThumbWrapActive: { borderColor: colors.primary },
   artThumb: { width: '100%', height: '100%' },
   quotePreview: {
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: radius.card,
+    padding: spacing.cardPadding,
     marginBottom: 24,
     alignItems: 'center',
   },
-  quotePreviewText: { fontSize: 15, fontWeight: '600', textAlign: 'center', lineHeight: 22 },
-  quotePreviewAuthor: { marginTop: 10, fontSize: 13, fontStyle: 'italic', opacity: 0.85 },
+  quotePreviewText: { ...typography.body, fontWeight: '600', textAlign: 'center', lineHeight: 22 },
+  quotePreviewAuthor: { ...typography.caption, marginTop: 10, fontStyle: 'italic', opacity: 0.85 },
   shuffleBtn: {
     marginTop: 16,
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.15)',
+    backgroundColor: 'rgba(255,255,255,0.25)',
   },
-  shuffleBtnText: { color: colors.white, fontWeight: '600', fontSize: 12 },
+  shuffleBtnText: { ...typography.caption, color: colors.white, fontWeight: '600' },
   customImageBox: { marginBottom: 24, alignItems: 'center' },
-  customImagePreview: { width: 140, height: 140, borderRadius: 16, marginBottom: 14 },
-  customImageHint: { color: colors.textFaint, marginBottom: 14 },
+  customImagePreview: { width: 140, height: 140, borderRadius: radius.card, marginBottom: 14 },
+  customImageHint: { ...typography.body, color: colors.textSecondary, marginBottom: 14 },
   pickBtn: {
-    paddingVertical: 10,
+    height: buttonHeight,
     paddingHorizontal: 18,
-    borderRadius: 20,
+    borderRadius: radius.card,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  pickBtnText: { color: colors.text, fontWeight: '600' },
+  pickBtnText: { ...typography.title, color: colors.primary },
   startBtn: {
+    height: buttonHeight,
     backgroundColor: colors.primary,
-    borderRadius: 20,
-    paddingVertical: 18,
+    borderRadius: radius.card,
+    justifyContent: 'center',
     alignItems: 'center',
     marginTop: 8,
   },
-  startBtnText: { color: colors.background, fontWeight: '800', fontSize: 16 },
+  startBtnText: { ...typography.title, color: colors.card },
 });

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
 import Svg, { Line, Rect } from 'react-native-svg';
-import { colors } from '../theme/colors';
+import { colors, radius } from '../theme/colors';
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
@@ -144,8 +144,8 @@ export function PuzzleGrid({ rows, cols, size, revealedCount, children, frozen }
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 16,
+    borderRadius: radius.card,
     overflow: 'hidden',
-    backgroundColor: colors.surface,
+    backgroundColor: colors.card,
   },
 });

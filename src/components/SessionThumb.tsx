@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import Svg, { Line, Rect } from 'react-native-svg';
 import { PuzzleContent } from './PuzzleContent';
 import { SessionRecord } from '../types';
-import { colors } from '../theme/colors';
+import { colors, radius } from '../theme/colors';
 
 interface SessionThumbProps {
   session: SessionRecord;
@@ -63,9 +63,9 @@ export function SessionThumb({ session, size }: SessionThumbProps) {
 
 const styles = StyleSheet.create({
   wrap: {
-    borderRadius: 14,
+    borderRadius: radius.card,
     overflow: 'hidden',
-    backgroundColor: colors.surface,
+    backgroundColor: colors.card,
   },
   greyOverlay: {
     backgroundColor: 'rgba(80,80,80,0.5)',

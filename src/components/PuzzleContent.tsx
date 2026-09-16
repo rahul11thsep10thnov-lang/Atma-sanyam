@@ -53,5 +53,5 @@ const styles = StyleSheet.create({
 
 export function backgroundColorFor(image: ImageRef): string {
   if (image.kind === 'quote') return image.background;
-  return colors.surfaceAlt;
+  return colors.background;
 }

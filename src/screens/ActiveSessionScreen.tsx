@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { Alert, Dimensions, StyleSheet, Text, View, Pressable, BackHandler } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { colors } from '../theme/colors';
+import { colors, radius, typography, buttonHeight } from '../theme/colors';
 import { PuzzleGrid } from '../components/PuzzleGrid';
 import { PuzzleContent } from '../components/PuzzleContent';
 import { useFocusTimer } from '../hooks/useFocusTimer';
@@ -144,24 +144,32 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background, alignItems: 'center', paddingTop: 32 },
   header: { alignItems: 'center', marginBottom: 12 },
   timerText: { fontSize: 52, fontWeight: '800', color: colors.text, fontVariant: ['tabular-nums'] },
-  progressText: { color: colors.textMuted, marginTop: 4, fontSize: 13 },
+  progressText: { ...typography.caption, color: colors.textSecondary, marginTop: 4 },
   graceBanner: {
     backgroundColor: colors.danger,
     paddingVertical: 10,
     paddingHorizontal: 18,
-    borderRadius: 14,
+    borderRadius: radius.card,
     marginBottom: 12,
   },
-  graceBannerText: { color: colors.white, fontWeight: '700', fontSize: 13 },
-  gridWrap: { marginVertical: 24, shadowColor: '#000', shadowOpacity: 0.3, shadowRadius: 20, shadowOffset: { width: 0, height: 10 } },
+  graceBannerText: { ...typography.caption, color: colors.white, fontWeight: '700' },
+  gridWrap: {
+    marginVertical: 24,
+    shadowColor: '#000',
+    shadowOpacity: 0.12,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 10 },
+  },
   giveUpBtn: {
     marginTop: 'auto',
     marginBottom: 40,
-    paddingVertical: 14,
+    height: buttonHeight,
     paddingHorizontal: 28,
-    borderRadius: 20,
+    borderRadius: radius.card,
     borderWidth: 1,
     borderColor: colors.danger,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  giveUpBtnText: { color: colors.danger, fontWeight: '700' },
+  giveUpBtnText: { ...typography.title, color: colors.danger },
 });

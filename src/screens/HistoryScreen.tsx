@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { colors } from '../theme/colors';
+import { colors, spacing, typography } from '../theme/colors';
 import { loadHistory } from '../storage/history';
 import { SessionRecord } from '../types';
 import { SessionThumb } from '../components/SessionThumb';
@@ -9,7 +9,7 @@ import { SessionThumb } from '../components/SessionThumb';
 const COLUMNS = 3;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const GAP = 12;
-const PADDING = 20;
+const PADDING = spacing.screenPadding;
 const THUMB_SIZE = (SCREEN_WIDTH - PADDING * 2 - GAP * (COLUMNS - 1)) / COLUMNS;
 
 function formatDate(ts: number): string {
@@ -75,11 +75,11 @@ export function HistoryScreen() {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background, paddingHorizontal: PADDING, paddingTop: 24 },
   headerRow: { marginBottom: 20 },
-  title: { fontSize: 26, fontWeight: '800', color: colors.text },
-  subtitle: { color: colors.textMuted, marginTop: 4, fontSize: 13 },
+  title: { ...typography.heading, color: colors.text },
+  subtitle: { ...typography.caption, color: colors.textSecondary, marginTop: 4 },
   listContent: { paddingBottom: 40 },
-  itemMeta: { color: colors.textMuted, fontSize: 11, marginTop: 6 },
-  itemFailed: { color: colors.danger, fontSize: 10, fontWeight: '700', marginTop: 2 },
+  itemMeta: { ...typography.caption, color: colors.textSecondary, marginTop: 6 },
+  itemFailed: { ...typography.caption, color: colors.danger, fontWeight: '700', marginTop: 2 },
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 40 },
-  emptyText: { color: colors.textFaint, textAlign: 'center', fontSize: 14 },
+  emptyText: { ...typography.body, color: colors.textSecondary, textAlign: 'center' },
 });
