@@ -1,16 +1,16 @@
 import React from 'react';
 import { Alert, StyleSheet, Switch, Text, View, Pressable } from 'react-native';
-import * as Notifications from 'expo-notifications';
 import { colors } from '../theme/colors';
 import { useSettings } from '../context/SettingsContext';
 import { clearHistory } from '../storage/history';
+import { requestNotificationPermissionsAsync } from '../notifications/safeNotifications';
 
 export function SettingsScreen() {
   const { settings, updateSettings } = useSettings();
 
   const toggleNotifications = async (value: boolean) => {
     if (value) {
-      const perm = await Notifications.requestPermissionsAsync();
+      const perm = await requestNotificationPermissionsAsync();
       if (!perm.granted) {
         Alert.alert(
           'Permission denied',

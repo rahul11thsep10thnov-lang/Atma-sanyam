@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
-import * as Notifications from 'expo-notifications';
+import { cancelScheduledNotificationAsync, scheduleWarningNotificationAsync } from '../notifications/safeNotifications';
 
 export type TimerStatus = 'running' | 'grace' | 'completed' | 'failed';
 export type FailReason = 'left_app' | 'gave_up';
@@ -60,11 +60,7 @@ export function useFocusTimer({
 
   const cancelWarningNotification = useCallback(async () => {
     if (warnNotificationIdRef.current) {
-      try {
-        await Notifications.cancelScheduledNotificationAsync(warnNotificationIdRef.current);
-      } catch {
-        // ignore
-      }
+      await cancelScheduledNotificationAsync(warnNotificationIdRef.current);
       warnNotificationIdRef.current = null;
     }
   }, []);
@@ -125,17 +121,11 @@ export function useFocusTimer({
         setAwaySecondsRemaining(GRACE_SECONDS);
 
         if (notificationsEnabled) {
-          Notifications.scheduleNotificationAsync({
-            content: {
-              title: 'Still there?',
-              body: `Come back within ${GRACE_SECONDS}s or your puzzle session will fail.`,
-            },
-            trigger: null,
-          })
-            .then((id) => {
-              warnNotificationIdRef.current = id;
-            })
-            .catch(() => undefined);
+          scheduleWarningNotificationAsync(
+            `Come back within ${GRACE_SECONDS}s or your puzzle session will fail.`
+          ).then((id) => {
+            warnNotificationIdRef.current = id;
+          });
         }
 
         clearGraceInterval();
