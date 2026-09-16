@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "FOCUS",
+    "slug": "puzzlefocus",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "puzzlefocus",
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "FOCUS needs photo library access so you can pick your own image for a puzzle session.",
+        "UIBackgroundModes": []
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#1565C0",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "permissions": ["READ_MEDIA_IMAGES"]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "FOCUS needs photo library access so you can pick your own image for a puzzle session."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#1565C0"
+        }
+      ]
+    ]
+  }
+}
