@@ -5,13 +5,15 @@ import { colors } from '../theme/colors';
 
 interface PuzzleContentProps {
   image: ImageRef;
-  size: number;
+  width: number;
+  height?: number;
 }
 
-export function PuzzleContent({ image, size }: PuzzleContentProps) {
+export function PuzzleContent({ image, width, height }: PuzzleContentProps) {
+  const h = height ?? width;
   if (image.kind === 'quote') {
     return (
-      <View style={[styles.quoteCard, { width: size, height: size, backgroundColor: image.background }]}>
+      <View style={[styles.quoteCard, { width, height: h, backgroundColor: image.background }]}>
         <Text style={[styles.quoteMark, { color: image.textColor }]}>&ldquo;</Text>
         <Text style={[styles.quoteText, { color: image.textColor }]} numberOfLines={6}>
           {image.quote.text}
@@ -22,7 +24,7 @@ export function PuzzleContent({ image, size }: PuzzleContentProps) {
   }
 
   const source = image.kind === 'art' ? image.uri : { uri: image.uri };
-  return <Image source={source} style={{ width: size, height: size }} resizeMode="cover" />;
+  return <Image source={source} style={{ width, height: h }} resizeMode="cover" />;
 }
 
 const styles = StyleSheet.create({

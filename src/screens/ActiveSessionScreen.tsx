@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { Alert, Dimensions, StyleSheet, Text, View, Pressable, BackHandler } from 'react-native';
+import { Alert, Dimensions, Platform, StyleSheet, Text, View, Pressable, BackHandler } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { colors, radius, typography, buttonHeight } from '../theme/colors';
+import { colors, typography } from '../theme/colors';
 import { PuzzleGrid } from '../components/PuzzleGrid';
 import { PuzzleContent } from '../components/PuzzleContent';
 import { useFocusTimer } from '../hooks/useFocusTimer';
@@ -13,8 +14,7 @@ import { useSettings } from '../context/SettingsContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>;
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const GRID_SIZE = Math.min(SCREEN_WIDTH - 48, 420);
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 function formatTime(totalSeconds: number): string {
   const m = Math.floor(totalSeconds / 60);
@@ -25,6 +25,7 @@ function formatTime(totalSeconds: number): string {
 export function ActiveSessionScreen({ route, navigation }: Props) {
   const { config } = route.params;
   const { settings } = useSettings();
+  const insets = useSafeAreaInsets();
   const totalSeconds = config.durationMinutes * 60;
   const totalPieces = config.grid.rows * config.grid.cols;
   const startedAtRef = useRef(Date.now());
@@ -79,7 +80,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
     [finalizeSession, navigation, settings.soundEnabled]
   );
 
-  const { remainingSeconds, revealedCount, status, progress, awaySecondsRemaining, giveUp } = useFocusTimer({
+  const { remainingSeconds, revealedCount, status, awaySecondsRemaining, giveUp } = useFocusTimer({
     totalSeconds,
     totalPieces,
     notificationsEnabled: settings.notificationsEnabled,
@@ -106,70 +107,83 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
 
   return (
     <View style={styles.screen}>
-      <View style={styles.header}>
-        <Text style={styles.timerText}>{formatTime(remainingSeconds)}</Text>
-        <Text style={styles.progressText}>
-          {revealedCount}/{totalPieces} pieces · {Math.round(progress * 100)}%
-        </Text>
+      <PuzzleGrid
+        rows={config.grid.rows}
+        cols={config.grid.cols}
+        width={SCREEN_WIDTH}
+        height={SCREEN_HEIGHT}
+        revealedCount={revealedCount}
+        frozen={status === 'failed'}
+        fullBleed
+      >
+        <PuzzleContent image={config.image} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} />
+      </PuzzleGrid>
+
+      <View style={styles.watermark} pointerEvents="none">
+        <Text style={styles.watermarkText}>{formatTime(remainingSeconds)}</Text>
       </View>
 
       {status === 'grace' && (
-        <View style={styles.graceBanner}>
+        <View style={[styles.graceBanner, { top: insets.top + 12 }]}>
           <Text style={styles.graceBannerText}>
-            Stay focused! Return within {awaySecondsRemaining}s or this session fails.
+            Come back within {awaySecondsRemaining}s or this session fails
           </Text>
         </View>
       )}
 
-      <View style={styles.gridWrap}>
-        <PuzzleGrid
-          rows={config.grid.rows}
-          cols={config.grid.cols}
-          size={GRID_SIZE}
-          revealedCount={revealedCount}
-          frozen={status === 'failed'}
-        >
-          <PuzzleContent image={config.image} size={GRID_SIZE} />
-        </PuzzleGrid>
-      </View>
-
-      <Pressable style={styles.giveUpBtn} onPress={confirmGiveUp}>
-        <Text style={styles.giveUpBtnText}>Give up</Text>
+      <Pressable
+        style={[styles.giveUpBtn, { top: insets.top + 8 }]}
+        onPress={confirmGiveUp}
+        hitSlop={12}
+      >
+        <Text style={styles.giveUpBtnText}>✕</Text>
       </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.background, alignItems: 'center', paddingTop: 32 },
-  header: { alignItems: 'center', marginBottom: 12 },
-  timerText: { fontSize: 52, fontWeight: '800', color: colors.text, fontVariant: ['tabular-nums'] },
-  progressText: { ...typography.caption, color: colors.textSecondary, marginTop: 4 },
+  screen: { flex: 1, backgroundColor: colors.background },
+  watermark: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  watermarkText: {
+    ...typography.heading,
+    fontSize: 64,
+    color: colors.white,
+    opacity: 0.9,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
+    fontVariant: ['tabular-nums'],
+    textShadowColor: 'rgba(0,0,0,0.35)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 8,
+  },
   graceBanner: {
+    position: 'absolute',
+    left: 24,
+    right: 24,
     backgroundColor: colors.danger,
     paddingVertical: 10,
-    paddingHorizontal: 18,
-    borderRadius: radius.card,
-    marginBottom: 12,
-  },
-  graceBannerText: { ...typography.caption, color: colors.white, fontWeight: '700' },
-  gridWrap: {
-    marginVertical: 24,
-    shadowColor: '#000',
-    shadowOpacity: 0.12,
-    shadowRadius: 20,
-    shadowOffset: { width: 0, height: 10 },
-  },
-  giveUpBtn: {
-    marginTop: 'auto',
-    marginBottom: 40,
-    height: buttonHeight,
-    paddingHorizontal: 28,
-    borderRadius: radius.card,
-    borderWidth: 1,
-    borderColor: colors.danger,
-    justifyContent: 'center',
+    paddingHorizontal: 16,
+    borderRadius: 12,
     alignItems: 'center',
   },
-  giveUpBtnText: { ...typography.title, color: colors.danger },
+  graceBannerText: { ...typography.caption, color: colors.white, fontWeight: '700' },
+  giveUpBtn: {
+    position: 'absolute',
+    right: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(0,0,0,0.25)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  giveUpBtnText: { color: colors.white, fontSize: 16, fontWeight: '700' },
 });

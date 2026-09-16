@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "PuzzleFocus",
+    "name": "FOCUS",
     "slug": "puzzlefocus",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,7 +10,7 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "PuzzleFocus needs photo library access so you can pick your own image for a puzzle session.",
+        "NSPhotoLibraryUsageDescription": "FOCUS needs photo library access so you can pick your own image for a puzzle session.",
         "UIBackgroundModes": []
       }
     },
@@ -31,7 +31,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "PuzzleFocus needs photo library access so you can pick your own image for a puzzle session."
+          "photosPermission": "FOCUS needs photo library access so you can pick your own image for a puzzle session."
         }
       ],
       [

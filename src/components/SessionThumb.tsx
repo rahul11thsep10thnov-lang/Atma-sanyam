@@ -37,7 +37,7 @@ export function SessionThumb({ session, size }: SessionThumbProps) {
 
   return (
     <View style={[styles.wrap, { width: size, height: size }]}>
-      <PuzzleContent image={session.image} size={size} />
+      <PuzzleContent image={session.image} width={size} />
       {failed && (
         <>
           <View style={[StyleSheet.absoluteFill, styles.greyOverlay]} />

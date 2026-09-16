@@ -14,7 +14,7 @@ export function SettingsScreen() {
       if (!perm.granted) {
         Alert.alert(
           'Permission denied',
-          'Enable notifications for PuzzleFocus in your device settings to get away-from-app warnings.'
+          'Enable notifications for FOCUS in your device settings to get away-from-app warnings.'
         );
         return;
       }

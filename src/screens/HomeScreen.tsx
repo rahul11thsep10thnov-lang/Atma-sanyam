@@ -1,21 +1,13 @@
-import React, { useMemo, useState } from 'react';
-import {
-  Alert,
-  Image,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import React, { useState } from 'react';
+import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { colors, radius, spacing, typography, buttonHeight } from '../theme/colors';
-import { DURATION_PRESETS, gridForDuration } from '../utils/grid';
+import { gridForDuration } from '../utils/grid';
 import { ART_PACK } from '../data/artPacks';
 import { QUOTES, paletteForQuote } from '../data/quotes';
+import { DialTimerPicker } from '../components/DialTimerPicker';
 import { ImageRef, Quote, SessionConfig } from '../types';
 import { RootStackParamList } from '../navigation/types';
 
@@ -23,23 +15,12 @@ type SourceKind = 'art' | 'quote' | 'custom';
 
 export function HomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const [duration, setDuration] = useState<number>(15);
-  const [customText, setCustomText] = useState('15');
-  const [isCustomDuration, setIsCustomDuration] = useState(false);
+  const [duration, setDuration] = useState(30);
 
   const [sourceKind, setSourceKind] = useState<SourceKind>('art');
   const [selectedArtId, setSelectedArtId] = useState(ART_PACK[0].id);
   const [selectedQuote, setSelectedQuote] = useState<Quote>(QUOTES[0]);
   const [customUri, setCustomUri] = useState<string | null>(null);
-
-  const effectiveDuration = useMemo(() => {
-    if (!isCustomDuration) return duration;
-    const parsed = parseInt(customText, 10);
-    if (Number.isNaN(parsed) || parsed <= 0) return duration;
-    return Math.min(180, parsed);
-  }, [isCustomDuration, customText, duration]);
-
-  const grid = useMemo(() => gridForDuration(effectiveDuration), [effectiveDuration]);
 
   const pickCustomImage = async () => {
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -55,25 +36,28 @@ export function HomeScreen() {
     });
     if (!result.canceled && result.assets?.[0]?.uri) {
       setCustomUri(result.assets[0].uri);
+      setSourceKind('custom');
     }
   };
 
-  const shuffleQuote = () => {
-    const next = QUOTES[Math.floor(Math.random() * QUOTES.length)];
-    setSelectedQuote(next);
+  const handleQuoteTap = () => {
+    if (sourceKind === 'quote') {
+      const next = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+      setSelectedQuote(next);
+    } else {
+      setSourceKind('quote');
+    }
   };
 
   const resolveImage = (): ImageRef | null => {
     if (sourceKind === 'art') {
-      const art = ART_PACK.find((a) => a.id === selectedArtId) ?? ART_PACK[0];
-      return art;
+      return ART_PACK.find((a) => a.id === selectedArtId) ?? ART_PACK[0];
     }
     if (sourceKind === 'quote') {
       const palette = paletteForQuote(selectedQuote.id);
       return { kind: 'quote', quote: selectedQuote, ...palette };
     }
-    if (sourceKind === 'custom') {
-      if (!customUri) return null;
+    if (customUri) {
       return { kind: 'custom', uri: customUri };
     }
     return null;
@@ -86,223 +70,114 @@ export function HomeScreen() {
       return;
     }
     const config: SessionConfig = {
-      durationMinutes: effectiveDuration,
+      durationMinutes: duration,
       image,
-      grid,
+      grid: gridForDuration(duration),
     };
     navigation.navigate('ActiveSession', { config });
   };
 
+  const quotePalette = paletteForQuote(selectedQuote.id);
+
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>PuzzleFocus</Text>
-      <Text style={styles.subtitle}>Stay on task. Watch the picture come together.</Text>
-
-      <Text style={styles.sectionLabel}>Session length</Text>
-      <View style={styles.chipRow}>
-        {DURATION_PRESETS.map((d) => {
-          const active = !isCustomDuration && duration === d;
-          return (
-            <Pressable
-              key={d}
-              style={[styles.chip, active && styles.chipActive]}
-              onPress={() => {
-                setIsCustomDuration(false);
-                setDuration(d);
-              }}
-            >
-              <Text style={[styles.chipText, active && styles.chipTextActive]}>{d}m</Text>
-            </Pressable>
-          );
-        })}
-        <Pressable
-          style={[styles.chip, isCustomDuration && styles.chipActive]}
-          onPress={() => setIsCustomDuration(true)}
+    <View style={styles.screen}>
+      <View style={styles.topSection}>
+        <Text style={styles.title}>FOCUS</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.strip}
         >
-          <Text style={[styles.chipText, isCustomDuration && styles.chipTextActive]}>Custom</Text>
-        </Pressable>
-      </View>
-
-      {isCustomDuration && (
-        <View style={styles.customDurationRow}>
-          <TextInput
-            style={styles.customInput}
-            keyboardType="number-pad"
-            placeholder="Minutes"
-            placeholderTextColor={colors.textSecondary}
-            value={customText}
-            onChangeText={setCustomText}
-          />
-          <Text style={styles.customDurationHint}>{effectiveDuration} min selected</Text>
-        </View>
-      )}
-
-      <Text style={styles.gridHint}>
-        {grid.rows}×{grid.cols} puzzle ({grid.rows * grid.cols} pieces)
-      </Text>
-
-      <Text style={styles.sectionLabel}>Puzzle image</Text>
-      <View style={styles.chipRow}>
-        {(['art', 'quote', 'custom'] as SourceKind[]).map((kind) => {
-          const active = sourceKind === kind;
-          const label = kind === 'art' ? 'Art pack' : kind === 'quote' ? 'Quote tile' : 'My photo';
-          return (
-            <Pressable
-              key={kind}
-              style={[styles.chip, active && styles.chipActive]}
-              onPress={() => setSourceKind(kind)}
-            >
-              <Text style={[styles.chipText, active && styles.chipTextActive]}>{label}</Text>
-            </Pressable>
-          );
-        })}
-      </View>
-
-      {sourceKind === 'art' && (
-        <View style={styles.artRow}>
           {ART_PACK.map((art) => {
-            const active = art.id === selectedArtId;
+            const active = sourceKind === 'art' && art.id === selectedArtId;
             return (
               <Pressable
                 key={art.id}
-                onPress={() => setSelectedArtId(art.id)}
-                style={[styles.artThumbWrap, active && styles.artThumbWrapActive]}
+                onPress={() => {
+                  setSourceKind('art');
+                  setSelectedArtId(art.id);
+                }}
+                style={[styles.tile, active && styles.tileActive]}
               >
-                <Image source={art.uri} style={styles.artThumb} />
+                <Image source={art.uri} style={styles.tileImage} />
               </Pressable>
             );
           })}
-        </View>
-      )}
 
-      {sourceKind === 'quote' && (
-        <View
-          style={[
-            styles.quotePreview,
-            { backgroundColor: paletteForQuote(selectedQuote.id).background },
-          ]}
-        >
-          <Text
-            style={[styles.quotePreviewText, { color: paletteForQuote(selectedQuote.id).textColor }]}
+          <Pressable
+            onPress={handleQuoteTap}
+            style={[styles.tile, sourceKind === 'quote' && styles.tileActive, { backgroundColor: quotePalette.background }]}
           >
-            "{selectedQuote.text}"
-          </Text>
-          <Text
-            style={[styles.quotePreviewAuthor, { color: paletteForQuote(selectedQuote.id).textColor }]}
+            <Text style={[styles.quoteGlyph, { color: quotePalette.textColor }]}>&ldquo;</Text>
+          </Pressable>
+
+          <Pressable
+            onPress={pickCustomImage}
+            style={[styles.tile, sourceKind === 'custom' && styles.tileActive, styles.customTile]}
           >
-            — {selectedQuote.author}
-          </Text>
-          <Pressable style={styles.shuffleBtn} onPress={shuffleQuote}>
-            <Text style={styles.shuffleBtnText}>Shuffle quote</Text>
+            {customUri ? (
+              <Image source={{ uri: customUri }} style={styles.tileImage} />
+            ) : (
+              <Text style={styles.customTileGlyph}>+</Text>
+            )}
           </Pressable>
-        </View>
-      )}
+        </ScrollView>
+      </View>
 
-      {sourceKind === 'custom' && (
-        <View style={styles.customImageBox}>
-          {customUri ? (
-            <Image source={{ uri: customUri }} style={styles.customImagePreview} />
-          ) : (
-            <Text style={styles.customImageHint}>No photo selected yet</Text>
-          )}
-          <Pressable style={styles.pickBtn} onPress={pickCustomImage}>
-            <Text style={styles.pickBtnText}>{customUri ? 'Choose a different photo' : 'Choose photo'}</Text>
-          </Pressable>
-        </View>
-      )}
-
-      <Pressable style={styles.startBtn} onPress={handleStart}>
-        <Text style={styles.startBtnText}>Start focus session</Text>
-      </Pressable>
-    </ScrollView>
+      <View style={styles.bottomSection}>
+        <DialTimerPicker value={duration} onChange={setDuration} />
+        <Pressable style={styles.startBtn} onPress={handleStart}>
+          <Text style={styles.startBtnText}>Start focus session</Text>
+        </Pressable>
+      </View>
+    </View>
   );
 }
 
+const TILE_SIZE = 72;
+
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
-  content: { padding: spacing.screenPadding, paddingBottom: 48 },
-  title: { ...typography.heading, color: colors.text, marginTop: 12 },
-  subtitle: { ...typography.body, color: colors.textSecondary, marginTop: 4, marginBottom: 24 },
-  sectionLabel: {
-    ...typography.caption,
-    fontWeight: '700',
-    color: colors.textSecondary,
-    marginBottom: 10,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 8 },
-  chip: {
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  chipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
-  chipText: { ...typography.body, color: colors.textSecondary, fontWeight: '600' },
-  chipTextActive: { color: colors.card },
-  customDurationRow: { marginTop: 10, marginBottom: 4 },
-  customInput: {
-    backgroundColor: colors.card,
-    borderRadius: radius.card,
-    borderWidth: 1,
-    borderColor: colors.border,
-    paddingHorizontal: spacing.cardPadding,
-    paddingVertical: 10,
+  topSection: { paddingTop: 20 },
+  title: {
+    ...typography.heading,
     color: colors.text,
+    textAlign: 'center',
+    marginBottom: 16,
+    letterSpacing: 1,
   },
-  customDurationHint: { ...typography.caption, color: colors.textSecondary, marginTop: 6 },
-  gridHint: { ...typography.caption, color: colors.textSecondary, marginTop: 4, marginBottom: 24 },
-  artRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginBottom: 24 },
-  artThumbWrap: {
-    width: 84,
-    height: 84,
+  strip: { paddingHorizontal: spacing.screenPadding, gap: 12 },
+  tile: {
+    width: TILE_SIZE,
+    height: TILE_SIZE,
     borderRadius: radius.card,
     overflow: 'hidden',
     borderWidth: 2,
     borderColor: 'transparent',
-  },
-  artThumbWrapActive: { borderColor: colors.primary },
-  artThumb: { width: '100%', height: '100%' },
-  quotePreview: {
-    borderRadius: radius.card,
-    padding: spacing.cardPadding,
-    marginBottom: 24,
-    alignItems: 'center',
-  },
-  quotePreviewText: { ...typography.body, fontWeight: '600', textAlign: 'center', lineHeight: 22 },
-  quotePreviewAuthor: { ...typography.caption, marginTop: 10, fontStyle: 'italic', opacity: 0.85 },
-  shuffleBtn: {
-    marginTop: 16,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.25)',
-  },
-  shuffleBtnText: { ...typography.caption, color: colors.white, fontWeight: '600' },
-  customImageBox: { marginBottom: 24, alignItems: 'center' },
-  customImagePreview: { width: 140, height: 140, borderRadius: radius.card, marginBottom: 14 },
-  customImageHint: { ...typography.body, color: colors.textSecondary, marginBottom: 14 },
-  pickBtn: {
-    height: buttonHeight,
-    paddingHorizontal: 18,
-    borderRadius: radius.card,
     backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.border,
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  pickBtnText: { ...typography.title, color: colors.primary },
+  tileActive: { borderColor: colors.primary },
+  tileImage: { width: '100%', height: '100%' },
+  quoteGlyph: { fontSize: 40, fontWeight: '700', opacity: 0.85 },
+  customTile: { borderStyle: 'dashed', borderColor: colors.border, borderWidth: 2 },
+  customTileGlyph: { fontSize: 28, color: colors.textSecondary, fontWeight: '300' },
+  bottomSection: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: spacing.screenPadding,
+    paddingBottom: 32,
+  },
   startBtn: {
     height: buttonHeight,
+    width: '100%',
     backgroundColor: colors.primary,
     borderRadius: radius.card,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: 32,
   },
   startBtnText: { ...typography.title, color: colors.card },
 });
