@@ -8,10 +8,10 @@ import { gridForDuration } from '../utils/grid';
 import { ART_PACK } from '../data/artPacks';
 import { QUOTES, paletteForQuote } from '../data/quotes';
 import { DialTimerPicker } from '../components/DialTimerPicker';
-import { ImageRef, Quote, SessionConfig } from '../types';
+import { ImageRef, Quote, RemoteImageRef, SessionConfig } from '../types';
 import { RootStackParamList } from '../navigation/types';
 
-type SourceKind = 'art' | 'quote' | 'custom';
+type SourceKind = 'art' | 'quote' | 'custom' | 'remote';
 
 export function HomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -21,6 +21,16 @@ export function HomeScreen() {
   const [selectedArtId, setSelectedArtId] = useState(ART_PACK[0].id);
   const [selectedQuote, setSelectedQuote] = useState<Quote>(QUOTES[0]);
   const [customUri, setCustomUri] = useState<string | null>(null);
+  const [remoteImage, setRemoteImage] = useState<RemoteImageRef | null>(null);
+
+  const openLibrary = () => {
+    navigation.navigate('ContentBrowser', {
+      onSelect: (image) => {
+        setRemoteImage(image);
+        setSourceKind('remote');
+      },
+    });
+  };
 
   const pickCustomImage = async () => {
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -56,6 +66,9 @@ export function HomeScreen() {
     if (sourceKind === 'quote') {
       const palette = paletteForQuote(selectedQuote.id);
       return { kind: 'quote', quote: selectedQuote, ...palette };
+    }
+    if (sourceKind === 'remote') {
+      return remoteImage;
     }
     if (customUri) {
       return { kind: 'custom', uri: customUri };
@@ -121,6 +134,17 @@ export function HomeScreen() {
               <Text style={styles.customTileGlyph}>+</Text>
             )}
           </Pressable>
+
+          <Pressable
+            onPress={openLibrary}
+            style={[styles.tile, sourceKind === 'remote' && styles.tileActive, styles.libraryTile]}
+          >
+            {remoteImage ? (
+              <Image source={{ uri: remoteImage.uri }} style={styles.tileImage} />
+            ) : (
+              <Text style={styles.libraryTileGlyph}>🖼</Text>
+            )}
+          </Pressable>
         </ScrollView>
       </View>
 
@@ -163,6 +187,8 @@ const styles = StyleSheet.create({
   quoteGlyph: { fontSize: 40, fontWeight: '700', opacity: 0.85 },
   customTile: { borderStyle: 'dashed', borderColor: colors.border, borderWidth: 2 },
   customTileGlyph: { fontSize: 28, color: colors.textSecondary, fontWeight: '300' },
+  libraryTile: { backgroundColor: colors.card },
+  libraryTileGlyph: { fontSize: 26 },
   bottomSection: {
     flex: 1,
     alignItems: 'center',

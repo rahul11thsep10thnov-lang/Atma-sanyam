@@ -8,6 +8,7 @@ import { HomeScreen } from '../screens/HomeScreen';
 import { HistoryScreen } from '../screens/HistoryScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { ActiveSessionScreen } from '../screens/ActiveSessionScreen';
+import { ContentBrowserScreen } from '../screens/ContentBrowserScreen';
 import { colors } from '../theme/colors';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -59,6 +60,7 @@ export function RootNavigator() {
           component={ActiveSessionScreen}
           options={{ gestureEnabled: false, animation: 'fade' }}
         />
+        <Stack.Screen name="ContentBrowser" component={ContentBrowserScreen} options={{ animation: 'slide_from_bottom' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -27,6 +27,11 @@ export function PuzzleContent({ image, width, height }: PuzzleContentProps) {
   return <Image source={source} style={{ width, height: h }} resizeMode="cover" />;
 }
 
+export function attributionFor(image: ImageRef): string | null {
+  if (image.kind === 'remote' && image.attributionText) return image.attributionText;
+  return null;
+}
+
 const styles = StyleSheet.create({
   quoteCard: {
     padding: 22,

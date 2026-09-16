@@ -26,7 +26,18 @@ export interface CustomImageRef {
   uri: string;
 }
 
-export type ImageRef = ArtImageRef | QuoteImageRef | CustomImageRef;
+// An image chosen from the remote content library (src/content/). `uri` is
+// always a local file:// path already resolved from the disk cache — nothing
+// downstream needs to know the image came from a network catalog.
+export interface RemoteImageRef {
+  kind: 'remote';
+  uri: string;
+  imageId: string;
+  title: string;
+  attributionText: string | null;
+}
+
+export type ImageRef = ArtImageRef | QuoteImageRef | CustomImageRef | RemoteImageRef;
 
 export interface GridDims {
   rows: number;

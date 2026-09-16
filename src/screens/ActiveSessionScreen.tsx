@@ -5,7 +5,7 @@ import * as Haptics from 'expo-haptics';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { colors, typography } from '../theme/colors';
 import { PuzzleGrid } from '../components/PuzzleGrid';
-import { PuzzleContent } from '../components/PuzzleContent';
+import { PuzzleContent, attributionFor } from '../components/PuzzleContent';
 import { useFocusTimer } from '../hooks/useFocusTimer';
 import { RootStackParamList } from '../navigation/types';
 import { saveSessionRecord } from '../storage/history';
@@ -123,6 +123,12 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
         <Text style={styles.watermarkText}>{formatTime(remainingSeconds)}</Text>
       </View>
 
+      {attributionFor(config.image) && (
+        <View style={[styles.attributionBadge, { bottom: insets.bottom + 12 }]} pointerEvents="none">
+          <Text style={styles.attributionText}>{attributionFor(config.image)}</Text>
+        </View>
+      )}
+
       {status === 'grace' && (
         <View style={[styles.graceBanner, { top: insets.top + 12 }]}>
           <Text style={styles.graceBannerText}>
@@ -186,4 +192,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   giveUpBtnText: { color: colors.white, fontSize: 16, fontWeight: '700' },
+  attributionBadge: {
+    position: 'absolute',
+    left: 12,
+    right: 12,
+    alignItems: 'center',
+  },
+  attributionText: {
+    ...typography.caption,
+    color: 'rgba(255,255,255,0.75)',
+    textShadowColor: 'rgba(0,0,0,0.4)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
 });
