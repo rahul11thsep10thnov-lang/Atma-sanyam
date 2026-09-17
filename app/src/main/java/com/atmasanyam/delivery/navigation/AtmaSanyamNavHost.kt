@@ -2,11 +2,13 @@ package com.atmasanyam.delivery.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.atmasanyam.delivery.core.data.BookingFlowViewModel
+import com.atmasanyam.delivery.core.mapgoogle.GoogleDeliveryMapRenderer
 import com.atmasanyam.delivery.core.navigation.Destination
 import com.atmasanyam.delivery.feature.auth.authMobileScreen
 import com.atmasanyam.delivery.feature.auth.authVerifyCodeScreen
@@ -28,9 +30,12 @@ import com.atmasanyam.delivery.feature.vehicle.vehicleSelectionScreen
 fun AtmaSanyamNavHost(navController: NavHostController = rememberNavController()) {
     val bookingFlowViewModel: BookingFlowViewModel = viewModel()
     val bookingFlowState = bookingFlowViewModel.state.collectAsState()
+    // The only line that needs to change to swap map providers (see core:map-api).
+    val mapRenderer = remember { GoogleDeliveryMapRenderer() }
 
     NavHost(navController = navController, startDestination = Destination.Home.route) {
         homeScreen(
+            mapRenderer = mapRenderer,
             onEnterGoodsDetails = { pickup, destination, route ->
                 bookingFlowViewModel.setPickupAndDestination(pickup, destination, route)
                 navController.navigate(Destination.GoodsDetails.route)

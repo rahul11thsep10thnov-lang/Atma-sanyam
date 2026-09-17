@@ -1,8 +1,6 @@
 package com.atmasanyam.delivery.feature.home
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +12,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Schedule
@@ -36,11 +33,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.atmasanyam.delivery.core.designsystem.components.LocationField
 import com.atmasanyam.delivery.core.designsystem.components.PrimaryButton
+import com.atmasanyam.delivery.core.mapapi.DeliveryMapRenderer
 import com.atmasanyam.delivery.core.model.DeliveryLocation
+import com.atmasanyam.delivery.core.model.GeoPoint
 import com.atmasanyam.delivery.core.model.Route
 
 @Composable
 fun HomeRoute(
+    mapRenderer: DeliveryMapRenderer,
     onEnterGoodsDetails: (pickup: DeliveryLocation, destination: DeliveryLocation, route: Route) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(),
@@ -48,6 +48,7 @@ fun HomeRoute(
     val uiState by viewModel.uiState.collectAsState()
     HomeScreen(
         uiState = uiState,
+        mapRenderer = mapRenderer,
         onPickupTextChanged = viewModel::onPickupTextChanged,
         onDestinationTextChanged = viewModel::onDestinationTextChanged,
         onUseCurrentLocationForPickup = viewModel::onUseCurrentLocationForPickup,
@@ -63,6 +64,7 @@ fun HomeRoute(
 @Composable
 fun HomeScreen(
     uiState: HomeUiState,
+    mapRenderer: DeliveryMapRenderer,
     onPickupTextChanged: (String) -> Unit,
     onDestinationTextChanged: (String) -> Unit,
     onUseCurrentLocationForPickup: () -> Unit,
@@ -113,6 +115,9 @@ fun HomeScreen(
             )
 
             MapPreview(
+                mapRenderer = mapRenderer,
+                pickupPoint = uiState.pickupPoint,
+                destinationPoint = uiState.destinationPoint,
                 showRoute = uiState.showRoutePreview,
                 distanceKm = uiState.mockDistanceKm,
                 etaMinutes = uiState.mockEtaMinutes,
@@ -157,6 +162,9 @@ private fun HomeHeader(modifier: Modifier = Modifier) {
 
 @Composable
 private fun MapPreview(
+    mapRenderer: DeliveryMapRenderer,
+    pickupPoint: GeoPoint?,
+    destinationPoint: GeoPoint?,
     showRoute: Boolean,
     distanceKm: Double?,
     etaMinutes: Int?,
@@ -166,28 +174,14 @@ private fun MapPreview(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
     ) {
-        Box(
+        mapRenderer.Render(
+            pickup = pickupPoint,
+            destination = destinationPoint,
+            encodedRoutePolyline = null,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(180.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant),
-            contentAlignment = Alignment.Center,
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(
-                    Icons.Filled.Map,
-                    contentDescription = null,
-                    modifier = Modifier.size(40.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Text(
-                    text = if (showRoute) "Route preview (Google Maps in Phase 3)" else "Select pickup and destination to preview the route",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp),
-                )
-            }
-        }
+                .height(180.dp),
+        )
         if (showRoute && distanceKm != null && etaMinutes != null) {
             Row(
                 modifier = Modifier

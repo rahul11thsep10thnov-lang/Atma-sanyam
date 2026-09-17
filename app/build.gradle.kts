@@ -59,6 +59,10 @@ dependencies {
     implementation(project(":core:navigation"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:data"))
+    implementation(project(":core:map-api"))
+    // Swapping map providers later means changing this one line (plus adding the new
+    // core:map-<provider> module) - nothing in any feature module needs to change.
+    implementation(project(":core:map-google"))
     implementation(project(":feature:home"))
     implementation(project(":feature:goods"))
     implementation(project(":feature:vehicle"))

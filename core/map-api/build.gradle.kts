@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.atmasanyam.delivery.feature.home"
+    namespace = "com.atmasanyam.delivery.core.mapapi"
     compileSdk = 34
 
     defaultConfig {
@@ -28,20 +28,8 @@ android {
 
 dependencies {
     implementation(project(":core:model"))
-    implementation(project(":core:navigation"))
-    implementation(project(":core:designsystem"))
-    implementation(project(":core:map-api"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material.icons.extended)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.kotlinx.coroutines.android)
 }

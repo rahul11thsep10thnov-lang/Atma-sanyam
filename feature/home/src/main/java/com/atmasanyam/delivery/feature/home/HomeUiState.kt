@@ -23,22 +23,42 @@ data class HomeUiState(
         get() = pickupText.isNotBlank() && destinationText.isNotBlank()
 
     /**
+     * Demo-only coordinates so the map (Phase 3) has two plausibly-placed pins to show before
+     * Phase 4 wires up real Places/Geocoding results - separated by roughly [mockDistanceKm].
+     * Null until both pickup and destination text are entered.
+     */
+    val pickupPoint: GeoPoint?
+        get() = if (showRoutePreview) BENGALURU_DEMO_CENTER else null
+
+    val destinationPoint: GeoPoint?
+        get() = mockDistanceKm?.takeIf { showRoutePreview }?.let { distanceKm ->
+            BENGALURU_DEMO_CENTER.copy(latitude = BENGALURU_DEMO_CENTER.latitude + (distanceKm / KM_PER_DEGREE_LATITUDE))
+        }
+
+    /**
      * Packages the current mock selection into real domain types for the rest of the flow.
-     * The zero coordinates are a placeholder until Phase 3-4 wire up Places/Geocoding -
-     * everything downstream (goods details, vehicle matching, pricing) only cares about the
-     * route's distance/duration, not these specific lat/lng values.
+     * Everything downstream (goods details, vehicle matching, pricing) only cares about the
+     * route's distance/duration, not the demo lat/lngs above.
      */
     fun toPickupDestinationRoute(): Triple<DeliveryLocation, DeliveryLocation, Route>? {
         val distanceKm = mockDistanceKm ?: return null
         val etaMinutes = mockEtaMinutes ?: return null
         if (!canEnterGoodsDetails) return null
-        val pickup = DeliveryLocation(point = GeoPoint(0.0, 0.0), addressLine = pickupText)
-        val destination = DeliveryLocation(point = GeoPoint(0.0, 0.0), addressLine = destinationText)
+        val pickupPoint = pickupPoint ?: return null
+        val destinationPoint = destinationPoint ?: return null
+
+        val pickup = DeliveryLocation(point = pickupPoint, addressLine = pickupText)
+        val destination = DeliveryLocation(point = destinationPoint, addressLine = destinationText)
         val route = Route(
             distanceMeters = (distanceKm * 1000).toInt(),
             durationSeconds = etaMinutes * 60,
             encodedPolyline = "",
         )
         return Triple(pickup, destination, route)
+    }
+
+    private companion object {
+        val BENGALURU_DEMO_CENTER = GeoPoint(latitude = 12.9716, longitude = 77.5946)
+        const val KM_PER_DEGREE_LATITUDE = 111.0
     }
 }

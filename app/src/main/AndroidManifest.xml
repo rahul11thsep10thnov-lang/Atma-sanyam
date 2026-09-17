@@ -23,6 +23,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Read by the Google Maps SDK at runtime. Empty/missing until secrets.properties
+             supplies a real MAPS_API_KEY (see README) - the app still builds and runs without
+             one, the map just can't load tiles yet. -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${mapsApiKey}" />
     </application>
 
 </manifest>
