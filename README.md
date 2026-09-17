@@ -287,13 +287,14 @@ Android dependency: `./gradlew :core:model:test` (needs a JDK, no Android SDK).
 
 - Opens directly to the Home screen (no login prompt).
 - "Atma Sanyam" header, tagline "Deliver anything from shop to home".
-- A map is visible immediately, centered on India. Without a real `MAPS_API_KEY` it'll
-  show Google's own "for development purposes only" watermark or a blank/error tile
-  instead of streets — that's expected until a real key is supplied (see below), not a
-  bug in this app.
-- Type anything into pickup and destination — two markers and a route line appear near
-  Bengaluru (demo coordinates, see Phase 4), the camera animates to frame them, and
-  "Enter goods details" becomes enabled.
+- Without a real `MAPS_API_KEY` (true until one is supplied — see below), you'll see a
+  plain "Map preview unavailable" placeholder instead of a live map. That's a deliberate
+  safety fallback, not a bug: an empty API key is a known crash trigger on some Maps SDK
+  versions, and this can't be tested on a real device from where the code was written, so
+  the app never attempts to construct a real map without a non-blank key.
+- Type anything into pickup and destination — "Enter goods details" becomes enabled (and,
+  once a real Maps key is in place, two markers and a route line appear near Bengaluru —
+  demo coordinates, see Phase 4 — with the camera animating to frame them).
 - Pick at least one goods category, set a weight, and enter dimensions — validation
   messages appear if any are missing, matching the required error text.
 - Vehicle Selection shows real cards with capacity/price/ETA — try a huge weight or
