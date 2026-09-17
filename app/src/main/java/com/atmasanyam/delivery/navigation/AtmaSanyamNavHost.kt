@@ -57,7 +57,7 @@ fun AtmaSanyamNavHost(navController: NavHostController = rememberNavController()
             onBack = { navController.popBackStack() },
         )
         authMobileScreen(
-            onCodeSent = { navController.navigate(Destination.AuthVerifyCode.route) },
+            onCodeSent = { phoneNumber -> navController.navigate(Destination.AuthVerifyCode.createRoute(phoneNumber)) },
             onBack = { navController.popBackStack() },
         )
         authVerifyCodeScreen(

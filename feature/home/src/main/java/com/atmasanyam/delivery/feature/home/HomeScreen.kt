@@ -184,7 +184,7 @@ private fun MapPreview(
                     text = if (showRoute) "Route preview (Google Maps in Phase 3)" else "Select pickup and destination to preview the route",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(top = 8.dp, horizontal = 16.dp),
+                    modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp),
                 )
             }
         }

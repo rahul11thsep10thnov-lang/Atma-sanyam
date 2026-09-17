@@ -11,7 +11,10 @@ sealed class Destination(val route: String) {
     data object VehicleSelection : Destination("vehicle_selection")
     data object BookingSummary : Destination("booking_summary")
     data object AuthMobile : Destination("auth_mobile")
-    data object AuthVerifyCode : Destination("auth_verify_code")
+    data object AuthVerifyCode : Destination("auth_verify_code/{phoneNumber}") {
+        const val ARG_PHONE_NUMBER = "phoneNumber"
+        fun createRoute(phoneNumber: String) = "auth_verify_code/$phoneNumber"
+    }
     data object BookingConfirmation : Destination("booking_confirmation")
     data object LiveTracking : Destination("live_tracking")
     data object BookingHistory : Destination("booking_history")
