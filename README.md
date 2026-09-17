@@ -9,12 +9,31 @@ Core flow: `SHOP / SOURCE → DELIVERY VEHICLE → CUSTOMER / DESTINATION`, foll
 dimensions and an estimated price are all available with no authentication; login is
 only requested when the user taps **BOOK DELIVERY**.
 
-## Status: Phase 1–2 of 15
+## Try it right now — no Android Studio needed
 
-This is the initial scaffold — Gradle multi-module project, navigation skeleton, and a
-fully working Home/Map screen with mock data. See [Phase plan](#phase-plan) below for
-what's implemented vs. still to come. Nothing here talks to a real backend yet; there is
-no backend in this repository (see [Backend](#backend-not-yet-implemented)).
+Every push to this branch is automatically built into an installable `.apk` by
+**GitHub Actions** (see `.github/workflows/android-build.yml`), since this project
+doesn't assume you have Android Studio or a dev machine set up:
+
+1. Open this repo on GitHub → **Actions** tab → **Android Build** workflow → the latest
+   (green ✅) run on `claude/goods-delivery-app-bpgwtc`.
+2. Scroll to **Artifacts** at the bottom and download `atma-sanyam-debug-apk`. It's a zip
+   containing `app-debug.apk`.
+3. Copy that `.apk` to an Android phone (email it to yourself, Google Drive, USB — any
+   way you'd move a file), tap it, and allow "install from unknown sources" if asked. It
+   installs and opens like any app — this is a debug build, so it's unsigned/self-signed,
+   which is normal and only matters if you were publishing to the Play Store.
+
+No build tools, no SDK, nothing to install on your own machine. This is the way to
+actually see and use the app at this stage.
+
+## Status: Phases 1–2 scaffolded, Phases 5–10 UI wired with mock data
+
+Gradle multi-module project, full navigation flow, and every screen in the guest →
+quote → auth → booking journey has real UI (not just placeholders) — goods details,
+vehicle matching + pricing, booking summary with an itemized price breakdown, and
+mobile number + code entry. What's still mocked: the map (Phase 3), Places/geocoding
+(Phase 4), and everything backend (Phase 12+) — see [Phase plan](#phase-plan).
 
 ## Module structure
 
@@ -22,52 +41,72 @@ no backend in this repository (see [Backend](#backend-not-yet-implemented)).
 app/                        Application, MainActivity, NavHost wiring every feature together
 core/
   model/                    Pure Kotlin (no Android deps) — domain models, PricingEngine,
-                             VehicleMatchingEngine. Runs & tests with plain `gradle test`.
+                             VehicleMatchingEngine, BookingFlowState. `gradle test`-able.
   navigation/                Pure Kotlin — Destination route constants shared by all features
   designsystem/               Android/Compose — Material 3 theme, reusable components
+  data/                       Android — BookingFlowViewModel (the shared in-progress order)
 feature/
   home/                       Map-first landing screen: pickup/destination, mock route preview
-  goods/                      Placeholder — goods category/quantity/weight/dimensions (Phase 5-9)
-  vehicle/                    Placeholder — vehicle matching + pricing UI (Phase 7-8)
-  auth/                       Placeholder — mobile number + alphanumeric code (Phase 10)
-  booking/                    Placeholder — booking summary/confirmation (Phase 11+)
+  goods/                      Category chips, description, quantity, weight, dimensions
+  vehicle/                    Vehicle cards computed via VehicleMatchingEngine/PricingEngine
+  auth/                       Mobile number entry + alphanumeric code verification (simulated)
+  booking/                    Itemized booking summary + confirmation with a generated booking ID
 ```
 
-Dependency direction: `app` → every `feature:*` → `core:designsystem` / `core:navigation`
-→ `core:model`. Feature modules never depend on each other directly — the app module wires
-one feature's "next step" callback into the next feature's screen, so features stay
-independently buildable and testable.
+Dependency direction: `app` → every `feature:*` → `core:designsystem` / `core:data` /
+`core:navigation` → `core:model`. Feature modules never depend on each other directly —
+`app` is the only module that wires one feature's "next step" callback into the next
+feature's screen, so features stay independently buildable and testable.
 
-`core:model` is deliberately plain Kotlin/JVM: the pricing formula and vehicle-eligibility
-logic are pure functions with no Android dependency, so they're usable from the Android
-app today and from a Kotlin backend later without change, and are fully unit-tested
-(`core/model/src/test/...`).
+`core:model` is deliberately plain Kotlin/JVM: the pricing formula, vehicle-eligibility
+logic, and the shared `BookingFlowState` shape are pure data/functions with no Android
+dependency, so they're usable from the Android app today and from a Kotlin backend later
+without change. `PricingEngine`/`VehicleMatchingEngine` are fully unit-tested
+(`core/model/src/test/...`, 8 tests, run with `./gradlew :core:model:test`).
+
+## How the guest's order survives the login step
+
+`core:data`'s `BookingFlowViewModel` is created once, in `AtmaSanyamNavHost` (scoped to
+the Activity, not to any one screen), and every screen from Home through Booking
+Confirmation reads/writes the same instance. That's the mechanism behind the
+requirement that a guest's pickup, destination, goods, and selected vehicle are never
+lost when they're asked to authenticate — there's no re-entry, because there's only one
+piece of state for the whole flow, not one per screen.
 
 ## What exists today
 
 - Multi-module Gradle project (Kotlin DSL, version catalog) that opens in Android Studio
-- Material 3 theme + reusable Compose components (buttons, location search field, section
-  header, a shared "coming soon" placeholder screen)
+- **A GitHub Actions workflow that builds and uploads a real, installable debug APK on
+  every push** — see above
+- Material 3 theme + reusable Compose components
 - `PricingEngine` and `VehicleMatchingEngine` with a 4-tier sample vehicle catalog
   (Bike / Three-Wheeler / Mini Goods Vehicle / Large Goods Vehicle), fully unit tested
-- Home screen: pickup/destination text search fields (with a "use current location"
-  affordance), a map placeholder card, and a mock distance/ETA preview once both are set
-- End-to-end navigation skeleton: Home → Goods Details → Vehicle Selection → Booking
-  Summary → Auth (mobile → verify code) → Booking Confirmation → back to Home, with every
-  intermediate screen a real (if placeholder) destination in the graph
+- Home screen: pickup/destination text search, a map placeholder card, mock distance/ETA
+- Goods Details: multi-select category chips, optional description, quantity stepper,
+  weight quick-picks + manual entry, feet/inches dimensions, with the specified
+  validation messages ("Please select what you're delivering.", etc.)
+- Vehicle Selection: real cards computed from the goods details + mock route, each
+  showing capacity, ETA, and price, or an ineligibility reason; an empty state for
+  "Your items exceed our currently available vehicle capacities."
+- Booking Summary: full itemized recap (pickup, destination, goods, quantity, weight,
+  dimensions, vehicle) plus a transparent price breakdown (base fare, distance charge,
+  loading fee, surcharges, platform fee, tax, total)
+- Auth: mobile number entry (10-digit validation, no email field anywhere) and
+  alphanumeric code entry (6-character validation) — client-side only for now, since
+  there's no backend yet to actually send/verify a code
+- Booking Confirmation: a generated `WS-2026-NNNNNN` booking ID and a "SEARCHING" status
+  placeholder for where driver assignment (Phase 14) will attach
 - Secrets kept out of source: `secrets.properties` (gitignored) feeds `MAPS_API_KEY` /
-  `API_BASE_URL` into `BuildConfig` and a manifest placeholder; only
-  `secrets.properties.example` is committed
+  `API_BASE_URL` into `BuildConfig`; only `secrets.properties.example` is committed
 
 ## What's missing (by design, for later phases)
 
 - Google Maps SDK / Places Autocomplete / Routes API — Home currently shows a placeholder
-  card and a deterministic mock distance/ETA instead of a real map (Phase 3-5)
-- Goods category/quantity/weight/dimensions UI (Phase 5-6)
-- Wiring the vehicle-selection screen to `VehicleMatchingEngine`/`PricingEngine` (Phase 7-8)
-- Firebase Authentication or another OTP/alphanumeric-code auth backend (Phase 10)
-- Any backend at all — REST API, database, admin panel (Phase 12); see below
-- Firebase Cloud Messaging, live tracking, driver app (Phase 14-20)
+  card and a deterministic mock distance/ETA instead of a real map (Phase 3-4)
+- Any backend at all — REST API, database, admin panel (Phase 12); see below. Until then,
+  auth "verifies" anything of the right shape, and pricing/vehicle-eligibility are
+  computed on-device only (never trust-worthy for a real booking on its own)
+- Firebase Cloud Messaging, live tracking, driver app, payments (Phase 14-24)
 
 ## Phase plan
 
@@ -77,13 +116,13 @@ app today and from a Kotlin backend later without change, and are fully unit-tes
 | 2 | Navigation graph + base UI | ✅ Done |
 | 3 | Google Maps SDK integration | ⬜ Next |
 | 4 | Pickup/destination (Places Autocomplete, geocoding) | ⬜ |
-| 5 | Goods details UI | ⬜ |
-| 6 | Weight/dimensions UI | ⬜ |
-| 7 | Vehicle matching (engine done, UI pending) | 🟡 Engine done |
-| 8 | Pricing (engine done, UI pending) | 🟡 Engine done |
-| 9 | Guest quote flow end-to-end | ⬜ |
-| 10 | Authentication (mobile + code) | ⬜ |
-| 11 | Booking confirmation | ⬜ |
+| 5 | Goods details UI | ✅ Done (mock route only) |
+| 6 | Weight/dimensions UI | ✅ Done |
+| 7 | Vehicle matching UI | ✅ Done |
+| 8 | Pricing UI | ✅ Done |
+| 9 | Guest quote flow end-to-end | ✅ Done (client-side only) |
+| 10 | Authentication UI (mobile + code) | ✅ Done (simulated, no backend) |
+| 11 | Booking confirmation | ✅ Done (client-side booking ID) |
 | 12 | Connect backend | ⬜ |
 | 13 | Real (server-computed) pricing | ⬜ |
 | 14 | Driver assignment | ⬜ |
@@ -97,8 +136,9 @@ Entities (see the requirements this repo was built against for the full list): `
 `DriverLocation`, `Payment`, `ProofOfDelivery`, `Notification`.
 
 Everything already exists as a Kotlin data class in `core/model` — see
-`Location.kt`, `Goods.kt`, `Vehicle.kt`, `Pricing.kt`, `Booking.kt` — with the shape a
-future Retrofit/Room/backend layer would map onto:
+`Location.kt`, `Goods.kt`, `Vehicle.kt`, `Pricing.kt`, `Booking.kt`,
+`BookingFlowState.kt` — with the shape a future Retrofit/Room/backend layer would map
+onto:
 
 ```
 User (1) ── (N) SavedAddress
@@ -151,11 +191,11 @@ No backend/server code exists in this repository yet (Phase 12). `core/model`'s
 the same logic can run server-side (e.g., a Kotlin/Ktor or Spring Boot service) without a
 rewrite — that was a deliberate choice, not an oversight.
 
-## Required API keys / configuration (not yet needed to build Phase 1-2, but coming)
+## Required API keys / configuration (not yet needed to build/run today, but coming)
 
 - **Google Maps SDK for Android / Places API / Directions or Routes API** key — needed
   starting Phase 3. Create one in Google Cloud Console, restrict it to those three APIs.
-- **Firebase project** (Authentication + Cloud Messaging) — needed starting Phase 10/14.
+- **Firebase project** (Authentication + Cloud Messaging) — needed starting Phase 12/14.
   `google-services.json` is gitignored and must never be committed.
 
 Copy `secrets.properties.example` to `secrets.properties` (gitignored) and fill in:
@@ -167,32 +207,52 @@ API_BASE_URL=https://your-backend.example.com/
 
 ## Building and running
 
-**This repository's own CI/dev sandbox has no access to `dl.google.com`**, so the Android
-SDK platform and Google's Maven repo can't be fetched there — only `core:model` and
-`core:navigation` (plain Kotlin, tested against Maven Central) can be built and unit-tested
-in that environment. **A normal machine with internet access does not have this
-restriction** — build there or in Android Studio as usual:
+### Right now: no local setup at all
 
-1. Install **Android Studio** (Ladybug/2024.2 or newer recommended) with SDK Platform 34
-   and Build-Tools installed via the SDK Manager.
+Use the CI-built APK described at the top of this document. This is the recommended path
+for as long as no one working on this project has Android Studio installed — every
+change to this branch produces a fresh, downloadable, installable build automatically.
+
+### When the app grows large enough to need Android Studio
+
+At some point — once you're iterating quickly, debugging on a device with breakpoints,
+testing Maps/Places integration (Phase 3+), or building a driver app alongside this one —
+a real local setup starts paying for itself. When you get there:
+
+1. Install **Android Studio** (Ladybug/2024.2 or newer) — it bundles the JDK and lets you
+   install the Android SDK through its own SDK Manager UI, no command line needed.
 2. `git clone` this repo, checkout `claude/goods-delivery-app-bpgwtc`, and open the root
-   folder in Android Studio — it will recognize the Gradle project automatically.
-3. Copy `secrets.properties.example` to `secrets.properties` at the repo root. For Phase
-   1-2 the placeholder value is enough (Maps isn't wired up yet); no real key required.
-4. Let Gradle sync (first sync downloads AGP/Compose/etc. from Google's and Maven
-   Central's repos — this needs the internet access this sandbox doesn't have).
-5. Run the `app` configuration on an emulator (API 26+) or a physical device.
-6. To run the pure-Kotlin domain tests from a terminal: `./gradlew :core:model:test`.
+   folder in Android Studio — it recognizes the Gradle project automatically.
+3. Copy `secrets.properties.example` to `secrets.properties` at the repo root and fill in
+   a real `MAPS_API_KEY` once Phase 3 lands (a placeholder is fine before that).
+4. Let Gradle sync, then run the `app` configuration on an emulator or a plugged-in phone
+   with USB debugging on — Android Studio handles both with a device dropdown + Run button.
+5. Studio also gives you: a visual layout preview for Compose screens, a debugger with
+   breakpoints, a memory/CPU profiler, and Logcat for live device logs — none of which
+   the CI-built APK or this sandbox can offer.
 
-### What you should see
+This repo's own dev sandbox (where automated changes are made) has no access to
+`dl.google.com`, so it can't fetch the Android SDK or Google's Maven repo either — that's
+exactly why the GitHub Actions workflow exists: CI runs on GitHub's own infrastructure,
+which has no such restriction.
 
-- App opens directly to the Home screen (no login prompt).
+### Running just the unit tests
+
+`core:model`'s `PricingEngine`/`VehicleMatchingEngine` tests are plain JVM tests with no
+Android dependency: `./gradlew :core:model:test` (needs a JDK, no Android SDK).
+
+### What you should see in the app
+
+- Opens directly to the Home screen (no login prompt).
 - "Atma Sanyam" header, tagline "Deliver anything from shop to home".
-- Type anything into both the pickup and destination fields — a map placeholder card
-  appears showing a mock distance/ETA, and "Enter goods details" becomes enabled.
-- Tapping through "Enter goods details" → "Continue to vehicle selection" → "Continue to
-  booking summary" → "Book delivery" → "Simulate code sent" → "Simulate verified" walks
-  the full guest → quote → auth → booking navigation skeleton end to end, landing on a
-  booking-confirmation placeholder with a button back to Home.
-- Tapping the pickup field's location icon fills in a mock "Current location" value
-  (real GPS/FusedLocationProviderClient integration is Phase 3-4).
+- Type anything into pickup and destination — a mock route preview and "Enter goods
+  details" button appear.
+- Pick at least one goods category, set a weight, and enter dimensions — validation
+  messages appear if any are missing, matching the required error text.
+- Vehicle Selection shows real cards with capacity/price/ETA — try a huge weight or
+  dimension to see the "exceeds available vehicle capacities" state.
+- Booking Summary shows a full itemized price breakdown.
+- Tapping "Book delivery" only now asks for a mobile number, then a 6-character code —
+  matching the required guest → quote → login → book order.
+- Booking Confirmation shows a generated `WS-2026-NNNNNN` ID, then "Back to home" resets
+  the flow for a new order.
