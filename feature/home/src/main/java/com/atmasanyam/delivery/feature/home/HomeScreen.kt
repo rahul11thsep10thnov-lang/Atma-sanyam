@@ -36,10 +36,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.atmasanyam.delivery.core.designsystem.components.LocationField
 import com.atmasanyam.delivery.core.designsystem.components.PrimaryButton
+import com.atmasanyam.delivery.core.model.DeliveryLocation
+import com.atmasanyam.delivery.core.model.Route
 
 @Composable
 fun HomeRoute(
-    onEnterGoodsDetails: () -> Unit,
+    onEnterGoodsDetails: (pickup: DeliveryLocation, destination: DeliveryLocation, route: Route) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(),
 ) {
@@ -49,7 +51,11 @@ fun HomeRoute(
         onPickupTextChanged = viewModel::onPickupTextChanged,
         onDestinationTextChanged = viewModel::onDestinationTextChanged,
         onUseCurrentLocationForPickup = viewModel::onUseCurrentLocationForPickup,
-        onEnterGoodsDetails = onEnterGoodsDetails,
+        onEnterGoodsDetails = {
+            uiState.toPickupDestinationRoute()?.let { (pickup, destination, route) ->
+                onEnterGoodsDetails(pickup, destination, route)
+            }
+        },
         modifier = modifier,
     )
 }

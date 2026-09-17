@@ -2,6 +2,11 @@ name: Android Build
 
 # Builds the app on every push/PR so a real, installable debug APK is always available
 # from the Actions run's Artifacts section - no local Android Studio or SDK needed.
+#
+# ubuntu-latest runners ship with an Android SDK cmdline-tools install already at
+# $ANDROID_HOME (see actions/runner-images); we reuse that instead of a third-party
+# "setup Android SDK" action, since more than one of those has proven unreliable
+# against current Google package repositories.
 on:
   push:
     branches: ["**"]
@@ -21,11 +26,10 @@ jobs:
           distribution: temurin
           java-version: "21"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install required SDK platform and build-tools
-        run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
+      - name: Accept SDK licenses and install platform/build-tools
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0" "platform-tools"
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
