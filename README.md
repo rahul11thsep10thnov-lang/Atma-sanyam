@@ -27,13 +27,14 @@ doesn't assume you have Android Studio or a dev machine set up:
 No build tools, no SDK, nothing to install on your own machine. This is the way to
 actually see and use the app at this stage.
 
-## Status: Phases 1–2 scaffolded, Phases 5–10 UI wired with mock data
+## Status: Phases 1–3, 5–11 wired; Phase 4 and backend still ahead
 
 Gradle multi-module project, full navigation flow, and every screen in the guest →
 quote → auth → booking journey has real UI (not just placeholders) — goods details,
-vehicle matching + pricing, booking summary with an itemized price breakdown, and
-mobile number + code entry. What's still mocked: the map (Phase 3), Places/geocoding
-(Phase 4), and everything backend (Phase 12+) — see [Phase plan](#phase-plan).
+vehicle matching + pricing, booking summary with an itemized price breakdown, mobile
+number + code entry, and now a real Google Map on Home. What's still mocked:
+pickup/destination geocoding (Phase 4 — Home uses fixed demo coordinates today), and
+everything backend (Phase 12+) — see [Phase plan](#phase-plan).
 
 ## Module structure
 
@@ -45,6 +46,8 @@ core/
   navigation/                Pure Kotlin — Destination route constants shared by all features
   designsystem/               Android/Compose — Material 3 theme, reusable components
   data/                       Android — BookingFlowViewModel (the shared in-progress order)
+  map-api/                    Android/Compose — DeliveryMapRenderer interface, no map SDK
+  map-google/                  Android/Compose — the Google Maps implementation of it
 feature/
   home/                       Map-first landing screen: pickup/destination, mock route preview
   goods/                      Category chips, description, quantity, weight, dimensions
@@ -73,6 +76,31 @@ requirement that a guest's pickup, destination, goods, and selected vehicle are 
 lost when they're asked to authenticate — there's no re-entry, because there's only one
 piece of state for the whole flow, not one per screen.
 
+## Map provider architecture — swappable by design
+
+```
+              feature:home
+                   │
+          core:map-api  (DeliveryMapRenderer interface — no map SDK)
+                   │
+        ┌──────────┴──────────┐
+        │                     │
+  core:map-google        core:map-<other>   (e.g. Mappls, not built yet)
+  (Google Maps SDK)       (a future sibling module)
+```
+
+`feature:home` only ever calls `DeliveryMapRenderer.Render(pickup, destination, routePolyline, modifier)` —
+it has no idea which provider is behind that call. `core:map-google` is the only module that
+imports anything from Google's Maps libraries. Switching providers later (e.g. to Mappls,
+which has better India-specific address/road data and doesn't force an international
+billing card) means:
+
+1. Write `core:map-<provider>` implementing the same `DeliveryMapRenderer` interface.
+2. Change one line in `app/build.gradle.kts` (which map module `app` depends on) and one
+   line in `AtmaSanyamNavHost.kt` (which renderer class gets instantiated).
+
+No feature module, and nothing about the booking flow, ever needs to change.
+
 ## What exists today
 
 - Multi-module Gradle project (Kotlin DSL, version catalog) that opens in Android Studio
@@ -81,7 +109,8 @@ piece of state for the whole flow, not one per screen.
 - Material 3 theme + reusable Compose components
 - `PricingEngine` and `VehicleMatchingEngine` with a 4-tier sample vehicle catalog
   (Bike / Three-Wheeler / Mini Goods Vehicle / Large Goods Vehicle), fully unit tested
-- Home screen: pickup/destination text search, a map placeholder card, mock distance/ETA
+- Home screen: pickup/destination text search, a real Google Map with pickup/destination
+  markers and a route line (camera animates to frame both once set), mock distance/ETA
 - Goods Details: multi-select category chips, optional description, quantity stepper,
   weight quick-picks + manual entry, feet/inches dimensions, with the specified
   validation messages ("Please select what you're delivering.", etc.)
@@ -101,8 +130,11 @@ piece of state for the whole flow, not one per screen.
 
 ## What's missing (by design, for later phases)
 
-- Google Maps SDK / Places Autocomplete / Routes API — Home currently shows a placeholder
-  card and a deterministic mock distance/ETA instead of a real map (Phase 3-4)
+- A real Maps API key — the map SDK is wired up and compiles/runs, but without a valid,
+  billed `MAPS_API_KEY` it can't load tiles yet (see below)
+- Places Autocomplete / real geocoding — Home uses fixed demo coordinates near Bengaluru
+  rather than looking up the address the user typed (Phase 4); the Routes/Directions API
+  for real road distance & an actual route polyline is Phase 4-5 too
 - Any backend at all — REST API, database, admin panel (Phase 12); see below. Until then,
   auth "verifies" anything of the right shape, and pricing/vehicle-eligibility are
   computed on-device only (never trust-worthy for a real booking on its own)
@@ -114,8 +146,8 @@ piece of state for the whole flow, not one per screen.
 |---|---|---|
 | 1 | Android project scaffold | ✅ Done |
 | 2 | Navigation graph + base UI | ✅ Done |
-| 3 | Google Maps SDK integration | ⬜ Next |
-| 4 | Pickup/destination (Places Autocomplete, geocoding) | ⬜ |
+| 3 | Google Maps SDK integration | ✅ Done (needs a real API key to render tiles) |
+| 4 | Pickup/destination (Places Autocomplete, geocoding) | ⬜ Next |
 | 5 | Goods details UI | ✅ Done (mock route only) |
 | 6 | Weight/dimensions UI | ✅ Done |
 | 7 | Vehicle matching UI | ✅ Done |
@@ -191,12 +223,22 @@ No backend/server code exists in this repository yet (Phase 12). `core/model`'s
 the same logic can run server-side (e.g., a Kotlin/Ktor or Spring Boot service) without a
 rewrite — that was a deliberate choice, not an oversight.
 
-## Required API keys / configuration (not yet needed to build/run today, but coming)
+## Required API keys / configuration
 
-- **Google Maps SDK for Android / Places API / Directions or Routes API** key — needed
-  starting Phase 3. Create one in Google Cloud Console, restrict it to those three APIs.
+- **Google Maps SDK for Android** key — the app builds and runs without one, but the map
+  won't show real street tiles until a valid, billed key is supplied. Places API and
+  Directions/Routes API aren't called yet (Phase 4), but enabling them on the same key
+  now saves a step later. Create one in Google Cloud Console, restrict it to those APIs.
 - **Firebase project** (Authentication + Cloud Messaging) — needed starting Phase 12/14.
   `google-services.json` is gitignored and must never be committed.
+
+To wire in a real key: since the app is built via GitHub Actions (not locally), add it as
+a **repository secret** named `MAPS_API_KEY` (Settings → Secrets and variables → Actions)
+rather than editing `secrets.properties` locally — that file only affects a local Android
+Studio build, not the CI-built APK everyone's actually using right now. The debug-signing
+certificate the CI build uses also needs to stay fixed for an Android-app-restricted key to
+keep working across builds — ask before adding the API key restriction if that hasn't been
+set up yet.
 
 Copy `secrets.properties.example` to `secrets.properties` (gitignored) and fill in:
 
@@ -245,8 +287,13 @@ Android dependency: `./gradlew :core:model:test` (needs a JDK, no Android SDK).
 
 - Opens directly to the Home screen (no login prompt).
 - "Atma Sanyam" header, tagline "Deliver anything from shop to home".
-- Type anything into pickup and destination — a mock route preview and "Enter goods
-  details" button appear.
+- A map is visible immediately, centered on India. Without a real `MAPS_API_KEY` it'll
+  show Google's own "for development purposes only" watermark or a blank/error tile
+  instead of streets — that's expected until a real key is supplied (see below), not a
+  bug in this app.
+- Type anything into pickup and destination — two markers and a route line appear near
+  Bengaluru (demo coordinates, see Phase 4), the camera animates to frame them, and
+  "Enter goods details" becomes enabled.
 - Pick at least one goods category, set a weight, and enter dimensions — validation
   messages appear if any are missing, matching the required error text.
 - Vehicle Selection shows real cards with capacity/price/ETA — try a huge weight or
