@@ -10,6 +10,8 @@ name: Android Build
 on:
   push:
     branches: ["**"]
+    paths-ignore:
+      - "**.md"
   pull_request:
   workflow_dispatch:
 

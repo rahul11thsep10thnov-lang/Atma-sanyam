@@ -111,9 +111,10 @@ private fun VehicleQuoteCard(quote: VehicleQuote, onSelect: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(text = quote.vehicle.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                if (quote.eligible && quote.priceBreakdown != null) {
+                val breakdown = quote.priceBreakdown
+                if (quote.eligible && breakdown != null) {
                     Text(
-                        text = "₹%.0f".format(quote.priceBreakdown.total),
+                        text = "₹%.0f".format(breakdown.total),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary,
