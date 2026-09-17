@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. Actual color/typography theming is applied in Compose (ui/theme). -->
+    <style name="Theme.RangEPatte" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/ivory_background</item>
+        <item name="android:windowBackground">@color/ivory_background</item>
+        <item name="android:navigationBarColor">@color/deep_brown</item>
+    </style>
+</resources>
