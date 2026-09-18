@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    WHOLESOUL mark: a rounded "sun disc" holding a leaf and a fruit dot,
+    evoking a fresh Indian market at sunrise. Original artwork, not derived
+    from any third-party logo.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- outer sun/circle -->
+    <path
+        android:pathData="M54,14 A40,40 0 1 1 53.9,14 Z"
+        android:fillColor="#3A7D44" />
+
+    <!-- inner cream disc -->
+    <path
+        android:pathData="M54,22 A32,32 0 1 1 53.9,22 Z"
+        android:fillColor="#FFF8F0" />
+
+    <!-- leaf -->
+    <path
+        android:pathData="M54,34 C70,34 74,50 62,62 C50,74 34,70 34,54 C34,42 44,34 54,34 Z"
+        android:fillColor="#3A7D44" />
+    <path
+        android:pathData="M40,68 L60,40"
+        android:strokeColor="#FFF8F0"
+        android:strokeWidth="2.4"
+        android:fillColor="#00000000" />
+
+    <!-- fruit dot -->
+    <path
+        android:pathData="M70,58 A8,8 0 1 1 69.9,58 Z"
+        android:fillColor="#F0B685" />
+</vector>
