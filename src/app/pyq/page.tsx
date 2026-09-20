@@ -5,6 +5,8 @@ import { PYQ_PAPERS } from "@/data/pyq";
 import Badge from "@/components/ui/Badge";
 import DisclaimerBanner from "@/components/ui/DisclaimerBanner";
 import { FileText } from "lucide-react";
+import { getAccent } from "@/lib/accentColors";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Police PYQ — Previous Year Questions",
@@ -26,7 +28,7 @@ export default async function PyqPage({
 
   return (
     <div className="container-page py-8">
-      <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">Police PYQ</h1>
+      <h1 className="font-display text-2xl md:text-3xl font-extrabold text-gray-900">Police PYQ</h1>
       <p className="mt-1 text-sm text-gray-600">Previous Year Questions — state-wise aur exam-wise.</p>
 
       <div className="mt-4">
@@ -38,14 +40,14 @@ export default async function PyqPage({
       </div>
 
       <div className="mt-5 flex flex-wrap gap-2">
-        <Link href="/pyq" className={`rounded-full px-3 py-1.5 text-xs font-semibold ${!sp.state ? "bg-brand-navy text-white" : "bg-gray-100 text-gray-600"}`}>
+        <Link href="/pyq" className={`rounded-full px-3 py-1.5 text-xs font-semibold ${!sp.state ? "bg-brand-orange text-white" : "bg-gray-100 text-gray-600"}`}>
           Sabhi States
         </Link>
         {STATES.map((s) => (
           <Link
             key={s.code}
             href={`/pyq?state=${s.code}`}
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold ${sp.state === s.code ? "bg-brand-navy text-white" : "bg-gray-100 text-gray-600"}`}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold ${sp.state === s.code ? "bg-brand-orange text-white" : "bg-gray-100 text-gray-600"}`}
           >
             {s.hinglishName}
           </Link>
@@ -53,18 +55,26 @@ export default async function PyqPage({
       </div>
 
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filtered.map((p) => (
-          <Link key={p.id} href={`/pyq/${p.id}`} className="card p-4 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between">
-              <Badge tone={p.exam === "constable" ? "navy" : "gold"}>
-                {p.state.toUpperCase()} · {p.exam.toUpperCase()}
-              </Badge>
-              <FileText size={15} className="text-gray-400" />
-            </div>
-            <h3 className="mt-2 text-sm font-bold text-gray-900">{p.title}</h3>
-            <p className="mt-1 text-xs text-gray-500">{p.questionIds.length} Questions · Year {p.year}</p>
-          </Link>
-        ))}
+        {filtered.map((p, i) => {
+          const accent = getAccent(i);
+          return (
+            <Link
+              key={p.id}
+              href={`/pyq/${p.id}`}
+              className="card card-accent p-4 hover:shadow-md transition-shadow"
+              style={{ ["--accent" as string]: accent.border }}
+            >
+              <div className="flex items-center justify-between">
+                <Badge tone={p.exam === "constable" ? "navy" : "gold"}>
+                  {p.state.toUpperCase()} · {p.exam.toUpperCase()}
+                </Badge>
+                <FileText size={15} className={cn(accent.text)} />
+              </div>
+              <h3 className="mt-2 text-sm font-bold text-gray-900">{p.title}</h3>
+              <p className="mt-1 text-xs text-gray-500">{p.questionIds.length} Questions · Year {p.year}</p>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

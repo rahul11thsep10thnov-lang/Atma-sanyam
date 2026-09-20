@@ -7,8 +7,18 @@
   --brand-navy-dark: #072544;
   --brand-gold: #d99a1b;
   --brand-gold-light: #fdf3dd;
+  --brand-orange: #ee6c14;
+  --brand-orange-dark: #c8560c;
+  --brand-orange-light: #fdead9;
   --brand-green: #16794f;
+  --brand-green-light: #e4f6ee;
   --brand-red: #c0362c;
+  --brand-red-light: #fdecea;
+  --brand-purple: #6a4fd6;
+  --brand-purple-light: #efeafd;
+  --brand-blue: #1d78d8;
+  --brand-blue-light: #e6f1fc;
+  --brand-dark: #10182b;
   --card-border: #e3e7ee;
 }
 
@@ -19,9 +29,20 @@
   --color-brand-navy-dark: var(--brand-navy-dark);
   --color-brand-gold: var(--brand-gold);
   --color-brand-gold-light: var(--brand-gold-light);
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-orange-dark: var(--brand-orange-dark);
+  --color-brand-orange-light: var(--brand-orange-light);
   --color-brand-green: var(--brand-green);
+  --color-brand-green-light: var(--brand-green-light);
   --color-brand-red: var(--brand-red);
+  --color-brand-red-light: var(--brand-red-light);
+  --color-brand-purple: var(--brand-purple);
+  --color-brand-purple-light: var(--brand-purple-light);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-blue-light: var(--brand-blue-light);
+  --color-brand-dark: var(--brand-dark);
   --font-sans: var(--font-geist-sans);
+  --font-display: var(--font-baloo);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -29,6 +50,10 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-baloo), var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
 /* Leave room at the bottom on mobile for the fixed bottom nav bar */
@@ -52,33 +77,56 @@ body {
 .card {
   background: #ffffff;
   border: 1px solid var(--card-border);
-  border-radius: 0.75rem;
+  border-radius: 1rem;
+}
+
+/* Colored left-border accent card, e.g. <div class="card card-accent" style="--accent: var(--brand-orange)"> */
+.card-accent {
+  border-left-width: 4px;
+  border-left-color: var(--accent, var(--brand-navy));
 }
 
 .btn-primary {
   background: var(--brand-navy);
   color: #fff;
-  border-radius: 0.6rem;
-  font-weight: 600;
-  transition: background-color 0.15s ease;
+  border-radius: 999px;
+  font-weight: 700;
+  transition: background-color 0.15s ease, transform 0.1s ease;
 }
 .btn-primary:hover {
   background: var(--brand-navy-dark);
+}
+.btn-primary:active {
+  transform: scale(0.98);
 }
 
 .btn-secondary {
   background: #ffffff;
   color: var(--brand-navy);
   border: 1.5px solid var(--brand-navy);
-  border-radius: 0.6rem;
-  font-weight: 600;
+  border-radius: 999px;
+  font-weight: 700;
 }
 
 .btn-gold {
   background: var(--brand-gold);
   color: #3a2600;
-  border-radius: 0.6rem;
-  font-weight: 600;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.btn-orange {
+  background: var(--brand-orange);
+  color: #fff;
+  border-radius: 999px;
+  font-weight: 700;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+.btn-orange:hover {
+  background: var(--brand-orange-dark);
+}
+.btn-orange:active {
+  transform: scale(0.98);
 }
 
 .select {

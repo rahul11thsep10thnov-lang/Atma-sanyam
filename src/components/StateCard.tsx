@@ -1,41 +1,56 @@
 import Link from "next/link";
 import { StateInfo } from "@/types";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Users, ShieldCheck, MapPinned, PenSquare } from "lucide-react";
+import { getAccent } from "@/lib/accentColors";
+import { cn } from "@/lib/utils";
 
-export default function StateCard({ state }: { state: StateInfo }) {
+export default function StateCard({ state, index = 0 }: { state: StateInfo; index?: number }) {
+  const accent = getAccent(index);
+
   return (
-    <div className="card p-4 flex flex-col gap-3 hover:shadow-md transition-shadow">
+    <div
+      className="card card-accent p-4 flex flex-col gap-3 hover:shadow-md transition-shadow"
+      style={{ ["--accent" as string]: accent.border }}
+    >
       <div>
-        <h3 className="text-base font-bold text-gray-900">{state.hinglishName} Police</h3>
+        <h3 className="font-display text-base font-bold text-gray-900">{state.hinglishName} Police</h3>
         <p className="text-xs text-gray-500 mt-0.5">
           Rajdhani: {state.capital} · {state.totalDistricts} jile
         </p>
       </div>
-      <div className="flex flex-wrap gap-2">
+
+      <div className="grid grid-cols-2 gap-1.5">
         <Link
           href={`/${state.code}-police-constable`}
-          className="rounded-md bg-blue-50 px-2.5 py-1 text-xs font-semibold text-brand-navy hover:bg-blue-100"
+          className={cn("flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-semibold", accent.bg, accent.text)}
         >
-          Constable
+          <Users size={13} /> Constable
         </Link>
         <Link
           href={`/${state.code}-police-si`}
-          className="rounded-md bg-blue-50 px-2.5 py-1 text-xs font-semibold text-brand-navy hover:bg-blue-100"
+          className={cn("flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-semibold", accent.bg, accent.text)}
         >
-          SI
+          <ShieldCheck size={13} /> SI
         </Link>
         <Link
           href={`/state-gk/${state.code}`}
-          className="rounded-md bg-amber-50 px-2.5 py-1 text-xs font-semibold text-[#8a5a00] hover:bg-amber-100"
+          className="flex items-center gap-1.5 rounded-lg bg-gray-50 px-2.5 py-2 text-xs font-semibold text-gray-600"
         >
-          State GK
+          <MapPinned size={13} /> State GK
+        </Link>
+        <Link
+          href={`/exams/${state.code}`}
+          className="flex items-center gap-1.5 rounded-lg bg-gray-50 px-2.5 py-2 text-xs font-semibold text-gray-600"
+        >
+          <PenSquare size={13} /> Practice
         </Link>
       </div>
+
       <Link
         href={`/exams/${state.code}`}
-        className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-brand-navy hover:underline"
+        className={cn("mt-0.5 inline-flex items-center gap-1 text-sm font-bold hover:underline", accent.text)}
       >
-        Practice karein <ArrowRight size={14} />
+        Taiyari shuru karein <ArrowRight size={14} />
       </Link>
     </div>
   );
