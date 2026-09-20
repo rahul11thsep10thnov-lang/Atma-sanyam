@@ -1,0 +1,510 @@
+// TripToe database schema.
+// Provider is PostgreSQL per the project brief; run `npm run prisma:migrate`
+// once DATABASE_URL is set (see .env.example) to create these tables.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Geography
+// ---------------------------------------------------------------------------
+
+model State {
+  id           String        @id @default(cuid())
+  slug         String        @unique
+  name         String
+  districts    District[]
+  destinations Destination[]
+}
+
+model District {
+  id           String        @id @default(cuid())
+  slug         String
+  name         String
+  state        State         @relation(fields: [stateId], references: [id], onDelete: Cascade)
+  stateId      String
+  destinations Destination[]
+
+  @@unique([stateId, slug])
+}
+
+// ---------------------------------------------------------------------------
+// Core destination content
+// ---------------------------------------------------------------------------
+
+model Destination {
+  id                  String       @id @default(cuid())
+  slug                String       @unique
+  name                String
+  tagline             String
+  shortDescription    String
+  introduction         String       @db.Text
+  history             String       @db.Text
+  geography           String       @db.Text
+  culture             String       @db.Text
+  religion            String       @db.Text
+  latitude            Float
+  longitude           Float
+  bestTimeToVisit     String
+  idealDuration       String
+  approximateBudget   String
+  nearestAirport      String
+  nearestRailway      String
+  bestKnownFor        String[]
+  languages           String[]
+  currency            String
+  timeZone            String
+  tags                String[]
+  popularity          Int          @default(0)
+  isSampleData        Boolean      @default(true)
+
+  state               State        @relation(fields: [stateId], references: [id])
+  stateId             String
+  district            District?    @relation(fields: [districtId], references: [id])
+  districtId          String?
+
+  images              Photo[]
+  attractions         Attraction[]
+  hotels              Hotel[]
+  restaurants         Restaurant[]
+  markets             Market[]
+  foods               Food[]
+  festivals           Festival[]
+  emergencyContacts   EmergencyContact[]
+  transportation      Transportation?
+  reviews             Review[]
+  wishlistItems       WishlistItem[]
+  itineraries         Itinerary[]
+  translations        Translation[]
+
+  nearbyOf            DestinationRelation[] @relation("FromDestination")
+  nearbyTo            DestinationRelation[] @relation("ToDestination")
+
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  @@index([stateId])
+  @@index([popularity])
+}
+
+/// Self-referencing many-to-many for "nearby destinations".
+model DestinationRelation {
+  id              String      @id @default(cuid())
+  from            Destination @relation("FromDestination", fields: [fromId], references: [id], onDelete: Cascade)
+  fromId          String
+  to              Destination @relation("ToDestination", fields: [toId], references: [id], onDelete: Cascade)
+  toId            String
+  distanceKm      Float?
+
+  @@unique([fromId, toId])
+}
+
+enum ThingsToDoCategory {
+  HISTORICAL
+  RELIGIOUS
+  ADVENTURE
+  NATURE
+  FAMILY
+  PHOTOGRAPHY
+  NIGHTLIFE
+  CULTURE
+  SHOPPING
+  FOOD
+  MUSEUMS
+  ENTERTAINMENT
+}
+
+model Attraction {
+  id                String              @id @default(cuid())
+  slug              String
+  name              String
+  description       String              @db.Text
+  location          String
+  latitude           Float?
+  longitude          Float?
+  openingHours      String
+  timeRequired      String
+  entryFee          String
+  bestVisitingTime  String
+  mapUrl            String?
+  officialWebsite   String?
+  categories        ThingsToDoCategory[]
+  sourceLabel       String
+  sourceUrl         String?
+
+  destination       Destination         @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  destinationId     String
+  images            Photo[]
+  reviews           Review[]
+
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  @@unique([destinationId, slug])
+}
+
+enum HotelCategory {
+  LUXURY
+  PREMIUM
+  MID_RANGE
+  BUDGET
+  HOSTELS
+  HOMESTAYS
+  HERITAGE
+  RESORTS
+}
+
+model Hotel {
+  id                   String        @id @default(cuid())
+  name                 String
+  category             HotelCategory
+  area                 String
+  priceRange           String?
+  facilities           String[]
+  roomTypes            String[]
+  guestRating          Float?
+  reviewCount          Int?
+  distanceFromLandmark String?
+  bookingUrl           String?
+  dataVerified         Boolean       @default(false)
+
+  destination          Destination   @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  destinationId        String
+  images               Photo[]
+  reviews              Review[]
+  wishlistItems        WishlistItem[]
+
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  @@index([destinationId])
+}
+
+enum RestaurantCategory {
+  LOCAL_FOOD
+  STREET_FOOD
+  VEGETARIAN
+  NON_VEGETARIAN
+  FINE_DINING
+  BUDGET
+  FAMILY
+  CAFES
+  SWEETS
+  BREAKFAST
+  TRADITIONAL
+}
+
+model Restaurant {
+  id                String              @id @default(cuid())
+  name              String
+  categories        RestaurantCategory[]
+  cuisine           String[]
+  priceRange        String?
+  location          String
+  openingHours      String
+  signatureDishes   String[]
+  vegNonVeg         String
+  contact           String?
+  mapUrl            String?
+  website           String?
+  reservationUrl    String?
+  dataVerified      Boolean             @default(false)
+
+  destination       Destination         @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  destinationId     String
+  reviews           Review[]
+  wishlistItems     WishlistItem[]
+
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  @@index([destinationId])
+}
+
+model Market {
+  id                 String      @id @default(cuid())
+  name               String
+  location           String
+  whatToBuy          String[]
+  typicalPriceRange  String
+  bargainingInfo     String
+  openingHours       String
+  famousProducts     String[]
+  mapUrl             String?
+
+  destination        Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  destinationId      String
+
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+  @@index([destinationId])
+}
+
+model Food {
+  id            String      @id @default(cuid())
+  name          String
+  type          String
+  description   String      @db.Text
+  whereToTry    String[]
+
+  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  destinationId String
+
+  @@index([destinationId])
+}
+
+model Festival {
+  id            String      @id @default(cuid())
+  name          String
+  month         String
+  description   String      @db.Text
+
+  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  destinationId String
+
+  @@index([destinationId])
+}
+
+model EmergencyContact {
+  id            String      @id @default(cuid())
+  label         String
+  number        String
+  scope         String // "national" | "local"
+
+  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  destinationId String
+
+  @@index([destinationId])
+}
+
+model Transportation {
+  id                    String      @id @default(cuid())
+  nearestAirport        String
+  nearestRailwayStation String
+  majorBusStations      String[]
+  roadConnectivity      String
+  taxiInfo              String
+  metroInfo             String?
+  localTransport        String[]
+  autoRickshaw          String
+  rentalVehicles        String
+  fromDelhi             String?
+
+  destination           Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  destinationId         String      @unique
+}
+
+// ---------------------------------------------------------------------------
+// Users, reviews, trips, wishlists
+// ---------------------------------------------------------------------------
+
+enum UserRole {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  role          UserRole  @default(USER)
+  emailVerified DateTime?
+
+  accounts      Account[]
+  sessions      Session[]
+  reviews       Review[]
+  itineraries   Itinerary[]
+  wishlistItems WishlistItem[]
+  photos        Photo[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// NextAuth.js required models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum ReviewTargetType {
+  HOTEL
+  RESTAURANT
+  ATTRACTION
+  MARKET
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  FLAGGED
+}
+
+model Review {
+  id              String           @id @default(cuid())
+  targetType      ReviewTargetType
+  overallRating   Int
+  cleanliness     Int?
+  value           Int?
+  accessibility   Int?
+  service         Int?
+  food            Int?
+  crowding        Int?
+  title           String?
+  body            String           @db.Text
+  verifiedVisit   Boolean          @default(false)
+  status          ReviewStatus     @default(PENDING)
+  reportCount     Int              @default(0)
+
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String
+
+  destination     Destination?     @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  destinationId   String?
+  attraction      Attraction?      @relation(fields: [attractionId], references: [id], onDelete: Cascade)
+  attractionId    String?
+  hotel           Hotel?           @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  hotelId         String?
+  restaurant      Restaurant?      @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurantId    String?
+
+  photos          Photo[]
+
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([destinationId])
+  @@index([status])
+}
+
+model Photo {
+  id            String       @id @default(cuid())
+  url           String
+  alt           String
+  source        String
+  copyright     String
+  width         Int?
+  height        Int?
+
+  destination   Destination? @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  destinationId String?
+  attraction    Attraction?  @relation(fields: [attractionId], references: [id], onDelete: Cascade)
+  attractionId  String?
+  hotel         Hotel?       @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  hotelId       String?
+  review        Review?      @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reviewId      String?
+  uploadedBy    User?        @relation(fields: [userId], references: [id])
+  userId        String?
+
+  createdAt     DateTime     @default(now())
+}
+
+model Itinerary {
+  id            String      @id @default(cuid())
+  title         String
+  days          Int
+  travellers    Int
+  budget        Int
+  travelStyle   String
+  interests     String[]
+  planJson      Json
+
+  user          User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String?
+  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  destinationId String
+
+  createdAt     DateTime    @default(now())
+}
+
+enum WishlistTargetType {
+  DESTINATION
+  HOTEL
+  RESTAURANT
+}
+
+model WishlistItem {
+  id            String              @id @default(cuid())
+  targetType    WishlistTargetType
+
+  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  destination   Destination?        @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  destinationId String?
+  hotel         Hotel?              @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  hotelId       String?
+  restaurant    Restaurant?         @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurantId  String?
+
+  createdAt     DateTime            @default(now())
+
+  @@unique([userId, destinationId, hotelId, restaurantId])
+}
+
+// ---------------------------------------------------------------------------
+// Translations & analytics
+// ---------------------------------------------------------------------------
+
+model Translation {
+  id            String      @id @default(cuid())
+  locale        String
+  field         String // e.g. "introduction", "history"
+  value         String      @db.Text
+
+  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  destinationId String
+
+  @@unique([destinationId, locale, field])
+}
+
+model AnalyticsEvent {
+  id         String   @id @default(cuid())
+  type       String // "search" | "destination_view" | "hotel_click" | ...
+  metadata   Json?
+  sessionId  String?
+  occurredAt DateTime @default(now())
+
+  @@index([type])
+  @@index([occurredAt])
+}
