@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: atma
+      POSTGRES_PASSWORD: atma
+      POSTGRES_DB: atma_sanyam
+    ports:
+      - "5432:5432"
+    volumes:
+      - atma_postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  atma_postgres_data:

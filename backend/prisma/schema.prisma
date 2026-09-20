@@ -1,0 +1,497 @@
+// Atma Sanyam — database schema
+// See ARCHITECTURE.md §4 for the design rationale.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Reference data
+// ---------------------------------------------------------------------------
+
+model Language {
+  code         String   @id // ISO 639-1 style code: hi, bn, as, ta, te, kn, mr, ml, en
+  englishName  String
+  nativeName   String
+  isEnabled    Boolean  @default(true)
+  isDefault    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  storyTranslations StoryTranslation[]
+  storyScripts      StoryScript[]
+  audioAssets       AudioAsset[]
+  subtitleAssets    SubtitleAsset[]
+  videoAssets       VideoAsset[]
+  users             User[]
+}
+
+enum SourceType {
+  NEWS_API
+  RSS
+  LICENSED_FEED
+  MANUAL
+}
+
+model NewsSource {
+  id               String     @id @default(cuid())
+  name             String
+  homepageUrl      String
+  sourceType       SourceType
+  providerKey      String     @unique // matches the NewsSourceProvider registry key
+  reliabilityScore Int        @default(60) // 0-100, used by QualityScorer
+  isBlacklisted    Boolean    @default(false)
+  licenseNotes     String? // terms-of-use / licensing notes for legal review
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  rawArticles  RawArticle[]
+  storySources StorySource[]
+}
+
+enum PrimaryCategory {
+  FAMILY_DISPUTE
+  HUSBAND_WIFE
+  IN_LAWS
+  SIBLING_DISPUTE
+  PARENT_CHILD
+  PROPERTY_INHERITANCE
+  DOMESTIC_CONFLICT
+  FAMILY_CRIME
+  FAMILY_MURDER
+  FAMILY_MISSING_PERSON
+  FAMILY_KIDNAPPING
+  FAMILY_FRAUD
+  NEIGHBOUR_DISPUTE
+  OTHER_HUMAN_INTEREST
+  NOT_RELEVANT
+}
+
+model Location {
+  id       String  @id @default(cuid())
+  state    String
+  district String?
+  city     String?
+
+  @@unique([state, district, city])
+  masterStories MasterStory[]
+}
+
+// ---------------------------------------------------------------------------
+// Ingestion
+// ---------------------------------------------------------------------------
+
+enum DedupStatus {
+  UNPROCESSED
+  NEW_MASTER_STORY
+  MERGED_INTO_EXISTING
+  DISCARDED_NOT_RELEVANT
+  DISCARDED_INSUFFICIENT_INFO
+  DISCARDED_DUPLICATE_LOW_VALUE
+}
+
+model RawArticle {
+  id            String      @id @default(cuid())
+  sourceId      String
+  externalId    String? // provider's own article id, if available
+  url           String
+  headline      String
+  publishedAt   DateTime
+  fetchedAt     DateTime    @default(now())
+  rawSummary    String // short factual extract only — never the full copyrighted body
+  language      String      @default("en")
+  dedupStatus   DedupStatus @default(UNPROCESSED)
+
+  familyRelevanceScore Int? // 0-100, set by classification stage
+  primaryCategory      PrimaryCategory?
+  suitabilityScore     Int? // STORY_VIDEO_SUITABILITY_SCORE, 0-100
+  rejectionReason      String?
+
+  source       NewsSource    @relation(fields: [sourceId], references: [id])
+  storySources StorySource[]
+
+  @@unique([sourceId, externalId])
+  @@index([dedupStatus])
+  @@index([publishedAt])
+}
+
+// ---------------------------------------------------------------------------
+// Canonical story
+// ---------------------------------------------------------------------------
+
+enum PipelineStatus {
+  COLLECTED
+  AI_CLASSIFIED
+  DUPLICATE_CHECKED
+  QUALITY_CHECKED
+  SCRIPT_GENERATED
+  SAFETY_CHECKED
+  PENDING_REVIEW
+  APPROVED
+  VIDEO_GENERATED
+  PUBLISHED
+  REJECTED
+  FAILED
+}
+
+model MasterStory {
+  id                   String          @id @default(cuid())
+  masterStoryHash      String          @unique // near-duplicate lookup key (headline+location+date signature)
+  title                String
+  eventType            PrimaryCategory
+  eventDate            DateTime?
+  locationId           String?
+  peopleInvolved       Json // [{ name, role, ageRange? }]
+  relationships        Json // [{ personA, personB, relationship }]
+  whatHappened         String
+  background           String?
+  policeAction         String?
+  legalStatus          String? // e.g. "under investigation", "chargesheet filed", "acquitted"
+  currentStatus        String?
+
+  familyRelevanceScore Int             @default(0)
+  suitabilityScore     Int             @default(0)
+  qualityScore         Int             @default(0)
+  pipelineStatus       PipelineStatus  @default(COLLECTED)
+  rejectionReason      String?
+  autoPublishEligible  Boolean         @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  location       Location?           @relation(fields: [locationId], references: [id])
+  storySources   StorySource[]
+  scripts        StoryScript[]
+  translations   StoryTranslation[]
+  videoAssets    VideoAsset[]
+  adminReviews   AdminReview[]
+
+  @@index([pipelineStatus])
+  @@index([eventType])
+  @@index([familyRelevanceScore])
+}
+
+// Many-to-many: a MasterStory can be corroborated by multiple RawArticles/sources
+model StorySource {
+  id            String   @id @default(cuid())
+  masterStoryId String
+  rawArticleId  String
+  sourceId      String
+  sourceUrl     String
+  publishedAt   DateTime
+  createdAt     DateTime @default(now())
+
+  masterStory MasterStory @relation(fields: [masterStoryId], references: [id], onDelete: Cascade)
+  rawArticle  RawArticle  @relation(fields: [rawArticleId], references: [id])
+  source      NewsSource  @relation(fields: [sourceId], references: [id])
+
+  @@unique([masterStoryId, rawArticleId])
+}
+
+// ---------------------------------------------------------------------------
+// Script / translation / audio / subtitles / video
+// ---------------------------------------------------------------------------
+
+enum ScriptStatus {
+  DRAFT
+  SAFETY_CHECKED
+  APPROVED
+  REJECTED
+}
+
+model StoryScript {
+  id                      String       @id @default(cuid())
+  masterStoryId           String
+  languageCode            String
+  introduction            String
+  location                String
+  people                  String
+  background              String
+  sequence                String
+  authorities             String
+  currentStatus           String
+  context                 String
+  sourceAttribution       String
+  wordCount               Int
+  estimatedDurationSeconds Int
+  status                  ScriptStatus @default(DRAFT)
+  safetyFlags             Json? // [{ rule, severity, excerpt, resolved }]
+  version                 Int          @default(1)
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+
+  masterStory    MasterStory        @relation(fields: [masterStoryId], references: [id], onDelete: Cascade)
+  language       Language           @relation(fields: [languageCode], references: [code])
+  translations   StoryTranslation[]
+  audioAssets    AudioAsset[]
+  subtitleAssets SubtitleAsset[]
+
+  @@unique([masterStoryId, languageCode, version])
+}
+
+model StoryTranslation {
+  id                String   @id @default(cuid())
+  masterStoryId     String
+  languageCode      String
+  localizedTitle    String
+  localizedSummary  String
+  storyScriptId     String
+  createdAt         DateTime @default(now())
+
+  masterStory MasterStory @relation(fields: [masterStoryId], references: [id], onDelete: Cascade)
+  language    Language    @relation(fields: [languageCode], references: [code])
+  storyScript StoryScript @relation(fields: [storyScriptId], references: [id])
+
+  @@unique([masterStoryId, languageCode])
+}
+
+model AudioAsset {
+  id               String   @id @default(cuid())
+  storyScriptId    String
+  languageCode     String
+  provider         String // e.g. "google-tts", "mock"
+  voiceId          String
+  storageUrl       String
+  durationSeconds  Int
+  createdAt        DateTime @default(now())
+
+  storyScript StoryScript @relation(fields: [storyScriptId], references: [id], onDelete: Cascade)
+  language    Language    @relation(fields: [languageCode], references: [code])
+
+  @@unique([storyScriptId, languageCode])
+}
+
+enum SubtitleFormat {
+  SRT
+  VTT
+}
+
+model SubtitleAsset {
+  id            String         @id @default(cuid())
+  storyScriptId String
+  languageCode  String
+  format        SubtitleFormat @default(VTT)
+  storageUrl    String
+  createdAt     DateTime       @default(now())
+
+  storyScript StoryScript @relation(fields: [storyScriptId], references: [id], onDelete: Cascade)
+  language    Language    @relation(fields: [languageCode], references: [code])
+
+  @@unique([storyScriptId, languageCode, format])
+}
+
+enum RenderStatus {
+  PENDING
+  RENDERING
+  READY
+  FAILED
+}
+
+model VideoAsset {
+  id              String       @id @default(cuid())
+  masterStoryId   String
+  languageCode    String
+  storageUrl      String?
+  thumbnailUrl    String?
+  durationSeconds Int?
+  resolution      String       @default("1080x1920")
+  templateVersion String       @default("v1")
+  renderStatus    RenderStatus @default(PENDING)
+  failureReason   String?
+  publishedAt     DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  masterStory MasterStory @relation(fields: [masterStoryId], references: [id], onDelete: Cascade)
+  language    Language    @relation(fields: [languageCode], references: [code])
+
+  views  View[]
+  likes  Like[]
+  shares Share[]
+  saves  Save[]
+  reports Report[]
+
+  @@unique([masterStoryId, languageCode])
+  @@index([renderStatus])
+  @@index([publishedAt])
+}
+
+// ---------------------------------------------------------------------------
+// Users, preferences, engagement
+// ---------------------------------------------------------------------------
+
+model User {
+  id               String   @id @default(cuid())
+  deviceId         String   @unique
+  email            String?  @unique
+  preferredLanguageCode String @default("en")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  preferredLanguage Language @relation(fields: [preferredLanguageCode], references: [code])
+  preference   UserPreference?
+  views        View[]
+  likes        Like[]
+  shares       Share[]
+  saves        Save[]
+  reports      Report[]
+  devices      DeviceToken[]
+}
+
+model UserPreference {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  categories            PrimaryCategory[]
+  states                String[]
+  notificationsEnabled  Boolean  @default(true)
+  updatedAt             DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model DeviceToken {
+  id        String   @id @default(cuid())
+  userId    String
+  fcmToken  String   @unique
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model View {
+  id           String   @id @default(cuid())
+  userId       String?
+  videoAssetId String
+  watchSeconds Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  user       User?      @relation(fields: [userId], references: [id])
+  videoAsset VideoAsset @relation(fields: [videoAssetId], references: [id])
+
+  @@index([videoAssetId])
+}
+
+model Like {
+  id           String   @id @default(cuid())
+  userId       String
+  videoAssetId String
+  createdAt    DateTime @default(now())
+
+  user       User       @relation(fields: [userId], references: [id])
+  videoAsset VideoAsset @relation(fields: [videoAssetId], references: [id])
+
+  @@unique([userId, videoAssetId])
+}
+
+model Share {
+  id           String   @id @default(cuid())
+  userId       String?
+  videoAssetId String
+  channel      String? // whatsapp, sms, other
+  createdAt    DateTime @default(now())
+
+  user       User?      @relation(fields: [userId], references: [id])
+  videoAsset VideoAsset @relation(fields: [videoAssetId], references: [id])
+}
+
+model Save {
+  id           String   @id @default(cuid())
+  userId       String
+  videoAssetId String
+  createdAt    DateTime @default(now())
+
+  user       User       @relation(fields: [userId], references: [id])
+  videoAsset VideoAsset @relation(fields: [videoAssetId], references: [id])
+
+  @@unique([userId, videoAssetId])
+}
+
+enum ReportReason {
+  FACTUALLY_INCORRECT
+  OFFENSIVE
+  PRIVACY_CONCERN
+  DUPLICATE
+  OTHER
+}
+
+model Report {
+  id           String       @id @default(cuid())
+  userId       String?
+  videoAssetId String
+  reason       ReportReason
+  notes        String?
+  createdAt    DateTime     @default(now())
+  resolvedAt   DateTime?
+
+  user       User?      @relation(fields: [userId], references: [id])
+  videoAsset VideoAsset @relation(fields: [videoAssetId], references: [id])
+}
+
+// ---------------------------------------------------------------------------
+// Admin
+// ---------------------------------------------------------------------------
+
+enum AdminRole {
+  EDITOR
+  SUPER_ADMIN
+}
+
+model AdminUser {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  role         AdminRole @default(EDITOR)
+  createdAt    DateTime  @default(now())
+
+  reviews   AdminReview[]
+  auditLogs AdminAuditLog[]
+}
+
+enum AdminAction {
+  APPROVE
+  REJECT
+  EDIT
+  REGENERATE_SCRIPT
+  REGENERATE_AUDIO
+  REGENERATE_VIDEO
+  REMOVE_VIDEO
+  CHANGE_CATEGORY
+  CORRECT_METADATA
+}
+
+model AdminReview {
+  id            String      @id @default(cuid())
+  masterStoryId String
+  adminUserId   String
+  action        AdminAction
+  notes         String?
+  createdAt     DateTime    @default(now())
+
+  masterStory MasterStory @relation(fields: [masterStoryId], references: [id], onDelete: Cascade)
+  adminUser   AdminUser   @relation(fields: [adminUserId], references: [id])
+}
+
+model AdminAuditLog {
+  id          String   @id @default(cuid())
+  adminUserId String
+  action      String
+  entity      String
+  entityId    String
+  diff        Json?
+  createdAt   DateTime @default(now())
+
+  adminUser AdminUser @relation(fields: [adminUserId], references: [id])
+
+  @@index([entity, entityId])
+}
+
+// Configurable pipeline thresholds (§13, §24, §29)
+model PipelineConfig {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}

@@ -1,0 +1,28 @@
+# Node
+node_modules/
+dist/
+build/
+*.log
+coverage/
+
+# Env
+.env
+.env.local
+
+# Backend runtime storage (local media dev fallback)
+backend/storage/
+
+# Android
+android/.gradle/
+android/local.properties
+android/**/build/
+android/.idea/
+android/*.iml
+android/captures/
+android/.cxx/
+
+# Admin dashboard
+admin-dashboard/dist/
+
+# OS
+.DS_Store
