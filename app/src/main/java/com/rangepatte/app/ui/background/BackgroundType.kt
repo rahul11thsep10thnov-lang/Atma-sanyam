@@ -8,6 +8,8 @@ package com.rangepatte.app.ui.background
  * that one lookup updated — screens never reference drawables directly.
  */
 enum class BackgroundType {
+    /** Mud-plastered courtyard wall at dusk — the default scene behind the charpai game table. */
+    VILLAGE_CHAUPAL,
     GARDEN_BALCONY,
     CLASSICAL_LIVING_ROOM,
     MOUNTAIN_VALLEY,

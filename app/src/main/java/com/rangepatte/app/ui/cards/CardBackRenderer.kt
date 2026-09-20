@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import com.rangepatte.app.ui.theme.PlayingCardCornerRadius
@@ -17,15 +18,20 @@ import kotlin.math.min
 import kotlin.math.sin
 
 /**
- * An original geometric-floral card back — inspired by lotus/paisley motifs, not a reproduction of
- * any existing manufacturer's design. Drawn procedurally so no external art asset is required.
+ * An original, handcrafted-feeling card back — a maroon-and-gold mandala rosette bordered by a
+ * diamond lattice frame, inspired by Mughal/Rajasthani geometric-floral motifs rather than any
+ * existing manufacturer's design. Drawn entirely procedurally so no external art asset is needed.
  */
 @Composable
 internal fun CardBack(palette: CardPalette, modifier: Modifier = Modifier) {
+    val vignette = Brush.radialGradient(
+        colors = listOf(palette.backBase.copy(alpha = 0.85f), palette.backBase)
+    )
+
     Canvas(
         modifier = modifier
             .fillMaxSize()
-            .background(palette.backBase, RoundedCornerShape(PlayingCardCornerRadius))
+            .background(vignette, RoundedCornerShape(PlayingCardCornerRadius))
             .border(1.dp, palette.backOrnament, RoundedCornerShape(PlayingCardCornerRadius))
     ) {
         val center = Offset(size.width / 2f, size.height / 2f)
@@ -33,13 +39,32 @@ internal fun CardBack(palette: CardPalette, modifier: Modifier = Modifier) {
         val innerRadius = outerRadius * 0.45f
         val petalCount = 8
 
-        // Diamond lattice border, inset from the card edge.
+        // Outer double-rule antique frame, inset from the card edge.
         val inset = 6.dp.toPx()
         drawRect(
             color = palette.backOrnament.copy(alpha = 0.55f),
             topLeft = Offset(inset, inset),
             size = Size(size.width - inset * 2, size.height - inset * 2),
             style = Stroke(width = 1.dp.toPx())
+        )
+        val innerInset = inset + 3.dp.toPx()
+        drawRect(
+            color = palette.backOrnament.copy(alpha = 0.35f),
+            topLeft = Offset(innerInset, innerInset),
+            size = Size(size.width - innerInset * 2, size.height - innerInset * 2),
+            style = Stroke(width = 0.5.dp.toPx())
+        )
+        val flourish = 6.dp.toPx()
+        drawCornerFlourish(Offset(innerInset, innerInset), flourish, palette.backOrnament, mirrorX = false, mirrorY = false)
+        drawCornerFlourish(Offset(size.width - innerInset, innerInset), flourish, palette.backOrnament, mirrorX = true, mirrorY = false)
+        drawCornerFlourish(Offset(innerInset, size.height - innerInset), flourish, palette.backOrnament, mirrorX = false, mirrorY = true)
+        drawCornerFlourish(Offset(size.width - innerInset, size.height - innerInset), flourish, palette.backOrnament, mirrorX = true, mirrorY = true)
+
+        drawCircle(
+            color = palette.backOrnament.copy(alpha = 0.3f),
+            radius = outerRadius * 0.85f,
+            center = center,
+            style = Stroke(width = 0.75.dp.toPx())
         )
 
         // Central lotus-like rosette made of overlapping petals.

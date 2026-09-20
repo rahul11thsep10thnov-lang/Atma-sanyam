@@ -1,11 +1,13 @@
 package com.rangepatte.app.ui.table
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.matchParentSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -13,6 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -28,6 +32,7 @@ import com.rangepatte.app.ui.components.TurnIndicator
 import com.rangepatte.app.ui.components.WatermarkBackground
 import com.rangepatte.app.ui.components.WoodenTable
 import com.rangepatte.app.ui.cards.Hand
+import com.rangepatte.app.ui.theme.GoldenGlow
 import kotlin.random.Random
 
 /**
@@ -47,7 +52,7 @@ fun GameTableScreen(
     val demoHand = remember(game.id) { Deck.standard().shuffled(Random(game.id.ordinal)).cards.take(5) }
     val demoOpponentHand = remember(game.id) { Deck.standard().shuffled(Random(game.id.ordinal + 100)).cards.take(5) }
 
-    WatermarkBackground(backgroundType = BackgroundType.WOODEN_VERANDA, modifier = modifier) {
+    WatermarkBackground(backgroundType = BackgroundType.VILLAGE_CHAUPAL, modifier = modifier) {
         Column(modifier = Modifier.fillMaxSize().padding(12.dp)) {
             GameHeader(
                 title = stringResource(game.nameRes),
@@ -91,6 +96,23 @@ fun GameTableScreen(
                     }
                 }
 
+                // Warm lantern-light vignette — brighter, gold-tinted center, softly darkened
+                // edges — so the eye is drawn to the charpai rather than the whole screen reading
+                // uniformly bright.
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(
+                            Brush.radialGradient(
+                                colors = listOf(
+                                    GoldenGlow.copy(alpha = 0.12f),
+                                    Color.Transparent,
+                                    Color.Black.copy(alpha = 0.16f)
+                                )
+                            )
+                        )
+                )
+
                 ScorePanel(
                     scoresByPlayerName = listOf("You" to 0, "Table" to 0),
                     modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)
@@ -105,7 +127,8 @@ fun GameTableScreen(
                     cards = demoHand,
                     cardWidth = 52.dp,
                     cardHeight = 76.dp,
-                    faceUp = true
+                    faceUp = true,
+                    animateDealIn = true
                 )
             }
         }

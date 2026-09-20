@@ -10,6 +10,9 @@ import androidx.compose.ui.graphics.Color
  */
 object BackgroundManager {
     fun brushFor(type: BackgroundType): Brush = when (type) {
+        BackgroundType.VILLAGE_CHAUPAL -> Brush.verticalGradient(
+            listOf(Color(0xFF3D2A1E), Color(0xFF6B1421), Color(0xFFB5613C), Color(0xFFE08A2C))
+        )
         BackgroundType.GARDEN_BALCONY -> Brush.verticalGradient(
             listOf(Color(0xFF6E8A5C), Color(0xFFCBB99E), Color(0xFFF3E9D7))
         )

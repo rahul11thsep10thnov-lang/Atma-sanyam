@@ -1,14 +1,16 @@
-# Rang-e-Patte
+# Indian Taash
 
-*"Traditional Indian Card Games"* — a native Android app (Kotlin + Jetpack Compose) for classical
-Indian card games, styled after a heritage drawing room rather than a casino. "Rang-e-Patte" is a
-temporary internal name; see [Renaming the app](#renaming-the-app) to change it.
+*"Classic Indian Card Games"* — a native Android app (Kotlin + Jetpack Compose) styled after a
+traditional Indian village courtyard: players seated around a woven jute charpai, antique
+gold-bordered cards, brass nameplates, warm lantern light. "Indian Taash" is a temporary internal
+name; see [Renaming the app](#renaming-the-app) to change it.
 
 This is **not** a real-money gambling app. All scoring uses non-monetary points.
 
 ## Status
 
-Phases 1–6 of the build plan are implemented and this README describes only what exists today:
+Phases 1–6 of the build plan are implemented, plus a full visual redesign pass (village-courtyard
+theme) on top of them. This README describes only what exists today:
 
 | Phase | What | Status |
 |---|---|---|
@@ -18,7 +20,30 @@ Phases 1–6 of the build plan are implemented and this README describes only wh
 | 4 | Home screen (featured/popular/more games grid) | ✅ |
 | 5 | Navigation (Compose Navigation, bottom nav, setup/table/rules routes) | ✅ |
 | 6 | Game table shell (wooden table, header, hands, score panel) | ✅ |
+| — | Village-courtyard visual redesign (charpai table, antique cards, brass plaques, animation) | ✅ |
 | 7+ | Individual game engines (Solitaire, Spider, Rummy, Teen Patti, Flush, 29, Coat Piece, Dehla Pakad, Lakadi) | not started |
+
+### The redesign, specifically
+
+- **Charpai game table** (`ui/components/WoodenTable.kt`, `TableStyle.CHARPAI`): a procedurally
+  drawn woven jute-rope lattice inside a thick wooden frame, replacing the plain wooden panel.
+- **Antique cards** (`ui/cards/CardRenderer.kt`, `CardBackRenderer.kt`, `SuitMotifs.kt`): parchment
+  face, double gold-rule border with corner flourishes, stylized suit motifs (lotus / ornamental
+  diamond / paisley leaf / spear-leaf) alongside the small conventional ♠♥♦♣ corner glyph, and a
+  maroon-and-gold mandala card back.
+- **Brass/wood player nameplates and buttons** (`PlayerAvatar.kt`, `ScorePanel.kt`,
+  `ClassicalButton.kt`): wood-and-brass plaques instead of modern bubbles/flat buttons, with a
+  press-down scale animation on buttons.
+- **Typography** (`ui/theme/Type.kt`): real bundled Cinzel and Marcellus fonts (see
+  [Typography & fonts](#typography--fonts)) for the ornate title/headers, gold-colored with a
+  subtle shadow, framed by a small `OrnamentalDivider` flourish.
+- **Animation**: cards glow gold and lift slightly when selected; the local player's hand deals in
+  with a staggered fade/slide/rotate-settle; a warm gold-to-dark vignette sits over the table.
+- **Honest limitation**: the brief also asked for illustrated Mughal-miniature-style King/Queen/Jack
+  portraits. There is no image-generation tool available in the authoring environment to paint real
+  character artwork, so face cards instead get an ornamental vector crest (crown / diadem / plume —
+  see `FaceCardCrest` in `SuitMotifs.kt`) rather than a painted portrait. Swapping in real
+  illustrated art later means replacing that one composable's body — no calling screen changes.
 
 The game table screen currently shows a static demo hand (cards drawn from the real `Deck` engine,
 just not attached to a rules engine yet) so the rendering pipeline can be verified end-to-end before
@@ -83,10 +108,10 @@ app/src/main/java/com/rangepatte/app/
 │   ├── model/     # PlayingCard, Suit, Rank, Player, GameCatalog (game metadata)
 │   └── game/      # Deck, DeckManager, CardGameEngine + GameState/GameAction contracts
 ├── ui/
-│   ├── theme/     # Color.kt, Type.kt, Shape.kt, Theme.kt — the only place raw colors live
-│   ├── cards/     # PlayingCardView/CardFace/CardBack renderers, CardStack, Hand, CardStyle
+│   ├── theme/     # Color.kt, Type.kt, Shape.kt, Dimens.kt, Theme.kt — design tokens live here
+│   ├── cards/     # PlayingCardView/CardFace/CardBack renderers, SuitMotifs, CardStack, Hand, CardStyle
 │   ├── background/# BackgroundType enum + BackgroundManager (brush per scene)
-│   ├── components/# Shared widgets: ClassicalButton, GameTile, WoodenTable, GameHeader, ...
+│   ├── components/# Shared widgets: ClassicalButton, GameTile, WoodenTable, GameHeader, OrnamentalDivider, ...
 │   ├── home/, games/, history/, settings/, setup/, table/, rules/   # screens
 ├── navigation/    # Routes.kt, BottomNavItem.kt, RangEPatteNavHost.kt
 ├── MainActivity.kt
@@ -113,9 +138,23 @@ an `*Engine.kt`, `*Rules.kt`, and `*Screen.kt` — never touching the shared she
 ## How to add a new card design
 
 Card face/back painting lives entirely in `ui/cards/CardStyle.kt` (`CardPalette`),
-`CardRenderer.kt` (`CardFace`), and `CardBackRenderer.kt` (`CardBack`). Add a new `CardStyle` enum
-value and its `CardPalette` in `CardStyle.kt` — no other file needs to change, since every screen
-renders cards through `PlayingCardView`.
+`CardRenderer.kt` (`CardFace`), `CardBackRenderer.kt` (`CardBack`), and `SuitMotifs.kt` (the
+lotus/diamond/paisley/spear-leaf suit emblems and the King/Queen/Jack ornamental crests). Add a new
+`CardStyle` enum value and its `CardPalette` in `CardStyle.kt` for a new color scheme, or edit the
+`draw*` functions in `SuitMotifs.kt` for new motif shapes — no other file needs to change, since
+every screen renders cards through `PlayingCardView`.
+
+## Typography & fonts
+
+`ui/theme/Type.kt` defines three role tokens — `DisplayFont` (titles/headers), `TitleFont`
+(buttons/player names), `BodyFont` (scores/settings/small text) — used everywhere instead of
+inlining a `FontFamily`. `DisplayFont`/`TitleFont` are backed by two real font files bundled under
+`app/src/main/res/font/` (Cinzel, a variable font, and Marcellus, static regular) — both fetched
+from Google's open-source `google/fonts` repository and licensed SIL OFL 1.1; see
+`THIRD_PARTY_NOTICES.md` and `licenses/fonts/` for the full license text and provenance.
+`BodyFont` stays on the zero-cost platform serif for legibility at small sizes without adding a
+third bundled font. To swap either font, replace the `.ttf` under `res/font/`, update the
+`Font(R.font....)` reference in `Type.kt`, and update the license notice accordingly.
 
 ## How to add a new background
 
@@ -134,9 +173,11 @@ real artwork:
 
 1. Create `res/values-<languageCode>/strings.xml` (e.g. `values-hi/strings.xml` for Hindi) with the
    same string names as `res/values/strings.xml`, translated.
-2. For Devanagari or other non-Latin scripts, swap the placeholder typefaces in
-   `ui/theme/Type.kt` (currently `FontFamily.Serif` / `FontFamily.SansSerif`) for a licensed
-   Devanagari-compatible font added under `res/font/`.
+2. For Devanagari or other non-Latin scripts, add a Devanagari-compatible font (e.g. Noto Serif
+   Devanagari or Tiro Devanagari, both on Google's `google/fonts` GitHub repo under OFL) to
+   `res/font/` and reference it from `BodyFont`/`DisplayFont` in `ui/theme/Type.kt` — see
+   [Typography & fonts](#typography--fonts) for how the existing Cinzel/Marcellus fonts were
+   sourced and licensed the same way.
 
 No code changes are needed beyond that — every user-facing string in the app already goes through
 `stringResource(R.string...)`.

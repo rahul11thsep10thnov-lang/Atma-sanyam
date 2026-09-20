@@ -14,6 +14,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -22,7 +24,9 @@ import com.rangepatte.app.R
 import com.rangepatte.app.domain.model.GameInfo
 import com.rangepatte.app.ui.components.GameTile
 import com.rangepatte.app.ui.components.GamesGrid
+import com.rangepatte.app.ui.components.OrnamentalDivider
 import com.rangepatte.app.ui.components.WatermarkBackground
+import com.rangepatte.app.ui.theme.RoyalGold
 
 @Composable
 fun HomeScreen(
@@ -39,10 +43,17 @@ fun HomeScreen(
         ) {
             item {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(top = 8.dp)) {
+                    OrnamentalDivider(modifier = Modifier.padding(bottom = 4.dp))
                     Text(
                         text = stringResource(R.string.app_name),
-                        style = MaterialTheme.typography.displayLarge,
-                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.displayLarge.copy(
+                            shadow = Shadow(
+                                color = MaterialTheme.colorScheme.scrim.copy(alpha = 0.35f),
+                                offset = Offset(0f, 2f),
+                                blurRadius = 4f
+                            )
+                        ),
+                        color = RoyalGold,
                         textAlign = TextAlign.Center
                     )
                     Text(
@@ -51,6 +62,7 @@ fun HomeScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
                     )
+                    OrnamentalDivider(modifier = Modifier.padding(top = 8.dp))
                 }
             }
 
