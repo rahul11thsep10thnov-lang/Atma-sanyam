@@ -29,6 +29,7 @@ videosRouter.get(
 
     res.json({
       videoId: video.id,
+      masterStoryId: video.masterStoryId,
       playbackUrl: video.storageUrl,
       thumbnailUrl: video.thumbnailUrl,
       durationSeconds: video.durationSeconds,
