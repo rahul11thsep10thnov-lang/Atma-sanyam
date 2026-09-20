@@ -143,7 +143,7 @@ private fun HomeHeader(modifier: Modifier = Modifier) {
     ) {
         Column {
             Text(
-                text = "Atma Sanyam",
+                text = "PrayagVaahan",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,

@@ -1,4 +1,4 @@
-# Atma Sanyam — On-Demand Goods Delivery
+# PrayagVaahan — On-Demand Goods Delivery
 
 Native Android app (Kotlin, Jetpack Compose, Material 3, MVVM/Clean Architecture) for
 on-demand delivery of goods/articles from a shop to a customer's destination —
@@ -286,7 +286,7 @@ Android dependency: `./gradlew :core:model:test` (needs a JDK, no Android SDK).
 ### What you should see in the app
 
 - Opens directly to the Home screen (no login prompt).
-- "Atma Sanyam" header, tagline "Deliver anything from shop to home".
+- "PrayagVaahan" header, tagline "Deliver anything from shop to home".
 - Without a real `MAPS_API_KEY` (true until one is supplied — see below), you'll see a
   plain "Map preview unavailable" placeholder instead of a live map. That's a deliberate
   safety fallback, not a bug: an empty API key is a known crash trigger on some Maps SDK
