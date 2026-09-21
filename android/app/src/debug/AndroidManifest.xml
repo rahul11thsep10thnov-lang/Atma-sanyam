@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+      Debug-only override: allows plain http:// traffic so the app can talk
+      to a local development backend (e.g. http://<your-PC's-LAN-IP>:4000)
+      that has no HTTPS certificate. This file is merged only into debug
+      builds by Gradle — release builds use the main AndroidManifest.xml
+      unchanged and still require https:// as normal.
+    -->
+    <application android:usesCleartextTraffic="true" />
+</manifest>
