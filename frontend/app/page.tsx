@@ -4,6 +4,7 @@ import { PrivacyNotice } from "@/components/PrivacyNotice";
 
 interface LessonSummary {
   id: string;
+  title: string;
   status: string;
 }
 interface BatchSummary {
@@ -72,7 +73,7 @@ export default async function DashboardPage() {
             {lessons.slice(0, 5).map((l) => (
               <li key={l.id} className="py-2 text-sm">
                 <Link href={`/lessons/${l.id}`} className="text-slate-800 hover:underline">
-                  {l.id}
+                  {l.title || "(untitled lesson)"}
                 </Link>{" "}
                 — {l.status}
               </li>
