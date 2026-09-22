@@ -1,0 +1,243 @@
+{
+  "plan": {
+    "lesson_title": "Average Speed",
+    "estimated_duration_seconds": 45,
+    "learning_objectives": [
+      "Understand average speed",
+      "Apply distance / time to a new example"
+    ],
+    "scenes": [
+      {
+        "scene_id": "scene_001",
+        "type": "SPEAK_ONLY",
+        "narration": "Let's understand average speed with a simple example.",
+        "board_actions": [],
+        "pause_before_ms": 0,
+        "pause_after_ms": 500,
+        "emphasis": [],
+        "hand_mode": null,
+        "start_ms": null,
+        "duration_ms": null
+      },
+      {
+        "scene_id": "scene_002",
+        "type": "WRITE_AND_SPEAK",
+        "narration": "Suppose a cyclist travels 45 kilometres in 3 hours.",
+        "board_actions": [
+          {
+            "action": "write",
+            "content": "45 km in 3 hours",
+            "position": {
+              "x": 0.1,
+              "y": 0.15,
+              "width": null,
+              "height": null
+            },
+            "style": {
+              "color": "#1a1a1a",
+              "font_size": 40,
+              "stroke_width": 3,
+              "bold": false
+            },
+            "start_time_ms": 0,
+            "duration_ms": 1600,
+            "target_action_id": null
+          }
+        ],
+        "pause_before_ms": 200,
+        "pause_after_ms": 400,
+        "emphasis": [
+          "45 km",
+          "3 hours"
+        ],
+        "hand_mode": null,
+        "start_ms": null,
+        "duration_ms": null
+      },
+      {
+        "scene_id": "scene_003",
+        "type": "FORMULA",
+        "narration": "Speed is distance divided by time.",
+        "board_actions": [
+          {
+            "action": "write_formula",
+            "content": "speed = distance / time",
+            "position": {
+              "x": 0.1,
+              "y": 0.35,
+              "width": null,
+              "height": null
+            },
+            "style": {
+              "color": "#1c4587",
+              "font_size": 44,
+              "stroke_width": 3,
+              "bold": true
+            },
+            "start_time_ms": 0,
+            "duration_ms": 1400,
+            "target_action_id": null
+          }
+        ],
+        "pause_before_ms": 200,
+        "pause_after_ms": 400,
+        "emphasis": [
+          "speed"
+        ],
+        "hand_mode": null,
+        "start_ms": null,
+        "duration_ms": null
+      },
+      {
+        "scene_id": "scene_004",
+        "type": "WRITE_AND_SPEAK",
+        "narration": "Let's put our numbers in: 45 kilometres divided by 3 hours.",
+        "board_actions": [
+          {
+            "action": "write_formula",
+            "content": "speed = 45 km / 3 hr",
+            "position": {
+              "x": 0.1,
+              "y": 0.5,
+              "width": null,
+              "height": null
+            },
+            "style": {
+              "color": "#1a1a1a",
+              "font_size": 40,
+              "stroke_width": 3,
+              "bold": false
+            },
+            "start_time_ms": 0,
+            "duration_ms": 1600,
+            "target_action_id": null
+          }
+        ],
+        "pause_before_ms": 200,
+        "pause_after_ms": 400,
+        "emphasis": [],
+        "hand_mode": null,
+        "start_ms": null,
+        "duration_ms": null
+      },
+      {
+        "scene_id": "scene_005",
+        "type": "WRITE_AND_SPEAK",
+        "narration": "So the average speed is 15 kilometres per hour.",
+        "board_actions": [
+          {
+            "action": "write_formula",
+            "content": "speed = 15 km/h",
+            "position": {
+              "x": 0.1,
+              "y": 0.65,
+              "width": null,
+              "height": null
+            },
+            "style": {
+              "color": "#1a1a1a",
+              "font_size": 44,
+              "stroke_width": 3,
+              "bold": true
+            },
+            "start_time_ms": 0,
+            "duration_ms": 1400,
+            "target_action_id": null
+          },
+          {
+            "action": "circle",
+            "content": "15 km/h",
+            "position": {
+              "x": 0.1,
+              "y": 0.65,
+              "width": 0.32,
+              "height": 0.09
+            },
+            "style": {
+              "color": "#c0392b",
+              "font_size": 36,
+              "stroke_width": 4,
+              "bold": false
+            },
+            "start_time_ms": 0,
+            "duration_ms": 900,
+            "target_action_id": null
+          }
+        ],
+        "pause_before_ms": 300,
+        "pause_after_ms": 700,
+        "emphasis": [
+          "15 km/h"
+        ],
+        "hand_mode": null,
+        "start_ms": null,
+        "duration_ms": null
+      }
+    ],
+    "language": "en",
+    "video_format": "1920x1080",
+    "fps": 30,
+    "subtitles": {
+      "enabled": true,
+      "font": "Inter",
+      "size": 42,
+      "position": "bottom",
+      "burned_in": false
+    },
+    "whiteboard": {
+      "writing_speed": "medium",
+      "pause_between_words_ms": 60,
+      "pause_between_lines_ms": 300,
+      "hand_mode": "OCCASIONAL"
+    },
+    "prompt_version": ""
+  },
+  "audio": {
+    "scene_001": "audio/demo_scene_001.wav",
+    "scene_002": "audio/demo_scene_002.wav",
+    "scene_003": "audio/demo_scene_003.wav",
+    "scene_004": "audio/demo_scene_004.wav",
+    "scene_005": "audio/demo_scene_005.wav"
+  },
+  "timeline": {
+    "scene_001": {
+      "startMs": 0,
+      "durationMs": 3700,
+      "audioDurationMs": 3200,
+      "boardActionStartsMs": []
+    },
+    "scene_002": {
+      "startMs": 3900,
+      "durationMs": 3999,
+      "audioDurationMs": 3599,
+      "boardActionStartsMs": [
+        3900
+      ]
+    },
+    "scene_003": {
+      "startMs": 8099,
+      "durationMs": 2800,
+      "audioDurationMs": 2400,
+      "boardActionStartsMs": [
+        8099
+      ]
+    },
+    "scene_004": {
+      "startMs": 11099,
+      "durationMs": 4800,
+      "audioDurationMs": 4400,
+      "boardActionStartsMs": [
+        11099
+      ]
+    },
+    "scene_005": {
+      "startMs": 16199,
+      "durationMs": 4299,
+      "audioDurationMs": 3599,
+      "boardActionStartsMs": [
+        16199,
+        18389
+      ]
+    }
+  }
+}

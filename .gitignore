@@ -1,0 +1,42 @@
+# Env / secrets
+.env
+.env.local
+*.pem
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+.next/
+out/
+dist/
+npm-debug.log*
+
+# Remotion
+renderer/out/*.mp4
+!renderer/out/.gitkeep
+
+# Storage (user data must never be committed)
+storage/uploads/*
+storage/tmp/*
+storage/audio/*
+storage/video/*
+storage/thumbnails/*
+storage/dev.db
+!storage/**/.gitkeep
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Alembic sqlite artifacts used only for local sandbox testing
+backend/*.db

@@ -1,0 +1,382 @@
+{
+  "$defs": {
+    "BoardAction": {
+      "properties": {
+        "action": {
+          "enum": [
+            "write",
+            "write_formula",
+            "diagram",
+            "arrow",
+            "circle",
+            "rectangle",
+            "underline",
+            "highlight",
+            "erase",
+            "camera_zoom",
+            "camera_pan"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "content": {
+          "default": "",
+          "title": "Content",
+          "type": "string"
+        },
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "style": {
+          "$ref": "#/$defs/Style"
+        },
+        "start_time_ms": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Start Time Ms",
+          "type": "integer"
+        },
+        "duration_ms": {
+          "default": 800,
+          "minimum": 0,
+          "title": "Duration Ms",
+          "type": "integer"
+        },
+        "target_action_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Action Id"
+        }
+      },
+      "required": [
+        "action"
+      ],
+      "title": "BoardAction",
+      "type": "object"
+    },
+    "Position": {
+      "description": "Normalized 0-1 board coordinates so the renderer can target any\nresolution/aspect ratio without the backend knowing pixel dimensions.",
+      "properties": {
+        "x": {
+          "default": 0.1,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "default": 0.1,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Y",
+          "type": "number"
+        },
+        "width": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Width"
+        },
+        "height": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Height"
+        }
+      },
+      "title": "Position",
+      "type": "object"
+    },
+    "Scene": {
+      "properties": {
+        "scene_id": {
+          "title": "Scene Id",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "SPEAK_ONLY",
+            "WRITE_ONLY",
+            "WRITE_AND_SPEAK",
+            "DIAGRAM",
+            "FORMULA",
+            "EMPHASIS",
+            "PAUSE",
+            "ERASE",
+            "HIGHLIGHT",
+            "CIRCLE",
+            "ARROW",
+            "ZOOM"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "narration": {
+          "default": "",
+          "title": "Narration",
+          "type": "string"
+        },
+        "board_actions": {
+          "items": {
+            "$ref": "#/$defs/BoardAction"
+          },
+          "title": "Board Actions",
+          "type": "array"
+        },
+        "pause_before_ms": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Pause Before Ms",
+          "type": "integer"
+        },
+        "pause_after_ms": {
+          "default": 400,
+          "minimum": 0,
+          "title": "Pause After Ms",
+          "type": "integer"
+        },
+        "emphasis": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Emphasis",
+          "type": "array"
+        },
+        "hand_mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "OFF",
+                "OCCASIONAL",
+                "CONTINUOUS"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Hand Mode"
+        },
+        "start_ms": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Start Ms"
+        },
+        "duration_ms": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration Ms"
+        }
+      },
+      "required": [
+        "scene_id",
+        "type"
+      ],
+      "title": "Scene",
+      "type": "object"
+    },
+    "Style": {
+      "properties": {
+        "color": {
+          "default": "#1a1a1a",
+          "title": "Color",
+          "type": "string"
+        },
+        "font_size": {
+          "default": 36,
+          "maximum": 120,
+          "minimum": 12,
+          "title": "Font Size",
+          "type": "integer"
+        },
+        "stroke_width": {
+          "default": 3,
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Stroke Width",
+          "type": "integer"
+        },
+        "bold": {
+          "default": false,
+          "title": "Bold",
+          "type": "boolean"
+        }
+      },
+      "title": "Style",
+      "type": "object"
+    },
+    "SubtitleSettings": {
+      "properties": {
+        "enabled": {
+          "default": true,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "font": {
+          "default": "Inter",
+          "title": "Font",
+          "type": "string"
+        },
+        "size": {
+          "default": 42,
+          "title": "Size",
+          "type": "integer"
+        },
+        "position": {
+          "default": "bottom",
+          "enum": [
+            "bottom",
+            "top"
+          ],
+          "title": "Position",
+          "type": "string"
+        },
+        "burned_in": {
+          "default": false,
+          "title": "Burned In",
+          "type": "boolean"
+        }
+      },
+      "title": "SubtitleSettings",
+      "type": "object"
+    },
+    "WhiteboardSettings": {
+      "properties": {
+        "writing_speed": {
+          "default": "medium",
+          "enum": [
+            "realistic",
+            "medium",
+            "fast"
+          ],
+          "title": "Writing Speed",
+          "type": "string"
+        },
+        "pause_between_words_ms": {
+          "default": 60,
+          "title": "Pause Between Words Ms",
+          "type": "integer"
+        },
+        "pause_between_lines_ms": {
+          "default": 300,
+          "title": "Pause Between Lines Ms",
+          "type": "integer"
+        },
+        "hand_mode": {
+          "default": "OCCASIONAL",
+          "enum": [
+            "OFF",
+            "OCCASIONAL",
+            "CONTINUOUS"
+          ],
+          "title": "Hand Mode",
+          "type": "string"
+        }
+      },
+      "title": "WhiteboardSettings",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "lesson_title": {
+      "title": "Lesson Title",
+      "type": "string"
+    },
+    "estimated_duration_seconds": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Estimated Duration Seconds",
+      "type": "integer"
+    },
+    "learning_objectives": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Learning Objectives",
+      "type": "array"
+    },
+    "scenes": {
+      "items": {
+        "$ref": "#/$defs/Scene"
+      },
+      "title": "Scenes",
+      "type": "array"
+    },
+    "language": {
+      "default": "en",
+      "title": "Language",
+      "type": "string"
+    },
+    "video_format": {
+      "default": "1920x1080",
+      "enum": [
+        "1920x1080",
+        "1080x1920",
+        "1080x1080"
+      ],
+      "title": "Video Format",
+      "type": "string"
+    },
+    "fps": {
+      "default": 30,
+      "title": "Fps",
+      "type": "integer"
+    },
+    "subtitles": {
+      "$ref": "#/$defs/SubtitleSettings"
+    },
+    "whiteboard": {
+      "$ref": "#/$defs/WhiteboardSettings"
+    },
+    "prompt_version": {
+      "default": "",
+      "title": "Prompt Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "lesson_title",
+    "scenes"
+  ],
+  "title": "TeachingPlan",
+  "type": "object"
+}

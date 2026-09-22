@@ -1,0 +1,77 @@
+version: "3.9"
+
+# Provides the stateful dependencies (Postgres + Redis) for local development.
+# Run: docker compose up -d
+# Backend, frontend and workers are typically run directly on the host during
+# development (see README.md) so they can be edited with hot-reload, but
+# services are included below (commented) for a full containerized run.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: studio
+      POSTGRES_PASSWORD: studio
+      POSTGRES_DB: whiteboard_studio
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U studio -d whiteboard_studio"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Uncomment to run the backend API inside Docker as well.
+  # backend:
+  #   build: ./backend
+  #   env_file: .env
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #   ports:
+  #     - "8000:8000"
+  #   volumes:
+  #     - ./backend:/app
+  #     - ./storage:/app/storage
+  #
+  # worker:
+  #   build: ./backend
+  #   command: celery -A app.workers.celery_app worker --loglevel=info
+  #   env_file: .env
+  #   depends_on:
+  #     - redis
+  #     - postgres
+  #   volumes:
+  #     - ./backend:/app
+  #     - ./storage:/app/storage
+  #     - ./renderer:/renderer
+  #
+  # frontend:
+  #   build: ./frontend
+  #   env_file: .env
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./frontend:/app
+
+volumes:
+  postgres_data:
+  redis_data:
