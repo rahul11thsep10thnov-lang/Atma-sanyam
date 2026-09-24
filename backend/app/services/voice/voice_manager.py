@@ -26,6 +26,8 @@ class VoiceManager:
             "similarity": profile.similarity,
             "style": profile.style,
             "speed": profile.speed,
+            "voice_mode": profile.voice_mode,
+            "language": profile.language,
         }
         text_hash = voice_cache_key(profile.voice_id, profile.model_id, settings_dict, text)
 
@@ -48,6 +50,8 @@ class VoiceManager:
             similarity=profile.similarity,
             style=profile.style,
             speed=profile.speed,
+            language=profile.language,
+            extra={"voice_mode": profile.voice_mode},
         )
         result = self._voice_service.generate(request, output_path)
 

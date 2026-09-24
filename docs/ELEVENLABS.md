@@ -1,5 +1,9 @@
 # ElevenLabs Voice Setup
 
+> Looking for a free, unlimited alternative instead of ElevenLabs' metered
+> pricing? See `docs/CHATTERBOX.md` for a self-hosted option with no
+> per-minute cost.
+
 This app uses **one fixed Professional Voice Clone** for every generated
 video so the "teacher" sounds like the same person across hundreds or
 thousands of lessons. The app never creates or manages voice clones itself.

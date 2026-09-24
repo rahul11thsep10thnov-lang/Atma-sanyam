@@ -61,9 +61,14 @@ backend and the Remotion renderer. This means:
 
 ## Voice architecture
 
-See `docs/ELEVENLABS.md`. In short: one `ELEVENLABS_VOICE_ID` configured
-once in `.env`, used for every video. The app never creates new voice clones
-and never lets the browser choose a voice ID.
+`VoiceService` has three interchangeable implementations, selected by
+`MOCK_VOICE` / `VOICE_PROVIDER` (`services/voice/factory.py`):
+`MockVoiceService` (dev, no network), `ElevenLabsVoiceService` (paid,
+hosted — see `docs/ELEVENLABS.md`), and `ChatterboxVoiceService`
+(free, self-hosted — see `docs/CHATTERBOX.md`). Whichever is active, the
+rule from build spec section 4 holds: one voice, configured once, used for
+every video — the app never lets the browser choose a voice ID and never
+re-clones per video.
 
 ## Data model
 

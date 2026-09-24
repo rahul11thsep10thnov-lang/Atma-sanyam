@@ -12,8 +12,12 @@ class VoiceProfile(Base, UUIDMixin, TimestampMixin, OwnedMixin):
 
     __tablename__ = "voice_profiles"
 
-    provider: Mapped[str] = mapped_column(default="elevenlabs")
+    provider: Mapped[str] = mapped_column(default="elevenlabs")  # elevenlabs|chatterbox
     voice_id: Mapped[str] = mapped_column(default="")
+    # Chatterbox only: "predefined" (built-in voice, voice_id names it) or
+    # "clone" (voice_id is the filename of an uploaded reference clip).
+    # Ignored by other providers.
+    voice_mode: Mapped[str] = mapped_column(default="clone")
     model_id: Mapped[str] = mapped_column(default="eleven_multilingual_v2")
     stability: Mapped[float] = mapped_column(Float, default=0.5)
     similarity: Mapped[float] = mapped_column(Float, default=0.75)

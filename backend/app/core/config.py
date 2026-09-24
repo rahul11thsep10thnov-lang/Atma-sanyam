@@ -59,6 +59,9 @@ class Settings(BaseSettings):
     llm_api_key: str = Field(default="", repr=False)
     llm_model: str = "claude-sonnet-5"
 
+    # Which real (non-mock) voice provider to use when MOCK_VOICE=false.
+    voice_provider: str = "elevenlabs"  # elevenlabs|chatterbox
+
     elevenlabs_api_key: str = Field(default="", repr=False)
     elevenlabs_voice_id: str = ""
     elevenlabs_model_id: str = "eleven_multilingual_v2"
@@ -66,6 +69,16 @@ class Settings(BaseSettings):
     elevenlabs_similarity: float = 0.75
     elevenlabs_style: float = 0.0
     elevenlabs_speed: float = 1.0
+
+    # Chatterbox: a self-hosted, free, open-source TTS server (see
+    # docs/CHATTERBOX.md). No API key — it's your own server.
+    chatterbox_api_url: str = "http://localhost:8004"
+    chatterbox_voice_mode: str = "clone"  # predefined|clone
+    chatterbox_voice_id: str = ""  # predefined voice filename, or cloned reference filename
+    chatterbox_language: str = "en"
+    chatterbox_exaggeration: float = 0.5
+    chatterbox_cfg_weight: float = 0.5
+    chatterbox_temperature: float = 0.8
 
     retention_source_files_days: int = 30
     retention_extracted_text_days: int = 30

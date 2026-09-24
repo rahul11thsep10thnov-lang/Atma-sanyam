@@ -1,9 +1,11 @@
 import { backendFetch } from "@/lib/backend";
 import { TestVoiceForm } from "./TestVoiceForm";
+import { CloneVoiceForm } from "./CloneVoiceForm";
 
 interface VoiceProfile {
   provider: string;
   voice_id: string;
+  voice_mode: string;
   model_id: string;
   language: string;
   enabled: boolean;
@@ -32,8 +34,18 @@ export default async function VoicesPage() {
             <dd>{profile.provider}</dd>
             <dt className="text-slate-500">Voice ID</dt>
             <dd className="font-mono text-xs">{profile.voice_id}</dd>
-            <dt className="text-slate-500">Model</dt>
-            <dd>{profile.model_id}</dd>
+            {profile.provider === "chatterbox" && (
+              <>
+                <dt className="text-slate-500">Voice mode</dt>
+                <dd>{profile.voice_mode === "clone" ? "Cloned from your sample" : "Predefined"}</dd>
+              </>
+            )}
+            {profile.provider === "elevenlabs" && (
+              <>
+                <dt className="text-slate-500">Model</dt>
+                <dd>{profile.model_id}</dd>
+              </>
+            )}
             <dt className="text-slate-500">Language</dt>
             <dd>{profile.language}</dd>
             <dt className="text-slate-500">Status</dt>
@@ -41,11 +53,14 @@ export default async function VoicesPage() {
           </dl>
         ) : (
           <p className="text-sm text-slate-500">
-            No voice configured yet. Set ELEVENLABS_VOICE_ID in your backend .env, or leave MOCK_VOICE=true
-            for development. See docs/ELEVENLABS.md.
+            No voice configured yet. Set ELEVENLABS_VOICE_ID (docs/ELEVENLABS.md) or run a self-hosted
+            Chatterbox server and clone your voice below (docs/CHATTERBOX.md) — or leave MOCK_VOICE=true for
+            development.
           </p>
         )}
       </div>
+
+      <CloneVoiceForm />
 
       <TestVoiceForm />
     </div>

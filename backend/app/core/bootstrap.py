@@ -29,18 +29,28 @@ def ensure_default_voice_profile(db: Session, owner_id: str, settings: Settings)
     profile = db.query(VoiceProfile).filter(VoiceProfile.owner_id == owner_id).first()
     if profile is not None:
         return profile
-    profile = VoiceProfile(
-        owner_id=owner_id,
-        provider="elevenlabs",
-        voice_id=settings.elevenlabs_voice_id,
-        model_id=settings.elevenlabs_model_id,
-        stability=settings.elevenlabs_stability,
-        similarity=settings.elevenlabs_similarity,
-        style=settings.elevenlabs_style,
-        speed=settings.elevenlabs_speed,
-        language="en",
-        enabled=True,
-    )
+    if settings.voice_provider == "chatterbox":
+        profile = VoiceProfile(
+            owner_id=owner_id,
+            provider="chatterbox",
+            voice_id=settings.chatterbox_voice_id,
+            voice_mode=settings.chatterbox_voice_mode,
+            language=settings.chatterbox_language,
+            enabled=True,
+        )
+    else:
+        profile = VoiceProfile(
+            owner_id=owner_id,
+            provider="elevenlabs",
+            voice_id=settings.elevenlabs_voice_id,
+            model_id=settings.elevenlabs_model_id,
+            stability=settings.elevenlabs_stability,
+            similarity=settings.elevenlabs_similarity,
+            style=settings.elevenlabs_style,
+            speed=settings.elevenlabs_speed,
+            language="en",
+            enabled=True,
+        )
     db.add(profile)
     db.commit()
     db.refresh(profile)

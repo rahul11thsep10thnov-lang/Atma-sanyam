@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from pydantic import BaseModel, ConfigDict
+from typing import Any
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class VoiceGenerationRequest(BaseModel):
@@ -14,6 +16,11 @@ class VoiceGenerationRequest(BaseModel):
     style: float = 0.0
     speed: float = 1.0
     output_format: str = "mp3_44100_128"
+    language: str = "en"
+    # Provider-specific passthrough (e.g. Chatterbox's voice_mode/
+    # exaggeration/cfg_weight) that doesn't belong on every provider's
+    # request shape. Providers that don't recognize a key simply ignore it.
+    extra: dict[str, Any] = Field(default_factory=dict)
 
 
 class VoiceGenerationResult(BaseModel):
@@ -30,6 +37,7 @@ class VoiceProfilePublic(BaseModel):
 
     provider: str
     voice_id: str
+    voice_mode: str
     model_id: str
     stability: float
     similarity: float

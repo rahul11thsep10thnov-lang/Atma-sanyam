@@ -31,10 +31,15 @@ confirmation payload), `POST /batches/{id}/pause`,
 
 ## Voices
 
-`GET /voices` — the configured `VoiceProfile` (id, provider, connected
-date, status — never the API key).
+`GET /voices` — the configured `VoiceProfile` (id, provider, voice_mode,
+connected date, status — never the API key).
 `POST /voices/test` — `{ "text": "..." }` -> generates a short clip with the
-fixed `ELEVENLABS_VOICE_ID`.
+currently configured voice (ElevenLabs or self-hosted Chatterbox, per
+`VOICE_PROVIDER`).
+`POST /voices/upload-reference` — multipart file upload; only valid when
+`VOICE_PROVIDER=chatterbox`. Uploads a short voice sample to your
+Chatterbox server and makes it the account's one consistent voice (see
+`docs/CHATTERBOX.md`).
 
 ## Assets
 

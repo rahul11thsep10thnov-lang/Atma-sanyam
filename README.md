@@ -13,16 +13,18 @@ decisions made where the original spec was ambiguous.
 
 Phases 1–10 of the build spec (project scaffolding through an end-to-end
 mock-mode render) are implemented and covered by a passing automated test
-that renders a real MP4. Phases 11–12 (real LLM / ElevenLabs integration)
-are implemented behind `MOCK_AI=false` / `MOCK_VOICE=false` but have not
-been exercised against live paid APIs in this environment (no API keys
-available here). Quality control, batch generation (with the safety-gate
-confirmation flow), and the full privacy/retention/export system (spec's
-second, privacy-focused half) are implemented and tested. Production
-hardening (phase 15 — real cloud storage backend, real auth, load testing)
-is scaffolded (`StorageService` abstraction, `docs/PRIVACY.md`,
-`docs/TROUBLESHOOTING.md`) but not built out further, per the MVP-first
-instruction in the build spec.
+that renders a real MP4. Phases 11–12 (real LLM / voice integration) are
+implemented behind `MOCK_AI=false` / `MOCK_VOICE=false`. Quality control,
+batch generation (with the safety-gate confirmation flow), and the full
+privacy/retention/export system (spec's second, privacy-focused half) are
+implemented and tested. Production hardening (phase 15 — real cloud
+storage backend, real auth, load testing) is scaffolded (`StorageService`
+abstraction, `docs/PRIVACY.md`, `docs/TROUBLESHOOTING.md`) but not built
+out further, per the MVP-first instruction in the build spec.
+
+Two voice backends are supported (`VOICE_PROVIDER`), documented in
+`docs/ELEVENLABS.md` (paid, hosted) and `docs/CHATTERBOX.md` (free,
+self-hosted, no per-minute cost — added after the initial build).
 
 What that means concretely:
 
@@ -34,6 +36,13 @@ What that means concretely:
   of the above → privacy dashboard (retention settings, storage breakdown,
   export, cascade delete, delete-all) → ownership scoping (a user cannot
   reach another user's lesson).
+- **`ChatterboxVoiceService` (free, self-hosted voice):** its HTTP contract
+  (`/tts`, `/upload_reference`) was verified end-to-end in this environment
+  against a stand-in server implementing the real Chatterbox-TTS-Server API
+  shape — upload-clone, test-voice, and a full 5-scene lesson all generated
+  audio through it correctly. The actual Chatterbox model itself was not
+  run here (no GPU/model download in this sandbox) — that part depends on
+  you standing up the real server per `docs/CHATTERBOX.md`.
 - **Implemented, not live-tested here:** `AnthropicProvider` (real LLM) and
   `ElevenLabsVoiceService` (real TTS) — both are fully coded and isolated
   behind the same interfaces the mock implementations satisfy, so flipping
@@ -81,6 +90,7 @@ first look (see `docs/ARCHITECTURE.md`).
 - `docs/ARCHITECTURE.md` — system design, layering, and documented decisions
 - `docs/SETUP.md` — full local dev setup (backend, worker, frontend, renderer)
 - `docs/ELEVENLABS.md` — connecting your own ElevenLabs voice clone
+- `docs/CHATTERBOX.md` — free, self-hosted voice alternative (no per-minute cost)
 - `docs/VIDEO_RENDERING.md` — the Remotion whiteboard engine and FFmpeg pipeline
 - `docs/BATCH_PROCESSING.md` — batch safety gate and Celery queue design
 - `docs/API.md` — REST API reference
