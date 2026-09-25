@@ -56,6 +56,29 @@ h1, h2, h3, .font-display {
   font-family: var(--font-baloo), var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
+/* Exam-taking screens (mock test attempt, question palette, timer) use a
+   plain, professional face instead of the playful marketing display font —
+   this selector's specificity beats the bare h1/h2/h3 rule above. */
+.exam-shell,
+.exam-shell h1,
+.exam-shell h2,
+.exam-shell h3 {
+  font-family: var(--font-inter), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
 /* Leave room at the bottom on mobile for the fixed bottom nav bar */
 .has-mobile-nav {
   padding-bottom: 4.25rem;
@@ -141,4 +164,49 @@ h1, h2, h3, .font-display {
 .select:disabled {
   background: #f3f4f6;
   color: #9ca3af;
+}
+
+/* Compact, professional controls for the exam-taking UI — deliberately
+   less rounded than the marketing site's pill buttons, matching a serious
+   CBT-style tool rather than a consumer app. */
+.exam-btn {
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.exam-btn:focus-visible {
+  outline: 2px solid var(--brand-orange);
+  outline-offset: 2px;
+}
+.exam-btn-primary {
+  background: var(--brand-orange);
+  color: #fff;
+}
+.exam-btn-primary:hover:not(:disabled) {
+  background: var(--brand-orange-dark);
+}
+.exam-btn-secondary {
+  background: #fff;
+  color: var(--brand-dark);
+  border: 1px solid var(--card-border);
+}
+.exam-btn-secondary:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+.exam-btn-ghost {
+  background: transparent;
+  color: #475569;
+  border: 1px solid var(--card-border);
+}
+.exam-btn-ghost:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+.exam-btn-marked {
+  background: var(--brand-purple-light);
+  color: var(--brand-purple);
+  border: 1px solid var(--brand-purple);
+}
+.exam-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
