@@ -5,6 +5,7 @@ import com.google.common.truth.Truth.assertThat
 import com.wholesoul.app.data.repository.MockServiceabilityRepository
 import com.wholesoul.app.fakes.FakeAddressRepository
 import com.wholesoul.app.util.MainDispatcherRule
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -41,6 +42,7 @@ class AddEditAddressViewModelTest {
     fun `entering a known serviceable pin code shows a positive message`() = runTest(mainDispatcherRule.testDispatcher) {
         val viewModel = createViewModel()
         viewModel.onPinCodeChange("400001")
+        advanceUntilIdle()
 
         assertThat(viewModel.formState.value.isServiceable).isTrue()
     }
@@ -49,6 +51,7 @@ class AddEditAddressViewModelTest {
     fun `entering an unserviceable pin code shows a coming-soon message`() = runTest(mainDispatcherRule.testDispatcher) {
         val viewModel = createViewModel()
         viewModel.onPinCodeChange("999999")
+        advanceUntilIdle()
 
         assertThat(viewModel.formState.value.isServiceable).isFalse()
     }

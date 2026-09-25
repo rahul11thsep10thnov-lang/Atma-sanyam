@@ -1,5 +1,6 @@
 package com.wholesoul.app.presentation.onboarding
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,6 +43,7 @@ private val pages = listOf(
     OnboardingPage("Better prices. Fewer middlemen.", Icons.Filled.Storefront, WholesoulColors.Soil),
 )
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnboardingScreen(
     onFinished: () -> Unit,

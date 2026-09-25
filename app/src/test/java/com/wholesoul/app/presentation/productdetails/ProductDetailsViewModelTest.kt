@@ -10,6 +10,7 @@ import com.wholesoul.app.fakes.FakeAnalyticsLogger
 import com.wholesoul.app.fakes.FakeCartRepository
 import com.wholesoul.app.fakes.FakeWishlistRepository
 import com.wholesoul.app.util.MainDispatcherRule
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -35,6 +36,7 @@ class ProductDetailsViewModelTest {
     @Test
     fun `loading a product exposes it as success state`() = runTest(mainDispatcherRule.testDispatcher) {
         val viewModel = createViewModel()
+        advanceUntilIdle()
         val state = viewModel.uiState.value
         assertThat(state).isInstanceOf(UiState.Success::class.java)
         assertThat((state as UiState.Success).data.product.id).isEqualTo(product.id)
@@ -68,8 +70,10 @@ class ProductDetailsViewModelTest {
     fun `toggling wishlist marks product as wishlisted`() = runTest(mainDispatcherRule.testDispatcher) {
         val wishlistRepository = FakeWishlistRepository(catalog)
         val viewModel = createViewModel(wishlistRepository = wishlistRepository)
+        advanceUntilIdle()
 
         viewModel.toggleWishlist(product)
+        advanceUntilIdle()
 
         assertThat(wishlistRepository.isWishlisted(product.id)).isTrue()
         val state = viewModel.uiState.value as UiState.Success

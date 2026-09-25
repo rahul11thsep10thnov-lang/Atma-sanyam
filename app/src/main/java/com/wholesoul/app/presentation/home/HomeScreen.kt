@@ -1,6 +1,7 @@
 package com.wholesoul.app.presentation.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -185,6 +186,7 @@ private fun HomeContentList(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun BannerCarousel(banners: List<Pair<String, String>>) {
     if (banners.isEmpty()) return

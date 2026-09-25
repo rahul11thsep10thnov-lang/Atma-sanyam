@@ -12,6 +12,7 @@ import com.wholesoul.app.fakes.FakeAnalyticsLogger
 import com.wholesoul.app.fakes.FakeCartRepository
 import com.wholesoul.app.fakes.FakeOrderRepository
 import com.wholesoul.app.util.MainDispatcherRule
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -76,6 +77,7 @@ class CheckoutViewModelTest {
 
         viewModel.selectPaymentMethod(PaymentMethod.UPI)
         viewModel.placeOrder()
+        advanceUntilIdle()
 
         val placedOrderId = viewModel.uiState.value.placedOrderId
         assertThat(placedOrderId).isNotNull()
