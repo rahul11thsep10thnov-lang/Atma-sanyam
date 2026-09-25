@@ -1,32 +1,39 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7f8fa;
-  --foreground: #101828;
-  --brand-navy: #0b3560;
-  --brand-navy-dark: #072544;
+  --background: #f3f5f9;
+  --foreground: #1c2333;
+  --muted: #64748b;
+  --brand-orange: #ff6a13;
+  --brand-orange-dark: #e2560a;
+  --brand-orange-light: #fff1e6;
+  --brand-orange-border: #fcd3b0;
+  --brand-navy: #1c2333;
+  --brand-navy-dark: #111827;
+  --brand-dark: #1c2333;
   --brand-gold: #d99a1b;
-  --brand-gold-light: #fdf3dd;
-  --brand-orange: #ee6c14;
-  --brand-orange-dark: #c8560c;
-  --brand-orange-light: #fdead9;
-  --brand-green: #16794f;
-  --brand-green-light: #e4f6ee;
-  --brand-red: #c0362c;
+  --brand-gold-light: #fff8e6;
+  --brand-green: #10a760;
+  --brand-green-dark: #0b8a4e;
+  --brand-green-light: #e8f8ef;
+  --brand-red: #dc3b2f;
   --brand-red-light: #fdecea;
-  --brand-purple: #6a4fd6;
-  --brand-purple-light: #efeafd;
+  --brand-purple: #6d4fe0;
+  --brand-purple-light: #f1eeff;
   --brand-blue: #1d78d8;
-  --brand-blue-light: #e6f1fc;
-  --brand-dark: #10182b;
-  --card-border: #e3e7ee;
+  --brand-blue-light: #eaf3fd;
+  --card-border: #e6e9f1;
+  --radius-card: 1.125rem;
+  --radius-btn: 0.875rem;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
   --color-brand-navy: var(--brand-navy);
   --color-brand-navy-dark: var(--brand-navy-dark);
+  --color-brand-dark: var(--brand-dark);
   --color-brand-gold: var(--brand-gold);
   --color-brand-gold-light: var(--brand-gold-light);
   --color-brand-orange: var(--brand-orange);
@@ -40,30 +47,25 @@
   --color-brand-purple-light: var(--brand-purple-light);
   --color-brand-blue: var(--brand-blue);
   --color-brand-blue-light: var(--brand-blue-light);
-  --color-brand-dark: var(--brand-dark);
-  --font-sans: var(--font-geist-sans);
-  --font-display: var(--font-baloo);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-hind);
+  --font-display: var(--font-rubik);
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-hind), system-ui, sans-serif;
+  font-size: 16px;
 }
 
-h1, h2, h3, .font-display {
-  font-family: var(--font-baloo), var(--font-geist-sans), Arial, Helvetica, sans-serif;
-}
-
-/* Exam-taking screens (mock test attempt, question palette, timer) use a
-   plain, professional face instead of the playful marketing display font —
-   this selector's specificity beats the bare h1/h2/h3 rule above. */
-.exam-shell,
-.exam-shell h1,
-.exam-shell h2,
-.exam-shell h3 {
-  font-family: var(--font-inter), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+/* Headings, labels, buttons and numbers use the rounded UI face; running
+   text uses Hind. */
+h1, h2, h3, h4, button, .font-display, .ui {
+  font-family: var(--font-rubik), system-ui, sans-serif;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -79,9 +81,9 @@ h1, h2, h3, .font-display {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* Leave room at the bottom on mobile for the fixed bottom nav bar */
+/* Room at the bottom on mobile for the fixed tab bar */
 .has-mobile-nav {
-  padding-bottom: 4.25rem;
+  padding-bottom: calc(4.25rem + env(safe-area-inset-bottom));
 }
 @media (min-width: 768px) {
   .has-mobile-nav {
@@ -89,124 +91,315 @@ h1, h2, h3, .font-display {
   }
 }
 
+/* App column: content sits in a comfortable, app-like width even on
+   desktop instead of stretching edge to edge like a marketing site. */
 .container-page {
-  max-width: 72rem;
+  max-width: 60rem;
   margin-left: auto;
   margin-right: auto;
   padding-left: 1rem;
   padding-right: 1rem;
 }
 
+/* ---------- Cards ---------- */
 .card {
   background: #ffffff;
   border: 1px solid var(--card-border);
-  border-radius: 1rem;
+  border-radius: var(--radius-card);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.03);
 }
 
-/* Colored left-border accent card, e.g. <div class="card card-accent" style="--accent: var(--brand-orange)"> */
+/* Colored left-border accent, e.g. style="--accent: #ff6a13" */
 .card-accent {
   border-left-width: 4px;
-  border-left-color: var(--accent, var(--brand-navy));
+  border-left-color: var(--accent, var(--brand-orange));
 }
 
-.btn-primary {
-  background: var(--brand-navy);
+/* Colored top-border accent (big hub cards) */
+.card-top {
+  border-top-width: 4px;
+  border-top-color: var(--accent, var(--brand-orange));
+}
+
+/* Pastel tile: set --tile-bg / --tile-border / --tile-text inline */
+.tile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--tile-bg, #fff);
+  border: 1.5px solid var(--tile-border, var(--card-border));
+  border-radius: 0.875rem;
+  padding: 0.65rem 0.6rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.tile:active {
+  transform: scale(0.98);
+}
+.tile-icon {
+  display: flex;
+  height: 1.9rem;
+  width: 1.9rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.6rem;
+  background: #fff;
+  border: 1px solid var(--tile-border, var(--card-border));
+  color: var(--tile-text, var(--foreground));
+}
+
+/* Full-width action bar: "Practice Full Papers Online   [Start ›]" */
+.cta-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 1rem;
+  padding: 0.85rem 0.9rem;
   color: #fff;
-  border-radius: 999px;
+  font-family: var(--font-rubik), system-ui, sans-serif;
+  font-weight: 600;
+  background: var(--bar-bg, linear-gradient(90deg, #ff6a00, #ff8b3d));
+  box-shadow: 0 8px 18px -10px var(--bar-shadow, rgba(255, 106, 0, 0.7));
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+.cta-bar:hover {
+  filter: brightness(1.04);
+}
+.cta-bar:active {
+  transform: scale(0.99);
+}
+.cta-bar-pill {
+  margin-left: auto;
+  flex-shrink: 0;
+  border-radius: 0.7rem;
+  background: #fff;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.875rem;
   font-weight: 700;
+  color: var(--bar-pill-text, var(--brand-orange));
+}
+.cta-bar-icon {
+  display: flex;
+  height: 2.25rem;
+  width: 2.25rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.65rem;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Section title with an orange bar on the left */
+.section-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.section-bar::before {
+  content: "";
+  display: block;
+  width: 4px;
+  align-self: stretch;
+  min-height: 1.25rem;
+  border-radius: 999px;
+  background: var(--brand-orange);
+}
+
+/* Small uppercase eyebrow label */
+.eyebrow {
+  font-family: var(--font-rubik), system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Dark hero card (PYQ / mock listing headers) */
+.hero-dark {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, #1f2446 0%, #1c3a6b 60%, #164f86 100%);
+  color: #fff;
+}
+.hero-dark::before,
+.hero-dark::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+}
+.hero-dark::before {
+  width: 16rem;
+  height: 16rem;
+  right: -4rem;
+  top: -5rem;
+  background: rgba(255, 138, 61, 0.22);
+}
+.hero-dark::after {
+  width: 9rem;
+  height: 9rem;
+  right: 6rem;
+  bottom: -5rem;
+  background: rgba(59, 130, 246, 0.25);
+}
+.glass-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.45rem 0.75rem;
+  font-family: var(--font-rubik), system-ui, sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+/* ---------- Buttons ---------- */
+.btn-cta,
+.btn-primary,
+.btn-orange {
+  background: linear-gradient(90deg, #ff6a00, #ff8b3d);
+  color: #fff;
+  border-radius: var(--radius-btn);
+  font-family: var(--font-rubik), system-ui, sans-serif;
+  font-weight: 600;
+  box-shadow: 0 8px 18px -10px rgba(255, 106, 0, 0.75);
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+.btn-cta:hover,
+.btn-primary:hover,
+.btn-orange:hover {
+  filter: brightness(1.05);
+}
+.btn-cta:active,
+.btn-primary:active,
+.btn-orange:active {
+  transform: scale(0.98);
+}
+
+.btn-dark {
+  background: var(--brand-dark);
+  color: #fff;
+  border-radius: var(--radius-btn);
+  font-family: var(--font-rubik), system-ui, sans-serif;
+  font-weight: 600;
   transition: background-color 0.15s ease, transform 0.1s ease;
 }
-.btn-primary:hover {
-  background: var(--brand-navy-dark);
+.btn-dark:hover {
+  background: #0f1523;
 }
-.btn-primary:active {
+.btn-dark:active {
   transform: scale(0.98);
 }
 
 .btn-secondary {
   background: #ffffff;
-  color: var(--brand-navy);
-  border: 1.5px solid var(--brand-navy);
-  border-radius: 999px;
-  font-weight: 700;
+  color: var(--foreground);
+  border: 1.5px solid var(--card-border);
+  border-radius: var(--radius-btn);
+  font-family: var(--font-rubik), system-ui, sans-serif;
+  font-weight: 600;
+  transition: background-color 0.15s ease;
+}
+.btn-secondary:hover {
+  background: #f8fafc;
 }
 
 .btn-gold {
   background: var(--brand-gold);
   color: #3a2600;
-  border-radius: 999px;
-  font-weight: 700;
+  border-radius: var(--radius-btn);
+  font-weight: 600;
 }
 
-.btn-orange {
-  background: var(--brand-orange);
-  color: #fff;
-  border-radius: 999px;
-  font-weight: 700;
-  transition: background-color 0.15s ease, transform 0.1s ease;
-}
-.btn-orange:hover {
-  background: var(--brand-orange-dark);
-}
-.btn-orange:active {
-  transform: scale(0.98);
+.btn-cta:focus-visible,
+.btn-primary:focus-visible,
+.btn-orange:focus-visible,
+.btn-dark:focus-visible,
+.btn-secondary:focus-visible,
+.tile:focus-visible,
+.cta-bar:focus-visible {
+  outline: 2px solid var(--brand-orange);
+  outline-offset: 2px;
 }
 
 .select {
   width: 100%;
-  border: 1px solid var(--card-border);
-  border-radius: 0.6rem;
-  padding: 0.65rem 0.75rem;
-  font-size: 0.875rem;
-  color: #101828;
+  border: 1.5px solid var(--card-border);
+  border-radius: 0.8rem;
+  padding: 0.7rem 0.8rem;
+  font-size: 0.95rem;
+  color: var(--foreground);
   background: #fff;
+}
+.select:focus {
+  outline: none;
+  border-color: var(--brand-orange);
 }
 .select:disabled {
   background: #f3f4f6;
   color: #9ca3af;
 }
 
-/* Compact, professional controls for the exam-taking UI — deliberately
-   less rounded than the marketing site's pill buttons, matching a serious
-   CBT-style tool rather than a consumer app. */
+/* ---------- Exam-taking UI ---------- */
+.exam-shell {
+  background: var(--background);
+}
+
 .exam-btn {
-  border-radius: 0.5rem;
+  border-radius: var(--radius-btn);
+  font-family: var(--font-rubik), system-ui, sans-serif;
   font-weight: 600;
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+.exam-btn:active:not(:disabled) {
+  transform: scale(0.98);
 }
 .exam-btn:focus-visible {
   outline: 2px solid var(--brand-orange);
   outline-offset: 2px;
 }
 .exam-btn-primary {
-  background: var(--brand-orange);
+  background: linear-gradient(90deg, #ff6a00, #ff8b3d);
   color: #fff;
+  box-shadow: 0 8px 18px -10px rgba(255, 106, 0, 0.75);
 }
-.exam-btn-primary:hover:not(:disabled) {
-  background: var(--brand-orange-dark);
+.exam-btn-dark {
+  background: var(--brand-dark);
+  color: #fff;
 }
 .exam-btn-secondary {
   background: #fff;
-  color: var(--brand-dark);
-  border: 1px solid var(--card-border);
+  color: var(--foreground);
+  border: 1.5px solid var(--card-border);
 }
 .exam-btn-secondary:hover:not(:disabled) {
-  background: #f3f4f6;
+  background: #f8fafc;
 }
 .exam-btn-ghost {
-  background: transparent;
+  background: #f8faff;
   color: #475569;
-  border: 1px solid var(--card-border);
+  border: 1.5px solid #e3e8f2;
 }
 .exam-btn-ghost:hover:not(:disabled) {
-  background: #f3f4f6;
+  background: #eef2f9;
 }
 .exam-btn-marked {
   background: var(--brand-purple-light);
   color: var(--brand-purple);
-  border: 1px solid var(--brand-purple);
+  border: 1.5px solid var(--brand-purple);
 }
 .exam-btn:disabled {
-  opacity: 0.4;
+  opacity: 0.45;
   cursor: not-allowed;
+}
+
+/* Hide horizontal scrollbars on chip rows while keeping them scrollable */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

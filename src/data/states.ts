@@ -122,3 +122,16 @@ export const STATE_MAP: Record<StateCode, StateInfo> = STATES.reduce(
 export function getState(code: string): StateInfo | undefined {
   return STATE_MAP[code as StateCode];
 }
+
+// Two-letter badge used on list/accordion headers.
+export const STATE_SHORT: Record<StateCode, string> = {
+  up: "UP",
+  mp: "MP",
+  rajasthan: "RJ",
+  bihar: "BR",
+  jharkhand: "JH",
+  uttarakhand: "UK",
+  haryana: "HR",
+  punjab: "PB",
+  chhattisgarh: "CG",
+};

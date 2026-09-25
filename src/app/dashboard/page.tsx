@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getAttempts, getBookmarks, getDisplayName, getEarnedBadgeCodes, getPoints, getStreak, getWrongQuestions } from "@/lib/localStore";
 import { TestAttemptResult } from "@/types";
 import { getMockTest } from "@/data/mockTests";
+import { PYQ_MAP } from "@/data/pyq";
 import { BADGES } from "@/data/badges";
 import ProgressBar from "@/components/ui/ProgressBar";
 import Badge from "@/components/ui/Badge";
@@ -112,7 +113,7 @@ export default function DashboardPage() {
               return (
                 <div key={a.id} className="card p-3.5 flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-semibold text-gray-800">{mock?.title ?? a.mockId}</p>
+                    <p className="text-sm font-semibold text-gray-800">{mock?.title ?? PYQ_MAP[a.mockId]?.title ?? (a.mockId === "quick-practice" ? "Quick Practice" : a.mockId)}</p>
                     <p className="text-xs text-gray-400">{formatDate(a.submittedAt)}</p>
                   </div>
                   <div className="text-right text-xs">

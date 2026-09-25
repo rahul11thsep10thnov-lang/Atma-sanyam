@@ -5,17 +5,10 @@ import { getMockTest, MOCK_TESTS } from "@/data/mockTests";
 import { getQuestion } from "@/data/questions";
 import { getState } from "@/data/states";
 import { SUBJECT_MAP } from "@/data/subjects";
-import Badge from "@/components/ui/Badge";
-import {
-  Timer,
-  ListChecks,
-  MinusCircle,
-  Award,
-  Navigation,
-  BookMarked,
-  Info,
-  ArrowLeft,
-} from "lucide-react";
+import { getSubjectAccent } from "@/lib/accentColors";
+import DisplayName from "@/components/app/DisplayName";
+import { PaletteLegend } from "@/components/exam/QuestionPalette";
+import { ClipboardList, Timer, Navigation, Award, Grid3x3, BookMarked, ArrowLeft } from "lucide-react";
 
 export function generateStaticParams() {
   return MOCK_TESTS.map((m) => ({ id: m.id }));
@@ -36,7 +29,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function MockTestDetailPage({
+export default async function MockTestInstructionsPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -45,129 +38,163 @@ export default async function MockTestDetailPage({
   const mock = getMockTest(id);
   if (!mock) notFound();
   const state = getState(mock.state)!;
+  const examLabel = mock.exam === "constable" ? "Constable" : "SI";
 
   const subjects = Array.from(
     new Set(mock.questionIds.map((qid) => getQuestion(qid)?.subject).filter((s): s is string => Boolean(s)))
   );
+  const counts = new Map<string, number>();
+  mock.questionIds.forEach((qid) => {
+    const s = getQuestion(qid)?.subject;
+    if (s) counts.set(s, (counts.get(s) ?? 0) + 1);
+  });
 
   return (
-    <div className="exam-shell container-page py-8 max-w-2xl">
-      <Link href="/mock-test" className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-gray-800 mb-3">
-        <ArrowLeft size={13} /> Back to Tests
-      </Link>
-
-      <Badge tone={mock.exam === "constable" ? "navy" : "gold"}>
-        {state.hinglishName} · {mock.exam === "constable" ? "Constable" : "SI"}
-      </Badge>
-      <h1 className="mt-2 text-2xl font-bold text-gray-900">{mock.title}</h1>
-
-      {/* 1. Test Overview */}
-      <SectionCard icon={<ListChecks size={16} />} title="Test Overview">
-        <div className="grid grid-cols-2 gap-3">
-          <Info2 icon={<ListChecks size={15} />} label="Questions" value={String(mock.questionCount)} />
-          <Info2 icon={<Timer size={15} />} label="Duration" value={`${mock.durationMinutes} min`} />
-          <Info2 icon={<Award size={15} />} label="Marks / Question" value={String(mock.marksPerQuestion)} />
-          <Info2
-            icon={<MinusCircle size={15} />}
-            label="Negative Marking"
-            value={mock.negativeMarks ? `−${mock.negativeMarks} per wrong` : "None"}
-          />
-        </div>
-      </SectionCard>
-
-      {/* 2. Navigation */}
-      <SectionCard icon={<Navigation size={16} />} title="Navigation">
-        <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-700">
-          <li>
-            <span className="font-semibold">Save &amp; Next</span> — answer aur next question par jaayein
-          </li>
-          <li>
-            <span className="font-semibold">Previous</span> — pichhle question par wapas jaayein
-          </li>
-          <li>
-            <span className="font-semibold">Mark for Review</span> — baad me revisit karne ke liye
-          </li>
-          <li>
-            <span className="font-semibold">Question Palette</span> — kisi bhi question par seedhe jump karein
-          </li>
-        </ul>
-      </SectionCard>
-
-      {/* 3. Marking Scheme */}
-      <SectionCard icon={<Award size={16} />} title="Marking Scheme">
-        <div className="grid grid-cols-3 gap-3 text-center">
-          <div className="rounded-lg bg-brand-green-light p-3">
-            <p className="text-lg font-extrabold text-brand-green">+{mock.marksPerQuestion}</p>
-            <p className="text-xs text-gray-600 mt-0.5">Correct</p>
-          </div>
-          <div className="rounded-lg bg-brand-red-light p-3">
-            <p className="text-lg font-extrabold text-brand-red">
-              {mock.negativeMarks ? `−${mock.negativeMarks}` : "0"}
+    <div className="exam-shell min-h-dvh">
+      {/* Test header */}
+      <header className="sticky top-0 z-30 border-b border-[var(--card-border)] bg-white">
+        <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-3">
+          <Link
+            href="/mock-test"
+            aria-label="Back to tests"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-brand-dark hover:bg-gray-100"
+          >
+            <ArrowLeft size={22} />
+          </Link>
+          <div className="min-w-0">
+            <p className="truncate font-display text-[1.1rem] font-bold text-brand-dark">{mock.title}</p>
+            <p className="truncate font-display text-[14px] text-slate-500">
+              {state.hinglishName} Police · {examLabel} · <DisplayName />
             </p>
-            <p className="text-xs text-gray-600 mt-0.5">Incorrect</p>
-          </div>
-          <div className="rounded-lg bg-gray-100 p-3">
-            <p className="text-lg font-extrabold text-gray-500">0</p>
-            <p className="text-xs text-gray-600 mt-0.5">Unattempted</p>
           </div>
         </div>
-      </SectionCard>
+      </header>
 
-      {/* 4. Sections/Subjects */}
-      {subjects.length > 0 && (
-        <SectionCard icon={<BookMarked size={16} />} title="Subjects Covered">
-          <div className="flex flex-wrap gap-2">
-            {subjects.map((s) => (
-              <Badge key={s} tone="navy">
-                {SUBJECT_MAP[s]?.hinglishName ?? s}
-              </Badge>
-            ))}
+      <div className="mx-auto max-w-3xl px-3 pt-4 pb-44 sm:px-4">
+        <div className="overflow-hidden rounded-3xl border border-[var(--card-border)] bg-white">
+          {/* Orange banner */}
+          <div className="flex items-center gap-4 bg-gradient-to-r from-[#ff6a00] to-[#ff8b3d] px-5 py-6 text-white">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/20">
+              <ClipboardList size={30} />
+            </span>
+            <div>
+              <h1 className="font-display text-[1.6rem] font-bold leading-tight">General Instructions</h1>
+              <p className="mt-0.5 text-[16px] text-white/90">Test shuru karne se pehle dhyan se padhein</p>
+            </div>
           </div>
-        </SectionCard>
-      )}
 
-      {/* 5. Important Instructions */}
-      <SectionCard icon={<Info size={16} />} title="Important Instructions">
-        <ul className="text-sm text-gray-600 space-y-1.5 list-disc pl-4">
-          <li>Timer start hote hi countdown shuru ho jaayega — pause nahi hoga.</li>
-          <li>Time khatam hone par test automatically submit ho jaayega.</li>
-          <li>Ek baar submit karne ke baad answers change nahi kar sakte.</li>
-          <li>Internet connection stable rakhein — progress is browser me save hoti hai.</li>
-        </ul>
-      </SectionCard>
+          <div className="px-5 py-6 sm:px-7">
+            <Section icon={<Timer size={19} />} title="Time & Submission">
+              <ol className="list-decimal space-y-3 pl-5 text-[17px] leading-relaxed text-slate-700 marker:font-medium">
+                <li>
+                  Is test me <strong className="text-brand-dark">{mock.questionCount} questions</strong> hain aur poore
+                  test ke liye ek hi <strong className="text-brand-dark">{mock.durationMinutes}-minute</strong> timer
+                  hai, jo upar dikhta rahega.
+                </li>
+                <li>
+                  Timer zero hote hi test <strong className="text-brand-dark">automatically submit</strong> ho jaayega.
+                </li>
+                <li>
+                  Aap pehle bhi <strong className="text-brand-dark">Submit Test</strong> button se submit kar sakte hain.
+                  Submit ke baad answers <strong className="text-brand-dark">change nahi</strong> ho sakte.
+                </li>
+                <li>Submit karne se pehle aap kisi bhi question ya subject par kabhi bhi wapas ja sakte hain.</li>
+              </ol>
+            </Section>
 
-      <div className="flex gap-3 mt-6 pb-4">
-        <Link href="/mock-test" className="exam-btn exam-btn-secondary flex-1 py-3 text-sm text-center">
-          ← Back to Tests
-        </Link>
-        <Link href={`/mock-test/${mock.id}/attempt`} className="exam-btn exam-btn-primary flex-1 py-3 text-sm text-center">
-          I am Ready to Begin →
-        </Link>
+            <Section icon={<Navigation size={19} />} title="Navigation">
+              <ol className="list-decimal space-y-3 pl-5 text-[17px] leading-relaxed text-slate-700">
+                <li>
+                  <strong className="text-brand-dark">Next</strong> / <strong className="text-brand-dark">Prev</strong> se
+                  questions ke beech move karein. Answer apne aap save hota hai.
+                </li>
+                <li>
+                  <strong className="text-brand-dark">Mark</strong> se question ko review ke liye flag karein, aur{" "}
+                  <strong className="text-brand-dark">Clear</strong> se apna selected answer hata dein.
+                </li>
+                <li>
+                  Upar ke subject tabs se seedhe kisi bhi subject par jaayein.
+                </li>
+              </ol>
+            </Section>
+
+            <Section icon={<Grid3x3 size={19} />} title="Question Palette">
+              <p className="mb-3 text-[17px] leading-relaxed text-slate-700">
+                Palette button se sabhi questions ka status dekhein aur kisi bhi question par jump karein:
+              </p>
+              <PaletteLegend />
+            </Section>
+
+            <Section icon={<Award size={19} />} title="Marking Scheme">
+              <div className="grid grid-cols-3 gap-2.5 text-center">
+                <div className="rounded-2xl border border-[#bfe9d2] bg-brand-green-light p-3">
+                  <p className="font-display text-2xl font-bold text-[#0b8a4e]">+{mock.marksPerQuestion}</p>
+                  <p className="font-display text-sm text-slate-600">Correct</p>
+                </div>
+                <div className="rounded-2xl border border-[#f7c9c4] bg-brand-red-light p-3">
+                  <p className="font-display text-2xl font-bold text-brand-red">{mock.negativeMarks ? `−${mock.negativeMarks}` : "0"}</p>
+                  <p className="font-display text-sm text-slate-600">Wrong</p>
+                </div>
+                <div className="rounded-2xl border border-[var(--card-border)] bg-slate-50 p-3">
+                  <p className="font-display text-2xl font-bold text-slate-500">0</p>
+                  <p className="font-display text-sm text-slate-600">Unattempted</p>
+                </div>
+              </div>
+            </Section>
+
+            <Section icon={<BookMarked size={19} />} title="Subjects in this Test" last>
+              <div className="flex flex-wrap gap-2">
+                {subjects.map((s) => {
+                  const a = getSubjectAccent(s);
+                  return (
+                    <span
+                      key={s}
+                      className="rounded-xl border-[1.5px] px-3 py-1.5 font-display text-[15px] font-semibold"
+                      style={{ background: a.tileBg, borderColor: a.tileBorder, color: a.tileText }}
+                    >
+                      {SUBJECT_MAP[s]?.hinglishName ?? s} · {counts.get(s)}
+                    </span>
+                  );
+                })}
+              </div>
+            </Section>
+          </div>
+        </div>
+      </div>
+
+      {/* Sticky action bar */}
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-[var(--card-border)] bg-white/95 backdrop-blur pb-safe">
+        <div className="mx-auto grid max-w-3xl gap-2.5 px-4 py-3 sm:grid-cols-2">
+          <Link href="/mock-test" className="btn-secondary py-3.5 text-center text-[17px]">
+            ← Go to Tests
+          </Link>
+          <Link href={`/mock-test/${mock.id}/attempt`} className="btn-cta py-3.5 text-center text-[17px]">
+            I am ready to begin ►
+          </Link>
+        </div>
       </div>
     </div>
   );
 }
 
-function SectionCard({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+function Section({
+  icon,
+  title,
+  children,
+  last,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+  last?: boolean;
+}) {
   return (
-    <div className="card p-4 mt-4">
-      <div className="flex items-center gap-2 mb-3">
-        <span className="flex h-7 w-7 items-center justify-center rounded-md bg-orange-50 text-brand-orange">{icon}</span>
-        <h2 className="text-sm font-bold text-gray-900">{title}</h2>
-      </div>
-      {children}
-    </div>
-  );
-}
-
-function Info2({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
-  return (
-    <div className="rounded-lg border border-gray-100 p-2.5">
-      <div className="flex items-center gap-1.5 text-gray-500">
+    <section className={last ? "" : "mb-7"}>
+      <h2 className="flex items-center gap-2 border-b border-[#f3e3d3] pb-2.5 font-display text-[1.15rem] font-bold text-brand-orange">
         {icon}
-        <span className="text-[11px] font-semibold uppercase">{label}</span>
-      </div>
-      <p className="mt-1 text-sm font-bold text-gray-900">{value}</p>
-    </div>
+        {title}
+      </h2>
+      <div className="pt-4">{children}</div>
+    </section>
   );
 }

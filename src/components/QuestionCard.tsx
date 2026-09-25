@@ -38,58 +38,74 @@ export default function QuestionCard({
   const [reported, setReported] = useState(false);
 
   return (
-    <div className="card p-4 sm:p-5">
-      <div className="flex items-start justify-between gap-3">
-        <p className="text-xs font-semibold text-gray-500">
-          Question {index + 1} / {total}
-        </p>
+    <div>
+      <div className="flex items-center justify-between gap-3">
+        <span className="inline-flex items-center gap-2 rounded-full border border-[var(--card-border)] bg-white px-4 py-1.5 font-display text-[15px] font-semibold uppercase tracking-wider text-brand-dark">
+          Question <span className="text-brand-orange">{index + 1}</span> of {total}
+        </span>
         {onToggleBookmark && (
           <button
             onClick={onToggleBookmark}
-            aria-label="Save Question"
-            className="text-amber-500"
+            aria-label={bookmarked ? "Remove saved question" : "Save question"}
+            aria-pressed={!!bookmarked}
+            className="exam-btn exam-btn-ghost inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[14px]"
           >
-            <Star size={18} fill={bookmarked ? "currentColor" : "none"} />
+            <Star size={15} className="text-amber-500" fill={bookmarked ? "currentColor" : "none"} />
+            {bookmarked ? "Saved" : "Save"}
           </button>
         )}
       </div>
-      <p className="mt-2 text-base font-semibold text-gray-900 leading-relaxed">
-        {question.question}
-      </p>
-      <div className="mt-4 space-y-2">
+      <div className="mt-3 rounded-3xl border border-[var(--card-border)] bg-white p-5">
+        <p className="rounded-r-2xl border-l-4 border-brand-orange bg-[#f6f8fc] px-4 py-3.5 font-display text-[19px] font-medium leading-relaxed text-brand-dark">
+          {question.question}
+        </p>
+      </div>
+      <div className="mt-4 space-y-3" role="radiogroup" aria-label="Options">
         {question.options.map((opt, i) => {
           const isCorrect = i === question.correctAnswer;
           const isSelected = i === selected;
-          let style =
-            "border-gray-200 hover:border-brand-navy hover:bg-blue-50/50";
+          let box = "border-[var(--card-border)] bg-white hover:border-brand-orange/40";
+          let tile = "bg-[#f1f4f9] text-slate-600";
           if (revealed) {
-            if (isCorrect) style = "border-green-500 bg-green-50";
-            else if (isSelected && !isCorrect) style = "border-red-500 bg-red-50";
-            else style = "border-gray-200 opacity-70";
+            if (isCorrect) {
+              box = "border-brand-green bg-brand-green-light";
+              tile = "bg-brand-green text-white";
+            } else if (isSelected) {
+              box = "border-brand-red bg-brand-red-light";
+              tile = "bg-brand-red text-white";
+            } else {
+              box = "border-[var(--card-border)] bg-white opacity-60";
+            }
           } else if (isSelected) {
-            style = "border-brand-navy bg-blue-50";
+            box = "border-brand-orange bg-[#fff6ee]";
+            tile = "bg-brand-orange text-white";
           }
           return (
             <button
               key={i}
+              role="radio"
+              aria-checked={isSelected}
               disabled={revealed}
               onClick={() => onSelect(i)}
               className={cn(
-                "w-full flex items-center justify-between gap-2 rounded-lg border px-4 py-3 text-left text-sm font-medium text-gray-800 transition-colors",
-                style
+                "flex w-full items-center gap-4 rounded-2xl border-[1.5px] px-4 py-4 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-orange",
+                box
               )}
             >
-              <span>{opt}</span>
-              {revealed && isCorrect && <CheckCircle2 size={18} className="text-green-600 shrink-0" />}
-              {revealed && isSelected && !isCorrect && <XCircle size={18} className="text-red-600 shrink-0" />}
+              <span className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-display text-[17px] font-bold", tile)}>
+                {String.fromCharCode(65 + i)}
+              </span>
+              <span className="flex-1 font-display text-[18px] text-brand-dark">{opt}</span>
+              {revealed && isCorrect && <CheckCircle2 size={20} className="shrink-0 text-brand-green" />}
+              {revealed && isSelected && !isCorrect && <XCircle size={20} className="shrink-0 text-brand-red" />}
             </button>
           );
         })}
       </div>
       {revealed && (
-        <div className="mt-4 rounded-lg bg-gray-50 border border-gray-100 p-3">
-          <p className="text-xs font-bold text-gray-500 uppercase mb-1">Explanation</p>
-          <p className="text-sm text-gray-700 leading-relaxed">{question.explanation}</p>
+        <div className="mt-4 rounded-2xl border border-[#c6dcf8] bg-[#eff6ff] p-4">
+          <p className="eyebrow mb-1 text-[#1d64c4]">Explanation</p>
+          <p className="text-[16px] leading-relaxed text-slate-700">{question.explanation}</p>
         </div>
       )}
 

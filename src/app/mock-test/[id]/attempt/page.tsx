@@ -9,7 +9,7 @@ import { saveAttempt } from "@/lib/localStore";
 import { cn } from "@/lib/utils";
 import QuestionPalette, { PaletteEntry, QuestionStatus } from "@/components/exam/QuestionPalette";
 import ExamBottomSheet from "@/components/exam/ExamBottomSheet";
-import { CheckCircle2, XCircle, Flag, Clock, ArrowLeft, LayoutGrid, ChevronLeft, ChevronRight, Eraser } from "lucide-react";
+import { CheckCircle2, XCircle, Flag, Clock, ArrowLeft, LayoutGrid, X } from "lucide-react";
 
 interface AnswerState {
   selected: number | null;
@@ -262,246 +262,246 @@ export default function MockAttemptPage({ params }: { params: Promise<{ id: stri
   const seconds = secondsLeft % 60;
   const timerState = secondsLeft < 60 ? "critical" : secondsLeft < 300 ? "warning" : "normal";
   const currentAnswer = answers[current.id];
+  const isLast = index + 1 >= questions.length;
 
   const paletteEntries: PaletteEntry[] = questions.map((q) => ({
     id: q.id,
     status: questionStatus(answers[q.id]),
   }));
 
-  // Subjects present in this test, in first-appearance order — shown as an
-  // informational navigation aid. Unlike TrickySSC's SSC-CGL sections, this
-  // is one continuous timer for the whole test: subjects are not separately
-  // timed or locked (see the PR summary for why).
+  // Subjects in first-appearance order, shown as tabs. This is one
+  // continuous timer for the whole test: tabs are a navigation aid, not
+  // separately timed or locked sections.
   const subjects = Array.from(new Set(questions.map((q) => q.subject)));
-  const currentSubjectIndex = subjects.indexOf(current.subject);
+  const { context, ask } = splitQuestion(current.question);
+
+  const paletteProps = {
+    entries: paletteEntries,
+    currentIndex: index,
+    onJump: goTo,
+    answeredCount,
+    markedCount,
+    totalCount: questions.length,
+  };
 
   return (
-    <div className="exam-shell min-h-dvh flex flex-col bg-gray-50">
-      <ExamTopBar exitHref={`/mock-test/${mock.id}`} />
-
-      {/* Header: title + timer, always visible */}
-      <div className="sticky top-0 z-30 border-b border-gray-200 bg-white">
-        <div className="flex items-center justify-between gap-3 px-3 sm:px-5 h-14">
-          <div className="min-w-0">
-            <p className="truncate text-sm font-bold text-gray-900">{mock.title}</p>
-            <p className="text-[11px] text-gray-500">
-              Q{index + 1}/{questions.length} · {answeredCount} answered
+    <div className="exam-shell min-h-dvh">
+      {/* Top bar: exit · title · timer · palette */}
+      <div className="sticky top-0 z-30 bg-white">
+        <div className="mx-auto flex max-w-6xl items-center gap-2 px-3 py-2.5 sm:px-5">
+          <Link
+            href={`/mock-test/${mock.id}`}
+            aria-label="Exit test"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-brand-dark hover:bg-gray-100"
+          >
+            <ArrowLeft size={22} />
+          </Link>
+          <div className="min-w-0 flex-1">
+            <p className="truncate font-display text-[15px] font-semibold text-brand-dark">{mock.title}</p>
+            <p className="font-display text-[13px] text-slate-500">
+              {answeredCount}/{questions.length} answered
             </p>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <div
-              role="timer"
-              aria-live="polite"
-              aria-label={`Time remaining ${minutes} minutes ${seconds} seconds`}
-              className={cn(
-                "flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm font-bold tabular-nums",
-                timerState === "critical" && "border-brand-red bg-brand-red-light text-brand-red motion-safe:animate-pulse",
-                timerState === "warning" && "border-brand-gold bg-brand-gold-light text-[#8a5a00]",
-                timerState === "normal" && "border-gray-200 bg-gray-50 text-gray-700"
-              )}
-            >
-              <Clock size={14} />
-              {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
-            </div>
-            <button
-              onClick={handleSubmit}
-              className="exam-btn exam-btn-primary hidden sm:inline-flex px-4 py-1.5 text-sm"
-            >
-              Submit Test
-            </button>
+          <div
+            role="timer"
+            aria-live="off"
+            aria-label={`Time remaining ${minutes} minutes ${seconds} seconds`}
+            className={cn(
+              "flex shrink-0 items-center gap-1.5 rounded-xl border px-3 py-2 font-display text-[17px] font-bold tabular-nums",
+              timerState === "critical" && "border-brand-red bg-brand-red-light text-brand-red motion-safe:animate-pulse",
+              timerState === "warning" && "border-[#f5dd9a] bg-[#fffaeb] text-[#a16207]",
+              timerState === "normal" && "border-[var(--card-border)] bg-[#f8faff] text-brand-dark"
+            )}
+          >
+            <Clock size={16} />
+            {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
           </div>
+          <button
+            onClick={() => setPaletteOpen(true)}
+            aria-label="Open question palette"
+            className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--card-border)] text-brand-dark lg:hidden"
+          >
+            <LayoutGrid size={20} />
+            <span className="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-orange px-1 font-display text-[11px] font-bold text-white">
+              {answeredCount}
+            </span>
+          </button>
         </div>
-        {/* Subject navigation chips */}
-        {subjects.length > 1 && (
-          <div className="flex gap-1.5 overflow-x-auto px-3 sm:px-5 pb-2">
-            {subjects.map((subj, i) => {
+
+        {/* Subject tabs */}
+        <div className="border-b border-[var(--card-border)]">
+          <div className="no-scrollbar mx-auto flex max-w-6xl overflow-x-auto px-1 sm:px-3" role="tablist" aria-label="Subjects">
+            {subjects.map((subj) => {
               const qs = questions.filter((q) => q.subject === subj);
-              const answeredInSubj = qs.filter((q) => answers[q.id]?.selected !== null && answers[q.id]?.selected !== undefined).length;
+              const done = qs.filter((q) => answers[q.id]?.selected !== null && answers[q.id]?.selected !== undefined).length;
+              const active = subj === current.subject;
               return (
                 <button
                   key={subj}
+                  role="tab"
+                  aria-selected={active}
                   onClick={() => goTo(questions.findIndex((q) => q.subject === subj))}
                   className={cn(
-                    "exam-btn shrink-0 whitespace-nowrap px-3 py-1.5 text-xs",
-                    i === currentSubjectIndex ? "exam-btn-primary" : "exam-btn-ghost"
+                    "relative flex shrink-0 flex-col items-center gap-1.5 px-4 pt-2 pb-3",
+                    active ? "text-brand-orange" : "text-slate-400"
                   )}
                 >
-                  {SUBJECT_MAP[subj]?.hinglishName ?? subj}
-                  <span className="ml-1.5 opacity-75">{answeredInSubj}/{qs.length}</span>
+                  <span className="whitespace-nowrap font-display text-[16px] font-medium">
+                    {SUBJECT_MAP[subj]?.hinglishName ?? subj}
+                  </span>
+                  <span
+                    className={cn(
+                      "rounded-full px-2.5 py-0.5 font-display text-[13px] font-semibold tabular-nums",
+                      active ? "bg-brand-orange-light text-brand-orange" : "bg-slate-100 text-slate-400"
+                    )}
+                  >
+                    {done}/{qs.length}
+                  </span>
+                  <span className="h-1.5 w-full min-w-12 overflow-hidden rounded-full bg-slate-100">
+                    <span
+                      className="block h-full rounded-full bg-brand-orange transition-all"
+                      style={{ width: `${(done / qs.length) * 100}%` }}
+                    />
+                  </span>
+                  {active && <span className="absolute inset-x-0 bottom-0 h-[3px] rounded-t-full bg-brand-orange" />}
                 </button>
               );
             })}
           </div>
-        )}
+        </div>
       </div>
 
-      <div className="flex-1 w-full max-w-6xl mx-auto px-3 sm:px-5 py-4 lg:py-6 flex flex-col lg:flex-row lg:gap-5 lg:items-start">
-        {/* Main question area */}
-        <div className="flex-1 min-w-0 pb-24 lg:pb-0">
-          <div className="card p-4 sm:p-6">
-            <p className="text-xs font-bold uppercase tracking-wide text-gray-400 mb-2">
-              Question {index + 1} of {questions.length}
-            </p>
-            <p id="question-text" className="text-[17px] sm:text-xl font-semibold text-gray-900 leading-relaxed">
-              {current.question}
-            </p>
-
-            <div role="radiogroup" aria-labelledby="question-text" className="mt-5 space-y-2.5">
-              {current.options.map((opt, i) => {
-                const selected = currentAnswer?.selected === i;
-                return (
-                  <button
-                    key={i}
-                    role="radio"
-                    aria-checked={selected}
-                    onClick={() => updateAnswer(current.id, { selected: i, visited: true })}
-                    className={cn(
-                      "exam-btn flex w-full items-center gap-3 rounded-lg border px-4 py-3 text-left text-[15px] sm:text-base",
-                      selected
-                        ? "border-brand-orange bg-brand-orange-light text-gray-900"
-                        : "border-gray-200 text-gray-800 hover:border-brand-orange/50 hover:bg-orange-50/40"
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-bold",
-                        selected ? "border-brand-orange bg-brand-orange text-white" : "border-gray-300 text-gray-500"
-                      )}
-                    >
-                      {String.fromCharCode(65 + i)}
-                    </span>
-                    <span className="flex-1">{opt}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Desktop controls (mobile uses the sticky bottom bar instead) */}
-          <div className="mt-4 hidden lg:flex flex-wrap gap-2">
-            <button onClick={() => updateAnswer(current.id, { selected: null })} className="exam-btn exam-btn-ghost px-4 py-2.5 text-sm inline-flex items-center gap-1.5">
-              <Eraser size={14} /> Clear Response
-            </button>
+      <div className="mx-auto flex max-w-6xl flex-col px-3 pt-4 sm:px-5 lg:flex-row lg:items-start lg:gap-6 lg:pt-6">
+        {/* Question column */}
+        <div className="min-w-0 flex-1 pb-40 lg:pb-8">
+          <div className="flex items-center justify-between gap-2">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[var(--card-border)] bg-white px-4 py-1.5 font-display text-[15px] font-semibold uppercase tracking-wider text-brand-dark">
+              Question <span className="text-brand-orange">{index + 1}</span> of {questions.length}
+            </span>
             <button
               onClick={() => updateAnswer(current.id, { marked: !currentAnswer?.marked, visited: true })}
-              className={cn("exam-btn px-4 py-2.5 text-sm inline-flex items-center gap-1.5", currentAnswer?.marked ? "exam-btn-marked" : "exam-btn-ghost")}
+              aria-pressed={!!currentAnswer?.marked}
+              className={cn(
+                "exam-btn inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[14px]",
+                currentAnswer?.marked ? "exam-btn-marked" : "exam-btn-ghost"
+              )}
             >
-              <Flag size={14} /> {currentAnswer?.marked ? "Unmark" : "Mark for Review"}
+              <Flag size={15} fill={currentAnswer?.marked ? "currentColor" : "none"} />
+              {currentAnswer?.marked ? "Marked" : "Mark for Review"}
             </button>
-            <div className="ml-auto flex gap-2">
-              <button onClick={() => goTo(index - 1)} disabled={index === 0} className="exam-btn exam-btn-secondary px-4 py-2.5 text-sm">
-                Previous
+          </div>
+
+          <div className="mt-3 rounded-3xl border border-[var(--card-border)] bg-white p-5 sm:p-6">
+            {context && (
+              <p className="mb-4 font-display text-[19px] leading-relaxed text-slate-700">{context}</p>
+            )}
+            <p
+              id="question-text"
+              className="rounded-r-2xl border-l-4 border-brand-orange bg-[#f6f8fc] px-4 py-3.5 font-display text-[19px] font-medium leading-relaxed text-brand-dark"
+            >
+              {ask}
+            </p>
+          </div>
+
+          <div role="radiogroup" aria-labelledby="question-text" className="mt-4 space-y-3">
+            {current.options.map((opt, i) => {
+              const selected = currentAnswer?.selected === i;
+              return (
+                <button
+                  key={i}
+                  role="radio"
+                  aria-checked={selected}
+                  onClick={() => updateAnswer(current.id, { selected: i, visited: true })}
+                  className={cn(
+                    "flex w-full items-center gap-4 rounded-2xl border-[1.5px] bg-white px-4 py-4 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-orange",
+                    selected ? "border-brand-orange bg-[#fff6ee]" : "border-[var(--card-border)] hover:border-brand-orange/40"
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-display text-[17px] font-bold",
+                      selected ? "bg-brand-orange text-white" : "bg-[#f1f4f9] text-slate-600"
+                    )}
+                  >
+                    {String.fromCharCode(65 + i)}
+                  </span>
+                  <span className="flex-1 font-display text-[18px] text-brand-dark">{opt}</span>
+                  {selected && <CheckCircle2 size={20} className="shrink-0 text-brand-orange" />}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Action bar: fixed on mobile, in-flow on desktop */}
+          <div className="fixed inset-x-0 bottom-0 z-30 border-t border-[var(--card-border)] bg-white pb-safe lg:static lg:mt-6 lg:border-0 lg:bg-transparent">
+            <div className="mx-auto grid max-w-3xl grid-cols-2 gap-2.5 px-3 py-3 lg:max-w-none lg:px-0 lg:py-0">
+              <button onClick={() => goTo(index - 1)} disabled={index === 0} className="exam-btn exam-btn-ghost py-3.5 text-[17px]">
+                ← Prev
               </button>
-              <button onClick={() => goTo(index + 1)} disabled={index + 1 >= questions.length} className="exam-btn exam-btn-primary px-4 py-2.5 text-sm">
-                Save &amp; Next
+              <button onClick={() => goTo(index + 1)} disabled={isLast} className="exam-btn exam-btn-primary py-3.5 text-[17px]">
+                Next →
+              </button>
+              <button
+                onClick={() => updateAnswer(current.id, { selected: null })}
+                disabled={currentAnswer?.selected === null || currentAnswer?.selected === undefined}
+                className="exam-btn exam-btn-ghost inline-flex items-center justify-center gap-1.5 py-3.5 text-[17px]"
+              >
+                <X size={18} /> Clear
+              </button>
+              <button onClick={handleSubmit} className="exam-btn exam-btn-dark py-3.5 text-[17px]">
+                Submit Test →
               </button>
             </div>
           </div>
         </div>
 
-        {/* Desktop sidebar */}
-        <aside className="hidden lg:block w-[300px] shrink-0">
-          <div className="card p-4 sticky top-20">
-            <QuestionPalette
-              entries={paletteEntries}
-              currentIndex={index}
-              onJump={goTo}
-              answeredCount={answeredCount}
-              markedCount={markedCount}
-              totalCount={questions.length}
-            />
-            <button onClick={handleSubmit} className="exam-btn exam-btn-primary w-full mt-4 py-2.5 text-sm">
-              Submit Test
-            </button>
+        {/* Desktop palette */}
+        <aside className="hidden w-[310px] shrink-0 lg:block">
+          <div className="card sticky top-40 p-4">
+            <QuestionPalette {...paletteProps} />
           </div>
         </aside>
       </div>
 
-      {/* Mobile sticky bottom bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 border-t border-gray-200 bg-white pb-safe">
-        <div className="grid grid-cols-5 gap-1.5 p-2">
-          <button
-            onClick={() => updateAnswer(current.id, { selected: null })}
-            aria-label="Clear response"
-            className="exam-btn exam-btn-ghost flex flex-col items-center gap-0.5 py-2 text-[10px]"
-          >
-            <Eraser size={16} />
-            Clear
-          </button>
-          <button
-            onClick={() => updateAnswer(current.id, { marked: !currentAnswer?.marked, visited: true })}
-            aria-label="Mark for review"
-            className={cn("exam-btn flex flex-col items-center gap-0.5 py-2 text-[10px]", currentAnswer?.marked ? "exam-btn-marked" : "exam-btn-ghost")}
-          >
-            <Flag size={16} />
-            Mark
-          </button>
-          <button
-            onClick={() => setPaletteOpen(true)}
-            aria-label="Open question palette"
-            className="exam-btn exam-btn-ghost relative flex flex-col items-center gap-0.5 py-2 text-[10px]"
-          >
-            <LayoutGrid size={16} />
-            Palette
-            <span className="absolute top-0.5 right-1.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-brand-orange px-0.5 text-[8px] font-bold text-white">
-              {answeredCount}
-            </span>
-          </button>
-          <button
-            onClick={() => goTo(index - 1)}
-            disabled={index === 0}
-            aria-label="Previous question"
-            className="exam-btn exam-btn-secondary flex flex-col items-center gap-0.5 py-2 text-[10px]"
-          >
-            <ChevronLeft size={16} />
-            Prev
-          </button>
-          {index + 1 >= questions.length ? (
-            <button onClick={handleSubmit} aria-label="Submit test" className="exam-btn exam-btn-primary flex flex-col items-center gap-0.5 py-2 text-[10px]">
-              <CheckCircle2 size={16} />
-              Submit
-            </button>
-          ) : (
-            <button onClick={() => goTo(index + 1)} aria-label="Next question" className="exam-btn exam-btn-primary flex flex-col items-center gap-0.5 py-2 text-[10px]">
-              <ChevronRight size={16} />
-              Next
-            </button>
-          )}
-        </div>
-      </div>
-
       <ExamBottomSheet open={paletteOpen} onClose={() => setPaletteOpen(false)} title="Question Palette">
-        <QuestionPalette
-          entries={paletteEntries}
-          currentIndex={index}
-          onJump={goTo}
-          answeredCount={answeredCount}
-          markedCount={markedCount}
-          totalCount={questions.length}
-        />
+        <QuestionPalette {...paletteProps} />
         <button
           onClick={() => {
             setPaletteOpen(false);
             handleSubmit();
           }}
-          className="exam-btn exam-btn-primary w-full mt-4 py-3 text-sm"
+          className="exam-btn exam-btn-dark mt-4 w-full py-3.5 text-[16px]"
         >
-          Submit Test
+          Submit Test →
         </button>
       </ExamBottomSheet>
     </div>
   );
 }
 
+// Show the final sentence (the actual ask) in the highlighted box and any
+// preceding context above it, like "context … / When was the event?".
+function splitQuestion(text: string): { context: string | null; ask: string } {
+  const trimmed = text.trim();
+  const cut = trimmed.lastIndexOf(". ", trimmed.length - 2);
+  if (cut > 20 && cut < trimmed.length - 10) {
+    return { context: trimmed.slice(0, cut + 1), ask: trimmed.slice(cut + 2) };
+  }
+  return { context: null, ask: trimmed };
+}
+
 function ExamTopBar({ exitHref }: { exitHref: string }) {
   return (
-    <div className="flex items-center justify-between border-b border-gray-200 bg-white px-3 sm:px-5 h-11 shrink-0">
-      <Link href={exitHref} className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-gray-900">
-        <ArrowLeft size={14} /> Exit Test
-      </Link>
-      <span className="text-xs font-bold text-brand-navy">
-        Police<span className="text-brand-orange">Exams</span>
-      </span>
+    <div className="sticky top-0 z-30 border-b border-[var(--card-border)] bg-white">
+      <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
+        <Link href={exitHref} className="flex items-center gap-1.5 font-display text-[15px] font-semibold text-slate-600 hover:text-brand-dark">
+          <ArrowLeft size={18} /> Mock Tests
+        </Link>
+        <span className="font-display text-lg font-extrabold">
+          <span className="text-brand-dark">Police</span>
+          <span className="text-brand-orange">Exams</span>
+        </span>
+      </div>
     </div>
   );
 }
@@ -509,8 +509,8 @@ function ExamTopBar({ exitHref }: { exitHref: string }) {
 function Stat({ label, value, tone }: { label: string; value: string; tone?: string }) {
   return (
     <div>
-      <p className={cn("text-xl font-extrabold", tone ?? "text-brand-navy")}>{value}</p>
-      <p className="text-xs text-gray-500 mt-0.5">{label}</p>
+      <p className={cn("font-display text-2xl font-bold", tone ?? "text-brand-dark")}>{value}</p>
+      <p className="mt-0.5 font-display text-[13px] text-slate-500">{label}</p>
     </div>
   );
 }

@@ -1,15 +1,15 @@
-import Link from "next/link";
 import type { Metadata } from "next";
-import { STATES } from "@/data/states";
+import { STATES, STATE_SHORT } from "@/data/states";
 import { MOCK_TESTS } from "@/data/mockTests";
-import Badge from "@/components/ui/Badge";
-import { Timer } from "lucide-react";
-import { getAccent } from "@/lib/accentColors";
-import { cn } from "@/lib/utils";
+import { SUBJECT_MAP } from "@/data/subjects";
+import { Breadcrumb, DarkHero, ExamToggle, TestGroupCard, TestGroup, StateChip } from "@/components/app/TestList";
+import { SectionTitle } from "@/components/app/primitives";
+import { Rocket, Timer, Languages, BarChart3, Target } from "lucide-react";
+import type { ExamType } from "@/types";
 
 export const metadata: Metadata = {
-  title: "State Police Mock Tests",
-  description: "Full mock tests, subject tests, state GK tests aur police GK tests — sabhi 9 states ke Constable aur SI exams ke liye.",
+  title: "State Police Mock Tests — Constable & SI",
+  description: "Full mock tests aur subject tests — real timer, question palette aur detailed result analysis ke saath. Sabhi 9 states ke Police Constable aur SI ke liye.",
   alternates: { canonical: "/mock-test" },
 };
 
@@ -19,56 +19,88 @@ export default async function MockTestPage({
   searchParams: Promise<{ state?: string; exam?: string }>;
 }) {
   const sp = await searchParams;
-  const filtered = MOCK_TESTS.filter((m) => {
-    if (sp.state && m.state !== sp.state) return false;
-    if (sp.exam && m.exam !== sp.exam) return false;
-    return true;
-  });
+  const exam: ExamType = sp.exam === "si" ? "si" : "constable";
+  const stateFilter = STATES.find((s) => s.code === sp.state)?.code;
+  const examLabel = exam === "constable" ? "Constable" : "SI";
+
+  const mocks = MOCK_TESTS.filter((m) => m.exam === exam && (!stateFilter || m.state === stateFilter));
+
+  const groups: TestGroup[] = STATES.filter((s) => !stateFilter || s.code === stateFilter)
+    .map((s) => ({
+      key: s.code,
+      badge: STATE_SHORT[s.code],
+      title: `${s.hinglishName} Police ${examLabel} — Mock Tests`,
+      rows: mocks
+        .filter((m) => m.state === s.code)
+        .map((m) => ({
+          id: m.id,
+          href: `/mock-test/${m.id}`,
+          title: m.type === "full" ? "Full Mock Test" : SUBJECT_MAP[m.subject ?? ""]?.hinglishName ?? m.title,
+          chip: m.type === "full" ? "FULL" : "SUBJECT",
+          sub: m.type === "full" ? "Sabhi subjects · real exam jaisa" : "Ek subject ka test",
+          questions: m.questionCount,
+          minutes: m.durationMinutes,
+          marks: m.questionCount * m.marksPerQuestion,
+        })),
+    }))
+    .filter((g) => g.rows.length > 0);
+
+  const qs = (params: Record<string, string | undefined>) => {
+    const u = new URLSearchParams();
+    Object.entries(params).forEach(([k, v]) => v && u.set(k, v));
+    const s = u.toString();
+    return s ? `/mock-test?${s}` : "/mock-test";
+  };
 
   return (
-    <div className="container-page py-8">
-      <h1 className="font-display text-2xl md:text-3xl font-extrabold text-gray-900">State Police Mock Tests</h1>
-      <p className="mt-1 text-sm text-gray-600">
-        Full mock, subject test, state GK test — timer aur result analysis ke saath.
-      </p>
-
-      <div className="mt-5 flex flex-wrap gap-2">
-        <Link href="/mock-test" className={`rounded-full px-3 py-1.5 text-xs font-semibold ${!sp.state ? "bg-brand-orange text-white" : "bg-gray-100 text-gray-600"}`}>
-          Sabhi States
-        </Link>
-        {STATES.map((s) => (
-          <Link
-            key={s.code}
-            href={`/mock-test?state=${s.code}`}
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold ${sp.state === s.code ? "bg-brand-orange text-white" : "bg-gray-100 text-gray-600"}`}
-          >
-            {s.hinglishName}
-          </Link>
-        ))}
+    <div>
+      <div className="bg-[#eef1f6]">
+        <h1 className="container-page max-w-3xl py-5 font-display text-[1.45rem] font-semibold leading-snug text-brand-dark">
+          Free State Police Mock Tests — Online in Hinglish
+        </h1>
       </div>
+      <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Mock Tests", href: "/mock-test" }, { label: examLabel }]} />
 
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filtered.map((m, i) => {
-          const accent = getAccent(i);
-          return (
-            <Link
-              key={m.id}
-              href={`/mock-test/${m.id}`}
-              className="card card-accent p-4 hover:shadow-md transition-shadow"
-              style={{ ["--accent" as string]: accent.border }}
-            >
-              <div className="flex items-center justify-between">
-                <Badge tone={m.exam === "constable" ? "navy" : "gold"}>{m.state.toUpperCase()} · {m.exam.toUpperCase()}</Badge>
-                <Timer size={15} className={cn(accent.text)} />
-              </div>
-              <h3 className="mt-2 text-sm font-bold text-gray-900">{m.title}</h3>
-              <p className="mt-1 text-xs text-gray-500">
-                {m.questionCount} Q · {m.durationMinutes} min · {m.marksPerQuestion} marks/Q
-              </p>
-            </Link>
-          );
-        })}
+      <div className="container-page max-w-3xl space-y-5 py-5">
+        <DarkHero
+          icon={<Rocket size={30} className="text-white" />}
+          title={`Police ${examLabel} Mock Tests`}
+          meta={`Full mocks + subject tests · ${STATES.length} states`}
+          chips={[
+            { icon: <Rocket size={15} className="text-orange-300" />, label: `${mocks.length} Tests` },
+            { icon: <Timer size={15} className="text-sky-300" />, label: "Real Timer" },
+            { icon: <Languages size={15} className="text-emerald-300" />, label: "Hinglish" },
+          ]}
+        />
+
+        <p className="text-[1.05rem] leading-relaxed text-slate-600">
+          Real exam jaisa experience — <strong className="text-brand-dark">timer, question palette, mark for review</strong>{" "}
+          aur submit ke baad score, accuracy, subject-wise analysis aur har question ka solution.
+        </p>
+
+        <ExamToggle
+          options={[
+            { href: qs({ exam: "constable", state: stateFilter }), label: "Constable", active: exam === "constable", icon: <Target size={19} /> },
+            { href: qs({ exam: "si", state: stateFilter }), label: "Sub-Inspector", active: exam === "si", icon: <BarChart3 size={19} /> },
+          ]}
+        />
+
+        <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4">
+          <StateChip href={qs({ exam })} label="Sabhi States" active={!stateFilter} />
+          {STATES.map((s) => (
+            <StateChip key={s.code} href={qs({ exam, state: s.code })} label={s.hinglishName} active={stateFilter === s.code} />
+          ))}
+        </div>
+
+        <SectionTitle title={`Police ${examLabel} — Mock Tests`} count={`${mocks.length} Tests`} />
+
+        <div className="space-y-4">
+          {groups.map((g, i) => (
+            <TestGroupCard key={g.key} group={g} defaultOpen={i === 0 || !!stateFilter} />
+          ))}
+        </div>
       </div>
     </div>
   );
 }
+

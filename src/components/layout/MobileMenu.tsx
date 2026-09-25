@@ -4,119 +4,117 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Shield, Search } from "lucide-react";
-import { NAV_SECTIONS } from "@/lib/nav";
+import {
+  Menu,
+  X,
+  Home,
+  GraduationCap,
+  FileText,
+  Target,
+  PenSquare,
+  Sparkles,
+  MapPinned,
+  Newspaper,
+  NotebookText,
+  Dumbbell,
+  Bell,
+  LayoutDashboard,
+  User,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const ITEMS = [
+  { label: "Home", href: "/", icon: Home, color: "#ff6a13" },
+  { label: "Exams", href: "/exams", icon: GraduationCap, color: "#1c2333" },
+  { label: "PYQ Bank", href: "/pyq", icon: FileText, color: "#1d78d8" },
+  { label: "Mock Tests", href: "/mock-test", icon: Target, color: "#dc3b2f" },
+  { label: "Subject-wise Practice", href: "/practice", icon: PenSquare, color: "#6d4fe0" },
+  { label: "Aaj ka Quiz", href: "/daily-quiz", icon: Sparkles, color: "#e0a100" },
+  { label: "State GK", href: "/state-gk", icon: MapPinned, color: "#10a760" },
+  { label: "Current Affairs", href: "/current-affairs", icon: Newspaper, color: "#64748b" },
+  { label: "Study Notes", href: "/study-notes", icon: NotebookText, color: "#1c2333" },
+  { label: "Physical Test", href: "/physical-test", icon: Dumbbell, color: "#c2410c" },
+  { label: "Exam Updates", href: "/exam-updates", icon: Bell, color: "#e0a100" },
+  { label: "My Dashboard", href: "/dashboard", icon: LayoutDashboard, color: "#1d78d8" },
+];
 
 export default function MobileMenu() {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
 
-  // Portal target isn't available during SSR — render the trigger button
-  // immediately but only portal the overlay once mounted in the browser.
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
-  // Close the drawer whenever the route changes.
+  // Close whenever the route changes.
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    if (open) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    if (!open) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
   return (
     <>
       <button
-        onClick={() => setOpen(true)}
-        aria-label="Open menu"
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--card-border)] text-gray-600 hover:bg-gray-100 lg:hidden"
+        onClick={() => setOpen((o) => !o)}
+        aria-label={open ? "Close menu" : "Open menu"}
+        aria-expanded={open}
+        className="flex h-11 w-11 items-center justify-center rounded-xl text-brand-dark hover:bg-gray-100"
       >
-        <Menu size={20} />
+        {open ? <X size={26} /> : <Menu size={26} />}
       </button>
 
-      {mounted && open && createPortal(
-        <div className="fixed inset-0 z-50 h-dvh w-screen bg-brand-dark text-white overflow-y-auto lg:hidden">
-          <div className="container-page flex h-16 items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-orange text-white">
-                <Shield size={16} />
-              </span>
-              <span className="font-display text-lg font-extrabold">
-                Police<span className="text-brand-orange">Exams</span>
-              </span>
-            </div>
+      {/* Portaled so it isn't trapped in the sticky header's stacking
+          context and always layers above page content and the tab bar. */}
+      {mounted &&
+        open &&
+        createPortal(
+          <div className="fixed inset-x-0 bottom-0 top-16 z-50">
             <button
-              onClick={() => setOpen(false)}
               aria-label="Close menu"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white hover:bg-white/10"
-            >
-              <X size={20} />
-            </button>
-          </div>
-
-          <div className="container-page pb-10">
-            <p className="text-sm text-slate-400 mb-6 max-w-xs">
-              Police Constable &amp; SI ki taiyari — Simple, Smart aur
-              State-wise. Practice, mocks, PYQ aur state GK ek hi jagah.
-            </p>
-
-            <Link
-              href="/search"
-              className="mb-8 flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-slate-300"
-            >
-              <Search size={16} /> Exam, state ya topic search karein...
-            </Link>
-
-            {NAV_SECTIONS.map((section) => (
-              <div key={section.label} className="mb-7">
-                <p className="text-xs font-bold uppercase tracking-wider text-brand-orange mb-3">
-                  {section.label}
-                </p>
-                <div className="space-y-0.5">
-                  {section.items.map((item) => (
+              onClick={() => setOpen(false)}
+              className="absolute inset-0 h-full w-full bg-black/25"
+            />
+            <nav className="relative max-h-full overflow-y-auto border-b border-[var(--card-border)] bg-white shadow-lg">
+              <div className="container-page py-2">
+                {ITEMS.map((item) => {
+                  const Icon = item.icon;
+                  const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+                  return (
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="block rounded-lg px-2 py-2.5 text-[15px] text-slate-200 hover:bg-white/5 hover:text-white"
+                      className={cn(
+                        "flex items-center gap-3.5 rounded-xl px-3 py-3 font-display text-[17px] font-medium text-brand-dark",
+                        active ? "bg-brand-orange-light" : "hover:bg-gray-50"
+                      )}
                     >
+                      <Icon size={21} style={{ color: item.color }} />
                       {item.label}
                     </Link>
-                  ))}
-                </div>
+                  );
+                })}
+                <Link
+                  href="/login"
+                  className="mt-2 mb-2 flex items-center gap-3 rounded-2xl border border-brand-orange/40 bg-brand-orange-light px-4 py-3.5 font-display text-[17px] font-semibold text-brand-orange"
+                >
+                  <User size={21} /> Login / Register
+                </Link>
               </div>
-            ))}
-
-            <Link
-              href="/login"
-              className="btn-orange mt-2 flex items-center justify-center py-3 text-sm"
-            >
-              Login / Sign Up
-            </Link>
-
-            <div className="mt-8 border-t border-white/10 pt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-400">
-              <Link href="/about">About Us</Link>
-              <Link href="/contact">Contact</Link>
-              <Link href="/privacy-policy">Privacy Policy</Link>
-              <Link href="/terms">Terms</Link>
-              <Link href="/disclaimer">Disclaimer</Link>
-              <Link href="/admin">Admin Panel</Link>
-            </div>
-            <p className="mt-4 text-[11px] text-slate-500">
-              © {new Date().getFullYear()} PoliceExams. Made for Police exam aspirants.
-            </p>
-          </div>
-        </div>,
-        document.body
-      )}
+            </nav>
+          </div>,
+          document.body
+        )}
     </>
   );
 }

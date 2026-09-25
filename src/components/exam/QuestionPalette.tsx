@@ -123,3 +123,16 @@ function LegendRow({ status }: { status: QuestionStatus }) {
     </div>
   );
 }
+
+/** Stand-alone legend, e.g. on the instructions page. */
+export function PaletteLegend() {
+  return (
+    <div className="space-y-2 text-[15px] text-slate-600">
+      <LegendRow status="not-visited" />
+      <LegendRow status="skipped" />
+      <LegendRow status="answered" />
+      <LegendRow status="marked" />
+      <LegendRow status="answered-marked" />
+    </div>
+  );
+}

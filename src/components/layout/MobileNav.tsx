@@ -2,38 +2,47 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, GraduationCap, PenSquare, Timer, Menu } from "lucide-react";
+import { Home, FileText, Target, PenSquare, LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ITEMS = [
   { label: "Home", href: "/", icon: Home },
-  { label: "Exams", href: "/exams", icon: GraduationCap },
+  { label: "PYQ", href: "/pyq", icon: FileText },
   { label: "Practice", href: "/practice", icon: PenSquare },
-  { label: "Mock", href: "/mock-test", icon: Timer },
-  { label: "More", href: "/more", icon: Menu },
+  { label: "Mock", href: "/mock-test", icon: Target },
+  { label: "More", href: "/more", icon: LayoutGrid },
 ];
 
 export default function MobileNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--card-border)] bg-white md:hidden">
+    <nav
+      aria-label="Primary"
+      className="fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--card-border)] bg-white/95 backdrop-blur pb-safe md:hidden"
+    >
       <div className="grid grid-cols-5">
         {ITEMS.map((item) => {
-          const active =
-            item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+          const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
           const Icon = item.icon;
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={cn(
-                "flex flex-col items-center gap-0.5 py-2 text-[11px] font-medium",
-                active ? "text-brand-navy" : "text-gray-500"
-              )}
+              aria-current={active ? "page" : undefined}
+              className="flex flex-col items-center gap-1 pt-2 pb-2.5"
             >
-              <Icon size={20} strokeWidth={active ? 2.5 : 2} />
-              {item.label}
+              <span
+                className={cn(
+                  "flex h-8 w-14 items-center justify-center rounded-full transition-colors",
+                  active ? "bg-brand-orange-light text-brand-orange" : "text-slate-500"
+                )}
+              >
+                <Icon size={21} strokeWidth={active ? 2.4 : 2} />
+              </span>
+              <span className={cn("font-display text-[11px]", active ? "font-semibold text-brand-orange" : "font-medium text-slate-500")}>
+                {item.label}
+              </span>
             </Link>
           );
         })}

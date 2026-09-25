@@ -7,7 +7,7 @@ import { getQuestion } from "@/data/questions";
 import QuestionCard from "@/components/QuestionCard";
 import ProgressBar from "@/components/ui/ProgressBar";
 import DisclaimerBanner from "@/components/ui/DisclaimerBanner";
-import { addPoints, isBookmarked, recordAnswer, toggleBookmark } from "@/lib/localStore";
+import { addPoints, isBookmarked, recordAnswer, saveAttempt, toggleBookmark } from "@/lib/localStore";
 import { RotateCcw, Home } from "lucide-react";
 
 export default function PyqAttemptClient({ paper, state }: { paper: PyqPaper; state: StateInfo }) {
@@ -22,6 +22,7 @@ export default function PyqAttemptClient({ paper, state }: { paper: PyqPaper; st
   const [correctCount, setCorrectCount] = useState(0);
   const [finished, setFinished] = useState(false);
   const [bookmarkTick, setBookmarkTick] = useState(0);
+  const [startedAt] = useState(() => Date.now());
 
   if (questions.length === 0) {
     return (
@@ -49,6 +50,20 @@ export default function PyqAttemptClient({ paper, state }: { paper: PyqPaper; st
 
   function handleNext() {
     if (index + 1 >= questions.length) {
+      // Every question was answered (Check Answer is required before Next).
+      saveAttempt({
+        id: `pyq-${paper.id}-${Date.now()}`,
+        userId: null,
+        mockId: paper.id,
+        answers: [],
+        score: correctCount * 2,
+        correct: correctCount,
+        incorrect: questions.length - correctCount,
+        skipped: 0,
+        accuracy: Math.round((correctCount / questions.length) * 100),
+        timeTakenSeconds: Math.round((Date.now() - startedAt) / 1000),
+        submittedAt: new Date().toISOString(),
+      });
       setFinished(true);
       return;
     }
