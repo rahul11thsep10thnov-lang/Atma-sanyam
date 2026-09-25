@@ -14,18 +14,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rangepatte.app.R
+import com.rangepatte.app.data.local.LanguagePreferences
+import com.rangepatte.app.domain.model.AppLanguage
 import com.rangepatte.app.ui.background.BackgroundType
 import com.rangepatte.app.ui.components.SettingsRow
 import com.rangepatte.app.ui.components.WatermarkBackground
 
 @Composable
 fun SettingsScreen(
+    onChangeLanguageClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    val currentLanguage = LanguagePreferences.getSelectedLanguage(context) ?: AppLanguage.ENGLISH
 
     WatermarkBackground(backgroundType = BackgroundType.CLASSICAL_LIVING_ROOM, modifier = modifier) {
         LazyColumn(
@@ -63,6 +69,12 @@ fun SettingsScreen(
                         title = stringResource(R.string.settings_vibration),
                         checked = uiState.vibrationEnabled,
                         onCheckedChange = viewModel::toggleVibration
+                    )
+                    HorizontalDivider()
+                    SettingsRow(
+                        title = stringResource(R.string.settings_language),
+                        subtitle = currentLanguage.nativeName,
+                        onClick = onChangeLanguageClick
                     )
                     HorizontalDivider()
                     SettingsRow(title = stringResource(R.string.settings_about))

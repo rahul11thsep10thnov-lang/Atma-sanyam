@@ -12,7 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -23,8 +26,10 @@ import androidx.compose.ui.unit.dp
 import com.rangepatte.app.R
 import com.rangepatte.app.domain.game.Deck
 import com.rangepatte.app.domain.model.GameInfo
+import com.rangepatte.app.domain.model.PlayMode
 import com.rangepatte.app.ui.background.BackgroundType
 import com.rangepatte.app.ui.components.CardFan
+import com.rangepatte.app.ui.components.ClassicalOutlinedButton
 import com.rangepatte.app.ui.components.GameHeader
 import com.rangepatte.app.ui.components.PlayerAvatar
 import com.rangepatte.app.ui.components.ScorePanel
@@ -32,8 +37,11 @@ import com.rangepatte.app.ui.components.TurnIndicator
 import com.rangepatte.app.ui.components.WatermarkBackground
 import com.rangepatte.app.ui.components.WoodenTable
 import com.rangepatte.app.ui.cards.Hand
+import com.rangepatte.app.ui.rules.RulesDialog
 import com.rangepatte.app.ui.theme.GoldenGlow
 import kotlin.random.Random
+
+private const val UNDO_USES_PER_GAME = 3
 
 /**
  * The generic table shell every game screen is built on: header, wooden playing surface, seated
@@ -41,23 +49,32 @@ import kotlin.random.Random
  * in yet — the cards shown here are a static shuffled demo hand so the rendering engine (Phase 3)
  * can be seen working end-to-end. Each game's own screen (Phase 7+) replaces this demo content with
  * its engine's live [com.rangepatte.app.domain.game.GameState] while reusing this same layout.
+ *
+ * Undo is offered — up to [UNDO_USES_PER_GAME] times — only when [playMode] has no other human
+ * player who could be affected by it; see [PlayMode.allowsUndo]. There is no real move history to
+ * undo yet since no engine is wired in, so the button here is a UI scaffold: it decrements a local
+ * counter rather than reverting any game state. A concrete engine should replace this with a real
+ * undo stack once one exists.
  */
 @Composable
 fun GameTableScreen(
     game: GameInfo,
+    playMode: PlayMode,
     onBackClick: () -> Unit,
-    onRulesClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val demoHand = remember(game.id) { Deck.standard().shuffled(Random(game.id.ordinal)).cards.take(5) }
     val demoOpponentHand = remember(game.id) { Deck.standard().shuffled(Random(game.id.ordinal + 100)).cards.take(5) }
+    var showRules by remember(game.id) { mutableStateOf(false) }
+    val showUndo = playMode.allowsUndo || game.maxPlayers <= 1
+    var undoUsesRemaining by remember(game.id) { mutableStateOf(UNDO_USES_PER_GAME) }
 
     WatermarkBackground(backgroundType = BackgroundType.VILLAGE_CHAUPAL, modifier = modifier) {
         Column(modifier = Modifier.fillMaxSize().padding(12.dp)) {
             GameHeader(
                 title = stringResource(game.nameRes),
                 onBackClick = onBackClick,
-                onSettingsClick = onRulesClick
+                onSettingsClick = { showRules = true }
             )
 
             Box(
@@ -131,6 +148,25 @@ fun GameTableScreen(
                     animateDealIn = true
                 )
             }
+
+            if (showUndo) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    ClassicalOutlinedButton(
+                        text = "${stringResource(R.string.action_undo)} ($undoUsesRemaining)",
+                        enabled = undoUsesRemaining > 0,
+                        onClick = { undoUsesRemaining = (undoUsesRemaining - 1).coerceAtLeast(0) }
+                    )
+                }
+            }
         }
+    }
+
+    if (showRules) {
+        RulesDialog(game = game, onDismiss = { showRules = false })
     }
 }

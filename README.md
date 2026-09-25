@@ -10,7 +10,8 @@ This is **not** a real-money gambling app. All scoring uses non-monetary points.
 ## Status
 
 Phases 1–6 of the build plan are implemented, plus a full visual redesign pass (village-courtyard
-theme) on top of them. This README describes only what exists today:
+theme) and a language/rules/multiplayer-scaffold pass on top of them. This README describes only
+what exists today:
 
 | Phase | What | Status |
 |---|---|---|
@@ -18,10 +19,16 @@ theme) on top of them. This README describes only what exists today:
 | 2 | Theme (heritage color palette, typography, shapes) | ✅ |
 | 3 | Card engine (models, deck, card/back renderers, styles) | ✅ |
 | 4 | Home screen (featured/popular/more games grid) | ✅ |
-| 5 | Navigation (Compose Navigation, bottom nav, setup/table/rules routes) | ✅ |
+| 5 | Navigation (Compose Navigation, bottom nav, setup/table routes) | ✅ |
 | 6 | Game table shell (wooden table, header, hands, score panel) | ✅ |
 | — | Village-courtyard visual redesign (charpai table, antique cards, brass plaques, animation) | ✅ |
+| — | Language picker + 8-language UI translation (English, Hindi, Tamil, Telugu, Kannada, Marathi, Bengali, Punjabi) | ✅ |
+| — | Rules scroll popup with real researched rules content for all 9 games | ✅ |
+| — | Per-game vector emblem + one-clause summaries on game tiles | ✅ |
+| — | Classical tally-mark score display; gated Undo (AI games only, 3 uses) | ✅ |
+| — | Multiplayer architecture scaffold (`GameRoom`/`PlayerConnection`/`GameSynchronizer` interfaces; vs-Computer and Pass & Play modes functional; Nearby/Online shown as "coming soon") | ✅ (scaffold) |
 | 7+ | Individual game engines (Solitaire, Spider, Rummy, Teen Patti, Flush, 29, Coat Piece, Dehla Pakad, Lakadi) | not started |
+| — | Real Nearby (WiFi/Bluetooth) and Online (internet) multiplayer implementation | not started |
 
 ### The redesign, specifically
 
@@ -104,15 +111,20 @@ Or press **Run** in Android Studio with a connected device/emulator (minSdk 24 /
 
 ```
 app/src/main/java/com/rangepatte/app/
+├── data/
+│   └── local/     # LanguagePreferences (SharedPreferences-backed language choice)
 ├── domain/
-│   ├── model/     # PlayingCard, Suit, Rank, Player, GameCatalog (game metadata)
-│   └── game/      # Deck, DeckManager, CardGameEngine + GameState/GameAction contracts
+│   ├── model/     # PlayingCard, Suit, Rank, Player, GameCatalog, AppLanguage, PlayMode, RulesContent
+│   ├── game/      # Deck, DeckManager, CardGameEngine + GameState/GameAction contracts
+│   └── multiplayer/ # GameRoom/PlayerConnection/GameSynchronizer — architecture scaffold, unimplemented
 ├── ui/
 │   ├── theme/     # Color.kt, Type.kt, Shape.kt, Dimens.kt, Theme.kt — design tokens live here
 │   ├── cards/     # PlayingCardView/CardFace/CardBack renderers, SuitMotifs, CardStack, Hand, CardStyle
 │   ├── background/# BackgroundType enum + BackgroundManager (brush per scene)
-│   ├── components/# Shared widgets: ClassicalButton, GameTile, WoodenTable, GameHeader, OrnamentalDivider, ...
-│   ├── home/, games/, history/, settings/, setup/, table/, rules/   # screens
+│   ├── components/# Shared widgets: ClassicalButton, GameTile, GameEmblem, WoodenTable, GameHeader, OrnamentalDivider, ...
+│   ├── language/  # LanguageSelectionScreen, locale-wrapping utilities
+│   ├── rules/     # RulesDialog — the scroll-styled "how to play" popup
+│   ├── home/, games/, history/, settings/, setup/, table/   # screens
 ├── navigation/    # Routes.kt, BottomNavItem.kt, RangEPatteNavHost.kt
 ├── MainActivity.kt
 └── RangEPatteApplication.kt
@@ -125,15 +137,20 @@ an `*Engine.kt`, `*Rules.kt`, and `*Screen.kt` — never touching the shared she
 ## How to add a new game
 
 1. Add a `GameInfo` entry to `domain/model/GameCatalog.kt` (name/description string resources,
-   min/max players). It automatically appears in Home and Games grids and becomes navigable —
-   `setup/{segment}`, `table/{segment}`, `rules/{segment}` all resolve through the catalog.
-2. Implement a `CardGameEngine` (see `domain/game/CardGameEngine.kt`) with its own `GameState`/
+   min/max players, a `GameEmblem` case — see below). It automatically appears in Home and Games
+   grids and becomes navigable — `setup/{segment}` and `table/{segment}` resolve through the
+   catalog with no new route needed.
+2. Add a `GameRules(...)` entry for it in `domain/model/RulesContent.kt` — that's what the rules
+   scroll popup renders; without one it falls back to a "rules coming soon" placeholder.
+3. Implement a `CardGameEngine` (see `domain/game/CardGameEngine.kt`) with its own `GameState`/
    `GameAction` types, under a new `com.rangepatte.app.game.<yourgame>` package.
-3. Build a screen that renders your engine's state using the existing card/table components
+4. Build a screen that renders your engine's state using the existing card/table components
    (`PlayingCardView`, `Hand`, `CardFan`, `WoodenTable`, `ScorePanel`, ...) instead of
    `GameTableScreen`'s demo content, and wire it into `RangEPatteNavHost.kt` in place of the shared
    `GameTableScreen` call for that route.
-4. Add a `RulesScreen` content variant (or extend the shared one) with real rules text.
+5. Add a `when` branch for the new `GameId` in `ui/components/GameEmblem.kt` with a `draw*Emblem`
+   function for its tile icon (procedural vector, matching the existing games — no image asset
+   needed).
 
 ## How to add a new card design
 
@@ -169,17 +186,39 @@ real artwork:
    of the gradient for that case. `WatermarkBackground` (in `ui/components/`) already handles the
    low-opacity blur + scrim so text stays readable — nothing else needs to change.
 
-## How to add another language
+## Languages
 
-1. Create `res/values-<languageCode>/strings.xml` (e.g. `values-hi/strings.xml` for Hindi) with the
-   same string names as `res/values/strings.xml`, translated.
-2. For Devanagari or other non-Latin scripts, add a Devanagari-compatible font (e.g. Noto Serif
-   Devanagari or Tiro Devanagari, both on Google's `google/fonts` GitHub repo under OFL) to
+The app opens on a language picker (`ui/language/LanguageSelectionScreen.kt`) before anything
+else, per the design brief — the chosen language is saved (`data/local/LanguagePreferences.kt`,
+plain `SharedPreferences`, since it must be read synchronously in `Activity.attachBaseContext()`
+before Compose exists yet) and can be changed again later from Settings. All UI chrome — nav,
+buttons, headers, setup, settings, and every game's name and one-clause summary — is fully
+translated into all 8 supported languages: English, Hindi, Tamil, Telugu, Kannada, Marathi,
+Bengali, Punjabi (see `domain/model/AppLanguage.kt`).
+
+**Scope note:** the rules-scroll content (`domain/model/RulesContent.kt`) is English-only for now.
+Translating that many detailed rule bullets (~150 lines) into 7 languages accurately needs native-
+speaker review this environment can't provide, so — unlike the rest of the UI — it was deliberately
+left out of the translation pass rather than shipped with unreviewed machine translations for
+content this detailed. The 8-language string translations that *are* included (all `values-*/strings.xml`
+files) were also produced without native-speaker review and should get one before shipping, same
+as any machine-assisted localization.
+
+### How to add another language
+
+1. Add a case to `AppLanguage` in `domain/model/AppLanguage.kt` (locale tag + its name in its own
+   script + its English name).
+2. Create `res/values-<languageCode>/strings.xml` (e.g. `values-hi/strings.xml` for Hindi) with the
+   same string names as `res/values/strings.xml`, translated — every existing translation file is a
+   ready template for the exact key set expected.
+3. For a script Android's default fonts don't already cover well, add a compatible font (e.g. Noto
+   Serif Devanagari or Tiro Devanagari, both on Google's `google/fonts` GitHub repo under OFL) to
    `res/font/` and reference it from `BodyFont`/`DisplayFont` in `ui/theme/Type.kt` — see
    [Typography & fonts](#typography--fonts) for how the existing Cinzel/Marcellus fonts were
-   sourced and licensed the same way.
+   sourced and licensed the same way. (The 7 languages already added render through Android's
+   built-in system font fallback and needed no extra font bundled.)
 
-No code changes are needed beyond that — every user-facing string in the app already goes through
+No other code changes are needed — every user-facing UI string already goes through
 `stringResource(R.string...)`.
 
 ## Renaming the app
@@ -191,11 +230,31 @@ No code changes are needed beyond that — every user-facing string in the app a
   icon vectors — replace with real artwork if desired, or regenerate via Android Studio's Image
   Asset tool).
 
+## Multiplayer roadmap
+
+`domain/model/PlayMode.kt` and `domain/multiplayer/Multiplayer.kt` hold the current state of this:
+
+- **Working today:** `VS_COMPUTER` (play against AI) and `PASS_AND_PLAY` (multiple local players,
+  same device) — both purely local, no networking involved.
+- **Scaffolded, not implemented:** `NEARBY` (WiFi-Direct/Bluetooth, for players near each other
+  without internet) and `ONLINE` (internet play). Both appear in the setup screen already, disabled
+  with a "coming soon" label. `GameRoom`, `PlayerConnection`, and `GameSynchronizer` in
+  `domain/multiplayer/Multiplayer.kt` are the interfaces a real implementation would fill in — no
+  transport, server, or Nearby Connections code exists yet.
+- **Why scaffold-only:** real networking needs a backend/transport decision (Firebase vs. a custom
+  server vs. Android's Nearby Connections API) and, critically, a second physical device to test
+  against — neither was available in the environment this was authored in. Building it blind would
+  have meant shipping untested networking code.
+- **To implement Nearby:** build a `GameRoom`/`PlayerConnection` pair backed by Android's Nearby
+  Connections API (handles both WiFi and Bluetooth transport selection automatically), wire it into
+  a `GameSynchronizer`, and flip the two disabled `FilterChip`s in `GameSetupScreen.kt` back on.
+- **To implement Online:** the same interfaces, backed by a chosen realtime backend (Firebase
+  Firestore/Realtime Database is the lowest-setup option — no server to host).
+
 ## Legal / product design notes
 
 - No real-money betting, deposits, withdrawals, or gambling wallets exist or are planned in the
   offline single-player/AI experience. Only non-monetary points.
-- The app works fully offline for all single-player and AI games — no `INTERNET` permission is
-  requested. A future networked-multiplayer mode (see the original spec's `GameRoom` /
-  `PlayerConnection` / `GameSynchronizer` interfaces) will be designed as a separate, additive
-  layer so it never breaks offline play.
+- The app works fully offline for all single-player, AI, and Pass & Play games — no `INTERNET`
+  permission is requested yet. That permission, and any networking code, only gets added once real
+  Nearby/Online multiplayer (see above) is actually implemented, so it never breaks offline play.

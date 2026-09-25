@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ইন্ডিয়ান তাশ</string>
+    <string name="app_tagline">চিরায়ত ভারতীয় তাস খেলা</string>
+
+    <string name="language_select_title">আপনার ভাষা বেছে নিন</string>
+    <string name="language_select_subtitle">আপনার রাজদরবারের জন্য ভাষা নির্বাচন করুন</string>
+    <string name="language_select_continue">এগিয়ে যান</string>
+
+    <string name="nav_home">হোম</string>
+    <string name="nav_games">খেলা</string>
+    <string name="nav_history">ইতিহাস</string>
+    <string name="nav_settings">সেটিংস</string>
+
+    <string name="games_title">সব খেলা</string>
+
+    <string name="section_featured_game">বিশেষ খেলা</string>
+    <string name="section_popular_games">জনপ্রিয় খেলা</string>
+    <string name="section_more_games">আরও খেলা</string>
+    <string name="action_play">খেলুন</string>
+    <string name="players_suffix">খেলোয়াড়</string>
+
+    <string name="game_teen_patti_name">তিন পাত্তি</string>
+    <string name="game_teen_patti_desc">ব্লাফ দিয়ে সেরা তিন-তাসের হাত তৈরি করুন।</string>
+    <string name="game_flush_name">ফ্লাশ</string>
+    <string name="game_flush_desc">তিন তাসের একটি আঞ্চলিক ফ্লাশ খেলা।</string>
+    <string name="game_coat_piece_name">কোট পিস</string>
+    <string name="game_coat_piece_desc">তুরুপের তাস দিয়ে সঙ্গীর সাথে চাল জিতুন।</string>
+    <string name="game_twenty_nine_name">টোয়েন্টি নাইন</string>
+    <string name="game_twenty_nine_desc">দর হাঁকুন, তুরুপ বাছুন, জোড়ায় চাল জিতুন।</string>
+    <string name="game_rummy_name">রামি</string>
+    <string name="game_rummy_desc">সিকোয়েন্স ও সেট বানিয়ে আগে ঘোষণা করুন।</string>
+    <string name="game_dehla_pakad_name">দহলা পকড়</string>
+    <string name="game_dehla_pakad_desc">দহলা ধরে রাউন্ড জিতুন।</string>
+    <string name="game_lakadi_name">লকড়ি</string>
+    <string name="game_lakadi_desc">আঞ্চলিক কায়দায় তুরুপের চাল।</string>
+    <string name="game_solitaire_name">সলিটেয়ার</string>
+    <string name="game_solitaire_desc">একে একে তাস সরিয়ে বোর্ড পরিষ্কার করুন।</string>
+    <string name="game_spider_solitaire_name">স্পাইডার সলিটেয়ার</string>
+    <string name="game_spider_solitaire_desc">প্রতিটি কলামে পুরো সিকোয়েন্স সাজান।</string>
+
+    <string name="game_table_coming_soon">এই টেবিলটি প্রস্তুত হচ্ছে। %1$s এর সম্পূর্ণ খেলা শীঘ্রই আসছে।</string>
+    <string name="content_desc_back">পেছনে</string>
+    <string name="content_desc_settings">সেটিংস</string>
+    <string name="content_desc_playing_card">তাস</string>
+    <string name="content_desc_card_back">তাসের পিঠ</string>
+    <string name="action_undo">পূর্বাবস্থায় ফেরান</string>
+
+    <string name="setup_title">টেবিল প্রস্তুতি</string>
+    <string name="setup_players">খেলোয়াড়ের সংখ্যা</string>
+    <string name="setup_difficulty">এআই কঠিনতা</string>
+    <string name="setup_start">খেলা শুরু করুন</string>
+    <string name="setup_mode_title">আপনি কীভাবে খেলবেন?</string>
+    <string name="setup_mode_vs_computer">কম্পিউটারের বিরুদ্ধে</string>
+    <string name="setup_mode_pass_play">পাস অ্যান্ড প্লে (একই ডিভাইস)</string>
+    <string name="setup_mode_nearby">কাছাকাছি (ওয়াই-ফাই / ব্লুটুথ)</string>
+    <string name="setup_mode_online">অনলাইন (ইন্টারনেট)</string>
+    <string name="setup_mode_coming_soon">শীঘ্রই আসছে</string>
+
+    <string name="history_empty">এখনও কোনো খেলা খেলা হয়নি। আপনার ম্যাচের ইতিহাস এখানে দেখাবে।</string>
+
+    <string name="settings_sound">শব্দ</string>
+    <string name="settings_music">সঙ্গীত</string>
+    <string name="settings_animations">অ্যানিমেশন</string>
+    <string name="settings_vibration">কম্পন</string>
+    <string name="settings_language">ভাষা</string>
+    <string name="settings_about">সম্পর্কে</string>
+    <string name="settings_reset_data">খেলার ডেটা রিসেট করুন</string>
+
+    <string name="rules_title_format">%1$s — কীভাবে খেলবেন</string>
+    <string name="rules_placeholder">এই খেলার নিয়ম লেখা হচ্ছে এবং শীঘ্রই এখানে দেখাবে।</string>
+    <string name="rules_dialog_close">স্ক্রোল বন্ধ করুন</string>
+    <string name="rules_objective_heading">উদ্দেশ্য</string>
+    <string name="rules_setup_heading">প্রস্তুতি</string>
+    <string name="rules_play_heading">কীভাবে খেলবেন</string>
+    <string name="rules_scoring_heading">স্কোরিং</string>
+</resources>

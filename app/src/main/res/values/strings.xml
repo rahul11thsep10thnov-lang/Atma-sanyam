@@ -4,6 +4,11 @@
     <string name="app_name">Indian Taash</string>
     <string name="app_tagline">Classic Indian Card Games</string>
 
+    <!-- Language selection (first launch) -->
+    <string name="language_select_title">Choose Your Language</string>
+    <string name="language_select_subtitle">Select the language for your royal court</string>
+    <string name="language_select_continue">Continue</string>
+
     <!-- Bottom navigation -->
     <string name="nav_home">Home</string>
     <string name="nav_games">Games</string>
@@ -20,25 +25,25 @@
     <string name="action_play">Play</string>
     <string name="players_suffix">Players</string>
 
-    <!-- Games -->
+    <!-- Games: name + one-clause summary -->
     <string name="game_teen_patti_name">Teen Patti</string>
-    <string name="game_teen_patti_desc">The classic three-card game of nerve and bluff.</string>
+    <string name="game_teen_patti_desc">Bluff your way to the best three-card hand.</string>
     <string name="game_flush_name">Flush</string>
-    <string name="game_flush_desc">A regional flush variant of three-card play.</string>
+    <string name="game_flush_desc">A regional three-card flush game of nerve.</string>
     <string name="game_coat_piece_name">Coat Piece</string>
-    <string name="game_coat_piece_desc">Traditional Court Piece trick-taking with partners.</string>
+    <string name="game_coat_piece_desc">Win tricks with your partner using trump.</string>
     <string name="game_twenty_nine_name">Twenty Nine</string>
-    <string name="game_twenty_nine_desc">A bidding and trump trick-taking game for four.</string>
+    <string name="game_twenty_nine_desc">Bid, call trump, and win tricks in pairs.</string>
     <string name="game_rummy_name">Rummy</string>
-    <string name="game_rummy_desc">Form sequences and sets to declare a winning hand.</string>
+    <string name="game_rummy_desc">Build sequences and sets to declare first.</string>
     <string name="game_dehla_pakad_name">Dehla Pakad</string>
-    <string name="game_dehla_pakad_desc">Capture the tens in this classic trick-taking game.</string>
+    <string name="game_dehla_pakad_desc">Capture the tens to win the round.</string>
     <string name="game_lakadi_name">Lakadi</string>
-    <string name="game_lakadi_desc">A regional trump trick-taking favourite.</string>
+    <string name="game_lakadi_desc">Trump tricks, played the regional way.</string>
     <string name="game_solitaire_name">Solitaire</string>
-    <string name="game_solitaire_desc">The timeless single-player patience game.</string>
+    <string name="game_solitaire_desc">Clear the board, one card at a time.</string>
     <string name="game_spider_solitaire_name">Spider Solitaire</string>
-    <string name="game_spider_solitaire_desc">Build sequences across eight columns.</string>
+    <string name="game_spider_solitaire_desc">Sort a full suit down each column.</string>
 
     <!-- Game table -->
     <string name="game_table_coming_soon">This table is being prepared. Full gameplay for %1$s arrives soon.</string>
@@ -46,12 +51,19 @@
     <string name="content_desc_settings">Settings</string>
     <string name="content_desc_playing_card">Playing card</string>
     <string name="content_desc_card_back">Card back</string>
+    <string name="action_undo">Undo</string>
 
     <!-- Setup -->
     <string name="setup_title">Table Setup</string>
     <string name="setup_players">Number of players</string>
     <string name="setup_difficulty">AI difficulty</string>
     <string name="setup_start">Start Game</string>
+    <string name="setup_mode_title">How will you play?</string>
+    <string name="setup_mode_vs_computer">Vs Computer</string>
+    <string name="setup_mode_pass_play">Pass &amp; Play (same device)</string>
+    <string name="setup_mode_nearby">Nearby (Wi-Fi / Bluetooth)</string>
+    <string name="setup_mode_online">Online (Internet)</string>
+    <string name="setup_mode_coming_soon">Coming soon</string>
 
     <!-- History -->
     <string name="history_empty">No games played yet. Your match history will appear here.</string>
@@ -61,10 +73,16 @@
     <string name="settings_music">Music</string>
     <string name="settings_animations">Animations</string>
     <string name="settings_vibration">Vibration</string>
+    <string name="settings_language">Language</string>
     <string name="settings_about">About</string>
     <string name="settings_reset_data">Reset Game Data</string>
 
     <!-- Rules -->
     <string name="rules_title_format">%1$s — How to Play</string>
     <string name="rules_placeholder">Detailed rules for this game are being written and will appear here.</string>
+    <string name="rules_dialog_close">Close the scroll</string>
+    <string name="rules_objective_heading">Objective</string>
+    <string name="rules_setup_heading">Setup</string>
+    <string name="rules_play_heading">How to Play</string>
+    <string name="rules_scoring_heading">Scoring</string>
 </resources>

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,9 +27,9 @@ import com.rangepatte.app.R
 import com.rangepatte.app.domain.model.GameInfo
 
 /**
- * A single game entry in the Home/Games grid: illustration placeholder, name, short description,
- * player count and a Play button. The illustration is a plain suit-motif box today — see README
- * for how to swap in real per-game artwork under res/drawable/games/.
+ * A single game entry in the Home/Games grid: a per-game [GameEmblem], name, one-clause summary,
+ * player count and a Play button. See README for how to swap the emblem for real illustrated
+ * artwork under res/drawable/games/ later.
  */
 @Composable
 fun GameTile(
@@ -53,10 +54,12 @@ fun GameTile(
                     .background(MaterialTheme.colorScheme.tertiary.copy(alpha = 0.18f)),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = suitMotifFor(game.id.name),
-                    style = MaterialTheme.typography.displayLarge,
-                    color = MaterialTheme.colorScheme.tertiary
+                GameEmblem(
+                    gameId = game.id,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(18.dp)
                 )
             }
 
@@ -77,7 +80,7 @@ fun GameTile(
                 modifier = Modifier.padding(top = 4.dp)
             )
             Text(
-                text = playerCountLabel(game.minPlayers, game.maxPlayers),
+                text = playerCountLabel(game.minPlayers, game.maxPlayers, stringResource(R.string.players_suffix)),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.padding(top = 6.dp)
@@ -94,15 +97,8 @@ fun GameTile(
     }
 }
 
-private fun playerCountLabel(min: Int, max: Int): String =
-    if (min == max) "$min Players" else "$min–$max Players"
-
-/** A deterministic suit glyph per game so tiles are visually distinct without real artwork yet. */
-private fun suitMotifFor(gameIdName: String): String {
-    val motifs = listOf("♠", "♥", "♦", "♣")
-    val index = gameIdName.sumOf { it.code } % motifs.size
-    return motifs[index]
-}
+private fun playerCountLabel(min: Int, max: Int, suffix: String): String =
+    if (min == max) "$min $suffix" else "$min–$max $suffix"
 
 @Composable
 fun GamesGrid(
