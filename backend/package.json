@@ -17,7 +17,9 @@
     "seed:admin": "tsx --env-file-if-exists=.env src/database/seedAdmin.ts",
     "seed:admin:prod": "node dist/database/seedAdmin.js",
     "seed:content": "tsx --env-file-if-exists=.env src/database/seedContent.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "cleanup": "tsx --env-file-if-exists=.env src/database/cleanup.ts",
+    "cleanup:prod": "node dist/database/cleanup.js"
   },
   "dependencies": {
     "cors": "^2.8.6",

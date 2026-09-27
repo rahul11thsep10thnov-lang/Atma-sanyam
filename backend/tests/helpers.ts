@@ -7,6 +7,7 @@ import { runMigrations } from '../src/database/migrate.js';
 import { admins } from '../src/database/schema.js';
 import { hashPassword } from '../src/lib/password.js';
 import type { PushMessage, PushSender, PushTicket } from '../src/lib/push.js';
+import type { MailMessage, Mailer } from '../src/lib/mailer.js';
 
 export const TEST_DATABASE_URL =
   process.env.TEST_DATABASE_URL ?? 'postgres://focus:focus-local-dev@localhost:5432/focus_test';
@@ -26,7 +27,18 @@ export class FakePush implements PushSender {
   }
 }
 
-export async function setupTestApp(opts: { disableRateLimits?: boolean } = { disableRateLimits: true }) {
+export class FakeMailer implements Mailer {
+  sent: MailMessage[] = [];
+  async send(message: MailMessage) {
+    this.sent.push(message);
+  }
+  lastCode(to: string): string | undefined {
+    const msg = [...this.sent].reverse().find((m) => m.to === to);
+    return msg?.text.match(/\b(\d{6})\b/)?.[1];
+  }
+}
+
+export async function setupTestApp(opts: { disableRateLimits?: boolean; withMailer?: boolean } = { disableRateLimits: true }) {
   const env = loadEnv({ NODE_ENV: 'test', DATABASE_URL: TEST_DATABASE_URL, CORS_ORIGINS: 'http://localhost:8081' });
   const database: Database = createDatabase(TEST_DATABASE_URL, 5);
   // Fresh schema per test file.
@@ -35,8 +47,12 @@ export async function setupTestApp(opts: { disableRateLimits?: boolean } = { dis
   await database.db.execute(sql`create schema public`);
   await runMigrations(database.db);
   const push = new FakePush();
-  const app = createApp({ db: database.db, env, push }, { disableRateLimits: opts.disableRateLimits, logRequests: false });
-  return { app, database, push, db: database.db };
+  const mailer = new FakeMailer();
+  const app = createApp(
+    { db: database.db, env, push, mailer: opts.withMailer === false ? null : mailer },
+    { disableRateLimits: opts.disableRateLimits ?? true, logRequests: false }
+  );
+  return { app, database, push, mailer, db: database.db };
 }
 
 export async function createAdmin(

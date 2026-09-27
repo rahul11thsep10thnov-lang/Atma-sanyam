@@ -119,12 +119,13 @@ export async function updateSetting(db: Db, key: SettingKey, value: unknown, adm
   return row;
 }
 
-export async function publicConfig(db: Db) {
+export async function publicConfig(db: Db, server: { passwordReset: boolean }) {
   const { values } = await loadSettings(db);
   return {
     maintenance: values.maintenance,
     appVersion: values.app_version,
-    features: values.feature_flags,
+    // passwordReset reflects server capability (email configured), not an admin flag.
+    features: { ...values.feature_flags, passwordReset: server.passwordReset },
     texts: values.texts,
     session: values.session,
     serverTime: new Date().toISOString(),

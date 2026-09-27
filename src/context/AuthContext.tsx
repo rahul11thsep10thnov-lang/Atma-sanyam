@@ -23,6 +23,8 @@ interface AuthCtx {
   signUp: (email: string, password: string, displayName?: string) => Promise<void>;
   signOut: () => Promise<void>;
   deleteAccount: (password: string) => Promise<void>;
+  requestPasswordReset: (email: string) => Promise<void>;
+  confirmPasswordReset: (email: string, code: string, newPassword: string) => Promise<void>;
 }
 
 const TOKEN_KEY = 'focus.sessionToken';
@@ -119,8 +121,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [clearLocal]
   );
 
+  const requestPasswordReset = useCallback(async (email: string) => {
+    await apiRequest('/v1/auth/password-reset/request', { method: 'POST', body: { email }, auth: false });
+  }, []);
+
+  const confirmPasswordReset = useCallback(
+    async (email: string, code: string, newPassword: string) => {
+      const res = await apiRequest<{ token: string; user: User }>('/v1/auth/password-reset/confirm', {
+        method: 'POST',
+        body: { email, code, newPassword },
+        auth: false,
+      });
+      await applySession(res.token, res.user);
+    },
+    [applySession]
+  );
+
   return (
-    <AuthContext.Provider value={{ status, user, signIn, signUp, signOut, deleteAccount }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ status, user, signIn, signUp, signOut, deleteAccount, requestPasswordReset, confirmPasswordReset }}>
+      {children}
+    </AuthContext.Provider>
   );
 }
 

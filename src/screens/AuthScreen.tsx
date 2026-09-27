@@ -17,13 +17,24 @@ import { useAuth } from '../context/AuthContext';
 import { friendlyError } from '../services/apiClient';
 import { track } from '../services/analytics';
 import { env } from '../config/env';
+import { useRemoteConfig } from '../context/RemoteConfigContext';
 
-type Mode = 'signIn' | 'signUp';
+type Mode = 'signIn' | 'signUp' | 'resetRequest' | 'resetConfirm';
+
+const TITLES: Record<Mode, [string, string]> = {
+  signIn: ['Welcome back', 'Sign in to keep your preferences and get announcements.'],
+  signUp: ['Create your account', 'Optional — FOCUS works without an account.'],
+  resetRequest: ['Reset your password', 'We’ll email you a 6-digit code.'],
+  resetConfirm: ['Check your email', 'Enter the code we sent and choose a new password.'],
+};
 
 export function AuthScreen() {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, requestPasswordReset, confirmPasswordReset } = useAuth();
+  const { config } = useRemoteConfig();
+  const [code, setCode] = useState('');
+  const [info, setInfo] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>('signIn');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -32,17 +43,34 @@ export function AuthScreen() {
   const [error, setError] = useState<string | null>(null);
 
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-  const passwordValid = mode === 'signIn' ? password.length > 0 : password.length >= 8;
-  const canSubmit = emailValid && passwordValid && !busy;
+  const passwordValid = mode === 'signIn' ? password.length > 0 : mode === 'resetRequest' || password.length >= 8;
+  const codeValid = mode !== 'resetConfirm' || /^\d{6}$/.test(code);
+  const canSubmit = emailValid && passwordValid && codeValid && !busy;
+  const showPassword = mode !== 'resetRequest';
+
+  function switchMode(next: Mode) {
+    setMode(next);
+    setError(null);
+    setInfo(null);
+    setPassword('');
+    setCode('');
+  }
 
   async function submit() {
     if (!canSubmit) return;
     setBusy(true);
     setError(null);
     try {
-      if (mode === 'signIn') await signIn(email.trim(), password);
+      if (mode === 'resetRequest') {
+        await requestPasswordReset(email.trim());
+        switchMode('resetConfirm');
+        setInfo('If that email has an account, a code is on its way. It expires in 15 minutes.');
+        return;
+      }
+      if (mode === 'resetConfirm') await confirmPasswordReset(email.trim(), code, password);
+      else if (mode === 'signIn') await signIn(email.trim(), password);
       else await signUp(email.trim(), password, displayName.trim() || undefined);
-      track(mode === 'signIn' ? 'sign_in' : 'sign_up');
+      track(mode === 'signUp' ? 'sign_up' : mode === 'signIn' ? 'sign_in' : 'password_reset');
       navigation.goBack();
     } catch (e) {
       setError(friendlyError(e));
@@ -50,6 +78,9 @@ export function AuthScreen() {
       setBusy(false);
     }
   }
+
+  const [title, subtitle] = TITLES[mode];
+  const submitLabel = { signIn: 'Sign in', signUp: 'Create account', resetRequest: 'Send code', resetConfirm: 'Reset password' }[mode];
 
   return (
     <KeyboardAvoidingView style={styles.flex} behavior="padding">
@@ -65,14 +96,15 @@ export function AuthScreen() {
         </View>
 
         <Text style={styles.title} accessibilityRole="header">
-          {mode === 'signIn' ? 'Welcome back' : 'Create your account'}
+          {title}
         </Text>
-        <Text style={styles.subtitle}>
-          {mode === 'signIn'
-            ? 'Sign in to keep your preferences and get announcements.'
-            : 'Optional — FOCUS works without an account.'}
-        </Text>
+        <Text style={styles.subtitle}>{subtitle}</Text>
 
+        {info && (
+          <View style={styles.infoBox} accessibilityRole="alert">
+            <Text style={styles.infoText}>{info}</Text>
+          </View>
+        )}
         {error && (
           <View style={styles.errorBox} accessibilityRole="alert">
             <Text style={styles.errorText}>{error}</Text>
@@ -105,23 +137,49 @@ export function AuthScreen() {
           keyboardType="email-address"
           autoComplete="email"
           textContentType={mode === 'signIn' ? 'username' : 'emailAddress'}
-          returnKeyType="next"
+          returnKeyType={mode === 'resetRequest' ? 'go' : 'next'}
+          onSubmitEditing={mode === 'resetRequest' ? submit : undefined}
+          editable={mode !== 'resetConfirm'}
           accessibilityLabel="Email"
         />
 
-        <Text style={styles.label}>Password</Text>
-        <TextInput
-          style={styles.input}
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          autoComplete={mode === 'signIn' ? 'current-password' : 'new-password'}
-          textContentType={mode === 'signIn' ? 'password' : 'newPassword'}
-          returnKeyType="go"
-          onSubmitEditing={submit}
-          accessibilityLabel="Password"
-        />
-        {mode === 'signUp' && <Text style={styles.hint}>At least 8 characters.</Text>}
+        {mode === 'resetConfirm' && (
+          <>
+            <Text style={styles.label}>6-digit code</Text>
+            <TextInput
+              style={styles.input}
+              value={code}
+              onChangeText={(t) => setCode(t.replace(/\D/g, '').slice(0, 6))}
+              keyboardType="number-pad"
+              autoComplete="one-time-code"
+              textContentType="oneTimeCode"
+              accessibilityLabel="6-digit code"
+            />
+          </>
+        )}
+
+        {showPassword && (
+          <>
+            <Text style={styles.label}>{mode === 'resetConfirm' ? 'New password' : 'Password'}</Text>
+            <TextInput
+              style={styles.input}
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              autoComplete={mode === 'signIn' ? 'current-password' : 'new-password'}
+              textContentType={mode === 'signIn' ? 'password' : 'newPassword'}
+              returnKeyType="go"
+              onSubmitEditing={submit}
+              accessibilityLabel={mode === 'resetConfirm' ? 'New password' : 'Password'}
+            />
+          </>
+        )}
+        {(mode === 'signUp' || mode === 'resetConfirm') && <Text style={styles.hint}>At least 8 characters.</Text>}
+        {mode === 'signIn' && config.features.passwordReset && (
+          <Pressable style={styles.forgot} onPress={() => switchMode('resetRequest')} accessibilityRole="button">
+            <Text style={styles.forgotText}>Forgot password?</Text>
+          </Pressable>
+        )}
 
         <Pressable
           style={[styles.primaryBtn, !canSubmit && styles.btnDisabled]}
@@ -133,22 +191,20 @@ export function AuthScreen() {
           {busy ? (
             <ActivityIndicator color={colors.white} />
           ) : (
-            <Text style={styles.primaryBtnText}>{mode === 'signIn' ? 'Sign in' : 'Create account'}</Text>
+            <Text style={styles.primaryBtnText}>{submitLabel}</Text>
           )}
         </Pressable>
 
-        <Pressable
-          style={styles.switchBtn}
-          onPress={() => {
-            setMode(mode === 'signIn' ? 'signUp' : 'signIn');
-            setError(null);
-          }}
-          accessibilityRole="button"
-        >
+        <Pressable style={styles.switchBtn} onPress={() => switchMode(mode === 'signIn' ? 'signUp' : 'signIn')} accessibilityRole="button">
           <Text style={styles.switchText}>
-            {mode === 'signIn' ? 'New here? Create an account' : 'Already have an account? Sign in'}
+            {mode === 'signIn' ? 'New here? Create an account' : mode === 'signUp' ? 'Already have an account? Sign in' : 'Back to sign in'}
           </Text>
         </Pressable>
+        {mode === 'resetConfirm' && (
+          <Pressable style={styles.forgot} onPress={() => switchMode('resetRequest')} accessibilityRole="button">
+            <Text style={styles.forgotText}>Didn’t get a code? Send another</Text>
+          </Pressable>
+        )}
 
         {mode === 'signUp' && env.privacyPolicyUrl && (
           <Text style={styles.legal}>
@@ -205,6 +261,10 @@ const styles = StyleSheet.create({
   switchText: { ...typography.body, color: colors.primary, fontWeight: '600' },
   errorBox: { backgroundColor: '#FBE7E7', borderRadius: radius.card, padding: 12, marginBottom: 8 },
   errorText: { ...typography.body, color: colors.danger },
+  infoBox: { backgroundColor: '#E3F3E3', borderRadius: radius.card, padding: 12, marginBottom: 8 },
+  infoText: { ...typography.body, color: colors.success },
+  forgot: { alignSelf: 'flex-start', paddingVertical: 10 },
+  forgotText: { ...typography.body, color: colors.primary, fontWeight: '600' },
   legal: { ...typography.caption, color: colors.textSecondary, textAlign: 'center', marginTop: 4 },
   link: { color: colors.primary, textDecorationLine: 'underline' },
 });

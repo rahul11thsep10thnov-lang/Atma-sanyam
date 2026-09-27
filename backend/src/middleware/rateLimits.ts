@@ -26,6 +26,16 @@ export function createRateLimits(disabled = false) {
       ...json('Too many sign-in attempts. Try again in 15 minutes.'),
     }),
     register: rateLimit({ windowMs: 60 * 60_000, limit: 10, skip, ...json('Too many sign-ups from this network. Try later.') }),
+    passwordReset: rateLimit({
+      windowMs: 60 * 60_000,
+      limit: 10,
+      skip,
+      keyGenerator: (req) => {
+        const email = typeof req.body?.email === 'string' ? req.body.email.toLowerCase().slice(0, 200) : '';
+        return `${ipKeyGenerator(req.ip ?? 'unknown')}|${email}`;
+      },
+      ...json('Too many password reset attempts. Try again later.'),
+    }),
     events: rateLimit({ windowMs: 60_000, limit: 60, skip, ...json('Too many analytics requests.') }),
   };
 }

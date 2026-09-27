@@ -54,6 +54,24 @@ export const userSessions = pgTable(
   (t) => [index('user_sessions_user_id_idx').on(t.userId)]
 );
 
+// One-time codes for "forgot password". Only a hash is stored; codes expire
+// after 15 minutes and are locked after 5 wrong attempts.
+export const passwordResetCodes = pgTable(
+  'password_reset_codes',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    codeHash: text('code_hash').notNull(),
+    attempts: integer('attempts').notNull().default(0),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    usedAt: timestamp('used_at', { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index('password_reset_codes_user_idx').on(t.userId)]
+);
+
 // ---------------------------------------------------------------------------
 // Admin console users + role-based access control
 // ---------------------------------------------------------------------------

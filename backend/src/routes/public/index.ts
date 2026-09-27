@@ -1,11 +1,12 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { and, asc, eq, sql } from 'drizzle-orm';
-import { categories, content, devices, events, users, userSessions } from '../../database/schema.js';
+import { and, asc, desc, eq, gt, isNull, sql } from 'drizzle-orm';
+import { createHash, randomInt, timingSafeEqual } from 'node:crypto';
+import { categories, content, devices, events, passwordResetCodes, users, userSessions } from '../../database/schema.js';
 import type { Auth } from '../../middleware/auth.js';
 import type { createRateLimits } from '../../middleware/rateLimits.js';
 import { parse } from '../../middleware/validate.js';
-import { badRequest, conflict, notFound, unauthorized } from '../../lib/httpError.js';
+import { badRequest, conflict, HttpError, notFound, unauthorized } from '../../lib/httpError.js';
 import { burnPasswordCheck, hashPassword, verifyPassword } from '../../lib/password.js';
 import { normalizeEmail } from '../../lib/strings.js';
 import { EXPO_PUSH_TOKEN_RE } from '../../lib/push.js';
@@ -55,8 +56,12 @@ function publicUser(u: typeof users.$inferSelect) {
   return { id: u.id, email: u.email, displayName: u.displayName, createdAt: u.createdAt.toISOString() };
 }
 
+const RESET_TTL_MIN = 15;
+const RESET_MAX_ATTEMPTS = 5;
+const hashResetCode = (userId: string, code: string) => createHash('sha256').update(`${userId}:${code}`).digest();
+
 export function publicRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeof createRateLimits>) {
-  const { db, env } = deps;
+  const { db, env, mailer } = deps;
   const r = Router();
 
   r.get('/health', async (_req, res) => {
@@ -68,7 +73,7 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeo
     // Must be fresh: maintenance mode / forced updates have to apply on the
     // next app open, not whenever an HTTP cache decides to expire.
     res.set('Cache-Control', 'no-cache');
-    res.json(await publicConfig(db));
+    res.json(await publicConfig(db, { passwordReset: mailer !== null }));
   });
 
   // ---- content library -------------------------------------------------
@@ -126,6 +131,59 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeo
     if (!ok) throw unauthorized('Incorrect email or password');
     if (user.status !== 'active') throw unauthorized('This account has been deactivated. Contact support.');
     await db.update(users).set({ lastSeenAt: new Date() }).where(eq(users.id, user.id));
+    const session = await createUserSession(db, user.id, env.USER_SESSION_TTL_DAYS);
+    res.json({ token: session.token, expiresAt: session.expiresAt.toISOString(), user: publicUser(user) });
+  });
+
+  // ---- forgot password (emailed 6-digit code) ---------------------------
+  // Always answers the same way whether or not the email exists, so it can't
+  // be used to discover who has an account.
+  r.post('/auth/password-reset/request', limits.passwordReset, async (req, res) => {
+    if (!mailer) throw new HttpError(503, 'Password reset is not available right now.', 'unavailable');
+    const body = parse(z.object({ email }), req.body);
+    const [user] = await db.select().from(users).where(eq(users.email, normalizeEmail(body.email)));
+    if (user && user.status === 'active') {
+      const code = String(randomInt(0, 1_000_000)).padStart(6, '0');
+      await db.delete(passwordResetCodes).where(eq(passwordResetCodes.userId, user.id));
+      await db.insert(passwordResetCodes).values({
+        userId: user.id,
+        codeHash: hashResetCode(user.id, code).toString('hex'),
+        expiresAt: new Date(Date.now() + RESET_TTL_MIN * 60_000),
+      });
+      try {
+        await mailer.send({
+          to: user.email,
+          subject: 'Your FOCUS password reset code',
+          text: `Your FOCUS password reset code is ${code}.\n\nIt expires in ${RESET_TTL_MIN} minutes. If you didn't ask for this, you can ignore this email — your password won't change.`,
+        });
+      } catch (err) {
+        console.error('[mail] password reset email failed:', err instanceof Error ? err.message : err);
+      }
+    }
+    res.status(202).json({ ok: true, message: 'If that email has an account, a code is on its way.' });
+  });
+
+  r.post('/auth/password-reset/confirm', limits.passwordReset, async (req, res) => {
+    const body = parse(z.object({ email, code: z.string().regex(/^\d{6}$/, 'Enter the 6-digit code'), newPassword: userPassword }), req.body);
+    const invalid = badRequest('That code is invalid or has expired. Request a new one.');
+    const [user] = await db.select().from(users).where(eq(users.email, normalizeEmail(body.email)));
+    if (!user || user.status !== 'active') throw invalid;
+    const [row] = await db
+      .select()
+      .from(passwordResetCodes)
+      .where(and(eq(passwordResetCodes.userId, user.id), isNull(passwordResetCodes.usedAt), gt(passwordResetCodes.expiresAt, new Date())))
+      .orderBy(desc(passwordResetCodes.createdAt))
+      .limit(1);
+    if (!row || row.attempts >= RESET_MAX_ATTEMPTS) throw invalid;
+    const ok = timingSafeEqual(Buffer.from(row.codeHash, 'hex'), hashResetCode(user.id, body.code));
+    if (!ok) {
+      await db.update(passwordResetCodes).set({ attempts: row.attempts + 1 }).where(eq(passwordResetCodes.id, row.id));
+      throw invalid;
+    }
+    await db.update(passwordResetCodes).set({ usedAt: new Date() }).where(eq(passwordResetCodes.id, row.id));
+    await db.update(users).set({ passwordHash: await hashPassword(body.newPassword), updatedAt: new Date() }).where(eq(users.id, user.id));
+    // Anyone who had the old password is signed out everywhere.
+    await revokeAllUserSessions(db, user.id);
     const session = await createUserSession(db, user.id, env.USER_SESSION_TTL_DAYS);
     res.json({ token: session.token, expiresAt: session.expiresAt.toISOString(), user: publicUser(user) });
   });

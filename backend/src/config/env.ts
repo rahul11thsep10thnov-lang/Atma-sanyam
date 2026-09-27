@@ -26,6 +26,17 @@ const envSchema = z.object({
   USER_SESSION_TTL_DAYS: z.coerce.number().positive().default(30),
   EXPO_ACCESS_TOKEN: z.string().optional(),
   EXPO_PUSH_URL: z.string().url().default('https://exp.host/--/api/v2/push/send'),
+  // Transactional email (password-reset codes) via Resend (https://resend.com).
+  // Leave empty to disable "forgot password" in the app.
+  RESEND_API_KEY: z.string().optional(),
+  EMAIL_FROM: z.string().optional(),
+  // Development only: print emails to the log instead of sending them.
+  MAIL_DEV_LOG: z
+    .string()
+    .optional()
+    .transform((v) => v === 'true'),
+  // Analytics events older than this are deleted by `npm run cleanup`.
+  EVENTS_RETENTION_DAYS: z.coerce.number().int().min(30).default(395),
 });
 
 export type Env = z.infer<typeof envSchema>;

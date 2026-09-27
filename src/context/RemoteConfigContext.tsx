@@ -10,7 +10,15 @@ import { apiRequest } from '../services/apiClient';
 export interface RemoteConfig {
   maintenance: { enabled: boolean; message: string };
   appVersion: { minimumVersion: string; latestVersion: string; updateMessage: string; iosStoreUrl: string; androidStoreUrl: string };
-  features: { contentLibrary: boolean; quoteTiles: boolean; customPhotos: boolean; accounts: boolean; pushNotifications: boolean };
+  features: {
+    contentLibrary: boolean;
+    quoteTiles: boolean;
+    customPhotos: boolean;
+    accounts: boolean;
+    pushNotifications: boolean;
+    // Server capability: true only when the API can send reset emails.
+    passwordReset: boolean;
+  };
   texts: {
     announcement: string;
     sessionCompleteTitle: string;
@@ -32,6 +40,7 @@ export const DEFAULT_CONFIG: RemoteConfig = {
     // Accounts and push need a server.
     accounts: isBackendConfigured,
     pushNotifications: isBackendConfigured,
+    passwordReset: false,
   },
   texts: {
     announcement: '',
