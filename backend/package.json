@@ -1,0 +1,46 @@
+{
+  "name": "focus-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "dev": "tsx watch --env-file-if-exists=.env src/server.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx --env-file-if-exists=.env src/database/migrate.ts",
+    "db:migrate:prod": "node dist/database/migrate.js",
+    "seed:admin": "tsx --env-file-if-exists=.env src/database/seedAdmin.ts",
+    "seed:admin:prod": "node dist/database/seedAdmin.js",
+    "seed:content": "tsx --env-file-if-exists=.env src/database/seedContent.ts",
+    "test": "vitest run",
+    "cleanup": "tsx --env-file-if-exists=.env src/database/cleanup.ts",
+    "cleanup:prod": "node dist/database/cleanup.js",
+    "seed:content:prod": "node dist/database/seedContent.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "drizzle-orm": "^0.45.3",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "helmet": "^8.3.0",
+    "pg": "^8.23.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.20.4",
+    "@types/pg": "^8.23.1",
+    "@types/supertest": "^7.2.1",
+    "drizzle-kit": "^0.31.11",
+    "supertest": "^7.3.0",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.2"
+  }
+}
