@@ -69,4 +69,9 @@ export interface SessionRecord {
 export interface AppSettings {
   notificationsEnabled: boolean;
   soundEnabled: boolean;
+  // Anonymous usage analytics sent to the FOCUS server (on by default,
+  // disclosed in Settings and the privacy policy; can be turned off).
+  analyticsEnabled: boolean;
+  // "News & announcements" push notifications from the admin console.
+  pushEnabled: boolean;
 }

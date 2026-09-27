@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, spacing, typography } from '../theme/colors';
 import { loadHistory } from '../storage/history';
 import { SessionRecord } from '../types';
@@ -19,6 +20,7 @@ function formatDate(ts: number): string {
 
 export function HistoryScreen() {
   const [history, setHistory] = useState<SessionRecord[]>([]);
+  const insets = useSafeAreaInsets();
 
   useFocusEffect(
     useCallback(() => {
@@ -35,7 +37,7 @@ export function HistoryScreen() {
   const completedCount = history.filter((h) => h.outcome === 'completed').length;
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, { paddingTop: insets.top + 16 }]}>
       <View style={styles.headerRow}>
         <Text style={styles.title}>Garden</Text>
         <Text style={styles.subtitle}>
@@ -73,7 +75,7 @@ export function HistoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.background, paddingHorizontal: PADDING, paddingTop: 24 },
+  screen: { flex: 1, backgroundColor: colors.background, paddingHorizontal: PADDING },
   headerRow: { marginBottom: 20 },
   title: { ...typography.heading, color: colors.text },
   subtitle: { ...typography.caption, color: colors.textSecondary, marginTop: 4 },

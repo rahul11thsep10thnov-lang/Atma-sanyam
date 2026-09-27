@@ -65,7 +65,9 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeo
   });
 
   r.get('/config', async (_req, res) => {
-    res.set('Cache-Control', 'public, max-age=60');
+    // Must be fresh: maintenance mode / forced updates have to apply on the
+    // next app open, not whenever an HTTP cache decides to expire.
+    res.set('Cache-Control', 'no-cache');
     res.json(await publicConfig(db));
   });
 

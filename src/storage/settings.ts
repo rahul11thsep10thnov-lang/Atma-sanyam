@@ -6,6 +6,8 @@ const SETTINGS_KEY = 'puzzlefocus.settings.v1';
 export const DEFAULT_SETTINGS: AppSettings = {
   notificationsEnabled: false,
   soundEnabled: true,
+  analyticsEnabled: true,
+  pushEnabled: false,
 };
 
 export async function loadSettings(): Promise<AppSettings> {

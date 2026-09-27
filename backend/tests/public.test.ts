@@ -28,6 +28,7 @@ describe('health & config', () => {
     expect(res.body.features.contentLibrary).toBe(true);
     expect(res.body.session.gracePeriodSeconds).toBe(5);
     expect(res.body.appVersion.minimumVersion).toBe('1.0.0');
+    expect(res.headers['cache-control']).toBe('no-cache');
   });
 
   it('sets security headers and hides the framework', async () => {

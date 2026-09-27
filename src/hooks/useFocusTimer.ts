@@ -12,6 +12,8 @@ interface UseFocusTimerOptions {
   totalSeconds: number;
   totalPieces: number;
   notificationsEnabled: boolean;
+  // Remotely configurable from the admin console; defaults to GRACE_SECONDS.
+  graceSeconds?: number;
   onComplete: () => void;
   onFail: (reason: FailReason, revealedFraction: number) => void;
 }
@@ -29,12 +31,13 @@ export function useFocusTimer({
   totalSeconds,
   totalPieces,
   notificationsEnabled,
+  graceSeconds = GRACE_SECONDS,
   onComplete,
   onFail,
 }: UseFocusTimerOptions): UseFocusTimerResult {
   const [remainingSeconds, setRemainingSeconds] = useState(totalSeconds);
   const [status, setStatus] = useState<TimerStatus>('running');
-  const [awaySecondsRemaining, setAwaySecondsRemaining] = useState(GRACE_SECONDS);
+  const [awaySecondsRemaining, setAwaySecondsRemaining] = useState(graceSeconds);
 
   const anchorRemainingMsRef = useRef(totalSeconds * 1000);
   const runStartedAtRef = useRef<number | null>(Date.now());
@@ -118,11 +121,11 @@ export function useFocusTimer({
           runStartedAtRef.current = null;
         }
         setStatus('grace');
-        setAwaySecondsRemaining(GRACE_SECONDS);
+        setAwaySecondsRemaining(graceSeconds);
 
         if (notificationsEnabled) {
           scheduleWarningNotificationAsync(
-            `Come back within ${GRACE_SECONDS}s or your puzzle session will fail.`
+            `Come back within ${graceSeconds}s or your puzzle session will fail.`
           ).then((id) => {
             warnNotificationIdRef.current = id;
           });
@@ -132,9 +135,9 @@ export function useFocusTimer({
         graceIntervalRef.current = setInterval(() => {
           if (backgroundedAtRef.current == null) return;
           const awayMs = Date.now() - backgroundedAtRef.current;
-          const left = Math.max(0, Math.ceil((GRACE_SECONDS * 1000 - awayMs) / 1000));
+          const left = Math.max(0, Math.ceil((graceSeconds * 1000 - awayMs) / 1000));
           setAwaySecondsRemaining(left);
-          if (awayMs >= GRACE_SECONDS * 1000) {
+          if (awayMs >= graceSeconds * 1000) {
             clearGraceInterval();
             finish('failed', 'left_app');
           }
@@ -146,7 +149,7 @@ export function useFocusTimer({
         clearGraceInterval();
         cancelWarningNotification();
 
-        if (awayMs >= GRACE_SECONDS * 1000) {
+        if (awayMs >= graceSeconds * 1000) {
           finish('failed', 'left_app');
           return;
         }
@@ -159,7 +162,7 @@ export function useFocusTimer({
     const sub = AppState.addEventListener('change', handleAppStateChange);
     return () => sub.remove();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [notificationsEnabled]);
+  }, [notificationsEnabled, graceSeconds]);
 
   const elapsedSeconds = totalSeconds - remainingSeconds;
   const progress = totalSeconds > 0 ? Math.max(0, Math.min(1, elapsedSeconds / totalSeconds)) : 0;

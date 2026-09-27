@@ -11,4 +11,5 @@ export type RootStackParamList = {
   Tabs: NavigatorScreenParams<RootTabParamList>;
   ActiveSession: { config: SessionConfig };
   ContentBrowser: { onSelect: (image: RemoteImageRef) => void };
+  Auth: undefined;
 };

@@ -58,7 +58,20 @@ export function DialTimerPicker({ value, onChange, size = 260 }: DialTimerPicker
   const dashOffset = circumference * (1 - fraction);
 
   return (
-    <View style={{ width: size, height: size }} {...panResponder.panHandlers}>
+    <View
+      style={{ width: size, height: size }}
+      {...panResponder.panHandlers}
+      // Screen-reader users adjust the dial with swipe up/down instead of dragging.
+      accessible
+      accessibilityRole="adjustable"
+      accessibilityLabel="Session length"
+      accessibilityValue={{ text: `${value} minutes` }}
+      accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
+      onAccessibilityAction={(e) => {
+        const delta = e.nativeEvent.actionName === 'increment' ? DURATION_STEP_MINUTES : -DURATION_STEP_MINUTES;
+        onChange(Math.min(MAX_DURATION_MINUTES, Math.max(MIN_DURATION_MINUTES, value + delta)));
+      }}
+    >
       <Svg width={size} height={size}>
         <Circle
           cx={center}

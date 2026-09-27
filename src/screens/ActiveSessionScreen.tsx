@@ -11,6 +11,8 @@ import { RootStackParamList } from '../navigation/types';
 import { saveSessionRecord } from '../storage/history';
 import { SessionRecord } from '../types';
 import { useSettings } from '../context/SettingsContext';
+import { useRemoteConfig } from '../context/RemoteConfigContext';
+import { track } from '../services/analytics';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>;
 
@@ -25,6 +27,8 @@ function formatTime(totalSeconds: number): string {
 export function ActiveSessionScreen({ route, navigation }: Props) {
   const { config } = route.params;
   const { settings } = useSettings();
+  const { config: remote } = useRemoteConfig();
+  const texts = remote.texts;
   const insets = useSafeAreaInsets();
   const totalSeconds = config.durationMinutes * 60;
   const totalPieces = config.grid.rows * config.grid.cols;
@@ -45,9 +49,23 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
         revealedFraction,
       };
       await saveSessionRecord(record);
+      track(outcome === 'completed' ? 'session_complete' : 'session_fail', {
+        properties: {
+          durationMinutes: config.durationMinutes,
+          imageKind: config.image.kind,
+          reason: failureReason,
+          revealedPercent: Math.round(revealedFraction * 100),
+        },
+        contentId: config.image.kind === 'remote' ? config.image.imageId : undefined,
+      });
     },
     [config]
   );
+
+  useEffect(() => {
+    track('session_start', { properties: { durationMinutes: config.durationMinutes, imageKind: config.image.kind } });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleComplete = useCallback(() => {
     finalizeSession('completed', null, 1);
@@ -56,10 +74,10 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
     }
     if (finishedNavigatingRef.current) return;
     finishedNavigatingRef.current = true;
-    Alert.alert('Puzzle complete!', 'Great focus — your picture is fully assembled.', [
+    Alert.alert(texts.sessionCompleteTitle, texts.sessionCompleteMessage, [
       { text: 'Nice', onPress: () => navigation.replace('Tabs', { screen: 'Home' }) },
     ]);
-  }, [finalizeSession, navigation, settings.soundEnabled]);
+  }, [finalizeSession, navigation, settings.soundEnabled, texts]);
 
   const handleFail = useCallback(
     (reason: 'left_app' | 'gave_up', revealedFraction: number) => {
@@ -69,21 +87,19 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
       }
       if (finishedNavigatingRef.current) return;
       finishedNavigatingRef.current = true;
-      const message =
-        reason === 'left_app'
-          ? "You left the app too long, so this puzzle didn't get finished."
-          : 'Session ended early — the puzzle stays incomplete.';
-      Alert.alert('Session failed', message, [
+      const message = reason === 'left_app' ? texts.sessionLeftAppMessage : texts.sessionGaveUpMessage;
+      Alert.alert(texts.sessionFailedTitle, message, [
         { text: 'OK', onPress: () => navigation.replace('Tabs', { screen: 'Home' }) },
       ]);
     },
-    [finalizeSession, navigation, settings.soundEnabled]
+    [finalizeSession, navigation, settings.soundEnabled, texts]
   );
 
   const { remainingSeconds, revealedCount, status, awaySecondsRemaining, giveUp } = useFocusTimer({
     totalSeconds,
     totalPieces,
     notificationsEnabled: settings.notificationsEnabled,
+    graceSeconds: remote.session.gracePeriodSeconds,
     onComplete: handleComplete,
     onFail: handleFail,
   });
@@ -120,7 +136,9 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
       </PuzzleGrid>
 
       <View style={styles.watermark} pointerEvents="none">
-        <Text style={styles.watermarkText}>{formatTime(remainingSeconds)}</Text>
+        <Text style={styles.watermarkText} accessibilityRole="timer" accessibilityLabel={`${Math.ceil(remainingSeconds / 60)} minutes remaining`}>
+          {formatTime(remainingSeconds)}
+        </Text>
       </View>
 
       {attributionFor(config.image) && (
@@ -141,6 +159,8 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
         style={[styles.giveUpBtn, { top: insets.top + 8 }]}
         onPress={confirmGiveUp}
         hitSlop={12}
+        accessibilityRole="button"
+        accessibilityLabel="Give up this session"
       >
         <Text style={styles.giveUpBtnText}>✕</Text>
       </Pressable>

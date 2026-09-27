@@ -3,6 +3,9 @@ import { Alert, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text,
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRemoteConfig } from '../context/RemoteConfigContext';
+import { track } from '../services/analytics';
 import { colors, radius, spacing, typography, buttonHeight } from '../theme/colors';
 import { gridForDuration } from '../utils/grid';
 import { ART_PACK } from '../data/artPacks';
@@ -15,6 +18,9 @@ type SourceKind = 'art' | 'quote' | 'custom' | 'remote';
 
 export function HomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const insets = useSafeAreaInsets();
+  const { config } = useRemoteConfig();
+  const { features } = config;
   const [duration, setDuration] = useState(30);
 
   const [sourceKind, setSourceKind] = useState<SourceKind>('art');
@@ -32,21 +38,23 @@ export function HomeScreen() {
     });
   };
 
+  // Uses the system photo picker (PHPicker on iOS, Photo Picker on Android),
+  // which needs no photo-library permission: people choose one photo and the
+  // app only ever sees that one.
   const pickCustomImage = async () => {
-    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!perm.granted) {
-      Alert.alert('Permission needed', 'Allow photo library access to choose your own puzzle image.');
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      quality: 0.85,
-      allowsEditing: true,
-      aspect: [1, 1],
-    });
-    if (!result.canceled && result.assets?.[0]?.uri) {
-      setCustomUri(result.assets[0].uri);
-      setSourceKind('custom');
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        quality: 0.85,
+        allowsEditing: true,
+        aspect: [1, 1],
+      });
+      if (!result.canceled && result.assets?.[0]?.uri) {
+        setCustomUri(result.assets[0].uri);
+        setSourceKind('custom');
+      }
+    } catch {
+      Alert.alert('Couldn’t open your photos', 'Please try again.');
     }
   };
 
@@ -59,7 +67,16 @@ export function HomeScreen() {
     }
   };
 
+  // If an admin turns a source off remotely, fall back to the art pack.
+  const effectiveKind: SourceKind =
+    (sourceKind === 'quote' && !features.quoteTiles) ||
+    (sourceKind === 'custom' && !features.customPhotos) ||
+    (sourceKind === 'remote' && !features.contentLibrary)
+      ? 'art'
+      : sourceKind;
+
   const resolveImage = (): ImageRef | null => {
+    const sourceKind = effectiveKind;
     if (sourceKind === 'art') {
       return ART_PACK.find((a) => a.id === selectedArtId) ?? ART_PACK[0];
     }
@@ -82,30 +99,36 @@ export function HomeScreen() {
       Alert.alert('Pick an image', 'Choose a photo from your library to start this session.');
       return;
     }
-    const config: SessionConfig = {
+    const session: SessionConfig = {
       durationMinutes: duration,
       image,
       grid: gridForDuration(duration),
     };
-    navigation.navigate('ActiveSession', { config });
+    if (image.kind === 'remote') track('content_view', { contentId: image.imageId });
+    navigation.navigate('ActiveSession', { config: session });
   };
 
   const quotePalette = paletteForQuote(selectedQuote.id);
 
   return (
     <ImageBackground
-      source={require('../../assets/images/backgrounds/home-wallpaper.png')}
+      source={require('../../assets/images/backgrounds/home-wallpaper.jpg')}
       style={styles.screen}
       resizeMode="cover"
     >
-      <View style={styles.topSection}>
+      <View style={[styles.topSection, { paddingTop: insets.top + 16 }]}>
+        {!!config.texts.announcement && (
+          <View style={styles.announcement} accessibilityRole="summary">
+            <Text style={styles.announcementText}>{config.texts.announcement}</Text>
+          </View>
+        )}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.strip}
         >
           {ART_PACK.map((art) => {
-            const active = sourceKind === 'art' && art.id === selectedArtId;
+            const active = effectiveKind === 'art' && art.id === selectedArtId;
             return (
               <Pressable
                 key={art.id}
@@ -114,46 +137,65 @@ export function HomeScreen() {
                   setSelectedArtId(art.id);
                 }}
                 style={[styles.tile, active && styles.tileActive]}
+                accessibilityRole="button"
+                accessibilityLabel={`${art.id} artwork`}
+                accessibilityState={{ selected: active }}
               >
                 <Image source={art.uri} style={styles.tileImage} />
               </Pressable>
             );
           })}
 
-          <Pressable
-            onPress={handleQuoteTap}
-            style={[styles.tile, sourceKind === 'quote' && styles.tileActive, { backgroundColor: quotePalette.background }]}
-          >
-            <Text style={[styles.quoteGlyph, { color: quotePalette.textColor }]}>&ldquo;</Text>
-          </Pressable>
+          {features.quoteTiles && (
+            <Pressable
+              onPress={handleQuoteTap}
+              style={[styles.tile, effectiveKind === 'quote' && styles.tileActive, { backgroundColor: quotePalette.background }]}
+              accessibilityRole="button"
+              accessibilityLabel="Quote tile"
+              accessibilityHint="Tap again for a different quote"
+              accessibilityState={{ selected: effectiveKind === 'quote' }}
+            >
+              <Text style={[styles.quoteGlyph, { color: quotePalette.textColor }]}>&ldquo;</Text>
+            </Pressable>
+          )}
 
-          <Pressable
-            onPress={pickCustomImage}
-            style={[styles.tile, sourceKind === 'custom' && styles.tileActive, styles.customTile]}
-          >
-            {customUri ? (
-              <Image source={{ uri: customUri }} style={styles.tileImage} />
-            ) : (
-              <Text style={styles.customTileGlyph}>+</Text>
-            )}
-          </Pressable>
+          {features.customPhotos && (
+            <Pressable
+              onPress={pickCustomImage}
+              style={[styles.tile, effectiveKind === 'custom' && styles.tileActive, styles.customTile]}
+              accessibilityRole="button"
+              accessibilityLabel="Choose your own photo"
+              accessibilityState={{ selected: effectiveKind === 'custom' }}
+            >
+              {customUri ? (
+                <Image source={{ uri: customUri }} style={styles.tileImage} />
+              ) : (
+                <Text style={styles.customTileGlyph}>+</Text>
+              )}
+            </Pressable>
+          )}
 
-          <Pressable
-            onPress={openLibrary}
-            style={[styles.tile, sourceKind === 'remote' && styles.tileActive, styles.libraryTile]}
-          >
-            {remoteImage ? (
-              <Image source={{ uri: remoteImage.uri }} style={styles.tileImage} />
-            ) : (
-              <Text style={styles.libraryTileGlyph}>🖼</Text>
-            )}
-          </Pressable>
+          {features.contentLibrary && (
+            <Pressable
+              onPress={openLibrary}
+              style={[styles.tile, effectiveKind === 'remote' && styles.tileActive, styles.libraryTile]}
+              accessibilityRole="button"
+              accessibilityLabel="Browse image library"
+              accessibilityState={{ selected: effectiveKind === 'remote' }}
+            >
+              {remoteImage ? (
+                <Image source={{ uri: remoteImage.uri }} style={styles.tileImage} />
+              ) : (
+                <Text style={styles.libraryTileGlyph}>🖼</Text>
+              )}
+            </Pressable>
+          )}
         </ScrollView>
       </View>
 
       <View style={styles.bottomSection}>
         <DialTimerPicker value={duration} onChange={setDuration} />
-        <Pressable style={styles.startBtn} onPress={handleStart}>
+        <Pressable style={styles.startBtn} onPress={handleStart} accessibilityRole="button">
           <Text style={styles.startBtnText}>Start focus session</Text>
         </Pressable>
       </View>
@@ -165,7 +207,16 @@ const TILE_SIZE = 72;
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
-  topSection: { paddingTop: 20 },
+  topSection: {},
+  announcement: {
+    marginHorizontal: spacing.screenPadding,
+    marginBottom: 12,
+    backgroundColor: 'rgba(255,255,255,0.85)',
+    borderRadius: radius.card,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+  },
+  announcementText: { ...typography.body, color: colors.text, textAlign: 'center' },
   strip: { paddingHorizontal: spacing.screenPadding, gap: 12 },
   tile: {
     width: TILE_SIZE,

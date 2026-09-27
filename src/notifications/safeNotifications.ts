@@ -64,3 +64,26 @@ export async function cancelScheduledNotificationAsync(id: string): Promise<void
     // ignore
   }
 }
+
+// ---- Remote (push) notifications -------------------------------------------
+// Push tokens can't be obtained in Expo Go (removed in SDK 53+), only in a
+// development or store build. Callers get a readable reason instead of a crash.
+export async function getExpoPushTokenAsync(projectId: string): Promise<{ token: string } | { error: string }> {
+  try {
+    const Notifications = await loadNotifications();
+    if (!Notifications) return { error: 'Notifications are unavailable on this device.' };
+    const perm = await Notifications.requestPermissionsAsync();
+    if (!perm.granted) return { error: 'Notifications are turned off for FOCUS in your device settings.' };
+    const { Platform } = await import('react-native');
+    if (Platform.OS === 'android') {
+      await Notifications.setNotificationChannelAsync('default', {
+        name: 'News & announcements',
+        importance: Notifications.AndroidImportance.DEFAULT,
+      });
+    }
+    const result = await Notifications.getExpoPushTokenAsync({ projectId });
+    return { token: result.data };
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : 'Could not register for notifications.' };
+  }
+}
