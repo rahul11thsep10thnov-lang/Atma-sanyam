@@ -15,6 +15,10 @@ export function Layout() {
           <NavLink to="/stories">Stories</NavLink>
           <NavLink to="/sources">Sources</NavLink>
           <NavLink to="/config">Config</NavLink>
+          <div className="nav-section">Video Studio</div>
+          <NavLink to="/studio">Studio</NavLink>
+          <NavLink to="/voices">Voices</NavLink>
+          <NavLink to="/providers">Providers</NavLink>
         </nav>
         <button className="logout-btn" onClick={logout}>
           Sign out

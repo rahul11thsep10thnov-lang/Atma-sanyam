@@ -701,7 +701,8 @@ export async function maybeEnqueueRenders(db: Db, storyId: string) {
   const renderIds: string[] = [];
   for (const lang of inputs.languages) {
     const inputsHash = languageInputsHash(inputs, [lang], musicKey);
-    const done = await db.videoRender.findFirst({ where: { storyId, languageCode: lang.languageCode, inputsHash, status: "READY", kind: "SINGLE_LANGUAGE" } });
+    // Prefer the current render, else the newest: a forced re-render shares its inputs hash with older versions.
+    const done = await db.videoRender.findFirst({ where: { storyId, languageCode: lang.languageCode, inputsHash, status: "READY", kind: "SINGLE_LANGUAGE" }, orderBy: [{ isCurrent: "desc" }, { createdAt: "desc" }] });
     if (done) {
       if (!done.isCurrent) {
         await db.videoRender.updateMany({ where: { storyId, languageCode: lang.languageCode, kind: "SINGLE_LANGUAGE", isCurrent: true }, data: { isCurrent: false } });
@@ -715,7 +716,7 @@ export async function maybeEnqueueRenders(db: Db, storyId: string) {
   }
   if (inputs.project.multiAudioPackage && inputs.languages.length === inputs.story.languages.length && inputs.languages.length > 1) {
     const inputsHash = languageInputsHash(inputs, inputs.languages, musicKey);
-    const done = await db.videoRender.findFirst({ where: { storyId, kind: "MULTI_AUDIO", inputsHash, status: "READY" } });
+    const done = await db.videoRender.findFirst({ where: { storyId, kind: "MULTI_AUDIO", inputsHash, status: "READY" }, orderBy: [{ isCurrent: "desc" }, { createdAt: "desc" }] });
     if (done) renderIds.push(done.id);
     else {
       allCurrent = false;

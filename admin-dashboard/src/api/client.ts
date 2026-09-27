@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:4000/api/v1";
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:4000/api/v1";
 const TOKEN_STORAGE_KEY = "atma_admin_token";
 
 export function getStoredToken(): string | null {
@@ -19,7 +19,7 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+export async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getStoredToken();
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,

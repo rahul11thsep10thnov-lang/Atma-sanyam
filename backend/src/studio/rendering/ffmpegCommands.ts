@@ -19,7 +19,8 @@ export interface SceneClipSpec {
   motion: CameraMotion;
   transitionIn: Transition;
   transitionOut: Transition;
-  caption?: { textFile: string; fontFile: string };
+  /** ASS file with the scene's on-screen caption (libass: complex shaping + font fallback for mixed scripts). */
+  caption?: { assPath: string };
   label?: { textFile: string; fontFile: string };
   outputPath: string;
 }
@@ -59,12 +60,7 @@ function escapeFilterPath(p: string): string {
 
 function textOverlays(spec: SceneClipSpec): string[] {
   const out: string[] = [];
-  if (spec.caption) {
-    const size = Math.round(spec.height / 26);
-    out.push(
-      `drawtext=fontfile='${escapeFilterPath(spec.caption.fontFile)}':textfile='${escapeFilterPath(spec.caption.textFile)}':fontsize=${size}:fontcolor=white:box=1:boxcolor=black@0.45:boxborderw=${Math.round(size * 0.6)}:x=${Math.round(spec.width * 0.05)}:y=${Math.round(spec.height * 0.07)}`
-    );
-  }
+  if (spec.caption) out.push(`ass='${escapeFilterPath(spec.caption.assPath)}':shaping=complex`);
   if (spec.label) {
     const size = Math.round(spec.height / 48);
     out.push(

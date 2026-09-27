@@ -20,6 +20,7 @@ import {
   Transition,
 } from "./ffmpegCommands";
 import { TimelineScene, PlacedSegment } from "./audioTimeline";
+import { captionToAss } from "./subtitles";
 
 const execFileAsync = promisify(execFile);
 
@@ -131,7 +132,6 @@ export async function renderWithFfmpeg(job: RenderJob): Promise<{ tracks: Record
     if (job.onProgress) await job.onProgress(m);
   };
 
-  const captionFont = (await resolveFontFile(job.captionFontFamily, true)) ?? (await resolveFontFile("Noto Sans", true));
   const labelFont = await resolveFontFile("Noto Sans");
 
   // 1. Scene clips.
@@ -141,11 +141,11 @@ export async function renderWithFfmpeg(job: RenderJob): Promise<{ tracks: Record
     const t = job.timeline.find((s) => s.sceneNumber === scene.sceneNumber);
     if (!t) throw new Error(`Timeline has no entry for scene ${scene.sceneNumber}`);
     const clipPath = path.join(job.workDir, `scene_${String(scene.sceneNumber).padStart(3, "0")}.mp4`);
-    let caption: { textFile: string; fontFile: string } | undefined;
-    if (scene.caption && captionFont) {
-      const textFile = path.join(job.workDir, `caption_${scene.sceneNumber}.txt`);
-      await writeFile(textFile, scene.caption);
-      caption = { textFile, fontFile: captionFont };
+    let caption: { assPath: string } | undefined;
+    if (scene.caption) {
+      const assPath = path.join(job.workDir, `caption_${scene.sceneNumber}.ass`);
+      await writeFile(assPath, captionToAss(scene.caption, t.durationSeconds, { fontName: job.captionFontFamily, width: job.width, height: job.height }));
+      caption = { assPath };
     }
     let label: { textFile: string; fontFile: string } | undefined;
     if (job.labelText && labelFont) {

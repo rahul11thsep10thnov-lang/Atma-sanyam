@@ -115,3 +115,24 @@ export function cuesToAss(cues: SubtitleCue[], opts: { fontName: string; width: 
   const events = cues.map((c) => `Dialogue: 0,${assTime(c.startSeconds)},${assTime(c.endSeconds)},Default,,0,0,0,,${c.text.replace(/\n/g, "\\N").replace(/[{}]/g, "")}`);
   return [...header, ...events, ""].join("\n");
 }
+
+/** A single top-left caption card for a scene, rendered by libass (handles every Indic script and mixed text). */
+export function captionToAss(text: string, durationSeconds: number, opts: { fontName: string; width: number; height: number }): string {
+  const fontSize = Math.round(opts.height / 26);
+  return [
+    "[Script Info]",
+    "ScriptType: v4.00+",
+    `PlayResX: ${opts.width}`,
+    `PlayResY: ${opts.height}`,
+    "ScaledBorderAndShadow: yes",
+    "",
+    "[V4+ Styles]",
+    "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding",
+    `Style: Caption,${opts.fontName},${fontSize},&H00FFFFFF,&H00FFFFFF,&H73000000,&H73000000,1,0,0,0,100,100,0,0,3,${Math.round(fontSize / 3)},0,7,${Math.round(opts.width * 0.05)},${Math.round(opts.width * 0.05)},${Math.round(opts.height * 0.07)},1`,
+    "",
+    "[Events]",
+    "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text",
+    `Dialogue: 0,${assTime(0)},${assTime(durationSeconds)},Caption,,0,0,0,,${text.replace(/\n/g, "\\N").replace(/[{}]/g, "")}`,
+    "",
+  ].join("\n");
+}

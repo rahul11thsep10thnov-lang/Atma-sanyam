@@ -32,7 +32,16 @@ export function createApp() {
 
   // Local-disk media serving for dev (production points STORAGE_PUBLIC_BASE_URL
   // at a real CDN/object-storage bucket instead — see lib/storage.ts).
-  app.use("/media", express.static(localStorageRoot()));
+  // Media is embedded by the admin dashboard (another origin) and the app,
+  // so relax helmet's same-origin resource policy for this path only.
+  app.use(
+    "/media",
+    (_req, res, next) => {
+      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+      next();
+    },
+    express.static(localStorageRoot())
+  );
 
   app.get("/health", (_req, res) => res.json({ status: "ok" }));
 

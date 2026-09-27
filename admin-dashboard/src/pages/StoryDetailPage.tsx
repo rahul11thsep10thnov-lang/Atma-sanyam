@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { studioApi } from "../api/studio";
 import { api, MasterStoryDetail } from "../api/client";
 
 export function StoryDetailPage() {
@@ -7,6 +8,7 @@ export function StoryDetailPage() {
   const [story, setStory] = useState<MasterStoryDetail | null>(null);
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
+  const navigate = useNavigate();
   const [message, setMessage] = useState<string | null>(null);
 
   const reload = useCallback(() => {
@@ -147,6 +149,12 @@ export function StoryDetailPage() {
           </button>
           <button disabled={busy} onClick={() => doAction(() => api.regenerateScript(story.id), "Script regeneration queued")}>
             Regenerate script
+          </button>
+          <button
+            disabled={busy}
+            onClick={() => doAction(async () => navigate(`/studio/${(await studioApi.importFromMaster(story.id, ["hi", "en"])).story.id}`), "Sent to the Video Studio")}
+          >
+            Send to Video Studio
           </button>
         </div>
         {message && <p className="info">{message}</p>}
