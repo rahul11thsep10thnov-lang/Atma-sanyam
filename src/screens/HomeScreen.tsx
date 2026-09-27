@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -93,7 +93,11 @@ export function HomeScreen() {
   const quotePalette = paletteForQuote(selectedQuote.id);
 
   return (
-    <View style={styles.screen}>
+    <ImageBackground
+      source={require('../../assets/images/backgrounds/home-wallpaper.png')}
+      style={styles.screen}
+      resizeMode="cover"
+    >
       <View style={styles.topSection}>
         <Text style={styles.title}>FOCUS</Text>
         <ScrollView
@@ -154,7 +158,7 @@ export function HomeScreen() {
           <Text style={styles.startBtnText}>Start focus session</Text>
         </Pressable>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 
