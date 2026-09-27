@@ -455,5 +455,15 @@ The brief's generic names map onto these: `LLM_API_KEY` → `ANTHROPIC_API_KEY`,
 * Subtitle timing uses each synthesised line's real duration, split across
   cues by characters within a line. This is more accurate than proportional
   timing across the whole script, but it is not word-level forced alignment.
-* Burned-in subtitles for Indic scripts need FFmpeg built with libass and
-  Noto fonts on the render host. SRT/VTT sidecar files always work.
+* Burned-in subtitles and on-screen captions are rendered with libass using
+  complex (HarfBuzz) shaping and fontconfig fallback, so matras, conjuncts
+  and mixed-script text (e.g. Tamil with "FIR") render correctly. The render
+  host needs FFmpeg built with libass and the Noto fonts for each script.
+  SRT/VTT sidecar files and soft MP4 subtitle tracks always work.
+* The app feed shows the story's master-language title in every language.
+  Localised titles are stored in the language scripts, but the news
+  pipeline's `StoryTranslation` table is not yet populated for Studio
+  stories.
+* With the template (no-LLM) master-script writer, narration reuses the
+  article's own sentences, which QC notes. For third-party copyrighted
+  articles, enable the LLM writer or rewrite the lines before publishing.

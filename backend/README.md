@@ -70,3 +70,28 @@ the rest of the pipeline stays testable.
 `POST /api/v1/admin/auth/login` with an `AdminUser` row (create one via
 Prisma Studio or a seed script with a bcrypt-hashed password) returns a
 scoped admin JWT for `/api/v1/admin/*`.
+
+## Video Studio
+
+Design: [`../docs/VIDEO_STUDIO.md`](../docs/VIDEO_STUDIO.md). Code: `src/studio/`.
+
+1. Run `npx prisma migrate deploy` and `npm run prisma:seed` once. The seed
+   creates the 12 languages, the 8 base voices and the default provider settings.
+2. Install FFmpeg and Noto fonts on the machine that runs the workers.
+   On Ubuntu: `apt install ffmpeg fonts-noto-core`. On Windows: download FFmpeg,
+   add its `bin` folder to PATH, and install the Noto Sans fonts for each
+   script you publish in.
+3. Start the API (`npm run dev`) and the workers (`npm run worker`). The workers
+   run the news pipeline and the Studio queues `studio` and `studio-render`.
+   Without Redis, set `STUDIO_INLINE_JOBS=true` and the API runs Studio jobs itself.
+4. In the admin dashboard, open **Studio → New story**.
+
+With no API keys, the Studio still produces real, correctly timed MP4s and
+subtitles, but with placeholder art, silent placeholder voices and untranslated
+text. QC flags all of these. Add the keys from `.env.example` (Video Studio
+section) to get real output, then set each base voice's provider voice ID
+on the **Voices** page.
+
+Tests: `npm test` covers every Studio layer. `tests/studio.pipeline.test.ts`
+runs the whole pipeline in-process against `DATABASE_URL` and skips itself
+when no database is reachable.
