@@ -1,0 +1,6744 @@
+{
+  "exams": [
+    {
+      "slug": "up-police-constable",
+      "name": "UP Police Constable",
+      "stateCode": "up",
+      "examType": "constable",
+      "defaultLanguage": "hi-Latn",
+      "subjects": [
+        {
+          "slug": "gk",
+          "name": "General Knowledge",
+          "sortOrder": 0,
+          "chapters": [
+            {
+              "slug": "india-gk",
+              "name": "India GK",
+              "sortOrder": 0
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 1
+            },
+            {
+              "slug": "awards",
+              "name": "Awards",
+              "sortOrder": 2
+            },
+            {
+              "slug": "static-gk",
+              "name": "Static GK",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "current-affairs",
+          "name": "Current Affairs",
+          "sortOrder": 1,
+          "chapters": [
+            {
+              "slug": "national",
+              "name": "National",
+              "sortOrder": 0
+            },
+            {
+              "slug": "state",
+              "name": "State",
+              "sortOrder": 1
+            },
+            {
+              "slug": "international",
+              "name": "International",
+              "sortOrder": 2
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "hindi",
+          "name": "Hindi",
+          "sortOrder": 2,
+          "chapters": [
+            {
+              "slug": "sandhi",
+              "name": "Sandhi",
+              "sortOrder": 0
+            },
+            {
+              "slug": "paryayvachi",
+              "name": "Paryayvachi",
+              "sortOrder": 1
+            },
+            {
+              "slug": "samas",
+              "name": "Samas",
+              "sortOrder": 2
+            },
+            {
+              "slug": "vilom-shabd",
+              "name": "Vilom Shabd",
+              "sortOrder": 3
+            },
+            {
+              "slug": "muhavare",
+              "name": "Muhavare",
+              "sortOrder": 4
+            },
+            {
+              "slug": "vyakaran",
+              "name": "Vyakaran",
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "slug": "maths",
+          "name": "Mathematics",
+          "sortOrder": 3,
+          "chapters": [
+            {
+              "slug": "simplification",
+              "name": "Simplification",
+              "sortOrder": 0
+            },
+            {
+              "slug": "percentage",
+              "name": "Percentage",
+              "sortOrder": 1
+            },
+            {
+              "slug": "time-speed-distance",
+              "name": "Time-Speed-Distance",
+              "sortOrder": 2
+            },
+            {
+              "slug": "ratio",
+              "name": "Ratio",
+              "sortOrder": 3
+            },
+            {
+              "slug": "profit-loss",
+              "name": "Profit-Loss",
+              "sortOrder": 4
+            },
+            {
+              "slug": "average",
+              "name": "Average",
+              "sortOrder": 5
+            },
+            {
+              "slug": "simple-interest",
+              "name": "Simple Interest",
+              "sortOrder": 6
+            },
+            {
+              "slug": "number-system",
+              "name": "Number System",
+              "sortOrder": 7
+            },
+            {
+              "slug": "time-and-work",
+              "name": "Time and Work",
+              "sortOrder": 8
+            }
+          ]
+        },
+        {
+          "slug": "reasoning",
+          "name": "Reasoning",
+          "sortOrder": 4,
+          "chapters": [
+            {
+              "slug": "blood-relation",
+              "name": "Blood Relation",
+              "sortOrder": 0
+            },
+            {
+              "slug": "coding-decoding",
+              "name": "Coding-Decoding",
+              "sortOrder": 1
+            },
+            {
+              "slug": "odd-one-out",
+              "name": "Odd One Out",
+              "sortOrder": 2
+            },
+            {
+              "slug": "series",
+              "name": "Series",
+              "sortOrder": 3
+            },
+            {
+              "slug": "analogy",
+              "name": "Analogy",
+              "sortOrder": 4
+            },
+            {
+              "slug": "direction-sense",
+              "name": "Direction Sense",
+              "sortOrder": 5
+            },
+            {
+              "slug": "syllogism",
+              "name": "Syllogism",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "state-gk",
+          "name": "UP GK",
+          "sortOrder": 5,
+          "chapters": [
+            {
+              "slug": "geography",
+              "name": "Geography",
+              "sortOrder": 0
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 1
+            },
+            {
+              "slug": "wildlife",
+              "name": "Wildlife",
+              "sortOrder": 2
+            },
+            {
+              "slug": "culture",
+              "name": "Culture",
+              "sortOrder": 3
+            },
+            {
+              "slug": "monuments",
+              "name": "Monuments",
+              "sortOrder": 4
+            },
+            {
+              "slug": "history",
+              "name": "History",
+              "sortOrder": 5
+            },
+            {
+              "slug": "symbols",
+              "name": "Symbols",
+              "sortOrder": 6
+            },
+            {
+              "slug": "economy",
+              "name": "Economy",
+              "sortOrder": 7
+            }
+          ]
+        },
+        {
+          "slug": "police-law",
+          "name": "Police / Law-related Topics",
+          "sortOrder": 6,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "police-administration",
+              "name": "Police Administration",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "science",
+          "name": "General Science",
+          "sortOrder": 7,
+          "chapters": [
+            {
+              "slug": "physics",
+              "name": "Physics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "biology",
+              "name": "Biology",
+              "sortOrder": 1
+            },
+            {
+              "slug": "chemistry",
+              "name": "Chemistry",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "polity",
+          "name": "Indian Polity",
+          "sortOrder": 8,
+          "chapters": [
+            {
+              "slug": "constitution",
+              "name": "Constitution",
+              "sortOrder": 0
+            },
+            {
+              "slug": "parliament",
+              "name": "Parliament",
+              "sortOrder": 1
+            },
+            {
+              "slug": "judiciary",
+              "name": "Judiciary",
+              "sortOrder": 2
+            },
+            {
+              "slug": "president",
+              "name": "President",
+              "sortOrder": 3
+            },
+            {
+              "slug": "prime-minister",
+              "name": "Prime Minister",
+              "sortOrder": 4
+            },
+            {
+              "slug": "fundamental-duties",
+              "name": "Fundamental Duties",
+              "sortOrder": 5
+            },
+            {
+              "slug": "fundamental-rights",
+              "name": "Fundamental Rights",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "constitution",
+          "name": "Constitution",
+          "sortOrder": 9,
+          "chapters": [
+            {
+              "slug": "articles",
+              "name": "Articles",
+              "sortOrder": 0
+            },
+            {
+              "slug": "emergency",
+              "name": "Emergency",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "history",
+          "name": "Indian History",
+          "sortOrder": 10,
+          "chapters": [
+            {
+              "slug": "modern-india",
+              "name": "Modern India",
+              "sortOrder": 0
+            },
+            {
+              "slug": "freedom-movement",
+              "name": "Freedom Movement",
+              "sortOrder": 1
+            },
+            {
+              "slug": "ancient-india",
+              "name": "Ancient India",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "geography",
+          "name": "Geography",
+          "sortOrder": 11,
+          "chapters": [
+            {
+              "slug": "states",
+              "name": "States",
+              "sortOrder": 0
+            },
+            {
+              "slug": "physical-geography",
+              "name": "Physical Geography",
+              "sortOrder": 1
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 2
+            },
+            {
+              "slug": "mountains",
+              "name": "Mountains",
+              "sortOrder": 3
+            },
+            {
+              "slug": "climate",
+              "name": "Climate",
+              "sortOrder": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "up-police-si",
+      "name": "UP Police Sub-Inspector",
+      "stateCode": "up",
+      "examType": "si",
+      "defaultLanguage": "hi-Latn",
+      "subjects": [
+        {
+          "slug": "gk",
+          "name": "General Knowledge",
+          "sortOrder": 0,
+          "chapters": [
+            {
+              "slug": "india-gk",
+              "name": "India GK",
+              "sortOrder": 0
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 1
+            },
+            {
+              "slug": "awards",
+              "name": "Awards",
+              "sortOrder": 2
+            },
+            {
+              "slug": "static-gk",
+              "name": "Static GK",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "current-affairs",
+          "name": "Current Affairs",
+          "sortOrder": 1,
+          "chapters": [
+            {
+              "slug": "national",
+              "name": "National",
+              "sortOrder": 0
+            },
+            {
+              "slug": "state",
+              "name": "State",
+              "sortOrder": 1
+            },
+            {
+              "slug": "international",
+              "name": "International",
+              "sortOrder": 2
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "hindi",
+          "name": "Hindi",
+          "sortOrder": 2,
+          "chapters": [
+            {
+              "slug": "sandhi",
+              "name": "Sandhi",
+              "sortOrder": 0
+            },
+            {
+              "slug": "paryayvachi",
+              "name": "Paryayvachi",
+              "sortOrder": 1
+            },
+            {
+              "slug": "samas",
+              "name": "Samas",
+              "sortOrder": 2
+            },
+            {
+              "slug": "vilom-shabd",
+              "name": "Vilom Shabd",
+              "sortOrder": 3
+            },
+            {
+              "slug": "muhavare",
+              "name": "Muhavare",
+              "sortOrder": 4
+            },
+            {
+              "slug": "vyakaran",
+              "name": "Vyakaran",
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "slug": "maths",
+          "name": "Mathematics",
+          "sortOrder": 3,
+          "chapters": [
+            {
+              "slug": "simplification",
+              "name": "Simplification",
+              "sortOrder": 0
+            },
+            {
+              "slug": "percentage",
+              "name": "Percentage",
+              "sortOrder": 1
+            },
+            {
+              "slug": "time-speed-distance",
+              "name": "Time-Speed-Distance",
+              "sortOrder": 2
+            },
+            {
+              "slug": "ratio",
+              "name": "Ratio",
+              "sortOrder": 3
+            },
+            {
+              "slug": "profit-loss",
+              "name": "Profit-Loss",
+              "sortOrder": 4
+            },
+            {
+              "slug": "average",
+              "name": "Average",
+              "sortOrder": 5
+            },
+            {
+              "slug": "simple-interest",
+              "name": "Simple Interest",
+              "sortOrder": 6
+            },
+            {
+              "slug": "number-system",
+              "name": "Number System",
+              "sortOrder": 7
+            },
+            {
+              "slug": "time-and-work",
+              "name": "Time and Work",
+              "sortOrder": 8
+            }
+          ]
+        },
+        {
+          "slug": "reasoning",
+          "name": "Reasoning",
+          "sortOrder": 4,
+          "chapters": [
+            {
+              "slug": "blood-relation",
+              "name": "Blood Relation",
+              "sortOrder": 0
+            },
+            {
+              "slug": "coding-decoding",
+              "name": "Coding-Decoding",
+              "sortOrder": 1
+            },
+            {
+              "slug": "odd-one-out",
+              "name": "Odd One Out",
+              "sortOrder": 2
+            },
+            {
+              "slug": "series",
+              "name": "Series",
+              "sortOrder": 3
+            },
+            {
+              "slug": "analogy",
+              "name": "Analogy",
+              "sortOrder": 4
+            },
+            {
+              "slug": "direction-sense",
+              "name": "Direction Sense",
+              "sortOrder": 5
+            },
+            {
+              "slug": "syllogism",
+              "name": "Syllogism",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "state-gk",
+          "name": "UP GK",
+          "sortOrder": 5,
+          "chapters": [
+            {
+              "slug": "geography",
+              "name": "Geography",
+              "sortOrder": 0
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 1
+            },
+            {
+              "slug": "wildlife",
+              "name": "Wildlife",
+              "sortOrder": 2
+            },
+            {
+              "slug": "culture",
+              "name": "Culture",
+              "sortOrder": 3
+            },
+            {
+              "slug": "monuments",
+              "name": "Monuments",
+              "sortOrder": 4
+            },
+            {
+              "slug": "history",
+              "name": "History",
+              "sortOrder": 5
+            },
+            {
+              "slug": "symbols",
+              "name": "Symbols",
+              "sortOrder": 6
+            },
+            {
+              "slug": "economy",
+              "name": "Economy",
+              "sortOrder": 7
+            }
+          ]
+        },
+        {
+          "slug": "science",
+          "name": "General Science",
+          "sortOrder": 6,
+          "chapters": [
+            {
+              "slug": "physics",
+              "name": "Physics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "biology",
+              "name": "Biology",
+              "sortOrder": 1
+            },
+            {
+              "slug": "chemistry",
+              "name": "Chemistry",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "polity",
+          "name": "Indian Polity",
+          "sortOrder": 7,
+          "chapters": [
+            {
+              "slug": "constitution",
+              "name": "Constitution",
+              "sortOrder": 0
+            },
+            {
+              "slug": "parliament",
+              "name": "Parliament",
+              "sortOrder": 1
+            },
+            {
+              "slug": "judiciary",
+              "name": "Judiciary",
+              "sortOrder": 2
+            },
+            {
+              "slug": "president",
+              "name": "President",
+              "sortOrder": 3
+            },
+            {
+              "slug": "prime-minister",
+              "name": "Prime Minister",
+              "sortOrder": 4
+            },
+            {
+              "slug": "fundamental-duties",
+              "name": "Fundamental Duties",
+              "sortOrder": 5
+            },
+            {
+              "slug": "fundamental-rights",
+              "name": "Fundamental Rights",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "police-law",
+          "name": "Police / Law-related Topics",
+          "sortOrder": 8,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "police-administration",
+              "name": "Police Administration",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "history",
+          "name": "Indian History",
+          "sortOrder": 9,
+          "chapters": [
+            {
+              "slug": "modern-india",
+              "name": "Modern India",
+              "sortOrder": 0
+            },
+            {
+              "slug": "freedom-movement",
+              "name": "Freedom Movement",
+              "sortOrder": 1
+            },
+            {
+              "slug": "ancient-india",
+              "name": "Ancient India",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "computer",
+          "name": "Computer",
+          "sortOrder": 10,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "internet",
+              "name": "Internet",
+              "sortOrder": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "mp-police-constable",
+      "name": "MP Police Constable",
+      "stateCode": "mp",
+      "examType": "constable",
+      "defaultLanguage": "hi-Latn",
+      "subjects": [
+        {
+          "slug": "gk",
+          "name": "General Knowledge",
+          "sortOrder": 0,
+          "chapters": [
+            {
+              "slug": "india-gk",
+              "name": "India GK",
+              "sortOrder": 0
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 1
+            },
+            {
+              "slug": "awards",
+              "name": "Awards",
+              "sortOrder": 2
+            },
+            {
+              "slug": "static-gk",
+              "name": "Static GK",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "current-affairs",
+          "name": "Current Affairs",
+          "sortOrder": 1,
+          "chapters": [
+            {
+              "slug": "national",
+              "name": "National",
+              "sortOrder": 0
+            },
+            {
+              "slug": "state",
+              "name": "State",
+              "sortOrder": 1
+            },
+            {
+              "slug": "international",
+              "name": "International",
+              "sortOrder": 2
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "hindi",
+          "name": "Hindi",
+          "sortOrder": 2,
+          "chapters": [
+            {
+              "slug": "sandhi",
+              "name": "Sandhi",
+              "sortOrder": 0
+            },
+            {
+              "slug": "paryayvachi",
+              "name": "Paryayvachi",
+              "sortOrder": 1
+            },
+            {
+              "slug": "samas",
+              "name": "Samas",
+              "sortOrder": 2
+            },
+            {
+              "slug": "vilom-shabd",
+              "name": "Vilom Shabd",
+              "sortOrder": 3
+            },
+            {
+              "slug": "muhavare",
+              "name": "Muhavare",
+              "sortOrder": 4
+            },
+            {
+              "slug": "vyakaran",
+              "name": "Vyakaran",
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "slug": "maths",
+          "name": "Mathematics",
+          "sortOrder": 3,
+          "chapters": [
+            {
+              "slug": "simplification",
+              "name": "Simplification",
+              "sortOrder": 0
+            },
+            {
+              "slug": "percentage",
+              "name": "Percentage",
+              "sortOrder": 1
+            },
+            {
+              "slug": "time-speed-distance",
+              "name": "Time-Speed-Distance",
+              "sortOrder": 2
+            },
+            {
+              "slug": "ratio",
+              "name": "Ratio",
+              "sortOrder": 3
+            },
+            {
+              "slug": "profit-loss",
+              "name": "Profit-Loss",
+              "sortOrder": 4
+            },
+            {
+              "slug": "average",
+              "name": "Average",
+              "sortOrder": 5
+            },
+            {
+              "slug": "simple-interest",
+              "name": "Simple Interest",
+              "sortOrder": 6
+            },
+            {
+              "slug": "number-system",
+              "name": "Number System",
+              "sortOrder": 7
+            },
+            {
+              "slug": "time-and-work",
+              "name": "Time and Work",
+              "sortOrder": 8
+            }
+          ]
+        },
+        {
+          "slug": "reasoning",
+          "name": "Reasoning",
+          "sortOrder": 4,
+          "chapters": [
+            {
+              "slug": "blood-relation",
+              "name": "Blood Relation",
+              "sortOrder": 0
+            },
+            {
+              "slug": "coding-decoding",
+              "name": "Coding-Decoding",
+              "sortOrder": 1
+            },
+            {
+              "slug": "odd-one-out",
+              "name": "Odd One Out",
+              "sortOrder": 2
+            },
+            {
+              "slug": "series",
+              "name": "Series",
+              "sortOrder": 3
+            },
+            {
+              "slug": "analogy",
+              "name": "Analogy",
+              "sortOrder": 4
+            },
+            {
+              "slug": "direction-sense",
+              "name": "Direction Sense",
+              "sortOrder": 5
+            },
+            {
+              "slug": "syllogism",
+              "name": "Syllogism",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "state-gk",
+          "name": "MP GK",
+          "sortOrder": 5,
+          "chapters": [
+            {
+              "slug": "geography",
+              "name": "Geography",
+              "sortOrder": 0
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 1
+            },
+            {
+              "slug": "wildlife",
+              "name": "Wildlife",
+              "sortOrder": 2
+            },
+            {
+              "slug": "culture",
+              "name": "Culture",
+              "sortOrder": 3
+            },
+            {
+              "slug": "monuments",
+              "name": "Monuments",
+              "sortOrder": 4
+            },
+            {
+              "slug": "history",
+              "name": "History",
+              "sortOrder": 5
+            },
+            {
+              "slug": "symbols",
+              "name": "Symbols",
+              "sortOrder": 6
+            },
+            {
+              "slug": "economy",
+              "name": "Economy",
+              "sortOrder": 7
+            }
+          ]
+        },
+        {
+          "slug": "police-law",
+          "name": "Police / Law-related Topics",
+          "sortOrder": 6,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "police-administration",
+              "name": "Police Administration",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "science",
+          "name": "General Science",
+          "sortOrder": 7,
+          "chapters": [
+            {
+              "slug": "physics",
+              "name": "Physics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "biology",
+              "name": "Biology",
+              "sortOrder": 1
+            },
+            {
+              "slug": "chemistry",
+              "name": "Chemistry",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "history",
+          "name": "Indian History",
+          "sortOrder": 8,
+          "chapters": [
+            {
+              "slug": "modern-india",
+              "name": "Modern India",
+              "sortOrder": 0
+            },
+            {
+              "slug": "freedom-movement",
+              "name": "Freedom Movement",
+              "sortOrder": 1
+            },
+            {
+              "slug": "ancient-india",
+              "name": "Ancient India",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "geography",
+          "name": "Geography",
+          "sortOrder": 9,
+          "chapters": [
+            {
+              "slug": "states",
+              "name": "States",
+              "sortOrder": 0
+            },
+            {
+              "slug": "physical-geography",
+              "name": "Physical Geography",
+              "sortOrder": 1
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 2
+            },
+            {
+              "slug": "mountains",
+              "name": "Mountains",
+              "sortOrder": 3
+            },
+            {
+              "slug": "climate",
+              "name": "Climate",
+              "sortOrder": 4
+            }
+          ]
+        },
+        {
+          "slug": "polity",
+          "name": "Indian Polity",
+          "sortOrder": 10,
+          "chapters": [
+            {
+              "slug": "constitution",
+              "name": "Constitution",
+              "sortOrder": 0
+            },
+            {
+              "slug": "parliament",
+              "name": "Parliament",
+              "sortOrder": 1
+            },
+            {
+              "slug": "judiciary",
+              "name": "Judiciary",
+              "sortOrder": 2
+            },
+            {
+              "slug": "president",
+              "name": "President",
+              "sortOrder": 3
+            },
+            {
+              "slug": "prime-minister",
+              "name": "Prime Minister",
+              "sortOrder": 4
+            },
+            {
+              "slug": "fundamental-duties",
+              "name": "Fundamental Duties",
+              "sortOrder": 5
+            },
+            {
+              "slug": "fundamental-rights",
+              "name": "Fundamental Rights",
+              "sortOrder": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "mp-police-si",
+      "name": "MP Police Sub-Inspector",
+      "stateCode": "mp",
+      "examType": "si",
+      "defaultLanguage": "hi-Latn",
+      "subjects": [
+        {
+          "slug": "gk",
+          "name": "General Knowledge",
+          "sortOrder": 0,
+          "chapters": [
+            {
+              "slug": "india-gk",
+              "name": "India GK",
+              "sortOrder": 0
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 1
+            },
+            {
+              "slug": "awards",
+              "name": "Awards",
+              "sortOrder": 2
+            },
+            {
+              "slug": "static-gk",
+              "name": "Static GK",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "current-affairs",
+          "name": "Current Affairs",
+          "sortOrder": 1,
+          "chapters": [
+            {
+              "slug": "national",
+              "name": "National",
+              "sortOrder": 0
+            },
+            {
+              "slug": "state",
+              "name": "State",
+              "sortOrder": 1
+            },
+            {
+              "slug": "international",
+              "name": "International",
+              "sortOrder": 2
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "hindi",
+          "name": "Hindi",
+          "sortOrder": 2,
+          "chapters": [
+            {
+              "slug": "sandhi",
+              "name": "Sandhi",
+              "sortOrder": 0
+            },
+            {
+              "slug": "paryayvachi",
+              "name": "Paryayvachi",
+              "sortOrder": 1
+            },
+            {
+              "slug": "samas",
+              "name": "Samas",
+              "sortOrder": 2
+            },
+            {
+              "slug": "vilom-shabd",
+              "name": "Vilom Shabd",
+              "sortOrder": 3
+            },
+            {
+              "slug": "muhavare",
+              "name": "Muhavare",
+              "sortOrder": 4
+            },
+            {
+              "slug": "vyakaran",
+              "name": "Vyakaran",
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "slug": "maths",
+          "name": "Mathematics",
+          "sortOrder": 3,
+          "chapters": [
+            {
+              "slug": "simplification",
+              "name": "Simplification",
+              "sortOrder": 0
+            },
+            {
+              "slug": "percentage",
+              "name": "Percentage",
+              "sortOrder": 1
+            },
+            {
+              "slug": "time-speed-distance",
+              "name": "Time-Speed-Distance",
+              "sortOrder": 2
+            },
+            {
+              "slug": "ratio",
+              "name": "Ratio",
+              "sortOrder": 3
+            },
+            {
+              "slug": "profit-loss",
+              "name": "Profit-Loss",
+              "sortOrder": 4
+            },
+            {
+              "slug": "average",
+              "name": "Average",
+              "sortOrder": 5
+            },
+            {
+              "slug": "simple-interest",
+              "name": "Simple Interest",
+              "sortOrder": 6
+            },
+            {
+              "slug": "number-system",
+              "name": "Number System",
+              "sortOrder": 7
+            },
+            {
+              "slug": "time-and-work",
+              "name": "Time and Work",
+              "sortOrder": 8
+            }
+          ]
+        },
+        {
+          "slug": "reasoning",
+          "name": "Reasoning",
+          "sortOrder": 4,
+          "chapters": [
+            {
+              "slug": "blood-relation",
+              "name": "Blood Relation",
+              "sortOrder": 0
+            },
+            {
+              "slug": "coding-decoding",
+              "name": "Coding-Decoding",
+              "sortOrder": 1
+            },
+            {
+              "slug": "odd-one-out",
+              "name": "Odd One Out",
+              "sortOrder": 2
+            },
+            {
+              "slug": "series",
+              "name": "Series",
+              "sortOrder": 3
+            },
+            {
+              "slug": "analogy",
+              "name": "Analogy",
+              "sortOrder": 4
+            },
+            {
+              "slug": "direction-sense",
+              "name": "Direction Sense",
+              "sortOrder": 5
+            },
+            {
+              "slug": "syllogism",
+              "name": "Syllogism",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "state-gk",
+          "name": "MP GK",
+          "sortOrder": 5,
+          "chapters": [
+            {
+              "slug": "geography",
+              "name": "Geography",
+              "sortOrder": 0
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 1
+            },
+            {
+              "slug": "wildlife",
+              "name": "Wildlife",
+              "sortOrder": 2
+            },
+            {
+              "slug": "culture",
+              "name": "Culture",
+              "sortOrder": 3
+            },
+            {
+              "slug": "monuments",
+              "name": "Monuments",
+              "sortOrder": 4
+            },
+            {
+              "slug": "history",
+              "name": "History",
+              "sortOrder": 5
+            },
+            {
+              "slug": "symbols",
+              "name": "Symbols",
+              "sortOrder": 6
+            },
+            {
+              "slug": "economy",
+              "name": "Economy",
+              "sortOrder": 7
+            }
+          ]
+        },
+        {
+          "slug": "science",
+          "name": "General Science",
+          "sortOrder": 6,
+          "chapters": [
+            {
+              "slug": "physics",
+              "name": "Physics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "biology",
+              "name": "Biology",
+              "sortOrder": 1
+            },
+            {
+              "slug": "chemistry",
+              "name": "Chemistry",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "polity",
+          "name": "Indian Polity",
+          "sortOrder": 7,
+          "chapters": [
+            {
+              "slug": "constitution",
+              "name": "Constitution",
+              "sortOrder": 0
+            },
+            {
+              "slug": "parliament",
+              "name": "Parliament",
+              "sortOrder": 1
+            },
+            {
+              "slug": "judiciary",
+              "name": "Judiciary",
+              "sortOrder": 2
+            },
+            {
+              "slug": "president",
+              "name": "President",
+              "sortOrder": 3
+            },
+            {
+              "slug": "prime-minister",
+              "name": "Prime Minister",
+              "sortOrder": 4
+            },
+            {
+              "slug": "fundamental-duties",
+              "name": "Fundamental Duties",
+              "sortOrder": 5
+            },
+            {
+              "slug": "fundamental-rights",
+              "name": "Fundamental Rights",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "police-law",
+          "name": "Police / Law-related Topics",
+          "sortOrder": 8,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "police-administration",
+              "name": "Police Administration",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "constitution",
+          "name": "Constitution",
+          "sortOrder": 9,
+          "chapters": [
+            {
+              "slug": "articles",
+              "name": "Articles",
+              "sortOrder": 0
+            },
+            {
+              "slug": "emergency",
+              "name": "Emergency",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "computer",
+          "name": "Computer",
+          "sortOrder": 10,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "internet",
+              "name": "Internet",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "history",
+          "name": "Indian History",
+          "sortOrder": 11,
+          "chapters": [
+            {
+              "slug": "modern-india",
+              "name": "Modern India",
+              "sortOrder": 0
+            },
+            {
+              "slug": "freedom-movement",
+              "name": "Freedom Movement",
+              "sortOrder": 1
+            },
+            {
+              "slug": "ancient-india",
+              "name": "Ancient India",
+              "sortOrder": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "rajasthan-police-constable",
+      "name": "Rajasthan Police Constable",
+      "stateCode": "rajasthan",
+      "examType": "constable",
+      "defaultLanguage": "hi-Latn",
+      "subjects": [
+        {
+          "slug": "gk",
+          "name": "General Knowledge",
+          "sortOrder": 0,
+          "chapters": [
+            {
+              "slug": "india-gk",
+              "name": "India GK",
+              "sortOrder": 0
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 1
+            },
+            {
+              "slug": "awards",
+              "name": "Awards",
+              "sortOrder": 2
+            },
+            {
+              "slug": "static-gk",
+              "name": "Static GK",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "current-affairs",
+          "name": "Current Affairs",
+          "sortOrder": 1,
+          "chapters": [
+            {
+              "slug": "national",
+              "name": "National",
+              "sortOrder": 0
+            },
+            {
+              "slug": "state",
+              "name": "State",
+              "sortOrder": 1
+            },
+            {
+              "slug": "international",
+              "name": "International",
+              "sortOrder": 2
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "hindi",
+          "name": "Hindi",
+          "sortOrder": 2,
+          "chapters": [
+            {
+              "slug": "sandhi",
+              "name": "Sandhi",
+              "sortOrder": 0
+            },
+            {
+              "slug": "paryayvachi",
+              "name": "Paryayvachi",
+              "sortOrder": 1
+            },
+            {
+              "slug": "samas",
+              "name": "Samas",
+              "sortOrder": 2
+            },
+            {
+              "slug": "vilom-shabd",
+              "name": "Vilom Shabd",
+              "sortOrder": 3
+            },
+            {
+              "slug": "muhavare",
+              "name": "Muhavare",
+              "sortOrder": 4
+            },
+            {
+              "slug": "vyakaran",
+              "name": "Vyakaran",
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "slug": "maths",
+          "name": "Mathematics",
+          "sortOrder": 3,
+          "chapters": [
+            {
+              "slug": "simplification",
+              "name": "Simplification",
+              "sortOrder": 0
+            },
+            {
+              "slug": "percentage",
+              "name": "Percentage",
+              "sortOrder": 1
+            },
+            {
+              "slug": "time-speed-distance",
+              "name": "Time-Speed-Distance",
+              "sortOrder": 2
+            },
+            {
+              "slug": "ratio",
+              "name": "Ratio",
+              "sortOrder": 3
+            },
+            {
+              "slug": "profit-loss",
+              "name": "Profit-Loss",
+              "sortOrder": 4
+            },
+            {
+              "slug": "average",
+              "name": "Average",
+              "sortOrder": 5
+            },
+            {
+              "slug": "simple-interest",
+              "name": "Simple Interest",
+              "sortOrder": 6
+            },
+            {
+              "slug": "number-system",
+              "name": "Number System",
+              "sortOrder": 7
+            },
+            {
+              "slug": "time-and-work",
+              "name": "Time and Work",
+              "sortOrder": 8
+            }
+          ]
+        },
+        {
+          "slug": "reasoning",
+          "name": "Reasoning",
+          "sortOrder": 4,
+          "chapters": [
+            {
+              "slug": "blood-relation",
+              "name": "Blood Relation",
+              "sortOrder": 0
+            },
+            {
+              "slug": "coding-decoding",
+              "name": "Coding-Decoding",
+              "sortOrder": 1
+            },
+            {
+              "slug": "odd-one-out",
+              "name": "Odd One Out",
+              "sortOrder": 2
+            },
+            {
+              "slug": "series",
+              "name": "Series",
+              "sortOrder": 3
+            },
+            {
+              "slug": "analogy",
+              "name": "Analogy",
+              "sortOrder": 4
+            },
+            {
+              "slug": "direction-sense",
+              "name": "Direction Sense",
+              "sortOrder": 5
+            },
+            {
+              "slug": "syllogism",
+              "name": "Syllogism",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "state-gk",
+          "name": "Rajasthan GK",
+          "sortOrder": 5,
+          "chapters": [
+            {
+              "slug": "geography",
+              "name": "Geography",
+              "sortOrder": 0
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 1
+            },
+            {
+              "slug": "wildlife",
+              "name": "Wildlife",
+              "sortOrder": 2
+            },
+            {
+              "slug": "culture",
+              "name": "Culture",
+              "sortOrder": 3
+            },
+            {
+              "slug": "monuments",
+              "name": "Monuments",
+              "sortOrder": 4
+            },
+            {
+              "slug": "history",
+              "name": "History",
+              "sortOrder": 5
+            },
+            {
+              "slug": "symbols",
+              "name": "Symbols",
+              "sortOrder": 6
+            },
+            {
+              "slug": "economy",
+              "name": "Economy",
+              "sortOrder": 7
+            }
+          ]
+        },
+        {
+          "slug": "police-law",
+          "name": "Police / Law-related Topics",
+          "sortOrder": 6,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "police-administration",
+              "name": "Police Administration",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "history",
+          "name": "Indian History",
+          "sortOrder": 7,
+          "chapters": [
+            {
+              "slug": "modern-india",
+              "name": "Modern India",
+              "sortOrder": 0
+            },
+            {
+              "slug": "freedom-movement",
+              "name": "Freedom Movement",
+              "sortOrder": 1
+            },
+            {
+              "slug": "ancient-india",
+              "name": "Ancient India",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "science",
+          "name": "General Science",
+          "sortOrder": 8,
+          "chapters": [
+            {
+              "slug": "physics",
+              "name": "Physics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "biology",
+              "name": "Biology",
+              "sortOrder": 1
+            },
+            {
+              "slug": "chemistry",
+              "name": "Chemistry",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "polity",
+          "name": "Indian Polity",
+          "sortOrder": 9,
+          "chapters": [
+            {
+              "slug": "constitution",
+              "name": "Constitution",
+              "sortOrder": 0
+            },
+            {
+              "slug": "parliament",
+              "name": "Parliament",
+              "sortOrder": 1
+            },
+            {
+              "slug": "judiciary",
+              "name": "Judiciary",
+              "sortOrder": 2
+            },
+            {
+              "slug": "president",
+              "name": "President",
+              "sortOrder": 3
+            },
+            {
+              "slug": "prime-minister",
+              "name": "Prime Minister",
+              "sortOrder": 4
+            },
+            {
+              "slug": "fundamental-duties",
+              "name": "Fundamental Duties",
+              "sortOrder": 5
+            },
+            {
+              "slug": "fundamental-rights",
+              "name": "Fundamental Rights",
+              "sortOrder": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "rajasthan-police-si",
+      "name": "Rajasthan Police Sub-Inspector",
+      "stateCode": "rajasthan",
+      "examType": "si",
+      "defaultLanguage": "hi-Latn",
+      "subjects": [
+        {
+          "slug": "gk",
+          "name": "General Knowledge",
+          "sortOrder": 0,
+          "chapters": [
+            {
+              "slug": "india-gk",
+              "name": "India GK",
+              "sortOrder": 0
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 1
+            },
+            {
+              "slug": "awards",
+              "name": "Awards",
+              "sortOrder": 2
+            },
+            {
+              "slug": "static-gk",
+              "name": "Static GK",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "current-affairs",
+          "name": "Current Affairs",
+          "sortOrder": 1,
+          "chapters": [
+            {
+              "slug": "national",
+              "name": "National",
+              "sortOrder": 0
+            },
+            {
+              "slug": "state",
+              "name": "State",
+              "sortOrder": 1
+            },
+            {
+              "slug": "international",
+              "name": "International",
+              "sortOrder": 2
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "hindi",
+          "name": "Hindi",
+          "sortOrder": 2,
+          "chapters": [
+            {
+              "slug": "sandhi",
+              "name": "Sandhi",
+              "sortOrder": 0
+            },
+            {
+              "slug": "paryayvachi",
+              "name": "Paryayvachi",
+              "sortOrder": 1
+            },
+            {
+              "slug": "samas",
+              "name": "Samas",
+              "sortOrder": 2
+            },
+            {
+              "slug": "vilom-shabd",
+              "name": "Vilom Shabd",
+              "sortOrder": 3
+            },
+            {
+              "slug": "muhavare",
+              "name": "Muhavare",
+              "sortOrder": 4
+            },
+            {
+              "slug": "vyakaran",
+              "name": "Vyakaran",
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "slug": "maths",
+          "name": "Mathematics",
+          "sortOrder": 3,
+          "chapters": [
+            {
+              "slug": "simplification",
+              "name": "Simplification",
+              "sortOrder": 0
+            },
+            {
+              "slug": "percentage",
+              "name": "Percentage",
+              "sortOrder": 1
+            },
+            {
+              "slug": "time-speed-distance",
+              "name": "Time-Speed-Distance",
+              "sortOrder": 2
+            },
+            {
+              "slug": "ratio",
+              "name": "Ratio",
+              "sortOrder": 3
+            },
+            {
+              "slug": "profit-loss",
+              "name": "Profit-Loss",
+              "sortOrder": 4
+            },
+            {
+              "slug": "average",
+              "name": "Average",
+              "sortOrder": 5
+            },
+            {
+              "slug": "simple-interest",
+              "name": "Simple Interest",
+              "sortOrder": 6
+            },
+            {
+              "slug": "number-system",
+              "name": "Number System",
+              "sortOrder": 7
+            },
+            {
+              "slug": "time-and-work",
+              "name": "Time and Work",
+              "sortOrder": 8
+            }
+          ]
+        },
+        {
+          "slug": "reasoning",
+          "name": "Reasoning",
+          "sortOrder": 4,
+          "chapters": [
+            {
+              "slug": "blood-relation",
+              "name": "Blood Relation",
+              "sortOrder": 0
+            },
+            {
+              "slug": "coding-decoding",
+              "name": "Coding-Decoding",
+              "sortOrder": 1
+            },
+            {
+              "slug": "odd-one-out",
+              "name": "Odd One Out",
+              "sortOrder": 2
+            },
+            {
+              "slug": "series",
+              "name": "Series",
+              "sortOrder": 3
+            },
+            {
+              "slug": "analogy",
+              "name": "Analogy",
+              "sortOrder": 4
+            },
+            {
+              "slug": "direction-sense",
+              "name": "Direction Sense",
+              "sortOrder": 5
+            },
+            {
+              "slug": "syllogism",
+              "name": "Syllogism",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "state-gk",
+          "name": "Rajasthan GK",
+          "sortOrder": 5,
+          "chapters": [
+            {
+              "slug": "geography",
+              "name": "Geography",
+              "sortOrder": 0
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 1
+            },
+            {
+              "slug": "wildlife",
+              "name": "Wildlife",
+              "sortOrder": 2
+            },
+            {
+              "slug": "culture",
+              "name": "Culture",
+              "sortOrder": 3
+            },
+            {
+              "slug": "monuments",
+              "name": "Monuments",
+              "sortOrder": 4
+            },
+            {
+              "slug": "history",
+              "name": "History",
+              "sortOrder": 5
+            },
+            {
+              "slug": "symbols",
+              "name": "Symbols",
+              "sortOrder": 6
+            },
+            {
+              "slug": "economy",
+              "name": "Economy",
+              "sortOrder": 7
+            }
+          ]
+        },
+        {
+          "slug": "science",
+          "name": "General Science",
+          "sortOrder": 6,
+          "chapters": [
+            {
+              "slug": "physics",
+              "name": "Physics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "biology",
+              "name": "Biology",
+              "sortOrder": 1
+            },
+            {
+              "slug": "chemistry",
+              "name": "Chemistry",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "polity",
+          "name": "Indian Polity",
+          "sortOrder": 7,
+          "chapters": [
+            {
+              "slug": "constitution",
+              "name": "Constitution",
+              "sortOrder": 0
+            },
+            {
+              "slug": "parliament",
+              "name": "Parliament",
+              "sortOrder": 1
+            },
+            {
+              "slug": "judiciary",
+              "name": "Judiciary",
+              "sortOrder": 2
+            },
+            {
+              "slug": "president",
+              "name": "President",
+              "sortOrder": 3
+            },
+            {
+              "slug": "prime-minister",
+              "name": "Prime Minister",
+              "sortOrder": 4
+            },
+            {
+              "slug": "fundamental-duties",
+              "name": "Fundamental Duties",
+              "sortOrder": 5
+            },
+            {
+              "slug": "fundamental-rights",
+              "name": "Fundamental Rights",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "police-law",
+          "name": "Police / Law-related Topics",
+          "sortOrder": 8,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "police-administration",
+              "name": "Police Administration",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "geography",
+          "name": "Geography",
+          "sortOrder": 9,
+          "chapters": [
+            {
+              "slug": "states",
+              "name": "States",
+              "sortOrder": 0
+            },
+            {
+              "slug": "physical-geography",
+              "name": "Physical Geography",
+              "sortOrder": 1
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 2
+            },
+            {
+              "slug": "mountains",
+              "name": "Mountains",
+              "sortOrder": 3
+            },
+            {
+              "slug": "climate",
+              "name": "Climate",
+              "sortOrder": 4
+            }
+          ]
+        },
+        {
+          "slug": "history",
+          "name": "Indian History",
+          "sortOrder": 10,
+          "chapters": [
+            {
+              "slug": "modern-india",
+              "name": "Modern India",
+              "sortOrder": 0
+            },
+            {
+              "slug": "freedom-movement",
+              "name": "Freedom Movement",
+              "sortOrder": 1
+            },
+            {
+              "slug": "ancient-india",
+              "name": "Ancient India",
+              "sortOrder": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "bihar-police-constable",
+      "name": "Bihar Police Constable",
+      "stateCode": "bihar",
+      "examType": "constable",
+      "defaultLanguage": "hi-Latn",
+      "subjects": [
+        {
+          "slug": "gk",
+          "name": "General Knowledge",
+          "sortOrder": 0,
+          "chapters": [
+            {
+              "slug": "india-gk",
+              "name": "India GK",
+              "sortOrder": 0
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 1
+            },
+            {
+              "slug": "awards",
+              "name": "Awards",
+              "sortOrder": 2
+            },
+            {
+              "slug": "static-gk",
+              "name": "Static GK",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "current-affairs",
+          "name": "Current Affairs",
+          "sortOrder": 1,
+          "chapters": [
+            {
+              "slug": "national",
+              "name": "National",
+              "sortOrder": 0
+            },
+            {
+              "slug": "state",
+              "name": "State",
+              "sortOrder": 1
+            },
+            {
+              "slug": "international",
+              "name": "International",
+              "sortOrder": 2
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "hindi",
+          "name": "Hindi",
+          "sortOrder": 2,
+          "chapters": [
+            {
+              "slug": "sandhi",
+              "name": "Sandhi",
+              "sortOrder": 0
+            },
+            {
+              "slug": "paryayvachi",
+              "name": "Paryayvachi",
+              "sortOrder": 1
+            },
+            {
+              "slug": "samas",
+              "name": "Samas",
+              "sortOrder": 2
+            },
+            {
+              "slug": "vilom-shabd",
+              "name": "Vilom Shabd",
+              "sortOrder": 3
+            },
+            {
+              "slug": "muhavare",
+              "name": "Muhavare",
+              "sortOrder": 4
+            },
+            {
+              "slug": "vyakaran",
+              "name": "Vyakaran",
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "slug": "maths",
+          "name": "Mathematics",
+          "sortOrder": 3,
+          "chapters": [
+            {
+              "slug": "simplification",
+              "name": "Simplification",
+              "sortOrder": 0
+            },
+            {
+              "slug": "percentage",
+              "name": "Percentage",
+              "sortOrder": 1
+            },
+            {
+              "slug": "time-speed-distance",
+              "name": "Time-Speed-Distance",
+              "sortOrder": 2
+            },
+            {
+              "slug": "ratio",
+              "name": "Ratio",
+              "sortOrder": 3
+            },
+            {
+              "slug": "profit-loss",
+              "name": "Profit-Loss",
+              "sortOrder": 4
+            },
+            {
+              "slug": "average",
+              "name": "Average",
+              "sortOrder": 5
+            },
+            {
+              "slug": "simple-interest",
+              "name": "Simple Interest",
+              "sortOrder": 6
+            },
+            {
+              "slug": "number-system",
+              "name": "Number System",
+              "sortOrder": 7
+            },
+            {
+              "slug": "time-and-work",
+              "name": "Time and Work",
+              "sortOrder": 8
+            }
+          ]
+        },
+        {
+          "slug": "reasoning",
+          "name": "Reasoning",
+          "sortOrder": 4,
+          "chapters": [
+            {
+              "slug": "blood-relation",
+              "name": "Blood Relation",
+              "sortOrder": 0
+            },
+            {
+              "slug": "coding-decoding",
+              "name": "Coding-Decoding",
+              "sortOrder": 1
+            },
+            {
+              "slug": "odd-one-out",
+              "name": "Odd One Out",
+              "sortOrder": 2
+            },
+            {
+              "slug": "series",
+              "name": "Series",
+              "sortOrder": 3
+            },
+            {
+              "slug": "analogy",
+              "name": "Analogy",
+              "sortOrder": 4
+            },
+            {
+              "slug": "direction-sense",
+              "name": "Direction Sense",
+              "sortOrder": 5
+            },
+            {
+              "slug": "syllogism",
+              "name": "Syllogism",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "state-gk",
+          "name": "Bihar GK",
+          "sortOrder": 5,
+          "chapters": [
+            {
+              "slug": "geography",
+              "name": "Geography",
+              "sortOrder": 0
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 1
+            },
+            {
+              "slug": "wildlife",
+              "name": "Wildlife",
+              "sortOrder": 2
+            },
+            {
+              "slug": "culture",
+              "name": "Culture",
+              "sortOrder": 3
+            },
+            {
+              "slug": "monuments",
+              "name": "Monuments",
+              "sortOrder": 4
+            },
+            {
+              "slug": "history",
+              "name": "History",
+              "sortOrder": 5
+            },
+            {
+              "slug": "symbols",
+              "name": "Symbols",
+              "sortOrder": 6
+            },
+            {
+              "slug": "economy",
+              "name": "Economy",
+              "sortOrder": 7
+            }
+          ]
+        },
+        {
+          "slug": "police-law",
+          "name": "Police / Law-related Topics",
+          "sortOrder": 6,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "police-administration",
+              "name": "Police Administration",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "geography",
+          "name": "Geography",
+          "sortOrder": 7,
+          "chapters": [
+            {
+              "slug": "states",
+              "name": "States",
+              "sortOrder": 0
+            },
+            {
+              "slug": "physical-geography",
+              "name": "Physical Geography",
+              "sortOrder": 1
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 2
+            },
+            {
+              "slug": "mountains",
+              "name": "Mountains",
+              "sortOrder": 3
+            },
+            {
+              "slug": "climate",
+              "name": "Climate",
+              "sortOrder": 4
+            }
+          ]
+        },
+        {
+          "slug": "polity",
+          "name": "Indian Polity",
+          "sortOrder": 8,
+          "chapters": [
+            {
+              "slug": "constitution",
+              "name": "Constitution",
+              "sortOrder": 0
+            },
+            {
+              "slug": "parliament",
+              "name": "Parliament",
+              "sortOrder": 1
+            },
+            {
+              "slug": "judiciary",
+              "name": "Judiciary",
+              "sortOrder": 2
+            },
+            {
+              "slug": "president",
+              "name": "President",
+              "sortOrder": 3
+            },
+            {
+              "slug": "prime-minister",
+              "name": "Prime Minister",
+              "sortOrder": 4
+            },
+            {
+              "slug": "fundamental-duties",
+              "name": "Fundamental Duties",
+              "sortOrder": 5
+            },
+            {
+              "slug": "fundamental-rights",
+              "name": "Fundamental Rights",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "science",
+          "name": "General Science",
+          "sortOrder": 9,
+          "chapters": [
+            {
+              "slug": "physics",
+              "name": "Physics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "biology",
+              "name": "Biology",
+              "sortOrder": 1
+            },
+            {
+              "slug": "chemistry",
+              "name": "Chemistry",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "history",
+          "name": "Indian History",
+          "sortOrder": 10,
+          "chapters": [
+            {
+              "slug": "modern-india",
+              "name": "Modern India",
+              "sortOrder": 0
+            },
+            {
+              "slug": "freedom-movement",
+              "name": "Freedom Movement",
+              "sortOrder": 1
+            },
+            {
+              "slug": "ancient-india",
+              "name": "Ancient India",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "computer",
+          "name": "Computer",
+          "sortOrder": 11,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "internet",
+              "name": "Internet",
+              "sortOrder": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "bihar-police-si",
+      "name": "Bihar Police Sub-Inspector",
+      "stateCode": "bihar",
+      "examType": "si",
+      "defaultLanguage": "hi-Latn",
+      "subjects": [
+        {
+          "slug": "gk",
+          "name": "General Knowledge",
+          "sortOrder": 0,
+          "chapters": [
+            {
+              "slug": "india-gk",
+              "name": "India GK",
+              "sortOrder": 0
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 1
+            },
+            {
+              "slug": "awards",
+              "name": "Awards",
+              "sortOrder": 2
+            },
+            {
+              "slug": "static-gk",
+              "name": "Static GK",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "current-affairs",
+          "name": "Current Affairs",
+          "sortOrder": 1,
+          "chapters": [
+            {
+              "slug": "national",
+              "name": "National",
+              "sortOrder": 0
+            },
+            {
+              "slug": "state",
+              "name": "State",
+              "sortOrder": 1
+            },
+            {
+              "slug": "international",
+              "name": "International",
+              "sortOrder": 2
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "hindi",
+          "name": "Hindi",
+          "sortOrder": 2,
+          "chapters": [
+            {
+              "slug": "sandhi",
+              "name": "Sandhi",
+              "sortOrder": 0
+            },
+            {
+              "slug": "paryayvachi",
+              "name": "Paryayvachi",
+              "sortOrder": 1
+            },
+            {
+              "slug": "samas",
+              "name": "Samas",
+              "sortOrder": 2
+            },
+            {
+              "slug": "vilom-shabd",
+              "name": "Vilom Shabd",
+              "sortOrder": 3
+            },
+            {
+              "slug": "muhavare",
+              "name": "Muhavare",
+              "sortOrder": 4
+            },
+            {
+              "slug": "vyakaran",
+              "name": "Vyakaran",
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "slug": "maths",
+          "name": "Mathematics",
+          "sortOrder": 3,
+          "chapters": [
+            {
+              "slug": "simplification",
+              "name": "Simplification",
+              "sortOrder": 0
+            },
+            {
+              "slug": "percentage",
+              "name": "Percentage",
+              "sortOrder": 1
+            },
+            {
+              "slug": "time-speed-distance",
+              "name": "Time-Speed-Distance",
+              "sortOrder": 2
+            },
+            {
+              "slug": "ratio",
+              "name": "Ratio",
+              "sortOrder": 3
+            },
+            {
+              "slug": "profit-loss",
+              "name": "Profit-Loss",
+              "sortOrder": 4
+            },
+            {
+              "slug": "average",
+              "name": "Average",
+              "sortOrder": 5
+            },
+            {
+              "slug": "simple-interest",
+              "name": "Simple Interest",
+              "sortOrder": 6
+            },
+            {
+              "slug": "number-system",
+              "name": "Number System",
+              "sortOrder": 7
+            },
+            {
+              "slug": "time-and-work",
+              "name": "Time and Work",
+              "sortOrder": 8
+            }
+          ]
+        },
+        {
+          "slug": "reasoning",
+          "name": "Reasoning",
+          "sortOrder": 4,
+          "chapters": [
+            {
+              "slug": "blood-relation",
+              "name": "Blood Relation",
+              "sortOrder": 0
+            },
+            {
+              "slug": "coding-decoding",
+              "name": "Coding-Decoding",
+              "sortOrder": 1
+            },
+            {
+              "slug": "odd-one-out",
+              "name": "Odd One Out",
+              "sortOrder": 2
+            },
+            {
+              "slug": "series",
+              "name": "Series",
+              "sortOrder": 3
+            },
+            {
+              "slug": "analogy",
+              "name": "Analogy",
+              "sortOrder": 4
+            },
+            {
+              "slug": "direction-sense",
+              "name": "Direction Sense",
+              "sortOrder": 5
+            },
+            {
+              "slug": "syllogism",
+              "name": "Syllogism",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "state-gk",
+          "name": "Bihar GK",
+          "sortOrder": 5,
+          "chapters": [
+            {
+              "slug": "geography",
+              "name": "Geography",
+              "sortOrder": 0
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 1
+            },
+            {
+              "slug": "wildlife",
+              "name": "Wildlife",
+              "sortOrder": 2
+            },
+            {
+              "slug": "culture",
+              "name": "Culture",
+              "sortOrder": 3
+            },
+            {
+              "slug": "monuments",
+              "name": "Monuments",
+              "sortOrder": 4
+            },
+            {
+              "slug": "history",
+              "name": "History",
+              "sortOrder": 5
+            },
+            {
+              "slug": "symbols",
+              "name": "Symbols",
+              "sortOrder": 6
+            },
+            {
+              "slug": "economy",
+              "name": "Economy",
+              "sortOrder": 7
+            }
+          ]
+        },
+        {
+          "slug": "science",
+          "name": "General Science",
+          "sortOrder": 6,
+          "chapters": [
+            {
+              "slug": "physics",
+              "name": "Physics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "biology",
+              "name": "Biology",
+              "sortOrder": 1
+            },
+            {
+              "slug": "chemistry",
+              "name": "Chemistry",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "polity",
+          "name": "Indian Polity",
+          "sortOrder": 7,
+          "chapters": [
+            {
+              "slug": "constitution",
+              "name": "Constitution",
+              "sortOrder": 0
+            },
+            {
+              "slug": "parliament",
+              "name": "Parliament",
+              "sortOrder": 1
+            },
+            {
+              "slug": "judiciary",
+              "name": "Judiciary",
+              "sortOrder": 2
+            },
+            {
+              "slug": "president",
+              "name": "President",
+              "sortOrder": 3
+            },
+            {
+              "slug": "prime-minister",
+              "name": "Prime Minister",
+              "sortOrder": 4
+            },
+            {
+              "slug": "fundamental-duties",
+              "name": "Fundamental Duties",
+              "sortOrder": 5
+            },
+            {
+              "slug": "fundamental-rights",
+              "name": "Fundamental Rights",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "police-law",
+          "name": "Police / Law-related Topics",
+          "sortOrder": 8,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "police-administration",
+              "name": "Police Administration",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "history",
+          "name": "Indian History",
+          "sortOrder": 9,
+          "chapters": [
+            {
+              "slug": "modern-india",
+              "name": "Modern India",
+              "sortOrder": 0
+            },
+            {
+              "slug": "freedom-movement",
+              "name": "Freedom Movement",
+              "sortOrder": 1
+            },
+            {
+              "slug": "ancient-india",
+              "name": "Ancient India",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "computer",
+          "name": "Computer",
+          "sortOrder": 10,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "internet",
+              "name": "Internet",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "constitution",
+          "name": "Constitution",
+          "sortOrder": 11,
+          "chapters": [
+            {
+              "slug": "articles",
+              "name": "Articles",
+              "sortOrder": 0
+            },
+            {
+              "slug": "emergency",
+              "name": "Emergency",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "geography",
+          "name": "Geography",
+          "sortOrder": 12,
+          "chapters": [
+            {
+              "slug": "states",
+              "name": "States",
+              "sortOrder": 0
+            },
+            {
+              "slug": "physical-geography",
+              "name": "Physical Geography",
+              "sortOrder": 1
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 2
+            },
+            {
+              "slug": "mountains",
+              "name": "Mountains",
+              "sortOrder": 3
+            },
+            {
+              "slug": "climate",
+              "name": "Climate",
+              "sortOrder": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "jharkhand-police-constable",
+      "name": "Jharkhand Police Constable",
+      "stateCode": "jharkhand",
+      "examType": "constable",
+      "defaultLanguage": "hi-Latn",
+      "subjects": [
+        {
+          "slug": "gk",
+          "name": "General Knowledge",
+          "sortOrder": 0,
+          "chapters": [
+            {
+              "slug": "india-gk",
+              "name": "India GK",
+              "sortOrder": 0
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 1
+            },
+            {
+              "slug": "awards",
+              "name": "Awards",
+              "sortOrder": 2
+            },
+            {
+              "slug": "static-gk",
+              "name": "Static GK",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "current-affairs",
+          "name": "Current Affairs",
+          "sortOrder": 1,
+          "chapters": [
+            {
+              "slug": "national",
+              "name": "National",
+              "sortOrder": 0
+            },
+            {
+              "slug": "state",
+              "name": "State",
+              "sortOrder": 1
+            },
+            {
+              "slug": "international",
+              "name": "International",
+              "sortOrder": 2
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "hindi",
+          "name": "Hindi",
+          "sortOrder": 2,
+          "chapters": [
+            {
+              "slug": "sandhi",
+              "name": "Sandhi",
+              "sortOrder": 0
+            },
+            {
+              "slug": "paryayvachi",
+              "name": "Paryayvachi",
+              "sortOrder": 1
+            },
+            {
+              "slug": "samas",
+              "name": "Samas",
+              "sortOrder": 2
+            },
+            {
+              "slug": "vilom-shabd",
+              "name": "Vilom Shabd",
+              "sortOrder": 3
+            },
+            {
+              "slug": "muhavare",
+              "name": "Muhavare",
+              "sortOrder": 4
+            },
+            {
+              "slug": "vyakaran",
+              "name": "Vyakaran",
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "slug": "maths",
+          "name": "Mathematics",
+          "sortOrder": 3,
+          "chapters": [
+            {
+              "slug": "simplification",
+              "name": "Simplification",
+              "sortOrder": 0
+            },
+            {
+              "slug": "percentage",
+              "name": "Percentage",
+              "sortOrder": 1
+            },
+            {
+              "slug": "time-speed-distance",
+              "name": "Time-Speed-Distance",
+              "sortOrder": 2
+            },
+            {
+              "slug": "ratio",
+              "name": "Ratio",
+              "sortOrder": 3
+            },
+            {
+              "slug": "profit-loss",
+              "name": "Profit-Loss",
+              "sortOrder": 4
+            },
+            {
+              "slug": "average",
+              "name": "Average",
+              "sortOrder": 5
+            },
+            {
+              "slug": "simple-interest",
+              "name": "Simple Interest",
+              "sortOrder": 6
+            },
+            {
+              "slug": "number-system",
+              "name": "Number System",
+              "sortOrder": 7
+            },
+            {
+              "slug": "time-and-work",
+              "name": "Time and Work",
+              "sortOrder": 8
+            }
+          ]
+        },
+        {
+          "slug": "reasoning",
+          "name": "Reasoning",
+          "sortOrder": 4,
+          "chapters": [
+            {
+              "slug": "blood-relation",
+              "name": "Blood Relation",
+              "sortOrder": 0
+            },
+            {
+              "slug": "coding-decoding",
+              "name": "Coding-Decoding",
+              "sortOrder": 1
+            },
+            {
+              "slug": "odd-one-out",
+              "name": "Odd One Out",
+              "sortOrder": 2
+            },
+            {
+              "slug": "series",
+              "name": "Series",
+              "sortOrder": 3
+            },
+            {
+              "slug": "analogy",
+              "name": "Analogy",
+              "sortOrder": 4
+            },
+            {
+              "slug": "direction-sense",
+              "name": "Direction Sense",
+              "sortOrder": 5
+            },
+            {
+              "slug": "syllogism",
+              "name": "Syllogism",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "state-gk",
+          "name": "Jharkhand GK",
+          "sortOrder": 5,
+          "chapters": [
+            {
+              "slug": "geography",
+              "name": "Geography",
+              "sortOrder": 0
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 1
+            },
+            {
+              "slug": "wildlife",
+              "name": "Wildlife",
+              "sortOrder": 2
+            },
+            {
+              "slug": "culture",
+              "name": "Culture",
+              "sortOrder": 3
+            },
+            {
+              "slug": "monuments",
+              "name": "Monuments",
+              "sortOrder": 4
+            },
+            {
+              "slug": "history",
+              "name": "History",
+              "sortOrder": 5
+            },
+            {
+              "slug": "symbols",
+              "name": "Symbols",
+              "sortOrder": 6
+            },
+            {
+              "slug": "economy",
+              "name": "Economy",
+              "sortOrder": 7
+            }
+          ]
+        },
+        {
+          "slug": "police-law",
+          "name": "Police / Law-related Topics",
+          "sortOrder": 6,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "police-administration",
+              "name": "Police Administration",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "polity",
+          "name": "Indian Polity",
+          "sortOrder": 7,
+          "chapters": [
+            {
+              "slug": "constitution",
+              "name": "Constitution",
+              "sortOrder": 0
+            },
+            {
+              "slug": "parliament",
+              "name": "Parliament",
+              "sortOrder": 1
+            },
+            {
+              "slug": "judiciary",
+              "name": "Judiciary",
+              "sortOrder": 2
+            },
+            {
+              "slug": "president",
+              "name": "President",
+              "sortOrder": 3
+            },
+            {
+              "slug": "prime-minister",
+              "name": "Prime Minister",
+              "sortOrder": 4
+            },
+            {
+              "slug": "fundamental-duties",
+              "name": "Fundamental Duties",
+              "sortOrder": 5
+            },
+            {
+              "slug": "fundamental-rights",
+              "name": "Fundamental Rights",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "science",
+          "name": "General Science",
+          "sortOrder": 8,
+          "chapters": [
+            {
+              "slug": "physics",
+              "name": "Physics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "biology",
+              "name": "Biology",
+              "sortOrder": 1
+            },
+            {
+              "slug": "chemistry",
+              "name": "Chemistry",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "history",
+          "name": "Indian History",
+          "sortOrder": 9,
+          "chapters": [
+            {
+              "slug": "modern-india",
+              "name": "Modern India",
+              "sortOrder": 0
+            },
+            {
+              "slug": "freedom-movement",
+              "name": "Freedom Movement",
+              "sortOrder": 1
+            },
+            {
+              "slug": "ancient-india",
+              "name": "Ancient India",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "computer",
+          "name": "Computer",
+          "sortOrder": 10,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "internet",
+              "name": "Internet",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "constitution",
+          "name": "Constitution",
+          "sortOrder": 11,
+          "chapters": [
+            {
+              "slug": "articles",
+              "name": "Articles",
+              "sortOrder": 0
+            },
+            {
+              "slug": "emergency",
+              "name": "Emergency",
+              "sortOrder": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "jharkhand-police-si",
+      "name": "Jharkhand Police Sub-Inspector",
+      "stateCode": "jharkhand",
+      "examType": "si",
+      "defaultLanguage": "hi-Latn",
+      "subjects": [
+        {
+          "slug": "gk",
+          "name": "General Knowledge",
+          "sortOrder": 0,
+          "chapters": [
+            {
+              "slug": "india-gk",
+              "name": "India GK",
+              "sortOrder": 0
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 1
+            },
+            {
+              "slug": "awards",
+              "name": "Awards",
+              "sortOrder": 2
+            },
+            {
+              "slug": "static-gk",
+              "name": "Static GK",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "current-affairs",
+          "name": "Current Affairs",
+          "sortOrder": 1,
+          "chapters": [
+            {
+              "slug": "national",
+              "name": "National",
+              "sortOrder": 0
+            },
+            {
+              "slug": "state",
+              "name": "State",
+              "sortOrder": 1
+            },
+            {
+              "slug": "international",
+              "name": "International",
+              "sortOrder": 2
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "hindi",
+          "name": "Hindi",
+          "sortOrder": 2,
+          "chapters": [
+            {
+              "slug": "sandhi",
+              "name": "Sandhi",
+              "sortOrder": 0
+            },
+            {
+              "slug": "paryayvachi",
+              "name": "Paryayvachi",
+              "sortOrder": 1
+            },
+            {
+              "slug": "samas",
+              "name": "Samas",
+              "sortOrder": 2
+            },
+            {
+              "slug": "vilom-shabd",
+              "name": "Vilom Shabd",
+              "sortOrder": 3
+            },
+            {
+              "slug": "muhavare",
+              "name": "Muhavare",
+              "sortOrder": 4
+            },
+            {
+              "slug": "vyakaran",
+              "name": "Vyakaran",
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "slug": "maths",
+          "name": "Mathematics",
+          "sortOrder": 3,
+          "chapters": [
+            {
+              "slug": "simplification",
+              "name": "Simplification",
+              "sortOrder": 0
+            },
+            {
+              "slug": "percentage",
+              "name": "Percentage",
+              "sortOrder": 1
+            },
+            {
+              "slug": "time-speed-distance",
+              "name": "Time-Speed-Distance",
+              "sortOrder": 2
+            },
+            {
+              "slug": "ratio",
+              "name": "Ratio",
+              "sortOrder": 3
+            },
+            {
+              "slug": "profit-loss",
+              "name": "Profit-Loss",
+              "sortOrder": 4
+            },
+            {
+              "slug": "average",
+              "name": "Average",
+              "sortOrder": 5
+            },
+            {
+              "slug": "simple-interest",
+              "name": "Simple Interest",
+              "sortOrder": 6
+            },
+            {
+              "slug": "number-system",
+              "name": "Number System",
+              "sortOrder": 7
+            },
+            {
+              "slug": "time-and-work",
+              "name": "Time and Work",
+              "sortOrder": 8
+            }
+          ]
+        },
+        {
+          "slug": "reasoning",
+          "name": "Reasoning",
+          "sortOrder": 4,
+          "chapters": [
+            {
+              "slug": "blood-relation",
+              "name": "Blood Relation",
+              "sortOrder": 0
+            },
+            {
+              "slug": "coding-decoding",
+              "name": "Coding-Decoding",
+              "sortOrder": 1
+            },
+            {
+              "slug": "odd-one-out",
+              "name": "Odd One Out",
+              "sortOrder": 2
+            },
+            {
+              "slug": "series",
+              "name": "Series",
+              "sortOrder": 3
+            },
+            {
+              "slug": "analogy",
+              "name": "Analogy",
+              "sortOrder": 4
+            },
+            {
+              "slug": "direction-sense",
+              "name": "Direction Sense",
+              "sortOrder": 5
+            },
+            {
+              "slug": "syllogism",
+              "name": "Syllogism",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "state-gk",
+          "name": "Jharkhand GK",
+          "sortOrder": 5,
+          "chapters": [
+            {
+              "slug": "geography",
+              "name": "Geography",
+              "sortOrder": 0
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 1
+            },
+            {
+              "slug": "wildlife",
+              "name": "Wildlife",
+              "sortOrder": 2
+            },
+            {
+              "slug": "culture",
+              "name": "Culture",
+              "sortOrder": 3
+            },
+            {
+              "slug": "monuments",
+              "name": "Monuments",
+              "sortOrder": 4
+            },
+            {
+              "slug": "history",
+              "name": "History",
+              "sortOrder": 5
+            },
+            {
+              "slug": "symbols",
+              "name": "Symbols",
+              "sortOrder": 6
+            },
+            {
+              "slug": "economy",
+              "name": "Economy",
+              "sortOrder": 7
+            }
+          ]
+        },
+        {
+          "slug": "science",
+          "name": "General Science",
+          "sortOrder": 6,
+          "chapters": [
+            {
+              "slug": "physics",
+              "name": "Physics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "biology",
+              "name": "Biology",
+              "sortOrder": 1
+            },
+            {
+              "slug": "chemistry",
+              "name": "Chemistry",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "polity",
+          "name": "Indian Polity",
+          "sortOrder": 7,
+          "chapters": [
+            {
+              "slug": "constitution",
+              "name": "Constitution",
+              "sortOrder": 0
+            },
+            {
+              "slug": "parliament",
+              "name": "Parliament",
+              "sortOrder": 1
+            },
+            {
+              "slug": "judiciary",
+              "name": "Judiciary",
+              "sortOrder": 2
+            },
+            {
+              "slug": "president",
+              "name": "President",
+              "sortOrder": 3
+            },
+            {
+              "slug": "prime-minister",
+              "name": "Prime Minister",
+              "sortOrder": 4
+            },
+            {
+              "slug": "fundamental-duties",
+              "name": "Fundamental Duties",
+              "sortOrder": 5
+            },
+            {
+              "slug": "fundamental-rights",
+              "name": "Fundamental Rights",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "police-law",
+          "name": "Police / Law-related Topics",
+          "sortOrder": 8,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "police-administration",
+              "name": "Police Administration",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "history",
+          "name": "Indian History",
+          "sortOrder": 9,
+          "chapters": [
+            {
+              "slug": "modern-india",
+              "name": "Modern India",
+              "sortOrder": 0
+            },
+            {
+              "slug": "freedom-movement",
+              "name": "Freedom Movement",
+              "sortOrder": 1
+            },
+            {
+              "slug": "ancient-india",
+              "name": "Ancient India",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "geography",
+          "name": "Geography",
+          "sortOrder": 10,
+          "chapters": [
+            {
+              "slug": "states",
+              "name": "States",
+              "sortOrder": 0
+            },
+            {
+              "slug": "physical-geography",
+              "name": "Physical Geography",
+              "sortOrder": 1
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 2
+            },
+            {
+              "slug": "mountains",
+              "name": "Mountains",
+              "sortOrder": 3
+            },
+            {
+              "slug": "climate",
+              "name": "Climate",
+              "sortOrder": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "uttarakhand-police-constable",
+      "name": "Uttarakhand Police Constable",
+      "stateCode": "uttarakhand",
+      "examType": "constable",
+      "defaultLanguage": "hi-Latn",
+      "subjects": [
+        {
+          "slug": "gk",
+          "name": "General Knowledge",
+          "sortOrder": 0,
+          "chapters": [
+            {
+              "slug": "india-gk",
+              "name": "India GK",
+              "sortOrder": 0
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 1
+            },
+            {
+              "slug": "awards",
+              "name": "Awards",
+              "sortOrder": 2
+            },
+            {
+              "slug": "static-gk",
+              "name": "Static GK",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "current-affairs",
+          "name": "Current Affairs",
+          "sortOrder": 1,
+          "chapters": [
+            {
+              "slug": "national",
+              "name": "National",
+              "sortOrder": 0
+            },
+            {
+              "slug": "state",
+              "name": "State",
+              "sortOrder": 1
+            },
+            {
+              "slug": "international",
+              "name": "International",
+              "sortOrder": 2
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "hindi",
+          "name": "Hindi",
+          "sortOrder": 2,
+          "chapters": [
+            {
+              "slug": "sandhi",
+              "name": "Sandhi",
+              "sortOrder": 0
+            },
+            {
+              "slug": "paryayvachi",
+              "name": "Paryayvachi",
+              "sortOrder": 1
+            },
+            {
+              "slug": "samas",
+              "name": "Samas",
+              "sortOrder": 2
+            },
+            {
+              "slug": "vilom-shabd",
+              "name": "Vilom Shabd",
+              "sortOrder": 3
+            },
+            {
+              "slug": "muhavare",
+              "name": "Muhavare",
+              "sortOrder": 4
+            },
+            {
+              "slug": "vyakaran",
+              "name": "Vyakaran",
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "slug": "maths",
+          "name": "Mathematics",
+          "sortOrder": 3,
+          "chapters": [
+            {
+              "slug": "simplification",
+              "name": "Simplification",
+              "sortOrder": 0
+            },
+            {
+              "slug": "percentage",
+              "name": "Percentage",
+              "sortOrder": 1
+            },
+            {
+              "slug": "time-speed-distance",
+              "name": "Time-Speed-Distance",
+              "sortOrder": 2
+            },
+            {
+              "slug": "ratio",
+              "name": "Ratio",
+              "sortOrder": 3
+            },
+            {
+              "slug": "profit-loss",
+              "name": "Profit-Loss",
+              "sortOrder": 4
+            },
+            {
+              "slug": "average",
+              "name": "Average",
+              "sortOrder": 5
+            },
+            {
+              "slug": "simple-interest",
+              "name": "Simple Interest",
+              "sortOrder": 6
+            },
+            {
+              "slug": "number-system",
+              "name": "Number System",
+              "sortOrder": 7
+            },
+            {
+              "slug": "time-and-work",
+              "name": "Time and Work",
+              "sortOrder": 8
+            }
+          ]
+        },
+        {
+          "slug": "reasoning",
+          "name": "Reasoning",
+          "sortOrder": 4,
+          "chapters": [
+            {
+              "slug": "blood-relation",
+              "name": "Blood Relation",
+              "sortOrder": 0
+            },
+            {
+              "slug": "coding-decoding",
+              "name": "Coding-Decoding",
+              "sortOrder": 1
+            },
+            {
+              "slug": "odd-one-out",
+              "name": "Odd One Out",
+              "sortOrder": 2
+            },
+            {
+              "slug": "series",
+              "name": "Series",
+              "sortOrder": 3
+            },
+            {
+              "slug": "analogy",
+              "name": "Analogy",
+              "sortOrder": 4
+            },
+            {
+              "slug": "direction-sense",
+              "name": "Direction Sense",
+              "sortOrder": 5
+            },
+            {
+              "slug": "syllogism",
+              "name": "Syllogism",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "state-gk",
+          "name": "Uttarakhand GK",
+          "sortOrder": 5,
+          "chapters": [
+            {
+              "slug": "geography",
+              "name": "Geography",
+              "sortOrder": 0
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 1
+            },
+            {
+              "slug": "wildlife",
+              "name": "Wildlife",
+              "sortOrder": 2
+            },
+            {
+              "slug": "culture",
+              "name": "Culture",
+              "sortOrder": 3
+            },
+            {
+              "slug": "monuments",
+              "name": "Monuments",
+              "sortOrder": 4
+            },
+            {
+              "slug": "history",
+              "name": "History",
+              "sortOrder": 5
+            },
+            {
+              "slug": "symbols",
+              "name": "Symbols",
+              "sortOrder": 6
+            },
+            {
+              "slug": "economy",
+              "name": "Economy",
+              "sortOrder": 7
+            }
+          ]
+        },
+        {
+          "slug": "police-law",
+          "name": "Police / Law-related Topics",
+          "sortOrder": 6,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "police-administration",
+              "name": "Police Administration",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "polity",
+          "name": "Indian Polity",
+          "sortOrder": 7,
+          "chapters": [
+            {
+              "slug": "constitution",
+              "name": "Constitution",
+              "sortOrder": 0
+            },
+            {
+              "slug": "parliament",
+              "name": "Parliament",
+              "sortOrder": 1
+            },
+            {
+              "slug": "judiciary",
+              "name": "Judiciary",
+              "sortOrder": 2
+            },
+            {
+              "slug": "president",
+              "name": "President",
+              "sortOrder": 3
+            },
+            {
+              "slug": "prime-minister",
+              "name": "Prime Minister",
+              "sortOrder": 4
+            },
+            {
+              "slug": "fundamental-duties",
+              "name": "Fundamental Duties",
+              "sortOrder": 5
+            },
+            {
+              "slug": "fundamental-rights",
+              "name": "Fundamental Rights",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "geography",
+          "name": "Geography",
+          "sortOrder": 8,
+          "chapters": [
+            {
+              "slug": "states",
+              "name": "States",
+              "sortOrder": 0
+            },
+            {
+              "slug": "physical-geography",
+              "name": "Physical Geography",
+              "sortOrder": 1
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 2
+            },
+            {
+              "slug": "mountains",
+              "name": "Mountains",
+              "sortOrder": 3
+            },
+            {
+              "slug": "climate",
+              "name": "Climate",
+              "sortOrder": 4
+            }
+          ]
+        },
+        {
+          "slug": "history",
+          "name": "Indian History",
+          "sortOrder": 9,
+          "chapters": [
+            {
+              "slug": "modern-india",
+              "name": "Modern India",
+              "sortOrder": 0
+            },
+            {
+              "slug": "freedom-movement",
+              "name": "Freedom Movement",
+              "sortOrder": 1
+            },
+            {
+              "slug": "ancient-india",
+              "name": "Ancient India",
+              "sortOrder": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "uttarakhand-police-si",
+      "name": "Uttarakhand Police Sub-Inspector",
+      "stateCode": "uttarakhand",
+      "examType": "si",
+      "defaultLanguage": "hi-Latn",
+      "subjects": [
+        {
+          "slug": "gk",
+          "name": "General Knowledge",
+          "sortOrder": 0,
+          "chapters": [
+            {
+              "slug": "india-gk",
+              "name": "India GK",
+              "sortOrder": 0
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 1
+            },
+            {
+              "slug": "awards",
+              "name": "Awards",
+              "sortOrder": 2
+            },
+            {
+              "slug": "static-gk",
+              "name": "Static GK",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "current-affairs",
+          "name": "Current Affairs",
+          "sortOrder": 1,
+          "chapters": [
+            {
+              "slug": "national",
+              "name": "National",
+              "sortOrder": 0
+            },
+            {
+              "slug": "state",
+              "name": "State",
+              "sortOrder": 1
+            },
+            {
+              "slug": "international",
+              "name": "International",
+              "sortOrder": 2
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "hindi",
+          "name": "Hindi",
+          "sortOrder": 2,
+          "chapters": [
+            {
+              "slug": "sandhi",
+              "name": "Sandhi",
+              "sortOrder": 0
+            },
+            {
+              "slug": "paryayvachi",
+              "name": "Paryayvachi",
+              "sortOrder": 1
+            },
+            {
+              "slug": "samas",
+              "name": "Samas",
+              "sortOrder": 2
+            },
+            {
+              "slug": "vilom-shabd",
+              "name": "Vilom Shabd",
+              "sortOrder": 3
+            },
+            {
+              "slug": "muhavare",
+              "name": "Muhavare",
+              "sortOrder": 4
+            },
+            {
+              "slug": "vyakaran",
+              "name": "Vyakaran",
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "slug": "maths",
+          "name": "Mathematics",
+          "sortOrder": 3,
+          "chapters": [
+            {
+              "slug": "simplification",
+              "name": "Simplification",
+              "sortOrder": 0
+            },
+            {
+              "slug": "percentage",
+              "name": "Percentage",
+              "sortOrder": 1
+            },
+            {
+              "slug": "time-speed-distance",
+              "name": "Time-Speed-Distance",
+              "sortOrder": 2
+            },
+            {
+              "slug": "ratio",
+              "name": "Ratio",
+              "sortOrder": 3
+            },
+            {
+              "slug": "profit-loss",
+              "name": "Profit-Loss",
+              "sortOrder": 4
+            },
+            {
+              "slug": "average",
+              "name": "Average",
+              "sortOrder": 5
+            },
+            {
+              "slug": "simple-interest",
+              "name": "Simple Interest",
+              "sortOrder": 6
+            },
+            {
+              "slug": "number-system",
+              "name": "Number System",
+              "sortOrder": 7
+            },
+            {
+              "slug": "time-and-work",
+              "name": "Time and Work",
+              "sortOrder": 8
+            }
+          ]
+        },
+        {
+          "slug": "reasoning",
+          "name": "Reasoning",
+          "sortOrder": 4,
+          "chapters": [
+            {
+              "slug": "blood-relation",
+              "name": "Blood Relation",
+              "sortOrder": 0
+            },
+            {
+              "slug": "coding-decoding",
+              "name": "Coding-Decoding",
+              "sortOrder": 1
+            },
+            {
+              "slug": "odd-one-out",
+              "name": "Odd One Out",
+              "sortOrder": 2
+            },
+            {
+              "slug": "series",
+              "name": "Series",
+              "sortOrder": 3
+            },
+            {
+              "slug": "analogy",
+              "name": "Analogy",
+              "sortOrder": 4
+            },
+            {
+              "slug": "direction-sense",
+              "name": "Direction Sense",
+              "sortOrder": 5
+            },
+            {
+              "slug": "syllogism",
+              "name": "Syllogism",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "state-gk",
+          "name": "Uttarakhand GK",
+          "sortOrder": 5,
+          "chapters": [
+            {
+              "slug": "geography",
+              "name": "Geography",
+              "sortOrder": 0
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 1
+            },
+            {
+              "slug": "wildlife",
+              "name": "Wildlife",
+              "sortOrder": 2
+            },
+            {
+              "slug": "culture",
+              "name": "Culture",
+              "sortOrder": 3
+            },
+            {
+              "slug": "monuments",
+              "name": "Monuments",
+              "sortOrder": 4
+            },
+            {
+              "slug": "history",
+              "name": "History",
+              "sortOrder": 5
+            },
+            {
+              "slug": "symbols",
+              "name": "Symbols",
+              "sortOrder": 6
+            },
+            {
+              "slug": "economy",
+              "name": "Economy",
+              "sortOrder": 7
+            }
+          ]
+        },
+        {
+          "slug": "science",
+          "name": "General Science",
+          "sortOrder": 6,
+          "chapters": [
+            {
+              "slug": "physics",
+              "name": "Physics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "biology",
+              "name": "Biology",
+              "sortOrder": 1
+            },
+            {
+              "slug": "chemistry",
+              "name": "Chemistry",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "polity",
+          "name": "Indian Polity",
+          "sortOrder": 7,
+          "chapters": [
+            {
+              "slug": "constitution",
+              "name": "Constitution",
+              "sortOrder": 0
+            },
+            {
+              "slug": "parliament",
+              "name": "Parliament",
+              "sortOrder": 1
+            },
+            {
+              "slug": "judiciary",
+              "name": "Judiciary",
+              "sortOrder": 2
+            },
+            {
+              "slug": "president",
+              "name": "President",
+              "sortOrder": 3
+            },
+            {
+              "slug": "prime-minister",
+              "name": "Prime Minister",
+              "sortOrder": 4
+            },
+            {
+              "slug": "fundamental-duties",
+              "name": "Fundamental Duties",
+              "sortOrder": 5
+            },
+            {
+              "slug": "fundamental-rights",
+              "name": "Fundamental Rights",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "police-law",
+          "name": "Police / Law-related Topics",
+          "sortOrder": 8,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "police-administration",
+              "name": "Police Administration",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "history",
+          "name": "Indian History",
+          "sortOrder": 9,
+          "chapters": [
+            {
+              "slug": "modern-india",
+              "name": "Modern India",
+              "sortOrder": 0
+            },
+            {
+              "slug": "freedom-movement",
+              "name": "Freedom Movement",
+              "sortOrder": 1
+            },
+            {
+              "slug": "ancient-india",
+              "name": "Ancient India",
+              "sortOrder": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "haryana-police-constable",
+      "name": "Haryana Police Constable",
+      "stateCode": "haryana",
+      "examType": "constable",
+      "defaultLanguage": "hi-Latn",
+      "subjects": [
+        {
+          "slug": "gk",
+          "name": "General Knowledge",
+          "sortOrder": 0,
+          "chapters": [
+            {
+              "slug": "india-gk",
+              "name": "India GK",
+              "sortOrder": 0
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 1
+            },
+            {
+              "slug": "awards",
+              "name": "Awards",
+              "sortOrder": 2
+            },
+            {
+              "slug": "static-gk",
+              "name": "Static GK",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "current-affairs",
+          "name": "Current Affairs",
+          "sortOrder": 1,
+          "chapters": [
+            {
+              "slug": "national",
+              "name": "National",
+              "sortOrder": 0
+            },
+            {
+              "slug": "state",
+              "name": "State",
+              "sortOrder": 1
+            },
+            {
+              "slug": "international",
+              "name": "International",
+              "sortOrder": 2
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "hindi",
+          "name": "Hindi",
+          "sortOrder": 2,
+          "chapters": [
+            {
+              "slug": "sandhi",
+              "name": "Sandhi",
+              "sortOrder": 0
+            },
+            {
+              "slug": "paryayvachi",
+              "name": "Paryayvachi",
+              "sortOrder": 1
+            },
+            {
+              "slug": "samas",
+              "name": "Samas",
+              "sortOrder": 2
+            },
+            {
+              "slug": "vilom-shabd",
+              "name": "Vilom Shabd",
+              "sortOrder": 3
+            },
+            {
+              "slug": "muhavare",
+              "name": "Muhavare",
+              "sortOrder": 4
+            },
+            {
+              "slug": "vyakaran",
+              "name": "Vyakaran",
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "slug": "maths",
+          "name": "Mathematics",
+          "sortOrder": 3,
+          "chapters": [
+            {
+              "slug": "simplification",
+              "name": "Simplification",
+              "sortOrder": 0
+            },
+            {
+              "slug": "percentage",
+              "name": "Percentage",
+              "sortOrder": 1
+            },
+            {
+              "slug": "time-speed-distance",
+              "name": "Time-Speed-Distance",
+              "sortOrder": 2
+            },
+            {
+              "slug": "ratio",
+              "name": "Ratio",
+              "sortOrder": 3
+            },
+            {
+              "slug": "profit-loss",
+              "name": "Profit-Loss",
+              "sortOrder": 4
+            },
+            {
+              "slug": "average",
+              "name": "Average",
+              "sortOrder": 5
+            },
+            {
+              "slug": "simple-interest",
+              "name": "Simple Interest",
+              "sortOrder": 6
+            },
+            {
+              "slug": "number-system",
+              "name": "Number System",
+              "sortOrder": 7
+            },
+            {
+              "slug": "time-and-work",
+              "name": "Time and Work",
+              "sortOrder": 8
+            }
+          ]
+        },
+        {
+          "slug": "reasoning",
+          "name": "Reasoning",
+          "sortOrder": 4,
+          "chapters": [
+            {
+              "slug": "blood-relation",
+              "name": "Blood Relation",
+              "sortOrder": 0
+            },
+            {
+              "slug": "coding-decoding",
+              "name": "Coding-Decoding",
+              "sortOrder": 1
+            },
+            {
+              "slug": "odd-one-out",
+              "name": "Odd One Out",
+              "sortOrder": 2
+            },
+            {
+              "slug": "series",
+              "name": "Series",
+              "sortOrder": 3
+            },
+            {
+              "slug": "analogy",
+              "name": "Analogy",
+              "sortOrder": 4
+            },
+            {
+              "slug": "direction-sense",
+              "name": "Direction Sense",
+              "sortOrder": 5
+            },
+            {
+              "slug": "syllogism",
+              "name": "Syllogism",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "state-gk",
+          "name": "Haryana GK",
+          "sortOrder": 5,
+          "chapters": [
+            {
+              "slug": "geography",
+              "name": "Geography",
+              "sortOrder": 0
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 1
+            },
+            {
+              "slug": "wildlife",
+              "name": "Wildlife",
+              "sortOrder": 2
+            },
+            {
+              "slug": "culture",
+              "name": "Culture",
+              "sortOrder": 3
+            },
+            {
+              "slug": "monuments",
+              "name": "Monuments",
+              "sortOrder": 4
+            },
+            {
+              "slug": "history",
+              "name": "History",
+              "sortOrder": 5
+            },
+            {
+              "slug": "symbols",
+              "name": "Symbols",
+              "sortOrder": 6
+            },
+            {
+              "slug": "economy",
+              "name": "Economy",
+              "sortOrder": 7
+            }
+          ]
+        },
+        {
+          "slug": "police-law",
+          "name": "Police / Law-related Topics",
+          "sortOrder": 6,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "police-administration",
+              "name": "Police Administration",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "science",
+          "name": "General Science",
+          "sortOrder": 7,
+          "chapters": [
+            {
+              "slug": "physics",
+              "name": "Physics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "biology",
+              "name": "Biology",
+              "sortOrder": 1
+            },
+            {
+              "slug": "chemistry",
+              "name": "Chemistry",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "constitution",
+          "name": "Constitution",
+          "sortOrder": 8,
+          "chapters": [
+            {
+              "slug": "articles",
+              "name": "Articles",
+              "sortOrder": 0
+            },
+            {
+              "slug": "emergency",
+              "name": "Emergency",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "computer",
+          "name": "Computer",
+          "sortOrder": 9,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "internet",
+              "name": "Internet",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "geography",
+          "name": "Geography",
+          "sortOrder": 10,
+          "chapters": [
+            {
+              "slug": "states",
+              "name": "States",
+              "sortOrder": 0
+            },
+            {
+              "slug": "physical-geography",
+              "name": "Physical Geography",
+              "sortOrder": 1
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 2
+            },
+            {
+              "slug": "mountains",
+              "name": "Mountains",
+              "sortOrder": 3
+            },
+            {
+              "slug": "climate",
+              "name": "Climate",
+              "sortOrder": 4
+            }
+          ]
+        },
+        {
+          "slug": "polity",
+          "name": "Indian Polity",
+          "sortOrder": 11,
+          "chapters": [
+            {
+              "slug": "constitution",
+              "name": "Constitution",
+              "sortOrder": 0
+            },
+            {
+              "slug": "parliament",
+              "name": "Parliament",
+              "sortOrder": 1
+            },
+            {
+              "slug": "judiciary",
+              "name": "Judiciary",
+              "sortOrder": 2
+            },
+            {
+              "slug": "president",
+              "name": "President",
+              "sortOrder": 3
+            },
+            {
+              "slug": "prime-minister",
+              "name": "Prime Minister",
+              "sortOrder": 4
+            },
+            {
+              "slug": "fundamental-duties",
+              "name": "Fundamental Duties",
+              "sortOrder": 5
+            },
+            {
+              "slug": "fundamental-rights",
+              "name": "Fundamental Rights",
+              "sortOrder": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "haryana-police-si",
+      "name": "Haryana Police Sub-Inspector",
+      "stateCode": "haryana",
+      "examType": "si",
+      "defaultLanguage": "hi-Latn",
+      "subjects": [
+        {
+          "slug": "gk",
+          "name": "General Knowledge",
+          "sortOrder": 0,
+          "chapters": [
+            {
+              "slug": "india-gk",
+              "name": "India GK",
+              "sortOrder": 0
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 1
+            },
+            {
+              "slug": "awards",
+              "name": "Awards",
+              "sortOrder": 2
+            },
+            {
+              "slug": "static-gk",
+              "name": "Static GK",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "current-affairs",
+          "name": "Current Affairs",
+          "sortOrder": 1,
+          "chapters": [
+            {
+              "slug": "national",
+              "name": "National",
+              "sortOrder": 0
+            },
+            {
+              "slug": "state",
+              "name": "State",
+              "sortOrder": 1
+            },
+            {
+              "slug": "international",
+              "name": "International",
+              "sortOrder": 2
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "hindi",
+          "name": "Hindi",
+          "sortOrder": 2,
+          "chapters": [
+            {
+              "slug": "sandhi",
+              "name": "Sandhi",
+              "sortOrder": 0
+            },
+            {
+              "slug": "paryayvachi",
+              "name": "Paryayvachi",
+              "sortOrder": 1
+            },
+            {
+              "slug": "samas",
+              "name": "Samas",
+              "sortOrder": 2
+            },
+            {
+              "slug": "vilom-shabd",
+              "name": "Vilom Shabd",
+              "sortOrder": 3
+            },
+            {
+              "slug": "muhavare",
+              "name": "Muhavare",
+              "sortOrder": 4
+            },
+            {
+              "slug": "vyakaran",
+              "name": "Vyakaran",
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "slug": "maths",
+          "name": "Mathematics",
+          "sortOrder": 3,
+          "chapters": [
+            {
+              "slug": "simplification",
+              "name": "Simplification",
+              "sortOrder": 0
+            },
+            {
+              "slug": "percentage",
+              "name": "Percentage",
+              "sortOrder": 1
+            },
+            {
+              "slug": "time-speed-distance",
+              "name": "Time-Speed-Distance",
+              "sortOrder": 2
+            },
+            {
+              "slug": "ratio",
+              "name": "Ratio",
+              "sortOrder": 3
+            },
+            {
+              "slug": "profit-loss",
+              "name": "Profit-Loss",
+              "sortOrder": 4
+            },
+            {
+              "slug": "average",
+              "name": "Average",
+              "sortOrder": 5
+            },
+            {
+              "slug": "simple-interest",
+              "name": "Simple Interest",
+              "sortOrder": 6
+            },
+            {
+              "slug": "number-system",
+              "name": "Number System",
+              "sortOrder": 7
+            },
+            {
+              "slug": "time-and-work",
+              "name": "Time and Work",
+              "sortOrder": 8
+            }
+          ]
+        },
+        {
+          "slug": "reasoning",
+          "name": "Reasoning",
+          "sortOrder": 4,
+          "chapters": [
+            {
+              "slug": "blood-relation",
+              "name": "Blood Relation",
+              "sortOrder": 0
+            },
+            {
+              "slug": "coding-decoding",
+              "name": "Coding-Decoding",
+              "sortOrder": 1
+            },
+            {
+              "slug": "odd-one-out",
+              "name": "Odd One Out",
+              "sortOrder": 2
+            },
+            {
+              "slug": "series",
+              "name": "Series",
+              "sortOrder": 3
+            },
+            {
+              "slug": "analogy",
+              "name": "Analogy",
+              "sortOrder": 4
+            },
+            {
+              "slug": "direction-sense",
+              "name": "Direction Sense",
+              "sortOrder": 5
+            },
+            {
+              "slug": "syllogism",
+              "name": "Syllogism",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "state-gk",
+          "name": "Haryana GK",
+          "sortOrder": 5,
+          "chapters": [
+            {
+              "slug": "geography",
+              "name": "Geography",
+              "sortOrder": 0
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 1
+            },
+            {
+              "slug": "wildlife",
+              "name": "Wildlife",
+              "sortOrder": 2
+            },
+            {
+              "slug": "culture",
+              "name": "Culture",
+              "sortOrder": 3
+            },
+            {
+              "slug": "monuments",
+              "name": "Monuments",
+              "sortOrder": 4
+            },
+            {
+              "slug": "history",
+              "name": "History",
+              "sortOrder": 5
+            },
+            {
+              "slug": "symbols",
+              "name": "Symbols",
+              "sortOrder": 6
+            },
+            {
+              "slug": "economy",
+              "name": "Economy",
+              "sortOrder": 7
+            }
+          ]
+        },
+        {
+          "slug": "science",
+          "name": "General Science",
+          "sortOrder": 6,
+          "chapters": [
+            {
+              "slug": "physics",
+              "name": "Physics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "biology",
+              "name": "Biology",
+              "sortOrder": 1
+            },
+            {
+              "slug": "chemistry",
+              "name": "Chemistry",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "polity",
+          "name": "Indian Polity",
+          "sortOrder": 7,
+          "chapters": [
+            {
+              "slug": "constitution",
+              "name": "Constitution",
+              "sortOrder": 0
+            },
+            {
+              "slug": "parliament",
+              "name": "Parliament",
+              "sortOrder": 1
+            },
+            {
+              "slug": "judiciary",
+              "name": "Judiciary",
+              "sortOrder": 2
+            },
+            {
+              "slug": "president",
+              "name": "President",
+              "sortOrder": 3
+            },
+            {
+              "slug": "prime-minister",
+              "name": "Prime Minister",
+              "sortOrder": 4
+            },
+            {
+              "slug": "fundamental-duties",
+              "name": "Fundamental Duties",
+              "sortOrder": 5
+            },
+            {
+              "slug": "fundamental-rights",
+              "name": "Fundamental Rights",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "police-law",
+          "name": "Police / Law-related Topics",
+          "sortOrder": 8,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "police-administration",
+              "name": "Police Administration",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "history",
+          "name": "Indian History",
+          "sortOrder": 9,
+          "chapters": [
+            {
+              "slug": "modern-india",
+              "name": "Modern India",
+              "sortOrder": 0
+            },
+            {
+              "slug": "freedom-movement",
+              "name": "Freedom Movement",
+              "sortOrder": 1
+            },
+            {
+              "slug": "ancient-india",
+              "name": "Ancient India",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "constitution",
+          "name": "Constitution",
+          "sortOrder": 10,
+          "chapters": [
+            {
+              "slug": "articles",
+              "name": "Articles",
+              "sortOrder": 0
+            },
+            {
+              "slug": "emergency",
+              "name": "Emergency",
+              "sortOrder": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "punjab-police-constable",
+      "name": "Punjab Police Constable",
+      "stateCode": "punjab",
+      "examType": "constable",
+      "defaultLanguage": "hi-Latn",
+      "subjects": [
+        {
+          "slug": "gk",
+          "name": "General Knowledge",
+          "sortOrder": 0,
+          "chapters": [
+            {
+              "slug": "india-gk",
+              "name": "India GK",
+              "sortOrder": 0
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 1
+            },
+            {
+              "slug": "awards",
+              "name": "Awards",
+              "sortOrder": 2
+            },
+            {
+              "slug": "static-gk",
+              "name": "Static GK",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "current-affairs",
+          "name": "Current Affairs",
+          "sortOrder": 1,
+          "chapters": [
+            {
+              "slug": "national",
+              "name": "National",
+              "sortOrder": 0
+            },
+            {
+              "slug": "state",
+              "name": "State",
+              "sortOrder": 1
+            },
+            {
+              "slug": "international",
+              "name": "International",
+              "sortOrder": 2
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "hindi",
+          "name": "Hindi",
+          "sortOrder": 2,
+          "chapters": [
+            {
+              "slug": "sandhi",
+              "name": "Sandhi",
+              "sortOrder": 0
+            },
+            {
+              "slug": "paryayvachi",
+              "name": "Paryayvachi",
+              "sortOrder": 1
+            },
+            {
+              "slug": "samas",
+              "name": "Samas",
+              "sortOrder": 2
+            },
+            {
+              "slug": "vilom-shabd",
+              "name": "Vilom Shabd",
+              "sortOrder": 3
+            },
+            {
+              "slug": "muhavare",
+              "name": "Muhavare",
+              "sortOrder": 4
+            },
+            {
+              "slug": "vyakaran",
+              "name": "Vyakaran",
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "slug": "maths",
+          "name": "Mathematics",
+          "sortOrder": 3,
+          "chapters": [
+            {
+              "slug": "simplification",
+              "name": "Simplification",
+              "sortOrder": 0
+            },
+            {
+              "slug": "percentage",
+              "name": "Percentage",
+              "sortOrder": 1
+            },
+            {
+              "slug": "time-speed-distance",
+              "name": "Time-Speed-Distance",
+              "sortOrder": 2
+            },
+            {
+              "slug": "ratio",
+              "name": "Ratio",
+              "sortOrder": 3
+            },
+            {
+              "slug": "profit-loss",
+              "name": "Profit-Loss",
+              "sortOrder": 4
+            },
+            {
+              "slug": "average",
+              "name": "Average",
+              "sortOrder": 5
+            },
+            {
+              "slug": "simple-interest",
+              "name": "Simple Interest",
+              "sortOrder": 6
+            },
+            {
+              "slug": "number-system",
+              "name": "Number System",
+              "sortOrder": 7
+            },
+            {
+              "slug": "time-and-work",
+              "name": "Time and Work",
+              "sortOrder": 8
+            }
+          ]
+        },
+        {
+          "slug": "reasoning",
+          "name": "Reasoning",
+          "sortOrder": 4,
+          "chapters": [
+            {
+              "slug": "blood-relation",
+              "name": "Blood Relation",
+              "sortOrder": 0
+            },
+            {
+              "slug": "coding-decoding",
+              "name": "Coding-Decoding",
+              "sortOrder": 1
+            },
+            {
+              "slug": "odd-one-out",
+              "name": "Odd One Out",
+              "sortOrder": 2
+            },
+            {
+              "slug": "series",
+              "name": "Series",
+              "sortOrder": 3
+            },
+            {
+              "slug": "analogy",
+              "name": "Analogy",
+              "sortOrder": 4
+            },
+            {
+              "slug": "direction-sense",
+              "name": "Direction Sense",
+              "sortOrder": 5
+            },
+            {
+              "slug": "syllogism",
+              "name": "Syllogism",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "state-gk",
+          "name": "Punjab GK",
+          "sortOrder": 5,
+          "chapters": [
+            {
+              "slug": "geography",
+              "name": "Geography",
+              "sortOrder": 0
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 1
+            },
+            {
+              "slug": "wildlife",
+              "name": "Wildlife",
+              "sortOrder": 2
+            },
+            {
+              "slug": "culture",
+              "name": "Culture",
+              "sortOrder": 3
+            },
+            {
+              "slug": "monuments",
+              "name": "Monuments",
+              "sortOrder": 4
+            },
+            {
+              "slug": "history",
+              "name": "History",
+              "sortOrder": 5
+            },
+            {
+              "slug": "symbols",
+              "name": "Symbols",
+              "sortOrder": 6
+            },
+            {
+              "slug": "economy",
+              "name": "Economy",
+              "sortOrder": 7
+            }
+          ]
+        },
+        {
+          "slug": "police-law",
+          "name": "Police / Law-related Topics",
+          "sortOrder": 6,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "police-administration",
+              "name": "Police Administration",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "computer",
+          "name": "Computer",
+          "sortOrder": 7,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "internet",
+              "name": "Internet",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "geography",
+          "name": "Geography",
+          "sortOrder": 8,
+          "chapters": [
+            {
+              "slug": "states",
+              "name": "States",
+              "sortOrder": 0
+            },
+            {
+              "slug": "physical-geography",
+              "name": "Physical Geography",
+              "sortOrder": 1
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 2
+            },
+            {
+              "slug": "mountains",
+              "name": "Mountains",
+              "sortOrder": 3
+            },
+            {
+              "slug": "climate",
+              "name": "Climate",
+              "sortOrder": 4
+            }
+          ]
+        },
+        {
+          "slug": "constitution",
+          "name": "Constitution",
+          "sortOrder": 9,
+          "chapters": [
+            {
+              "slug": "articles",
+              "name": "Articles",
+              "sortOrder": 0
+            },
+            {
+              "slug": "emergency",
+              "name": "Emergency",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "science",
+          "name": "General Science",
+          "sortOrder": 10,
+          "chapters": [
+            {
+              "slug": "physics",
+              "name": "Physics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "biology",
+              "name": "Biology",
+              "sortOrder": 1
+            },
+            {
+              "slug": "chemistry",
+              "name": "Chemistry",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "polity",
+          "name": "Indian Polity",
+          "sortOrder": 11,
+          "chapters": [
+            {
+              "slug": "constitution",
+              "name": "Constitution",
+              "sortOrder": 0
+            },
+            {
+              "slug": "parliament",
+              "name": "Parliament",
+              "sortOrder": 1
+            },
+            {
+              "slug": "judiciary",
+              "name": "Judiciary",
+              "sortOrder": 2
+            },
+            {
+              "slug": "president",
+              "name": "President",
+              "sortOrder": 3
+            },
+            {
+              "slug": "prime-minister",
+              "name": "Prime Minister",
+              "sortOrder": 4
+            },
+            {
+              "slug": "fundamental-duties",
+              "name": "Fundamental Duties",
+              "sortOrder": 5
+            },
+            {
+              "slug": "fundamental-rights",
+              "name": "Fundamental Rights",
+              "sortOrder": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "punjab-police-si",
+      "name": "Punjab Police Sub-Inspector",
+      "stateCode": "punjab",
+      "examType": "si",
+      "defaultLanguage": "hi-Latn",
+      "subjects": [
+        {
+          "slug": "gk",
+          "name": "General Knowledge",
+          "sortOrder": 0,
+          "chapters": [
+            {
+              "slug": "india-gk",
+              "name": "India GK",
+              "sortOrder": 0
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 1
+            },
+            {
+              "slug": "awards",
+              "name": "Awards",
+              "sortOrder": 2
+            },
+            {
+              "slug": "static-gk",
+              "name": "Static GK",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "current-affairs",
+          "name": "Current Affairs",
+          "sortOrder": 1,
+          "chapters": [
+            {
+              "slug": "national",
+              "name": "National",
+              "sortOrder": 0
+            },
+            {
+              "slug": "state",
+              "name": "State",
+              "sortOrder": 1
+            },
+            {
+              "slug": "international",
+              "name": "International",
+              "sortOrder": 2
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "hindi",
+          "name": "Hindi",
+          "sortOrder": 2,
+          "chapters": [
+            {
+              "slug": "sandhi",
+              "name": "Sandhi",
+              "sortOrder": 0
+            },
+            {
+              "slug": "paryayvachi",
+              "name": "Paryayvachi",
+              "sortOrder": 1
+            },
+            {
+              "slug": "samas",
+              "name": "Samas",
+              "sortOrder": 2
+            },
+            {
+              "slug": "vilom-shabd",
+              "name": "Vilom Shabd",
+              "sortOrder": 3
+            },
+            {
+              "slug": "muhavare",
+              "name": "Muhavare",
+              "sortOrder": 4
+            },
+            {
+              "slug": "vyakaran",
+              "name": "Vyakaran",
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "slug": "maths",
+          "name": "Mathematics",
+          "sortOrder": 3,
+          "chapters": [
+            {
+              "slug": "simplification",
+              "name": "Simplification",
+              "sortOrder": 0
+            },
+            {
+              "slug": "percentage",
+              "name": "Percentage",
+              "sortOrder": 1
+            },
+            {
+              "slug": "time-speed-distance",
+              "name": "Time-Speed-Distance",
+              "sortOrder": 2
+            },
+            {
+              "slug": "ratio",
+              "name": "Ratio",
+              "sortOrder": 3
+            },
+            {
+              "slug": "profit-loss",
+              "name": "Profit-Loss",
+              "sortOrder": 4
+            },
+            {
+              "slug": "average",
+              "name": "Average",
+              "sortOrder": 5
+            },
+            {
+              "slug": "simple-interest",
+              "name": "Simple Interest",
+              "sortOrder": 6
+            },
+            {
+              "slug": "number-system",
+              "name": "Number System",
+              "sortOrder": 7
+            },
+            {
+              "slug": "time-and-work",
+              "name": "Time and Work",
+              "sortOrder": 8
+            }
+          ]
+        },
+        {
+          "slug": "reasoning",
+          "name": "Reasoning",
+          "sortOrder": 4,
+          "chapters": [
+            {
+              "slug": "blood-relation",
+              "name": "Blood Relation",
+              "sortOrder": 0
+            },
+            {
+              "slug": "coding-decoding",
+              "name": "Coding-Decoding",
+              "sortOrder": 1
+            },
+            {
+              "slug": "odd-one-out",
+              "name": "Odd One Out",
+              "sortOrder": 2
+            },
+            {
+              "slug": "series",
+              "name": "Series",
+              "sortOrder": 3
+            },
+            {
+              "slug": "analogy",
+              "name": "Analogy",
+              "sortOrder": 4
+            },
+            {
+              "slug": "direction-sense",
+              "name": "Direction Sense",
+              "sortOrder": 5
+            },
+            {
+              "slug": "syllogism",
+              "name": "Syllogism",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "state-gk",
+          "name": "Punjab GK",
+          "sortOrder": 5,
+          "chapters": [
+            {
+              "slug": "geography",
+              "name": "Geography",
+              "sortOrder": 0
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 1
+            },
+            {
+              "slug": "wildlife",
+              "name": "Wildlife",
+              "sortOrder": 2
+            },
+            {
+              "slug": "culture",
+              "name": "Culture",
+              "sortOrder": 3
+            },
+            {
+              "slug": "monuments",
+              "name": "Monuments",
+              "sortOrder": 4
+            },
+            {
+              "slug": "history",
+              "name": "History",
+              "sortOrder": 5
+            },
+            {
+              "slug": "symbols",
+              "name": "Symbols",
+              "sortOrder": 6
+            },
+            {
+              "slug": "economy",
+              "name": "Economy",
+              "sortOrder": 7
+            }
+          ]
+        },
+        {
+          "slug": "science",
+          "name": "General Science",
+          "sortOrder": 6,
+          "chapters": [
+            {
+              "slug": "physics",
+              "name": "Physics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "biology",
+              "name": "Biology",
+              "sortOrder": 1
+            },
+            {
+              "slug": "chemistry",
+              "name": "Chemistry",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "polity",
+          "name": "Indian Polity",
+          "sortOrder": 7,
+          "chapters": [
+            {
+              "slug": "constitution",
+              "name": "Constitution",
+              "sortOrder": 0
+            },
+            {
+              "slug": "parliament",
+              "name": "Parliament",
+              "sortOrder": 1
+            },
+            {
+              "slug": "judiciary",
+              "name": "Judiciary",
+              "sortOrder": 2
+            },
+            {
+              "slug": "president",
+              "name": "President",
+              "sortOrder": 3
+            },
+            {
+              "slug": "prime-minister",
+              "name": "Prime Minister",
+              "sortOrder": 4
+            },
+            {
+              "slug": "fundamental-duties",
+              "name": "Fundamental Duties",
+              "sortOrder": 5
+            },
+            {
+              "slug": "fundamental-rights",
+              "name": "Fundamental Rights",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "police-law",
+          "name": "Police / Law-related Topics",
+          "sortOrder": 8,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "police-administration",
+              "name": "Police Administration",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "history",
+          "name": "Indian History",
+          "sortOrder": 9,
+          "chapters": [
+            {
+              "slug": "modern-india",
+              "name": "Modern India",
+              "sortOrder": 0
+            },
+            {
+              "slug": "freedom-movement",
+              "name": "Freedom Movement",
+              "sortOrder": 1
+            },
+            {
+              "slug": "ancient-india",
+              "name": "Ancient India",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "geography",
+          "name": "Geography",
+          "sortOrder": 10,
+          "chapters": [
+            {
+              "slug": "states",
+              "name": "States",
+              "sortOrder": 0
+            },
+            {
+              "slug": "physical-geography",
+              "name": "Physical Geography",
+              "sortOrder": 1
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 2
+            },
+            {
+              "slug": "mountains",
+              "name": "Mountains",
+              "sortOrder": 3
+            },
+            {
+              "slug": "climate",
+              "name": "Climate",
+              "sortOrder": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "chhattisgarh-police-constable",
+      "name": "Chhattisgarh Police Constable",
+      "stateCode": "chhattisgarh",
+      "examType": "constable",
+      "defaultLanguage": "hi-Latn",
+      "subjects": [
+        {
+          "slug": "gk",
+          "name": "General Knowledge",
+          "sortOrder": 0,
+          "chapters": [
+            {
+              "slug": "india-gk",
+              "name": "India GK",
+              "sortOrder": 0
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 1
+            },
+            {
+              "slug": "awards",
+              "name": "Awards",
+              "sortOrder": 2
+            },
+            {
+              "slug": "static-gk",
+              "name": "Static GK",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "current-affairs",
+          "name": "Current Affairs",
+          "sortOrder": 1,
+          "chapters": [
+            {
+              "slug": "national",
+              "name": "National",
+              "sortOrder": 0
+            },
+            {
+              "slug": "state",
+              "name": "State",
+              "sortOrder": 1
+            },
+            {
+              "slug": "international",
+              "name": "International",
+              "sortOrder": 2
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "hindi",
+          "name": "Hindi",
+          "sortOrder": 2,
+          "chapters": [
+            {
+              "slug": "sandhi",
+              "name": "Sandhi",
+              "sortOrder": 0
+            },
+            {
+              "slug": "paryayvachi",
+              "name": "Paryayvachi",
+              "sortOrder": 1
+            },
+            {
+              "slug": "samas",
+              "name": "Samas",
+              "sortOrder": 2
+            },
+            {
+              "slug": "vilom-shabd",
+              "name": "Vilom Shabd",
+              "sortOrder": 3
+            },
+            {
+              "slug": "muhavare",
+              "name": "Muhavare",
+              "sortOrder": 4
+            },
+            {
+              "slug": "vyakaran",
+              "name": "Vyakaran",
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "slug": "maths",
+          "name": "Mathematics",
+          "sortOrder": 3,
+          "chapters": [
+            {
+              "slug": "simplification",
+              "name": "Simplification",
+              "sortOrder": 0
+            },
+            {
+              "slug": "percentage",
+              "name": "Percentage",
+              "sortOrder": 1
+            },
+            {
+              "slug": "time-speed-distance",
+              "name": "Time-Speed-Distance",
+              "sortOrder": 2
+            },
+            {
+              "slug": "ratio",
+              "name": "Ratio",
+              "sortOrder": 3
+            },
+            {
+              "slug": "profit-loss",
+              "name": "Profit-Loss",
+              "sortOrder": 4
+            },
+            {
+              "slug": "average",
+              "name": "Average",
+              "sortOrder": 5
+            },
+            {
+              "slug": "simple-interest",
+              "name": "Simple Interest",
+              "sortOrder": 6
+            },
+            {
+              "slug": "number-system",
+              "name": "Number System",
+              "sortOrder": 7
+            },
+            {
+              "slug": "time-and-work",
+              "name": "Time and Work",
+              "sortOrder": 8
+            }
+          ]
+        },
+        {
+          "slug": "reasoning",
+          "name": "Reasoning",
+          "sortOrder": 4,
+          "chapters": [
+            {
+              "slug": "blood-relation",
+              "name": "Blood Relation",
+              "sortOrder": 0
+            },
+            {
+              "slug": "coding-decoding",
+              "name": "Coding-Decoding",
+              "sortOrder": 1
+            },
+            {
+              "slug": "odd-one-out",
+              "name": "Odd One Out",
+              "sortOrder": 2
+            },
+            {
+              "slug": "series",
+              "name": "Series",
+              "sortOrder": 3
+            },
+            {
+              "slug": "analogy",
+              "name": "Analogy",
+              "sortOrder": 4
+            },
+            {
+              "slug": "direction-sense",
+              "name": "Direction Sense",
+              "sortOrder": 5
+            },
+            {
+              "slug": "syllogism",
+              "name": "Syllogism",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "state-gk",
+          "name": "Chhattisgarh GK",
+          "sortOrder": 5,
+          "chapters": [
+            {
+              "slug": "geography",
+              "name": "Geography",
+              "sortOrder": 0
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 1
+            },
+            {
+              "slug": "wildlife",
+              "name": "Wildlife",
+              "sortOrder": 2
+            },
+            {
+              "slug": "culture",
+              "name": "Culture",
+              "sortOrder": 3
+            },
+            {
+              "slug": "monuments",
+              "name": "Monuments",
+              "sortOrder": 4
+            },
+            {
+              "slug": "history",
+              "name": "History",
+              "sortOrder": 5
+            },
+            {
+              "slug": "symbols",
+              "name": "Symbols",
+              "sortOrder": 6
+            },
+            {
+              "slug": "economy",
+              "name": "Economy",
+              "sortOrder": 7
+            }
+          ]
+        },
+        {
+          "slug": "police-law",
+          "name": "Police / Law-related Topics",
+          "sortOrder": 6,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "police-administration",
+              "name": "Police Administration",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "science",
+          "name": "General Science",
+          "sortOrder": 7,
+          "chapters": [
+            {
+              "slug": "physics",
+              "name": "Physics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "biology",
+              "name": "Biology",
+              "sortOrder": 1
+            },
+            {
+              "slug": "chemistry",
+              "name": "Chemistry",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "constitution",
+          "name": "Constitution",
+          "sortOrder": 8,
+          "chapters": [
+            {
+              "slug": "articles",
+              "name": "Articles",
+              "sortOrder": 0
+            },
+            {
+              "slug": "emergency",
+              "name": "Emergency",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "history",
+          "name": "Indian History",
+          "sortOrder": 9,
+          "chapters": [
+            {
+              "slug": "modern-india",
+              "name": "Modern India",
+              "sortOrder": 0
+            },
+            {
+              "slug": "freedom-movement",
+              "name": "Freedom Movement",
+              "sortOrder": 1
+            },
+            {
+              "slug": "ancient-india",
+              "name": "Ancient India",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "geography",
+          "name": "Geography",
+          "sortOrder": 10,
+          "chapters": [
+            {
+              "slug": "states",
+              "name": "States",
+              "sortOrder": 0
+            },
+            {
+              "slug": "physical-geography",
+              "name": "Physical Geography",
+              "sortOrder": 1
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 2
+            },
+            {
+              "slug": "mountains",
+              "name": "Mountains",
+              "sortOrder": 3
+            },
+            {
+              "slug": "climate",
+              "name": "Climate",
+              "sortOrder": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "chhattisgarh-police-si",
+      "name": "Chhattisgarh Police Sub-Inspector",
+      "stateCode": "chhattisgarh",
+      "examType": "si",
+      "defaultLanguage": "hi-Latn",
+      "subjects": [
+        {
+          "slug": "gk",
+          "name": "General Knowledge",
+          "sortOrder": 0,
+          "chapters": [
+            {
+              "slug": "india-gk",
+              "name": "India GK",
+              "sortOrder": 0
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 1
+            },
+            {
+              "slug": "awards",
+              "name": "Awards",
+              "sortOrder": 2
+            },
+            {
+              "slug": "static-gk",
+              "name": "Static GK",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "current-affairs",
+          "name": "Current Affairs",
+          "sortOrder": 1,
+          "chapters": [
+            {
+              "slug": "national",
+              "name": "National",
+              "sortOrder": 0
+            },
+            {
+              "slug": "state",
+              "name": "State",
+              "sortOrder": 1
+            },
+            {
+              "slug": "international",
+              "name": "International",
+              "sortOrder": 2
+            },
+            {
+              "slug": "sports",
+              "name": "Sports",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "slug": "hindi",
+          "name": "Hindi",
+          "sortOrder": 2,
+          "chapters": [
+            {
+              "slug": "sandhi",
+              "name": "Sandhi",
+              "sortOrder": 0
+            },
+            {
+              "slug": "paryayvachi",
+              "name": "Paryayvachi",
+              "sortOrder": 1
+            },
+            {
+              "slug": "samas",
+              "name": "Samas",
+              "sortOrder": 2
+            },
+            {
+              "slug": "vilom-shabd",
+              "name": "Vilom Shabd",
+              "sortOrder": 3
+            },
+            {
+              "slug": "muhavare",
+              "name": "Muhavare",
+              "sortOrder": 4
+            },
+            {
+              "slug": "vyakaran",
+              "name": "Vyakaran",
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "slug": "maths",
+          "name": "Mathematics",
+          "sortOrder": 3,
+          "chapters": [
+            {
+              "slug": "simplification",
+              "name": "Simplification",
+              "sortOrder": 0
+            },
+            {
+              "slug": "percentage",
+              "name": "Percentage",
+              "sortOrder": 1
+            },
+            {
+              "slug": "time-speed-distance",
+              "name": "Time-Speed-Distance",
+              "sortOrder": 2
+            },
+            {
+              "slug": "ratio",
+              "name": "Ratio",
+              "sortOrder": 3
+            },
+            {
+              "slug": "profit-loss",
+              "name": "Profit-Loss",
+              "sortOrder": 4
+            },
+            {
+              "slug": "average",
+              "name": "Average",
+              "sortOrder": 5
+            },
+            {
+              "slug": "simple-interest",
+              "name": "Simple Interest",
+              "sortOrder": 6
+            },
+            {
+              "slug": "number-system",
+              "name": "Number System",
+              "sortOrder": 7
+            },
+            {
+              "slug": "time-and-work",
+              "name": "Time and Work",
+              "sortOrder": 8
+            }
+          ]
+        },
+        {
+          "slug": "reasoning",
+          "name": "Reasoning",
+          "sortOrder": 4,
+          "chapters": [
+            {
+              "slug": "blood-relation",
+              "name": "Blood Relation",
+              "sortOrder": 0
+            },
+            {
+              "slug": "coding-decoding",
+              "name": "Coding-Decoding",
+              "sortOrder": 1
+            },
+            {
+              "slug": "odd-one-out",
+              "name": "Odd One Out",
+              "sortOrder": 2
+            },
+            {
+              "slug": "series",
+              "name": "Series",
+              "sortOrder": 3
+            },
+            {
+              "slug": "analogy",
+              "name": "Analogy",
+              "sortOrder": 4
+            },
+            {
+              "slug": "direction-sense",
+              "name": "Direction Sense",
+              "sortOrder": 5
+            },
+            {
+              "slug": "syllogism",
+              "name": "Syllogism",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "state-gk",
+          "name": "Chhattisgarh GK",
+          "sortOrder": 5,
+          "chapters": [
+            {
+              "slug": "geography",
+              "name": "Geography",
+              "sortOrder": 0
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 1
+            },
+            {
+              "slug": "wildlife",
+              "name": "Wildlife",
+              "sortOrder": 2
+            },
+            {
+              "slug": "culture",
+              "name": "Culture",
+              "sortOrder": 3
+            },
+            {
+              "slug": "monuments",
+              "name": "Monuments",
+              "sortOrder": 4
+            },
+            {
+              "slug": "history",
+              "name": "History",
+              "sortOrder": 5
+            },
+            {
+              "slug": "symbols",
+              "name": "Symbols",
+              "sortOrder": 6
+            },
+            {
+              "slug": "economy",
+              "name": "Economy",
+              "sortOrder": 7
+            }
+          ]
+        },
+        {
+          "slug": "science",
+          "name": "General Science",
+          "sortOrder": 6,
+          "chapters": [
+            {
+              "slug": "physics",
+              "name": "Physics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "biology",
+              "name": "Biology",
+              "sortOrder": 1
+            },
+            {
+              "slug": "chemistry",
+              "name": "Chemistry",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "polity",
+          "name": "Indian Polity",
+          "sortOrder": 7,
+          "chapters": [
+            {
+              "slug": "constitution",
+              "name": "Constitution",
+              "sortOrder": 0
+            },
+            {
+              "slug": "parliament",
+              "name": "Parliament",
+              "sortOrder": 1
+            },
+            {
+              "slug": "judiciary",
+              "name": "Judiciary",
+              "sortOrder": 2
+            },
+            {
+              "slug": "president",
+              "name": "President",
+              "sortOrder": 3
+            },
+            {
+              "slug": "prime-minister",
+              "name": "Prime Minister",
+              "sortOrder": 4
+            },
+            {
+              "slug": "fundamental-duties",
+              "name": "Fundamental Duties",
+              "sortOrder": 5
+            },
+            {
+              "slug": "fundamental-rights",
+              "name": "Fundamental Rights",
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "slug": "police-law",
+          "name": "Police / Law-related Topics",
+          "sortOrder": 8,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "police-administration",
+              "name": "Police Administration",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "history",
+          "name": "Indian History",
+          "sortOrder": 9,
+          "chapters": [
+            {
+              "slug": "modern-india",
+              "name": "Modern India",
+              "sortOrder": 0
+            },
+            {
+              "slug": "freedom-movement",
+              "name": "Freedom Movement",
+              "sortOrder": 1
+            },
+            {
+              "slug": "ancient-india",
+              "name": "Ancient India",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "slug": "computer",
+          "name": "Computer",
+          "sortOrder": 10,
+          "chapters": [
+            {
+              "slug": "basics",
+              "name": "Basics",
+              "sortOrder": 0
+            },
+            {
+              "slug": "internet",
+              "name": "Internet",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "slug": "geography",
+          "name": "Geography",
+          "sortOrder": 11,
+          "chapters": [
+            {
+              "slug": "states",
+              "name": "States",
+              "sortOrder": 0
+            },
+            {
+              "slug": "physical-geography",
+              "name": "Physical Geography",
+              "sortOrder": 1
+            },
+            {
+              "slug": "rivers",
+              "name": "Rivers",
+              "sortOrder": 2
+            },
+            {
+              "slug": "mountains",
+              "name": "Mountains",
+              "sortOrder": 3
+            },
+            {
+              "slug": "climate",
+              "name": "Climate",
+              "sortOrder": 4
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
