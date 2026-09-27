@@ -9,7 +9,7 @@ import MobileNav from "@/components/layout/MobileNav";
 // their own header and sticky actions — no site header, footer or tab bar
 // competing with them, the way a dedicated exam app behaves.
 function isExamRoute(pathname: string): boolean {
-  return /^\/mock-test\/[^/]+(\/attempt)?\/?$/.test(pathname);
+  return /^\/mock-test\/(live\/)?[^/]+(\/attempt)?\/?$/.test(pathname);
 }
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {

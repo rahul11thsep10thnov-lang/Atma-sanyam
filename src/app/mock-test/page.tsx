@@ -4,6 +4,7 @@ import { MOCK_TESTS } from "@/data/mockTests";
 import { SUBJECT_MAP } from "@/data/subjects";
 import { Breadcrumb, DarkHero, ExamToggle, TestGroupCard, TestGroup, StateChip } from "@/components/app/TestList";
 import { SectionTitle } from "@/components/app/primitives";
+import LiveMockTests from "@/components/mock/LiveMockTests";
 import { Rocket, Timer, Languages, BarChart3, Target } from "lucide-react";
 import type { ExamType } from "@/types";
 
@@ -91,6 +92,8 @@ export default async function MockTestPage({
             <StateChip key={s.code} href={qs({ exam, state: s.code })} label={s.hinglishName} active={stateFilter === s.code} />
           ))}
         </div>
+
+        <LiveMockTests state={stateFilter} examType={exam} />
 
         <SectionTitle title={`Police ${examLabel} — Mock Tests`} count={`${mocks.length} Tests`} />
 

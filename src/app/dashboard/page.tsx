@@ -11,6 +11,7 @@ import ProgressBar from "@/components/ui/ProgressBar";
 import Badge from "@/components/ui/Badge";
 import { formatDate } from "@/lib/utils";
 import { Flame, Trophy, Star, AlertCircle, Timer, Award } from "lucide-react";
+import LiveResults from "@/components/mock/LiveResults";
 
 export default function DashboardPage() {
   const [attempts, setAttempts] = useState<TestAttemptResult[]>([]);
@@ -34,6 +35,8 @@ export default function DashboardPage() {
     /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
+  // Server-scored tests have their own "Test Results" card above.
+  const localAttempts = attempts.filter((a) => !a.id.startsWith("live-"));
   const totalAttempted = attempts.reduce((sum, a) => sum + a.correct + a.incorrect + a.skipped, 0);
   const totalCorrect = attempts.reduce((sum, a) => sum + a.correct, 0);
   const avgAccuracy = attempts.length
@@ -102,13 +105,14 @@ export default function DashboardPage() {
         </p>
       </div>
 
+      <LiveResults />
       <div className="mt-6">
         <h2 className="text-sm font-bold text-gray-900 mb-3">Recent Tests</h2>
-        {attempts.length === 0 ? (
+        {localAttempts.length === 0 ? (
           <p className="text-sm text-gray-500">Abhi tak koi test attempt nahi kiya. Practice ya Mock Test start karein!</p>
         ) : (
           <div className="space-y-2">
-            {attempts.slice(0, 8).map((a) => {
+            {localAttempts.slice(0, 8).map((a) => {
               const mock = getMockTest(a.mockId);
               return (
                 <div key={a.id} className="card p-3.5 flex items-center justify-between">
