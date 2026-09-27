@@ -22,7 +22,7 @@ const ORG_PATTERN = new RegExp(`\\b((?:[A-Z][A-Za-z'.-]+\\s){0,4}(?:${ORG_SUFFIX
 const ACRONYM_ORGS = /\b(CBI|NCW|NHRC|SIT|FIR|AIIMS|CID|NCPCR)\b/g;
 
 const QUOTE_PATTERN = /"([^"]{4,400})"/g;
-const ALLEGATION_CUES = /\b(alleged(?:ly)?|accus(?:ed|es|ing)|complaint|FIR|booked|charged with|chargesheet|suspect(?:ed)?)\b/i;
+const ALLEGATION_CUES = /\b(alleged(?:ly)?|(?<!the\s)accus(?:ed|es|ing)|complaint|FIR|booked|charged with|chargesheet|suspect(?:ed)?)\b/i;
 const CLAIM_CUES = /\b(claim(?:ed|s)?|according to (?:the )?(?:family|relatives|neighbours|neighbors|villagers|locals)|family members said|relatives said|neighbours said)\b/i;
 const OFFICIAL_CUES = /\b(police|SHO|SP|DSP|ASP|inspector|sub-inspector|officer|superintendent|commissioner|magistrate|court|judge|official|spokesperson|collector)\b[^.]*\b(said|stated|told|confirmed|informed|added|announced|ordered|directed)\b|\b(said|stated|told|confirmed|informed)\b[^.]*\b(police|SHO|SP|inspector|officer|official|spokesperson)\b/i;
 const COURT_FINDING_CUES = /\b(convicted|sentenced|found guilty|acquitted|court held|court ruled|court ordered)\b/i;
@@ -151,7 +151,7 @@ export function extractFactsRuleBased(text: string, locationFacts: string[] = []
       quotedSentences.add(sentence);
       facts.push({
         type: "QUOTE",
-        value: m[1].trim(),
+        value: m[1].trim().replace(/[,;:]$/, "."),
         sourceSentence: sentence,
         attributedTo: findAttribution(sentence, m[1]),
         statementType: "DIRECT_QUOTE",

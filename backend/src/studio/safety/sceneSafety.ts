@@ -17,7 +17,7 @@ export const TOPIC_RULES: TopicRule[] = [
   { topic: "death", pattern: /\b(died|death|dead|murder(?:ed)?|killed|homicide|deceased)\b/i, level: "SENSITIVE" },
   { topic: "violence", pattern: /\b(assault(?:ed)?|beat(?:en|ing)?|thrash(?:ed)?|attack(?:ed)?|torture[d]?|domestic violence|harass(?:ed|ment)|cruelty|injur(?:ed|ies))\b/i, level: "SENSITIVE" },
   { topic: "dowry", pattern: /\b(dowry)\b/i, level: "SENSITIVE" },
-  { topic: "minors", pattern: /\b(minor|child(?:ren)?|infant|POCSO|juvenile|(?:[1-9]|1[0-7])-year-old)\b/i, level: "SENSITIVE" },
+  { topic: "minors", pattern: /\b(minor|child|infant|POCSO|juvenile|(?:[1-9]|1[0-7])-year-old)\b/i, level: "SENSITIVE" },
   { topic: "arrest", pattern: /\b(arrest(?:ed)?|detain(?:ed)?|custody|jail)\b/i, level: "SENSITIVE" },
 ];
 

@@ -110,8 +110,11 @@ function detectAge(text: string, name: string): number | undefined {
   return age && age < 120 ? age : undefined;
 }
 
+const FEMALE_NAME_ENDINGS = /\s(Devi|Kumari|Bai|Begum|Khatun|Bibi|Ben)$/;
+
 function detectGenderFromContext(text: string, name: string): GenderKey {
   const n = escapeRegex(name);
+  if (FEMALE_NAME_ENDINGS.test(name)) return "FEMALE";
   const before = text.match(new RegExp(`([A-Za-z-]+\\.?\\s)${n}`))?.[1];
   if (before && MALE_HONORIFICS.test(before)) return "MALE";
   if (before && FEMALE_HONORIFICS.test(before)) return "FEMALE";
@@ -164,7 +167,7 @@ export function extractCharacters(text: string, facts: ExtractedFact[], sensitiv
   // Unnamed family roles referred to possessively ("her husband", "the accused's mother").
   for (const r of ROLES) {
     if (characters.some((c) => c.role === r.role)) continue;
-    const m = text.match(new RegExp(`\\b(her|his|their|the)\\s(${r.pattern})\\b`, "i"));
+    const m = text.match(new RegExp(`\\b(her|his|their|the)\\s(${r.pattern})\\b(?!-)`, "i"));
     if (!m) continue;
     const ageGroup = r.ageGroup ?? (r.isOfficial ? "ADULT" : "UNKNOWN");
     const speaks = quotes.some((q) => q.attributedTo && new RegExp(`\\b(?:${r.pattern})\\b`, "i").test(q.attributedTo));
@@ -216,13 +219,23 @@ export function protect(c: ExtractedCharacter, text: string, sensitiveTopics: st
       ageGroup: "CHILD",
       displayName: c.gender === "MALE" ? "a minor boy" : c.gender === "FEMALE" ? "a minor girl" : "a minor",
       realName: undefined,
+      protectedName: c.realName ?? c.protectedName,
       anonymized: true,
       speaks: false,
     };
   }
-  const survivorRole = /\b(victim|survivor|complainant|wife|daughter|daughter-in-law|woman|girl)\b/i.test(c.role) || c.gender === "FEMALE";
-  if (sensitiveTopics.includes(SEXUAL_VIOLENCE_TOPIC) && survivorRole && !c.isOfficial) {
-    return { ...c, displayName: c.role === "person named in the report" ? "the woman" : `the ${c.role}`, realName: undefined, anonymized: true, speaks: false };
+  // Sexual-violence cases: Indian law bars publishing anything that could
+  // identify the survivor — including the names of family members or the
+  // accused relative — so every named private individual is anonymised.
+  if (sensitiveTopics.includes(SEXUAL_VIOLENCE_TOPIC) && !c.isOfficial) {
+    return {
+      ...c,
+      displayName: c.role === "person named in the report" ? (c.gender === "FEMALE" ? "the woman" : c.gender === "MALE" ? "the man" : "a person") : `the ${c.role}`,
+      realName: undefined,
+      protectedName: c.realName ?? c.protectedName,
+      anonymized: true,
+      speaks: false,
+    };
   }
   return c;
 }

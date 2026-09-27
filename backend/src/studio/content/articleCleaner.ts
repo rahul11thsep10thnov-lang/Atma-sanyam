@@ -14,6 +14,7 @@ const BOILERPLATE_PATTERNS = [
   /^(tags?|topics?):\s/i,
 ];
 
+const DATELINE_PATTERN = /^[A-Z][A-Za-z]+(?:\s[A-Z][A-Za-z]+)?\s?(?:\((?:PTI|IANS|ANI|Reuters)\))?\s?[:\-]\s+/;
 const URL_PATTERN = /\bhttps?:\/\/\S+|\bwww\.\S+/gi;
 const EMAIL_PATTERN = /\b[\w.+-]+@[\w-]+\.[\w.]+\b/g;
 const PHONE_PATTERN = /(?:\+91[-\s]?)?\b[6-9]\d{9}\b/g;
@@ -59,7 +60,9 @@ export function cleanArticle(input: string): CleaningResult {
   const seen = new Set<string>();
   const paragraphs: string[] = [];
   for (const rawLine of text.split(/\n+/)) {
-    const line = rawLine.replace(/[ \t]+/g, " ").trim();
+    let line = rawLine.replace(/[ \t]+/g, " ").trim();
+    // Datelines such as "Jaipur:" or "NEW DELHI (PTI) -" at the start of the report.
+    if (paragraphs.length === 0) line = line.replace(DATELINE_PATTERN, "");
     if (!line) continue;
     if (BOILERPLATE_PATTERNS.some((p) => p.test(line))) {
       removedLines.push(line);

@@ -87,7 +87,40 @@ export async function analyzeArticle(input: AnalyzeInput, llm?: LLMProvider | nu
   const timeline = buildTimeline(facts);
   if (timeline.length < 3) warnings.push("Very few narrative sentences found — the article may be too thin for a 1-minute video.");
 
-  return { cleanedText, facts, timeline, characters, location, sensitiveTopics, isSensitive: isSensitive || declared.length > 0, warnings, provider: "rule-based" };
+  return redactProtectedNames({ cleanedText, facts, timeline, characters, location, sensitiveTopics, isSensitive: isSensitive || declared.length > 0, warnings, provider: "rule-based" });
+}
+
+function escapeRegex(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Replaces the names of protected people (minors, sexual-violence
+ * survivors) with their anonymised description everywhere — cleaned text,
+ * facts and timeline — so no later stage (script, translation, subtitles)
+ * can ever reintroduce them. The names themselves are then discarded.
+ */
+export function redactProtectedNames(analysis: ArticleAnalysis): ArticleAnalysis {
+  const protectedChars = analysis.characters.filter((c) => c.protectedName);
+  if (protectedChars.length === 0) return analysis;
+  const rules = protectedChars.flatMap((c) => {
+    const full = c.protectedName!;
+    const parts = full.split(" ").filter((p) => p.length > 2);
+    return [full, ...parts].map((n) => ({ pattern: new RegExp(`\\b${escapeRegex(n)}\\b`, "g"), replacement: c.displayName }));
+  });
+  const redact = (text: string | undefined) => (text === undefined ? text : rules.reduce((t, r) => t.replace(r.pattern, r.replacement), text));
+  const protectedNames = new Set(protectedChars.map((c) => c.protectedName!.toLowerCase()));
+
+  return {
+    ...analysis,
+    cleanedText: redact(analysis.cleanedText)!,
+    facts: analysis.facts
+      .filter((f) => !(f.type === "PERSON_NAME" && protectedNames.has(f.value.toLowerCase())))
+      .map((f) => ({ ...f, value: redact(f.value)!, sourceSentence: redact(f.sourceSentence), attributedTo: redact(f.attributedTo) })),
+    timeline: analysis.timeline.map((t) => ({ ...t, event: redact(t.event)!, sourceSentence: redact(t.sourceSentence)! })),
+    characters: analysis.characters.map(({ protectedName: _omit, ...c }) => c),
+    warnings: [...analysis.warnings, `Anonymised ${protectedChars.length} protected person(s) (minor or survivor) throughout the text.`],
+  };
 }
 
 function finalizeLlm(
@@ -135,7 +168,7 @@ function finalizeLlm(
   });
 
   const timeline = (result.timeline ?? []).filter((t) => t?.event).map((t, order) => ({ ...t, order }));
-  return {
+  return redactProtectedNames({
     cleanedText: ctx.cleanedText,
     facts,
     timeline: timeline.length > 0 ? timeline : buildTimeline(facts),
@@ -145,5 +178,5 @@ function finalizeLlm(
     isSensitive: ctx.isSensitive,
     warnings: ctx.warnings,
     provider: ctx.provider,
-  };
+  });
 }

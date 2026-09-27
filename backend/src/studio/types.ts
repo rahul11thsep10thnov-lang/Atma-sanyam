@@ -56,6 +56,8 @@ export interface ExtractedCharacter {
   anonymized: boolean;
   speaks: boolean;
   appearance: CharacterAppearance;
+  /** In-memory only: a name that must be redacted from all text (minors, survivors). Never persisted. */
+  protectedName?: string;
 }
 
 export interface CharacterAppearance {
@@ -130,6 +132,10 @@ export interface LanguageSceneLines {
   narratorText: string;
   dialogue: { speakerKey: string; text: string; statementType: StatementTypeKey }[];
   onScreenText?: string;
+  /** Hash of the master scene text this was localised from (per-scene reuse). */
+  sourceHash?: string;
+  /** True when an editor changed this scene's lines by hand. */
+  edited?: boolean;
 }
 
 export interface LanguageScriptContent {
