@@ -19,7 +19,8 @@
     "seed:content": "tsx --env-file-if-exists=.env src/database/seedContent.ts",
     "test": "vitest run",
     "cleanup": "tsx --env-file-if-exists=.env src/database/cleanup.ts",
-    "cleanup:prod": "node dist/database/cleanup.js"
+    "cleanup:prod": "node dist/database/cleanup.js",
+    "seed:content:prod": "node dist/database/seedContent.js"
   },
   "dependencies": {
     "cors": "^2.8.6",

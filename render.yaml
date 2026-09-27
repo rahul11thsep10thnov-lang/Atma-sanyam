@@ -1,0 +1,38 @@
+# Optional Render Blueprint for the FOCUS API (https://render.com/docs/blueprint-spec).
+# Render → New → Blueprint → pick this repo. You'll be asked for the values
+# marked `sync: false`. The database is expected to be external (e.g. Neon);
+# see docs/DEPLOYMENT.md.
+services:
+  - type: web
+    name: focus-api
+    runtime: docker
+    dockerContext: ./backend
+    dockerfilePath: ./backend/Dockerfile
+    healthCheckPath: /v1/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: "1"
+      - key: DATABASE_URL
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
+      - key: EXPO_ACCESS_TOKEN
+        sync: false
+
+  - type: cron
+    name: focus-cleanup
+    runtime: docker
+    dockerContext: ./backend
+    dockerfilePath: ./backend/Dockerfile
+    schedule: "30 3 * * *"
+    dockerCommand: node dist/database/cleanup.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false

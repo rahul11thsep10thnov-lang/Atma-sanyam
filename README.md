@@ -1,72 +1,83 @@
-# PuzzleFocus
+# FOCUS
 
-A Forest-style focus timer where a jigsaw puzzle assembles itself while you stay on task —
-instead of growing a tree, you complete a picture. Leave the app before time's up and the
-puzzle stays unfinished.
+A calm focus timer where a jigsaw puzzle assembles itself while you stay on task.
+Leave the app mid-session and the puzzle stays unfinished.
 
-## Core mechanic
+This repository contains the whole product:
 
-- Pick a session length (5 / 15 / 25 / 45 / 60 min, or custom) and an image.
-- The image is divided into a grid that scales with duration (3×3 up to ~9×9 for longer
-  sessions — see `src/utils/grid.ts`).
-- As the countdown runs, puzzle pieces reveal left-to-right/top-to-bottom in sync with
-  elapsed time, so the picture is exactly 100% complete when the timer hits zero
-  (`src/hooks/useFocusTimer.ts` + `src/components/PuzzleGrid.tsx`).
-- If you background the app, you get a short grace period (5s) to return before the
-  session is marked **failed** — the puzzle freezes and the attempt is recorded as
-  incomplete in your history (`AppState` handling in `useFocusTimer`). An optional local
-  notification warns you the moment you leave, if notifications are enabled in Settings.
-- A "Give up" button on the active session screen fails the session immediately.
+| Part | Folder | Stack | Runs on |
+|---|---|---|---|
+| **Mobile app** (Android + iOS) | `/` (repo root) | Expo SDK 57, React Native 0.86, TypeScript | Phones (EAS Build → Play Store / App Store) |
+| **API** | [`/backend`](backend) | Node 22, Express 5, Drizzle ORM, PostgreSQL | Any container host (Render, Railway, Fly…) |
+| **Admin console** | [`/admin`](admin) | Next.js 16, React 19, TypeScript | Vercel (or any Node host) |
 
-## Image sources
+```
+ ┌──────────────────────┐        HTTPS (Bearer token)         ┌───────────────────────┐
+ │  FOCUS mobile app    │ ──────────────  /v1/*  ───────────▶ │                       │
+ │  iOS · Android       │                                      │   FOCUS API           │     ┌──────────────┐
+ └──────────────────────┘                                      │   Express + Drizzle   │ ──▶ │ PostgreSQL   │
+                                                               │   auth · RBAC · rate  │     └──────────────┘
+ ┌──────────────────────┐   browser → same-origin proxy        │   limits · audit log  │
+ │  Admin console       │   (httpOnly cookie) → /admin/v1/* ─▶ │                       │ ──▶ Expo Push → APNs/FCM
+ │  Next.js on Vercel   │                                      │                       │ ──▶ Resend (reset emails)
+ └──────────────────────┘                                      └───────────────────────┘
+```
 
-- **Art pack** — a handful of bundled placeholder images in `assets/images/art/`
-  (procedurally generated gradients/shapes via `scripts/generatePlaceholderArt.js`;
-  swap in real curated photos later).
-- **Quote tiles** — quote + attribution rendered live as a styled `View`
-  (`src/components/PuzzleContent.tsx`, data in `src/data/quotes.ts`) — no photos needed.
-- **Custom upload** — pick a photo from your library via `expo-image-picker`.
+The mobile app still works **fully offline with no server** (bundled art, quotes, own
+photos, demo library) — exactly as before — so Expo Go testing keeps working.
 
-## Screens
+## Quick start (local development)
 
-- **Home** — duration + image source picker, starts a session.
-- **Active session** — puzzle grid, countdown, give-up button.
-- **Garden (history)** — grid of past sessions; completed puzzles shown as small
-  thumbnails, failed ones greyed out with a cracked overlay.
-- **Settings** — away-from-app notification permission, sound/haptics toggle, clear history.
-
-## Tech
-
-- Expo SDK 57, React Native 0.86, TypeScript, React Navigation (bottom tabs + native stack).
-- `react-native-svg` renders the puzzle grid overlay (covers + jigsaw grid lines) on top
-  of arbitrary content (an `Image` or the quote `View`), animated per-piece with
-  `Animated.Value`.
-- Session history and settings persist locally via `@react-native-async-storage/async-storage`.
-  No backend.
-
-## Getting started
+Prerequisites: Node 22+, PostgreSQL 16 (or a free Neon database), the Expo Go app on your phone.
 
 ```bash
+# 1. API
+cd backend
+cp .env.example .env            # set DATABASE_URL
 npm install
-npm start        # then press i / a / w, or scan the QR code in Expo Go
+npm run db:migrate
+ADMIN_BOOTSTRAP_EMAIL=you@example.com ADMIN_BOOTSTRAP_PASSWORD='Choose-A-Long-Pass1' npm run seed:admin
+npm run seed:content            # category tree (add --with-samples for placeholder drafts)
+npm run dev                     # http://localhost:4000
+
+# 2. Admin console (new terminal)
+cd admin
+cp .env.example .env.local      # API_URL=http://localhost:4000
+npm install
+npm run dev                     # http://localhost:3000 → sign in with the admin above
+
+# 3. Mobile app (new terminal, repo root)
+cp .env.example .env            # EXPO_PUBLIC_API_URL=http://<your-computer-LAN-IP>:4000
+npm install
+npm start                       # scan the QR code with Expo Go
 ```
 
-To regenerate the placeholder art pack:
+Leave `EXPO_PUBLIC_API_URL` empty to run the app without any server.
+
+## Documentation
+
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — structure, database schema, security model
+- [docs/API.md](docs/API.md) — every endpoint
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) — putting the API, database and admin console online
+- [docs/STORE_SUBMISSION.md](docs/STORE_SUBMISSION.md) — building and submitting to Google Play and the App Store
+- [docs/CREDENTIALS.md](docs/CREDENTIALS.md) — every account/key you need, where to get it, where it goes
+
+## Tests
 
 ```bash
-node scripts/generatePlaceholderArt.js
+cd backend && npm test          # 63 integration tests against a real PostgreSQL database
+cd admin && npm run build       # type-checked production build
+npx tsc --noEmit                # mobile app (repo root)
 ```
 
-## Testing on a real device
+CI (`.github/workflows/ci.yml`) runs all of the above plus Android/iOS bundle exports on every push.
 
-`npm start` prints a QR code — scan it with the [Expo Go](https://expo.dev/go) app on
-your phone (same Wi-Fi network, or run `npm start -- --tunnel` if it isn't).
+## Core mechanic (mobile)
 
-For an installable build (useful for testing `expo-image-picker`, backgrounding, and
-notifications outside of Expo Go), `eas.json` is preconfigured — run:
-
-```bash
-npx eas-cli login          # one-time, needs an Expo account
-npx eas-cli build:configure
-npx eas-cli build --profile preview --platform android   # or ios
-```
+- Pick a length on the circular dial (5–180 min, 5-min steps) and an image: bundled art,
+  a quote tile, your own photo, or the online library managed from the admin console.
+- The picture is covered by tiles that flip away in a spread-out order as time passes
+  (`src/hooks/useFocusTimer.ts`, `src/components/PuzzleGrid.tsx`).
+- Leaving the app starts a grace period (default 5 s, configurable from the admin console);
+  stay away longer and the session fails.
+- History ("Garden") and preferences stay on the device.
