@@ -1,3 +1,4 @@
+import { loadDotEnv } from './config/dotenv.js';
 import { loadEnv, type Env } from './config/env.js';
 import { createDatabase } from './database/client.js';
 import { seedTaxonomy } from './database/seedTaxonomy.js';
@@ -8,6 +9,7 @@ import type { AppDeps } from './types.js';
 
 /** Shared start-up for the API and the standalone worker. */
 export async function bootstrap(): Promise<{ env: Env; deps: AppDeps; close: () => Promise<void> }> {
+  loadDotEnv();
   const env = loadEnv();
   setLogLevel(env.LOG_LEVEL);
   const database = createDatabase(env.DATABASE_URL, env.DATABASE_POOL_MAX);

@@ -2,6 +2,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { sql } from 'drizzle-orm';
 import { createDatabase, type Db } from './client.js';
+import { loadDotEnv } from '../config/dotenv.js';
 import { admins } from './schema.js';
 import { hashPassword } from '../lib/password.js';
 import { ROLES } from '../lib/roles.js';
@@ -32,6 +33,7 @@ export async function upsertAdmin(db: Db, email: string, password: string, name:
 
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isMain) {
+  loadDotEnv();
   const email = process.env.ADMIN_BOOTSTRAP_EMAIL;
   const password = process.env.ADMIN_BOOTSTRAP_PASSWORD;
   if (!email || !password) {

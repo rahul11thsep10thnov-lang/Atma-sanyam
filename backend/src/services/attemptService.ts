@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, lt } from 'drizzle-orm';
 import type { Db } from '../database/client.js';
 import { exams, mockTestQuestions, mockTests, questionOptions, questions, subjects, testAnswers, testAttempts } from '../database/schema.js';
 import { badRequest, conflict, notFound } from '../lib/httpError.js';
@@ -27,6 +27,9 @@ export async function startAttempt(db: Db, userId: string, mockTestId: string, g
   if (open && open.deadlineAt.getTime() + graceSeconds * 1000 > now.getTime()) {
     return { attemptId: open.id, startedAt: open.startedAt, deadlineAt: open.deadlineAt, serverTime: now, resumed: true, totalQuestions: open.totalQuestions };
   }
+  // Close expired attempts before starting a new one, so an old attempt can't
+  // be submitted later with answers learned from a newer attempt's result.
+  await closeExpiredAttempts(db, userId, mockTestId, graceSeconds);
 
   const served = await db
     .select({ id: questions.id })
@@ -47,6 +50,44 @@ export async function startAttempt(db: Db, userId: string, mockTestId: string, g
   });
   log.info('attempt.started', { attemptId: attempt.id, mockTestId, questions: served.length });
   return { attemptId: attempt.id, startedAt: attempt.startedAt, deadlineAt, serverTime: now, resumed: false, totalQuestions: served.length };
+}
+
+async function closeExpiredAttempts(db: Db, userId: string, mockTestId: string, graceSeconds: number) {
+  const cutoff = new Date(Date.now() - graceSeconds * 1000);
+  const stale = await db
+    .select()
+    .from(testAttempts)
+    .where(
+      and(
+        eq(testAttempts.userId, userId),
+        eq(testAttempts.mockTestId, mockTestId),
+        eq(testAttempts.status, 'in_progress'),
+        lt(testAttempts.deadlineAt, cutoff)
+      )
+    );
+  if (!stale.length) return;
+  const [test] = await db.select({ marks: mockTests.marksPerQuestion }).from(mockTests).where(eq(mockTests.id, mockTestId)).limit(1);
+  const marks = Number(test?.marks ?? 0);
+  for (const a of stale) {
+    // Nothing was submitted in time: every question counts as unanswered.
+    await db
+      .update(testAttempts)
+      .set({
+        status: 'submitted',
+        submittedAt: a.deadlineAt,
+        timeTakenSeconds: Math.round((a.deadlineAt.getTime() - a.startedAt.getTime()) / 1000),
+        attemptedCount: 0,
+        correctCount: 0,
+        incorrectCount: 0,
+        unansweredCount: a.totalQuestions,
+        score: '0.00',
+        maxScore: (a.totalQuestions * marks).toFixed(2),
+        percentage: '0.00',
+        late: true,
+      })
+      .where(and(eq(testAttempts.id, a.id), eq(testAttempts.status, 'in_progress')));
+    log.info('attempt.expired', { attemptId: a.id, mockTestId });
+  }
 }
 
 /** Scores an attempt from the database answer key. Scores sent by a client

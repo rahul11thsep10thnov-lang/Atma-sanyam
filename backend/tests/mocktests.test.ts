@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray, sql } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { questions } from '../src/database/schema.js';
 import { auth, adminToken, scopeIds, setupTestApp, userToken } from './helpers.js';
@@ -205,6 +205,20 @@ describe('attempts & scoring', () => {
     expect(history.body.items).toHaveLength(1);
   });
 
+  it('closes an expired attempt when a new one starts, so it cannot be submitted later', async () => {
+    const user = await userToken(ctx.app);
+    const first = await request(ctx.app).post(`/api/mock-tests/${testId}/start`).set(auth(user));
+    // Pretend the deadline (plus grace) passed without a submission.
+    await ctx.db.execute(sql`update test_attempts set deadline_at = now() - interval '1 hour' where id = ${first.body.attemptId}`);
+    const second = await request(ctx.app).post(`/api/mock-tests/${testId}/start`).set(auth(user));
+    expect(second.body.attemptId).not.toBe(first.body.attemptId);
+    const answers = key.map((q) => ({ questionId: q.id, selectedOption: q.correctOption }));
+    const late = await request(ctx.app).post(`/api/mock-tests/${testId}/submit`).set(auth(user)).send({ attemptId: first.body.attemptId, answers });
+    // The stored result stands: nothing was answered in time.
+    expect(late.body.summary.correct).toBe(0);
+    expect(late.body.summary.unanswered).toBe(8);
+  });
+
   it('won’t let one user submit another user’s attempt', async () => {
     const owner = await userToken(ctx.app);
     const thief = await userToken(ctx.app);
@@ -215,7 +229,7 @@ describe('attempts & scoring', () => {
 
   it('reports question accuracy and unusually hard questions', async () => {
     const a = await request(ctx.app).get('/api/admin/analytics?minAttempts=2').set(auth(admin));
-    expect(a.body.testsAttempted).toBe(3);
+    expect(a.body.testsAttempted).toBe(4);
     const q = a.body.mostDifficultQuestions[0];
     expect(q.accuracy).toBeGreaterThanOrEqual(0);
     expect(q.accuracy).toBeLessThanOrEqual(1);

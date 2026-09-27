@@ -2,141 +2,256 @@
 
 **Police Constable & SI ki taiyari — Simple, Smart aur State-wise**
 
-A state-wise exam preparation platform for Indian Police Constable and
-Sub-Inspector (SI) recruitment exams, covering 9 states: Uttar Pradesh,
-Madhya Pradesh, Rajasthan, Jharkhand, Bihar, Uttarakhand, Haryana, Punjab
-and Chhattisgarh (18 exam profiles total). Everything is Hinglish, mobile
-first, and structured so a new state/exam can be added purely with data —
-no frontend code changes required.
+A state-wise exam-preparation platform for Police Constable and Sub-Inspector
+recruitment in 9 states (UP, MP, Rajasthan, Bihar, Jharkhand, Uttarakhand,
+Haryana, Punjab, Chhattisgarh). It has three parts:
 
-## Tech stack
+| Part | Folder | What it is |
+|---|---|---|
+| **Website** (the user app) | `/` (repo root) | Next.js 16 site candidates use on phone or laptop: practice, mock tests, PYQ, results |
+| **API** | [`backend/`](backend) | Node.js + TypeScript API: question bank, AI generation pipeline, validation, mock-test engine, scoring, analytics |
+| **Admin console** | [`admin/`](admin) | Next.js web console for the exam team: generate, review, approve, publish, build mock tests |
 
-- **Frontend:** Next.js 16 (App Router) + React 19 + TypeScript, Tailwind CSS v4
-- **Backend/Auth/DB:** Supabase (Postgres + Auth + RLS) — schema in [`supabase/schema.sql`](./supabase/schema.sql)
-- **Hosting:** Vercel (zero-config)
+Questions are generated and approved in the admin console and reach the
+website through the API, so **new questions and tests go live without
+rebuilding the website**.
 
-## Running it locally
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — components, data model, security
+- [docs/QUESTION_PIPELINE.md](docs/QUESTION_PIPELINE.md) — generation → validation → review → publish, step by step
 
-```bash
-npm install
-npm run dev
+---
+
+## 1. Project architecture
+
+```
+  Candidates (phone / laptop)                    Exam team
+  ┌─────────────────────────┐                    ┌──────────────────────────┐
+  │ Website  (Next.js, /)   │                    │ Admin console (admin/)   │
+  │ demo tests built in +   │                    │ httpOnly cookie session, │
+  │ live tests from the API │                    │ same-origin proxy        │
+  └───────────┬─────────────┘                    └────────────┬─────────────┘
+     GET /api/mock-tests, POST …/start, …/submit      /api/admin/* (Bearer)
+              └──────────────────┬────────────────────────────┘
+                     ┌───────────▼────────────┐      ┌──────────────────────┐
+                     │ API (backend/)         │─────▶│ PostgreSQL           │
+                     │ auth · roles · audit   │      │ (Supabase / Neon /   │
+                     │ question bank          │      │  any Postgres; an    │
+                     │ validator · duplicates │      │  embedded one in dev)│
+                     │ mock-test engine       │      └──────────────────────┘
+                     │ scoring · analytics    │
+                     │ ┌────────────────────┐ │      ┌──────────────────────┐
+                     │ │ generation worker  │─┼─────▶│ AI provider (Claude) │
+                     │ └────────────────────┘ │      │ server-side only     │
+                     └────────────────────────┘      └──────────────────────┘
 ```
 
-Open http://localhost:3000.
+The AI key lives only in the API's environment. The website and admin
+console never call the AI provider and never see any secret.
 
-The app works out of the box **without any Supabase project configured** —
-content (states, exams, syllabus, 360 sample questions, PYQ sets, mock
-tests, study notes, etc.) ships as typed static data in `src/data/*` and is
-the seed source of truth. User-specific state in this demo mode (bookmarks,
-mistake tracking, points/streak, attempt history, and the admin panel's
-question moderation) is kept in the browser's `localStorage` — see
-`src/lib/localStore.ts`. This lets every feature (practice, mock tests,
-daily quiz, dashboard, admin panel, leaderboard) be exercised end-to-end
-immediately, with no backend to provision.
+## 2. Folder structure
 
-## Going to production with Supabase
+```
+/                      Website (Next.js App Router)
+  src/app/             pages; /mock-test/live/[id] = tests from the API
+  src/components/exam/ shared exam screens (instructions, test, result)
+  src/lib/liveApi.ts   website ↔ API client (guest / Supabase session)
+  src/data/            built-in demo content (states, 360 sample questions…)
+backend/               API + generation worker
+  src/database/        schema (Drizzle), migrations runner, seeders
+  src/pipeline/        question schema, validator, duplicates, AI providers, worker
+  src/services/        question bank, generation jobs, mock tests, attempts, analytics, import
+  src/routes/          public (/api/*) and admin (/api/admin/*) routes
+  drizzle/             SQL migrations
+  seed/                exam taxonomy + sample questions (exported from the website data)
+  tests/               unit + integration tests (vitest)
+admin/                 Admin console (Next.js)
+docs/                  ARCHITECTURE.md, QUESTION_PIPELINE.md
+scripts/               setup.mjs, dev-all.mjs
+supabase/              original Supabase schema (website auth; see ARCHITECTURE.md)
+```
 
-The app is designed to upgrade to a real multi-user backend with **no UI
-rewrites** — the static data types in `src/types/index.ts` mirror the
-Postgres tables 1:1.
+## 3. Environment setup
 
-1. Create a Supabase project.
-2. Run [`supabase/schema.sql`](./supabase/schema.sql) in the Supabase SQL
-   editor (or `supabase db push`). It creates every table from the spec
-   (states, subjects, topics, exams, exam_configs, questions,
-   question_options, question_reports, pyq_papers, pyq_questions,
-   mock_tests, mock_questions, test_attempts, test_answers, study_notes,
-   current_affairs, exam_updates, physical_requirements, bookmarks,
-   wrong_questions, leaderboard_entries, badges, user_badges, profiles),
-   plus Row Level Security policies (public read on content, admin-only
-   writes, owner-only access on user data).
-3. Copy `.env.example` to `.env.local` and fill in your Supabase project
-   URL/keys.
-4. Seed the database from the same static data used in demo mode:
-   ```bash
-   SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... npm run seed:supabase
-   ```
-5. In the Supabase Auth settings, enable the **Google** provider and a
-   **Phone (OTP)** provider (e.g. via Twilio) — the login page
-   (`src/app/login/page.tsx`) already calls `signInWithOAuth` /
-   `signInWithOtp` / `verifyOtp` and will start working automatically once
-   env vars are present.
-6. Promote your own user to admin: `update public.profiles set role =
-   'admin' where id = '<your-auth-uid>';`
-7. Swap the `localStore.ts` calls in the admin panel / dashboard /
-   bookmarks / mistakes pages for the equivalent Supabase queries against
-   the tables above (the RLS policies already enforce the right access —
-   owner-only for `bookmarks`/`wrong_questions`/`test_attempts`,
-   admin-only writes for content tables).
+Requirements: **Node.js 20.12 or newer** (22 recommended) and Git. Nothing
+else — no database server is needed for local development.
 
-## Content & data model
+```bash
+git clone <this repo> && cd <folder>
+npm run setup      # installs everything, creates .env files, database, first admin
+npm run dev:all    # starts website, API and admin console together
+```
 
-- `src/data/states.ts` — the 9 states and their stable facts (capital,
-  formation year, high court, etc.)
-- `src/data/examConfigs.ts` — all 18 exam profiles (Constable/SI ×
-  9 states). Cycle-specific facts that we cannot know in advance
-  (**vacancy, application dates, exam date, cut-off**) are always rendered
-  as "Official notification ka wait karein" rather than fabricated, per
-  the no-fake-data requirement. Eligibility/pattern figures are shown as
-  clearly labelled **indicative** values (based on typical past cycles)
-  with an on-page disclaimer to verify against the latest official
-  notification.
-- `src/data/stateFacts.ts` + `src/data/genericQuestions.ts` — the source
-  facts/questions combined by `src/scripts/generate-questions.ts` into the
-  360-question sample bank (`npm run generate:questions` to regenerate
-  `src/data/generated/questions.json`). ~65% easy / ~35% moderate, no
-  "hard" questions, per the difficulty requirement.
-- `src/data/mockTests.ts`, `src/data/pyq.ts`, `src/data/studyNotes.ts`,
-  `src/data/currentAffairs.ts`, `src/data/examUpdates.ts` — derived
-  content, all explicitly marked `isSample: true` where they are
-  demo/placeholder rather than verified official material (PYQ papers are
-  original admin-authored practice sets, not copied from any copyrighted
-  source; current affairs / exam updates ship as clearly labelled
-  placeholders since we do not fabricate live news or notifications).
+| App | URL |
+|---|---|
+| Website | http://localhost:3000 |
+| Admin console | http://localhost:3001 |
+| API health | http://localhost:4000/api/health |
 
-Adding a **new state or exam** later is just adding records to these data
-modules (or, once Supabase is live, rows to the corresponding tables) — no
-page code changes needed, since every route (`/[slug]`, `/state-gk/[state]`,
-`/physical-test/[state]`, `/mock-test/[id]`, `/pyq/[id]`, ...) is driven by
-`generateStaticParams` over the data.
+`npm run setup` prints your admin email and password (also saved in
+`backend/.env`). Change the password under **Settings** after signing in.
 
-## Feature map
+Environment files (all git-ignored; examples are committed):
+
+| File | Key settings |
+|---|---|
+| `backend/.env` ([example](backend/.env.example)) | `DATABASE_URL`, `CORS_ORIGINS`, `MOCK_AI`, `AI_API_KEY`, models, budget, `SUPABASE_URL`/`SUPABASE_ANON_KEY` |
+| `admin/.env.local` ([example](admin/.env.example)) | `API_URL` (server-side only) |
+| `.env.local` ([example](.env.example)) | `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` |
+
+`NEXT_PUBLIC_*` values are public by design (an API address, Supabase's anon
+key). Secrets — `AI_API_KEY`, `DATABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` —
+go only in server-side env files or your host's secret settings.
+
+## 4. Database setup
+
+- **Development:** leave `DATABASE_URL` empty. The API creates an embedded
+  PostgreSQL (PGlite) in `backend/.data/`, migrates and seeds it on start.
+- **Production:** any PostgreSQL 14+. With Supabase: *Project Settings →
+  Database → Connection string* (session pooler URI) → `DATABASE_URL`. Then:
+
+```bash
+cd backend
+npm run db:migrate                     # create/upgrade tables
+ADMIN_BOOTSTRAP_EMAIL=you@example.com ADMIN_BOOTSTRAP_PASSWORD='a-long-Passw0rd' npm run seed
+#   seeds the 18 exams, subjects and chapters, and creates your super admin
+#   add `-- --with-sample-questions` to import the 360 sample questions for review
+```
+
+## 5. AI provider setup
+
+1. Create an API key at console.anthropic.com.
+2. In `backend/.env` (or your host's secrets): `MOCK_AI=false`,
+   `AI_API_KEY=<key>`.
+3. Optional: `AI_GENERATION_MODEL` / `AI_REVIEW_MODEL` (default
+   `claude-opus-5`; e.g. `claude-sonnet-5` costs less), `AI_EFFORT`
+   (`high` default), `AI_MONTHLY_BUDGET_USD` (hard monthly cap).
+4. Restart the API. **Settings** in the console shows the provider and models.
+
+Spending controls: a cost estimate before every job, a per-job cost cap
+(default 2× the estimate), a monthly budget, max retries per batch, max
+questions per job and request timeouts — all editable under **Settings**.
+
+## 6. Admin console startup
+
+`npm run dev:all` starts it, or on its own: `cd admin && npm run dev`
+(needs the API running and `API_URL` set). Roles: **Super Admin** (all),
+**Admin** (all except accounts), **Reviewer** (inspect, edit, approve,
+reject — cannot publish or spend AI budget). Add accounts under Settings.
+
+## 7. Website startup
+
+`npm run dev` in the repo root. With `NEXT_PUBLIC_API_URL` set, the Mock Tests
+page shows **Latest Mock Tests** from the API; without it the website runs
+entirely on its built-in demo content, as before.
+
+## 8. Development mode (no AI cost)
+
+`MOCK_AI=true` (the default) replaces the AI provider with a local generator:
+
+- numerical chapters (Percentage, Profit-Loss, Simple Interest, Average,
+  Ratio, Time-Speed-Distance, Time & Work, Simplification, Series) get
+  correct, freshly calculated questions in **Hindi, English or Hinglish**;
+- other Hinglish chapters reuse the website's sample questions;
+- ~6% of questions carry a deliberate flaw (`MOCK_AI_FAULT_RATE`) so the
+  validator and review queue have something to catch;
+- the instruction `[mock:invalid-json]` makes a job fail, to try **Retry
+  failed batches**.
+
+This exercises the whole path — admin → generation → validation →
+database → mock test → website → result → analytics — for free.
+
+## 9. Production deployment
+
+| Part | Suggested host | Notes |
+|---|---|---|
+| Database | Supabase or Neon | set `DATABASE_URL` on the API |
+| API | Render / Railway / Fly (Docker) | [`backend/Dockerfile`](backend/Dockerfile) runs migrations then starts; [`render.yaml`](render.yaml) blueprint included; health check `/api/health` |
+| Worker (optional) | same image, command `node dist/worker.js` | set `WORKER_ENABLED=false` on the API to split generation out |
+| Admin console | Vercel or Render | root directory `admin`, env `API_URL` |
+| Website | Vercel | env `NEXT_PUBLIC_API_URL` = your API URL |
+
+On the API set `NODE_ENV=production`, `CORS_ORIGINS=<website URL>`,
+`TRUST_PROXY=1` (behind one proxy) and, for website logins,
+`SUPABASE_URL` + `SUPABASE_ANON_KEY`. The console's cookie is `Secure` in
+production, so serve it over HTTPS. CI (`.github/workflows/ci.yml`) runs the
+API tests on PostgreSQL 16 and builds all three apps.
+
+## 10. Database migrations
+
+Schema lives in `backend/src/database/schema.ts`. After changing it:
+
+```bash
+cd backend
+npm run db:generate -- --name describe-change   # writes drizzle/NNNN_*.sql — review and commit it
+npm run db:migrate                              # apply locally; production applies on container start
+```
+
+## 11. How to generate questions
+
+Console → **Generate Questions** → choose exam, subject, chapter (and topic),
+language, number of questions, difficulty mix (e.g. 30/50/20), explanation,
+optional approved source material and instructions → check the cost
+estimate → **Start generation**. The job page shows live progress, e.g.
+`Generation: ████████████░░░░ 75% — 375 / 500 generated`, plus approved /
+needs-review / rejected counts, per-batch status and cost. If some batches
+fail, the others' questions are kept; use **Retry failed batches**.
+
+## 12. How to review questions
+
+Console → **Review Questions** (the sidebar shows how many are waiting). Each
+question shows the options with the key marked, the explanation, exam /
+subject / chapter / topic, difficulty, the 16 automated checks, the AI
+reviewer's verdict, any **POSSIBLE DUPLICATE** side by side, and its source.
+Keyboard: **A** approve · **P** approve & publish · **R** reject · **E**
+edit · **X** archive · **J/K** next/previous. The Question Bank also offers
+filters and bulk approve / reject / publish.
+
+## 13. How to publish mock tests
+
+1. Publish questions (Question Bank → select → **Publish**, or **P** in Review).
+   Only PUBLISHED questions can go into a test.
+2. Console → **Mock Tests** → **New mock test / blueprint**: exam, language,
+   duration, marking, difficulty mix and questions per subject →
+   **Generate test**, or **Save as blueprint**.
+3. Open the test → **Publish**. It appears on the website's Mock Tests page
+   within a minute.
+4. Blueprints → **Generate tests** creates "Mock Test 1…N" in one go,
+   picking the least-used questions so the series repeats as little as
+   possible.
+
+---
+
+## Website features
 
 | Area | Where |
 |---|---|
 | Home | `src/app/page.tsx` |
-| Exam catalog | `/exams`, `/exams/constable`, `/exams/si`, `/exams/[state]` |
-| Exam profile (18 combos) | `/[slug]` e.g. `/up-police-constable` — tabs for Overview, Syllabus, Pattern, PYQ, Mock, Practice, Physical, Updates, Notes |
-| Quick Practice engine | `/practice` → `/practice/run` |
-| Mock Test engine (timer, palette, mark for review, results) | `/mock-test` → `/mock-test/[id]` → `/mock-test/[id]/attempt` |
-| PYQ (attempt online) | `/pyq` → `/pyq/[id]` |
-| State GK | `/state-gk` → `/state-gk/[state]` |
-| Daily Quiz + streak | `/daily-quiz` |
-| Current Affairs | `/current-affairs` |
-| Physical Test (PET/PST) | `/physical-test` → `/physical-test/[state]` |
-| Study Notes | `/study-notes` → `/study-notes/[slug]` |
-| Exam Updates | `/exam-updates` |
-| Global Search | `/search` |
-| Auth (Google / Mobile OTP / Guest demo) | `/login` |
-| Dashboard, Bookmarks, Meri Mistakes | `/dashboard`, `/dashboard/bookmarks`, `/dashboard/mistakes` |
-| Leaderboard + gamification (points/streak/badges) | `/leaderboard`, `src/data/badges.ts` |
-| Admin panel (question CRUD + moderation, reports, analytics) | `/admin` |
-| Legal / footer pages | `/about`, `/contact`, `/privacy-policy`, `/terms`, `/disclaimer`, `/report-error`, `/official-sources` |
-| SEO | per-page `generateMetadata`, `src/app/sitemap.ts`, `src/app/robots.ts`, JSON-LD in `src/app/layout.tsx` |
+| Exam catalog and 18 exam profiles | `/exams`, `/[slug]` e.g. `/up-police-constable` |
+| Quick Practice | `/practice` → `/practice/run` |
+| Mock tests — built-in demo | `/mock-test` → `/mock-test/[id]` → `/attempt` |
+| Mock tests — published from the console | `/mock-test/live/[id]` → `/attempt` (server-scored) |
+| PYQ practice sets, State GK, Daily Quiz, Current Affairs, Physical Test, Study Notes, Exam Updates, Search | `/pyq`, `/state-gk`, `/daily-quiz`, `/current-affairs`, `/physical-test`, `/study-notes`, `/exam-updates`, `/search` |
+| Login (Google / Mobile OTP via Supabase, or guest) | `/login` |
+| Dashboard, bookmarks, mistakes, leaderboard | `/dashboard`, `/leaderboard` |
 
-## Scripts
+The website never invents official recruitment data: vacancies, dates and
+cut-offs show "Official notification ka wait karein". Built-in PYQ sets,
+current affairs and exam updates are labelled sample/placeholder content.
+The older `/admin` page inside the website is the original demo
+(browser-only) panel; the real console is `admin/`.
+
+## Commands
 
 ```bash
-npm run dev               # local dev server
-npm run build              # production build
-npm run lint                # eslint
-npm run generate:questions  # regenerate src/data/generated/questions.json from the fact/question banks
-npm run seed:supabase       # push static seed data into a configured Supabase project
+npm run setup        # first-time setup (all three apps)
+npm run dev:all      # run everything
+npm run dev          # website only
+npm run build        # build the website
+cd backend && npm test          # API tests (embedded Postgres; TEST_DATABASE_URL=… for a real one)
+cd backend && npm run worker    # standalone generation worker (needs DATABASE_URL)
+npm run export:seed  # re-export website taxonomy/sample questions into backend/seed
 ```
 
-## Deploying
-
-Push to a Git repo and import it on [Vercel](https://vercel.com/new) — no
-extra configuration needed for the demo mode. Add the Supabase env vars
-(see `.env.example`) in the Vercel project settings once you've set up a
-real backend per the section above.
+`npm audit` in `backend/` reports advisories only in the development tool
+`drizzle-kit`'s bundled esbuild dev server (never run by this project);
+`npm audit --omit=dev` reports none.

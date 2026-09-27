@@ -6,11 +6,13 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { createDatabase } from './client.js';
+import { loadDotEnv } from '../config/dotenv.js';
 import { SEED_DIR, seedTaxonomy } from './seedTaxonomy.js';
 import { upsertAdmin } from './seedAdmin.js';
 import { importQuestions } from '../services/importService.js';
 
 async function main() {
+  loadDotEnv();
   const database = createDatabase(process.env.DATABASE_URL, 1);
   try {
     await database.migrate();

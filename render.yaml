@@ -1,0 +1,43 @@
+# Optional Render Blueprint (https://render.com/docs/blueprint-spec) for the
+# API and the admin console. Render → New → Blueprint → pick this repo; you'll
+# be asked for the values marked `sync: false`. The website and admin console
+# can equally be hosted on Vercel, and the database on Supabase or Neon.
+# See README.md → Production deployment.
+services:
+  - type: web
+    name: policeexams-api
+    runtime: docker
+    dockerContext: ./backend
+    dockerfilePath: ./backend/Dockerfile
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: "1"
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false # your website's URL, e.g. https://policeexams.in
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: MOCK_AI
+        value: "false"
+      - key: AI_API_KEY
+        sync: false
+      - key: AI_MONTHLY_BUDGET_USD
+        sync: false
+
+  - type: web
+    name: policeexams-admin
+    runtime: node
+    rootDir: admin
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: API_URL
+        sync: false # the policeexams-api URL, e.g. https://policeexams-api.onrender.com

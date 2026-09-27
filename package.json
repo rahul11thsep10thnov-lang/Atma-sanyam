@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "generate:questions": "tsx src/scripts/generate-questions.ts",
-    "seed:supabase": "tsx src/scripts/seed-supabase.ts"
+    "seed:supabase": "tsx src/scripts/seed-supabase.ts",
+    "setup": "node scripts/setup.mjs",
+    "dev:all": "node scripts/dev-all.mjs",
+    "export:seed": "tsx src/scripts/export-backend-seed.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
