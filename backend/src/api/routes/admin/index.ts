@@ -4,6 +4,9 @@ import { adminPipelineRouter } from "./pipeline";
 import { adminStoriesRouter } from "./storiesAdmin";
 import { adminSourcesRouter } from "./sources";
 import { adminConfigRouter } from "./config";
+import { adminStudioRouter } from "./studio";
+import { adminVoicesRouter } from "./voices";
+import { adminProvidersRouter } from "./providers";
 import { requireAdminAuth } from "../../../middleware/auth";
 
 export const adminRouter = Router();
@@ -16,3 +19,6 @@ adminRouter.use("/pipeline", adminPipelineRouter);
 adminRouter.use("/stories", adminStoriesRouter);
 adminRouter.use("/sources", adminSourcesRouter);
 adminRouter.use("/config", adminConfigRouter);
+adminRouter.use("/studio", adminStudioRouter);
+adminRouter.use("/voices", adminVoicesRouter);
+adminRouter.use("/providers", adminProvidersRouter);

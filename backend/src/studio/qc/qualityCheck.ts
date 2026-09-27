@@ -6,6 +6,8 @@ import { NARRATOR_SPEAKER_KEY } from "../media/voiceCatalog";
 
 export interface QcInput {
   articleText: string;
+  /** Names legitimately added by the system (e.g. the source publication in the closing line). */
+  extraAllowedNames?: string[];
   masterLanguage: string;
   allowReconstruction: boolean;
   characters: { key: string; displayName: string; realName?: string | null; isRealPerson: boolean; anonymized: boolean }[];
@@ -78,7 +80,7 @@ export function runQualityCheck(input: QcInput): QcReport {
     add("no_hallucinated_facts", { severity: "BLOCKING", message: `Number "${n}" in the script does not appear in the article.` });
   }
   if (input.masterLanguage === "en") {
-    const allowed = input.characters.flatMap((c) => [c.displayName, c.realName ?? ""]).filter(Boolean);
+    const allowed = [...input.characters.flatMap((c) => [c.displayName, c.realName ?? ""]), ...(input.extraAllowedNames ?? [])].filter(Boolean);
     for (const name of findUnsupportedNames(masterText, input.articleText, allowed)) {
       add("no_hallucinated_facts", { severity: "WARNING", message: `Name "${name}" in the script does not appear in the article — verify.` });
     }

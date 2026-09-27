@@ -3,6 +3,7 @@ import { env } from "../../config/env";
 import { STUDIO_LANGUAGE_CODES } from "../language/languageProfiles";
 import { LLMProvider } from "./llm/LLMProvider";
 import { AnthropicLLMProvider } from "./llm/AnthropicLLMProvider";
+import { CachedLLMProvider } from "./llm/CachedLLMProvider";
 import { TranslationProvider } from "./translation/TranslationProvider";
 import { LLMTranslationProvider } from "./translation/LLMTranslationProvider";
 import { GoogleTranslateProvider } from "./translation/GoogleTranslateProvider";
@@ -53,7 +54,7 @@ function byKey(configs: ProviderConfig[], kind: ProviderKind, key: string) {
 
 /** Pure construction from config rows — exported for tests and the providers page. */
 export function buildProviders(prisma: PrismaClient, configs: ProviderConfig[]): StudioProviders {
-  const llm = new AnthropicLLMProvider();
+  const llm = new CachedLLMProvider(new AnthropicLLMProvider(), prisma);
 
   // Translation: explicit TRANSLATION_PROVIDER choice, falling back to passthrough.
   const translationCandidates: Record<string, TranslationProvider> = {
@@ -146,7 +147,8 @@ export async function describeProviders(prisma: PrismaClient): Promise<ProviderS
     notes,
     settings: row(kind, key)?.settings ?? null,
   });
-  const voiceKeys = active.voices.describe();
+  // A voice provider is "active" when it is in the routing order AND has credentials.
+  const voiceKeys = active.voices.describe().filter((k) => k === "mock" || (k === "elevenlabs" ? new ElevenLabsVoiceProvider().isConfigured() : k === "chatterbox" ? new ChatterboxVoiceProvider().isConfigured() : new GoogleVoiceProvider().isConfigured()));
 
   return [
     entry("LLM", "anthropic", active.llm.isConfigured(), active.llm.isConfigured(), ["ANTHROPIC_API_KEY"], `Model ${active.llm.model}. Without it, rule-based analysis and template scripts are used.`),

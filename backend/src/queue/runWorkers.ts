@@ -4,6 +4,7 @@ import { startClassifyArticleWorker } from "./workers/classifyArticleWorker";
 import { startExtractDedupScoreWorker } from "./workers/extractDedupScoreWorker";
 import { startGenerateScriptWorker } from "./workers/generateScriptWorker";
 import { startPublishLanguageWorker } from "./workers/publishLanguageWorker";
+import { startStudioWorkers } from "../studio/jobs/studioWorkers";
 
 async function main() {
   const workers = [
@@ -12,6 +13,7 @@ async function main() {
     startExtractDedupScoreWorker(),
     startGenerateScriptWorker(),
     startPublishLanguageWorker(),
+    ...startStudioWorkers(),
   ];
   await scheduleIngestion();
 
