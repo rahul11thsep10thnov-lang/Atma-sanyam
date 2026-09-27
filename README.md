@@ -3,6 +3,12 @@
 A calm focus timer where a jigsaw puzzle assembles itself while you stay on task.
 Leave the app mid-session and the puzzle stays unfinished.
 
+> This repository also hosts a second, unrelated product: an Indian
+> government examination information portal at
+> [`/exam-portal`](exam-portal) (Next.js, own database, own deployment).
+> See [`exam-portal/PROJECT_PLAN.md`](exam-portal/PROJECT_PLAN.md). It
+> shares nothing with FOCUS below besides git history and CI.
+
 This repository contains the whole product:
 
 | Part | Folder | Stack | Runs on |

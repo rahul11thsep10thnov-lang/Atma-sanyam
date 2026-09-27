@@ -1,0 +1,57 @@
+// Exam Portal — Prisma schema.
+//
+// PHASE 1 (foundation): only enough models to prove the database connection,
+// migration flow, and Prisma Client generation all work end-to-end.
+//
+// The full normalized schema (Organization, Category, State, Exam, Job,
+// Result, AdmitCard, AnswerKey, Syllabus, Admission, Scholarship, Article,
+// Document, ImportantLink, Notification, Tag, ExamTag, RelatedContent,
+// AuditLog, ContactMessage, etc.) is documented in DATABASE_SCHEMA.md and
+// will be added in Phase 2 (Database schema) — see DEVELOPMENT_STATUS.md.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// Role-based access control for the admin CMS (see Section 16 of the spec).
+/// Enforced server-side on every admin route/action, not just hidden in the UI.
+enum AdminRole {
+  SUPER_ADMIN
+  EDITOR
+  AUTHOR
+  REVIEWER
+}
+
+/// Editorial workflow status shared by every publishable content type
+/// (Section 17). AI-extracted content always starts at DRAFT/IN_REVIEW and
+/// can never reach PUBLISHED without a human APPROVE action.
+enum ContentStatus {
+  DRAFT
+  IN_REVIEW
+  APPROVED
+  PUBLISHED
+  ARCHIVED
+  REJECTED
+}
+
+/// Admin/CMS user account. Public site visitors are a separate concern
+/// (added in a later phase alongside notifications/subscriptions).
+model AdminUser {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         AdminRole @default(AUTHOR)
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([role])
+  @@map("admin_users")
+}
