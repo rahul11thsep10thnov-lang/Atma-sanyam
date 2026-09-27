@@ -99,7 +99,6 @@ export function HomeScreen() {
       resizeMode="cover"
     >
       <View style={styles.topSection}>
-        <Text style={styles.title}>FOCUS</Text>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -167,13 +166,6 @@ const TILE_SIZE = 72;
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
   topSection: { paddingTop: 20 },
-  title: {
-    ...typography.heading,
-    color: colors.text,
-    textAlign: 'center',
-    marginBottom: 16,
-    letterSpacing: 1,
-  },
   strip: { paddingHorizontal: spacing.screenPadding, gap: 12 },
   tile: {
     width: TILE_SIZE,
