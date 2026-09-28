@@ -34,30 +34,56 @@ exam-portal/
 ├── prisma.config.ts           # Prisma 7 config: schema path + DATABASE_URL
 ├── src/
 │   ├── app/                   # Next.js App Router
-│   │   ├── (public)/          # public site routes — added from Phase 4 on
-│   │   ├── admin/             # admin CMS routes, protected server-side
+│   │   ├── (public)/          # public site: Header/Footer shell (Phase 4),
+│   │   │                      # homepage, /search; every content-type page
+│   │   │                      # added from Phase 5 on lives in here too
+│   │   ├── admin/
+│   │   │   ├── (protected)/   # requireAdmin()-gated: layout + overview
+│   │   │   ├── login/         # NOT gated — would infinite-redirect otherwise
+│   │   │   └── forbidden/     # role-mismatch landing page
 │   │   ├── api/               # route handlers (public + admin JSON API)
-│   │   └── page.tsx           # homepage
+│   │   └── not-found.tsx      # custom 404 (Section 35)
+│   ├── proxy.ts               # Next.js 16's `middleware.ts` — edge-level
+│   │                          # redirect for unauthenticated /admin/* only;
+│   │                          # never the real auth check (see below)
 │   ├── lib/
 │   │   ├── db/                # Prisma client singleton — the ONLY place
 │   │   │                      # PrismaClient is instantiated
 │   │   ├── env.ts             # validated environment variables (Zod)
-│   │   ├── auth/              # NextAuth config, session helpers (Phase 3)
-│   │   ├── validation/        # Zod schemas per content type (Phase 5+)
-│   │   ├── services/          # business logic, one module per domain
-│   │   │                      # (jobs, results, search, ...) — UI and API
-│   │   │                      # route handlers call these, never Prisma
-│   │   │                      # directly, per Section 3
-│   │   ├── seo/                # metadata/sitemap/structured-data helpers
-│   │   ├── documents/          # PDF upload + storage abstraction (Phase 13)
-│   │   ├── ai/                  # extraction pipeline (Phase 14)
-│   │   └── notifications/       # notification abstraction (Phase 16)
-│   ├── components/            # reusable UI (JobCard, ResultCard, ...)
+│   │   ├── auth/               # NextAuth config, password hashing,
+│   │   │                       # requireAdmin/requireAdminApi (Phase 3)
+│   │   ├── validation/         # Zod schemas per content type (Phase 5+)
+│   │   ├── services/            # business logic, one module per domain
+│   │   │                        # (adminAuth, auditLog, home, search, ...)
+│   │   │                        # — UI and route handlers call these,
+│   │   │                        # never Prisma directly, per Section 3
+│   │   ├── navLinks.ts          # nav items shared by Header (server) and
+│   │   │                        # MobileNav (client) — see note below
+│   │   ├── format.ts            # shared date/number formatting
+│   │   ├── seo/                 # metadata/sitemap/structured-data helpers
+│   │   ├── documents/           # PDF upload + storage abstraction (Phase 13)
+│   │   ├── ai/                   # extraction pipeline (Phase 14)
+│   │   └── notifications/        # notification abstraction (Phase 16)
+│   ├── components/
+│   │   ├── layout/             # Header, Footer, SearchBar, MobileNav
+│   │   ├── admin/               # AdminSidebar, LogoutButton
+│   │   ├── cards/                # JobCard, ExamCard, ResultCard, AdmitCard,
+│   │   │                         # AnswerKeyCard, ArticleCard
+│   │   └── (EmptyState, SectionHeading, Chip — top-level, used everywhere)
 │   └── generated/prisma/      # generated Prisma Client (git-ignored)
 ├── .env.example
 └── PROJECT_PLAN.md / ARCHITECTURE.md / DATABASE_SCHEMA.md /
     DEVELOPMENT_STATUS.md
 ```
+
+> **Client/server module boundary gotcha** (hit and fixed in Phase 4): a
+> plain constant exported from a `"use client"` file (e.g. a nav-links
+> array also needed by a server component) doesn't survive being
+> imported from server code — Next.js turns every export of a client
+> module into a client reference, not just the component. Shared,
+> non-component data like `NAV_LINKS` lives in its own plain module
+> (`src/lib/navLinks.ts`) that both the server `Header` and the client
+> `MobileNav` import, instead of one importing it from the other.
 
 ## Layering rules (Section 3)
 

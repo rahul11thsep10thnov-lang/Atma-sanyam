@@ -122,14 +122,64 @@ complete on the basis of code existing alone.
       (live counts); 5 wrong attempts → account locked; correct password
       then also rejected while locked.
 
-## Phases 4–20
+## Phase 4 — Public layout ✅ (this delivery)
+
+- [x] Design tokens (Section 32): an original teal/amber/slate palette
+      defined as Tailwind v4 `@theme` CSS variables in `globals.css` —
+      deliberately not the red/orange associated with existing
+      government-jobs sites.
+- [x] `(public)` route group (`src/app/(public)/`) wraps the homepage and
+      search page with a shared `Header`/`Footer`; `/admin/*` and
+      `/api/*` stay outside it, unaffected.
+- [x] `Header` (logo/brand, desktop nav, `SearchBar`) and `MobileNav`
+      (hamburger menu, client component) — Section 33's Header/Navbar/
+      MobileNavbar/SearchBar components.
+- [x] `SearchBar` is a plain `<form method="GET">` — no client JS
+      required to search (Section 25: minimal JavaScript).
+- [x] `Footer` with an "independent, unofficial" disclaimer (Section 42:
+      never let real/fabricated/editorial content blur together —
+      applies to the site's own framing too).
+- [x] Homepage rebuilt per Section 7's section list: Latest Jobs,
+      Latest Results, Latest Admit Cards, Latest Answer Keys, Popular
+      Exams, Popular Organizations, Browse by State, Closing Soon
+      (announcements), Articles. Every section is backed by a real
+      Prisma query in `src/lib/services/home.ts` (PUBLISHED-only,
+      capped `take`, minimal `select`) — nothing hard-coded.
+  - "Popular Exams" is honestly labelled as ordered by closest
+    application deadline, not a fabricated popularity score — real
+    click-based ranking needs Phase 17's analytics.
+  - "Closing Soon" is derived from `applicationEndDate` rather than a
+    separate hand-curated "announcements" content type the schema
+    doesn't define.
+  - Every section has a real empty state (`EmptyState`) when nothing is
+    published yet — verified live (Results/Answer Keys/Articles all
+    correctly show their empty state against the current seed data).
+- [x] `JobCard`, `ExamCard`, `ResultCard`, `AdmitCard`, `AnswerKeyCard`,
+      `ArticleCard` (Section 33) render as previews (not links) for now
+      — their detail pages (`/jobs/[slug]` etc.) don't exist until Phase
+      5+, and linking to them today would just be a dead link from our
+      own UI. `Chip` previews Organizations/States the same way.
+- [x] Minimal cross-content search (`src/lib/services/search.ts`,
+      `/search`) — title-only, Exam + Job, no filters/pagination —
+      exists only so the header search bar isn't a dead end before
+      Phase 11 builds the real thing. Verified live: a real query
+      ("clerk") finds the seeded demo exam/job; a non-matching query
+      shows its own empty state.
+- [x] Custom `not-found.tsx` (Section 35) instead of the Next.js default.
+- [x] `npm run typecheck` / `lint` / `build` all pass.
+- [x] Verified end-to-end via `npm run dev` + curl: homepage renders all
+      sections with real data and correct empty states; search finds
+      real matches and handles no-match; custom 404 returns a real 404
+      status; `/admin` and `/api/health` still work unchanged.
+
+## Phases 5–20
 
 Not started. See `PROJECT_PLAN.md` for the full ordered list
-(public layout → exam/job system → results → admit cards → answer keys →
-syllabus → articles/admissions/scholarships → search → SEO →
-PDF/document system → AI extraction pipeline → human verification →
-notifications → analytics → testing/security/performance →
-production deployment → Android API readiness).
+(exam/job system → results → admit cards → answer keys → syllabus →
+articles/admissions/scholarships → search → SEO → PDF/document system →
+AI extraction pipeline → human verification → notifications → analytics
+→ testing/security/performance → production deployment → Android API
+readiness).
 
 ## Known follow-ups / decisions to revisit
 
@@ -153,3 +203,13 @@ production deployment → Android API readiness).
   `requireAdmin(allowedRoles)`/`requireAdminApi(allowedRoles)` are ready
   to be called with the right role list as each content type's
   create/edit/publish/approve actions are built from Phase 5 onward.
+- Homepage cards (`JobCard`, `ExamCard`, etc.) and `Chip`s render as
+  previews, not links, because `/jobs/[slug]`, `/exam/[slug]`,
+  `/organization/[slug]`, `/state/[slug]` etc. don't exist yet. Revisit
+  each one as its detail/listing page is built (Phase 5 for
+  Exam/Job/Organization/Category/State, Phase 6–10 for the rest) —
+  wiring up the `href` is a small, mechanical follow-up, not a redesign.
+- The header/mobile nav currently link to in-page anchors on the
+  homepage (`/#jobs`, `/#results`, …) rather than separate `/jobs`,
+  `/results`, … index pages, since those listing pages are Phase 5–10's
+  job. Swap them for real routes as each one ships.
