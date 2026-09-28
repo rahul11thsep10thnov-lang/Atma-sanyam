@@ -9,11 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-/** Small pill showing whose turn it is — kept understated rather than a flashy banner. */
+/** Small pill showing whose turn it is — [text] is already localized (see `turn_indicator_format`). */
 @Composable
-fun TurnIndicator(playerName: String, modifier: Modifier = Modifier) {
+fun TurnIndicator(text: String, modifier: Modifier = Modifier) {
     Text(
-        text = "$playerName’s turn",
+        text = text,
         style = MaterialTheme.typography.labelLarge,
         color = MaterialTheme.colorScheme.onTertiary,
         modifier = modifier

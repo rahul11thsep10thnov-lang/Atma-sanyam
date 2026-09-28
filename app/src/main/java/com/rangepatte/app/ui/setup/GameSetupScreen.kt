@@ -1,11 +1,24 @@
 package com.rangepatte.app.ui.setup
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.FilterChip
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Computer
+import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.filled.Wifi
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,23 +28,41 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.rangepatte.app.R
 import com.rangepatte.app.domain.model.AiDifficulty
 import com.rangepatte.app.domain.model.GameInfo
 import com.rangepatte.app.domain.model.PlayMode
 import com.rangepatte.app.ui.background.BackgroundType
-import com.rangepatte.app.ui.components.ClassicalButton
 import com.rangepatte.app.ui.components.GameHeader
+import com.rangepatte.app.ui.components.GamePortrait
 import com.rangepatte.app.ui.components.WatermarkBackground
+import com.rangepatte.app.ui.components.royal.RoyalButton
+import com.rangepatte.app.ui.components.royal.RoyalButtonStyle
+import com.rangepatte.app.ui.components.royal.RoyalPanel
+import com.rangepatte.app.ui.components.royal.RoyalSectionTitle
+import com.rangepatte.app.ui.components.royal.RoyalSlot
 import com.rangepatte.app.ui.rules.RulesDialog
+import com.rangepatte.app.ui.theme.GoldBevelDark
+import com.rangepatte.app.ui.theme.GoldBevelLight
+import com.rangepatte.app.ui.theme.GoldenGlow
+import com.rangepatte.app.ui.theme.ParchmentText
+import com.rangepatte.app.ui.theme.ParchmentTextDim
+import com.rangepatte.app.ui.theme.RoyalLabelStyle
+import com.rangepatte.app.ui.theme.RoyalTitleStyle
 
 /**
- * Pre-game setup: how to play (vs computer / pass & play / nearby / online), player count, and AI
- * difficulty. The rules scroll pops up automatically the moment a game is selected (per the design
- * brief), and can be reopened any time via the header's scroll icon.
+ * Pre-game setup, laid out like a strategy game's unit-info card: an info panel for the game
+ * (framed portrait, summary, player count, Rules) beside an options panel of square command slots
+ * (how to play, player count) and difficulty plaques. Side by side on wide screens, stacked on
+ * phones. The rules scroll pops up automatically the moment a game is selected (per the design
+ * brief) and can be reopened from the header or the Rules button.
  */
 @Composable
 fun GameSetupScreen(
@@ -49,84 +80,85 @@ fun GameSetupScreen(
     LaunchedEffect(game.id) { showRules = true }
 
     WatermarkBackground(backgroundType = BackgroundType.COURTYARD, modifier = modifier) {
-        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Column(modifier = Modifier.fillMaxSize()) {
             GameHeader(
                 title = stringResource(game.nameRes),
                 onBackClick = onBackClick,
-                onSettingsClick = { showRules = true }
+                onRulesClick = { showRules = true }
             )
-
-            Column(
-                modifier = Modifier.padding(top = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp)
-            ) {
-                Text(text = stringResource(R.string.setup_title), style = MaterialTheme.typography.headlineMedium)
-
-                if (isMultiplayerCapable) {
-                    Column {
-                        Text(text = stringResource(R.string.setup_mode_title), style = MaterialTheme.typography.titleMedium)
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(top = 8.dp)) {
-                            FilterChip(
-                                selected = mode == PlayMode.VS_COMPUTER,
-                                onClick = { mode = PlayMode.VS_COMPUTER },
-                                label = { Text(stringResource(R.string.setup_mode_vs_computer)) }
-                            )
-                            FilterChip(
-                                selected = mode == PlayMode.PASS_AND_PLAY,
-                                onClick = { mode = PlayMode.PASS_AND_PLAY },
-                                label = { Text(stringResource(R.string.setup_mode_pass_play)) }
-                            )
-                        }
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(top = 8.dp)) {
-                            val comingSoon = stringResource(R.string.setup_mode_coming_soon)
-                            FilterChip(
-                                selected = false,
-                                enabled = false,
-                                onClick = {},
-                                label = { Text("${stringResource(R.string.setup_mode_nearby)} · $comingSoon") }
-                            )
-                            FilterChip(
-                                selected = false,
-                                enabled = false,
-                                onClick = {},
-                                label = { Text("${stringResource(R.string.setup_mode_online)} · $comingSoon") }
-                            )
-                        }
-                    }
-
-                    Column {
-                        Text(text = stringResource(R.string.setup_players), style = MaterialTheme.typography.titleMedium)
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(top = 8.dp)) {
-                            (game.minPlayers..game.maxPlayers).forEach { count ->
-                                FilterChip(
-                                    selected = playerCount == count,
-                                    onClick = { playerCount = count },
-                                    label = { Text(count.toString()) }
-                                )
+            BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                val wide = maxWidth >= 600.dp
+                val infoPanel = @Composable { panelModifier: Modifier ->
+                    GameInfoPanel(game = game, onRulesClick = { showRules = true }, modifier = panelModifier)
+                }
+                val optionsPanel = @Composable { panelModifier: Modifier ->
+                    RoyalPanel(title = stringResource(R.string.setup_title), modifier = panelModifier) {
+                        if (isMultiplayerCapable) {
+                            RoyalSectionTitle(stringResource(R.string.setup_mode_title))
+                            ModeSlots(selected = mode, onSelect = { mode = it })
+                            RoyalSectionTitle(stringResource(R.string.setup_players))
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .horizontalScroll(rememberScrollState())
+                            ) {
+                                (game.minPlayers..game.maxPlayers).forEach { count ->
+                                    RoyalSlot(
+                                        selected = playerCount == count,
+                                        onClick = { playerCount = count },
+                                        contentDescription = "$count ${stringResource(R.string.players_suffix)}",
+                                        size = 48.dp
+                                    ) {
+                                        Text(
+                                            text = count.toString(),
+                                            style = RoyalTitleStyle,
+                                            color = if (playerCount == count) GoldenGlow else ParchmentText
+                                        )
+                                    }
+                                }
                             }
                         }
+                        if (!isMultiplayerCapable || mode == PlayMode.VS_COMPUTER) {
+                            RoyalSectionTitle(stringResource(R.string.setup_difficulty))
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                                AiDifficulty.entries.forEach { level ->
+                                    RoyalButton(
+                                        text = stringResource(level.labelRes()),
+                                        onClick = { difficulty = level },
+                                        style = if (difficulty == level) RoyalButtonStyle.CRIMSON else RoyalButtonStyle.STEEL,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
+                            }
+                        }
+                        RoyalButton(
+                            text = stringResource(R.string.setup_start),
+                            onClick = { onStartGame(playerCount, difficulty, if (isMultiplayerCapable) mode else PlayMode.VS_COMPUTER) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 20.dp)
+                        )
                     }
                 }
 
-                if (!isMultiplayerCapable || mode == PlayMode.VS_COMPUTER) {
-                    Column {
-                        Text(text = stringResource(R.string.setup_difficulty), style = MaterialTheme.typography.titleMedium)
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(top = 8.dp)) {
-                            AiDifficulty.entries.forEach { level ->
-                                FilterChip(
-                                    selected = difficulty == level,
-                                    onClick = { difficulty = level },
-                                    label = { Text(level.name.lowercase().replaceFirstChar { it.uppercase() }) }
-                                )
-                            }
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    if (wide) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                            infoPanel(Modifier.weight(1f))
+                            optionsPanel(Modifier.weight(1.3f))
                         }
+                    } else {
+                        infoPanel(Modifier.fillMaxWidth())
+                        optionsPanel(Modifier.fillMaxWidth())
                     }
                 }
-
-                ClassicalButton(
-                    text = stringResource(R.string.setup_start),
-                    onClick = { onStartGame(playerCount, difficulty, if (isMultiplayerCapable) mode else PlayMode.VS_COMPUTER) }
-                )
             }
         }
     }
@@ -134,4 +166,108 @@ fun GameSetupScreen(
     if (showRules) {
         RulesDialog(game = game, onDismiss = { showRules = false })
     }
+}
+
+@Composable
+private fun GameInfoPanel(game: GameInfo, onRulesClick: () -> Unit, modifier: Modifier = Modifier) {
+    RoyalPanel(title = stringResource(game.nameRes), modifier = modifier) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            GamePortrait(game = game, size = 96.dp)
+            Column(modifier = Modifier
+                .weight(1f)
+                .padding(start = 14.dp)) {
+                Text(
+                    text = stringResource(game.descriptionRes),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = ParchmentText
+                )
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 8.dp)) {
+                    Icon(
+                        imageVector = Icons.Filled.Groups,
+                        contentDescription = null,
+                        tint = GoldBevelLight,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    val players = if (game.minPlayers == game.maxPlayers) "${game.minPlayers}" else "${game.minPlayers}–${game.maxPlayers}"
+                    Text(
+                        text = "$players ${stringResource(R.string.players_suffix)}",
+                        style = RoyalLabelStyle,
+                        color = GoldBevelLight,
+                        modifier = Modifier.padding(start = 6.dp)
+                    )
+                }
+            }
+        }
+        RoyalButton(
+            text = stringResource(R.string.action_rules),
+            onClick = onRulesClick,
+            style = RoyalButtonStyle.STEEL,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 14.dp)
+        )
+    }
+}
+
+private data class ModeOption(val mode: PlayMode, val icon: ImageVector, val labelRes: Int, val available: Boolean)
+
+private val modeOptions = listOf(
+    ModeOption(PlayMode.VS_COMPUTER, Icons.Filled.Computer, R.string.setup_mode_vs_computer, available = true),
+    ModeOption(PlayMode.PASS_AND_PLAY, Icons.Filled.Groups, R.string.setup_mode_pass_play, available = true),
+    ModeOption(PlayMode.NEARBY, Icons.Filled.Wifi, R.string.setup_mode_nearby, available = false),
+    ModeOption(PlayMode.ONLINE, Icons.Filled.Public, R.string.setup_mode_online, available = false)
+)
+
+/** Four square command slots for how to play; Nearby/Online are shown locked ("coming soon"). */
+@Composable
+private fun ModeSlots(selected: PlayMode, onSelect: (PlayMode) -> Unit) {
+    val comingSoon = stringResource(R.string.setup_mode_coming_soon)
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+    ) {
+        modeOptions.forEach { option ->
+            val label = stringResource(option.labelRes)
+            val isSelected = selected == option.mode
+            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(72.dp)) {
+                RoyalSlot(
+                    selected = isSelected,
+                    onClick = { onSelect(option.mode) },
+                    contentDescription = if (option.available) label else "$label, $comingSoon",
+                    enabled = option.available
+                ) {
+                    Icon(
+                        imageVector = if (option.available) option.icon else Icons.Filled.Lock,
+                        contentDescription = null,
+                        tint = if (isSelected) GoldenGlow else ParchmentText,
+                        modifier = Modifier.size(26.dp)
+                    )
+                }
+                Text(
+                    text = label,
+                    style = RoyalLabelStyle.copy(fontSize = 10.sp, letterSpacing = 0.4.sp, lineHeight = 13.sp),
+                    color = if (isSelected) GoldBevelLight else ParchmentTextDim,
+                    textAlign = TextAlign.Center,
+                    maxLines = 3,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+                if (!option.available) {
+                    Text(
+                        text = comingSoon,
+                        style = RoyalLabelStyle.copy(fontSize = 9.sp, letterSpacing = 0.sp),
+                        color = GoldBevelDark,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun AiDifficulty.labelRes(): Int = when (this) {
+    AiDifficulty.EASY -> R.string.difficulty_easy
+    AiDifficulty.MEDIUM -> R.string.difficulty_medium
+    AiDifficulty.HARD -> R.string.difficulty_hard
 }

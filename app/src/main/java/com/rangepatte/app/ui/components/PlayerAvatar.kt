@@ -12,9 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.rangepatte.app.R
 import com.rangepatte.app.ui.theme.BrassLight
 import com.rangepatte.app.ui.theme.GoldenGlow
 import com.rangepatte.app.ui.theme.Radii
@@ -52,7 +54,7 @@ fun PlayerAvatar(
             )
         }
         Text(
-            text = if (isAI) "$name (AI)" else name,
+            text = if (isAI) stringResource(R.string.player_ai_format, name) else name,
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onBackground,
             maxLines = 1,

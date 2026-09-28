@@ -29,13 +29,14 @@ import com.rangepatte.app.domain.model.GameInfo
 import com.rangepatte.app.domain.model.PlayMode
 import com.rangepatte.app.ui.background.BackgroundType
 import com.rangepatte.app.ui.components.CardFan
-import com.rangepatte.app.ui.components.ClassicalOutlinedButton
 import com.rangepatte.app.ui.components.GameHeader
 import com.rangepatte.app.ui.components.PlayerAvatar
 import com.rangepatte.app.ui.components.ScorePanel
 import com.rangepatte.app.ui.components.TurnIndicator
 import com.rangepatte.app.ui.components.WatermarkBackground
 import com.rangepatte.app.ui.components.WoodenTable
+import com.rangepatte.app.ui.components.royal.RoyalButton
+import com.rangepatte.app.ui.components.royal.RoyalButtonStyle
 import com.rangepatte.app.ui.cards.Hand
 import com.rangepatte.app.ui.rules.RulesDialog
 import com.rangepatte.app.ui.theme.GoldenGlow
@@ -68,13 +69,15 @@ fun GameTableScreen(
     var showRules by remember(game.id) { mutableStateOf(false) }
     val showUndo = playMode.allowsUndo || game.maxPlayers <= 1
     var undoUsesRemaining by remember(game.id) { mutableStateOf(UNDO_USES_PER_GAME) }
+    val youName = stringResource(R.string.player_you)
+    val opponentName = stringResource(R.string.player_opponent)
 
     WatermarkBackground(backgroundType = BackgroundType.VILLAGE_CHAUPAL, modifier = modifier) {
         Column(modifier = Modifier.fillMaxSize().padding(12.dp)) {
             GameHeader(
                 title = stringResource(game.nameRes),
                 onBackClick = onBackClick,
-                onSettingsClick = { showRules = true }
+                onRulesClick = { showRules = true }
             )
 
             Box(
@@ -86,7 +89,7 @@ fun GameTableScreen(
                 WoodenTable {
                     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
                         PlayerAvatar(
-                            name = "Table",
+                            name = opponentName,
                             isAI = true,
                             modifier = Modifier.padding(top = 16.dp)
                         )
@@ -100,7 +103,7 @@ fun GameTableScreen(
 
                         Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                TurnIndicator(playerName = "You")
+                                TurnIndicator(text = stringResource(R.string.turn_indicator_format, youName))
                                 Text(
                                     text = stringResource(R.string.game_table_coming_soon, stringResource(game.nameRes)),
                                     style = MaterialTheme.typography.bodyMedium,
@@ -131,7 +134,7 @@ fun GameTableScreen(
                 )
 
                 ScorePanel(
-                    scoresByPlayerName = listOf("You" to 0, "Table" to 0),
+                    scoresByPlayerName = listOf(youName to 0, opponentName to 0),
                     modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)
                 )
             }
@@ -156,9 +159,10 @@ fun GameTableScreen(
                         .padding(top = 8.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    ClassicalOutlinedButton(
+                    RoyalButton(
                         text = "${stringResource(R.string.action_undo)} ($undoUsesRemaining)",
                         enabled = undoUsesRemaining > 0,
+                        style = RoyalButtonStyle.STEEL,
                         onClick = { undoUsesRemaining = (undoUsesRemaining - 1).coerceAtLeast(0) }
                     )
                 }

@@ -99,3 +99,21 @@ val RangEPatteTypography = Typography(
         lineHeight = 16.sp
     )
 )
+
+/** Small-caps carved-inscription style for panel titles (e.g. "OPTIONS", "SELECT LANGUAGE"). */
+val RoyalTitleStyle = TextStyle(
+    fontFamily = DisplayFont,
+    fontWeight = FontWeight.Bold,
+    fontSize = 19.sp,
+    lineHeight = 26.sp,
+    letterSpacing = 1.8.sp
+)
+
+/** Compact small-caps style for buttons, plaques and option-row labels. */
+val RoyalLabelStyle = TextStyle(
+    fontFamily = DisplayFont,
+    fontWeight = FontWeight.Bold,
+    fontSize = 13.sp,
+    lineHeight = 18.sp,
+    letterSpacing = 1.2.sp
+)

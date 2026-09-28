@@ -26,6 +26,7 @@ what exists today:
 | — | Rules scroll popup with real researched rules content for all 9 games | ✅ |
 | — | Per-game vector emblem + one-clause summaries on game tiles | ✅ |
 | — | Classical tally-mark score display; gated Undo (AI games only, 3 uses) | ✅ |
+| — | Royal-court UI kit (strategy-game-style carved panels, crimson/steel buttons, options rows, portrait cards, command slots) applied to every screen | ✅ |
 | — | Multiplayer architecture scaffold (`GameRoom`/`PlayerConnection`/`GameSynchronizer` interfaces; vs-Computer and Pass & Play modes functional; Nearby/Online shown as "coming soon") | ✅ (scaffold) |
 | 7+ | Individual game engines (Solitaire, Spider, Rummy, Teen Patti, Flush, 29, Coat Piece, Dehla Pakad, Lakadi) | not started |
 | — | Real Nearby (WiFi/Bluetooth) and Online (internet) multiplayer implementation | not started |
@@ -51,6 +52,26 @@ what exists today:
   character artwork, so face cards instead get an ornamental vector crest (crown / diadem / plume —
   see `FaceCardCrest` in `SuitMotifs.kt`) rather than a painted portrait. Swapping in real
   illustrated art later means replacing that one composable's body — no calling screen changes.
+
+### Royal-court UI kit
+
+Menus follow the look of classic strategy-game interfaces (the reference was Age of Empires III's
+menus): dark carved-wood panels, double bevelled-gold frames with corner caps, small-caps titles
+over a fading gold rule, rectangular crimson/steel buttons. Only the *style* is reproduced — every
+element is drawn procedurally in `ui/components/royal/`; no artwork, logos or portraits from any
+existing game are used. The building blocks:
+
+- `RoyalPanel` / `GoldRule` — the carved container every screen is built from.
+- `RoyalButton` (`CRIMSON` primary, `STEEL` secondary) — the only button style in the app.
+- `RoyalSectionTitle`, `RoyalOptionRow`, `RoyalOrbToggle`, `RoyalSlider` — the Settings screen's
+  options-panel rows.
+- `RoyalSlot` — square command slots (play mode, player count) on the setup screen.
+- `GamePortrait` / `GameTile` / `FeaturedGameCard` (`ui/components/GameTile.kt`) — framed game
+  portraits with a crimson name plaque.
+
+The app uses one fixed dark colour scheme (`ui/theme/Theme.kt`) regardless of the system setting,
+since the heritage look is its identity rather than a user preference. Grids reflow to 2/3/4
+columns by width, and the setup screen goes side-by-side on screens 600dp and wider.
 
 The game table screen currently shows a static demo hand (cards drawn from the real `Deck` engine,
 just not attached to a rules engine yet) so the rendering pipeline can be verified end-to-end before

@@ -2,6 +2,7 @@ package com.rangepatte.app.ui.history
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -14,21 +15,33 @@ import androidx.compose.ui.unit.dp
 import com.rangepatte.app.R
 import com.rangepatte.app.ui.background.BackgroundType
 import com.rangepatte.app.ui.components.WatermarkBackground
+import com.rangepatte.app.ui.components.royal.RoyalPanel
+import com.rangepatte.app.ui.theme.ParchmentTextDim
 
 /**
- * Match history placeholder. Backed by Room ([com.rangepatte.app.domain.game.GameStatus] rounds,
- * a `GameHistoryEntity`) starting Phase 17 — this screen only needs its data source swapped then.
+ * Match history placeholder. Backed by Room (a `GameHistoryEntity`) starting Phase 17 — this
+ * screen only needs its data source swapped then.
  */
 @Composable
 fun HistoryScreen(modifier: Modifier = Modifier) {
     WatermarkBackground(backgroundType = BackgroundType.EVENING_BALCONY, modifier = modifier) {
-        Box(modifier = Modifier.fillMaxSize().padding(32.dp), contentAlignment = Alignment.Center) {
-            Text(
-                text = stringResource(R.string.history_empty),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center
-            )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            RoyalPanel(title = stringResource(R.string.nav_history), modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = stringResource(R.string.history_empty),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = ParchmentTextDim,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp)
+                )
+            }
         }
     }
 }

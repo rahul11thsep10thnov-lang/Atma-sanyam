@@ -13,17 +13,18 @@ import com.rangepatte.app.ui.background.BackgroundManager
 import com.rangepatte.app.ui.background.BackgroundType
 
 /**
- * Paints a heritage scene at very low opacity behind [content], with a translucent scrim on top so
- * text and cards stay fully readable. Used by both the home screen and the game table so the
- * "watermark, never a distraction" rule lives in exactly one place.
+ * Paints a heritage scene, blurred and dimmed, behind [content], with a dark scrim on top so the
+ * carved-wood panels in front read clearly — a dusky backdrop in the manner of a classic strategy
+ * game's menu screens. Used by every screen so the "backdrop, never a distraction" rule lives in
+ * exactly one place.
  */
 @Composable
 fun WatermarkBackground(
     backgroundType: BackgroundType,
     modifier: Modifier = Modifier,
-    watermarkAlpha: Float = 0.12f,
-    scrimColor: Color = Color.White,
-    scrimAlpha: Float = 0.55f,
+    watermarkAlpha: Float = 0.55f,
+    scrimColor: Color = Color.Black,
+    scrimAlpha: Float = 0.4f,
     content: @Composable () -> Unit
 ) {
     Box(modifier = modifier.fillMaxSize()) {

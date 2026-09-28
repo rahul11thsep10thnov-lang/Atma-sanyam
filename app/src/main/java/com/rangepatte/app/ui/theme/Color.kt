@@ -65,3 +65,20 @@ val CardBorderGold = AntiqueGoldToken
 val GoldenGlow = Color(0xFFF5C542)
 val BrassLight = Color(0xFFC9A24B)
 val BrassDark = Color(0xFF7A5A22)
+
+// ---- Royal-court UI chrome (dark carved wood, bevelled gold, crimson/steel plaques) ----------
+
+val RoyalBackground = Color(0xFF1B110A)
+val PanelWoodDark = Color(0xFF24160C)
+val PanelWoodMid = Color(0xFF3A2515)
+val PanelWoodLight = Color(0xFF4A301B)
+val GoldBevelLight = Color(0xFFE8C77A)
+val GoldBevelDark = Color(0xFF8A6A2A)
+val ParchmentText = Color(0xFFEADCBF)
+val ParchmentTextDim = Color(0xFFBFA985)
+val ButtonCrimsonTop = Color(0xFF9A2E1E)
+val ButtonCrimsonBottom = Color(0xFF5A150C)
+val ButtonSteelTop = Color(0xFF4E5664)
+val ButtonSteelBottom = Color(0xFF232830)
+val OrbTeal = Color(0xFF4FD1C5)
+val SlotFrameBlue = Color(0xFF2F6FA8)

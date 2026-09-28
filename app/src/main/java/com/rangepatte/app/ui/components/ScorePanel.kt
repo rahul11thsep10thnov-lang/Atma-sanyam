@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.rangepatte.app.ui.theme.BrassLight
 import com.rangepatte.app.ui.theme.GoldenGlow
+import com.rangepatte.app.ui.theme.ParchmentText
 import com.rangepatte.app.ui.theme.Radii
 import com.rangepatte.app.ui.theme.WoodBrown
 
@@ -46,7 +47,7 @@ fun ScorePanel(
                     Text(
                         text = name,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = ParchmentText,
                         modifier = Modifier.weight(1f)
                     )
                     Text(
