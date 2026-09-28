@@ -72,10 +72,26 @@ exam-portal/
   middleware/route handlers**, not just by hiding UI — every mutation
   re-checks the caller's role server-side (Section 16).
 
-## Authentication (Phase 3, not yet implemented)
+## Authentication (Phase 3 ✅)
 
 NextAuth v4 with the credentials provider: `AdminUser.passwordHash`
-(bcrypt) verified server-side, session stored as an encrypted JWT cookie.
+(bcrypt, cost 12) verified server-side in `src/lib/services/adminAuth.ts`,
+session stored as a signed JWT cookie (12h). Credential checking,
+account lockout (5 failed attempts → 15-minute lock), and the login audit
+log entry all live in that one service function — the NextAuth config
+(`src/lib/auth/config.ts`) just calls it and translates the result.
+
+Authorization is checked in two places, deliberately:
+
+- `src/proxy.ts` (Next.js 16's renamed `middleware.ts`) redirects an
+  unauthenticated visitor away from `/admin/*` before the page renders —
+  a UX convenience, not a security boundary by itself.
+- `requireAdmin()` (Server Components/pages) and `requireAdminApi()`
+  (Server Actions/route handlers), both in `src/lib/auth/session.ts`, are
+  the real boundary: every admin page and every future content mutation
+  calls one of these directly and can pass an `AdminRole[]` allowlist.
+  Section 16 requires this — a hidden button is not access control.
+
 Public site visitors (for saved searches/notifications) will use a
 separate, simpler auth path added when that feature is built — the spec
 doesn't require public accounts for browsing.

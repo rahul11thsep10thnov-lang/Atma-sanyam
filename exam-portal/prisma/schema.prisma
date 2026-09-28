@@ -138,15 +138,19 @@ enum ContactMessageStatus {
 
 /// Admin/CMS user account.
 model AdminUser {
-  id           String    @id @default(cuid())
-  name         String
-  email        String    @unique
-  passwordHash String
-  role         AdminRole @default(AUTHOR)
-  isActive     Boolean   @default(true)
-  lastLoginAt  DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id               String    @id @default(cuid())
+  name             String
+  email            String    @unique
+  passwordHash     String
+  role             AdminRole @default(AUTHOR)
+  isActive         Boolean   @default(true)
+  lastLoginAt      DateTime?
+  /// Consecutive failed sign-in attempts since the last success; reset to 0
+  /// on success. At 5 the account is locked for 15 minutes (Section 26).
+  failedLoginCount Int       @default(0)
+  lockedUntil      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   auditLogs AuditLog[]
 

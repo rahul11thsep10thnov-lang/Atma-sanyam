@@ -78,16 +78,49 @@ complete on the basis of code existing alone.
       after the schema change.
 - [x] Homepage now also displays a live `Exam` count via Prisma.
 
-## Phase 3 — Authentication & admin foundation (not started)
+## Phase 3 — Authentication & admin foundation ✅ (this delivery)
 
-- [ ] NextAuth (Auth.js) v4 credentials provider against `AdminUser`.
-- [ ] Password hashing via `bcryptjs`.
-- [ ] Server-side role checks (SUPER_ADMIN/EDITOR/AUTHOR/REVIEWER) in
-      middleware + every admin server action — never UI-only.
-- [x] `seed:admin` script to bootstrap the first SUPER_ADMIN (done in
+- [x] NextAuth (Auth.js) v4 credentials provider against `AdminUser`,
+      configured in `src/lib/auth/config.ts` with a JWT session (12h),
+      route handler at `src/app/api/auth/[...nextauth]/route.ts`.
+- [x] Password hashing via `bcryptjs` (`src/lib/auth/password.ts`,
+      cost 12), reused by both the login flow and `seed:admin`.
+- [x] Account lockout (`src/lib/services/adminAuth.ts`): 5 consecutive
+      failed attempts locks the account for 15 minutes; a bcrypt
+      comparison always runs, even for an unknown email, so response
+      timing can't reveal which admin emails exist. Verified live: 5
+      wrong-password attempts set `lockedUntil`, and the correct
+      password is then also rejected until it expires.
+- [x] Server-side role checks: `requireAdmin`/`requireAdminApi`
+      (`src/lib/auth/session.ts`) are the single sanctioned way to check
+      "signed in" / "allowed to do this" — every admin page and future
+      Server Action/API route calls these directly (Section 16: never
+      rely on the UI just hiding a button).
+- [x] `src/proxy.ts` (Next.js 16 renamed `middleware.ts` → `proxy.ts` —
+      followed AGENTS.md's instruction to heed this project's
+      breaking-change notices) redirects unauthenticated visitors away
+      from `/admin/*` before the page renders. This is a UX layer only;
+      the real authorization boundary is `requireAdmin` in the layout.
+- [x] `seed:admin` script to bootstrap the first SUPER_ADMIN (built in
       Phase 2, ahead of schedule, since it was needed to seed demo
-      content attributed to a real admin).
-- [ ] Admin login page + protected `/admin` shell.
+      content attributed to a real admin) — now also clears any lockout
+      on `--reset-password` and shares the same `hashPassword` helper.
+- [x] Admin login page (`/admin/login`) + protected `/admin` shell
+      (`src/app/admin/(protected)/layout.tsx`) with a role-aware sidebar
+      (`AdminSidebar`) previewing the full CMS nav, a header showing the
+      signed-in admin + role, and a working sign-out button.
+- [x] `/admin/forbidden` page for role-mismatch redirects.
+- [x] Every admin/audit route is `noindex, nofollow` (Section 45: draft/
+      admin content is never publicly indexable).
+- [x] `AuditLog` `LOGIN` entry recorded on every successful sign-in —
+      verified live via a direct database query after signing in.
+- [x] `npm run typecheck` / `npm run lint` / `npm run build` all pass.
+- [x] End-to-end verified via `npm run dev` + curl (full NextAuth
+      CSRF → credentials → session-cookie flow, not just unit-level):
+      unauthenticated `/admin` → 307 to `/admin/login`; correct
+      credentials → session cookie that renders the real Overview page
+      (live counts); 5 wrong attempts → account locked; correct password
+      then also rejected while locked.
 
 ## Phases 4–20
 
@@ -109,3 +142,14 @@ production deployment → Android API readiness).
 - Decide on the object-storage provider (S3 / R2 / Supabase Storage) at
   the start of Phase 13, based on the project owner's existing accounts.
 - Decide on the AI extraction provider/model at the start of Phase 14.
+- Login brute-force protection today is per-account lockout only (5
+  attempts / 15 min), which is DB-backed and works across instances.
+  There's no additional per-IP rate limit yet — revisit in Phase 18
+  (security hardening) if abuse patterns call for one (e.g. Upstash
+  Redis-backed limiter, since in-memory limiting doesn't survive
+  serverless cold starts/multiple instances).
+- `EDITOR`/`AUTHOR`/`REVIEWER` permissions are defined as an enum today
+  but not yet exercised by any content mutation (there isn't any yet) —
+  `requireAdmin(allowedRoles)`/`requireAdminApi(allowedRoles)` are ready
+  to be called with the right role list as each content type's
+  create/edit/publish/approve actions are built from Phase 5 onward.

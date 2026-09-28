@@ -4,8 +4,8 @@
 //   ADMIN_BOOTSTRAP_EMAIL=you@example.com \
 //   ADMIN_BOOTSTRAP_PASSWORD='a-long-Strong-passw0rd' \
 //   ADMIN_BOOTSTRAP_NAME='Your Name' npm run seed:admin
-import bcrypt from "bcryptjs";
 import { prisma } from "../src/lib/db/client";
+import { hashPassword } from "../src/lib/auth/password";
 
 async function main() {
   const email = process.env.ADMIN_BOOTSTRAP_EMAIL;
@@ -34,12 +34,17 @@ async function main() {
     return;
   }
 
-  const passwordHash = await bcrypt.hash(password, 12);
+  const passwordHash = await hashPassword(password);
 
   if (existing) {
     await prisma.adminUser.update({
       where: { id: existing.id },
-      data: { passwordHash, isActive: true },
+      data: {
+        passwordHash,
+        isActive: true,
+        failedLoginCount: 0,
+        lockedUntil: null,
+      },
     });
     console.log(`Password reset for ${normalizedEmail}.`);
   } else {
