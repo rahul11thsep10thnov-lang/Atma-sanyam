@@ -126,13 +126,13 @@ doesn't require public accounts for browsing.
 
 `src/lib/services/workflow.ts` is one shared state machine for
 DRAFT → IN_REVIEW → APPROVED → PUBLISHED → ARCHIVED (Section 17),
-parameterized by role — Exam, Job, and (Phase 6) Result all call
-`applyTransition()`/`availableTransitions()` rather than each
-reimplementing the rules. Phase 6 needed zero changes to `workflow.ts`,
-`ownership.ts`, or `contentVersion.ts` to add Result — exactly the
-point of building them as shared modules in Phase 5. Phases 7–10
-(AdmitCard, AnswerKey, Syllabus, Admission, Scholarship, Article) reuse
-the same modules the same way.
+parameterized by role — Exam, Job, Result (Phase 6), and AdmitCard
+(Phase 7) all call `applyTransition()`/`availableTransitions()` rather
+than each reimplementing the rules. Neither Phase 6 nor Phase 7 needed
+any change to `workflow.ts`, `ownership.ts`, or `contentVersion.ts` —
+exactly the point of building them as shared modules in Phase 5.
+Phases 8–10 (AnswerKey, Syllabus, Admission, Scholarship, Article)
+reuse the same modules the same way.
 
 `src/lib/services/ownership.ts` layers Section 16's per-role rules on
 top: AUTHOR may create content and edit only their own drafts;

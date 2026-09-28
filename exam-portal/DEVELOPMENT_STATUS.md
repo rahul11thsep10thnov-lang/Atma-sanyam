@@ -255,10 +255,44 @@ complete on the basis of code existing alone.
       card as a preview, and that the result now appears on the exam
       page, `/results`, and the homepage's Latest Results section.
 
-## Phases 7–20
+## Phase 7 — Admit Cards ✅ (this delivery)
+
+- [x] `src/lib/services/admitCards.ts`: admin CRUD, the same shared
+      workflow/ownership/versioning/audit modules (again, no changes
+      needed to any of them), plus public `listPublishedAdmitCards`
+      (paginated) and `getPublishedAdmitCardBySlug`.
+- [x] Admin `/admin/admit-cards` (list/new/edit) with `AdmitCardForm`.
+- [x] Public `/admit-card` (paginated) and `/admit-card/[slug]` per
+      Section 11: exam/organization, release date, exam date, download
+      link, official website, instructions, related result (via the
+      schema's real `Result.relatedAdmitCardId` back-relation), related
+      answer key. There's no direct FK from AdmitCard to AnswerKey in
+      the schema, so "related answer key" is derived from sharing the
+      same exam — the same central-entity pattern used throughout,
+      never a keyword match (Section 21A Step 8).
+- [x] `AdmitCard` card component now links to `/admit-card/[slug]` (was
+      a preview since Phase 4).
+- [x] Two previews upgraded to real links now that the target page
+      exists: the Result page's "Related Admit Card" and the exam
+      page's "Admit Cards" section (both were `UpcomingContentList`,
+      now `RelatedContent`). "Related Answer Key" on both pages stays a
+      preview — Phase 8's job.
+- [x] Header/mobile nav "Admit Cards" and the admin sidebar's "Admit
+      Cards" now point to the real pages.
+- [x] `npm run typecheck` / `lint` / `build` all pass.
+- [x] **Verified end-to-end with a real headless-browser run**: created
+      an Admit Card under the demo Exam, ran Submit for Review →
+      Approve → Publish, confirmed the public page renders the real
+      release/exam dates, download link, and instructions, and that it
+      appears on the exam page, `/admit-card`, and the homepage.
+      Separately confirmed the earlier Result (linked to the seeded
+      demo Admit Card) now renders "Related Admit Card" as a real,
+      working link instead of Phase 6's preview.
+
+## Phases 8–20
 
 Not started. See `PROJECT_PLAN.md` for the full ordered list
-(admit cards → answer keys → syllabus →
+(answer keys → syllabus →
 articles/admissions/scholarships → search → SEO → PDF/document system →
 AI extraction pipeline → human verification → notifications → analytics
 → testing/security/performance → production deployment → Android API
@@ -290,11 +324,12 @@ readiness).
   actual AUTHOR/EDITOR/REVIEWER accounts — worth a real multi-account
   pass in Phase 18 (testing) rather than assuming the unit logic is
   sufficient.
-- Homepage/`Chip` links to `/organization/[slug]`, `/category/[slug]`,
-  `/state/[slug]`, and now `/results/[slug]` are live; AdmitCard/
-  AnswerKey/Syllabus previews (`UpcomingContentList`) still need
-  converting to real links as Phases 7–9 ship those detail pages.
-- The header/mobile nav's Admit Cards/Answer Keys/Articles links are
-  still in-page homepage anchors (`/#admit-cards`, …) — swap each for a
-  real index page as its phase ships (mirroring what Phases 5 and 6 did
-  for `/jobs` and `/results`).
+- Homepage/`Chip`/`AdmitCard` links to `/organization/[slug]`,
+  `/category/[slug]`, `/state/[slug]`, `/results/[slug]`, and now
+  `/admit-card/[slug]` are all live; AnswerKey/Syllabus previews
+  (`UpcomingContentList`) still need converting to real links as
+  Phases 8–9 ship those detail pages.
+- The header/mobile nav's Answer Keys/Articles links are still in-page
+  homepage anchors (`/#answer-keys`, …) — swap each for a real index
+  page as its phase ships (mirroring Phases 5–7's `/jobs`, `/results`,
+  `/admit-card`).

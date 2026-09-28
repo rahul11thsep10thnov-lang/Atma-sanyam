@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPublishedResultBySlug } from "@/lib/services/results";
+import { getPublishedAdmitCardBySlug } from "@/lib/services/admitCards";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { InformationTable } from "@/components/InformationTable";
 import { RelatedContent } from "@/components/RelatedContent";
@@ -16,55 +16,57 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const data = await getPublishedResultBySlug(slug);
+  const data = await getPublishedAdmitCardBySlug(slug);
   if (!data) return {};
-  const { result } = data;
+  const { admitCard } = data;
   return {
-    title: `${result.title} — Exam Portal`,
+    title: `${admitCard.title} — Exam Portal`,
     description:
-      result.description ||
-      `${result.title}: declared ${formatDate(result.resultDate) ?? "date not specified"}.`,
-    alternates: { canonical: `/results/${result.slug}` },
+      admitCard.description ||
+      `${admitCard.title}: download link, exam date, and instructions.`,
+    alternates: { canonical: `/admit-card/${admitCard.slug}` },
   };
 }
 
-export default async function ResultDetailPage({
+export default async function AdmitCardDetailPage({
   params,
 }: {
   params: Promise<Params>;
 }) {
   const { slug } = await params;
-  const data = await getPublishedResultBySlug(slug);
+  const data = await getPublishedAdmitCardBySlug(slug);
   if (!data) notFound();
-  const { result, relatedResults } = data;
+  const { admitCard, relatedAnswerKeys } = data;
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-8 px-4 py-8 sm:px-6">
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },
-          { label: "Results", href: "/results" },
-          { label: result.title },
+          { label: "Admit Cards", href: "/admit-card" },
+          { label: admitCard.title },
         ]}
       />
 
       <div className="flex flex-col gap-2">
         <h1 className="text-xl font-semibold text-slate-900 sm:text-2xl">
-          {result.title}
+          {admitCard.title}
         </h1>
         <p className="text-sm text-slate-500">
-          {result.exam.organization.name} · {result.exam.title}
+          {admitCard.exam.organization.name} · {admitCard.exam.title}
         </p>
-        {result.description ? (
-          <p className="text-sm text-slate-700">{result.description}</p>
+        {admitCard.description ? (
+          <p className="text-sm text-slate-700">{admitCard.description}</p>
         ) : null}
       </div>
 
       <InformationTable
         rows={[
-          { label: "Organization", value: result.exam.organization.name },
-          { label: "Exam", value: result.exam.title },
-          { label: "Result Date", value: formatDate(result.resultDate) },
+          { label: "Organization", value: admitCard.exam.organization.name },
+          { label: "Exam", value: admitCard.exam.title },
+          { label: "Release Date", value: formatDate(admitCard.releaseDate) },
+          { label: "Exam Date", value: formatDate(admitCard.examDate) },
+          { label: "Instructions", value: admitCard.instructions },
         ]}
       />
 
@@ -73,19 +75,19 @@ export default async function ResultDetailPage({
           Important Links
         </h2>
         <div className="flex flex-wrap gap-3">
-          {result.resultUrl ? (
+          {admitCard.downloadUrl ? (
             <a
-              href={result.resultUrl}
+              href={admitCard.downloadUrl}
               target="_blank"
               rel="noopener noreferrer nofollow"
               className="rounded-md bg-brand-700 px-4 py-2 text-sm font-medium text-white hover:bg-brand-900"
             >
-              View Result
+              Download Admit Card
             </a>
           ) : null}
-          {result.officialWebsite ? (
+          {admitCard.officialWebsite ? (
             <a
-              href={result.officialWebsite}
+              href={admitCard.officialWebsite}
               target="_blank"
               rel="noopener noreferrer nofollow"
               className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
@@ -97,42 +99,25 @@ export default async function ResultDetailPage({
       </section>
 
       <RelatedContent
-        title="Related Admit Card"
-        items={
-          result.relatedAdmitCard && result.relatedAdmitCard.status === "PUBLISHED"
-            ? [
-                {
-                  title: result.relatedAdmitCard.title,
-                  href: `/admit-card/${result.relatedAdmitCard.slug}`,
-                },
-              ]
-            : []
-        }
-      />
-      {/* Answer Key detail pages don't exist until Phase 8 — preview only,
-          to avoid a dead link from our own UI. */}
-      <UpcomingContentList
-        title="Related Answer Key"
-        items={
-          result.relatedAnswerKey && result.relatedAnswerKey.status === "PUBLISHED"
-            ? [{ title: result.relatedAnswerKey.title }]
-            : []
-        }
-      />
-
-      <RelatedContent
-        title="Related Results"
-        items={relatedResults.map((r) => ({
+        title="Related Result"
+        items={admitCard.results.map((r) => ({
           title: r.title,
           href: `/results/${r.slug}`,
         }))}
       />
 
+      {/* Answer Key detail pages don't exist until Phase 8 — preview only,
+          to avoid a dead link from our own UI. */}
+      <UpcomingContentList
+        title="Related Answer Key"
+        items={relatedAnswerKeys.map((a) => ({ title: a.title }))}
+      />
+
       <Link
-        href={`/exam/${result.exam.slug}`}
+        href={`/exam/${admitCard.exam.slug}`}
         className="text-sm text-brand-700 hover:underline"
       >
-        View full exam page for {result.exam.title} →
+        View full exam page for {admitCard.exam.title} →
       </Link>
     </main>
   );

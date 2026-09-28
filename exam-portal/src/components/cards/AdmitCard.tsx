@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { AdmitCardSummary } from "@/lib/services/home";
 import { formatDate } from "@/lib/format";
 
@@ -8,7 +9,10 @@ export function AdmitCard({ admitCard }: { admitCard: AdmitCardSummary }) {
   const release = formatDate(admitCard.releaseDate);
   const examDate = formatDate(admitCard.examDate);
   return (
-    <article className="flex flex-col gap-1.5 rounded-lg border border-slate-200 bg-white p-4">
+    <Link
+      href={`/admit-card/${admitCard.slug}`}
+      className="flex flex-col gap-1.5 rounded-lg border border-slate-200 bg-white p-4 transition-colors hover:border-brand-600"
+    >
       <h3 className="text-sm font-medium text-slate-900">
         {admitCard.title}
       </h3>
@@ -17,6 +21,6 @@ export function AdmitCard({ admitCard }: { admitCard: AdmitCardSummary }) {
         {release ? <span>Released {release}</span> : null}
         {examDate ? <span>Exam on {examDate}</span> : null}
       </div>
-    </article>
+    </Link>
   );
 }
