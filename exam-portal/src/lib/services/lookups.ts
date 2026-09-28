@@ -29,3 +29,17 @@ export function listExamsForSelect() {
     orderBy: { title: "asc" },
   });
 }
+
+export function listAdmitCardsForSelect() {
+  return prisma.admitCard.findMany({
+    select: { id: true, title: true },
+    orderBy: { title: "asc" },
+  });
+}
+
+export function listAnswerKeysForSelect() {
+  return prisma.answerKey.findMany({
+    select: { id: true, title: true },
+    orderBy: { title: "asc" },
+  });
+}

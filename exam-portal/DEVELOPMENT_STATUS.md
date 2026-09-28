@@ -223,10 +223,42 @@ complete on the basis of code existing alone.
       FAQ, and Apply/Official Website links — then confirmed `/jobs`
       and the exam page both link to it.
 
-## Phases 6–20
+## Phase 6 — Results ✅ (this delivery)
+
+- [x] `src/lib/services/results.ts`: admin CRUD, the same shared
+      `workflow.ts`/`ownership.ts`/`contentVersion.ts` (no new logic
+      needed — this is exactly what building those shared modules in
+      Phase 5 was for), plus public `listPublishedResults` (paginated)
+      and `getPublishedResultBySlug`.
+- [x] Admin `/admin/results` (list/new/edit) with `ResultForm`, including
+      "Related Admit Card"/"Related Answer Key" selects populated from
+      whatever `AdmitCard`/`AnswerKey` rows already exist (those models
+      have existed since Phase 2; their own admin CRUD is Phases 7/8).
+- [x] Public `/results` (paginated) and `/results/[slug]` per Section
+      10: organization/exam, result date, important information, result
+      link, official website, related admit card/answer key, related
+      exam. A related Admit Card/Answer Key only renders (as a
+      **preview**, not a link — their detail pages are Phases 7/8) when
+      it's itself `PUBLISHED`, so a result never surfaces a draft
+      record's title to the public.
+- [x] `ResultCard` now links to `/results/[slug]` (was a preview since
+      Phase 4); the exam page's "Results" section upgraded from
+      `UpcomingContentList` to real `RelatedContent` links.
+- [x] Header/mobile nav "Results" and the admin sidebar's "Results" now
+      point to the real pages.
+- [x] `npm run typecheck` / `lint` / `build` all pass.
+- [x] **Verified end-to-end with a real headless-browser run**: created
+      a Result under the existing demo Exam, linked it to the
+      already-published demo Admit Card, ran it through Submit for
+      Review → Approve → Publish, and confirmed the public result page
+      renders the real description/date/links, shows the related admit
+      card as a preview, and that the result now appears on the exam
+      page, `/results`, and the homepage's Latest Results section.
+
+## Phases 7–20
 
 Not started. See `PROJECT_PLAN.md` for the full ordered list
-(results → admit cards → answer keys → syllabus →
+(admit cards → answer keys → syllabus →
 articles/admissions/scholarships → search → SEO → PDF/document system →
 AI extraction pipeline → human verification → notifications → analytics
 → testing/security/performance → production deployment → Android API
@@ -259,10 +291,10 @@ readiness).
   pass in Phase 18 (testing) rather than assuming the unit logic is
   sufficient.
 - Homepage/`Chip` links to `/organization/[slug]`, `/category/[slug]`,
-  `/state/[slug]` are live now; Result/AdmitCard/AnswerKey/Syllabus
-  previews (`UpcomingContentList`) still need converting to real links
-  as Phases 6–9 ship those detail pages.
-- The header/mobile nav's Results/Admit Cards/Answer Keys/Articles
-  links are still in-page homepage anchors (`/#results`, …) — swap each
-  for a real `/results`, `/admit-card`, … index page as its phase ships
-  (mirroring what Phase 5 just did for `/jobs`).
+  `/state/[slug]`, and now `/results/[slug]` are live; AdmitCard/
+  AnswerKey/Syllabus previews (`UpcomingContentList`) still need
+  converting to real links as Phases 7–9 ship those detail pages.
+- The header/mobile nav's Admit Cards/Answer Keys/Articles links are
+  still in-page homepage anchors (`/#admit-cards`, …) — swap each for a
+  real index page as its phase ships (mirroring what Phases 5 and 6 did
+  for `/jobs` and `/results`).

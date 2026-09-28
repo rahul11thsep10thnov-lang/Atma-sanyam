@@ -122,14 +122,17 @@ Public site visitors (for saved searches/notifications) will use a
 separate, simpler auth path added when that feature is built — the spec
 doesn't require public accounts for browsing.
 
-## Content workflow (Phase 5 ✅, reused by every content type from here on)
+## Content workflow (Phase 5 ✅, reused by every content type since)
 
 `src/lib/services/workflow.ts` is one shared state machine for
 DRAFT → IN_REVIEW → APPROVED → PUBLISHED → ARCHIVED (Section 17),
-parameterized by role — Exam and Job both call `applyTransition()`/
-`availableTransitions()` rather than each reimplementing the rules.
-Phases 6–10 (Result, AdmitCard, AnswerKey, Syllabus, Admission,
-Scholarship, Article) reuse the same module instead of copy-pasting it.
+parameterized by role — Exam, Job, and (Phase 6) Result all call
+`applyTransition()`/`availableTransitions()` rather than each
+reimplementing the rules. Phase 6 needed zero changes to `workflow.ts`,
+`ownership.ts`, or `contentVersion.ts` to add Result — exactly the
+point of building them as shared modules in Phase 5. Phases 7–10
+(AdmitCard, AnswerKey, Syllabus, Admission, Scholarship, Article) reuse
+the same modules the same way.
 
 `src/lib/services/ownership.ts` layers Section 16's per-role rules on
 top: AUTHOR may create content and edit only their own drafts;
