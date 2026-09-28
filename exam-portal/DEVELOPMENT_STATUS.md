@@ -46,17 +46,37 @@ complete on the basis of code existing alone.
       (dev-only, never deployed) bundled MySQL introspection driver —
       accepted as out of scope since this project only uses PostgreSQL.
 
-## Phase 2 — Database schema (not started)
+## Phase 2 — Database schema ✅ (this delivery)
 
-- [ ] Implement the full `DATABASE_SCHEMA.md` design in `schema.prisma`
-      (Organization, Category, State, Exam, Job, Result, AdmitCard,
-      AnswerKey, Syllabus + structured children, Admission, Scholarship,
-      Article, Document, ImportantLink, Notification, Tag, ExamTag,
-      RelatedContent, AuditLog, ContentVersion, ExtractionJob,
-      ExtractionResult, FieldOverride, ContactMessage).
-- [ ] One migration per logical group, each applied and verified.
-- [ ] Seed script with clearly-marked development/demo data
-      (Section 37) — a handful of example organizations/exams only.
+- [x] Implemented the full `DATABASE_SCHEMA.md` design in `schema.prisma`:
+      `User`, `Organization`, `Category` (self-referencing tree), `State`,
+      `Tag`, `Exam`, `ExamTag`, `Job`, `Result`, `AdmitCard`, `AnswerKey`,
+      `Syllabus`/`SyllabusPaper`/`SyllabusSubject`/`SyllabusTopic`,
+      `Admission`, `Scholarship`, `Article`, `ImportantLink`,
+      `RelatedContent`, `Notification`/`NotificationDelivery`,
+      `AuditLog`, `ContactMessage`, `Document`, `ExtractionJob`,
+      `ExtractionResult`, `FieldOverride`, `ContentVersion` — 29 tables
+      plus the existing `AdminUser`.
+- [x] `npx prisma validate` and `npx prisma format` pass.
+- [x] Migration (`full_schema`) generated and applied against the live
+      local `examportal_dev` database with `prisma migrate dev`.
+- [x] Prisma Client regenerated; `npm run typecheck` passes against the
+      full model set (every relation/field reference type-checks).
+- [x] Seed scripts added and run successfully against the live database:
+  - `prisma/seedAdmin.ts` (`npm run seed:admin`) — bootstraps the first
+    `SUPER_ADMIN` from env vars, idempotent (re-run is a no-op unless
+    `--reset-password`).
+  - `prisma/seedContent.ts` (`npm run seed:content [-- --with-samples]`)
+    — seeds all 28 states + 8 union territories + `ALL_INDIA`, a starter
+    category tree, and starter tags; `--with-samples` additionally
+    creates one clearly-labelled **`[DEMO]`** organization/exam with a
+    Job, AdmitCard, Result, and a full Syllabus → Paper → Subject → Topic
+    tree, proving every relation in the schema round-trips correctly.
+    Verified idempotent: running it twice does not duplicate rows
+    (checked via row counts).
+- [x] `npm run typecheck` / `npm run lint` / `npm run build` all pass
+      after the schema change.
+- [x] Homepage now also displays a live `Exam` count via Prisma.
 
 ## Phase 3 — Authentication & admin foundation (not started)
 
@@ -64,7 +84,9 @@ complete on the basis of code existing alone.
 - [ ] Password hashing via `bcryptjs`.
 - [ ] Server-side role checks (SUPER_ADMIN/EDITOR/AUTHOR/REVIEWER) in
       middleware + every admin server action — never UI-only.
-- [ ] `admin:seed` script to bootstrap the first SUPER_ADMIN.
+- [x] `seed:admin` script to bootstrap the first SUPER_ADMIN (done in
+      Phase 2, ahead of schedule, since it was needed to seed demo
+      content attributed to a real admin).
 - [ ] Admin login page + protected `/admin` shell.
 
 ## Phases 4–20

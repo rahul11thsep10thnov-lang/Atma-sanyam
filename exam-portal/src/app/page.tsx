@@ -1,7 +1,10 @@
 import { prisma } from "@/lib/db/client";
 
 export default async function HomePage() {
-  const adminCount = await prisma.adminUser.count();
+  const [adminCount, examCount] = await Promise.all([
+    prisma.adminUser.count(),
+    prisma.exam.count(),
+  ]);
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-4 py-16 sm:px-6">
@@ -33,6 +36,12 @@ export default async function HomePage() {
             Admin users provisioned
           </dt>
           <dd className="mt-1 text-sm text-slate-900">{adminCount}</dd>
+        </div>
+        <div>
+          <dt className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+            Exams in the database
+          </dt>
+          <dd className="mt-1 text-sm text-slate-900">{examCount}</dd>
         </div>
       </dl>
 

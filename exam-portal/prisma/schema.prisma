@@ -1,13 +1,16 @@
 // Exam Portal — Prisma schema.
 //
-// PHASE 1 (foundation): only enough models to prove the database connection,
-// migration flow, and Prisma Client generation all work end-to-end.
+// Full normalized schema per DATABASE_SCHEMA.md. Exam is the central
+// entity (Section 5): Job/Result/AdmitCard/AnswerKey/Syllabus each belong
+// to exactly one Exam via a foreign key rather than duplicating data.
 //
-// The full normalized schema (Organization, Category, State, Exam, Job,
-// Result, AdmitCard, AnswerKey, Syllabus, Admission, Scholarship, Article,
-// Document, ImportantLink, Notification, Tag, ExamTag, RelatedContent,
-// AuditLog, ContactMessage, etc.) is documented in DATABASE_SCHEMA.md and
-// will be added in Phase 2 (Database schema) — see DEVELOPMENT_STATUS.md.
+// Shared content fields (Section 4) — id, title, slug, description,
+// status, createdAt, updatedAt, publishedAt, createdBy, updatedBy — are
+// repeated on every publishable model (Prisma has no field mixins).
+// `createdBy`/`updatedBy` are plain `AdminUser.id` strings, not enforced
+// foreign keys: they're an audit trail, not something we want to block a
+// content delete/restore on, or that forces AdminUser to carry a dozen
+// reverse-relation arrays, one per content type.
 
 generator client {
   provider = "prisma-client"
@@ -18,8 +21,12 @@ datasource db {
   provider = "postgresql"
 }
 
-/// Role-based access control for the admin CMS (see Section 16 of the spec).
-/// Enforced server-side on every admin route/action, not just hidden in the UI.
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+/// Role-based access control for the admin CMS (Section 16). Enforced
+/// server-side on every admin route/action, not just hidden in the UI.
 enum AdminRole {
   SUPER_ADMIN
   EDITOR
@@ -39,8 +46,97 @@ enum ContentStatus {
   REJECTED
 }
 
-/// Admin/CMS user account. Public site visitors are a separate concern
-/// (added in a later phase alongside notifications/subscriptions).
+/// What kind of official document was uploaded (Section 19/21A Step 1).
+enum DocumentType {
+  JOB_NOTIFICATION
+  RESULT
+  ADMIT_CARD
+  ANSWER_KEY
+  SYLLABUS
+  ADMISSION
+  SCHOLARSHIP
+  OTHER
+}
+
+/// A PDF upload is never assumed authentic just because it was uploaded
+/// (Section 19) — an admin must mark it verified, ideally against a
+/// recorded official source URL.
+enum DocumentVerificationStatus {
+  UNVERIFIED
+  VERIFIED
+}
+
+/// Pipeline status tracked per document (Section 21A Step 14).
+enum ExtractionStatus {
+  UPLOADED
+  EXTRACTING
+  EXTRACTED
+  CLASSIFIED
+  AI_PROCESSING
+  VALIDATION_FAILED
+  READY_FOR_REVIEW
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  PUBLISHED
+  ARCHIVED
+  FAILED
+}
+
+/// Admin audit trail action types (Section 27).
+enum AuditAction {
+  LOGIN
+  CREATE
+  UPDATE
+  DELETE
+  PUBLISH
+  UNPUBLISH
+  APPROVE
+  REJECT
+  UPLOAD
+  DOWNLOAD
+}
+
+/// Notification event types (Section 28 / 21A Step 12).
+enum NotificationType {
+  NEW_JOB
+  NEW_RESULT
+  NEW_ADMIT_CARD
+  NEW_ANSWER_KEY
+  NEW_EXAM_NOTIFICATION
+  ANSWER_KEY_RELEASED
+  EXAM_DATE_CHANGED
+  DEADLINE_UPDATE
+  APPLICATION_DEADLINE
+}
+
+/// Delivery channel abstraction (Section 28) — the core Notification row
+/// stays provider-agnostic; fan-out per channel is tracked separately.
+enum NotificationChannel {
+  WEBSITE
+  EMAIL
+  PUSH
+  TELEGRAM
+  WHATSAPP
+  ANDROID
+}
+
+enum NotificationDeliveryStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum ContactMessageStatus {
+  NEW
+  RESOLVED
+}
+
+// ---------------------------------------------------------------------------
+// Users & access
+// ---------------------------------------------------------------------------
+
+/// Admin/CMS user account.
 model AdminUser {
   id           String    @id @default(cuid())
   name         String
@@ -52,6 +148,641 @@ model AdminUser {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
+  auditLogs AuditLog[]
+
   @@index([role])
   @@map("admin_users")
+}
+
+/// Public site visitor account (saved searches, notification subscriptions).
+/// Browsing/searching the site never requires an account — this is only
+/// for opt-in features added in a later phase.
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+
+  @@map("users")
+}
+
+// ---------------------------------------------------------------------------
+// Lookups shared across content types
+// ---------------------------------------------------------------------------
+
+model Organization {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  logoUrl     String?
+  website     String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  exams        Exam[]
+  jobs         Job[]
+  admissions   Admission[]
+  scholarships Scholarship[]
+  documents    Document[]
+
+  @@index([name])
+  @@map("organizations")
+}
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String
+  slug        String     @unique
+  description String?
+  parentId    String?
+  parent      Category?  @relation("CategoryToParent", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryToParent")
+
+  exams      Exam[]
+  admissions Admission[]
+
+  @@index([parentId])
+  @@map("categories")
+}
+
+/// 28 states + 8 union territories + a synthetic "ALL_INDIA" row for
+/// national-level exams. Seeded in Phase 2's seed script.
+model State {
+  id   String @id @default(cuid())
+  name String
+  code String @unique
+  slug String @unique
+
+  exams        Exam[]
+  admissions   Admission[]
+  scholarships Scholarship[]
+
+  @@map("states")
+}
+
+model Tag {
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
+
+  examTags ExamTag[]
+
+  @@map("tags")
+}
+
+// ---------------------------------------------------------------------------
+// Exam — the central entity (Section 5)
+// ---------------------------------------------------------------------------
+
+model Exam {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  description String?
+  status      ContentStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  publishedAt DateTime?
+  createdBy   String
+  updatedBy   String
+
+  organizationId       String
+  organization         Organization @relation(fields: [organizationId], references: [id])
+  categoryId           String
+  category             Category     @relation(fields: [categoryId], references: [id])
+  stateId              String?
+  state                State?       @relation(fields: [stateId], references: [id])
+  examDate             DateTime?
+  applicationStartDate DateTime?
+  applicationEndDate   DateTime?
+
+  jobs           Job[]
+  results        Result[]
+  admitCards     AdmitCard[]
+  answerKeys     AnswerKey[]
+  syllabi        Syllabus[]
+  importantLinks ImportantLink[]
+  examTags       ExamTag[]
+  documents      Document[]
+
+  @@index([organizationId])
+  @@index([categoryId])
+  @@index([stateId])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([applicationEndDate])
+  @@map("exams")
+}
+
+model ExamTag {
+  id     String @id @default(cuid())
+  examId String
+  exam   Exam   @relation(fields: [examId], references: [id], onDelete: Cascade)
+  tagId  String
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([examId, tagId])
+  @@map("exam_tags")
+}
+
+// ---------------------------------------------------------------------------
+// Content types — each belongs to exactly one Exam
+// ---------------------------------------------------------------------------
+
+model Job {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  description String?
+  status      ContentStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  publishedAt DateTime?
+  createdBy   String
+  updatedBy   String
+
+  examId String
+  exam   Exam   @relation(fields: [examId], references: [id])
+
+  /// Denormalized from exam.organizationId for fast organization-page
+  /// listings without joining through Exam.
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  advertisementNumber      String?
+  vacancies                Int?
+  qualification            String?
+  ageLimitMin              Int?
+  ageLimitMax              Int?
+  /// Headline fee amount; a per-category breakdown (General/OBC/SC/ST/PwD…)
+  /// lives in applicationFeeByCategory since it varies by notification.
+  applicationFee           Decimal?  @db.Decimal(10, 2)
+  applicationFeeByCategory Json?
+  notificationDocumentId   String?
+  notificationDocument     Document? @relation(fields: [notificationDocumentId], references: [id])
+  officialWebsite          String?
+  applyUrl                 String?
+  eligibility              String?
+  /// Ordered list of selection stages, e.g. ["Tier 1", "Tier 2", "Interview"].
+  selectionProcess         Json?
+  examPattern              Json?
+  salary                   String?
+  applicationEndDate       DateTime?
+  seoTitle                 String?
+  seoDescription           String?
+  seoKeywords              String[]
+
+  importantLinks ImportantLink[]
+
+  @@index([examId])
+  @@index([organizationId])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([applicationEndDate])
+  @@map("jobs")
+}
+
+model Result {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  description String?
+  status      ContentStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  publishedAt DateTime?
+  createdBy   String
+  updatedBy   String
+
+  examId String
+  exam   Exam   @relation(fields: [examId], references: [id])
+
+  resultDate         DateTime?
+  resultUrl          String?
+  officialWebsite    String?
+  relatedAdmitCardId String?
+  relatedAdmitCard   AdmitCard? @relation(fields: [relatedAdmitCardId], references: [id])
+  relatedAnswerKeyId String?
+  relatedAnswerKey   AnswerKey? @relation(fields: [relatedAnswerKeyId], references: [id])
+
+  @@index([examId])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([resultDate])
+  @@map("results")
+}
+
+model AdmitCard {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  description String?
+  status      ContentStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  publishedAt DateTime?
+  createdBy   String
+  updatedBy   String
+
+  examId String
+  exam   Exam   @relation(fields: [examId], references: [id])
+
+  releaseDate     DateTime?
+  examDate        DateTime?
+  downloadUrl     String?
+  officialWebsite String?
+  instructions    String?
+
+  results Result[]
+
+  @@index([examId])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([examDate])
+  @@map("admit_cards")
+}
+
+model AnswerKey {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  description String?
+  status      ContentStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  publishedAt DateTime?
+  createdBy   String
+  updatedBy   String
+
+  examId String
+  exam   Exam   @relation(fields: [examId], references: [id])
+
+  answerKeyDate     DateTime?
+  answerKeyUrl      String?
+  objectionDeadline DateTime?
+  objectionInfo     String?
+
+  results Result[]
+
+  @@index([examId])
+  @@index([status])
+  @@index([publishedAt])
+  @@map("answer_keys")
+}
+
+/// Structured syllabus (Section 13): Syllabus → Paper → Subject → Topic,
+/// rather than one giant text blob.
+model Syllabus {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  description String?
+  status      ContentStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  publishedAt DateTime?
+  createdBy   String
+  updatedBy   String
+
+  examId String
+  exam   Exam   @relation(fields: [examId], references: [id])
+
+  papers SyllabusPaper[]
+
+  @@index([examId])
+  @@index([status])
+  @@index([publishedAt])
+  @@map("syllabi")
+}
+
+model SyllabusPaper {
+  id         String   @id @default(cuid())
+  syllabusId String
+  syllabus   Syllabus @relation(fields: [syllabusId], references: [id], onDelete: Cascade)
+  name       String
+  order      Int      @default(0)
+
+  subjects SyllabusSubject[]
+
+  @@index([syllabusId])
+  @@map("syllabus_papers")
+}
+
+model SyllabusSubject {
+  id      String        @id @default(cuid())
+  paperId String
+  paper   SyllabusPaper @relation(fields: [paperId], references: [id], onDelete: Cascade)
+  name    String
+  order   Int           @default(0)
+
+  topics SyllabusTopic[]
+
+  @@index([paperId])
+  @@map("syllabus_subjects")
+}
+
+model SyllabusTopic {
+  id        String          @id @default(cuid())
+  subjectId String
+  subject   SyllabusSubject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  name      String
+  subtopics String[]
+  order     Int             @default(0)
+
+  @@index([subjectId])
+  @@map("syllabus_topics")
+}
+
+// ---------------------------------------------------------------------------
+// Standalone content types (not exam-scoped)
+// ---------------------------------------------------------------------------
+
+model Admission {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  description String?
+  status      ContentStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  publishedAt DateTime?
+  createdBy   String
+  updatedBy   String
+
+  organizationId       String?
+  organization         Organization? @relation(fields: [organizationId], references: [id])
+  categoryId           String?
+  category             Category?     @relation(fields: [categoryId], references: [id])
+  stateId              String?
+  state                State?        @relation(fields: [stateId], references: [id])
+  applicationStartDate DateTime?
+  applicationEndDate   DateTime?
+  eligibility          String?
+  officialWebsite      String?
+
+  @@index([organizationId])
+  @@index([categoryId])
+  @@index([stateId])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([applicationEndDate])
+  @@map("admissions")
+}
+
+model Scholarship {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  description String?
+  status      ContentStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  publishedAt DateTime?
+  createdBy   String
+  updatedBy   String
+
+  organizationId     String?
+  organization       Organization? @relation(fields: [organizationId], references: [id])
+  stateId            String?
+  state              State?        @relation(fields: [stateId], references: [id])
+  applicationEndDate DateTime?
+  eligibility        String?
+  amount             String?
+  officialWebsite    String?
+
+  @@index([organizationId])
+  @@index([stateId])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([applicationEndDate])
+  @@map("scholarships")
+}
+
+model Article {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  description String?
+  status      ContentStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  publishedAt DateTime?
+  createdBy   String
+  updatedBy   String
+
+  body          String
+  authorId      String
+  coverImageUrl String?
+
+  @@index([status])
+  @@index([publishedAt])
+  @@map("articles")
+}
+
+// ---------------------------------------------------------------------------
+// Cross-cutting
+// ---------------------------------------------------------------------------
+
+/// Generic "Apply Online / Download Notification / Official Website" links
+/// attached to an Exam or a Job.
+model ImportantLink {
+  id     String  @id @default(cuid())
+  label  String
+  url    String
+  order  Int     @default(0)
+  examId String?
+  exam   Exam?   @relation(fields: [examId], references: [id], onDelete: Cascade)
+  jobId  String?
+  job    Job?    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([examId])
+  @@index([jobId])
+  @@map("important_links")
+}
+
+/// Polymorphic related-content links (Section 21A Step 8), populated by a
+/// service using real database relationships (shared exam/organization/
+/// category), never plain keyword matching. `sourceType`/`targetType` are
+/// content-type discriminators, e.g. "Exam", "Job", "Result", "Article".
+model RelatedContent {
+  id            String   @id @default(cuid())
+  sourceType    String
+  sourceId      String
+  targetType    String
+  targetId      String
+  relationScore Float?
+  createdAt     DateTime @default(now())
+
+  @@unique([sourceType, sourceId, targetType, targetId])
+  @@index([sourceType, sourceId])
+  @@map("related_content")
+}
+
+model Notification {
+  id         String           @id @default(cuid())
+  type       NotificationType
+  title      String
+  body       String
+  targetType String?
+  targetId   String?
+  createdAt  DateTime         @default(now())
+  sentAt     DateTime?
+
+  deliveries NotificationDelivery[]
+
+  @@index([type])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+/// Per-channel fan-out so the core Notification row never couples to one
+/// provider (Section 28).
+model NotificationDelivery {
+  id             String                     @id @default(cuid())
+  notificationId String
+  notification   Notification               @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  channel        NotificationChannel
+  status         NotificationDeliveryStatus @default(PENDING)
+  error          String?
+  sentAt         DateTime?
+
+  @@index([notificationId])
+  @@index([channel, status])
+  @@map("notification_deliveries")
+}
+
+/// Every important admin action (Section 27).
+model AuditLog {
+  id            String      @id @default(cuid())
+  adminUserId   String
+  adminUser     AdminUser   @relation(fields: [adminUserId], references: [id])
+  action        AuditAction
+  contentType   String?
+  contentId     String?
+  previousValue Json?
+  newValue      Json?
+  createdAt     DateTime    @default(now())
+
+  @@index([adminUserId])
+  @@index([contentType, contentId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model ContactMessage {
+  id        String               @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  status    ContactMessageStatus @default(NEW)
+  createdAt DateTime             @default(now())
+
+  @@index([status])
+  @@map("contact_messages")
+}
+
+// ---------------------------------------------------------------------------
+// Documents & AI extraction pipeline (Sections 19–21A)
+// ---------------------------------------------------------------------------
+
+model Document {
+  id                 String                     @id @default(cuid())
+  filename           String
+  documentType       DocumentType
+  examId             String?
+  exam               Exam?                      @relation(fields: [examId], references: [id])
+  organizationId     String?
+  organization       Organization?              @relation(fields: [organizationId], references: [id])
+  storageUrl         String
+  sourceUrl          String?
+  checksum           String
+  uploadedBy         String
+  uploadedAt         DateTime                   @default(now())
+  verificationStatus DocumentVerificationStatus @default(UNVERIFIED)
+
+  extractionJobs        ExtractionJob[]
+  jobsUsingNotification Job[]
+
+  @@index([examId])
+  @@index([organizationId])
+  @@index([documentType])
+  @@map("documents")
+}
+
+/// Tracks a document through the pipeline (Section 21A Steps 14–15).
+/// `(documentId, attempt)` is unique so a retry never creates a duplicate
+/// job — it increments `attempt` on the same document instead.
+model ExtractionJob {
+  id         String           @id @default(cuid())
+  documentId String
+  document   Document         @relation(fields: [documentId], references: [id])
+  status     ExtractionStatus @default(UPLOADED)
+  attempt    Int              @default(1)
+  aiModel    String?
+  error      String?
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  results ExtractionResult[]
+
+  @@unique([documentId, attempt])
+  @@index([status])
+  @@map("extraction_jobs")
+}
+
+/// One row per extracted field (Section 3/21A Step 3), so a field can be
+/// individually accepted, edited, rejected, or flagged uncertain without
+/// touching the rest of the extraction.
+model ExtractionResult {
+  id              String        @id @default(cuid())
+  extractionJobId String
+  extractionJob   ExtractionJob @relation(fields: [extractionJobId], references: [id], onDelete: Cascade)
+  fieldPath       String
+  value           Json?
+  sourcePage      Int?
+  confidence      Float?
+  isUncertain     Boolean       @default(false)
+  conflictsWith   Json?
+
+  overrides FieldOverride[]
+
+  @@index([extractionJobId])
+  @@map("extraction_results")
+}
+
+/// Human-approved data always wins over AI output (Section 17). Recorded
+/// as an override rather than an in-place edit so both values stay
+/// auditable.
+model FieldOverride {
+  id                 String           @id @default(cuid())
+  extractionResultId String
+  extractionResult   ExtractionResult @relation(fields: [extractionResultId], references: [id], onDelete: Cascade)
+  aiValue            Json?
+  humanValue         Json
+  adminUserId        String
+  reason             String?
+  createdAt          DateTime         @default(now())
+
+  @@index([extractionResultId])
+  @@map("field_overrides")
+}
+
+/// A published record's history (Section 21A Step 16) — updating an
+/// already-published notification creates a new version instead of
+/// silently overwriting the previous one.
+model ContentVersion {
+  id            String   @id @default(cuid())
+  contentType   String
+  contentId     String
+  versionNumber Int
+  snapshot      Json
+  createdBy     String
+  createdAt     DateTime @default(now())
+  changeSummary String?
+
+  @@unique([contentType, contentId, versionNumber])
+  @@index([contentType, contentId])
+  @@map("content_versions")
 }
