@@ -122,6 +122,34 @@ Public site visitors (for saved searches/notifications) will use a
 separate, simpler auth path added when that feature is built — the spec
 doesn't require public accounts for browsing.
 
+## Content workflow (Phase 5 ✅, reused by every content type from here on)
+
+`src/lib/services/workflow.ts` is one shared state machine for
+DRAFT → IN_REVIEW → APPROVED → PUBLISHED → ARCHIVED (Section 17),
+parameterized by role — Exam and Job both call `applyTransition()`/
+`availableTransitions()` rather than each reimplementing the rules.
+Phases 6–10 (Result, AdmitCard, AnswerKey, Syllabus, Admission,
+Scholarship, Article) reuse the same module instead of copy-pasting it.
+
+`src/lib/services/ownership.ts` layers Section 16's per-role rules on
+top: AUTHOR may create content and edit only their own drafts;
+EDITOR/SUPER_ADMIN may edit anything; REVIEWER approves/rejects via the
+workflow transitions but doesn't edit content fields directly. Every
+Server Action calls `canCreateContent`/`canEditContent` itself — never
+inferred from what the UI happened to show.
+
+`src/lib/services/contentVersion.ts` snapshots a record before an
+already-PUBLISHED row is overwritten (Section 21A Step 16), so an edit
+or a status change never silently loses the previous version. Every
+mutation (create/update/each transition) also calls
+`src/lib/services/auditLog.ts` (Section 27).
+
+Admin forms (`ExamForm`, `JobForm`) are Client Components using React's
+`useActionState` bound to a Server Action — this keeps entered values on
+a validation error (no round-trip data loss) while still degrading to a
+working plain `<form method="POST">` without JavaScript, since Server
+Actions are progressively enhanced by Next.js either way.
+
 ## File/document storage (Phase 13, not yet implemented)
 
 An `S3-compatible object storage` abstraction behind a small interface in

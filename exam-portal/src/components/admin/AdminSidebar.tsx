@@ -14,8 +14,8 @@ const NAV_SECTIONS: Array<{
   roles?: AdminRole[];
 }> = [
   { label: "Overview", href: "/admin" },
-  { label: "Jobs" },
-  { label: "Exams" },
+  { label: "Jobs", href: "/admin/jobs" },
+  { label: "Exams", href: "/admin/exams" },
   { label: "Results" },
   { label: "Admit Cards" },
   { label: "Answer Keys" },

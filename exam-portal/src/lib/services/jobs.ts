@@ -1,0 +1,254 @@
+import { prisma } from "@/lib/db/client";
+import { slugify, uniqueSlug } from "@/lib/slug";
+import { recordAuditLog } from "@/lib/services/auditLog";
+import { snapshotContentVersion } from "@/lib/services/contentVersion";
+import { applyTransition, type Transition } from "@/lib/services/workflow";
+import { parseList } from "@/lib/validation/shared";
+import type { JobInput } from "@/lib/validation/job";
+import type { AdminRole } from "@/generated/prisma/enums";
+
+const PAGE_SIZE = 20;
+
+export async function listJobsForAdmin(page = 1) {
+  const [items, total] = await Promise.all([
+    prisma.job.findMany({
+      orderBy: { updatedAt: "desc" },
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        status: true,
+        updatedAt: true,
+        organization: { select: { name: true } },
+      },
+    }),
+    prisma.job.count(),
+  ]);
+  return { items, total, pageSize: PAGE_SIZE };
+}
+
+export function getJobForAdmin(id: string) {
+  return prisma.job.findUnique({ where: { id } });
+}
+
+function jobWriteData(input: JobInput) {
+  return {
+    title: input.title,
+    description: input.description,
+    examId: input.examId,
+    advertisementNumber: input.advertisementNumber,
+    vacancies: input.vacancies,
+    qualification: input.qualification,
+    ageLimitMin: input.ageLimitMin,
+    ageLimitMax: input.ageLimitMax,
+    applicationFee: input.applicationFee,
+    officialWebsite: input.officialWebsite,
+    applyUrl: input.applyUrl,
+    eligibility: input.eligibility,
+    selectionProcess: parseList(input.selectionProcess),
+    salary: input.salary,
+    applicationEndDate: input.applicationEndDate,
+    seoTitle: input.seoTitle,
+    seoDescription: input.seoDescription,
+    seoKeywords: parseList(input.seoKeywords),
+  };
+}
+
+export async function createJob(input: JobInput, adminId: string) {
+  const exam = await prisma.exam.findUniqueOrThrow({
+    where: { id: input.examId },
+    select: { organizationId: true },
+  });
+  const slug = await uniqueSlug(
+    input.title,
+    async (candidate) =>
+      (await prisma.job.count({ where: { slug: candidate } })) > 0,
+  );
+  const job = await prisma.job.create({
+    data: {
+      ...jobWriteData(input),
+      slug,
+      organizationId: exam.organizationId,
+      status: "DRAFT",
+      createdBy: adminId,
+      updatedBy: adminId,
+    },
+  });
+  await recordAuditLog({
+    adminUserId: adminId,
+    action: "CREATE",
+    contentType: "Job",
+    contentId: job.id,
+    newValue: { title: job.title, slug: job.slug },
+  });
+  return job;
+}
+
+export async function updateJob(id: string, input: JobInput, adminId: string) {
+  const existing = await prisma.job.findUniqueOrThrow({ where: { id } });
+
+  if (existing.status === "PUBLISHED") {
+    await snapshotContentVersion({
+      contentType: "Job",
+      contentId: id,
+      snapshot: existing,
+      createdBy: adminId,
+      changeSummary: "Edited while published",
+    });
+  }
+
+  const slug =
+    slugify(input.title) === existing.slug
+      ? existing.slug
+      : await uniqueSlug(
+          input.title,
+          async (candidate) =>
+            (await prisma.job.count({
+              where: { slug: candidate, NOT: { id } },
+            })) > 0,
+        );
+
+  // If the exam changed, keep the denormalized organizationId in sync.
+  const exam =
+    input.examId === existing.examId
+      ? null
+      : await prisma.exam.findUniqueOrThrow({
+          where: { id: input.examId },
+          select: { organizationId: true },
+        });
+
+  const job = await prisma.job.update({
+    where: { id },
+    data: {
+      ...jobWriteData(input),
+      slug,
+      ...(exam ? { organizationId: exam.organizationId } : {}),
+      updatedBy: adminId,
+    },
+  });
+  await recordAuditLog({
+    adminUserId: adminId,
+    action: "UPDATE",
+    contentType: "Job",
+    contentId: job.id,
+    previousValue: { title: existing.title, slug: existing.slug },
+    newValue: { title: job.title, slug: job.slug },
+  });
+  return job;
+}
+
+export async function transitionJobStatus(
+  id: string,
+  transition: Transition,
+  role: AdminRole,
+  adminId: string,
+) {
+  const existing = await prisma.job.findUniqueOrThrow({ where: { id } });
+  const nextStatus = applyTransition(existing.status, transition, role);
+
+  if (existing.status === "PUBLISHED" && nextStatus !== "PUBLISHED") {
+    await snapshotContentVersion({
+      contentType: "Job",
+      contentId: id,
+      snapshot: existing,
+      createdBy: adminId,
+      changeSummary: `Status changed via ${transition}`,
+    });
+  }
+
+  const job = await prisma.job.update({
+    where: { id },
+    data: {
+      status: nextStatus,
+      updatedBy: adminId,
+      publishedAt:
+        nextStatus === "PUBLISHED" && !existing.publishedAt
+          ? new Date()
+          : existing.publishedAt,
+    },
+  });
+
+  const auditAction =
+    transition === "PUBLISH"
+      ? "PUBLISH"
+      : transition === "ARCHIVE"
+        ? "UNPUBLISH"
+        : transition === "APPROVE"
+          ? "APPROVE"
+          : transition === "REJECT"
+            ? "REJECT"
+            : "UPDATE";
+  await recordAuditLog({
+    adminUserId: adminId,
+    action: auditAction,
+    contentType: "Job",
+    contentId: job.id,
+    previousValue: { status: existing.status },
+    newValue: { status: job.status },
+  });
+
+  return job;
+}
+
+const PUBLIC_PAGE_SIZE = 12;
+
+/** Public `/jobs` listing page (Section 14: paginated, never unbounded). */
+export async function listPublishedJobs(page = 1) {
+  const [items, total] = await Promise.all([
+    prisma.job.findMany({
+      where: { status: "PUBLISHED" },
+      orderBy: { publishedAt: "desc" },
+      skip: (page - 1) * PUBLIC_PAGE_SIZE,
+      take: PUBLIC_PAGE_SIZE,
+      select: {
+        title: true,
+        slug: true,
+        applicationEndDate: true,
+        publishedAt: true,
+        organization: { select: { name: true } },
+      },
+    }),
+    prisma.job.count({ where: { status: "PUBLISHED" } }),
+  ]);
+  const jobs = items.map((job) => ({
+    title: job.title,
+    slug: job.slug,
+    organizationName: job.organization.name,
+    applicationEndDate: job.applicationEndDate,
+    publishedAt: job.publishedAt,
+  }));
+  return { jobs, total, pageSize: PUBLIC_PAGE_SIZE };
+}
+
+/** Public job detail page, plus the sibling published jobs under the same
+ * exam ("Related Jobs", Section 9) and the exam's other published content
+ * ("Related Exams" surface — same exam, different content type). */
+export async function getPublishedJobBySlug(slug: string) {
+  const job = await prisma.job.findFirst({
+    where: { slug, status: "PUBLISHED" },
+    include: {
+      organization: { select: { name: true, slug: true, website: true } },
+      exam: {
+        select: {
+          title: true,
+          slug: true,
+          examDate: true,
+          category: { select: { name: true, slug: true } },
+          state: { select: { name: true, slug: true } },
+        },
+      },
+      importantLinks: { orderBy: { order: "asc" } },
+    },
+  });
+  if (!job) return null;
+
+  const relatedJobs = await prisma.job.findMany({
+    where: { examId: job.examId, status: "PUBLISHED", NOT: { id: job.id } },
+    select: { title: true, slug: true },
+    take: 5,
+  });
+
+  return { job, relatedJobs };
+}

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { SectionHeading } from "@/components/SectionHeading";
 import { EmptyState } from "@/components/EmptyState";
 import { Chip } from "@/components/Chip";
@@ -69,9 +70,12 @@ export default async function HomePage() {
                 key={exam.slug}
                 className="flex flex-wrap items-baseline justify-between gap-2 rounded-md border border-amber-200 bg-amber-50 px-4 py-2 text-sm"
               >
-                <span className="font-medium text-slate-900">
+                <Link
+                  href={`/exam/${exam.slug}`}
+                  className="font-medium text-slate-900 hover:underline"
+                >
                   {exam.title}
-                </span>
+                </Link>
                 <span className="text-accent-500 font-semibold">
                   Apply by {formatDate(exam.applicationEndDate)}
                 </span>
@@ -154,7 +158,12 @@ export default async function HomePage() {
           <SectionHeading title="Popular Organizations" />
           <div className="flex flex-wrap gap-2">
             {popularOrganizations.map((org) => (
-              <Chip key={org.slug} label={org.name} count={org.examCount} />
+              <Chip
+                key={org.slug}
+                label={org.name}
+                count={org.examCount}
+                href={`/organization/${org.slug}`}
+              />
             ))}
           </div>
         </section>
@@ -169,6 +178,7 @@ export default async function HomePage() {
                 key={state.slug}
                 label={state.name}
                 count={state.examCount}
+                href={`/state/${state.slug}`}
               />
             ))}
           </div>

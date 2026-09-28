@@ -172,10 +172,61 @@ complete on the basis of code existing alone.
       real matches and handles no-match; custom 404 returns a real 404
       status; `/admin` and `/api/health` still work unchanged.
 
-## Phases 5–20
+## Phase 5 — Exam & Job system ✅ (this delivery)
+
+- [x] `src/lib/services/workflow.ts`: the DRAFT → IN_REVIEW → APPROVED →
+      PUBLISHED → ARCHIVED workflow (Section 17) as one shared,
+      role-checked state machine, reused by both Exam and Job (and
+      every future content type from Phase 6 on) instead of
+      reimplementing it per type.
+- [x] `src/lib/services/ownership.ts`: AUTHOR may create content and
+      edit only their own drafts; EDITOR/SUPER_ADMIN may edit anything;
+      REVIEWER reviews/approves/rejects but doesn't edit fields directly
+      (Section 16) — enforced in the Server Actions, not just the UI.
+- [x] `src/lib/services/contentVersion.ts`: editing or transitioning an
+      already-PUBLISHED record snapshots the previous row first
+      (Section 21A Step 16) — verified live: edited a published job's
+      vacancy count, and the prior value (250) landed in
+      `ContentVersion.snapshot` while the new value (999) went live.
+- [x] Every create/update/publish/approve/reject/archive action records
+      an `AuditLog` row (Section 27) — verified live via direct DB query
+      after a full create → review → approve → publish run.
+- [x] Full Exam admin CRUD (`/admin/exams`, `/new`, `/[id]/edit`) and
+      Job admin CRUD (`/admin/jobs`, ...), both with Zod-validated
+      Server Actions (`src/lib/validation/exam.ts`, `job.ts`), unique
+      slug generation (`src/lib/slug.ts`), and `StatusActions` buttons
+      driven server-side by `availableTransitions(status, role)`.
+- [x] Public `/exam/[slug]` and `/jobs/[slug]` detail pages, `/jobs`
+      index with pagination, and `/organization/[slug]`,
+      `/category/[slug]`, `/state/[slug]` listing pages — all reading
+      only `PUBLISHED` content.
+- [x] Section 9's Job page template: `ImportantDates`,
+      `InformationTable` (renders "Not specified in the available
+      notification." for unknown fields, never a guess), selection
+      process, important links, deterministic `FAQ`
+      (`src/lib/faq.ts` — every answer traces to a real stored field,
+      no invented content), `RelatedContent` (other jobs under the same
+      exam).
+- [x] Homepage/`JobCard`/`ExamCard`/state & organization `Chip`s now
+      link to their real detail pages (Phase 4 had these as
+      non-clickable previews); Result/AdmitCard/AnswerKey/Syllabus
+      still render as `UpcomingContentList` previews since those
+      phases (6–9) haven't shipped pages yet — linking to them today
+      would be a dead link from our own UI.
+- [x] `npm run typecheck` / `lint` / `build` all pass.
+- [x] **Verified end-to-end with a real headless-browser run** (not just
+      curl): logged in, created an Exam, ran it through
+      Submit for Review → Approve → Publish, confirmed it appeared on
+      the public exam page and homepage; created a Job under that exam,
+      ran the same workflow, and confirmed the published job page
+      rendered the real vacancy count, qualification, selection process,
+      FAQ, and Apply/Official Website links — then confirmed `/jobs`
+      and the exam page both link to it.
+
+## Phases 6–20
 
 Not started. See `PROJECT_PLAN.md` for the full ordered list
-(exam/job system → results → admit cards → answer keys → syllabus →
+(results → admit cards → answer keys → syllabus →
 articles/admissions/scholarships → search → SEO → PDF/document system →
 AI extraction pipeline → human verification → notifications → analytics
 → testing/security/performance → production deployment → Android API
@@ -198,18 +249,20 @@ readiness).
   (security hardening) if abuse patterns call for one (e.g. Upstash
   Redis-backed limiter, since in-memory limiting doesn't survive
   serverless cold starts/multiple instances).
-- `EDITOR`/`AUTHOR`/`REVIEWER` permissions are defined as an enum today
-  but not yet exercised by any content mutation (there isn't any yet) —
-  `requireAdmin(allowedRoles)`/`requireAdminApi(allowedRoles)` are ready
-  to be called with the right role list as each content type's
-  create/edit/publish/approve actions are built from Phase 5 onward.
-- Homepage cards (`JobCard`, `ExamCard`, etc.) and `Chip`s render as
-  previews, not links, because `/jobs/[slug]`, `/exam/[slug]`,
-  `/organization/[slug]`, `/state/[slug]` etc. don't exist yet. Revisit
-  each one as its detail/listing page is built (Phase 5 for
-  Exam/Job/Organization/Category/State, Phase 6–10 for the rest) —
-  wiring up the `href` is a small, mechanical follow-up, not a redesign.
-- The header/mobile nav currently link to in-page anchors on the
-  homepage (`/#jobs`, `/#results`, …) rather than separate `/jobs`,
-  `/results`, … index pages, since those listing pages are Phase 5–10's
-  job. Swap them for real routes as each one ships.
+- The Exam/Job workflow (`workflow.ts`) and ownership rules
+  (`ownership.ts`) are exercised live as SUPER_ADMIN, which bypasses
+  every role restriction. The role-boundary logic itself (AUTHOR can
+  only submit/edit their own drafts; REVIEWER can approve/reject but
+  not create/edit; only EDITOR/SUPER_ADMIN can publish/archive) is
+  implemented and code-reviewed but not yet exercised end-to-end with
+  actual AUTHOR/EDITOR/REVIEWER accounts — worth a real multi-account
+  pass in Phase 18 (testing) rather than assuming the unit logic is
+  sufficient.
+- Homepage/`Chip` links to `/organization/[slug]`, `/category/[slug]`,
+  `/state/[slug]` are live now; Result/AdmitCard/AnswerKey/Syllabus
+  previews (`UpcomingContentList`) still need converting to real links
+  as Phases 6–9 ship those detail pages.
+- The header/mobile nav's Results/Admit Cards/Answer Keys/Articles
+  links are still in-page homepage anchors (`/#results`, …) — swap each
+  for a real `/results`, `/admit-card`, … index page as its phase ships
+  (mirroring what Phase 5 just did for `/jobs`).
