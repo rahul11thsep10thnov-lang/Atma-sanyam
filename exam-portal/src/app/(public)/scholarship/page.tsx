@@ -7,7 +7,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { formatDate } from "@/lib/format";
 
 export const metadata: Metadata = {
-  title: "Scholarships — Exam Portal",
+  title: "Scholarships",
   description: "Latest scholarship opportunities for students.",
 };
 

@@ -11,7 +11,7 @@ import { Pagination } from "@/components/Pagination";
 import { formatDate } from "@/lib/format";
 
 export const metadata: Metadata = {
-  title: "Search — Exam Portal",
+  title: "Search",
   robots: { index: false, follow: true },
 };
 

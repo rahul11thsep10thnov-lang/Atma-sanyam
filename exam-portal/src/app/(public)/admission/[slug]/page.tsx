@@ -16,7 +16,7 @@ export async function generateMetadata({
   const admission = await getPublishedAdmissionBySlug(slug);
   if (!admission) return {};
   return {
-    title: `${admission.title} — Exam Portal`,
+    title: `${admission.title}`,
     description: admission.description || `${admission.title}: admission details and eligibility.`,
     alternates: { canonical: `/admission/${admission.slug}` },
   };

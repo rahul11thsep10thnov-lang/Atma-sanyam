@@ -1,5 +1,7 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { JsonLd } from "@/components/JsonLd";
+import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/siteConfig";
 
 /**
  * Wraps every public-facing page (homepage, search, and every content
@@ -13,6 +15,23 @@ export default function PublicLayout({
 }) {
   return (
     <div className="flex min-h-screen flex-col">
+      {/* Site-wide structured data (Section 24) — genuinely describes
+          this site (an independent portal, not a government body), so
+          it's safe to emit on every public page. */}
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: SITE_NAME,
+          url: SITE_URL,
+          description: SITE_DESCRIPTION,
+          potentialAction: {
+            "@type": "SearchAction",
+            target: `${SITE_URL}/search?q={search_term_string}`,
+            "query-input": "required name=search_term_string",
+          },
+        }}
+      />
       <Header />
       <div className="flex-1">{children}</div>
       <Footer />

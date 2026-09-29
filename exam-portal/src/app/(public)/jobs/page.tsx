@@ -6,7 +6,7 @@ import { Pagination } from "@/components/Pagination";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = {
-  title: "Latest Government Jobs — Exam Portal",
+  title: "Latest Government Jobs",
   description:
     "Browse the latest government job notifications: organization, vacancies, and application deadlines.",
 };

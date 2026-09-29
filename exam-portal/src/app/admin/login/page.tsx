@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { LoginForm } from "./LoginForm";
 
 export const metadata: Metadata = {
-  title: "Admin sign in — Exam Portal",
+  title: "Admin sign in",
   robots: { index: false, follow: false },
 };
 

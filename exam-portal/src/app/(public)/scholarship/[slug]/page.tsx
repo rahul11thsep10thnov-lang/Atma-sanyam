@@ -16,7 +16,7 @@ export async function generateMetadata({
   const scholarship = await getPublishedScholarshipBySlug(slug);
   if (!scholarship) return {};
   return {
-    title: `${scholarship.title} — Exam Portal`,
+    title: `${scholarship.title}`,
     description:
       scholarship.description || `${scholarship.title}: eligibility and amount details.`,
     alternates: { canonical: `/scholarship/${scholarship.slug}` },

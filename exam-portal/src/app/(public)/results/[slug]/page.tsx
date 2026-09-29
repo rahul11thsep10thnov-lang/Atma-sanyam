@@ -19,7 +19,7 @@ export async function generateMetadata({
   if (!data) return {};
   const { result } = data;
   return {
-    title: `${result.title} — Exam Portal`,
+    title: `${result.title}`,
     description:
       result.description ||
       `${result.title}: declared ${formatDate(result.resultDate) ?? "date not specified"}.`,

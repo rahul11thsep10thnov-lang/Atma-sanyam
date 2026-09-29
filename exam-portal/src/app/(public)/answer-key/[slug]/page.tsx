@@ -19,7 +19,7 @@ export async function generateMetadata({
   if (!data) return {};
   const { answerKey } = data;
   return {
-    title: `${answerKey.title} — Exam Portal`,
+    title: `${answerKey.title}`,
     description:
       answerKey.description ||
       `${answerKey.title}: official answer key link and objection information.`,

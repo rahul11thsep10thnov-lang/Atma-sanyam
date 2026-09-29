@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPublishedArticleBySlug } from "@/lib/services/articles";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { JsonLd } from "@/components/JsonLd";
+import { SITE_URL } from "@/lib/siteConfig";
 import { formatDate } from "@/lib/format";
 
 type Params = { slug: string };
@@ -15,7 +17,7 @@ export async function generateMetadata({
   const article = await getPublishedArticleBySlug(slug);
   if (!article) return {};
   return {
-    title: `${article.title} — Exam Portal`,
+    title: `${article.title}`,
     description: article.description || undefined,
     alternates: { canonical: `/articles/${article.slug}` },
     openGraph: article.coverImageUrl ? { images: [article.coverImageUrl] } : undefined,
@@ -35,6 +37,18 @@ export default async function ArticleDetailPage({
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8 sm:px-6">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: article.title,
+          description: article.description ?? undefined,
+          image: article.coverImageUrl ?? undefined,
+          datePublished: article.publishedAt?.toISOString(),
+          dateModified: article.updatedAt.toISOString(),
+          mainEntityOfPage: `${SITE_URL}/articles/${article.slug}`,
+        }}
+      />
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },

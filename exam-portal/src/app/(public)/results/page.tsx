@@ -6,7 +6,7 @@ import { Pagination } from "@/components/Pagination";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = {
-  title: "Latest Results — Exam Portal",
+  title: "Latest Results",
   description: "Browse the latest government exam results.",
 };
 

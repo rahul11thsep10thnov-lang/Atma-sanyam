@@ -16,7 +16,7 @@ export async function generateMetadata({
   const exam = await getPublishedExamBySlug(slug);
   if (!exam) return {};
   return {
-    title: `${exam.title} — Exam Portal`,
+    title: `${exam.title}`,
     description:
       exam.description ||
       `${exam.title} by ${exam.organization.name}: notification, jobs, admit card, result, answer key and syllabus.`,

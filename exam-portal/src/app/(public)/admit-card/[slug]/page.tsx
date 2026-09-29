@@ -19,7 +19,7 @@ export async function generateMetadata({
   if (!data) return {};
   const { admitCard } = data;
   return {
-    title: `${admitCard.title} — Exam Portal`,
+    title: `${admitCard.title}`,
     description:
       admitCard.description ||
       `${admitCard.title}: download link, exam date, and instructions.`,

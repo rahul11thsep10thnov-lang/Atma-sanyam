@@ -16,7 +16,7 @@ export async function generateMetadata({
   const category = await getCategoryBySlug(slug);
   if (!category) return {};
   return {
-    title: `${category.name} Exams — Exam Portal`,
+    title: `${category.name} Exams`,
     description:
       category.description || `Latest ${category.name} exams and notifications.`,
     alternates: { canonical: `/category/${category.slug}` },

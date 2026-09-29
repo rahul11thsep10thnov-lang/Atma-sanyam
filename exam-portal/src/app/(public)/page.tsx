@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { SectionHeading } from "@/components/SectionHeading";
 import { EmptyState } from "@/components/EmptyState";
@@ -20,6 +21,10 @@ import {
   getStatesWithExams,
   getClosingSoonExams,
 } from "@/lib/services/home";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default async function HomePage() {
   const [

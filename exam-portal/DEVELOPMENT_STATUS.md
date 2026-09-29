@@ -413,12 +413,45 @@ complete on the basis of code existing alone.
       `organizationId` filter correctly narrows to that organization's
       content.
 
-## Phases 12–20
+## Phase 12 — SEO ✅ (this delivery)
+
+- [x] `src/lib/siteConfig.ts`: one place for site name/description/URL,
+      used by the root layout's default metadata, the sitemap,
+      robots.txt, and JSON-LD.
+- [x] Root layout: `metadataBase`, a `title.template` (`%s — Exam
+      Portal`), default Open Graph and Twitter card metadata. Stripped
+      the manual `"— Exam Portal"` suffix from all 23 pages that had
+      one, so titles don't double up now that the template adds it —
+      verified live (`Latest Government Jobs — Exam Portal`, not
+      `... — Exam Portal — Exam Portal`).
+- [x] `src/app/sitemap.ts` — dynamically generated from every published
+      content type (Section 45: draft/archived content never appears).
+      67 URLs live in dev right now, including every test record
+      created since Phase 5.
+- [x] `src/app/robots.ts` — disallows `/admin` and `/api`, points to the
+      sitemap. Verified live.
+- [x] JSON-LD structured data (Section 24, only where the content
+      genuinely backs the schema): `WebSite` + `SearchAction` site-wide
+      on every public page; `BreadcrumbList` built into the
+      `Breadcrumbs` component itself (every page using it gets both the
+      visual trail and the schema for free); `Article` on
+      `/articles/[slug]`; `FAQPage` on `/jobs/[slug]`, only when
+      `faqItems.length > 0` — never emitted on a page without real FAQ
+      content.
+- [x] Homepage got a `canonical` (it had none before).
+- [x] `npm run typecheck` / `lint` / `build` all pass (39 routes incl.
+      `/sitemap.xml`, `/robots.txt`).
+- [x] Verified live: robots.txt content, sitemap URL count/content
+      (including dynamic slugs), title-template correctness on a real
+      page, all three JSON-LD types present on their respective pages,
+      and that `/admin/login` still carries `noindex, nofollow`.
+
+## Phases 13–20
 
 Not started. See `PROJECT_PLAN.md` for the full ordered list
-(SEO → PDF/document system → AI extraction pipeline → human
-verification → notifications → analytics → testing/security/
-performance → production deployment → Android API readiness).
+(PDF/document system → AI extraction pipeline → human verification →
+notifications → analytics → testing/security/performance → production
+deployment → Android API readiness).
 
 ## Known follow-ups / decisions to revisit
 

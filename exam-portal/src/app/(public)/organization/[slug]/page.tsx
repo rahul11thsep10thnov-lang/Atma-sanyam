@@ -16,7 +16,7 @@ export async function generateMetadata({
   const org = await getOrganizationBySlug(slug);
   if (!org) return {};
   return {
-    title: `${org.name} — Exams & Jobs — Exam Portal`,
+    title: `${org.name} — Exams & Jobs`,
     description:
       org.description || `Latest exams and job notifications from ${org.name}.`,
     alternates: { canonical: `/organization/${org.slug}` },

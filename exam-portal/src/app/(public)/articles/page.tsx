@@ -5,7 +5,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = {
-  title: "Articles — Exam Portal",
+  title: "Articles",
   description: "Educational and exam-related articles.",
 };
 

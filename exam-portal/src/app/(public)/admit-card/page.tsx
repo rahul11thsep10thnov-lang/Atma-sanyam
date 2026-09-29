@@ -6,7 +6,7 @@ import { Pagination } from "@/components/Pagination";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = {
-  title: "Latest Admit Cards — Exam Portal",
+  title: "Latest Admit Cards",
   description: "Download links and instructions for the latest government exam admit cards.",
 };
 

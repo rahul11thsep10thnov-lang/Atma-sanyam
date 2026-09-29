@@ -16,7 +16,7 @@ export async function generateMetadata({
   const state = await getStateBySlug(slug);
   if (!state) return {};
   return {
-    title: `${state.name} Government Exams — Exam Portal`,
+    title: `${state.name} Government Exams`,
     description: `Latest government exams and job notifications in ${state.name}.`,
     alternates: { canonical: `/state/${state.slug}` },
   };

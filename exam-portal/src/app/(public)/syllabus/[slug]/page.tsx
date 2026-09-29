@@ -15,7 +15,7 @@ export async function generateMetadata({
   const syllabus = await getPublishedSyllabusBySlug(slug);
   if (!syllabus) return {};
   return {
-    title: `${syllabus.title} — Exam Portal`,
+    title: `${syllabus.title}`,
     description:
       syllabus.description ||
       `${syllabus.title}: paper-wise subjects and topics.`,

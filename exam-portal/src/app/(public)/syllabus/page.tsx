@@ -6,7 +6,7 @@ import { Pagination } from "@/components/Pagination";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = {
-  title: "Exam Syllabus — Exam Portal",
+  title: "Exam Syllabus",
   description: "Structured, paper-wise syllabus for the latest government exams.",
 };
 

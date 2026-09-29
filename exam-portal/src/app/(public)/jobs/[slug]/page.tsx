@@ -8,6 +8,7 @@ import { ImportantDates } from "@/components/ImportantDates";
 import { InformationTable } from "@/components/InformationTable";
 import { FAQ } from "@/components/FAQ";
 import { RelatedContent } from "@/components/RelatedContent";
+import { JsonLd } from "@/components/JsonLd";
 
 type Params = { slug: string };
 
@@ -21,7 +22,7 @@ export async function generateMetadata({
   if (!data) return {};
   const { job } = data;
   return {
-    title: job.seoTitle || `${job.title} — Exam Portal`,
+    title: job.seoTitle || `${job.title}`,
     description:
       job.seoDescription ||
       job.description ||
@@ -164,6 +165,20 @@ export default async function JobDetailPage({
 
       {faqItems.length > 0 ? (
         <section className="flex flex-col gap-2">
+          {/* FAQPage schema only emitted here, where the page genuinely has
+              FAQs generated from verified fields (Section 24: never on a
+              page without real FAQ content). */}
+          <JsonLd
+            data={{
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: faqItems.map((item) => ({
+                "@type": "Question",
+                name: item.question,
+                acceptedAnswer: { "@type": "Answer", text: item.answer },
+              })),
+            }}
+          />
           <h2 className="text-sm font-semibold text-slate-900">
             Frequently Asked Questions
           </h2>
