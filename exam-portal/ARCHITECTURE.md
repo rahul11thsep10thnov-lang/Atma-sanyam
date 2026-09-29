@@ -247,6 +247,33 @@ alone, to an explicit rejection. This was a real bug found live during
 Phase 15 (see DEVELOPMENT_STATUS.md), not a hypothetical one — both
 code paths typechecked fine.
 
+## Notifications (Phase 16) ✅
+
+`src/lib/notifications/dispatcher.ts` mirrors the same pluggable-
+provider shape as the AI extraction pipeline: a `ChannelDispatcher`
+interface, one implementation per `NotificationChannel`. Only
+`WEBSITE` has a real one (the `Notification` row itself is the
+website feed); every other channel needs a provider this environment
+doesn't have configured, so it's recorded as an honest `FAILED`
+delivery rather than a fake `SENT` or a silent skip — the
+`NotificationDelivery` fan-out table is never allowed to claim
+something went out that didn't. Adding a real EMAIL/PUSH/etc.
+provider later is a new dispatcher class plus one line in
+`getChannelDispatcher()`.
+
+`dispatchNotification()` is called from each content type's `PUBLISH`
+transition (`jobs.ts`, `results.ts`, `admitCards.ts`,
+`answerKeys.ts`), gated on `nextStatus === "PUBLISHED" &&
+!existing.publishedAt` — deliberately the same "genuinely first
+publish" condition the codebase already uses to decide whether to
+stamp `publishedAt`, so there's exactly one signal for "this is new,"
+not two that can drift apart. An earlier version gated on
+`existing.status !== "PUBLISHED"` instead, which looks similar but
+fires on every republish too (`ARCHIVE → REOPEN_AS_DRAFT → PUBLISH`)
+— a real bug caught by deliberately live-testing that exact path, not
+by typechecking (both versions typecheck fine; only one matches what
+the code's own comment says it does).
+
 ## Deployment topology
 
 - **App**: Vercel (or any Node 20+ host) — same as the spec recommends.

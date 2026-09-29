@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db/client";
 import { slugify, uniqueSlug } from "@/lib/slug";
 import { recordAuditLog } from "@/lib/services/auditLog";
 import { snapshotContentVersion } from "@/lib/services/contentVersion";
+import { dispatchNotification } from "@/lib/services/notifications";
 import { applyTransition, type Transition } from "@/lib/services/workflow";
 import type { AdmitCardInput } from "@/lib/validation/admitCard";
 import type { AdminRole } from "@/generated/prisma/enums";
@@ -163,6 +164,16 @@ export async function transitionAdmitCardStatus(
     previousValue: { status: existing.status },
     newValue: { status: admitCard.status },
   });
+
+  if (nextStatus === "PUBLISHED" && !existing.publishedAt) {
+    await dispatchNotification({
+      type: "NEW_ADMIT_CARD",
+      title: admitCard.title,
+      body: `A new admit card has been published: ${admitCard.title}.`,
+      targetType: "AdmitCard",
+      targetId: admitCard.id,
+    });
+  }
 
   return admitCard;
 }

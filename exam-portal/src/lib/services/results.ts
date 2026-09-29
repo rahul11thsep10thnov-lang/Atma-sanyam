@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db/client";
 import { slugify, uniqueSlug } from "@/lib/slug";
 import { recordAuditLog } from "@/lib/services/auditLog";
 import { snapshotContentVersion } from "@/lib/services/contentVersion";
+import { dispatchNotification } from "@/lib/services/notifications";
 import { applyTransition, type Transition } from "@/lib/services/workflow";
 import type { ResultInput } from "@/lib/validation/result";
 import type { AdminRole } from "@/generated/prisma/enums";
@@ -163,6 +164,16 @@ export async function transitionResultStatus(
     previousValue: { status: existing.status },
     newValue: { status: result.status },
   });
+
+  if (nextStatus === "PUBLISHED" && !existing.publishedAt) {
+    await dispatchNotification({
+      type: "NEW_RESULT",
+      title: result.title,
+      body: `A new result has been published: ${result.title}.`,
+      targetType: "Result",
+      targetId: result.id,
+    });
+  }
 
   return result;
 }

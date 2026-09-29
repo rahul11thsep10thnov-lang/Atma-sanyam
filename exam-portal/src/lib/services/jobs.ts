@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db/client";
 import { slugify, uniqueSlug } from "@/lib/slug";
 import { recordAuditLog } from "@/lib/services/auditLog";
 import { snapshotContentVersion } from "@/lib/services/contentVersion";
+import { dispatchNotification } from "@/lib/services/notifications";
 import { applyTransition, type Transition } from "@/lib/services/workflow";
 import { parseList } from "@/lib/validation/shared";
 import type { JobInput } from "@/lib/validation/job";
@@ -188,6 +189,19 @@ export async function transitionJobStatus(
     previousValue: { status: existing.status },
     newValue: { status: job.status },
   });
+
+  // A notification fires only on a genuine transition INTO published —
+  // never on a republish (e.g. after ARCHIVE → DRAFT → PUBLISH again),
+  // so subscribers aren't re-notified about something they already saw.
+  if (nextStatus === "PUBLISHED" && !existing.publishedAt) {
+    await dispatchNotification({
+      type: "NEW_JOB",
+      title: job.title,
+      body: `A new job notification has been published: ${job.title}.`,
+      targetType: "Job",
+      targetId: job.id,
+    });
+  }
 
   return job;
 }

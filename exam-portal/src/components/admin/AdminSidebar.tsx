@@ -4,10 +4,11 @@ import type { AdminRole } from "@/generated/prisma/enums";
 /**
  * Full admin CMS navigation (Section 15). Content types built through
  * Phase 10 (Jobs, Exams, Results, Admit Cards, Answer Keys, Syllabus,
- * Admissions, Scholarships, Articles) link to their real pages;
- * Organizations/Categories/States/Documents/Notifications/Users/
- * Settings/Audit Logs are still previews until their own phases (11+)
- * ship. `roles: undefined` means every admin role can see it.
+ * Admissions, Scholarships, Articles), Documents (Phase 13), and
+ * Notifications (Phase 16) link to their real pages;
+ * Organizations/Categories/States/Users/Settings/Audit Logs are still
+ * previews until their own phases ship. `roles: undefined` means every
+ * admin role can see it.
  */
 const NAV_SECTIONS: Array<{
   label: string;
@@ -28,7 +29,7 @@ const NAV_SECTIONS: Array<{
   { label: "Categories" },
   { label: "States" },
   { label: "Documents", href: "/admin/documents" },
-  { label: "Notifications" },
+  { label: "Notifications", href: "/admin/notifications" },
   { label: "Users", roles: ["SUPER_ADMIN"] },
   { label: "Settings", roles: ["SUPER_ADMIN"] },
   { label: "Audit Logs", roles: ["SUPER_ADMIN", "EDITOR"] },

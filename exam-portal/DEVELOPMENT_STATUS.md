@@ -625,11 +625,56 @@ been exercised live as `SUPER_ADMIN`, which passes every check
 trivially. Worth including in the same real multi-account pass planned
 for Phase 18.
 
-## Phases 16–20
+## Phase 16 — Notifications ✅
+
+- `src/lib/notifications/dispatcher.ts` — a `ChannelDispatcher`
+  interface, one implementation per channel. `WebsiteDispatcher`
+  always succeeds immediately (the website feed IS the `Notification`
+  row — there's nothing external to call). `UnconfiguredDispatcher`
+  covers EMAIL/PUSH/TELEGRAM/WHATSAPP/ANDROID, all of which need a
+  real provider (SMTP creds, an FCM/APNs key, a bot token) this
+  environment doesn't have — rather than silently no-op or fake
+  success, every delivery on these channels is recorded `FAILED` with
+  an honest "channel not configured" reason, so the fan-out table
+  never claims something went out that didn't.
+- `src/lib/services/notifications.ts` — `dispatchNotification(...)`
+  creates one `Notification` row and fans it out to all 6 channels via
+  `NotificationDelivery` rows in parallel. `listNotificationsForAdmin`
+  and `listWebsiteNotifications` (public feed query, unused by a page
+  yet — public consumption is a future phase) round out the service.
+- Wired into the `PUBLISH` transition of all four content types that
+  have a matching `NotificationType` (Job → `NEW_JOB`, Result →
+  `NEW_RESULT`, AdmitCard → `NEW_ADMIT_CARD`, AnswerKey →
+  `NEW_ANSWER_KEY`). Syllabus/Admission/Scholarship/Article have no
+  matching enum value and are deliberately left unwired rather than
+  forced into a semantically-wrong type — extending
+  `NotificationType` is a schema change for a future phase if desired.
+  A notification fires only on `nextStatus === "PUBLISHED" &&
+  !existing.publishedAt` — the same "genuinely first publish" signal
+  the codebase already uses to decide whether to stamp `publishedAt`
+  — so a republish after archive never re-notifies.
+- Admin UI: `/admin/notifications` lists every notification with a
+  colored badge per channel (green = sent, red = failed, with the
+  failure reason as a tooltip).
+
+### Bug found and fixed while live-testing this phase
+
+The first implementation gated the notification on `existing.status
+!== "PUBLISHED"`, which is true on *every* transition into published,
+including a republish after `ARCHIVE → REOPEN_AS_DRAFT → PUBLISH`. The
+comment above the code already said "never on a republish" — the
+implementation just didn't match its own stated intent. Caught by
+deliberately live-testing the republish path (not just the first
+publish), not by typechecking. Fixed by switching the guard to
+`!existing.publishedAt`, confirmed live: published a job (1
+notification), then archived → reopened as draft → published it again
+— still exactly 1 notification row for that job afterward.
+
+## Phases 17–20
 
 Not started. See `PROJECT_PLAN.md` for the full ordered list
-(notifications → analytics → testing/security/performance →
-production deployment → Android API readiness).
+(analytics → testing/security/performance → production deployment →
+Android API readiness).
 
 ## Known follow-ups / decisions to revisit
 
