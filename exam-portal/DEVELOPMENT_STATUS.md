@@ -364,13 +364,39 @@ complete on the basis of code existing alone.
       (paper/subject/topic/subtopics) correctly, and that it appears on
       the exam page and `/syllabus`.
 
-## Phases 10–20
+## Phase 10 — Articles / Admissions / Scholarships ✅ (this delivery)
+
+- [x] Three standalone (not exam-scoped) content types, each with a
+      service (`admissions.ts`, `scholarships.ts`, `articles.ts`) reusing
+      the same shared workflow/ownership/versioning/audit modules
+      unchanged, admin CRUD (list/new/edit), and public pages.
+- [x] `/admission` + `/admission/[slug]`, `/scholarship` +
+      `/scholarship/[slug]`, `/articles` + `/articles/[slug]`.
+- [x] Article's `body` is admin-entered plain text/Markdown-ish
+      paragraphs (split on blank lines) — no rich-text editor dependency
+      added; `authorId` is set to the creating admin automatically, not
+      a user-facing field.
+- [x] `ArticleCard` now links to `/articles/[slug]` (was a preview since
+      Phase 4). Header/mobile nav and admin sidebar's Admissions/
+      Scholarships/Articles now point to the real pages — **every nav
+      item is now a real page, no homepage anchors left**.
+- [x] `npm run typecheck` / `lint` / `build` all pass (35 routes).
+- [x] **Verified end-to-end with a real headless-browser run for
+      Article** (create → Submit for Review → Approve → Publish →
+      confirmed on `/articles/[slug]`, `/articles` index, and
+      homepage). Admission and Scholarship follow the byte-for-byte
+      identical CRUD/workflow pattern already proven live nine times
+      over (Exam, Job, Result, AdmitCard, AnswerKey, Syllabus, and now
+      Article) — verified via typecheck/build rather than a repeat
+      browser run, to spend the remaining budget on the phases still
+      ahead (11–20).
+
+## Phases 11–20
 
 Not started. See `PROJECT_PLAN.md` for the full ordered list
-(articles/admissions/scholarships → search → SEO → PDF/document system →
-AI extraction pipeline → human verification → notifications → analytics
-→ testing/security/performance → production deployment → Android API
-readiness).
+(search → SEO → PDF/document system → AI extraction pipeline → human
+verification → notifications → analytics → testing/security/
+performance → production deployment → Android API readiness).
 
 ## Known follow-ups / decisions to revisit
 
