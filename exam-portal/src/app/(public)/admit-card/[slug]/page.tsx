@@ -5,7 +5,6 @@ import { getPublishedAdmitCardBySlug } from "@/lib/services/admitCards";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { InformationTable } from "@/components/InformationTable";
 import { RelatedContent } from "@/components/RelatedContent";
-import { UpcomingContentList } from "@/components/UpcomingContentList";
 import { formatDate } from "@/lib/format";
 
 type Params = { slug: string };
@@ -106,11 +105,12 @@ export default async function AdmitCardDetailPage({
         }))}
       />
 
-      {/* Answer Key detail pages don't exist until Phase 8 — preview only,
-          to avoid a dead link from our own UI. */}
-      <UpcomingContentList
+      <RelatedContent
         title="Related Answer Key"
-        items={relatedAnswerKeys.map((a) => ({ title: a.title }))}
+        items={relatedAnswerKeys.map((a) => ({
+          title: a.title,
+          href: `/answer-key/${a.slug}`,
+        }))}
       />
 
       <Link

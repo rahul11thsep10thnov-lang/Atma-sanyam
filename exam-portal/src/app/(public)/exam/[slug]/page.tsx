@@ -84,7 +84,13 @@ export default async function ExamDetailPage({
             href: `/admit-card/${a.slug}`,
           }))}
         />
-        <UpcomingContentList title="Answer Keys" items={exam.answerKeys} />
+        <RelatedContent
+          title="Answer Keys"
+          items={exam.answerKeys.map((a) => ({
+            title: a.title,
+            href: `/answer-key/${a.slug}`,
+          }))}
+        />
         <UpcomingContentList title="Syllabus" items={exam.syllabi} />
       </div>
 

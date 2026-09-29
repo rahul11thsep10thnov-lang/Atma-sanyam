@@ -5,7 +5,6 @@ import { getPublishedResultBySlug } from "@/lib/services/results";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { InformationTable } from "@/components/InformationTable";
 import { RelatedContent } from "@/components/RelatedContent";
-import { UpcomingContentList } from "@/components/UpcomingContentList";
 import { formatDate } from "@/lib/format";
 
 type Params = { slug: string };
@@ -109,13 +108,16 @@ export default async function ResultDetailPage({
             : []
         }
       />
-      {/* Answer Key detail pages don't exist until Phase 8 — preview only,
-          to avoid a dead link from our own UI. */}
-      <UpcomingContentList
+      <RelatedContent
         title="Related Answer Key"
         items={
           result.relatedAnswerKey && result.relatedAnswerKey.status === "PUBLISHED"
-            ? [{ title: result.relatedAnswerKey.title }]
+            ? [
+                {
+                  title: result.relatedAnswerKey.title,
+                  href: `/answer-key/${result.relatedAnswerKey.slug}`,
+                },
+              ]
             : []
         }
       />

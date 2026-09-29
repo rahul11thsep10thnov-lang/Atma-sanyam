@@ -18,7 +18,7 @@ const NAV_SECTIONS: Array<{
   { label: "Exams", href: "/admin/exams" },
   { label: "Results", href: "/admin/results" },
   { label: "Admit Cards", href: "/admin/admit-cards" },
-  { label: "Answer Keys" },
+  { label: "Answer Keys", href: "/admin/answer-keys" },
   { label: "Syllabus" },
   { label: "Admissions" },
   { label: "Scholarships" },
