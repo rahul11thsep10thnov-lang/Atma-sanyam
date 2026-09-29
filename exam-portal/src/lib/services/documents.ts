@@ -26,6 +26,11 @@ export async function listDocumentsForAdmin(page = 1) {
         storageUrl: true,
         exam: { select: { title: true } },
         organization: { select: { name: true } },
+        extractionJobs: {
+          orderBy: { attempt: "desc" },
+          take: 1,
+          select: { id: true, status: true, attempt: true, error: true },
+        },
       },
     }),
     prisma.document.count(),

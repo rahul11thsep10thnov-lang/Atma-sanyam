@@ -9,6 +9,7 @@ import {
   deleteDocument,
   DocumentValidationError,
 } from "@/lib/services/documents";
+import { startExtractionJob } from "@/lib/services/extraction";
 import { canCreateContent } from "@/lib/services/ownership";
 import type { DocumentType } from "@/generated/prisma/enums";
 
@@ -89,8 +90,22 @@ export async function toggleVerifiedAction(formData: FormData) {
   // identical URL still showed the pre-toggle status; a hard reload
   // showed the right one). A distinguishing query param, the same
   // pattern every other admin action in this app already uses, forces
-  // an actual navigation instead.
-  redirect("/admin/documents?updated=1");
+  // an actual navigation instead. Timestamped (not a static "1") so two
+  // consecutive toggles never redirect to the same URL twice in a row.
+  redirect(`/admin/documents?updated=${Date.now()}`);
+}
+
+export async function runExtractionAction(formData: FormData) {
+  const admin = await requireAdminApi();
+  if (!canCreateContent(admin.role)) {
+    redirect(
+      `/admin/documents?error=${encodeURIComponent("You don't have permission to run extraction.")}`,
+    );
+  }
+  const id = String(formData.get("id"));
+  await startExtractionJob(id, admin.id);
+  revalidatePath("/admin/documents");
+  redirect(`/admin/documents?updated=${Date.now()}`);
 }
 
 export async function deleteDocumentAction(formData: FormData) {

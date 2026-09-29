@@ -516,10 +516,59 @@ correctly shows the new paper immediately after submit. `npm run
 typecheck`, `npm run lint`, and `npm run build` all pass clean across
 all 10 touched action files.
 
-## Phases 14–20
+## Phase 14 — AI extraction pipeline ✅
 
-Not started. See `PROJECT_PLAN.md` for the full ordered list (AI
-extraction pipeline → human verification → notifications → analytics →
+- `src/lib/ai/provider.ts` — an `AIExtractionProvider` interface
+  (`modelName`, `extractFields(input)`) so the concrete model is
+  swappable without touching the pipeline. This environment has no AI
+  API key configured, so the only implementation wired up is
+  `MockAIExtractionProvider`, a deterministic stub that returns a
+  canned, clearly-labeled field set per `DocumentType` (values like
+  `"(mock) Extracted job title — review against source"`, several
+  fields marked `isUncertain: true`). `getAIProvider()` reads
+  `AI_EXTRACTION_PROVIDER` (default `"mock"`) and throws a clear
+  `AIProviderNotConfiguredError` for anything else — it never silently
+  falls back, so a deployer who sets a value expecting a real model
+  gets an explicit error instead of mock data in production.
+- `src/lib/services/extraction.ts` — `startExtractionJob(documentId,
+  adminId)` creates an `ExtractionJob` (attempt = previous max + 1, so
+  retries never collide with the `(documentId, attempt)` unique
+  constraint), calls the provider, and persists one `ExtractionResult`
+  row per field. A per-document-type required-field check (currently
+  just `title`) lands the job on `VALIDATION_FAILED` with a message
+  naming the missing field(s) if extraction came back too thin,
+  `READY_FOR_REVIEW` otherwise, or `FAILED` with the error message if
+  the provider itself threw. AI output only ever reaches
+  `ExtractionResult` rows — nothing in this phase writes to a published
+  content table; that requires the human approval step Phase 15 adds.
+- Admin UI: `/admin/documents` gained an "Extraction" column showing
+  the latest job's status and attempt number (or "Not run"), and a "Run
+  extraction" button per row. Clicking it links through to
+  `/admin/documents/extraction/[jobId]`, a read-only table of every
+  extracted field with its value, confidence, source page, and an
+  "Uncertain" flag — plus a standing banner clarifying this data hasn't
+  been reviewed by a human and is never auto-published. Field-level
+  accept/edit/reject actions are Phase 15's job, not this one.
+
+Verified live: ran extraction on a real uploaded `JOB_NOTIFICATION`
+document twice in a row — first run created attempt #1
+(`READY_FOR_REVIEW`), second run created attempt #2 without touching
+attempt #1, confirming the idempotency-by-attempt design actually
+works end to end rather than just typechecking. `npm run typecheck`,
+`npm run lint`, and `npm run build` all pass clean.
+
+### Known limitation, called out honestly rather than hidden
+
+The mock provider always populates `title`, so the
+`VALIDATION_FAILED` path (required field missing) is implemented and
+typechecked but not yet exercised by a live click — only unit-level
+reasoning backs it. It will get real exercise once a non-mock provider
+(or a mock configured to sometimes omit fields) exists.
+
+## Phases 15–20
+
+Not started. See `PROJECT_PLAN.md` for the full ordered list (human
+verification workflow → notifications → analytics →
 testing/security/performance → production deployment → Android API
 readiness).
 
@@ -537,7 +586,13 @@ readiness).
   provider (S3 / R2 / Supabase Storage / MinIO) the deployer configures
   via `STORAGE_*` env vars. No further decision needed unless a
   non-S3-compatible provider is desired later.
-- Decide on the AI extraction provider/model at the start of Phase 14.
+- Phase 14 built the extraction layer as a pluggable
+  `AIExtractionProvider` interface rather than picking a model outright
+  — only a mock provider is wired up today (no AI API key is
+  configured in this environment). Implement a real provider (e.g.
+  backed by the Claude API's PDF support) and select it via
+  `AI_EXTRACTION_PROVIDER` when a key becomes available; nothing else
+  in the pipeline needs to change.
 - Login brute-force protection today is per-account lockout only (5
   attempts / 15 min), which is DB-backed and works across instances.
   There's no additional per-IP rate limit yet — revisit in Phase 18

@@ -200,15 +200,31 @@ static suffix like `?saved=1` still collides with itself on two
 consecutive saves from the same page. All 10 admin `actions.ts` files
 follow this pattern as of Phase 13.
 
-## AI extraction pipeline (Phase 14, not yet implemented)
+## AI extraction pipeline (Phase 14) ✅
 
-Implemented as the fixed, input-variable-driven pipeline described in
-Section 21(A) of the spec: one reusable pipeline
-(`document_type`, `organization`, `exam`, `category`, `state`,
-`source_document`, `source_url` as inputs) rather than a bespoke pipeline
-per exam. AI output is written to a separate `ExtractionResult`-style
-table (see DATABASE_SCHEMA.md) and can never write directly to published
-content tables — only an admin approval action can do that.
+One reusable pipeline (`src/lib/services/extraction.ts`), not a bespoke
+one per exam or document type: `startExtractionJob(documentId, adminId)`
+takes a `Document` row, calls whichever `AIExtractionProvider` is
+configured, and writes one `ExtractionResult` row per field —
+never directly to a published content table. Only a future human
+approval action (Phase 15) is allowed to do that.
+
+The provider itself is swappable: `src/lib/ai/provider.ts` defines the
+`AIExtractionProvider` interface, and `getAIProvider()` selects an
+implementation by the `AI_EXTRACTION_PROVIDER` env var. This
+environment has no AI API key configured, so only a `"mock"` provider
+(a deterministic, clearly-labeled stub) is wired up; anything else
+throws rather than silently substituting mock data. Swapping in a real
+model later — e.g. one built on the Claude API's PDF support — means
+implementing the same interface and adding one branch to
+`getAIProvider()`, with zero changes anywhere else in the pipeline,
+admin UI, or database.
+
+Idempotency: `ExtractionJob` has a `(documentId, attempt)` unique
+constraint, and each new run computes `attempt = previous max + 1`
+rather than overwriting — confirmed live by running extraction twice
+on the same document and seeing two independent job records, not one
+being clobbered.
 
 ## Deployment topology
 

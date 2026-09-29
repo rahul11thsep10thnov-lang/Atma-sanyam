@@ -3,8 +3,14 @@ import { listDocumentsForAdmin } from "@/lib/services/documents";
 import { listExamsForSelect, listOrganizations } from "@/lib/services/lookups";
 import { Pagination } from "@/components/Pagination";
 import { formatDate } from "@/lib/format";
+import Link from "next/link";
 import { DocumentUploader } from "./DocumentUploader";
-import { uploadDocumentAction, toggleVerifiedAction, deleteDocumentAction } from "./actions";
+import {
+  uploadDocumentAction,
+  toggleVerifiedAction,
+  deleteDocumentAction,
+  runExtractionAction,
+} from "./actions";
 
 export const metadata: Metadata = { title: "Documents" };
 
@@ -52,6 +58,7 @@ export default async function AdminDocumentsPage({
               <th className="px-4 py-2">Type</th>
               <th className="px-4 py-2">Exam</th>
               <th className="px-4 py-2">Verified</th>
+              <th className="px-4 py-2">Extraction</th>
               <th className="px-4 py-2">Uploaded</th>
               <th className="px-4 py-2" />
             </tr>
@@ -94,6 +101,19 @@ export default async function AdminDocumentsPage({
                     {doc.verificationStatus}
                   </span>
                 </td>
+                <td className="px-4 py-2">
+                  {doc.extractionJobs[0] ? (
+                    <Link
+                      href={`/admin/documents/extraction/${doc.extractionJobs[0].id}`}
+                      className="text-xs font-medium text-brand-700 hover:underline"
+                      title={doc.extractionJobs[0].error ?? undefined}
+                    >
+                      {doc.extractionJobs[0].status} (#{doc.extractionJobs[0].attempt})
+                    </Link>
+                  ) : (
+                    <span className="text-xs text-slate-400">Not run</span>
+                  )}
+                </td>
                 <td className="px-4 py-2 text-slate-500">{formatDate(doc.uploadedAt)}</td>
                 <td className="px-4 py-2 text-right">
                   <div className="flex justify-end gap-3">
@@ -108,6 +128,12 @@ export default async function AdminDocumentsPage({
                         {doc.verificationStatus === "VERIFIED" ? "Unverify" : "Verify"}
                       </button>
                     </form>
+                    <form action={runExtractionAction}>
+                      <input type="hidden" name="id" value={doc.id} />
+                      <button type="submit" className="text-brand-700 hover:underline">
+                        Run extraction
+                      </button>
+                    </form>
                     <form action={deleteDocumentAction}>
                       <input type="hidden" name="id" value={doc.id} />
                       <button type="submit" className="text-red-600 hover:underline">
@@ -120,7 +146,7 @@ export default async function AdminDocumentsPage({
             ))}
             {items.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-6 text-center text-slate-500">
+                <td colSpan={7} className="px-4 py-6 text-center text-slate-500">
                   No documents uploaded yet.
                 </td>
               </tr>
