@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { requireAdminApi } from "@/lib/auth/session";
 import { admitCardInputSchema } from "@/lib/validation/admitCard";
 import {
@@ -66,7 +67,8 @@ export async function updateAdmitCardAction(
   }
 
   await updateAdmitCard(id, parsed.data, admin.id);
-  redirect(`/admin/admit-cards/${id}/edit?saved=1`);
+  revalidatePath(`/admin/admit-cards/${id}/edit`);
+  redirect(`/admin/admit-cards/${id}/edit?saved=${Date.now()}`);
 }
 
 export async function transitionAdmitCardAction(formData: FormData) {
@@ -91,5 +93,6 @@ export async function transitionAdmitCardAction(formData: FormData) {
     }
     throw err;
   }
-  redirect(`/admin/admit-cards/${id}/edit?saved=1`);
+  revalidatePath(`/admin/admit-cards/${id}/edit`);
+  redirect(`/admin/admit-cards/${id}/edit?saved=${Date.now()}`);
 }

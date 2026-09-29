@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { requireAdminApi } from "@/lib/auth/session";
 import { syllabusInputSchema, topicInputSchema, paperNameSchema } from "@/lib/validation/syllabus";
 import { parseList } from "@/lib/validation/shared";
@@ -107,6 +108,17 @@ export async function transitionSyllabusAction(formData: FormData) {
 }
 
 // --- Structural actions: plain forms, full-page redirects, no client JS ---
+//
+// Every one of these redirects back to the exact edit URL the form was
+// submitted from. `revalidatePath` plus a `?updated=` cache-busting
+// param (rather than the bare URL) is required — confirmed live for the
+// same pattern in documents/actions.ts: a same-URL redirect after a
+// Server Action can get treated as a no-op navigation and reuse the
+// pre-mutation RSC payload even with `revalidatePath` alone.
+
+function editUrl(syllabusId: string) {
+  return `/admin/syllabi/${syllabusId}/edit?updated=${Date.now()}`;
+}
 
 export async function addPaperAction(formData: FormData) {
   const syllabusId = String(formData.get("syllabusId"));
@@ -115,7 +127,8 @@ export async function addPaperAction(formData: FormData) {
   if (name.success) {
     await addPaper(syllabusId, name.data, admin.id);
   }
-  redirect(`/admin/syllabi/${syllabusId}/edit`);
+  revalidatePath(`/admin/syllabi/${syllabusId}/edit`);
+  redirect(editUrl(syllabusId));
 }
 
 export async function deletePaperAction(formData: FormData) {
@@ -123,7 +136,8 @@ export async function deletePaperAction(formData: FormData) {
   const syllabusId = String(formData.get("syllabusId"));
   await assertCanEditSyllabus(syllabusId);
   await deletePaper(paperId, (await requireAdminApi()).id);
-  redirect(`/admin/syllabi/${syllabusId}/edit`);
+  revalidatePath(`/admin/syllabi/${syllabusId}/edit`);
+  redirect(editUrl(syllabusId));
 }
 
 export async function addSubjectAction(formData: FormData) {
@@ -134,7 +148,8 @@ export async function addSubjectAction(formData: FormData) {
   if (name.success) {
     await addSubject(paperId, name.data, admin.id);
   }
-  redirect(`/admin/syllabi/${syllabusId}/edit`);
+  revalidatePath(`/admin/syllabi/${syllabusId}/edit`);
+  redirect(editUrl(syllabusId));
 }
 
 export async function deleteSubjectAction(formData: FormData) {
@@ -142,7 +157,8 @@ export async function deleteSubjectAction(formData: FormData) {
   const syllabusId = String(formData.get("syllabusId"));
   const admin = await assertCanEditSyllabus(syllabusId);
   await deleteSubject(subjectId, admin.id);
-  redirect(`/admin/syllabi/${syllabusId}/edit`);
+  revalidatePath(`/admin/syllabi/${syllabusId}/edit`);
+  redirect(editUrl(syllabusId));
 }
 
 export async function addTopicAction(formData: FormData) {
@@ -156,7 +172,8 @@ export async function addTopicAction(formData: FormData) {
   if (parsed.success) {
     await addTopic(subjectId, parsed.data.name, parseList(parsed.data.subtopics), admin.id);
   }
-  redirect(`/admin/syllabi/${syllabusId}/edit`);
+  revalidatePath(`/admin/syllabi/${syllabusId}/edit`);
+  redirect(editUrl(syllabusId));
 }
 
 export async function deleteTopicAction(formData: FormData) {
@@ -164,5 +181,6 @@ export async function deleteTopicAction(formData: FormData) {
   const syllabusId = String(formData.get("syllabusId"));
   const admin = await assertCanEditSyllabus(syllabusId);
   await deleteTopic(topicId, admin.id);
-  redirect(`/admin/syllabi/${syllabusId}/edit`);
+  revalidatePath(`/admin/syllabi/${syllabusId}/edit`);
+  redirect(editUrl(syllabusId));
 }

@@ -165,13 +165,40 @@ a validation error (no round-trip data loss) while still degrading to a
 working plain `<form method="POST">` without JavaScript, since Server
 Actions are progressively enhanced by Next.js either way.
 
-## File/document storage (Phase 13, not yet implemented)
+## File/document storage (Phase 13) ✅
 
-An `S3-compatible object storage` abstraction behind a small interface in
-`src/lib/documents/storage.ts` (upload, get signed URL, delete) so the
-concrete provider (S3, Cloudflare R2, Supabase Storage…) is swappable via
-environment variables only — never hard-coded local filesystem paths in
-production code paths.
+A `DocumentStorage` interface in `src/lib/documents/storage.ts` (upload,
+delete) with two implementations: `LocalDiskStorage` (writes under
+`public/uploads/documents`, used automatically when no `STORAGE_*` env
+vars are set — dev only, gitignored) and `S3CompatibleStorage`
+(`@aws-sdk/client-s3`, `forcePathStyle: true`, works against AWS S3 or
+any S3-compatible provider — R2, Supabase Storage, MinIO). The concrete
+provider is swappable purely via environment variables; production
+throws at startup rather than silently falling back to local disk if
+the `STORAGE_*` vars aren't all set. Every upload is validated
+server-side (PDF-only, 20MB max, non-empty) and gets a SHA-256 checksum
+(`src/lib/documents/checksum.ts`) stored alongside it. New documents
+always start `UNVERIFIED`; only an explicit admin action sets
+`VERIFIED` — nothing auto-verifies.
+
+### Router-cache gotcha: same-URL redirect after a Server Action mutation
+
+A Server Action that ends with `redirect()` back to the *exact* URL the
+client was already on is treated by Next.js as a no-op client-side
+navigation — it reuses the stale pre-mutation RSC payload even if the
+action already called `revalidatePath()`. This was discovered live
+while testing the document verify/unverify toggle (DB updated
+correctly; a soft nav back to the identical URL still showed the
+pre-toggle value; a hard `page.goto()` reload showed the correct one,
+isolating the bug to client-side soft-navigation caching specifically).
+
+**The fix, and the now-required pattern for every mutating admin
+action in this codebase**: call `revalidatePath()` *and* redirect to a
+URL with a distinguishing/cache-busting query param (e.g.
+`?saved=${Date.now()}`), never a bare or statically-suffixed URL — a
+static suffix like `?saved=1` still collides with itself on two
+consecutive saves from the same page. All 10 admin `actions.ts` files
+follow this pattern as of Phase 13.
 
 ## AI extraction pipeline (Phase 14, not yet implemented)
 

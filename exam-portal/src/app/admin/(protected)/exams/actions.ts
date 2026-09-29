@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { requireAdminApi } from "@/lib/auth/session";
 import { examInputSchema } from "@/lib/validation/exam";
 import { createExam, getExamForAdmin, updateExam, transitionExamStatus } from "@/lib/services/exams";
@@ -61,7 +62,8 @@ export async function updateExamAction(
   }
 
   await updateExam(id, parsed.data, admin.id);
-  redirect(`/admin/exams/${id}/edit?saved=1`);
+  revalidatePath(`/admin/exams/${id}/edit`);
+  redirect(`/admin/exams/${id}/edit?saved=${Date.now()}`);
 }
 
 export async function transitionExamAction(formData: FormData) {
@@ -88,5 +90,6 @@ export async function transitionExamAction(formData: FormData) {
     }
     throw err;
   }
-  redirect(`/admin/exams/${id}/edit?saved=1`);
+  revalidatePath(`/admin/exams/${id}/edit`);
+  redirect(`/admin/exams/${id}/edit?saved=${Date.now()}`);
 }

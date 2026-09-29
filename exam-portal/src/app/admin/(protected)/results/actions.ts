@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { requireAdminApi } from "@/lib/auth/session";
 import { resultInputSchema } from "@/lib/validation/result";
 import {
@@ -66,7 +67,8 @@ export async function updateResultAction(
   }
 
   await updateResult(id, parsed.data, admin.id);
-  redirect(`/admin/results/${id}/edit?saved=1`);
+  revalidatePath(`/admin/results/${id}/edit`);
+  redirect(`/admin/results/${id}/edit?saved=${Date.now()}`);
 }
 
 export async function transitionResultAction(formData: FormData) {
@@ -91,5 +93,6 @@ export async function transitionResultAction(formData: FormData) {
     }
     throw err;
   }
-  redirect(`/admin/results/${id}/edit?saved=1`);
+  revalidatePath(`/admin/results/${id}/edit`);
+  redirect(`/admin/results/${id}/edit?saved=${Date.now()}`);
 }

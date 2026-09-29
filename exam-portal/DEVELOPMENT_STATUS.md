@@ -446,12 +446,82 @@ complete on the basis of code existing alone.
       page, all three JSON-LD types present on their respective pages,
       and that `/admin/login` still carries `noindex, nofollow`.
 
-## Phases 13–20
+## Phase 13 — PDF/document system ✅
 
-Not started. See `PROJECT_PLAN.md` for the full ordered list
-(PDF/document system → AI extraction pipeline → human verification →
-notifications → analytics → testing/security/performance → production
-deployment → Android API readiness).
+- `Document` model (already in the Phase 2 schema) is now backed by a
+  real admin flow: `/admin/documents` lists uploaded documents with
+  filters context (type, linked exam/organization), an upload form, and
+  per-row verify/unverify + delete controls.
+- `src/lib/documents/storage.ts` — a small `DocumentStorage` interface
+  with two implementations: `LocalDiskStorage` (writes to
+  `public/uploads/documents`, used automatically in dev) and
+  `S3CompatibleStorage` (`@aws-sdk/client-s3`, `forcePathStyle: true`,
+  works against AWS S3 or any S3-compatible provider — R2, Supabase
+  Storage, MinIO, etc.). `getDocumentStorage()` picks the S3 adapter
+  only when all 5 `STORAGE_*` env vars are set, and throws at startup
+  in production if they're missing rather than silently falling back to
+  local disk.
+- `src/lib/documents/checksum.ts` — SHA-256 checksum computed on every
+  upload and stored on the `Document` row, so a re-uploaded file (or a
+  future AI-extraction step in Phase 14) can be checked for integrity.
+- `src/lib/services/documents.ts` — validates uploads server-side
+  (PDF-only via `ALLOWED_MIME_TYPES`, 20MB `MAX_FILE_SIZE_BYTES`,
+  rejects empty files) independent of any client-side `accept`
+  attribute, which is only a UX hint. New documents always start
+  `UNVERIFIED`; an admin explicitly marks them `VERIFIED` after
+  checking the content against the official source — there is no
+  auto-verification path.
+- Only `EDITOR`/`SUPER_ADMIN` roles can delete a document; any admin who
+  can create content can upload one.
+- `public/uploads` added to `.gitignore` — it's a dev-only fallback and
+  is never meant to be committed; production always uses object
+  storage.
+
+### Cross-cutting bug found and fixed while testing this phase
+
+While live-testing the verify/unverify toggle, the UI didn't update
+after a click even though the database mutation was correct. Root
+cause: a Server Action that calls `redirect()` back to the *exact* URL
+the client was already on is treated by Next.js as a no-op client-side
+navigation, which reuses the stale pre-mutation RSC payload —
+`revalidatePath()` alone does not force a re-fetch in this situation
+(confirmed by reproducing with a hard `page.goto()` reload, which *did*
+show the correct data, isolating the bug to client-side soft-navigation
+caching specifically).
+
+Fix: append a distinguishing/cache-busting query parameter to the
+redirect target so Next.js treats it as a real navigation. This was
+already the pattern used by every content type's `update`/`transition`
+actions (`?saved=1`), but two things were still broken:
+
+- `documents/actions.ts`'s `toggleVerifiedAction` had no distinguishing
+  param at all — fixed with `?updated=1`.
+- `syllabi/actions.ts`'s six structural actions (`addPaperAction`,
+  `deletePaperAction`, `addSubjectAction`, `deleteSubjectAction`,
+  `addTopicAction`, `deleteTopicAction`) had no distinguishing param
+  either — fixed with a shared `editUrl()` helper using
+  `?updated=${Date.now()}`.
+- The other 8 content types (`exams`, `jobs`, `results`, `admit-cards`,
+  `answer-keys`, `admissions`, `scholarships`, `articles`) used a
+  *static* `?saved=1`, which would hit the identical bug on two
+  consecutive saves (same URL both times) — bulk-patched to
+  `?saved=${Date.now()}` plus an explicit `revalidatePath()` call
+  before the redirect, so the fix holds for arbitrarily many saves in a
+  row, not just the first one after a cold page load.
+
+Verified live with Playwright after the fix: the document verify
+toggle round-trips `VERIFIED ⇄ UNVERIFIED` correctly on a real soft
+navigation (no hard reload needed), and the syllabus "Add paper" form
+correctly shows the new paper immediately after submit. `npm run
+typecheck`, `npm run lint`, and `npm run build` all pass clean across
+all 10 touched action files.
+
+## Phases 14–20
+
+Not started. See `PROJECT_PLAN.md` for the full ordered list (AI
+extraction pipeline → human verification → notifications → analytics →
+testing/security/performance → production deployment → Android API
+readiness).
 
 ## Known follow-ups / decisions to revisit
 
@@ -461,8 +531,12 @@ deployment → Android API readiness).
 - CI: add an `exam-portal` job to `.github/workflows/ci.yml` once there
   are tests to run (Phase 18), mirroring the existing `backend`/`admin`/
   `mobile` jobs.
-- Decide on the object-storage provider (S3 / R2 / Supabase Storage) at
-  the start of Phase 13, based on the project owner's existing accounts.
+- Phase 13 built the storage layer as a pluggable `DocumentStorage`
+  interface rather than picking a provider outright — dev uses local
+  disk automatically, and production picks whichever S3-compatible
+  provider (S3 / R2 / Supabase Storage / MinIO) the deployer configures
+  via `STORAGE_*` env vars. No further decision needed unless a
+  non-S3-compatible provider is desired later.
 - Decide on the AI extraction provider/model at the start of Phase 14.
 - Login brute-force protection today is per-account lockout only (5
   attempts / 15 min), which is DB-backed and works across instances.

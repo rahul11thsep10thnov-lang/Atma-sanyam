@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { requireAdminApi } from "@/lib/auth/session";
 import { answerKeyInputSchema } from "@/lib/validation/answerKey";
 import {
@@ -65,7 +66,8 @@ export async function updateAnswerKeyAction(
   }
 
   await updateAnswerKey(id, parsed.data, admin.id);
-  redirect(`/admin/answer-keys/${id}/edit?saved=1`);
+  revalidatePath(`/admin/answer-keys/${id}/edit`);
+  redirect(`/admin/answer-keys/${id}/edit?saved=${Date.now()}`);
 }
 
 export async function transitionAnswerKeyAction(formData: FormData) {
@@ -90,5 +92,6 @@ export async function transitionAnswerKeyAction(formData: FormData) {
     }
     throw err;
   }
-  redirect(`/admin/answer-keys/${id}/edit?saved=1`);
+  revalidatePath(`/admin/answer-keys/${id}/edit`);
+  redirect(`/admin/answer-keys/${id}/edit?saved=${Date.now()}`);
 }

@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { requireAdminApi } from "@/lib/auth/session";
 import { scholarshipInputSchema } from "@/lib/validation/scholarship";
 import {
@@ -58,7 +59,8 @@ export async function updateScholarshipAction(
   const parsed = scholarshipInputSchema.safeParse(readInput(formData));
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
   await updateScholarship(id, parsed.data, admin.id);
-  redirect(`/admin/scholarships/${id}/edit?saved=1`);
+  revalidatePath(`/admin/scholarships/${id}/edit`);
+  redirect(`/admin/scholarships/${id}/edit?saved=${Date.now()}`);
 }
 
 export async function transitionScholarshipAction(formData: FormData) {
@@ -81,5 +83,6 @@ export async function transitionScholarshipAction(formData: FormData) {
     }
     throw err;
   }
-  redirect(`/admin/scholarships/${id}/edit?saved=1`);
+  revalidatePath(`/admin/scholarships/${id}/edit`);
+  redirect(`/admin/scholarships/${id}/edit?saved=${Date.now()}`);
 }

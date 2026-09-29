@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { requireAdminApi } from "@/lib/auth/session";
 import { admissionInputSchema } from "@/lib/validation/admission";
 import {
@@ -59,7 +60,8 @@ export async function updateAdmissionAction(
   const parsed = admissionInputSchema.safeParse(readInput(formData));
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
   await updateAdmission(id, parsed.data, admin.id);
-  redirect(`/admin/admissions/${id}/edit?saved=1`);
+  revalidatePath(`/admin/admissions/${id}/edit`);
+  redirect(`/admin/admissions/${id}/edit?saved=${Date.now()}`);
 }
 
 export async function transitionAdmissionAction(formData: FormData) {
@@ -82,5 +84,6 @@ export async function transitionAdmissionAction(formData: FormData) {
     }
     throw err;
   }
-  redirect(`/admin/admissions/${id}/edit?saved=1`);
+  revalidatePath(`/admin/admissions/${id}/edit`);
+  redirect(`/admin/admissions/${id}/edit?saved=${Date.now()}`);
 }

@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { requireAdminApi } from "@/lib/auth/session";
 import { articleInputSchema } from "@/lib/validation/article";
 import {
@@ -54,7 +55,8 @@ export async function updateArticleAction(
   const parsed = articleInputSchema.safeParse(readInput(formData));
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
   await updateArticle(id, parsed.data, admin.id);
-  redirect(`/admin/articles/${id}/edit?saved=1`);
+  revalidatePath(`/admin/articles/${id}/edit`);
+  redirect(`/admin/articles/${id}/edit?saved=${Date.now()}`);
 }
 
 export async function transitionArticleAction(formData: FormData) {
@@ -77,5 +79,6 @@ export async function transitionArticleAction(formData: FormData) {
     }
     throw err;
   }
-  redirect(`/admin/articles/${id}/edit?saved=1`);
+  revalidatePath(`/admin/articles/${id}/edit`);
+  redirect(`/admin/articles/${id}/edit?saved=${Date.now()}`);
 }

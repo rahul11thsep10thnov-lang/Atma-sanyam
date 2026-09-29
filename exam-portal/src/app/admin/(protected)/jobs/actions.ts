@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { requireAdminApi } from "@/lib/auth/session";
 import { jobInputSchema } from "@/lib/validation/job";
 import { createJob, getJobForAdmin, updateJob, transitionJobStatus } from "@/lib/services/jobs";
@@ -71,7 +72,8 @@ export async function updateJobAction(
   }
 
   await updateJob(id, parsed.data, admin.id);
-  redirect(`/admin/jobs/${id}/edit?saved=1`);
+  revalidatePath(`/admin/jobs/${id}/edit`);
+  redirect(`/admin/jobs/${id}/edit?saved=${Date.now()}`);
 }
 
 export async function transitionJobAction(formData: FormData) {
@@ -96,5 +98,6 @@ export async function transitionJobAction(formData: FormData) {
     }
     throw err;
   }
-  redirect(`/admin/jobs/${id}/edit?saved=1`);
+  revalidatePath(`/admin/jobs/${id}/edit`);
+  redirect(`/admin/jobs/${id}/edit?saved=${Date.now()}`);
 }
