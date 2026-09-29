@@ -19,11 +19,11 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: {
-    default: "TripToe — Discover India, Better.",
-    template: "%s | TripToe"
+    default: "budgettourism — Discover India, Better.",
+    template: "%s | budgettourism"
   },
   description:
-    "TripToe is India's digital travel encyclopedia — destinations, hotels, restaurants, markets, weather and trip planning for every corner of India."
+    "budgettourism is India's digital travel encyclopedia — destinations, hotels, restaurants, markets, weather and trip planning for every corner of India."
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

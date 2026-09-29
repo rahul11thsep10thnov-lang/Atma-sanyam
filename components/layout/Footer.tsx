@@ -1,17 +1,17 @@
 import Link from "next/link";
 import type { Locale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
-import { destinationSummaries } from "@/lib/data/destinations";
+import { popularSummaries } from "@/lib/master/view";
 
 export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const { footer, nav } = dict.common;
-  const featured = destinationSummaries.slice(0, 6);
+  const featured = popularSummaries(6);
 
   return (
     <footer className="mt-16 border-t border-forest-100 bg-forest-700 pb-24 pt-12 text-forest-50 md:pb-12">
       <div className="container-page grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <p className="font-display text-xl font-bold text-white">TripToe</p>
+          <p className="font-display text-xl font-bold text-white">budgettourism</p>
           <p className="mt-1 text-sm text-saffron-300">{dict.common.tagline}</p>
           <p className="mt-3 max-w-xs text-sm text-forest-100">{footer.aboutText}</p>
         </div>
@@ -30,6 +30,11 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         <div>
           <h3 className="text-sm font-semibold uppercase tracking-wide text-saffron-300">{footer.company}</h3>
           <ul className="mt-3 space-y-2 text-sm">
+            <li>
+              <Link href={`/${locale}/trips`} className="hover:text-saffron-300">
+                {nav.trips}
+              </Link>
+            </li>
             <li>
               <Link href={`/${locale}/admin`} className="hover:text-saffron-300">
                 {nav.admin}
@@ -59,7 +64,7 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         </div>
       </div>
       <div className="container-page mt-8 border-t border-forest-600 pt-6 text-xs text-forest-200">
-        © {new Date().getFullYear()} TripToe. {footer.rights}
+        © {new Date().getFullYear()} budgettourism. {footer.rights}
       </div>
     </footer>
   );

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { defaultLocale, isLocale, locales } from "@/lib/i18n/config";
 
-const LOCALE_COOKIE = "triptoe_locale";
+const LOCALE_COOKIE = "budgettourism_locale";
 const PUBLIC_FILE = /\.(.*)$/;
 
 function detectLocaleFromHeader(acceptLanguage: string | null): string {

@@ -1,7 +1,7 @@
 import type { ImageAsset } from "@/lib/types";
 
 /**
- * TripToe does not scrape images from search engines (see project image
+ * budgettourism does not scrape images from search engines (see project image
  * policy). Until a destination has licensed photography — official
  * tourism-board imagery, a licensed stock library, or a user upload —
  * every card/hero renders one of these generated placeholders instead of
@@ -64,7 +64,7 @@ export function placeholderImage(label: string, width = 1200, height = 800): Ima
   return {
     url: placeholderSvgDataUrl(label, width, height),
     alt: label,
-    source: "TripToe generated placeholder — pending licensed photography",
+    source: "budgettourism generated placeholder — pending licensed photography",
     copyright: "No copyright claimed; replace via the admin image pipeline before launch",
     width,
     height

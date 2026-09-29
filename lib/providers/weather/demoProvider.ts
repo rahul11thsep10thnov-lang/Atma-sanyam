@@ -45,7 +45,7 @@ export class DemoWeatherProvider implements WeatherProvider {
         observedAt: new Date().toISOString()
       },
       forecast,
-      source: "TripToe demo weather (deterministic sample data)",
+      source: "budgettourism demo weather (deterministic sample data)",
       isLiveData: false
     };
   }

@@ -1,56 +1,13 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { isLocale, locales, type Locale } from "@/lib/i18n/config";
-import { getDictionary } from "@/lib/i18n/dictionaries";
-import { destinations, getDestinationBySlug } from "@/lib/data/destinations";
-import { SubPageHeader } from "@/components/destination/SubPageHeader";
-import { ShoppingSection } from "@/components/destination/ShoppingSection";
-import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { createSectionSubPage } from "@/components/destination/createSectionSubPage";
 
-interface PageParams {
-  locale: string;
-  state: string;
-  slug: string;
-}
+const sub = createSectionSubPage({
+  path: "shopping",
+  crumb: (dict) => dict.destination.sections.shopping,
+  sectionIds: ["shopping"],
+  title: (name) => `Shopping in ${name}`,
+  description: (name, state) => `What to buy in ${name}, ${state}, and where — with authenticity notes and verification status.`
+});
 
-export function generateStaticParams() {
-  return locales.flatMap((locale) => destinations.map((d) => ({ locale, state: d.stateSlug, slug: d.slug })));
-}
-
-export function generateMetadata({ params }: { params: PageParams }): Metadata {
-  const destination = getDestinationBySlug(params.slug);
-  if (!destination) return {};
-  return {
-    title: `Markets & Shopping in ${destination.name}`,
-    description: `Authentic markets, handicrafts and souvenirs in ${destination.name}, ${destination.state}.`
-  };
-}
-
-export default function DestinationShoppingPage({ params }: { params: PageParams }) {
-  if (!isLocale(params.locale)) notFound();
-  const locale: Locale = params.locale;
-  const destination = getDestinationBySlug(params.slug);
-  if (!destination || destination.stateSlug !== params.state) notFound();
-  const dict = getDictionary(locale);
-
-  return (
-    <>
-      <Breadcrumbs
-        items={[
-          { label: dict.common.nav.home, href: `/${locale}` },
-          { label: destination.name, href: `/${locale}/india/${destination.stateSlug}/${destination.slug}` },
-          {
-            label: dict.common.nav.shopping,
-            href: `/${locale}/india/${destination.stateSlug}/${destination.slug}/shopping`
-          }
-        ]}
-      />
-      <SubPageHeader
-        destination={destination}
-        locale={locale}
-        title={`${dict.destination.sections.shopping} — ${destination.name}`}
-      />
-      <ShoppingSection destination={destination} dict={dict} id="shopping-full" />
-    </>
-  );
-}
+export const generateStaticParams = sub.generateStaticParams;
+export const generateMetadata = sub.generateMetadata;
+export default sub.Page;

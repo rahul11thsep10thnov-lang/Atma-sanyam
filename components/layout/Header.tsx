@@ -3,6 +3,7 @@ import type { Locale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { HeaderSearch } from "@/components/search/HeaderSearch";
+import { suggestionIndex } from "@/lib/master/view";
 
 export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const { nav } = dict.common;
@@ -20,7 +21,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
       </a>
       <div className="container-page flex h-16 items-center justify-between gap-4">
         <Link href={`/${locale}`} className="flex shrink-0 items-baseline gap-1 font-display text-2xl font-bold text-forest-700">
-          TripToe
+          budgettourism
           <span className="hidden text-xs font-sans font-medium tracking-wide text-saffron-600 sm:inline">
             {dict.common.tagline}
           </span>
@@ -39,7 +40,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         </nav>
 
         <div className="hidden flex-1 max-w-sm md:block">
-          <HeaderSearch locale={locale} placeholder={dict.home.searchPlaceholder} />
+          <HeaderSearch locale={locale} placeholder={dict.home.searchPlaceholder} suggestions={suggestionIndex()} />
         </div>
 
         <div className="flex items-center gap-2">

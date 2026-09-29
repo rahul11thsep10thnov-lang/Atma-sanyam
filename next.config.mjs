@@ -17,6 +17,16 @@ const nextConfig = {
     ],
     formats: ["image/avif", "image/webp"]
   },
+  // Old URLs from before the master-database rebuild keep working.
+  async redirects() {
+    const base = "/:locale/india/:state/:slug";
+    return [
+      { source: `${base}/hotels`, destination: `${base}/where-to-stay`, permanent: true },
+      { source: `${base}/restaurants`, destination: `${base}/food`, permanent: true },
+      { source: `${base}/attractions/:attraction`, destination: `${base}/:attraction`, permanent: true },
+      { source: `${base}/itinerary`, destination: "/:locale/itinerary/:slug", permanent: true }
+    ];
+  },
   experimental: {
     typedRoutes: false
   }

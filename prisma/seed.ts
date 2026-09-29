@@ -1,198 +1,92 @@
 /**
- * Seeds the database from the same demo data that powers the frontend
- * (lib/data/destinations) so `npm run prisma:seed` gives you a working
- * database without hand-writing SQL. Run after `npm run prisma:migrate`.
+ * Loads the master database (built by lib/master/seed) into PostgreSQL.
+ * Run after `npm run prisma:migrate`:  npm run prisma:seed
+ *
+ * Tables are inserted in dependency order; re-running is safe (skipDuplicates).
+ * Deliberately not part of the Next.js type-check (see tsconfig `exclude`);
+ * `npm run verify:seed-types` type-checks it against the generated client.
  */
-import { PrismaClient, ThingsToDoCategory, HotelCategory, RestaurantCategory } from "@prisma/client";
-import { destinations } from "../lib/data/destinations";
-import type {
-  ThingsToDoCategory as TtdCat,
-  HotelCategory as HotelCat,
-  RestaurantCategory as RestCat
-} from "../lib/types";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { getDb } from "../lib/master/repo";
+import { generateAllContent } from "../lib/master/generation/pipeline";
 
 const prisma = new PrismaClient();
 
-const TTD_MAP: Record<TtdCat, ThingsToDoCategory> = {
-  historical: "HISTORICAL",
-  religious: "RELIGIOUS",
-  adventure: "ADVENTURE",
-  nature: "NATURE",
-  family: "FAMILY",
-  photography: "PHOTOGRAPHY",
-  nightlife: "NIGHTLIFE",
-  culture: "CULTURE",
-  shopping: "SHOPPING",
-  food: "FOOD",
-  museums: "MUSEUMS",
-  entertainment: "ENTERTAINMENT"
-};
+const DATE_KEYS = new Set([
+  "created_at", "updated_at", "last_verified_at", "verified_at", "expires_at", "valid_from", "valid_until",
+  "detected_at", "resolved_at", "start_date", "end_date", "publication_date", "accessed_at",
+  "generation_timestamp", "last_updated", "date_optional"
+]);
+const JSON_KEYS = new Set(["value", "existing_value", "incoming_value"]);
 
-const HOTEL_MAP: Record<HotelCat, HotelCategory> = {
-  luxury: "LUXURY",
-  premium: "PREMIUM",
-  midRange: "MID_RANGE",
-  budget: "BUDGET",
-  hostels: "HOSTELS",
-  homestays: "HOMESTAYS",
-  heritage: "HERITAGE",
-  resorts: "RESORTS"
-};
+/** ISO strings → Date, JSON nulls → Prisma.JsonNull (createMany rejects bare null for Json columns). */
+function prepare<T extends object>(row: T): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(row)) {
+    if (DATE_KEYS.has(k) && typeof v === "string") out[k] = new Date(v);
+    else if (JSON_KEYS.has(k) && v === null) out[k] = Prisma.JsonNull;
+    else out[k] = v;
+  }
+  return out;
+}
 
-const REST_MAP: Record<RestCat, RestaurantCategory> = {
-  localFood: "LOCAL_FOOD",
-  streetFood: "STREET_FOOD",
-  vegetarian: "VEGETARIAN",
-  nonVegetarian: "NON_VEGETARIAN",
-  fineDining: "FINE_DINING",
-  budget: "BUDGET",
-  family: "FAMILY",
-  cafes: "CAFES",
-  sweets: "SWEETS",
-  breakfast: "BREAKFAST",
-  traditional: "TRADITIONAL"
-};
+type Delegate = { createMany: (args: { data: any[]; skipDuplicates?: boolean }) => Promise<{ count: number }> };
+
+async function insert(name: string, delegate: Delegate, rows: object[]) {
+  const data = rows.map(prepare);
+  let count = 0;
+  for (let i = 0; i < data.length; i += 500) {
+    const res = await delegate.createMany({ data: data.slice(i, i + 500), skipDuplicates: true });
+    count += res.count;
+  }
+  console.log(`  ${name.padEnd(26)} ${String(count).padStart(5)} / ${data.length}`);
+}
 
 async function main() {
-  for (const destination of destinations) {
-    const state = await prisma.state.upsert({
-      where: { slug: destination.stateSlug },
-      update: {},
-      create: { slug: destination.stateSlug, name: destination.state }
-    });
+  const db = getDb();
+  const content = generateAllContent(db);
+  console.log("Seeding master database…");
 
-    const created = await prisma.destination.upsert({
-      where: { slug: destination.slug },
-      update: {},
-      create: {
-        slug: destination.slug,
-        name: destination.name,
-        tagline: destination.tagline,
-        shortDescription: destination.shortDescription,
-        introduction: destination.introduction,
-        history: destination.history,
-        geography: destination.geography,
-        culture: destination.culture,
-        religion: destination.religion,
-        latitude: destination.latitude,
-        longitude: destination.longitude,
-        bestTimeToVisit: destination.bestTimeToVisit,
-        idealDuration: destination.idealDuration,
-        approximateBudget: destination.approximateBudget,
-        nearestAirport: destination.nearestAirport,
-        nearestRailway: destination.nearestRailwayStation,
-        bestKnownFor: destination.bestKnownFor,
-        languages: destination.languages,
-        currency: destination.currency,
-        timeZone: destination.timeZone,
-        tags: destination.tags,
-        popularity: destination.popularity,
-        isSampleData: destination.isSampleData,
-        stateId: state.id,
-        attractions: {
-          create: destination.attractions.map((a) => ({
-            slug: a.slug,
-            name: a.name,
-            description: a.description,
-            location: a.location,
-            latitude: a.geo?.lat,
-            longitude: a.geo?.lng,
-            openingHours: a.openingHours,
-            timeRequired: a.timeRequired,
-            entryFee: a.entryFee,
-            bestVisitingTime: a.bestVisitingTime,
-            mapUrl: a.mapUrl,
-            officialWebsite: a.officialWebsite,
-            categories: a.categories.map((c) => TTD_MAP[c]),
-            sourceLabel: a.source.label,
-            sourceUrl: a.source.url
-          }))
-        },
-        hotels: {
-          create: destination.hotels.map((h) => ({
-            name: h.name,
-            category: HOTEL_MAP[h.category],
-            area: h.area,
-            priceRange: h.priceRange,
-            facilities: h.facilities,
-            roomTypes: h.roomTypes,
-            guestRating: h.guestRating,
-            reviewCount: h.reviewCount,
-            distanceFromLandmark: h.distanceFromLandmark,
-            bookingUrl: h.bookingUrl,
-            dataVerified: h.dataVerified
-          }))
-        },
-        restaurants: {
-          create: destination.restaurants.map((r) => ({
-            name: r.name,
-            categories: r.categories.map((c) => REST_MAP[c]),
-            cuisine: r.cuisine,
-            priceRange: r.priceRange,
-            location: r.location,
-            openingHours: r.openingHours,
-            signatureDishes: r.signatureDishes,
-            vegNonVeg: r.vegNonVeg,
-            contact: r.contact,
-            mapUrl: r.mapUrl,
-            website: r.website,
-            reservationUrl: r.reservationUrl,
-            dataVerified: r.dataVerified
-          }))
-        },
-        markets: {
-          create: destination.markets.map((m) => ({
-            name: m.name,
-            location: m.location,
-            whatToBuy: m.whatToBuy,
-            typicalPriceRange: m.typicalPriceRange,
-            bargainingInfo: m.bargainingInfo,
-            openingHours: m.openingHours,
-            famousProducts: m.famousProducts,
-            mapUrl: m.mapUrl
-          }))
-        },
-        foods: {
-          create: destination.localFoods.map((f) => ({
-            name: f.name,
-            type: f.type,
-            description: f.description,
-            whereToTry: f.whereToTry ?? []
-          }))
-        },
-        festivals: {
-          create: destination.festivals.map((f) => ({
-            name: f.name,
-            month: f.month,
-            description: f.description
-          }))
-        },
-        emergencyContacts: {
-          create: destination.emergencyContacts.map((e) => ({
-            label: e.label,
-            number: e.number,
-            scope: e.scope
-          }))
-        },
-        transportation: {
-          create: {
-            nearestAirport: destination.transportation.nearestAirport,
-            nearestRailwayStation: destination.transportation.nearestRailwayStation,
-            majorBusStations: destination.transportation.majorBusStations,
-            roadConnectivity: destination.transportation.roadConnectivity,
-            taxiInfo: destination.transportation.taxiInfo,
-            metroInfo: destination.transportation.metroInfo,
-            localTransport: destination.transportation.localTransport,
-            autoRickshaw: destination.transportation.autoRickshaw,
-            rentalVehicles: destination.transportation.rentalVehicles,
-            fromDelhi: destination.transportation.fromDelhi
-          }
-        }
-      }
-    });
+  await insert("sources", prisma.source, db.sources);
+  await insert("states", prisma.state, db.states);
+  await insert("districts", prisma.district, db.districts);
 
-    console.log(`Seeded ${created.name}`);
-  }
+  // parents first so the self-referencing foreign key is satisfied
+  const destinations = [...db.destinations].sort((a, b) => Number(Boolean(a.parent_destination_id)) - Number(Boolean(b.parent_destination_id)));
+  await insert("destinations", prisma.destination, destinations);
+  await insert("destination_categories", prisma.destinationCategoryLink, db.destination_categories);
+  await insert("attractions", prisma.attraction, db.attractions);
+  await insert("historical_periods", prisma.historicalPeriod, db.historical_periods);
+  await insert("historical_events", prisma.historicalEvent, db.historical_events);
+  await insert("traditions", prisma.tradition, db.traditions);
+  await insert("destination_descriptions", prisma.destinationDescription, db.destination_descriptions);
+  await insert("transport_hubs", prisma.transportHub, db.transport_hubs);
+  await insert("destination_connections", prisma.destinationConnection, db.destination_connections);
+  await insert("circuits", prisma.circuit, db.circuits);
+  await insert("circuit_destinations", prisma.circuitDestination, db.circuit_destinations);
+  await insert("travel_costs", prisma.travelCost, db.travel_costs);
+  await insert("accommodation_areas", prisma.accommodationArea, db.accommodation_areas);
+  await insert("local_foods", prisma.localFood, db.local_foods);
+  await insert("shopping", prisma.shoppingItem, db.shopping);
+  await insert("festivals", prisma.festival, db.festivals);
+  await insert("destination_weather", prisma.destinationWeather, db.destination_weather);
+  await insert("practical_information", prisma.practicalInformation, db.practical_information);
+  await insert("emergency_services", prisma.emergencyService, db.emergency_services);
+  await insert("experiences", prisma.experience, db.experiences);
+  await insert(
+    "destination_suitability",
+    prisma.destinationSuitability,
+    db.destination_suitability.map(({ values, ...rest }) => ({ ...rest, ...values }))
+  );
+  await insert("facts", prisma.fact, db.facts);
+  await insert("conflict_records", prisma.conflictRecord, db.conflict_records);
+  await insert("entity_relationships", prisma.entityRelationship, db.entity_relationships);
+  await insert("translations", prisma.translation, db.translations);
+  await insert("media", prisma.media, db.media);
+  await insert("ai_visual_prompts", prisma.aiVisualPrompt, db.ai_visual_prompts);
+  await insert("generated_content", prisma.generatedContent, content.generated_content);
+  await insert("seo_metadata", prisma.seoMetadata, content.seo_metadata);
+  console.log("Done.");
 }
 
 main()

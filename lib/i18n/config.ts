@@ -1,4 +1,4 @@
-export const locales = ["en", "hi", "mr", "kn", "ta", "te"] as const;
+export const locales = ["en", "hi", "bn", "mr", "ta", "te", "kn", "ml"] as const;
 
 export type Locale = (typeof locales)[number];
 
@@ -10,7 +10,9 @@ export const localeNames: Record<Locale, { native: string; english: string }> = 
   mr: { native: "मराठी", english: "Marathi" },
   kn: { native: "ಕನ್ನಡ", english: "Kannada" },
   ta: { native: "தமிழ்", english: "Tamil" },
-  te: { native: "తెలుగు", english: "Telugu" }
+  te: { native: "తెలుగు", english: "Telugu" },
+  bn: { native: "বাংলা", english: "Bengali" },
+  ml: { native: "മലയാളം", english: "Malayalam" }
 };
 
 export function isLocale(value: string): value is Locale {

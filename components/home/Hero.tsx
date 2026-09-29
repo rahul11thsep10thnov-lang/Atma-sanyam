@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { destinationSummaries, popularSearchSlugs } from "@/lib/data/destinations";
+import type { SuggestionItem } from "@/lib/master/view";
 
 export function Hero({
   locale,
@@ -11,7 +11,9 @@ export function Hero({
   subheading,
   placeholder,
   searchExamples,
-  popularSearchesLabel
+  popularSearchesLabel,
+  suggestions,
+  popular
 }: {
   locale: string;
   headline: string;
@@ -19,34 +21,28 @@ export function Hero({
   placeholder: string;
   searchExamples: string;
   popularSearchesLabel: string;
+  suggestions: SuggestionItem[];
+  popular: SuggestionItem[];
 }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  const matches =
-    query.trim().length > 0
-      ? destinationSummaries
-          .filter(
-            (d) =>
-              d.name.toLowerCase().includes(query.toLowerCase()) ||
-              d.state.toLowerCase().includes(query.toLowerCase())
-          )
-          .slice(0, 6)
-      : [];
+  const q = query.trim().toLowerCase();
+  const matches = q
+    ? suggestions.filter((d) => d.label.toLowerCase().includes(q) || d.sublabel.toLowerCase().includes(q)).slice(0, 6)
+    : [];
 
-  const popularSearches = popularSearchSlugs
-    .map((slug) => destinationSummaries.find((d) => d.slug === slug))
-    .filter((d): d is NonNullable<typeof d> => Boolean(d));
-
-  function goTo(slug: string, stateSlug: string) {
+  function goTo(href: string) {
     setOpen(false);
-    router.push(`/${locale}/india/${stateSlug}/${slug}`);
+    router.push(`/${locale}${href}`);
   }
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (matches[0]) goTo(matches[0].slug, matches[0].stateSlug);
+    // A place name goes straight to its page; anything else ("3 day trip from Delhi") goes to intent-aware search.
+    if (matches[0] && matches[0].label.toLowerCase() === q) goTo(matches[0].href);
+    else if (q) router.push(`/${locale}/search?q=${encodeURIComponent(query.trim())}`);
   }
 
   return (
@@ -92,14 +88,14 @@ export function Hero({
             {open && matches.length > 0 && (
               <ul className="absolute left-0 right-0 z-30 mt-2 overflow-hidden rounded-2xl bg-white text-left shadow-xl">
                 {matches.map((m) => (
-                  <li key={m.slug}>
+                  <li key={m.href}>
                     <button
                       type="button"
-                      onMouseDown={() => goTo(m.slug, m.stateSlug)}
+                      onMouseDown={() => goTo(m.href)}
                       className="flex w-full items-center justify-between px-5 py-3 text-left hover:bg-forest-50"
                     >
-                      <span className="font-medium text-charcoal">{m.name}</span>
-                      <span className="text-xs text-charcoal-light">{m.state}</span>
+                      <span className="font-medium text-charcoal">{m.label}</span>
+                      <span className="text-xs text-charcoal-light">{m.sublabel}</span>
                     </button>
                   </li>
                 ))}
@@ -112,13 +108,13 @@ export function Hero({
             <span className="text-xs font-medium uppercase tracking-wide text-forest-100/80">
               {popularSearchesLabel}:
             </span>
-            {popularSearches.map((d) => (
+            {popular.map((d) => (
               <Link
-                key={d.slug}
-                href={`/${locale}/india/${d.stateSlug}/${d.slug}`}
+                key={d.href}
+                href={`/${locale}${d.href}`}
                 className="rounded-full border border-white/30 px-3 py-1 text-sm text-white hover:bg-white/10"
               >
-                {d.name}
+                {d.label}
               </Link>
             ))}
           </div>

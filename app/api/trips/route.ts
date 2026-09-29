@@ -1,41 +1,27 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getDestinationBySlug } from "@/lib/data/destinations";
+import { NextRequest } from "next/server";
+import { destinationBySlug } from "@/lib/master/repo";
+import { badRequest, intParam, json, notFound, rateLimit } from "@/lib/api/http";
 
-interface TripPayload {
-  destinationSlug: string;
-  title: string;
-  days: number;
-  travellers: number;
-  budget: number;
-  travelStyle: "budget" | "comfort" | "luxury";
-  interests: string[];
-}
-
+/** POST /api/trips — validates a trip to save. Storing needs DATABASE_URL and a signed-in user. */
 export async function POST(request: NextRequest) {
-  let payload: Partial<TripPayload>;
+  const limited = rateLimit(request, "trips", 20);
+  if (limited) return limited;
+  let body: Record<string, unknown>;
   try {
-    payload = await request.json();
+    body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    return badRequest("Invalid JSON body");
   }
-
-  if (!payload.destinationSlug || !payload.title || !payload.days) {
-    return NextResponse.json({ error: "destinationSlug, title and days are required" }, { status: 400 });
-  }
-  if (!getDestinationBySlug(payload.destinationSlug)) {
-    return NextResponse.json({ error: "Unknown destination" }, { status: 404 });
-  }
-
-  // Saved trips require a signed-in user (see lib/auth) — not wired to a
-  // session store in this demo build. Validate and report the storage
-  // state honestly instead of pretending to save it.
-  return NextResponse.json(
+  const slug = typeof body.destinationSlug === "string" ? body.destinationSlug : "";
+  const title = typeof body.title === "string" ? body.title.trim().slice(0, 120) : "";
+  if (!title) return badRequest("title is required");
+  if (!destinationBySlug(slug)) return notFound("Unknown destination");
+  return json(
     {
       accepted: true,
       persisted: false,
-      message: process.env.DATABASE_URL
-        ? "Attach an authenticated user id before enabling writes."
-        : "Configure DATABASE_URL and sign-in to save trips — see README.md."
+      days: intParam(body.days, 1, 30, 1),
+      message: process.env.DATABASE_URL ? "Attach an authenticated user id before enabling writes." : "Configure DATABASE_URL and sign-in to save trips — see README.md."
     },
     { status: 202 }
   );

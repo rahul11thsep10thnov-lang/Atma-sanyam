@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/authOptions";
+import { safeSession } from "@/lib/auth/session";
 
 export const metadata: Metadata = { title: "Admin — Users" };
 
 export default async function AdminUsersPage() {
-  const session = await getServerSession(authOptions);
+  const session = await safeSession();
 
   return (
     <div>

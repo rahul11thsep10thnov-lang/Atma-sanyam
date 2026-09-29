@@ -6,17 +6,20 @@ export function DestinationCard({
   destination,
   locale,
   bestTimeLabel,
-  exploreLabel
+  exploreLabel,
+  fluid = false
 }: {
   destination: DestinationSummary;
   locale: string;
   bestTimeLabel: string;
   exploreLabel: string;
+  /** Fill the grid cell instead of the fixed rail width. */
+  fluid?: boolean;
 }) {
   return (
     <Link
       href={`/${locale}/india/${destination.stateSlug}/${destination.slug}`}
-      className="group flex w-64 shrink-0 flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg sm:w-72"
+      className={`group flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg ${fluid ? "w-full" : "w-64 shrink-0 sm:w-72"}`}
     >
       <div className="relative h-40 w-full overflow-hidden bg-forest-100">
         <SmartImage

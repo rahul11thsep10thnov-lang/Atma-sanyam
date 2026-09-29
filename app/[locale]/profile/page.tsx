@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/authOptions";
+import { safeSession } from "@/lib/auth/session";
 import { isLocale, type Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { SignInButton, SignOutButton } from "@/components/auth/AuthButton";
@@ -13,14 +12,14 @@ export default async function ProfilePage({ params }: { params: { locale: string
   const locale: Locale = params.locale;
   const dict = getDictionary(locale);
   const { nav, ui } = dict.common;
-  const session = await getServerSession(authOptions);
+  const session = await safeSession();
 
   const providersConfigured = Boolean(process.env.GOOGLE_CLIENT_ID);
 
   const tabs = [
     { label: nav.myTrips, description: "Trips you plan and save appear here." },
     { label: nav.savedPlaces, description: "Destinations, hotels and restaurants you've saved." },
-    { label: nav.wishlists, description: "Custom wishlists you create across TripToe." },
+    { label: nav.wishlists, description: "Custom wishlists you create across budgettourism." },
     { label: nav.reviews, description: "Reviews you've written for places you've visited." }
   ];
 

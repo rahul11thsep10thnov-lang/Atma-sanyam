@@ -1,5 +1,5 @@
 {
-  "siteName": "TripToe",
+  "siteName": "budgettourism",
   "tagline": "Discover India, Better.",
   "nav": {
     "home": "Home",
@@ -61,11 +61,72 @@
     "reportReview": "Report",
     "submit": "Submit",
     "cancel": "Cancel",
-    "viewAll": "View All"
+    "viewAll": "View All",
+    "draftBadge": "Draft · unverified",
+    "verifiedBadge": "Verified",
+    "partialBadge": "Partly verified",
+    "noDataBadge": "Not yet collected",
+    "lastVerified": "Last verified",
+    "neverVerified": "Not yet verified",
+    "sourcesLabel": "Sources",
+    "contentInEnglish": "This guide's text is currently available in English only; interface labels are translated.",
+    "notYetCollected": "Not yet collected",
+    "jumpTo": "Jump to",
+    "planner": "Trip planner",
+    "budgetEstimate": "Estimated budget",
+    "routeFinder": "Route finder",
+    "whyTheseFit": "Why these fit together",
+    "caveats": "Before you travel",
+    "day": "Day",
+    "customise": "Customise this plan",
+    "perPersonPerDay": "per person per day",
+    "estimatedTotal": "Estimated total",
+    "tier": "Style",
+    "month": "Month of travel",
+    "anyMonth": "Any month",
+    "find": "Find routes",
+    "from": "Starting from",
+    "regenerate": "Update plan",
+    "stops": "Stops",
+    "travellerType": "Traveller type",
+    "dataGapsTitle": "What we haven't collected yet",
+    "travellerTypes": {
+      "ANY": "Any",
+      "SOLO": "Solo",
+      "COUPLE": "Couple",
+      "FAMILY": "Family",
+      "ELDERLY": "Older travellers",
+      "GROUP": "Group"
+    },
+    "plannerError": "Could not build a plan right now. Please try again.",
+    "generating": "Building your plan…",
+    "months": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "viewFullItinerary": "Open the full itinerary",
+    "reliability": "Reliability",
+    "partOf": "Part of",
+    "alsoNear": "Also nearby",
+    "dayWord": "day",
+    "daysWord": "days",
+    "curated": "Curated route",
+    "recommended": "recommended",
+    "moreOn": "More on {name}"
   },
   "footer": {
-    "about": "About TripToe",
-    "aboutText": "TripToe is India's digital travel encyclopedia — helping you discover destinations, plan journeys and travel with confidence.",
+    "about": "About budgettourism",
+    "aboutText": "budgettourism is India's digital travel encyclopedia — helping you discover destinations, plan journeys and travel with confidence.",
     "explore": "Explore",
     "company": "Company",
     "legal": "Legal",
@@ -73,5 +134,24 @@
     "terms": "Terms of Use",
     "contact": "Contact Us",
     "rights": "All rights reserved."
+  },
+  "search": {
+    "examples": "Try “hotels in Goa”, “places near Jaipur”, “3 day trip from Delhi” or “3 day trip to Kerala”.",
+    "count": "{n} results for “{q}”",
+    "none": "Nothing matched. Try a destination or state name.",
+    "kinds": {
+      "destination": "Destination",
+      "state": "State",
+      "attraction": "Attraction",
+      "route": "Route",
+      "section": "Guide section",
+      "circuit": "Trip route"
+    }
+  },
+  "explore": {
+    "count": "{n} destinations across India",
+    "all": "All",
+    "statesTitle": "States and Union Territories",
+    "noDestinations": "No destinations collected for this state yet."
   }
 }

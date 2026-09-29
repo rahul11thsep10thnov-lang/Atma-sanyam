@@ -1,7 +1,8 @@
 import type { Crumb } from "./Breadcrumbs";
-import type { Destination } from "@/lib/types";
+import type { AttractionRecord } from "@/lib/master/types";
+import type { DestinationView } from "@/lib/master/view";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://triptoe.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://budgettourism.com";
 
 function Script({ data }: { data: object }) {
   return (
@@ -30,26 +31,53 @@ export function BreadcrumbJsonLd({ items }: { items: Crumb[] }) {
   );
 }
 
-export function DestinationJsonLd({ destination, locale }: { destination: Destination; locale: string }) {
-  const url = `${SITE_URL}/${locale}/india/${destination.stateSlug}/${destination.slug}`;
+export function DestinationJsonLd({ view, locale, description }: { view: DestinationView; locale: string; description: string }) {
+  const d = view.record;
+  const image = view.heroImage.url;
   return (
     <Script
       data={{
         "@context": "https://schema.org",
         "@type": "TouristDestination",
-        name: destination.name,
-        description: destination.shortDescription,
-        url,
-        image: destination.heroImage.url.startsWith("data:") ? undefined : destination.heroImage.url,
-        geo: {
-          "@type": "GeoCoordinates",
-          latitude: destination.latitude,
-          longitude: destination.longitude
-        },
-        address: {
-          "@type": "PostalAddress",
-          addressRegion: destination.state,
-          addressCountry: "IN"
+        name: d.name,
+        description,
+        url: `${SITE_URL}/${locale}${view.path}`,
+        image: image.startsWith("data:") ? undefined : image,
+        geo: { "@type": "GeoCoordinates", latitude: d.latitude, longitude: d.longitude },
+        address: { "@type": "PostalAddress", addressRegion: view.state.name, addressCountry: "IN" }
+      }}
+    />
+  );
+}
+
+export function AttractionJsonLd({ attraction, destinationName, stateName, url }: { attraction: AttractionRecord; destinationName: string; stateName: string; url: string }) {
+  return (
+    <Script
+      data={{
+        "@context": "https://schema.org",
+        "@type": "TouristAttraction",
+        name: attraction.name,
+        description: attraction.short_description,
+        url: `${SITE_URL}${url}`,
+        geo: { "@type": "GeoCoordinates", latitude: attraction.latitude, longitude: attraction.longitude },
+        address: { "@type": "PostalAddress", addressLocality: destinationName, addressRegion: stateName, addressCountry: "IN" }
+      }}
+    />
+  );
+}
+
+export function TripJsonLd({ name, description, url, stops }: { name: string; description: string; url: string; stops: Array<{ name: string; url: string }> }) {
+  return (
+    <Script
+      data={{
+        "@context": "https://schema.org",
+        "@type": "Trip",
+        name,
+        description,
+        url: `${SITE_URL}${url}`,
+        itinerary: {
+          "@type": "ItemList",
+          itemListElement: stops.map((s, i) => ({ "@type": "ListItem", position: i + 1, name: s.name, url: `${SITE_URL}${s.url}` }))
         }
       }}
     />

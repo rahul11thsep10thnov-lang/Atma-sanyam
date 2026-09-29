@@ -3,34 +3,30 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Locale } from "@/lib/i18n/config";
-import { destinationSummaries } from "@/lib/data/destinations";
+import type { SuggestionItem } from "@/lib/master/view";
 
-export function HeaderSearch({ locale, placeholder }: { locale: Locale; placeholder: string }) {
+export function HeaderSearch({ locale, placeholder, suggestions }: { locale: Locale; placeholder: string; suggestions: SuggestionItem[] }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  const matches =
-    query.trim().length > 0
-      ? destinationSummaries
-          .filter(
-            (d) =>
-              d.name.toLowerCase().includes(query.toLowerCase()) ||
-              d.state.toLowerCase().includes(query.toLowerCase())
-          )
-          .slice(0, 6)
-      : [];
+  const q = query.trim().toLowerCase();
+  const matches = q
+    ? suggestions.filter((d) => d.label.toLowerCase().includes(q) || d.sublabel.toLowerCase().includes(q)).slice(0, 6)
+    : [];
 
-  function goTo(slug: string, stateSlug: string) {
+  function goTo(href: string) {
     setOpen(false);
     setQuery("");
-    router.push(`/${locale}/india/${stateSlug}/${slug}`);
+    router.push(`/${locale}${href}`);
   }
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (matches[0]) {
-      goTo(matches[0].slug, matches[0].stateSlug);
+    if (matches[0] && matches[0].label.toLowerCase() === q) goTo(matches[0].href);
+    else if (q) {
+      setOpen(false);
+      router.push(`/${locale}/search?q=${encodeURIComponent(query.trim())}`);
     }
   }
 
@@ -63,16 +59,16 @@ export function HeaderSearch({ locale, placeholder }: { locale: Locale; placehol
           className="absolute left-0 right-0 z-30 mt-2 max-h-80 overflow-auto rounded-xl border border-forest-100 bg-white py-1 shadow-lg"
         >
           {matches.map((m) => (
-            <li key={m.slug}>
+            <li key={m.href}>
               <button
                 type="button"
                 role="option"
                 aria-selected={false}
-                onMouseDown={() => goTo(m.slug, m.stateSlug)}
+                onMouseDown={() => goTo(m.href)}
                 className="flex w-full flex-col items-start px-4 py-2 text-left hover:bg-forest-50"
               >
-                <span className="text-sm font-medium text-charcoal">{m.name}</span>
-                <span className="text-xs text-charcoal-light">{m.state}</span>
+                <span className="text-sm font-medium text-charcoal">{m.label}</span>
+                <span className="text-xs text-charcoal-light">{m.sublabel}</span>
               </button>
             </li>
           ))}

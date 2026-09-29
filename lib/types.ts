@@ -6,7 +6,7 @@
  * not require touching component code.
  */
 
-export type Locale = "en" | "hi" | "mr" | "kn" | "ta" | "te";
+export type Locale = "en" | "hi" | "bn" | "mr" | "ta" | "te" | "kn" | "ml";
 
 export interface SourceRef {
   /** e.g. "Ministry of Tourism", "State Tourism Department", "ASI" */

@@ -3,6 +3,7 @@ import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { HtmlLang } from "@/components/layout/HtmlLang";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 
 export function generateStaticParams() {
@@ -24,6 +25,7 @@ export default function LocaleLayout({
 
   return (
     <div className="flex min-h-screen flex-col">
+      <HtmlLang locale={locale} />
       <Header locale={locale} dict={dict} />
       <main id="main-content" className="flex-1 pb-16 md:pb-0">
         {children}

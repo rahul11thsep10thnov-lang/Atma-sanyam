@@ -1,41 +1,49 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getDestinationBySlug } from "@/lib/data/destinations";
-import { generateItinerary, type ItineraryRequest } from "@/lib/itinerary/generate";
+import { NextRequest } from "next/server";
+import { DESTINATION_CATEGORIES, BUDGET_TIERS, TRAVELLER_TYPES } from "@/lib/master/enums";
+import { planItinerary } from "@/lib/master/engine/itinerary";
+import { destinationBySlug, getDb } from "@/lib/master/repo";
+import { attractionHrefs } from "@/lib/master/view";
+import { badRequest, enumList, enumParam, intParam, json, notFound, rateLimit } from "@/lib/api/http";
 
+/**
+ * POST /api/itinerary — builds a day-by-day plan from stored attractions, hours and the destination graph.
+ * Body: { stops: [{ slug, days }] | destination: slug + days, travellers, tier, traveller_type, interests[], month? }
+ */
 export async function POST(request: NextRequest) {
-  let body: Partial<ItineraryRequest>;
+  const limited = rateLimit(request, "itinerary", 20);
+  if (limited) return limited;
+
+  let body: Record<string, unknown>;
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    return badRequest("Invalid JSON body");
   }
 
-  const { destinationSlug, days, travellers, budget, travelStyle, interests } = body;
+  const rawStops = Array.isArray(body.stops) ? body.stops : typeof body.destination === "string" ? [{ slug: body.destination, days: body.days }] : [];
+  if (rawStops.length === 0 || rawStops.length > 5) return badRequest("Provide 1–5 stops (or a destination slug)");
 
-  if (!destinationSlug || typeof destinationSlug !== "string") {
-    return NextResponse.json({ error: "destinationSlug is required" }, { status: 400 });
+  const stops = [];
+  for (const s of rawStops as Array<{ slug?: unknown; days?: unknown }>) {
+    const dest = typeof s.slug === "string" ? destinationBySlug(s.slug) : undefined;
+    if (!dest) return notFound(`Unknown destination "${String(s.slug)}"`);
+    stops.push({ destination_id: dest.id, days: intParam(s.days, 1, 10, dest.recommended_days) });
   }
-  const destination = getDestinationBySlug(destinationSlug);
-  if (!destination) {
-    return NextResponse.json({ error: "Unknown destination" }, { status: 404 });
-  }
+  if (stops.reduce((t, s) => t + s.days, 0) > 21) return badRequest("Trips longer than 21 days are not supported");
 
-  const safeDays = Math.min(Math.max(Number(days) || 1, 1), 14);
-  const safeTravellers = Math.min(Math.max(Number(travellers) || 1, 1), 20);
-  const safeBudget = Math.max(Number(budget) || 0, 0);
-  const safeStyle = (["budget", "comfort", "luxury"] as const).includes(travelStyle as any)
-    ? (travelStyle as "budget" | "comfort" | "luxury")
-    : "comfort";
-  const safeInterests = Array.isArray(interests) ? interests : [];
-
-  const result = generateItinerary(destination, {
-    destinationSlug,
-    days: safeDays,
-    travellers: safeTravellers,
-    budget: safeBudget,
-    travelStyle: safeStyle,
-    interests: safeInterests
+  const plan = planItinerary(getDb(), {
+    stops,
+    travellers: intParam(body.travellers, 1, 20, 2),
+    tier: enumParam(body.tier, BUDGET_TIERS, "MID_RANGE"),
+    traveller_type: enumParam(body.traveller_type, TRAVELLER_TYPES, "ANY"),
+    interests: enumList(body.interests, DESTINATION_CATEGORIES),
+    month: typeof body.month === "number" || typeof body.month === "string" ? intParam(body.month, 1, 12, 0) || undefined : undefined
   });
 
-  return NextResponse.json(result);
+  return json({
+    plan,
+    hrefs: attractionHrefs(plan.activities.map((a) => a.attraction_id).filter((x): x is string => Boolean(x))),
+    disclaimer:
+      "Generated from stored attractions, reported opening hours and estimated travel times. Time-sensitive details are unverified until marked otherwise — confirm before you travel."
+  });
 }

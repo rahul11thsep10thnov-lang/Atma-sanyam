@@ -1,6 +1,12 @@
-// TripToe database schema.
-// Provider is PostgreSQL per the project brief; run `npm run prisma:migrate`
-// once DATABASE_URL is set (see .env.example) to create these tables.
+// budgettourism — master India tourism database schema (PostgreSQL).
+//
+// Architecture: RAW SOURCES → STRUCTURED FACTS → VERIFICATION → MASTER DATABASE →
+// DESTINATION GRAPH → AI CONTENT → VALIDATION → WEBPAGE. This file is the master
+// database. Run `npm run prisma:migrate` once DATABASE_URL is set, then
+// `npm run prisma:seed` to load the seed dataset.
+//
+// The controlled-vocabulary enums below are generated from lib/master/enums.ts;
+// scripts/verify-engine.ts fails if the two drift apart.
 
 generator client {
   provider = "prisma-client-js"
@@ -12,298 +18,1345 @@ datasource db {
 }
 
 // ---------------------------------------------------------------------------
-// Geography
+// Controlled vocabularies (mirrors lib/master/enums.ts)
 // ---------------------------------------------------------------------------
 
+enum EntityType {
+  STATE
+  UNION_TERRITORY
+  REGION
+  DISTRICT
+  DESTINATION
+  LOCALITY
+  ATTRACTION
+  MONUMENT
+  TEMPLE
+  MOSQUE
+  CHURCH
+  GURDWARA
+  MONASTERY
+  MUSEUM
+  PALACE
+  FORT
+  ARCHAEOLOGICAL_SITE
+  NATIONAL_PARK
+  WILDLIFE_SANCTUARY
+  TIGER_RESERVE
+  BIRD_SANCTUARY
+  BEACH
+  HILL_STATION
+  LAKE
+  RIVER
+  WATERFALL
+  CAVE
+  ISLAND
+  FOREST
+  TREK
+  VIEWPOINT
+  MARKET
+  FOOD_DESTINATION
+  FESTIVAL
+  EVENT
+  EXPERIENCE
+  ADVENTURE_ACTIVITY
+  HANDICRAFT
+  CIRCUIT
+  ITINERARY
+  TRANSPORT_HUB
+}
+
+enum Confidence {
+  VERIFIED
+  PROVISIONALLY_VERIFIED
+  MULTIPLE_SOURCES
+  SINGLE_SOURCE
+  UNVERIFIED
+  CONFLICTING
+  OUTDATED
+}
+
+enum ContentStatus {
+  DRAFT
+  DATA_COLLECTION
+  VERIFYING
+  VERIFIED
+  READY
+  AI_GENERATED
+  FACT_CHECKED
+  EDITOR_REVIEW
+  PUBLISHED
+  OUTDATED
+  ARCHIVED
+}
+
+enum SourceType {
+  GOVERNMENT
+  STATE_TOURISM
+  ASI
+  UNESCO
+  OFFICIAL_SITE
+  MUNICIPAL
+  TRANSPORT_OPERATOR
+  WEATHER_PROVIDER
+  MAP_PROVIDER
+  ACADEMIC
+  NEWS
+  TRAVEL_GUIDE
+  USER_SUBMITTED
+  AI_GENERATED
+}
+
+enum ReliabilityClass {
+  A
+  B
+  C
+  D
+}
+
+enum StateType {
+  STATE
+  UNION_TERRITORY
+}
+
+enum DestinationLevel {
+  A
+  B
+  C
+}
+
+enum DestinationCategory {
+  HERITAGE
+  HISTORY
+  SPIRITUAL
+  PILGRIMAGE
+  NATURE
+  WILDLIFE
+  BEACH
+  MOUNTAIN
+  HILL_STATION
+  ADVENTURE
+  CULTURAL
+  FOOD
+  SHOPPING
+  ARCHITECTURE
+  ART
+  MUSEUM
+  RURAL
+  TRIBAL
+  WELLNESS
+  NIGHTLIFE
+  FAMILY
+  ROMANTIC
+  BACKPACKING
+  ECO_TOURISM
+}
+
+enum HistoricalStatus {
+  HISTORICALLY_DOCUMENTED
+  TRADITIONAL_ACCOUNT
+  RELIGIOUS_TRADITION
+  LEGEND
+  LOCAL_FOLKLORE
+  DISPUTED
+  UNCERTAIN
+}
+
+enum Suitability {
+  YES
+  POSSIBLE
+  LIMITED
+  NO
+  UNKNOWN
+}
+
+enum DescriptionType {
+  CURRENT_OVERVIEW
+  HISTORICAL_OVERVIEW
+  TRAVEL_OVERVIEW
+  FAMILY_OVERVIEW
+  FOOD_OVERVIEW
+  CULTURAL_OVERVIEW
+  GEOGRAPHY_OVERVIEW
+  RELIGION_OVERVIEW
+}
+
+enum HubType {
+  AIRPORT
+  RAILWAY
+  BUS_TERMINAL
+  METRO
+  PORT
+  HELIPAD
+}
+
+enum TransportMode {
+  ROAD
+  RAIL
+  BUS
+  AIR
+  WALK
+  FERRY
+}
+
+enum ConnectionQuality {
+  EXCELLENT
+  GOOD
+  FAIR
+  POOR
+  UNKNOWN
+}
+
+enum CircuitType {
+  REGIONAL
+  STATE
+  INTER_STATE
+  RELIGIOUS
+  HERITAGE
+  BUDDHIST
+  RAMAYANA
+  SHIVA
+  KRISHNA
+  SIKH
+  WILDLIFE
+  BEACH
+  HIMALAYAN
+  DESERT
+  FOOD
+  CULTURAL
+  ARCHAEOLOGICAL
+  ADVENTURE
+  FAMILY
+}
+
+enum CostType {
+  HOTEL
+  FOOD
+  TRANSPORT
+  ENTRY_FEE
+  LOCAL_TRANSPORT
+  SHOPPING
+  ACTIVITY
+  PARKING
+  PERMIT
+  GUIDE
+  MISCELLANEOUS
+}
+
+enum TravellerType {
+  SOLO
+  COUPLE
+  FAMILY
+  ELDERLY
+  GROUP
+  ANY
+}
+
+enum BudgetTier {
+  BUDGET
+  MID_RANGE
+  PREMIUM
+}
+
+enum FoodType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  STREET_FOOD
+  SWEET
+  SNACK
+  DRINK
+  SPECIALTY
+}
+
+enum FestivalDateType {
+  FIXED
+  ANNUAL_LUNAR
+  VARIABLE
+  TENTATIVE
+}
+
+enum PracticalInfoType {
+  SAFETY
+  LOCAL_RULE
+  RELIGIOUS_ETIQUETTE
+  DRESS_CODE
+  SCAM_WARNING
+  ROAD_WARNING
+  WEATHER_WARNING
+  PERMIT
+  PHOTOGRAPHY_RULE
+  DRONE_RULE
+  HEALTH_FACILITY
+  EMERGENCY
+  LOCAL_CUSTOM
+}
+
+enum EmergencyServiceType {
+  POLICE
+  HOSPITAL
+  AMBULANCE
+  FIRE
+  TOURIST_POLICE
+  PHARMACY
+  UNIFIED_EMERGENCY
+  WOMEN_HELPLINE
+  TOURIST_HELPLINE
+  RAILWAY_HELPLINE
+  DISASTER_MANAGEMENT
+}
+
+enum ExperienceType {
+  SIGHTSEEING
+  TREKKING
+  RAFTING
+  BOATING
+  SCUBA
+  SNORKELLING
+  WILDLIFE_SAFARI
+  CULTURAL
+  COOKING
+  SHOPPING
+  FOOD
+  SPIRITUAL
+  YOGA
+  MEDITATION
+  CAMPING
+  PHOTOGRAPHY
+}
+
+enum RelationshipType {
+  NEARBY
+  COMBINE_WITH
+  ALTERNATIVE_TO
+  PART_OF_CIRCUIT
+  HISTORICALLY_CONNECTED
+  RELIGIOUSLY_CONNECTED
+  TRANSPORT_CONNECTED
+  SAME_REGION
+  SAME_STATE
+  SAME_THEME
+}
+
+enum MediaType {
+  PHOTO
+  VIDEO
+  MAP
+  PANORAMA_360
+  AUDIO
+  ILLUSTRATION
+  ICON
+}
+
+enum PageType {
+  STATE_PAGE
+  DESTINATION_PAGE
+  ATTRACTION_PAGE
+  HISTORY_PAGE
+  CIRCUIT_PAGE
+  ITINERARY_PAGE
+  FESTIVAL_PAGE
+  NATIONAL_PARK_PAGE
+  FOOD_PAGE
+  SHOPPING_PAGE
+  TRAVEL_GUIDE_PAGE
+}
+
+enum CrowdLevel {
+  LOW
+  MODERATE
+  HIGH
+  VERY_HIGH
+  UNKNOWN
+}
+
+enum DifficultyLevel {
+  EASY
+  MODERATE
+  CHALLENGING
+  UNKNOWN
+}
+
+enum ContentReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  NEEDS_CHANGES
+}
+
+enum VerificationFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  ANNUAL
+  BIENNIAL
+  DECENNIAL
+}
+
+enum ConflictStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+enum Region {
+  North
+  East
+  West
+  Central
+  Northeast
+  South
+}
+
+// ===========================================================================
+// Master India tourism database — tables
+// Field names are the spec's snake_case names and mirror lib/master/types.ts
+// one-to-one. `entity_id` columns are polymorphic (they hold any permanent ID,
+// e.g. IN-UP-VNS or IN-UP-VNS-KVT) and therefore carry an index, not a foreign key.
+// `source_id` columns are validated by the app (lib/master/engine/validation.ts);
+// only `facts.source_id` is a hard foreign key.
+// ===========================================================================
+
+enum DatePrecision {
+  EXACT
+  YEAR
+  DECADE
+  CENTURY
+  APPROXIMATE
+}
+
+enum ServiceScope {
+  NATIONAL
+  LOCAL
+}
+
+// ---------------------------------------------------------------- geography
+
 model State {
-  id           String        @id @default(cuid())
-  slug         String        @unique
-  name         String
+  id                      String   @id // IN-UP
+  country_id              String   @default("IN")
+  slug                    String   @unique
+  name                    String
+  official_name           String
+  type                    StateType
+  iso_code                String   @unique
+  capital                 String
+  region                  Region
+  sub_region              String?
+  latitude                Float
+  longitude               Float
+  timezone                String   @default("Asia/Kolkata")
+  official_tourism_url    String?
+  official_government_url String?
+  description             String?  @db.Text
+  short_description       String?
+  languages               String[]
+  major_cities            String[]
+  major_tourism_themes    String[]
+  status                  ContentStatus @default(DRAFT)
+  created_at              DateTime @default(now())
+  updated_at              DateTime @updatedAt
+
   districts    District[]
   destinations Destination[]
+
+  @@map("states")
 }
 
 model District {
-  id           String        @id @default(cuid())
-  slug         String
-  name         String
-  state        State         @relation(fields: [stateId], references: [id], onDelete: Cascade)
-  stateId      String
+  id                 String   @id // DIST-IN-UP-VNS
+  state_id           String
+  name               String
+  official_name      String?
+  latitude           Float?
+  longitude          Float?
+  headquarters       String?
+  description        String?  @db.Text
+  tourism_importance String?
+  official_source    String?
+  source_url         String?
+  verified_at        DateTime?
+  status             ContentStatus @default(DRAFT)
+  source_id          String?
+  last_verified_at   DateTime?
+
+  state        State         @relation(fields: [state_id], references: [id], onDelete: Cascade)
   destinations Destination[]
 
-  @@unique([stateId, slug])
+  @@index([state_id])
+  @@map("districts")
 }
-
-// ---------------------------------------------------------------------------
-// Core destination content
-// ---------------------------------------------------------------------------
 
 model Destination {
-  id                  String       @id @default(cuid())
-  slug                String       @unique
-  name                String
-  tagline             String
-  shortDescription    String
-  introduction         String       @db.Text
-  history             String       @db.Text
-  geography           String       @db.Text
-  culture             String       @db.Text
-  religion            String       @db.Text
-  latitude            Float
-  longitude           Float
-  bestTimeToVisit     String
-  idealDuration       String
-  approximateBudget   String
-  nearestAirport      String
-  nearestRailway      String
-  bestKnownFor        String[]
-  languages           String[]
-  currency            String
-  timeZone            String
-  tags                String[]
-  popularity          Int          @default(0)
-  isSampleData        Boolean      @default(true)
+  id                    String   @id // IN-UP-VNS
+  state_id              String
+  district_id           String?
+  parent_destination_id String?
 
-  state               State        @relation(fields: [stateId], references: [id])
-  stateId             String
-  district            District?    @relation(fields: [districtId], references: [id])
-  districtId          String?
+  name           String
+  official_name  String?
+  local_names    String[]
+  alternate_names String[]
+  slug           String   @unique
+  entity_type    EntityType
+  destination_level DestinationLevel @default(A)
 
-  images              Photo[]
-  attractions         Attraction[]
-  hotels              Hotel[]
-  restaurants         Restaurant[]
-  markets             Market[]
-  foods               Food[]
-  festivals           Festival[]
-  emergencyContacts   EmergencyContact[]
-  transportation      Transportation?
-  reviews             Review[]
-  wishlistItems       WishlistItem[]
-  itineraries         Itinerary[]
-  translations        Translation[]
+  latitude   Float
+  longitude  Float
+  elevation  Float?
+  region     Region?
+  sub_region String?
 
-  nearbyOf            DestinationRelation[] @relation("FromDestination")
-  nearbyTo            DestinationRelation[] @relation("ToDestination")
+  short_description    String
+  one_line_description String
+  destination_type     String
 
-  createdAt           DateTime     @default(now())
-  updatedAt           DateTime     @updatedAt
+  heritage_score   Int @default(0)
+  nature_score     Int @default(0)
+  spiritual_score  Int @default(0)
+  adventure_score  Int @default(0)
+  food_score       Int @default(0)
+  family_score     Int @default(0)
+  shopping_score   Int @default(0)
+  culture_score    Int @default(0)
+  wildlife_score   Int @default(0)
+  beach_score      Int @default(0)
+  mountain_score   Int @default(0)
 
-  @@index([stateId])
+  recommended_min_days Int
+  recommended_max_days Int
+  recommended_days     Int
+
+  best_month_start Int?
+  best_month_end   Int?
+
+  budget_category BudgetTier?
+  crowd_level     CrowdLevel      @default(UNKNOWN)
+  difficulty_level DifficultyLevel @default(UNKNOWN)
+
+  family_suitable            Boolean?
+  children_suitable          Boolean?
+  elderly_suitable           Boolean?
+  solo_suitable              Boolean?
+  couple_suitable            Boolean?
+  accessible_travel_possible Boolean?
+
+  nearest_airport         String?
+  nearest_railway_station String?
+  nearest_bus_station     String?
+
+  primary_language     String?
+  secondary_languages  String[]
+
+  mobile_connectivity  String?
+  internet_availability String?
+  upi_availability     String?
+  atm_availability     String?
+
+  ancient_story_title   String?
+  ancient_story_short   String? @db.Text
+  ancient_story_long    String? @db.Text
+  ancient_story_status  HistoricalStatus?
+  ancient_story_sources String[]
+
+  popularity        Int     @default(0)
+  best_time_text    String?
+  ideal_duration_text String?
+  tagline           String?
+
+  status          ContentStatus @default(DRAFT)
+  is_sample_data  Boolean       @default(true)
+  source_id       String?
+  last_verified_at DateTime?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  state    State     @relation(fields: [state_id], references: [id])
+  district District? @relation(fields: [district_id], references: [id])
+  parent   Destination?  @relation("DestinationHierarchy", fields: [parent_destination_id], references: [id])
+  children Destination[] @relation("DestinationHierarchy")
+
+  categories       DestinationCategoryLink[]
+  attractions      Attraction[]
+  descriptions     DestinationDescription[]
+  transport_hubs   TransportHub[]
+  connections_out  DestinationConnection[] @relation("ConnectionOrigin")
+  connections_in   DestinationConnection[] @relation("ConnectionTarget")
+  circuit_links    CircuitDestination[]
+  travel_costs     TravelCost[]
+  accommodation_areas AccommodationArea[]
+  local_foods      LocalFood[]
+  shopping         ShoppingItem[]
+  festivals        Festival[]
+  weather          DestinationWeather[]
+  practical_information PracticalInformation[]
+  emergency_services EmergencyService[]
+  experiences      Experience[]
+  suitability      DestinationSuitability?
+
+  @@index([state_id])
+  @@index([parent_destination_id])
+  @@index([destination_level])
   @@index([popularity])
+  @@map("destinations")
 }
 
-/// Self-referencing many-to-many for "nearby destinations".
-model DestinationRelation {
-  id              String      @id @default(cuid())
-  from            Destination @relation("FromDestination", fields: [fromId], references: [id], onDelete: Cascade)
-  fromId          String
-  to              Destination @relation("ToDestination", fields: [toId], references: [id], onDelete: Cascade)
-  toId            String
-  distanceKm      Float?
+model DestinationCategoryLink {
+  destination_id String
+  category       DestinationCategory
+  confidence     Confidence @default(UNVERIFIED)
+  source_id      String?
 
-  @@unique([fromId, toId])
-}
+  destination Destination @relation(fields: [destination_id], references: [id], onDelete: Cascade)
 
-enum ThingsToDoCategory {
-  HISTORICAL
-  RELIGIOUS
-  ADVENTURE
-  NATURE
-  FAMILY
-  PHOTOGRAPHY
-  NIGHTLIFE
-  CULTURE
-  SHOPPING
-  FOOD
-  MUSEUMS
-  ENTERTAINMENT
+  @@id([destination_id, category])
+  @@map("destination_categories")
 }
 
 model Attraction {
-  id                String              @id @default(cuid())
-  slug              String
-  name              String
-  description       String              @db.Text
-  location          String
-  latitude           Float?
-  longitude          Float?
-  openingHours      String
-  timeRequired      String
-  entryFee          String
-  bestVisitingTime  String
-  mapUrl            String?
-  officialWebsite   String?
-  categories        ThingsToDoCategory[]
-  sourceLabel       String
-  sourceUrl         String?
+  id             String @id // IN-UP-VNS-KVT
+  destination_id String
 
-  destination       Destination         @relation(fields: [destinationId], references: [id], onDelete: Cascade)
-  destinationId     String
-  images            Photo[]
-  reviews           Review[]
+  name            String
+  official_name   String?
+  alternate_names String[]
+  local_name      String?
+  slug            String
+  attraction_type EntityType
 
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
+  latitude  Float?
+  longitude Float?
 
-  @@unique([destinationId, slug])
+  short_description   String
+  current_description String @db.Text
+
+  historical_importance String? @db.Text
+  cultural_importance   String? @db.Text
+  religious_importance  String? @db.Text
+
+  opening_time       String?
+  closing_time       String?
+  weekly_closed_day  String?
+  opening_hours_text String?
+
+  entry_required     Boolean?
+  entry_fee          Float?
+  foreign_entry_fee  Float?
+  child_entry_fee    Float?
+  senior_entry_fee   Float?
+  entry_fee_notes    String?
+
+  online_booking_required  Boolean?
+  advance_booking_required Boolean?
+
+  average_visit_minutes Int?
+  minimum_visit_minutes Int?
+  best_time_of_day      String?
+
+  photography_allowed Boolean?
+  video_allowed       Boolean?
+  drone_allowed       Boolean?
+
+  dress_code     String?
+  footwear_rules String?
+
+  wheelchair_accessibility Suitability @default(UNKNOWN)
+  stroller_accessibility   Suitability @default(UNKNOWN)
+
+  parking_available        Boolean?
+  cloakroom_available      Boolean?
+  toilet_available         Boolean?
+  drinking_water_available Boolean?
+
+  nearby_transport String?
+  official_website String?
+  map_url          String?
+  categories       DestinationCategory[]
+  is_hidden_gem    Boolean @default(false)
+
+  status           ContentStatus @default(DRAFT)
+  source_id        String?
+  last_verified_at DateTime?
+
+  destination Destination @relation(fields: [destination_id], references: [id], onDelete: Cascade)
+
+  @@unique([destination_id, slug])
+  @@index([destination_id])
+  @@map("attractions")
 }
 
-enum HotelCategory {
-  LUXURY
-  PREMIUM
-  MID_RANGE
-  BUDGET
-  HOSTELS
-  HOMESTAYS
-  HERITAGE
-  RESORTS
+// ------------------------------------------------------------------ history
+
+model HistoricalPeriod {
+  id          String @id
+  name        String
+  start_year  Int // negative = BCE
+  end_year    Int?
+  description String
+
+  events HistoricalEvent[]
+
+  @@map("historical_periods")
 }
 
-model Hotel {
-  id                   String        @id @default(cuid())
+model HistoricalEvent {
+  id                      String @id
+  entity_id               String
+  title                   String
+  period_id               String
+  approximate_date        String
+  date_precision          DatePrecision
+  description             String @db.Text
+  historical_significance String? @db.Text
+  location                String?
+  people_involved         String[]
+  dynasties_involved      String[]
+  kingdoms_involved       String[]
+  confidence              Confidence @default(UNVERIFIED)
+  source_id               String?
+  last_verified_at        DateTime?
+
+  period HistoricalPeriod @relation(fields: [period_id], references: [id])
+
+  @@index([entity_id])
+  @@map("historical_events")
+}
+
+model Tradition {
+  id                   String @id
+  entity_id            String
+  title                String
+  tradition_type       String
+  short_story          String @db.Text
+  full_story           String? @db.Text
+  associated_religion  String?
+  associated_text      String?
+  associated_community String?
+  historical_status    HistoricalStatus
+  source_id            String?
+  last_verified_at     DateTime?
+
+  @@index([entity_id])
+  @@map("traditions")
+}
+
+model DestinationDescription {
+  id             String @id
+  destination_id String
+  description_type DescriptionType
+  title          String
+  content        String @db.Text
+  language       String @default("en")
+  source_id      String?
+  generated_by   String
+  review_status  ContentReviewStatus @default(PENDING)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  destination Destination @relation(fields: [destination_id], references: [id], onDelete: Cascade)
+
+  @@unique([destination_id, description_type, language])
+  @@map("destination_descriptions")
+}
+
+// ---------------------------------------------------------------- transport
+
+model TransportHub {
+  id                        String @id
+  destination_id            String
+  hub_type                  HubType
+  name                      String
+  code                      String?
+  latitude                  Float?
+  longitude                 Float?
+  distance_from_destination Float?
+  typical_transfer_time     Int?
+  official_url              String?
+  source_id                 String?
+  last_verified_at          DateTime?
+
+  destination Destination @relation(fields: [destination_id], references: [id], onDelete: Cascade)
+
+  @@index([destination_id])
+  @@map("transport_hubs")
+}
+
+/// Undirected edge of the destination graph: one row serves both directions.
+model DestinationConnection {
+  id                         String @id
+  origin_destination_id      String
+  destination_destination_id String
+  distance_km                Float
+  road_time_minutes          Int?
+  rail_time_minutes          Int?
+  bus_time_minutes           Int?
+  air_time_minutes           Int?
+  walking_possible           Boolean @default(false)
+  direct_train_available     Boolean?
+  direct_bus_available       Boolean?
+  direct_flight_available    Boolean?
+  transport_modes            TransportMode[]
+  typical_transport_cost_min Float?
+  typical_transport_cost_max Float?
+  connection_quality         ConnectionQuality @default(UNKNOWN)
+  seasonal                   Boolean @default(false)
+  seasonal_notes             String?
+  confidence                 Confidence @default(UNVERIFIED)
+  source_id                  String?
+  last_verified_at           DateTime?
+
+  origin Destination @relation("ConnectionOrigin", fields: [origin_destination_id], references: [id], onDelete: Cascade)
+  target Destination @relation("ConnectionTarget", fields: [destination_destination_id], references: [id], onDelete: Cascade)
+
+  @@unique([origin_destination_id, destination_destination_id])
+  @@map("destination_connections")
+}
+
+// ----------------------------------------------------------------- circuits
+
+model Circuit {
+  id                   String @id
   name                 String
-  category             HotelCategory
-  area                 String
-  priceRange           String?
-  facilities           String[]
-  roomTypes            String[]
-  guestRating          Float?
-  reviewCount          Int?
-  distanceFromLandmark String?
-  bookingUrl           String?
-  dataVerified         Boolean       @default(false)
+  slug                 String @unique
+  description          String @db.Text
+  circuit_type         CircuitType
+  region               Region?
+  states_involved      String[]
+  minimum_days         Int
+  recommended_days     Int
+  maximum_days         Int
+  theme                String
+  start_destination_id String
+  end_destination_id   String
+  is_round_trip        Boolean @default(false)
+  season_start         Int?
+  season_end           Int?
+  difficulty           DifficultyLevel @default(UNKNOWN)
+  status               ContentStatus @default(DRAFT)
+  generated_by         String @default("CURATED")
 
-  destination          Destination   @relation(fields: [destinationId], references: [id], onDelete: Cascade)
-  destinationId        String
-  images               Photo[]
-  reviews              Review[]
-  wishlistItems        WishlistItem[]
+  destinations CircuitDestination[]
 
-  createdAt            DateTime      @default(now())
-  updatedAt            DateTime      @updatedAt
-
-  @@index([destinationId])
+  @@map("circuits")
 }
 
-enum RestaurantCategory {
-  LOCAL_FOOD
-  STREET_FOOD
-  VEGETARIAN
-  NON_VEGETARIAN
-  FINE_DINING
-  BUDGET
-  FAMILY
-  CAFES
-  SWEETS
-  BREAKFAST
-  TRADITIONAL
+model CircuitDestination {
+  circuit_id       String
+  destination_id   String
+  sequence_number  Int
+  recommended_days Int
+  mandatory        Boolean @default(true)
+  optional         Boolean @default(false)
+
+  circuit     Circuit     @relation(fields: [circuit_id], references: [id], onDelete: Cascade)
+  destination Destination @relation(fields: [destination_id], references: [id], onDelete: Cascade)
+
+  @@id([circuit_id, sequence_number])
+  @@index([destination_id])
+  @@map("circuit_destinations")
 }
 
-model Restaurant {
-  id                String              @id @default(cuid())
-  name              String
-  categories        RestaurantCategory[]
-  cuisine           String[]
-  priceRange        String?
-  location          String
-  openingHours      String
-  signatureDishes   String[]
-  vegNonVeg         String
-  contact           String?
-  mapUrl            String?
-  website           String?
-  reservationUrl    String?
-  dataVerified      Boolean             @default(false)
+// -------------------------------------------------------------- itineraries
 
-  destination       Destination         @relation(fields: [destinationId], references: [id], onDelete: Cascade)
-  destinationId     String
-  reviews           Review[]
-  wishlistItems     WishlistItem[]
+model Itinerary {
+  id                    String @id
+  slug                  String @unique
+  title                 String
+  origin_destination_id String?
+  start_destination_id  String
+  end_destination_id    String
+  duration_days         Int
+  duration_nights       Int
+  traveller_type        TravellerType @default(ANY)
+  budget_min            Float?
+  budget_max            Float?
+  theme                 String
+  description           String @db.Text
+  generated_by          String
+  version               Int @default(1)
+  status                ContentStatus @default(DRAFT)
+  created_at            DateTime @default(now())
+  updated_at            DateTime @updatedAt
 
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
+  days ItineraryDay[]
+  saved_by SavedTrip[]
 
-  @@index([destinationId])
+  @@index([start_destination_id])
+  @@map("itineraries")
 }
 
-model Market {
-  id                 String      @id @default(cuid())
-  name               String
-  location           String
-  whatToBuy          String[]
-  typicalPriceRange  String
-  bargainingInfo     String
-  openingHours       String
-  famousProducts     String[]
-  mapUrl             String?
+model ItineraryDay {
+  id                        String @id
+  itinerary_id              String
+  day_number                Int
+  date_optional             DateTime?
+  destination_id            String
+  title                     String
+  summary                   String @db.Text
+  morning_activity          String?
+  afternoon_activity        String?
+  evening_activity          String?
+  breakfast_place           String?
+  lunch_place               String?
+  dinner_place              String?
+  overnight_location        String?
+  estimated_travel_minutes  Int @default(0)
+  estimated_walking_minutes Int?
+  notes                     String?
 
-  destination        Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
-  destinationId      String
+  itinerary  Itinerary @relation(fields: [itinerary_id], references: [id], onDelete: Cascade)
+  activities ItineraryActivity[]
 
-  createdAt          DateTime    @default(now())
-  updatedAt          DateTime    @updatedAt
-
-  @@index([destinationId])
+  @@unique([itinerary_id, day_number])
+  @@map("itinerary_days")
 }
 
-model Food {
-  id            String      @id @default(cuid())
-  name          String
-  type          String
-  description   String      @db.Text
-  whereToTry    String[]
+model ItineraryActivity {
+  id               String @id
+  itinerary_day_id String
+  attraction_id    String?
+  label            String
+  start_time       String
+  end_time         String
+  duration_minutes Int
+  sequence_number  Int
+  activity_type    String
+  transport_to_next String?
+  estimated_cost   Float?
+  mandatory        Boolean @default(false)
+  optional         Boolean @default(true)
 
-  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
-  destinationId String
+  day ItineraryDay @relation(fields: [itinerary_day_id], references: [id], onDelete: Cascade)
 
-  @@index([destinationId])
+  @@index([itinerary_day_id])
+  @@map("itinerary_activities")
+}
+
+// ------------------------------------------------------------ costs & stay
+
+model TravelCost {
+  id               String @id
+  destination_id   String? // null = national default
+  cost_type        CostType
+  item             String
+  unit             String
+  min_cost         Float
+  typical_cost     Float
+  max_cost         Float
+  currency         String @default("INR")
+  season           String?
+  traveller_type   TravellerType @default(ANY)
+  budget_tier      BudgetTier?
+  valid_from       DateTime?
+  valid_until      DateTime?
+  confidence       Confidence @default(UNVERIFIED)
+  source_id        String?
+  last_verified_at DateTime?
+
+  destination Destination? @relation(fields: [destination_id], references: [id], onDelete: Cascade)
+
+  @@index([destination_id, cost_type])
+  @@map("travel_costs")
+}
+
+model AccommodationArea {
+  id                            String @id
+  destination_id                String
+  area_name                     String
+  area_type                     String
+  description                   String @db.Text
+  budget_range                  String // BUDGET | MID_RANGE | PREMIUM | MIXED
+  distance_to_center            String?
+  distance_to_major_attractions String?
+  family_suitable               Boolean?
+  elderly_suitable              Boolean?
+  nightlife                     Boolean?
+  quiet                         Boolean?
+  shopping                      Boolean?
+  food                          Boolean?
+  transport_access              String?
+  confidence                    Confidence @default(UNVERIFIED)
+  source_id                     String?
+  last_verified_at              DateTime?
+
+  destination Destination @relation(fields: [destination_id], references: [id], onDelete: Cascade)
+
+  @@index([destination_id])
+  @@map("accommodation_areas")
+}
+
+// ------------------------------------------------------- food, shopping etc.
+
+model LocalFood {
+  id                    String @id
+  destination_id        String
+  name                  String
+  local_name            String?
+  food_type             FoodType
+  vegetarian            Boolean?
+  vegan_possible        Boolean?
+  jain_possible         Boolean?
+  halal_possible        Boolean?
+  description           String @db.Text
+  history               String? @db.Text
+  cultural_significance String? @db.Text
+  typical_price_min     Float?
+  typical_price_max     Float?
+  best_time             String?
+  where_to_find         String[]
+  confidence            Confidence @default(UNVERIFIED)
+  source_id             String?
+  last_verified_at      DateTime?
+
+  destination Destination @relation(fields: [destination_id], references: [id], onDelete: Cascade)
+
+  @@index([destination_id])
+  @@map("local_foods")
+}
+
+model ShoppingItem {
+  id                  String @id
+  destination_id      String
+  item                String
+  category            String
+  description         String @db.Text
+  famous_market       String?
+  market_location     String?
+  typical_price_range String?
+  bargaining_expected Boolean?
+  bargaining_notes    String?
+  authenticity_tips   String?
+  opening_hours_text  String?
+  confidence          Confidence @default(UNVERIFIED)
+  source_id           String?
+  last_verified_at    DateTime?
+
+  destination Destination @relation(fields: [destination_id], references: [id], onDelete: Cascade)
+
+  @@index([destination_id])
+  @@map("shopping")
 }
 
 model Festival {
-  id            String      @id @default(cuid())
-  name          String
-  month         String
-  description   String      @db.Text
+  id                   String @id
+  name                 String
+  destination_id       String?
+  state_id             String?
+  festival_type        String
+  religion             String?
+  month                String
+  start_date           DateTime?
+  end_date             DateTime?
+  date_type            FestivalDateType
+  description          String @db.Text
+  tourism_significance String?
+  crowd_level          CrowdLevel @default(UNKNOWN)
+  special_rules        String?
+  confidence           Confidence @default(UNVERIFIED)
+  source_id            String?
+  last_verified_at     DateTime?
 
-  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
-  destinationId String
+  destination Destination? @relation(fields: [destination_id], references: [id], onDelete: Cascade)
 
-  @@index([destinationId])
+  @@index([destination_id])
+  @@map("festivals")
 }
 
-model EmergencyContact {
-  id            String      @id @default(cuid())
-  label         String
-  number        String
-  scope         String // "national" | "local"
+/// Monthly climatology. Trip-date weather comes from a live API, not this table.
+model DestinationWeather {
+  destination_id      String
+  month               Int
+  avg_min_temperature Float
+  avg_max_temperature Float
+  rainfall            Float
+  rain_probability    Float?
+  humidity            Float?
+  weather_description String
+  recommended_clothing String?
+  travel_notes        String?
+  confidence          Confidence @default(UNVERIFIED)
+  source_id           String?
+  last_verified_at    DateTime?
 
-  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
-  destinationId String
+  destination Destination @relation(fields: [destination_id], references: [id], onDelete: Cascade)
 
-  @@index([destinationId])
+  @@id([destination_id, month])
+  @@map("destination_weather")
 }
 
-model Transportation {
-  id                    String      @id @default(cuid())
-  nearestAirport        String
-  nearestRailwayStation String
-  majorBusStations      String[]
-  roadConnectivity      String
-  taxiInfo              String
-  metroInfo             String?
-  localTransport        String[]
-  autoRickshaw          String
-  rentalVehicles        String
-  fromDelhi             String?
+model PracticalInformation {
+  id               String @id
+  destination_id   String
+  information_type PracticalInfoType
+  title            String
+  content          String @db.Text
+  severity         String @default("INFO")
+  confidence       Confidence @default(UNVERIFIED)
+  source_id        String?
+  last_verified_at DateTime?
 
-  destination           Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
-  destinationId         String      @unique
+  destination Destination @relation(fields: [destination_id], references: [id], onDelete: Cascade)
+
+  @@index([destination_id])
+  @@map("practical_information")
 }
 
-// ---------------------------------------------------------------------------
-// Users, reviews, trips, wishlists
-// ---------------------------------------------------------------------------
+model EmergencyService {
+  id               String @id
+  destination_id   String? // null = national number
+  scope            ServiceScope
+  service_type     EmergencyServiceType
+  name             String
+  address          String?
+  phone            String?
+  website          String?
+  latitude         Float?
+  longitude        Float?
+  open_24_hours    Boolean?
+  confidence       Confidence @default(UNVERIFIED)
+  source_id        String?
+  last_verified_at DateTime?
+
+  destination Destination? @relation(fields: [destination_id], references: [id], onDelete: Cascade)
+
+  @@index([destination_id])
+  @@map("emergency_services")
+}
+
+model Experience {
+  id               String @id
+  destination_id   String
+  name             String
+  experience_type  ExperienceType
+  description      String @db.Text
+  duration_minutes Int?
+  cost_min         Float?
+  cost_max         Float?
+  age_min          Int?
+  age_max          Int?
+  season_start     Int?
+  season_end       Int?
+  booking_required Boolean?
+  difficulty       DifficultyLevel @default(UNKNOWN)
+  safety_notes     String?
+  confidence       Confidence @default(UNVERIFIED)
+  source_id        String?
+  last_verified_at DateTime?
+
+  destination Destination @relation(fields: [destination_id], references: [id], onDelete: Cascade)
+
+  @@index([destination_id])
+  @@map("experiences")
+}
+
+model DestinationSuitability {
+  destination_id   String @id
+  solo             Suitability @default(UNKNOWN)
+  couple           Suitability @default(UNKNOWN)
+  family           Suitability @default(UNKNOWN)
+  children         Suitability @default(UNKNOWN)
+  elderly          Suitability @default(UNKNOWN)
+  wheelchair       Suitability @default(UNKNOWN)
+  backpacking      Suitability @default(UNKNOWN)
+  luxury           Suitability @default(UNKNOWN)
+  budget           Suitability @default(UNKNOWN)
+  pilgrimage       Suitability @default(UNKNOWN)
+  business         Suitability @default(UNKNOWN)
+  confidence       Confidence @default(UNVERIFIED)
+  source_id        String?
+  last_verified_at DateTime?
+
+  destination Destination @relation(fields: [destination_id], references: [id], onDelete: Cascade)
+
+  @@map("destination_suitability")
+}
+
+// -------------------------------------------- sources, facts, relationships
+
+model Source {
+  id                String @id
+  source_name       String
+  source_type       SourceType
+  url               String?
+  publisher         String?
+  organization      String?
+  country           String @default("India")
+  state             String?
+  publication_date  DateTime?
+  accessed_at       DateTime?
+  reliability_class ReliabilityClass
+  content_type      String?
+  notes             String?
+
+  facts Fact[]
+
+  @@map("sources")
+}
+
+model Fact {
+  id                     String @id
+  entity_id              String
+  fact_type              String
+  fact_text              String @db.Text
+  value                  Json?
+  unit                   String?
+  source_id              String
+  verify_against         String?
+  source_quote_optional  String?
+  confidence             Confidence @default(UNVERIFIED)
+  verified_by            String?
+  verified_at            DateTime?
+  valid_from             DateTime?
+  valid_until            DateTime?
+  verification_frequency VerificationFrequency @default(ANNUAL)
+  expires_at             DateTime?
+  status                 ContentStatus @default(DATA_COLLECTION)
+
+  source Source @relation(fields: [source_id], references: [id])
+
+  @@index([entity_id])
+  @@index([fact_type])
+  @@index([confidence])
+  @@map("facts")
+}
+
+/// Created when two sources disagree — never auto-resolved (spec section 53).
+model ConflictRecord {
+  id                 String @id
+  entity_id          String
+  fact_type          String
+  existing_fact_id   String
+  existing_value     Json?
+  existing_source_id String
+  incoming_value     Json?
+  incoming_source_id String
+  status             ConflictStatus @default(OPEN)
+  detected_at        DateTime @default(now())
+  resolved_by        String?
+  resolved_at        DateTime?
+  resolution_note    String?
+
+  @@index([entity_id])
+  @@index([status])
+  @@map("conflict_records")
+}
+
+model EntityRelationship {
+  id                String @id
+  entity_a          String
+  entity_b          String
+  relationship_type RelationshipType
+  distance_km       Float?
+  travel_time       Int?
+  priority          Int @default(0)
+  source_id         String?
+
+  @@unique([entity_a, entity_b, relationship_type])
+  @@index([entity_a])
+  @@index([entity_b])
+  @@map("entity_relationships")
+}
+
+// -------------------------------------------- translations, media, content
+
+model Translation {
+  id                 String @id
+  entity_id          String
+  language_code      String
+  field_name         String
+  translated_text    String @db.Text
+  translation_status String @default("MACHINE") // MACHINE | HUMAN | REVIEWED | PENDING
+  translated_by      String?
+  reviewed_by        String?
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
+
+  @@unique([entity_id, language_code, field_name])
+  @@map("translations")
+}
+
+model Media {
+  id               String @id
+  entity_id        String
+  media_type       MediaType
+  url              String
+  thumbnail_url    String?
+  caption          String?
+  alt_text         String
+  copyright_status String @default("UNKNOWN") // PLACEHOLDER | LICENSED | PUBLIC_DOMAIN | USER_UPLOADED | UNKNOWN
+  license          String?
+  creator          String?
+  source           String?
+  credit_required  Boolean @default(false)
+  usage_allowed    Boolean @default(false)
+  verified_at      DateTime?
+  role             String @default("GALLERY") // HERO | GALLERY | WATERMARK
+  uploaded_by      String?
+
+  uploader User? @relation(fields: [uploaded_by], references: [id])
+
+  @@index([entity_id])
+  @@map("media")
+}
+
+model AiVisualPrompt {
+  entity_id          String @id
+  hero_prompt        String @db.Text
+  history_prompt     String @db.Text
+  map_prompt         String @db.Text
+  background_prompt  String @db.Text
+  visual_style       String
+  negative_prompt    String @db.Text
+  generated_image_id String?
+
+  @@map("ai_visual_prompts")
+}
+
+model GeneratedContent {
+  id                    String @id
+  entity_id             String
+  page_type             PageType
+  content_type          String
+  language              String @default("en")
+  title                 String
+  subtitle              String?
+  content               String @db.Text
+  ai_model              String
+  prompt_version        String
+  source_data_version   String
+  generation_timestamp  DateTime @default(now())
+  fact_check_status     String @default("PENDING") // PENDING | PASSED | FAILED | NEEDS_REVIEW
+  editor_status         ContentReviewStatus @default(PENDING)
+  published_status      ContentStatus @default(AI_GENERATED)
+  content_version       Int @default(1)
+
+  @@unique([entity_id, page_type, language, content_version])
+  @@index([entity_id])
+  @@map("generated_content")
+}
+
+model SeoMetadata {
+  entity_id        String @id
+  meta_title       String
+  meta_description String
+  canonical_url    String
+  slug             String
+  h1               String
+  keywords         String[]
+  og_title         String
+  og_description   String
+  og_image         String?
+  schema_type      String
+  robots           String @default("index,follow")
+  last_updated     DateTime @default(now())
+
+  @@map("seo_metadata")
+}
+
+// ===========================================================================
+// Users, saved trips, reviews, analytics
+// (NextAuth models keep the field names the Auth.js Prisma adapter expects.)
+// ===========================================================================
 
 enum UserRole {
   USER
@@ -319,18 +1372,19 @@ model User {
   role          UserRole  @default(USER)
   emailVerified DateTime?
 
-  accounts      Account[]
-  sessions      Session[]
-  reviews       Review[]
-  itineraries   Itinerary[]
-  wishlistItems WishlistItem[]
-  photos        Photo[]
+  accounts   Account[]
+  sessions   Session[]
+  reviews    Review[]
+  saved_trips SavedTrip[]
+  wishlist   WishlistItem[]
+  media      Media[]
 
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("users")
 }
 
-// NextAuth.js required models
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -348,6 +1402,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@map("accounts")
 }
 
 model Session {
@@ -356,6 +1411,8 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
 }
 
 model VerificationToken {
@@ -364,16 +1421,17 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+  @@map("verification_tokens")
 }
 
 enum ReviewTargetType {
-  HOTEL
-  RESTAURANT
+  DESTINATION
   ATTRACTION
-  MARKET
+  EXPERIENCE
+  ACCOMMODATION_AREA
 }
 
-enum ReviewStatus {
+enum UserReviewStatus {
   PENDING
   APPROVED
   REJECTED
@@ -381,130 +1439,75 @@ enum ReviewStatus {
 }
 
 model Review {
-  id              String           @id @default(cuid())
-  targetType      ReviewTargetType
-  overallRating   Int
-  cleanliness     Int?
-  value           Int?
-  accessibility   Int?
-  service         Int?
-  food            Int?
-  crowding        Int?
-  title           String?
-  body            String           @db.Text
-  verifiedVisit   Boolean          @default(false)
-  status          ReviewStatus     @default(PENDING)
-  reportCount     Int              @default(0)
+  id             String @id @default(cuid())
+  target_type    ReviewTargetType
+  target_id      String // permanent entity ID
+  overall_rating Int
+  cleanliness    Int?
+  value          Int?
+  accessibility  Int?
+  service        Int?
+  food           Int?
+  crowding       Int?
+  title          String?
+  body           String @db.Text
+  verified_visit Boolean @default(false)
+  status         UserReviewStatus @default(PENDING)
+  report_count   Int @default(0)
 
-  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId          String
+  user_id String
+  user    User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-  destination     Destination?     @relation(fields: [destinationId], references: [id], onDelete: Cascade)
-  destinationId   String?
-  attraction      Attraction?      @relation(fields: [attractionId], references: [id], onDelete: Cascade)
-  attractionId    String?
-  hotel           Hotel?           @relation(fields: [hotelId], references: [id], onDelete: Cascade)
-  hotelId         String?
-  restaurant      Restaurant?      @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  restaurantId    String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  photos          Photo[]
-
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-
-  @@index([destinationId])
+  @@index([target_type, target_id])
   @@index([status])
+  @@map("reviews")
 }
 
-model Photo {
-  id            String       @id @default(cuid())
-  url           String
-  alt           String
-  source        String
-  copyright     String
-  width         Int?
-  height        Int?
+model SavedTrip {
+  id           String @id @default(cuid())
+  title        String
+  itinerary_id String?
+  plan_json    Json
+  user_id      String
+  created_at   DateTime @default(now())
 
-  destination   Destination? @relation(fields: [destinationId], references: [id], onDelete: Cascade)
-  destinationId String?
-  attraction    Attraction?  @relation(fields: [attractionId], references: [id], onDelete: Cascade)
-  attractionId  String?
-  hotel         Hotel?       @relation(fields: [hotelId], references: [id], onDelete: Cascade)
-  hotelId       String?
-  review        Review?      @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-  reviewId      String?
-  uploadedBy    User?        @relation(fields: [userId], references: [id])
-  userId        String?
+  user      User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  itinerary Itinerary? @relation(fields: [itinerary_id], references: [id])
 
-  createdAt     DateTime     @default(now())
-}
-
-model Itinerary {
-  id            String      @id @default(cuid())
-  title         String
-  days          Int
-  travellers    Int
-  budget        Int
-  travelStyle   String
-  interests     String[]
-  planJson      Json
-
-  user          User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId        String?
-  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
-  destinationId String
-
-  createdAt     DateTime    @default(now())
+  @@map("saved_trips")
 }
 
 enum WishlistTargetType {
   DESTINATION
-  HOTEL
-  RESTAURANT
+  ATTRACTION
+  CIRCUIT
+  ITINERARY
 }
 
 model WishlistItem {
-  id            String              @id @default(cuid())
-  targetType    WishlistTargetType
+  id          String @id @default(cuid())
+  target_type WishlistTargetType
+  target_id   String
+  user_id     String
+  created_at  DateTime @default(now())
 
-  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId        String
-  destination   Destination?        @relation(fields: [destinationId], references: [id], onDelete: Cascade)
-  destinationId String?
-  hotel         Hotel?              @relation(fields: [hotelId], references: [id], onDelete: Cascade)
-  hotelId       String?
-  restaurant    Restaurant?         @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  restaurantId  String?
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-  createdAt     DateTime            @default(now())
-
-  @@unique([userId, destinationId, hotelId, restaurantId])
-}
-
-// ---------------------------------------------------------------------------
-// Translations & analytics
-// ---------------------------------------------------------------------------
-
-model Translation {
-  id            String      @id @default(cuid())
-  locale        String
-  field         String // e.g. "introduction", "history"
-  value         String      @db.Text
-
-  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
-  destinationId String
-
-  @@unique([destinationId, locale, field])
+  @@unique([user_id, target_type, target_id])
+  @@map("wishlist_items")
 }
 
 model AnalyticsEvent {
-  id         String   @id @default(cuid())
-  type       String // "search" | "destination_view" | "hotel_click" | ...
-  metadata   Json?
-  sessionId  String?
-  occurredAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  type        String // search | destination_view | map_click | itinerary_generated | language_selected …
+  metadata    Json?
+  session_id  String?
+  occurred_at DateTime @default(now())
 
   @@index([type])
-  @@index([occurredAt])
+  @@index([occurred_at])
+  @@map("analytics_events")
 }
