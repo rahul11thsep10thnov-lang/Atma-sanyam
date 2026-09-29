@@ -292,6 +292,28 @@ dev server needs an actual restart. The generated TypeScript types on
 disk are current either way, so this only shows up at runtime, not at
 typecheck time.
 
+## Security headers and testing (Phase 18) ✅
+
+`next.config.ts` applies the same security header baseline as
+`../admin/next.config.ts` to every route, plus `X-Robots-Tag: noindex,
+nofollow` scoped to `/admin/*` only — this app, unlike the admin
+console, has a public site that must stay indexable.
+
+Any server-rendered `<script>` tag fed from database content is a
+stored-XSS vector, not just user-submitted-form content — `JsonLd.tsx`
+proved this live (see DEVELOPMENT_STATUS.md's Phase 18 entry): admin
+free-text fields flow onto public pages, so `JSON.stringify` output
+going into a script body always needs its `<` escaped
+(`<`) before injection, independent of how trusted the data
+source feels.
+
+Vitest (`npm run test`) covers `workflow.ts`, `ownership.ts`,
+`slug.ts`, and the AI mock provider — the modules whose correctness
+other services assume without re-checking (e.g. `extraction.ts`'s
+`REQUIRED_FIELDS` check assumes the mock provider always returns a
+`title`, which `provider.test.ts` now asserts directly rather than
+just hoping).
+
 ## Deployment topology
 
 - **App**: Vercel (or any Node 20+ host) — same as the spec recommends.

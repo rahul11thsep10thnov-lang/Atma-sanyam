@@ -716,11 +716,88 @@ because it's a real gotcha for this workflow: any schema migration run
 against a long-lived `npm run dev` process needs a restart, not just a
 `prisma generate`.
 
-## Phases 18–20
+## Phase 18 — Testing / security / performance hardening ✅
+
+### Testing
+
+- Added Vitest (`npm run test`) with 4 test files, 28 tests, covering
+  the pure-logic modules most worth locking down: `workflow.ts`
+  (every content-status transition rule and its role gating —
+  including the specific cases already relied on elsewhere, like
+  EDITOR publishing straight from DRAFT without a reviewer step),
+  `ownership.ts` (AUTHOR can only edit their own DRAFT, EDITOR/
+  SUPER_ADMIN can edit anything, REVIEWER can edit nothing directly),
+  `slug.ts` (`slugify` edge cases, `uniqueSlug`'s `-2`/`-3`/…
+  collision handling), and the mock AI provider (field sets are
+  scoped per document type, every type includes a non-null `title` —
+  the same assumption `extraction.ts`'s `REQUIRED_FIELDS` check
+  depends on).
+- Deliberately scoped to pure/synchronous logic rather than DB-coupled
+  services — testing `transitionJobStatus` etc. end-to-end would need
+  a real Postgres instance wired into CI, which is a bigger investment
+  than this phase covers. Noted as a known follow-up below rather than
+  silently skipped.
+
+### Security
+
+- `next.config.ts` gained the same security header baseline as
+  `../admin/next.config.ts` (`X-Frame-Options: DENY`, a CSP with
+  `frame-ancestors 'none'`, `X-Content-Type-Options: nosniff`,
+  `Referrer-Policy: same-origin`, a restrictive `Permissions-Policy`,
+  HSTS), applied to every route — public and admin alike — plus
+  `X-Robots-Tag: noindex, nofollow` on `/admin/*` only, as defense in
+  depth on top of `robots.txt` (which already disallows `/admin`).
+  Verified live with `curl -I` against both a public page and
+  `/admin/login`: the shared headers appear on both, `X-Robots-Tag`
+  only on the admin one.
+- **Found and fixed a real stored-XSS vector**: `JsonLd.tsx` injected
+  `JSON.stringify(data)` into a `<script>` tag unescaped. `data` comes
+  from the database, not a request body, but those database fields
+  (job titles, descriptions) are admin-entered free text rendered on
+  *every public visitor's* page — a title containing
+  `</script><script>...</script>` would have broken out of the tag
+  and executed as a stored XSS against the whole site, not just
+  whoever entered it. Fixed by escaping `<` to `<` before
+  injection (the standard mitigation for this exact pattern — `<`
+  never needs to appear unescaped in a script body, so the JSON's
+  meaning is unaffected). Verified: the escaped output no longer
+  contains a literal `</script>`, and still round-trips through
+  `JSON.parse` to the original string.
+- Reviewed and found already solid, no changes needed: password
+  hashing (bcrypt, cost 12), login timing-safe against email
+  enumeration (`burnPasswordCheck` runs a real bcrypt comparison even
+  for unknown emails), account lockout (Phase 3), file upload
+  filename sanitization (storage keys strip everything outside
+  `[a-zA-Z0-9._-]`, so no path traversal via a crafted filename), and
+  no other `dangerouslySetInnerHTML` usage in the codebase.
+
+### Performance
+
+No changes needed yet — every public listing page already paginates
+(Phase 11), and Next.js's own static/dynamic route split (visible in
+every phase's build output) already separates what can be prerendered
+from what can't. Revisit once there's real production traffic data to
+act on rather than guessing.
+
+### Known follow-ups
+
+- DB-coupled service integration tests (running the actual Prisma
+  queries against a real Postgres instance) aren't set up yet — would
+  need a test database wired into whatever CI this repo eventually
+  runs.
+- Still no per-IP rate limiting beyond the existing per-account
+  lockout (noted since Phase 3/12) — revisit if abuse patterns
+  actually show up.
+- The role-boundary tests added this phase (`ownership.test.ts`,
+  `workflow.test.ts`) exercise the *rules* directly and don't need a
+  live multi-account pass to be trustworthy — but the live admin UI
+  itself (Server Actions calling these rules) is still only ever
+  exercised live as `SUPER_ADMIN`, per the Phase 12/15 follow-ups.
+
+## Phases 19–20
 
 Not started. See `PROJECT_PLAN.md` for the full ordered list
-(testing/security/performance → production deployment → Android API
-readiness).
+(production deployment → Android API readiness).
 
 ## Known follow-ups / decisions to revisit
 
