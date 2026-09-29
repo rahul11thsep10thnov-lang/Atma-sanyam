@@ -127,13 +127,24 @@ doesn't require public accounts for browsing.
 `src/lib/services/workflow.ts` is one shared state machine for
 DRAFT → IN_REVIEW → APPROVED → PUBLISHED → ARCHIVED (Section 17),
 parameterized by role — Exam, Job, Result (Phase 6), AdmitCard (Phase
-7), and AnswerKey (Phase 8) all call
+7), AnswerKey (Phase 8), and Syllabus (Phase 9) all call
 `applyTransition()`/`availableTransitions()` rather than each
-reimplementing the rules. None of Phases 6, 7, or 8 needed any change
-to `workflow.ts`, `ownership.ts`, or `contentVersion.ts` — exactly the
-point of building them as shared modules in Phase 5. Phases 9–10
-(Syllabus, Admission, Scholarship, Article) reuse the same modules the
-same way.
+reimplementing the rules. None of Phases 6–9 needed any change to
+`workflow.ts`, `ownership.ts`, or `contentVersion.ts` — exactly the
+point of building them as shared modules in Phase 5. Phase 10
+(Admission, Scholarship, Article) reuses the same modules the same way.
+
+Syllabus (Phase 9) is the one content type with a genuinely nested
+shape (Paper → Subject → Topic → subtopics, Section 13) rather than
+flat fields. Its structural mutations
+(`addPaper`/`addSubject`/`addTopic` and their `delete*` counterparts in
+`src/lib/services/syllabi.ts`) are separate from the top-level
+title/description/exam edit, each with its own small Server Action —
+`SyllabusTreeEditor` renders one `<form>` per add/remove, so building
+the tree works with a full-page redirect and no client-side state,
+consistent with every other admin form in this project. A structural
+edit still snapshots the whole tree via `contentVersion.ts` when the
+syllabus is already `PUBLISHED`, same guarantee as a flat-field edit.
 
 `src/lib/services/ownership.ts` layers Section 16's per-role rules on
 top: AUTHOR may create content and edit only their own drafts;

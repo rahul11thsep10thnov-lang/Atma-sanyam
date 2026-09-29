@@ -4,7 +4,6 @@ import { getPublishedExamBySlug } from "@/lib/services/exams";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImportantDates } from "@/components/ImportantDates";
 import { RelatedContent } from "@/components/RelatedContent";
-import { UpcomingContentList } from "@/components/UpcomingContentList";
 
 type Params = { slug: string };
 
@@ -91,7 +90,13 @@ export default async function ExamDetailPage({
             href: `/answer-key/${a.slug}`,
           }))}
         />
-        <UpcomingContentList title="Syllabus" items={exam.syllabi} />
+        <RelatedContent
+          title="Syllabus"
+          items={exam.syllabi.map((s) => ({
+            title: s.title,
+            href: `/syllabus/${s.slug}`,
+          }))}
+        />
       </div>
 
       {exam.importantLinks.length > 0 ? (

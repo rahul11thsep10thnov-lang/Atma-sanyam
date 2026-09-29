@@ -325,11 +325,49 @@ complete on the basis of code existing alone.
       "Related Answer Key" now renders as a real, working link instead
       of Phase 7's preview.
 
-## Phases 9–20
+## Phase 9 — Syllabus ✅ (this delivery)
+
+- [x] `src/lib/services/syllabi.ts`: top-level admin CRUD reuses the same
+      shared workflow/ownership/versioning/audit modules unchanged
+      (fourth content type in a row). New here: structural mutations
+      (`addPaper`/`deletePaper`/`addSubject`/`deleteSubject`/
+      `addTopic`/`deleteTopic`) for the nested Paper → Subject → Topic
+      tree (Section 13) — each checks the same `canEditContent`
+      ownership rule, snapshots the whole tree via `contentVersion` if
+      the syllabus is already `PUBLISHED`, and records an `AuditLog`
+      entry, so the tree's structure gets the same guarantees as any
+      other content field.
+- [x] Admin `/admin/syllabi` (list/new/edit). The edit page pairs the
+      usual meta form (title/exam/description) with
+      `SyllabusTreeEditor` — a **read-only-until-submitted** tree view
+      where every add/remove is its own small `<form>` bound to a
+      dedicated Server Action (full-page redirect, no client
+      JavaScript), consistent with the no-JS-required pattern used
+      everywhere else in this admin console rather than reaching for a
+      client-side drag-and-drop tree builder.
+- [x] Public `/syllabus` (paginated) and `/syllabus/[slug]` rendering
+      the structured tree read-only (Section 13: never one text blob).
+      An empty tree renders the spec's exact
+      "Not specified in the available notification." copy.
+- [x] The exam page's "Syllabus" section — the last `UpcomingContentList`
+      preview left in the whole site — is now a real `RelatedContent`
+      link. Removed `UpcomingContentList` entirely (dead code, no
+      remaining callers after this).
+- [x] Header/mobile nav and the admin sidebar's "Syllabus" now point to
+      the real pages.
+- [x] `npm run typecheck` / `lint` / `build` all pass.
+- [x] **Verified end-to-end with a real headless-browser run**: created
+      a Syllabus under the demo Exam, added a Paper, a Subject under
+      it, and a Topic with comma-separated subtopics — each via its own
+      no-JS form submission — then ran Submit for Review → Approve →
+      Publish. Confirmed the public page renders the full tree
+      (paper/subject/topic/subtopics) correctly, and that it appears on
+      the exam page and `/syllabus`.
+
+## Phases 10–20
 
 Not started. See `PROJECT_PLAN.md` for the full ordered list
-(syllabus →
-articles/admissions/scholarships → search → SEO → PDF/document system →
+(articles/admissions/scholarships → search → SEO → PDF/document system →
 AI extraction pipeline → human verification → notifications → analytics
 → testing/security/performance → production deployment → Android API
 readiness).
@@ -360,11 +398,10 @@ readiness).
   actual AUTHOR/EDITOR/REVIEWER accounts — worth a real multi-account
   pass in Phase 18 (testing) rather than assuming the unit logic is
   sufficient.
-- Homepage/`Chip`/card links to every content type except Syllabus are
-  now live (`/organization`, `/category`, `/state`, `/results`,
-  `/admit-card`, `/answer-key`); the exam page's "Syllabus" section is
-  the last `UpcomingContentList` preview left — converts to a real link
-  once Phase 9 ships `/syllabus/[slug]`.
+- Every exam-scoped content type (Job, Result, AdmitCard, AnswerKey,
+  Syllabus) now cross-links on both the exam page and each other's
+  detail pages with real `href`s — no `UpcomingContentList` previews
+  left anywhere in the site.
 - The header/mobile nav's "Articles" link is the last homepage anchor
   (`/#articles`) — swaps for a real index page in Phase 10, mirroring
-  Phases 5–8.
+  Phases 5–9.
