@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { recordView } from "@/lib/analytics/track";
 import { getPublishedAdmitCardBySlug } from "@/lib/services/admitCards";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { InformationTable } from "@/components/InformationTable";
@@ -36,6 +37,7 @@ export default async function AdmitCardDetailPage({
   const data = await getPublishedAdmitCardBySlug(slug);
   if (!data) notFound();
   const { admitCard, relatedAnswerKeys } = data;
+  await recordView("AdmitCard", admitCard.id, `/admit-card/${slug}`);
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-8 px-4 py-8 sm:px-6">

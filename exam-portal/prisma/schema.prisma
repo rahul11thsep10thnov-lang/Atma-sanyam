@@ -790,3 +790,24 @@ model ContentVersion {
   @@index([contentType, contentId])
   @@map("content_versions")
 }
+
+// ---------------------------------------------------------------------------
+// Analytics (Phase 17) — privacy-conscious by construction: no IP address,
+// no user agent, no cookie/session id, no full referrer URL (only a
+// hostname). A view is just "this content was looked at, once, at this
+// time" — enough to rank popular content, not enough to reconstruct who
+// looked at it.
+// ---------------------------------------------------------------------------
+
+model ContentViewEvent {
+  id             String   @id @default(cuid())
+  contentType    String
+  contentId      String
+  path           String
+  referrerHost   String?
+  createdAt      DateTime @default(now())
+
+  @@index([contentType, contentId])
+  @@index([createdAt])
+  @@map("content_view_events")
+}

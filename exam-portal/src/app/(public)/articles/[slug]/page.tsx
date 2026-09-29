@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPublishedArticleBySlug } from "@/lib/services/articles";
+import { recordView } from "@/lib/analytics/track";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
 import { SITE_URL } from "@/lib/siteConfig";
@@ -32,6 +33,7 @@ export default async function ArticleDetailPage({
   const { slug } = await params;
   const article = await getPublishedArticleBySlug(slug);
   if (!article) notFound();
+  await recordView("Article", article.id, `/articles/${slug}`);
 
   const paragraphs = article.body.split(/\n{2,}/).filter(Boolean);
 

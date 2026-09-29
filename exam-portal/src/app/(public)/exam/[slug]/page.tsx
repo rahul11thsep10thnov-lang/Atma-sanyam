@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPublishedExamBySlug } from "@/lib/services/exams";
+import { recordView } from "@/lib/analytics/track";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImportantDates } from "@/components/ImportantDates";
 import { RelatedContent } from "@/components/RelatedContent";
@@ -32,6 +33,7 @@ export default async function ExamDetailPage({
   const { slug } = await params;
   const exam = await getPublishedExamBySlug(slug);
   if (!exam) notFound();
+  await recordView("Exam", exam.id, `/exam/${slug}`);
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-8 px-4 py-8 sm:px-6">

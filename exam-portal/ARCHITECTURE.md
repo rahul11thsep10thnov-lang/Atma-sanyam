@@ -274,6 +274,24 @@ fires on every republish too (`ARCHIVE → REOPEN_AS_DRAFT → PUBLISH`)
 by typechecking (both versions typecheck fine; only one matches what
 the code's own comment says it does).
 
+## Analytics (Phase 17) ✅
+
+`ContentViewEvent` (`src/lib/analytics/track.ts`) is privacy-conscious
+by construction, not by policy: the schema itself has no column for an
+IP address, user agent, cookie, or session id, and the referrer is
+truncated to a hostname before it's ever written. `recordView()` is
+called synchronously from each public detail page's Server Component
+render — no client-side JS, no separate tracking endpoint, no
+round-trip — and every call is wrapped so a database failure here can
+never fail the page render itself.
+
+This surfaced a workflow gotcha worth remembering: a Prisma schema
+migration run while `npm run dev` is already up does not get picked up
+by that running process even after `prisma generate` completes — the
+dev server needs an actual restart. The generated TypeScript types on
+disk are current either way, so this only shows up at runtime, not at
+typecheck time.
+
 ## Deployment topology
 
 - **App**: Vercel (or any Node 20+ host) — same as the spec recommends.

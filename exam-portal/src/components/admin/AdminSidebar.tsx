@@ -30,6 +30,7 @@ const NAV_SECTIONS: Array<{
   { label: "States" },
   { label: "Documents", href: "/admin/documents" },
   { label: "Notifications", href: "/admin/notifications" },
+  { label: "Analytics", href: "/admin/analytics" },
   { label: "Users", roles: ["SUPER_ADMIN"] },
   { label: "Settings", roles: ["SUPER_ADMIN"] },
   { label: "Audit Logs", roles: ["SUPER_ADMIN", "EDITOR"] },

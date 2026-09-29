@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPublishedSyllabusBySlug } from "@/lib/services/syllabi";
+import { recordView } from "@/lib/analytics/track";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 type Params = { slug: string };
@@ -31,6 +32,7 @@ export default async function SyllabusDetailPage({
   const { slug } = await params;
   const syllabus = await getPublishedSyllabusBySlug(slug);
   if (!syllabus) notFound();
+  await recordView("Syllabus", syllabus.id, `/syllabus/${slug}`);
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-8 px-4 py-8 sm:px-6">

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPublishedScholarshipBySlug } from "@/lib/services/scholarships";
+import { recordView } from "@/lib/analytics/track";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { InformationTable } from "@/components/InformationTable";
 import { formatDate } from "@/lib/format";
@@ -31,6 +32,7 @@ export default async function ScholarshipDetailPage({
   const { slug } = await params;
   const scholarship = await getPublishedScholarshipBySlug(slug);
   if (!scholarship) notFound();
+  await recordView("Scholarship", scholarship.id, `/scholarship/${slug}`);
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-8 px-4 py-8 sm:px-6">

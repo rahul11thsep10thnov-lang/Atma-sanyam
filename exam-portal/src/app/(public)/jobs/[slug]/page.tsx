@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getPublishedJobBySlug } from "@/lib/services/jobs";
+import { recordView } from "@/lib/analytics/track";
 import { buildJobFaq } from "@/lib/faq";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImportantDates } from "@/components/ImportantDates";
@@ -40,6 +41,7 @@ export default async function JobDetailPage({
   const data = await getPublishedJobBySlug(slug);
   if (!data) notFound();
   const { job, relatedJobs } = data;
+  await recordView("Job", job.id, `/jobs/${slug}`);
 
   const selectionProcess = Array.isArray(job.selectionProcess)
     ? (job.selectionProcess as unknown[]).filter(

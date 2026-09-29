@@ -670,11 +670,57 @@ publish), not by typechecking. Fixed by switching the guard to
 notification), then archived → reopened as draft → published it again
 — still exactly 1 notification row for that job afterward.
 
-## Phases 17–20
+## Phase 17 — Analytics ✅
+
+- New `ContentViewEvent` model (migration
+  `20260929133927_analytics_content_view_events`): `contentType`,
+  `contentId`, `path`, `referrerHost?`, `createdAt`. Deliberately
+  minimal — no IP address, no user agent, no cookie/session id, and
+  only a referrer *hostname* rather than the full referring URL (which
+  can carry query strings/PII). Enough to rank popular content, not
+  enough to reconstruct who looked at it.
+- `src/lib/analytics/track.ts` — `recordView(contentType, contentId,
+  path)`, called directly from a public detail page's Server Component
+  render (not client JS), so it also captures visitors with JavaScript
+  disabled and never adds a network round trip. Wrapped in try/catch
+  that only logs — an analytics write failure can never break a page
+  that would otherwise render fine.
+- Wired into all 9 public content detail pages: Job, Result, AdmitCard,
+  AnswerKey, Syllabus, Admission, Scholarship, Article, Exam. The
+  taxonomy pages (Category/State/Organization) are deliberately left
+  unwired for now — lower value, easy to add later the same way.
+- `src/lib/services/analytics.ts` — `getAnalyticsSummary()` returns
+  total views, views in the last 30 days, a breakdown by content type,
+  and the top 10 most-viewed items. Admin UI at `/admin/analytics`
+  displays all of it.
+
+Verified live: visited a job detail page with a Google referrer header,
+confirmed the `content_view_events` row recorded `contentType: "Job"`,
+the correct `contentId`, and `referrerHost: "www.google.com"` — not the
+full referring URL. Visited a result page too, then confirmed
+`/admin/analytics` showed "2" total views split correctly across "Job"
+and "Result". `npm run typecheck`, `npm run lint`, and `npm run build`
+all pass clean.
+
+### Bug found and fixed while live-testing this phase (infra, not logic)
+
+The first live test silently recorded nothing, even though the code
+was correct. Cause: `npx prisma migrate dev` and `npx prisma generate`
+ran *after* the dev server had already started, so the already-running
+process still held the pre-migration generated Prisma client in memory
+— `prisma.contentViewEvent` was `undefined` at runtime despite
+typechecking fine (the on-disk generated types were current; the
+in-memory module wasn't). Restarting the dev server picked up the
+regenerated client and the pipeline worked immediately. Noted here
+because it's a real gotcha for this workflow: any schema migration run
+against a long-lived `npm run dev` process needs a restart, not just a
+`prisma generate`.
+
+## Phases 18–20
 
 Not started. See `PROJECT_PLAN.md` for the full ordered list
-(analytics → testing/security/performance → production deployment →
-Android API readiness).
+(testing/security/performance → production deployment → Android API
+readiness).
 
 ## Known follow-ups / decisions to revisit
 
