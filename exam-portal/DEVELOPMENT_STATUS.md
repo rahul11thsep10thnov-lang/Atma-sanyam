@@ -391,10 +391,32 @@ complete on the basis of code existing alone.
       browser run, to spend the remaining budget on the phases still
       ahead (11–20).
 
-## Phases 11–20
+## Phase 11 — Search ✅ (this delivery)
+
+- [x] `src/lib/services/search.ts` rewritten for Section 14: searches
+      every content type (Exam, Job, Result, AdmitCard, AnswerKey,
+      Syllabus, Article, Organization), filterable by content type,
+      organization, category, and state, paginated (15/page). Only
+      runs the per-type queries the `type` filter actually needs —
+      never scans a table the request doesn't ask about.
+- [x] `/search` rebuilt with a real filter form (type/organization/
+      category/state selects, still a plain GET form — no client JS)
+      and working pagination that preserves the active filters.
+- [x] Fixed a real bug found while building this: `Pagination` appended
+      `?page=N` unconditionally, which would have produced a malformed
+      URL (`?q=x&type=y?page=2`) on any page with its own query string
+      — the first page to actually have one. Fixed to use `&` when
+      `basePath` already carries a query string.
+- [x] `npm run typecheck` / `lint` / `build` all pass.
+- [x] Verified live: an unfiltered query returns matches; `type=exam`
+      returns only Exam rows (0 Job rows) for the same query; an
+      `organizationId` filter correctly narrows to that organization's
+      content.
+
+## Phases 12–20
 
 Not started. See `PROJECT_PLAN.md` for the full ordered list
-(search → SEO → PDF/document system → AI extraction pipeline → human
+(SEO → PDF/document system → AI extraction pipeline → human
 verification → notifications → analytics → testing/security/
 performance → production deployment → Android API readiness).
 
