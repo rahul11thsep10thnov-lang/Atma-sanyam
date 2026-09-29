@@ -565,12 +565,71 @@ typechecked but not yet exercised by a live click — only unit-level
 reasoning backs it. It will get real exercise once a non-mock provider
 (or a mock configured to sometimes omit fields) exists.
 
-## Phases 15–20
+## Phase 15 — Human verification workflow ✅
 
-Not started. See `PROJECT_PLAN.md` for the full ordered list (human
-verification workflow → notifications → analytics →
-testing/security/performance → production deployment → Android API
-readiness).
+- `src/lib/services/extractionReview.ts` — field-level review
+  (`acceptField`, `editField`, `rejectField`) and job-level review
+  (`approveExtractionJob`, `rejectExtractionJob`). Every field decision
+  is recorded as a new `FieldOverride` row rather than an in-place
+  edit (Section 17: human-approved data always wins, and both the AI's
+  original value and the human's decision stay auditable side by
+  side). `approveExtractionJob` refuses to run unless every extracted
+  field already has at least one override — an extraction can't be
+  rubber-stamped approved without a human having looked at each field.
+  `rejectExtractionJob` has no such requirement, since an obviously
+  bad extraction (wrong document, garbled OCR) shouldn't need a
+  field-by-field teardown to throw out. Only `REVIEWER`/`EDITOR`/
+  `SUPER_ADMIN` roles may call any of these — `AUTHOR` can upload
+  documents and trigger extraction but not review or approve them,
+  mirroring the same separation Section 16 already establishes for
+  content publishing.
+- Admin UI: `/admin/documents/extraction/[jobId]` (previously
+  read-only from Phase 14) is now the review screen — original PDF in
+  an iframe on the left, extracted fields with Accept/Save
+  edit/Reject controls on the right, and job-level Approve/Reject
+  buttons at the bottom (Approve disabled until every field has a
+  decision). A standing banner reiterates that none of this touches
+  published content automatically.
+- `ExtractionJob.status` moves `READY_FOR_REVIEW → UNDER_REVIEW`
+  automatically on the first field decision, then `→ APPROVED` or
+  `→ REJECTED` via the job-level actions — both role- and
+  status-gated server-side, not just hidden in the UI.
+
+### Bug found and fixed while live-testing this phase
+
+The UI's "decision" label (Reviewed vs. Rejected) was initially
+derived from whether `FieldOverride.humanValue` was `null`. That's
+ambiguous: accepting a field whose AI value was itself `null` (the
+extraction found nothing) also produces a `null` `humanValue`, so an
+*accepted* empty field displayed as "Rejected". Fixed by recording the
+decision as an explicit prefix on `reason` (`ACCEPTED: …` /
+`EDITED: …` / `REJECTED: …`) instead of inferring it from the value,
+and reading that prefix in the UI. Caught by live-testing rather than
+by typechecking, since both code paths were type-correct — a reminder
+that "compiles" and "does what the label says" are different claims.
+
+Verified live end to end: accepted one field, rejected another with a
+typed reason, confirmed "Approve job" stayed disabled until the third
+field was also reviewed, then confirmed it enabled and the job
+transitioned to `APPROVED`. Separately verified rejecting a whole job
+before any field review works and immediately removes the review
+controls. `npm run typecheck`, `npm run lint`, and `npm run build` all
+pass clean.
+
+### Known follow-up
+
+Like the rest of the role/ownership logic in this codebase (see the
+Phase 12 follow-up above), the `REVIEWER`/`EDITOR`/`SUPER_ADMIN`-only
+gate on review actions is implemented and code-reviewed but has only
+been exercised live as `SUPER_ADMIN`, which passes every check
+trivially. Worth including in the same real multi-account pass planned
+for Phase 18.
+
+## Phases 16–20
+
+Not started. See `PROJECT_PLAN.md` for the full ordered list
+(notifications → analytics → testing/security/performance →
+production deployment → Android API readiness).
 
 ## Known follow-ups / decisions to revisit
 

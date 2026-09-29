@@ -226,6 +226,27 @@ rather than overwriting — confirmed live by running extraction twice
 on the same document and seeing two independent job records, not one
 being clobbered.
 
+## Human verification workflow (Phase 15) ✅
+
+`src/lib/services/extractionReview.ts` sits directly on top of the
+Phase 14 pipeline: every reviewer decision (accept/edit/reject a
+field, approve/reject a job) is a `FieldOverride` row or an
+`ExtractionJob.status` change, never a direct write to
+`ExtractionResult` or a published content table. `approveExtractionJob`
+enforces that every field has a decision before it will move a job to
+`APPROVED`; nothing upstream of that point ever writes to content
+tables, and Phase 15 doesn't add that write either — actually
+generating/updating a `Job`/`Result`/etc. record from an approved
+extraction is future work, deliberately not implied by "approved" here.
+
+A decision (accepted vs. edited vs. rejected) is encoded as a prefix
+on `FieldOverride.reason`, not inferred from whether `humanValue` is
+`null` — the latter is ambiguous, since accepting a field whose AI
+value was itself null looks identical, in the `humanValue` column
+alone, to an explicit rejection. This was a real bug found live during
+Phase 15 (see DEVELOPMENT_STATUS.md), not a hypothetical one — both
+code paths typechecked fine.
+
 ## Deployment topology
 
 - **App**: Vercel (or any Node 20+ host) — same as the spec recommends.
