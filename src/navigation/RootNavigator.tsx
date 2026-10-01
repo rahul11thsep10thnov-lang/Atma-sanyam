@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text } from 'react-native';
 import { RootStackParamList, RootTabParamList } from './types';
 import { HomeScreen } from '../screens/HomeScreen';
-import { BalconyScreen } from '../balcony/screens/BalconyScreen';
+import { BalconyWorldScreen } from '../balconyWorld/ui/BalconyWorldScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { ActiveSessionScreen } from '../screens/ActiveSessionScreen';
 import { ContentBrowserScreen } from '../screens/ContentBrowserScreen';
@@ -34,7 +34,7 @@ function Tabs() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="History" component={BalconyScreen} options={{ title: 'Balcony' }} />
+      <Tab.Screen name="History" component={BalconyWorldScreen} options={{ title: 'Balcony' }} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
