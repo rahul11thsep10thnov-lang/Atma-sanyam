@@ -71,11 +71,23 @@ export interface AudioSettings {
   master: number; // 0..1
 }
 
+/** Which side of the balcony carries each architectural feature of the
+ * procedural shell. Omitted = 'none'. */
+export interface ShellFeatures {
+  /** Floor-to-ceiling sliding glass doors on this side wall. */
+  glassDoors?: 'left' | 'right' | 'none';
+  /** A planted living-wall panel on this side wall. */
+  greenWall?: 'left' | 'right' | 'none';
+  /** Recessed downlights in the overhang. */
+  downlights?: number;
+}
+
 export interface ShellParams {
   width: number;
   balconyDepth: number;
   roomDepth: number;
   height: number;
+  features?: ShellFeatures;
 }
 
 export interface EnvironmentDefinition {

@@ -38,6 +38,9 @@ export function BalconyWorldScreen() {
   const [editMode, setEditMode] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
   const [hint, setHint] = useState<string | null>(null);
+  const [failure, setFailure] = useState<string | null>(null);
+  const [showStats, setShowStats] = useState(__DEV__);
+  const [stats, setStats] = useState('');
 
   const definition = useMemo(() => getEnvironment(STARTER_ENVIRONMENT_ID), []);
   const profile = useMemo(() => profileFor(recommendedQuality()), []);
@@ -58,9 +61,18 @@ export function BalconyWorldScreen() {
     async (gl: ExpoWebGLRenderingContext) => {
       engineRef.current?.dispose();
       audioRef.current?.dispose();
+      setFailure(null);
 
       const saved = await loadWorld(definition.id);
-      const engine = new BalconyEngine(gl, definition, profile, viewportRef.current);
+      let engine: BalconyEngine;
+      try {
+        engine = new BalconyEngine(gl, definition, profile, viewportRef.current);
+      } catch (error) {
+        // Surface GL/driver problems as text the person can report, never a
+        // blank view — this is what the device-run step is for.
+        setFailure(error instanceof Error ? error.message : String(error));
+        return;
+      }
       engineRef.current = engine;
 
       const now = Date.now();
@@ -147,6 +159,18 @@ export function BalconyWorldScreen() {
     if (!editMode) dragRef.current = null;
   }, [editMode]);
 
+  // Stats line (tap the title to toggle, on in dev builds): the numbers the
+  // performance step needs from a real device.
+  useEffect(() => {
+    if (!showStats || !ready) return;
+    const id = setInterval(() => {
+      const engine = engineRef.current;
+      if (!engine) return;
+      setStats(`${Math.round(engine.fps)} fps · ${engine.objects.list().length} objects · ${profile.level.toLowerCase()} · placeholder art`);
+    }, 500);
+    return () => clearInterval(id);
+  }, [showStats, ready, profile.level]);
+
   const onLayout = (e: LayoutChangeEvent) => {
     const { width, height } = e.nativeEvent.layout;
     if (width > 0 && height > 0) viewportRef.current = { width, height };
@@ -178,7 +202,7 @@ export function BalconyWorldScreen() {
             const obj = engine.objects.get(dragRef.current.id);
             const zone = engine.definition.zones.find((z) => z.id === 'floor-main');
             if (!obj || !zone) return;
-            const point = engine.placement.pointOnFloor(engine.ndcFrom(e.x, e.y, viewport), engine.camera, zone, obj.def.footprint, obj.record.scale);
+            const point = engine.placement.pointOnFloor(engine.ndcFrom(e.x, e.y, viewport), engine.camera, zone, obj.def.footprint, obj.record.scale, obj.record.rotation[1]);
             if (!point) return;
             if (!engine.placement.overlaps(obj, point, engine.objects.list())) {
               engine.objects.moveTo(obj.record.id, point);
@@ -263,13 +287,22 @@ export function BalconyWorldScreen() {
       </GestureDetector>
 
       <View style={[styles.topBar, { paddingTop: insets.top + 10 }]} pointerEvents="box-none">
-        <Text style={styles.title}>My Balcony</Text>
-        {__DEV__ && (
+        <Pressable onPress={() => setShowStats((v) => !v)} accessibilityRole="button" accessibilityLabel="Toggle performance stats">
+          <Text style={styles.title}>My Balcony</Text>
+        </Pressable>
+        {showStats && !!stats && (
           <View style={styles.devChip}>
-            <Text style={styles.devChipText}>placeholder art · {profile.level.toLowerCase()}</Text>
+            <Text style={styles.devChipText}>{stats}</Text>
           </View>
         )}
       </View>
+
+      {failure && (
+        <View style={styles.failureWrap} pointerEvents="none">
+          <Text style={styles.failureTitle}>Couldn't start the 3D balcony</Text>
+          <Text style={styles.failureText}>{failure}</Text>
+        </View>
+      )}
 
       {hint && (
         <View style={styles.hintWrap} pointerEvents="none">
@@ -311,6 +344,17 @@ const styles = StyleSheet.create({
   title: { ...typography.heading, color: colors.white, textShadowColor: 'rgba(40,20,10,0.35)', textShadowRadius: 6 },
   devChip: { backgroundColor: 'rgba(40,20,10,0.35)', borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4 },
   devChipText: { ...typography.caption, color: colors.white },
+  failureWrap: {
+    position: 'absolute',
+    left: spacing.screenPadding,
+    right: spacing.screenPadding,
+    top: '40%',
+    backgroundColor: 'rgba(255,255,255,0.94)',
+    borderRadius: radius.card,
+    padding: 16,
+  },
+  failureTitle: { ...typography.title, color: colors.text, marginBottom: 6 },
+  failureText: { ...typography.body, color: colors.textSecondary },
   hintWrap: { position: 'absolute', left: 0, right: 0, bottom: 96, alignItems: 'center' },
   hint: {
     ...typography.caption,

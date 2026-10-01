@@ -178,24 +178,27 @@ Minimal example (the prototype's):
 
 ```json
 {
-  "id": "balcony_modern_indian_01",
-  "name": "Modern Indian Balcony",
+  "id": "terrace_modern_01",
+  "name": "Modern Terrace",
   "price": { "coins": 0 },
-  "shell": { "kind": "procedural", "params": { "width": 4.2, "depth": 2.6, "height": 2.9, "overhang": 0.9 } },
-  "materials": { "floor": "mat_terracotta_tile", "walls": "mat_warm_plaster", "railing": "mat_dark_metal" },
-  "sky": { "preset": "goldenHour", "topColor": "#F7CFA8", "horizonColor": "#FDE7CC" },
-  "lighting": { "sun": { "azimuth": 215, "elevation": 22, "intensity": 2.4, "color": "#FFE4BF" }, "ambient": 0.55 },
-  "zones": [ { "id": "floor-main", "surface": "floor", "size": [3.6, 2.2], "maxObjects": 24 },
-             { "id": "wall-left", "surface": "wallLeft", "size": [2.2, 1.6], "maxObjects": 6 },
-             { "id": "wall-right", "surface": "wallRight", "size": [2.2, 1.6], "maxObjects": 6 },
-             { "id": "rail", "surface": "railing", "size": [4.0, 0.3], "maxObjects": 6 } ],
-  "personalWall": { "zoneId": "wall-right", "position": [0, 1.55], "frameId": "frame_brass_01" },
-  "defaultObjects": [ { "assetId": "sofa_rattan_01", "position": [-0.9, 0, -0.6] }, { "assetId": "table_teak_small_01", "position": [-0.9, 0, 0.2] }, { "assetId": "planter_terracotta_01", "position": [1.5, 0, -0.9] }, { "assetId": "lamp_floor_brass_01", "position": [-1.7, 0, -0.9] } ],
-  "audio": [ { "layer": "birds", "clip": "birds_morning_a", "gain": 0.6, "position": [0, 1.5, 3] }, { "layer": "wind", "clip": "wind_light_a", "gain": 0.35 } ],
-  "camera": { "default": { "yaw": 0, "pitch": 8, "distance": 4.6 }, "zoom": [2.2, 6.5] },
+  "shell": { "kind": "procedural", "params": { "width": 5.2, "balconyDepth": 2.6, "roomDepth": 3.0, "height": 2.9,
+             "features": { "glassDoors": "left", "greenWall": "right", "downlights": 3 } } },
+  "sky": { "topColor": "#6f82a8", "horizonColor": "#f2b47f", "sunColor": "#ffd3a0", "sunAzimuth": 24, "sunElevation": 7 },
+  "lighting": { "sunIntensity": 1.7, "sunColor": "#ffb97f", "ambient": 0.32, "hemisphereSky": "#e6ecf5", "hemisphereGround": "#5a5048" },
+  "fog": { "color": "#e9b48e", "near": 24, "far": 150 },
+  "zones": [ { "id": "floor-main", "surface": "floor", "center": [0, 0, -1.3], "size": [4.9, 2.4], "maxObjects": 24 },
+             { "id": "wall-right", "surface": "wallRight", "center": [2.6, 1.5, 1.2], "size": [1.6, 1.4], "maxObjects": 6 },
+             { "id": "rail", "surface": "railing", "center": [0, 1.11, -2.54], "size": [5.0, 0.3], "maxObjects": 6 } ],
+  "defaultObjects": [ { "assetId": "sofa_sectional_white_01", "position": [-2.05, 0, -1.35], "rotationY": -1.5708 },
+                      { "assetId": "table_coffee_low_01", "position": [-1.05, 0, -1.35], "rotationY": 1.5708 },
+                      { "assetId": "planter_trough_hedge_01", "position": [0.9, 0, -2.25] } ],
+  "audio": [ { "layer": "birds", "clip": "ambient_placeholder", "gain": 0.7 } ],
+  "camera": { "target": [-0.9, 0.9, -1.5], "default": { "yaw": 0.38, "pitch": 0.12, "distance": 3.2 }, "zoom": [1.6, 4.0] },
   "limits": { "maxObjects": 40 }
 }
 ```
+
+Later fields (`materials`, `personalWall`, positional audio, `variants`) extend this shape; `shell.params.features` is how one procedural shell serves several looks (which side carries the glass doors, the living wall, how many downlights) until GLB shells land. Sun azimuth 0 is straight ahead over the railing, 90 is to the right.
 
 Time-of-day and weather are **data on the sky/lighting block** (a `variants` map keyed `morning|afternoon|goldenHour|evening|night` and `clear|cloudy|rain`) that the loader can switch without rebuilding geometry — the V1 engine reads one variant; the hooks for more are in place.
 
@@ -231,7 +234,7 @@ Shared across all: left/right walls with placement zones, floor zone, railing zo
 
 | # | Environment | Architecture · floor · walls · railing | Sky / outside | Default set (styled) | Lighting | Audio | Signature feature |
 |---|---|---|---|---|---|---|---|
-| 1 | **Modern Indian Balcony** *(starter, free)* | Clean apartment balcony; terracotta tile floor; warm plaster walls; slim dark-metal railing with a wooden handrail | Golden-hour haze over a mid-rise skyline | Rattan sofa, teak side table, brass floor lamp, terracotta planter, woven rug, small brass wall plate | Low warm sun from the left, soft ambient | birds (morning), light wind, distant city | City skyline that lights up at dusk |
+| 1 | **Modern Terrace** *(starter, free)* | Wide luxury terrace: timber deck, white render, dark flat overhang with recessed downlights; frameless glass railing with a slim dark cap; floor-to-ceiling sliding glass doors on the left; living-wall panel on the right | Sunset over a dense high-rise skyline, warm haze on the horizon | Low white sectional with sand/olive/grey pillows, low walnut coffee table, hedge trough along the railing, tall broad-leaf plant, arc floor lamp, candle lantern, flat-weave rug | Low sun ahead-right, cool sky fill, warm horizon | birds, light wind, distant city | Skyline and downlights that light up at dusk |
 | 2 | **Luxury Urban Balcony** | Wide glass-fronted terrace; large-format grey stone floor; dark micro-cement walls; frameless glass railing | Blue hour over a dense high-rise skyline with lit windows | Low linen sofa, marble coffee table, sculptural arc lamp, olive in a concrete pot, abstract canvas | Cool sky light + warm interior spill | city hum, wind, faint jazz (music layer, off by default) | Edge-lit glass railing glow at night |
 | 3 | **Traditional Indian Balcony** | Carved wooden pillars, stone floor with inlaid border, lime-washed ochre walls, cusped arch overhang; jaali screen on one side | Warm afternoon, temple domes and trees beyond | Low wooden diwan with bolsters, brass tray table, hanging brass diya lamp, tulsi planter on a stand, block-print rug | Dappled light through the jaali | birds, wind, distant bells (very low) | Jaali screen casting patterned shadows that move with the hour |
 | 4 | **Mediterranean Balcony** | Whitewashed walls, terracotta-tiled floor, wrought-iron railing, blue shutters on the door | Bright blue sky, sea and terracotta rooftops | Wicker loveseat, mosaic table, iron lantern, bougainvillea on the railing, lemon tree in a clay pot | High noon, hard light, cool shadows | gulls, wind, waves (far) | Bougainvillea that spreads along the railing as it grows |
@@ -261,11 +264,11 @@ src/balconyWorld/
     QualityProfile.ts       LOW / MEDIUM / HIGH detection + settings
   catalog/
     AssetCatalog.ts         id → asset metadata (+ remote merge)
-    procedural/             placeholder builders: sofa, table, lamp, planter, lantern, frame…
+    procedural/             placeholder builders: sectional, coffee table, hedge trough, tall plant, arc lamp, lantern, rug…
     assets.json             bundled starter catalog
   environments/
     EnvironmentRegistry.ts
-    balcony_modern_indian_01/environment.json
+    terrace_modern_01/environment.json
   state/
     types.ts                data model (section G)
     WorldRepository.ts      AsyncStorage now, API later
