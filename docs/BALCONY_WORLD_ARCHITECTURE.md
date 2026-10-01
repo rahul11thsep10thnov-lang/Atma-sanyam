@@ -200,7 +200,7 @@ Minimal example (the prototype's):
 
 Later fields (`materials`, `personalWall`, positional audio, `variants`) extend this shape; `shell.params.features` is how one procedural shell serves several looks (which side carries the glass doors, the living wall, how many downlights) until GLB shells land. Sun azimuth 0 is straight ahead over the railing, 90 is to the right.
 
-Time-of-day and weather are **data on the sky/lighting block** (a `variants` map keyed `morning|afternoon|goldenHour|evening|night` and `clear|cloudy|rain`) that the loader can switch without rebuilding geometry — the V1 engine reads one variant; the hooks for more are in place.
+Time-of-day and weather are no longer static data on this block: `FocusEnvironmentEngine` (see `docs/FOCUS_ENVIRONMENT_ENGINE.md`) computes a continuous `LightingFrame` from the clock, the weather and the focus session, and `LightingRig` applies it over the environment's base sky/lighting every tick. The values here are the environment's resting look and the shader defaults.
 
 ## K. Asset pipeline
 
@@ -300,4 +300,4 @@ docs/BALCONY_WORLD_ARCHITECTURE.md   this document
 | 14 — environments | `EnvironmentRegistry`, switching with per-environment state, environments 2–10 as data (shells may still be procedural) | Add a folder → it appears |
 | 15 — monetization | IAP products for premium environments/items, server-side receipt verification via existing API, personal wall uploads (private) | Paid flow end-to-end on test accounts; nothing paid trusted client-side |
 
-Not in V1 (architected for): real-time day/night, weather, social sharing, true stereo panning.
+Shipped since: real-time day/night, weather and the focus "sunlight reward" (`FocusEnvironmentEngine` + `LightingRig`), and the 100-plant image library (`docs/PLANT_LIBRARY.md`). Not in V1 (architected for): social sharing, true stereo panning, forecast-driven weather.

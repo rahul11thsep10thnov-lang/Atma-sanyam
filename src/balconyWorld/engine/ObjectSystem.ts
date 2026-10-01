@@ -106,14 +106,17 @@ export class ObjectSystem {
   }
 
   /** Leaf sway and anything else flagged for ambient motion — a few
-   * rotations per frame, capped by the profile's ambient fps upstream. */
-  updateAmbient(timeSeconds: number) {
+   * rotations per frame, capped by the profile's ambient fps upstream.
+   * `wind` (0..1) and `speed` come from the environment engine: calm air
+   * barely moves a leaf, a windy afternoon moves it ~3×, deep focus stills it. */
+  updateAmbient(timeSeconds: number, wind = 0.5, speed = 1) {
     let index = 0;
+    const amp = 0.012 + wind * 0.05;
     for (const obj of this.objects.values()) {
       obj.group.traverse((node) => {
         if (node.userData.sway) {
-          node.rotation.z = Math.sin(timeSeconds * 0.9 + index * 1.7) * 0.028;
-          node.rotation.x = Math.sin(timeSeconds * 0.6 + index) * 0.018;
+          node.rotation.z = Math.sin(timeSeconds * 0.9 * speed + index * 1.7) * amp;
+          node.rotation.x = Math.sin(timeSeconds * 0.6 * speed + index) * amp * 0.65;
           index++;
         }
       });

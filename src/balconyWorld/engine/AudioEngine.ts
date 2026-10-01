@@ -24,6 +24,9 @@ export class AudioEngine {
   private players: { layer: string; gain: number; player: AudioPlayer }[] = [];
   private settings: AudioSettings = { enabled: true, master: 0.8 };
   private started = false;
+  /** Per-layer multipliers from the environment engine (time of day, weather, focus). */
+  private mix: Record<string, number> = {};
+  private mixCurrent: Record<string, number> = {};
 
   async start(layers: Layer[], settings: AudioSettings) {
     this.settings = settings;
@@ -33,7 +36,13 @@ export class AudioEngine {
       // Audio mode is a nicety; playback still works with platform defaults.
     }
     for (const layer of layers) {
-      const source = CLIPS[layer.clip] ?? CLIPS.ambient_placeholder;
+      const source = CLIPS[layer.clip];
+      if (!source) {
+        // The environment lists the layer so the engine's mix is already
+        // authored; the layer becomes audible once its clip is bundled.
+        if (__DEV__) console.info(`Balcony audio: no clip "${layer.clip}" yet for layer "${layer.layer}"`);
+        continue;
+      }
       const player = createAudioPlayer(source);
       player.loop = true;
       player.volume = 0;
@@ -51,6 +60,25 @@ export class AudioEngine {
     this.applyVolumes();
     if (settings.enabled && !wasEnabled) this.players.forEach((p) => p.player.play());
     if (!settings.enabled && wasEnabled) this.players.forEach((p) => p.player.pause());
+  }
+
+  /**
+   * The environment engine's audio frame: birds by day, crickets at night,
+   * rain when it rains, everything softer during deep focus. Eased so a
+   * state change is a fade, never a cut (architecture doc, section F).
+   */
+  applyMix(gains: Record<string, number>, dtSeconds: number) {
+    this.mix = gains;
+    const k = 1 - Math.exp(-Math.max(0, dtSeconds) / 1.5);
+    let changed = false;
+    for (const p of this.players) {
+      const target = gains[p.layer] ?? 1;
+      const current = this.mixCurrent[p.layer] ?? target;
+      const next = current + (target - current) * k;
+      if (Math.abs(next - current) > 0.001) changed = true;
+      this.mixCurrent[p.layer] = next;
+    }
+    if (changed && this.started) this.applyVolumes();
   }
 
   /** Called when the screen blurs / app backgrounds. */
@@ -78,7 +106,8 @@ export class AudioEngine {
   private applyVolumes() {
     const master = this.settings.enabled ? this.settings.master : 0;
     this.players.forEach((p) => {
-      p.player.volume = Math.max(0, Math.min(1, master * p.gain));
+      const mix = this.mixCurrent[p.layer] ?? this.mix[p.layer] ?? 1;
+      p.player.volume = Math.max(0, Math.min(1, master * p.gain * mix));
     });
   }
 }

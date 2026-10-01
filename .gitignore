@@ -43,3 +43,8 @@ yarn-error.*
 # local secrets (service account keys etc.)
 /secrets
 .env
+
+# Plant library package (rebuild with: node scripts/generatePlantLibrary.mjs --zip)
+/assets/plants/*.zip
+/assets/plants/FOCUS_PLANT_LIBRARY/*.rejected*.png
+/assets/plants/FOCUS_PLANT_LIBRARY/generation_log.txt

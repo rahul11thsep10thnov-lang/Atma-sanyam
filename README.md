@@ -61,6 +61,8 @@ Leave `EXPO_PUBLIC_API_URL` empty to run the app without any server.
 - [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) — putting the API, database and admin console online
 - [docs/STORE_SUBMISSION.md](docs/STORE_SUBMISSION.md) — building and submitting to Google Play and the App Store
 - [docs/CREDENTIALS.md](docs/CREDENTIALS.md) — every account/key you need, where to get it, where it goes
+- [docs/PLANT_LIBRARY.md](docs/PLANT_LIBRARY.md) — the 100-plant image library: template, manifest, generation pipeline, QC
+- [docs/FOCUS_ENVIRONMENT_ENGINE.md](docs/FOCUS_ENVIRONMENT_ENGINE.md) — the living balcony: time of day, weather, the sunlight reward
 
 ## Tests
 
@@ -68,7 +70,18 @@ Leave `EXPO_PUBLIC_API_URL` empty to run the app without any server.
 cd backend && npm test          # 63 integration tests against a real PostgreSQL database
 cd admin && npm run build       # type-checked production build
 npx tsc --noEmit                # mobile app (repo root)
+npm run plants:check            # the 100-plant library: files, names, sizes, manifest
 ```
+
+## Plant library
+
+`assets/plants/FOCUS_PLANT_LIBRARY/` holds 100 separate plant images (one plant
+per file, same camera, same soil cutaway, same sunlight) plus
+`plant_manifest.json`. The files committed are procedural placeholders on the
+final template; `npm run plants:generate -- --provider openai` replaces them
+with photorealistic renders job by job, with a vision QC pass, and
+`npm run plants:zip` packs `FOCUS_100_INDIAN_PLANTS_LIBRARY.zip`. See
+[docs/PLANT_LIBRARY.md](docs/PLANT_LIBRARY.md).
 
 CI (`.github/workflows/ci.yml`) runs all of the above plus Android/iOS bundle exports on every push.
 

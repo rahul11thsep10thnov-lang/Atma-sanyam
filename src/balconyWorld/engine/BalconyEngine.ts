@@ -8,6 +8,8 @@ import { CameraController } from './CameraController';
 import { ObjectSystem } from './ObjectSystem';
 import { PlacementController } from './PlacementController';
 import { QualityProfile } from './QualityProfile';
+import { LightingRig } from './LightingRig';
+import { FocusEnvironmentEngine, LightingFrame, localHour } from './FocusEnvironmentEngine';
 
 export interface Viewport {
   width: number; // in points (dp) — what gestures report
@@ -27,9 +29,14 @@ export class BalconyEngine {
   readonly objects: ObjectSystem;
   readonly placement = new PlacementController();
   readonly renderer: THREE.WebGLRenderer;
+  /** The living-world state machine (time of day, weather, focus arc). */
+  readonly environment: FocusEnvironmentEngine;
+  readonly lighting: LightingRig;
 
   /** Fires after any frame in which the camera moved — the screen persists it. */
   onCameraChanged: (() => void) | null = null;
+  /** Fires on every environment tick — the screen feeds the audio mixer and UI from it. */
+  onLightingFrame: ((frame: LightingFrame, dtSeconds: number) => void) | null = null;
 
   private dirty = true;
   private running = false;
@@ -39,6 +46,9 @@ export class BalconyEngine {
   private bufferWidth = 0;
   private bufferHeight = 0;
   private lastRenderAt = 0;
+  private lastEnvironmentAt = 0;
+  private pushIn = 0;
+  private readonly cameraTarget = new THREE.Vector3();
   /** Exponential moving average of rendered frames per second — what the
    * stats overlay shows and what the performance step tunes against. */
   fps = 0;
@@ -48,7 +58,9 @@ export class BalconyEngine {
     readonly definition: EnvironmentDefinition,
     readonly profile: QualityProfile,
     viewport: Viewport,
+    environment: FocusEnvironmentEngine = new FocusEnvironmentEngine(),
   ) {
+    this.environment = environment;
     this.renderer = createRenderer(gl, {
       antialias: profile.antialias,
       resolutionScale: profile.resolutionScale,
@@ -76,42 +88,32 @@ export class BalconyEngine {
       { ...cam.default, target: cam.target },
     );
 
-    this.buildEnvironment();
+    this.scene.add(buildShell(definition.shell.params));
+    const sky = createSky(definition);
+    this.scene.add(sky.mesh);
+    this.lighting = new LightingRig(this.scene, sky, definition, profile);
+    this.lighting.setFocusPoint(new THREE.Vector3(definition.camera.target[0], 0, definition.camera.target[2]));
     this.objects = new ObjectSystem(this.scene, profile);
-  }
-
-  private buildEnvironment() {
-    const def = this.definition;
-    this.scene.add(buildShell(def.shell.params));
-
-    const { mesh: sky, sunDirection } = createSky(def);
-    this.scene.add(sky);
-    this.scene.fog = new THREE.Fog(def.fog.color, def.fog.near, def.fog.far);
-
-    const hemi = new THREE.HemisphereLight(def.lighting.hemisphereSky, def.lighting.hemisphereGround, 0.9);
-    this.scene.add(hemi);
-    this.scene.add(new THREE.AmbientLight(0xffffff, def.lighting.ambient));
-
-    const sun = new THREE.DirectionalLight(def.lighting.sunColor, def.lighting.sunIntensity);
-    sun.position.copy(sunDirection).multiplyScalar(12).add(new THREE.Vector3(0, 0, -0.9));
-    sun.target.position.set(0, 0, -0.9);
-    this.scene.add(sun.target);
-    if (this.profile.shadowMap) {
-      sun.castShadow = true;
-      sun.shadow.mapSize.set(this.profile.shadowMapSize, this.profile.shadowMapSize);
-      sun.shadow.camera.left = -3.2;
-      sun.shadow.camera.right = 3.2;
-      sun.shadow.camera.top = 3.2;
-      sun.shadow.camera.bottom = -3.2;
-      sun.shadow.camera.near = 1;
-      sun.shadow.camera.far = 30;
-      sun.shadow.bias = -0.0008;
-    }
-    this.scene.add(sun);
   }
 
   loadObjects(records: UserPlacedObject[]) {
     records.forEach((r) => this.objects.add(r));
+    this.lighting.registerLamps();
+    this.refocusLighting();
+    this.dirty = true;
+  }
+
+  /** The pool of light and the beam centre on the first plant — the thing a
+   * session grows — falling back to the environment's focal spot. */
+  refocusLighting() {
+    const plant = this.objects.list().find((o) => o.def.category === 'PLANTS');
+    if (plant) {
+      const [w, d] = plant.def.footprint;
+      this.lighting.setFocusPoint(new THREE.Vector3(plant.group.position.x, 0, plant.group.position.z + Math.min(w, d) * 0.1));
+    } else {
+      const t = this.definition.camera.target;
+      this.lighting.setFocusPoint(new THREE.Vector3(t[0], 0, t[2]));
+    }
     this.dirty = true;
   }
 
@@ -185,13 +187,26 @@ export class BalconyEngine {
     const ambientInterval = 1000 / this.profile.ambientFps;
     if (now - this.lastAmbientAt >= ambientInterval) {
       this.lastAmbientAt = now;
-      this.objects.updateAmbient(now / 1000);
+      const seconds = now / 1000;
+      const frame = this.environment.tick(seconds, localHour());
+      const dt = this.lastEnvironmentAt ? seconds - this.lastEnvironmentAt : 0;
+      this.lastEnvironmentAt = seconds;
+      this.lighting.apply(frame, seconds, this.camera);
+      this.pushIn = frame.camera.pushIn;
+      this.objects.updateAmbient(seconds, frame.plantMotion.wind, frame.plantMotion.speed);
+      if (this.onLightingFrame) this.onLightingFrame(frame, dt);
       this.dirty = true;
     }
 
     if (!this.dirty) return;
     this.dirty = false;
     this.controller.applyTo(this.camera);
+    if (this.pushIn > 0) {
+      // the reward's almost imperceptible push-in: ≤3% of the way to the target
+      const t = this.controller.getState().target;
+      this.cameraTarget.set(t[0], t[1], t[2]);
+      this.camera.position.lerp(this.cameraTarget, this.pushIn * 0.03);
+    }
     this.renderer.render(this.scene, this.camera);
     this.gl.endFrameEXP();
     if (this.lastRenderAt > 0) {

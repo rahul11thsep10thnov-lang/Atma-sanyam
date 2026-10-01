@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AppState, LayoutChangeEvent, Pressable, StyleSheet, Text, View } from 'react-native';
+import { AccessibilityInfo, AppState, LayoutChangeEvent, Pressable, StyleSheet, Text, View } from 'react-native';
 import { GLView, ExpoWebGLRenderingContext } from 'expo-gl';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
@@ -13,10 +13,24 @@ import { AudioEngine } from '../engine/AudioEngine';
 import { profileFor, recommendedQuality } from '../engine/QualityProfile';
 import { getEnvironment, STARTER_ENVIRONMENT_ID } from '../environments/EnvironmentRegistry';
 import { loadWorld, saveWorld } from '../state/WorldRepository';
-import { AudioSettings, UserPlacedObject } from '../state/types';
+import { AudioSettings, EnvironmentPresetId, UserPlacedObject } from '../state/types';
 import { getAsset } from '../catalog/AssetCatalog';
+import { ENVIRONMENT_PRESETS, FOCUS_COMPLETE_SECONDS, FOCUS_INTERRUPTED_SECONDS, LightingFrame } from '../engine/FocusEnvironmentEngine';
+import { consumePendingOutcome, focusEnvironment } from '../engine/focusEnvironmentBridge';
+import { PlantLibrarySheet } from '../../plants/PlantLibrarySheet';
 
 const DEFAULT_AUDIO: AudioSettings = { enabled: true, master: 0.8 };
+
+const PRESET_LABELS: Record<EnvironmentPresetId, string> = {
+  AUTO: 'Auto',
+  MORNING: 'Morning',
+  GOLDEN_HOUR: 'Golden hour',
+  NIGHT: 'Night',
+  RAIN: 'Rain',
+  FOREST: 'Forest',
+  MONSOON: 'Monsoon',
+  WINTER: 'Winter',
+};
 
 /** Step 6 prototype screen: the starter balcony, explorable and editable.
  * One-finger drag orbits, two fingers pan, pinch zooms, double-tap frames
@@ -33,6 +47,8 @@ export function BalconyWorldScreen() {
   const dragRef = useRef<{ id: string; lastValid: THREE.Vector3 } | null>(null);
   const audioSettingsRef = useRef<AudioSettings>(DEFAULT_AUDIO);
   const editModeRef = useRef(false);
+  const presetRef = useRef<EnvironmentPresetId>('AUTO');
+  const frameRef = useRef<LightingFrame | null>(null);
 
   const [ready, setReady] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -41,6 +57,8 @@ export function BalconyWorldScreen() {
   const [failure, setFailure] = useState<string | null>(null);
   const [showStats, setShowStats] = useState(__DEV__);
   const [stats, setStats] = useState('');
+  const [preset, setPreset] = useState<EnvironmentPresetId>('AUTO');
+  const [plantsOpen, setPlantsOpen] = useState(false);
 
   const definition = useMemo(() => getEnvironment(STARTER_ENVIRONMENT_ID), []);
   const profile = useMemo(() => profileFor(recommendedQuality()), []);
@@ -54,6 +72,7 @@ export function BalconyWorldScreen() {
       placedObjects: engine.objects.records(),
       camera: engine.controller.getState(),
       audio: audioSettingsRef.current,
+      environmentPreset: presetRef.current,
     });
   }, [definition.id]);
 
@@ -64,9 +83,13 @@ export function BalconyWorldScreen() {
       setFailure(null);
 
       const saved = await loadWorld(definition.id);
+      const savedPreset = saved?.environmentPreset ?? 'AUTO';
+      presetRef.current = savedPreset;
+      setPreset(savedPreset);
+      focusEnvironment.setPreset(savedPreset);
       let engine: BalconyEngine;
       try {
-        engine = new BalconyEngine(gl, definition, profile, viewportRef.current);
+        engine = new BalconyEngine(gl, definition, profile, viewportRef.current, focusEnvironment);
       } catch (error) {
         // Surface GL/driver problems as text the person can report, never a
         // blank view — this is what the device-run step is for.
@@ -106,6 +129,11 @@ export function BalconyWorldScreen() {
       setSoundOn(audioSettings.enabled);
       const audio = new AudioEngine();
       audioRef.current = audio;
+      // the environment engine drives the mix: birds by day, crickets at night, hush in deep focus
+      engine.onLightingFrame = (frame, dt) => {
+        frameRef.current = frame;
+        audio.applyMix(frame.audio, dt);
+      };
       try {
         await audio.start(definition.audio, audioSettings);
       } catch (error) {
@@ -153,6 +181,38 @@ export function BalconyWorldScreen() {
     [],
   );
 
+  // Reduced motion (brief §19): no drifting light, particles or push-in.
+  useEffect(() => {
+    AccessibilityInfo.isReduceMotionEnabled()
+      .then((enabled) => focusEnvironment.setReducedMotion(enabled))
+      .catch(() => undefined);
+    const sub = AccessibilityInfo.addEventListener?.('reduceMotionChanged', (enabled) => focusEnvironment.setReducedMotion(enabled));
+    return () => sub?.remove?.();
+  }, []);
+
+  // A session finished while the balcony was off screen: play its outcome
+  // now — the sunlight reward for a completed one, a gentle fade otherwise.
+  useEffect(() => {
+    if (!isFocused || !ready) return;
+    let cancelled = false;
+    consumePendingOutcome().then((outcome) => {
+      if (!outcome || cancelled) return;
+      const now = performance.now() / 1000;
+      if (outcome.outcome === 'completed') {
+        focusEnvironment.dispatch({ type: 'FOCUS_COMPLETE', minutes: outcome.minutes, plantGrew: outcome.minutes >= 10 }, now);
+        setHint('Your focus brought the sunlight.');
+        setTimeout(() => setHint((h) => (h === 'Your focus brought the sunlight.' ? null : h)), FOCUS_COMPLETE_SECONDS * 1000 + 1500);
+      } else {
+        focusEnvironment.dispatch({ type: 'FOCUS_INTERRUPTED' }, now);
+        setHint("It's okay. Try again next time.");
+        setTimeout(() => setHint((h) => (h === "It's okay. Try again next time." ? null : h)), FOCUS_INTERRUPTED_SECONDS * 1000 + 1500);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isFocused, ready]);
+
   useEffect(() => {
     editModeRef.current = editMode;
     setHint(editMode ? 'Drag an object to move it' : null);
@@ -166,7 +226,9 @@ export function BalconyWorldScreen() {
     const id = setInterval(() => {
       const engine = engineRef.current;
       if (!engine) return;
-      setStats(`${Math.round(engine.fps)} fps · ${engine.objects.list().length} objects · ${profile.level.toLowerCase()} · placeholder art`);
+      const f = frameRef.current;
+      const env = f ? ` · ${f.timeOfDay.toLowerCase().replace('_', ' ')} ${f.hour.toFixed(1)}h · ${f.weather.toLowerCase()} · ${f.focus.toLowerCase()}` : '';
+      setStats(`${Math.round(engine.fps)} fps · ${engine.objects.list().length} objects · ${profile.level.toLowerCase()}${env} · placeholder art`);
     }, 500);
     return () => clearInterval(id);
   }, [showStats, ready, profile.level]);
@@ -278,6 +340,23 @@ export function BalconyWorldScreen() {
     engineRef.current?.resetCamera(performance.now());
   };
 
+  const cycleEnvironment = () => {
+    const idx = ENVIRONMENT_PRESETS.indexOf(presetRef.current);
+    const next = ENVIRONMENT_PRESETS[(idx + 1) % ENVIRONMENT_PRESETS.length] ?? 'AUTO';
+    presetRef.current = next;
+    setPreset(next);
+    focusEnvironment.setPreset(next);
+    engineRef.current?.setDirty();
+    persist();
+  };
+
+  /** Dev only: replay the sunlight reward without sitting through a session. */
+  const previewReward = () => {
+    focusEnvironment.dispatch({ type: 'FOCUS_COMPLETE', minutes: 25, plantGrew: true }, performance.now() / 1000);
+    setHint('Your focus brought the sunlight.');
+    setTimeout(() => setHint((h) => (h === 'Your focus brought the sunlight.' ? null : h)), FOCUS_COMPLETE_SECONDS * 1000 + 1500);
+  };
+
   return (
     <View style={styles.screen}>
       <GestureDetector gesture={gesture}>
@@ -313,9 +392,14 @@ export function BalconyWorldScreen() {
       <View style={[styles.actionBar, { paddingBottom: insets.bottom + 12 }]} pointerEvents="box-none">
         <ActionButton label="Focus" onPress={() => navigation.navigate('Tabs', { screen: 'Home' })} />
         <ActionButton label={editMode ? 'Done' : 'Edit'} active={editMode} onPress={() => setEditMode((v) => !v)} />
+        <ActionButton label="Plants" onPress={() => setPlantsOpen(true)} />
         <ActionButton label={soundOn ? 'Sound on' : 'Sound off'} onPress={toggleSound} />
+        <ActionButton label={PRESET_LABELS[preset]} onPress={cycleEnvironment} />
         <ActionButton label="Reset view" onPress={resetView} />
+        {showStats && __DEV__ && <ActionButton label="Sunlight" onPress={previewReward} />}
       </View>
+
+      <PlantLibrarySheet visible={plantsOpen} onClose={() => setPlantsOpen(false)} />
     </View>
   );
 }

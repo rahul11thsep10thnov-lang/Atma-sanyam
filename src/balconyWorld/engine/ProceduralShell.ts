@@ -38,6 +38,7 @@ export function buildShell(p: ShellParams): THREE.Group {
   const deck = plane(W, B, M.deck);
   deck.rotation.x = -Math.PI / 2;
   deck.position.set(0, 0, -B / 2);
+  deck.name = 'shell-deck';
   g.add(deck);
 
   const roomFloor = plane(W, R, M.roomFloor);

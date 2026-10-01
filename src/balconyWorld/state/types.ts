@@ -105,10 +105,15 @@ export interface EnvironmentDefinition {
   limits: { maxObjects: number };
 }
 
+/** User-selectable living-balcony environment (FocusEnvironmentEngine). */
+export type EnvironmentPresetId = 'AUTO' | 'MORNING' | 'GOLDEN_HOUR' | 'NIGHT' | 'RAIN' | 'FOREST' | 'MONSOON' | 'WINTER';
+
 export interface WorldSaveState {
   schemaVersion: number;
   environmentId: string;
   placedObjects: UserPlacedObject[];
   camera: CameraState | null;
   audio: AudioSettings;
+  /** Missing in saves written before the environment engine → AUTO. */
+  environmentPreset?: EnvironmentPresetId;
 }

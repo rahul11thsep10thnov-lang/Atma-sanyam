@@ -13,6 +13,7 @@ import { SessionRecord } from '../types';
 import { useSettings } from '../context/SettingsContext';
 import { useRemoteConfig } from '../context/RemoteConfigContext';
 import { track } from '../services/analytics';
+import { focusEnvironment, recordSessionOutcome } from '../balconyWorld/engine/focusEnvironmentBridge';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>;
 
@@ -49,6 +50,8 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
         revealedFraction,
       };
       await saveSessionRecord(record);
+      // The balcony plays the sunlight reward (or the gentle fade) next time it's on screen.
+      recordSessionOutcome(outcome, outcome === 'completed' ? config.durationMinutes : Math.round(config.durationMinutes * revealedFraction));
       track(outcome === 'completed' ? 'session_complete' : 'session_fail', {
         properties: {
           durationMinutes: config.durationMinutes,
@@ -64,6 +67,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
 
   useEffect(() => {
     track('session_start', { properties: { durationMinutes: config.durationMinutes, imageKind: config.image.kind } });
+    focusEnvironment.dispatch({ type: 'FOCUS_START' }, performance.now() / 1000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
