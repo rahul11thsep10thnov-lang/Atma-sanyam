@@ -26,9 +26,6 @@ export function DestinationCard({
           image={destination.heroImage}
           className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
         />
-        <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[11px] font-semibold text-forest-700">
-          {destination.popularity}% loved
-        </span>
       </div>
       <div className="flex flex-1 flex-col p-4">
         <h3 className="font-display text-lg font-semibold text-charcoal">{destination.name}</h3>

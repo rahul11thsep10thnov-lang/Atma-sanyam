@@ -39,7 +39,7 @@ export function generateMetadata({ params }: { params: PageParams }): Metadata {
   const locale: Locale = isLocale(params.locale) ? params.locale : "en";
   const { seo } = getDestinationContent(getDb(), view.record.id);
   return {
-    title: seo.meta_title,
+    title: { absolute: seo.meta_title },
     description: seo.meta_description,
     keywords: seo.keywords,
     alternates: {
