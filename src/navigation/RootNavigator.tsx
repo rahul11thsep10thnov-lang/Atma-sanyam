@@ -1,58 +1,56 @@
 import React, { useRef } from 'react';
-import { NavigationContainer, DefaultTheme, useNavigationContainerRef } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme, useNavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text } from 'react-native';
 import { RootStackParamList, RootTabParamList } from './types';
 import { HomeScreen } from '../screens/HomeScreen';
 import { BalconyWorldScreen } from '../balconyWorld/ui/BalconyWorldScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
+import { ProgressScreen } from '../screens/ProgressScreen';
 import { ActiveSessionScreen } from '../screens/ActiveSessionScreen';
 import { ContentBrowserScreen } from '../screens/ContentBrowserScreen';
 import { AuthScreen } from '../screens/AuthScreen';
 import { track } from '../services/analytics';
-import { colors } from '../theme/colors';
+import { useTheme } from '../theme/ThemeContext';
+import { FloatingTabBar, TabSpec } from '../ui/TabBar';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const TAB_ICONS: Record<keyof RootTabParamList, string> = {
-  Home: '🧩',
-  History: '🪴',
-  Settings: '⚙️',
+const TABS: Record<keyof RootTabParamList, TabSpec> = {
+  Home: { icon: 'home', label: 'Home' },
+  History: { icon: 'sprout', label: 'Balcony' },
+  Progress: { icon: 'chart', label: 'Progress' },
+  Settings: { icon: 'settings', label: 'Settings' },
 };
 
 function Tabs() {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textSecondary,
-        tabBarStyle: { backgroundColor: colors.card, borderTopColor: colors.border },
-        tabBarIcon: () => <Text style={{ fontSize: 18 }}>{TAB_ICONS[route.name]}</Text>,
-      })}
+      tabBar={(props) => <FloatingTabBar {...props} specs={TABS} />}
+      screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: 'transparent' } }}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="History" component={BalconyWorldScreen} options={{ title: 'Balcony' }} />
+      <Tab.Screen name="Progress" component={ProgressScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }
 
-const navTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: colors.background,
-    card: colors.card,
-    text: colors.text,
-    border: colors.border,
-    primary: colors.primary,
-  },
-};
-
 export function RootNavigator() {
+  const { colors, isDark } = useTheme();
+  const navTheme = {
+    ...(isDark ? DarkTheme : DefaultTheme),
+    colors: {
+      ...(isDark ? DarkTheme : DefaultTheme).colors,
+      background: colors.background,
+      card: colors.surfaceRaised,
+      text: colors.text,
+      border: colors.border,
+      primary: colors.primary,
+    },
+  };
   const navRef = useNavigationContainerRef<RootStackParamList>();
   const lastRoute = useRef<string | undefined>(undefined);
 

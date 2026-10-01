@@ -1,23 +1,18 @@
 import React, { useState } from 'react';
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Linking,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { KeyboardAvoidingView, Linking, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors, radius, spacing, typography, buttonHeight } from '../theme/colors';
 import { useAuth } from '../context/AuthContext';
 import { friendlyError } from '../services/apiClient';
 import { track } from '../services/analytics';
 import { env } from '../config/env';
 import { useRemoteConfig } from '../context/RemoteConfigContext';
+import { Screen } from '../ui/Screen';
+import { AppText } from '../ui/AppText';
+import { Button, IconButton } from '../ui/Button';
+import { Card } from '../ui/Card';
+import { TextField } from '../ui/TextField';
+import { space } from '../theme/spacing';
+import { useTheme } from '../theme/ThemeContext';
 
 type Mode = 'signIn' | 'signUp' | 'resetRequest' | 'resetConfirm';
 
@@ -30,7 +25,7 @@ const TITLES: Record<Mode, [string, string]> = {
 
 export function AuthScreen() {
   const navigation = useNavigation();
-  const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
   const { signIn, signUp, requestPasswordReset, confirmPasswordReset } = useAuth();
   const { config } = useRemoteConfig();
   const [code, setCode] = useState('');
@@ -84,52 +79,36 @@ export function AuthScreen() {
 
   return (
     <KeyboardAvoidingView style={styles.flex} behavior="padding">
-      <ScrollView
-        style={styles.flex}
-        contentContainerStyle={[styles.content, { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24 }]}
-        keyboardShouldPersistTaps="handled"
-      >
+      <Screen scroll>
         <View style={styles.headerRow}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={12} accessibilityRole="button" accessibilityLabel="Close">
-            <Text style={styles.close}>✕</Text>
-          </Pressable>
+          <IconButton icon="close" label="Close" variant="filled" size={40} onPress={() => navigation.goBack()} />
         </View>
 
-        <Text style={styles.title} accessibilityRole="header">
+        <AppText variant="headingLarge" accessibilityRole="header">
           {title}
-        </Text>
-        <Text style={styles.subtitle}>{subtitle}</Text>
+        </AppText>
+        <AppText variant="body" tone="secondary" style={styles.subtitle}>
+          {subtitle}
+        </AppText>
 
         {info && (
-          <View style={styles.infoBox} accessibilityRole="alert">
-            <Text style={styles.infoText}>{info}</Text>
-          </View>
+          <Card variant="tinted" padding="md" style={[styles.notice, { backgroundColor: colors.successSoft }]} accessibilityRole="alert">
+            <AppText variant="bodySmall" tone="success">{info}</AppText>
+          </Card>
         )}
         {error && (
-          <View style={styles.errorBox} accessibilityRole="alert">
-            <Text style={styles.errorText}>{error}</Text>
-          </View>
+          <Card variant="tinted" padding="md" style={[styles.notice, { backgroundColor: colors.dangerSoft }]} accessibilityRole="alert">
+            <AppText variant="bodySmall" tone="danger">{error}</AppText>
+          </Card>
         )}
 
         {mode === 'signUp' && (
-          <>
-            <Text style={styles.label}>Name (optional)</Text>
-            <TextInput
-              style={styles.input}
-              value={displayName}
-              onChangeText={setDisplayName}
-              autoComplete="name"
-              textContentType="name"
-              maxLength={60}
-              returnKeyType="next"
-              accessibilityLabel="Name"
-            />
-          </>
+          <TextField label="Name (optional)" icon="user" value={displayName} onChangeText={setDisplayName} autoComplete="name" textContentType="name" maxLength={60} returnKeyType="next" accessibilityLabel="Name" />
         )}
 
-        <Text style={styles.label}>Email</Text>
-        <TextInput
-          style={styles.input}
+        <TextField
+          label="Email"
+          icon="mail"
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
@@ -144,127 +123,70 @@ export function AuthScreen() {
         />
 
         {mode === 'resetConfirm' && (
-          <>
-            <Text style={styles.label}>6-digit code</Text>
-            <TextInput
-              style={styles.input}
-              value={code}
-              onChangeText={(t) => setCode(t.replace(/\D/g, '').slice(0, 6))}
-              keyboardType="number-pad"
-              autoComplete="one-time-code"
-              textContentType="oneTimeCode"
-              accessibilityLabel="6-digit code"
-            />
-          </>
+          <TextField label="6-digit code" icon="sparkles" value={code} onChangeText={(t) => setCode(t.replace(/\D/g, '').slice(0, 6))} keyboardType="number-pad" autoComplete="one-time-code" textContentType="oneTimeCode" accessibilityLabel="6-digit code" />
         )}
 
         {showPassword && (
-          <>
-            <Text style={styles.label}>{mode === 'resetConfirm' ? 'New password' : 'Password'}</Text>
-            <TextInput
-              style={styles.input}
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              autoComplete={mode === 'signIn' ? 'current-password' : 'new-password'}
-              textContentType={mode === 'signIn' ? 'password' : 'newPassword'}
-              returnKeyType="go"
-              onSubmitEditing={submit}
-              accessibilityLabel={mode === 'resetConfirm' ? 'New password' : 'Password'}
-            />
-          </>
+          <TextField
+            label={mode === 'resetConfirm' ? 'New password' : 'Password'}
+            icon="lock"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            autoComplete={mode === 'signIn' ? 'current-password' : 'new-password'}
+            textContentType={mode === 'signIn' ? 'password' : 'newPassword'}
+            returnKeyType="go"
+            onSubmitEditing={submit}
+            accessibilityLabel={mode === 'resetConfirm' ? 'New password' : 'Password'}
+            hint={mode === 'signUp' || mode === 'resetConfirm' ? 'At least 8 characters.' : undefined}
+          />
         )}
-        {(mode === 'signUp' || mode === 'resetConfirm') && <Text style={styles.hint}>At least 8 characters.</Text>}
         {mode === 'signIn' && config.features.passwordReset && (
-          <Pressable style={styles.forgot} onPress={() => switchMode('resetRequest')} accessibilityRole="button">
-            <Text style={styles.forgotText}>Forgot password?</Text>
-          </Pressable>
+          <Button label="Forgot password?" variant="tertiary" size="sm" onPress={() => switchMode('resetRequest')} style={styles.inlineLink} />
         )}
 
-        <Pressable
-          style={[styles.primaryBtn, !canSubmit && styles.btnDisabled]}
-          onPress={submit}
-          disabled={!canSubmit}
-          accessibilityRole="button"
-          accessibilityState={{ disabled: !canSubmit, busy }}
-        >
-          {busy ? (
-            <ActivityIndicator color={colors.white} />
-          ) : (
-            <Text style={styles.primaryBtnText}>{submitLabel}</Text>
-          )}
-        </Pressable>
+        <Button label={submitLabel} size="lg" fullWidth loading={busy} disabled={!canSubmit} onPress={submit} style={styles.submit} />
 
-        <Pressable style={styles.switchBtn} onPress={() => switchMode(mode === 'signIn' ? 'signUp' : 'signIn')} accessibilityRole="button">
-          <Text style={styles.switchText}>
-            {mode === 'signIn' ? 'New here? Create an account' : mode === 'signUp' ? 'Already have an account? Sign in' : 'Back to sign in'}
-          </Text>
-        </Pressable>
+        <Button
+          label={mode === 'signIn' ? 'New here? Create an account' : mode === 'signUp' ? 'Already have an account? Sign in' : 'Back to sign in'}
+          variant="tertiary"
+          onPress={() => switchMode(mode === 'signIn' ? 'signUp' : 'signIn')}
+          style={styles.switch}
+        />
         {mode === 'resetConfirm' && (
-          <Pressable style={styles.forgot} onPress={() => switchMode('resetRequest')} accessibilityRole="button">
-            <Text style={styles.forgotText}>Didn’t get a code? Send another</Text>
-          </Pressable>
+          <Button label="Didn’t get a code? Send another" variant="tertiary" size="sm" onPress={() => switchMode('resetRequest')} style={styles.switch} />
         )}
 
         {mode === 'signUp' && env.privacyPolicyUrl && (
-          <Text style={styles.legal}>
+          <AppText variant="caption" tone="muted" align="center" style={styles.legal}>
             By creating an account you agree to our{' '}
-            <Text style={styles.link} onPress={() => void Linking.openURL(env.privacyPolicyUrl!)} accessibilityRole="link">
+            <AppText variant="caption" tone="primary" onPress={() => void Linking.openURL(env.privacyPolicyUrl!)} accessibilityRole="link" style={styles.link}>
               Privacy Policy
-            </Text>
+            </AppText>
             {env.termsUrl && (
               <>
                 {' '}and{' '}
-                <Text style={styles.link} onPress={() => void Linking.openURL(env.termsUrl!)} accessibilityRole="link">
+                <AppText variant="caption" tone="primary" onPress={() => void Linking.openURL(env.termsUrl!)} accessibilityRole="link" style={styles.link}>
                   Terms
-                </Text>
+                </AppText>
               </>
             )}
             .
-          </Text>
+          </AppText>
         )}
-      </ScrollView>
+      </Screen>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: colors.background },
-  content: { paddingHorizontal: spacing.screenPadding + 8 },
-  headerRow: { flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 12 },
-  close: { fontSize: 20, color: colors.text, padding: 4 },
-  title: { ...typography.heading, color: colors.text },
-  subtitle: { ...typography.body, color: colors.textSecondary, marginTop: 6, marginBottom: 24 },
-  label: { ...typography.body, fontWeight: '600', color: colors.text, marginBottom: 6, marginTop: 12 },
-  input: {
-    height: buttonHeight,
-    borderRadius: radius.card,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.card,
-    paddingHorizontal: 14,
-    fontSize: 16,
-    color: colors.text,
-  },
-  hint: { ...typography.caption, color: colors.textSecondary, marginTop: 6 },
-  primaryBtn: {
-    marginTop: 28,
-    height: buttonHeight,
-    borderRadius: radius.card,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  btnDisabled: { opacity: 0.5 },
-  primaryBtnText: { ...typography.title, color: colors.white },
-  switchBtn: { alignItems: 'center', paddingVertical: 16 },
-  switchText: { ...typography.body, color: colors.primary, fontWeight: '600' },
-  errorBox: { backgroundColor: '#FBE7E7', borderRadius: radius.card, padding: 12, marginBottom: 8 },
-  errorText: { ...typography.body, color: colors.danger },
-  infoBox: { backgroundColor: '#E3F3E3', borderRadius: radius.card, padding: 12, marginBottom: 8 },
-  infoText: { ...typography.body, color: colors.success },
-  forgot: { alignSelf: 'flex-start', paddingVertical: 10 },
-  forgotText: { ...typography.body, color: colors.primary, fontWeight: '600' },
-  legal: { ...typography.caption, color: colors.textSecondary, textAlign: 'center', marginTop: 4 },
-  link: { color: colors.primary, textDecorationLine: 'underline' },
+  flex: { flex: 1 },
+  headerRow: { flexDirection: 'row', justifyContent: 'flex-end', marginBottom: space.md },
+  subtitle: { marginTop: space.xs, marginBottom: space.md },
+  notice: { marginTop: space.md },
+  inlineLink: { marginTop: space.xs, marginLeft: -space.md },
+  submit: { marginTop: space.xxl },
+  switch: { alignSelf: 'center', marginTop: space.sm },
+  legal: { marginTop: space.md },
+  link: { textDecorationLine: 'underline' },
 });

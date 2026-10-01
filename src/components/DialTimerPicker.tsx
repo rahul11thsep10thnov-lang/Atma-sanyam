@@ -1,7 +1,8 @@
 import React, { useMemo, useRef } from 'react';
 import { PanResponder, StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
-import { colors, typography } from '../theme/colors';
+import { typography } from '../theme/colors';
+import { useTheme } from '../theme/ThemeContext';
 import { MAX_DURATION_MINUTES, MIN_DURATION_MINUTES, DURATION_STEP_MINUTES } from '../utils/grid';
 
 interface DialTimerPickerProps {
@@ -27,6 +28,7 @@ function valueForAngle(deg: number): number {
 }
 
 export function DialTimerPicker({ value, onChange, size = 260 }: DialTimerPickerProps) {
+  const { colors } = useTheme();
   const center = size / 2;
   const radius = center - HANDLE_RADIUS;
   const onChangeRef = useRef(onChange);
@@ -77,7 +79,8 @@ export function DialTimerPicker({ value, onChange, size = 260 }: DialTimerPicker
           cx={center}
           cy={center}
           r={radius}
-          stroke={colors.border}
+          stroke={colors.borderStrong}
+          strokeOpacity={0.6}
           strokeWidth={STROKE_WIDTH}
           fill="none"
           strokeLinecap="round"
@@ -95,12 +98,12 @@ export function DialTimerPicker({ value, onChange, size = 260 }: DialTimerPicker
           rotation={-90}
           origin={`${center}, ${center}`}
         />
-        <Circle cx={handleX} cy={handleY} r={HANDLE_RADIUS} fill={colors.card} />
+        <Circle cx={handleX} cy={handleY} r={HANDLE_RADIUS} fill={colors.surfaceRaised} />
         <Circle cx={handleX} cy={handleY} r={HANDLE_RADIUS - 4} fill={colors.primary} />
       </Svg>
       <View style={styles.centerLabel} pointerEvents="none">
-        <Text style={styles.valueText}>{value}</Text>
-        <Text style={styles.unitText}>minutes</Text>
+        <Text style={[styles.valueText, { color: colors.text }]}>{value}</Text>
+        <Text style={[styles.unitText, { color: colors.textSecondary }]}>minutes</Text>
       </View>
     </View>
   );
@@ -116,6 +119,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  valueText: { ...typography.heading, fontSize: 44, color: colors.text },
-  unitText: { ...typography.caption, color: colors.textSecondary, marginTop: 2 },
+  valueText: { ...typography.heading, fontSize: 44, lineHeight: 52 },
+  unitText: { ...typography.caption, marginTop: 2 },
 });

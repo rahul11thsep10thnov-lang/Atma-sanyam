@@ -44,11 +44,11 @@ export const DEFAULT_CONFIG: RemoteConfig = {
   },
   texts: {
     announcement: '',
-    sessionCompleteTitle: 'Puzzle complete!',
-    sessionCompleteMessage: 'Great focus — your picture is fully assembled.',
-    sessionFailedTitle: 'Session failed',
-    sessionLeftAppMessage: "You left the app too long, so this puzzle didn't get finished.",
-    sessionGaveUpMessage: 'Session ended early — the puzzle stays incomplete.',
+    sessionCompleteTitle: 'Picture complete',
+    sessionCompleteMessage: 'Your focus revealed the whole picture. Your world grew a little.',
+    sessionFailedTitle: 'Your focus paused.',
+    sessionLeftAppMessage: 'You were away a little too long, so this picture stays unfinished.',
+    sessionGaveUpMessage: 'This session ended early. The picture stays unfinished for now.',
   },
   session: { gracePeriodSeconds: 5 },
 };

@@ -8,6 +8,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   soundEnabled: true,
   analyticsEnabled: true,
   pushEnabled: false,
+  appearance: 'system',
 };
 
 export async function loadSettings(): Promise<AppSettings> {

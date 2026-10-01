@@ -3,7 +3,8 @@
 // from disk on remount (no spinner flash) once cached.
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors, radius } from '../theme/colors';
+import { radii } from '../theme/radii';
+import { useTheme } from '../theme/ThemeContext';
 import { ContentImage } from './types';
 import { ImageVariant, peekCachedImageUri, resolveImageUri } from './repository';
 
@@ -16,6 +17,7 @@ interface RemoteThumbProps {
 }
 
 export function RemoteThumb({ image, variant = 'thumbnail', size, onPress, selected }: RemoteThumbProps) {
+  const { colors } = useTheme();
   const [uri, setUri] = useState<string | null>(() => peekCachedImageUri(image, variant));
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>(uri ? 'idle' : 'loading');
   const [attempt, setAttempt] = useState(0);
@@ -41,7 +43,7 @@ export function RemoteThumb({ image, variant = 'thumbnail', size, onPress, selec
 
   const containerStyle = [
     styles.container,
-    { width: size, height: size, borderColor: selected ? colors.primary : colors.border, borderWidth: selected ? 2 : 1 },
+    { width: size, height: size, borderColor: selected ? colors.primary : colors.border, borderWidth: selected ? 2 : 1, backgroundColor: colors.surfaceRaised },
   ];
 
   return (
@@ -60,7 +62,7 @@ export function RemoteThumb({ image, variant = 'thumbnail', size, onPress, selec
       )}
       {status === 'error' && (
         <Pressable style={styles.overlay} onPress={() => setAttempt((a) => a + 1)}>
-          <Text style={styles.retryText}>Retry</Text>
+          <Text style={[styles.retryText, { color: colors.primary }]}>Retry</Text>
         </Pressable>
       )}
     </Pressable>
@@ -69,9 +71,8 @@ export function RemoteThumb({ image, variant = 'thumbnail', size, onPress, selec
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: radius.card,
+    borderRadius: radii.md,
     overflow: 'hidden',
-    backgroundColor: colors.card,
   },
   image: { width: '100%', height: '100%' },
   overlay: {
@@ -83,5 +84,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  retryText: { color: colors.primary, fontWeight: '700', fontSize: 12 },
+  retryText: { fontWeight: '700', fontSize: 12 },
 });
