@@ -4,7 +4,8 @@ import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDictionary, type Dictionary } from "@/lib/i18n/dictionaries";
 import { getDb, stateById } from "@/lib/master/repo";
 import { viewBySlug } from "@/lib/master/view";
-import { getDestinationContent, isServable } from "@/lib/master/generation/pipeline";
+import { isServable } from "@/lib/master/generation/pipeline";
+import { localizedContent } from "@/lib/master/translation/localized";
 import { SubPageHeader } from "@/components/destination/SubPageHeader";
 import { GeneratedSectionView } from "@/components/destination/GeneratedSectionView";
 import { SourcesSection } from "@/components/destination/SourcesSection";
@@ -28,6 +29,8 @@ export function createSectionSubPage(opts: {
   /** Breadcrumb label. */
   crumb: (dict: Dictionary) => string;
   title: (name: string) => string;
+  /** On-page heading in the reader's language (the title above is used for metadata). */
+  heading?: (dict: Dictionary, name: string) => string;
   description: (name: string, state: string) => string;
   withLiveWeather?: boolean;
 }) {
@@ -57,10 +60,11 @@ export function createSectionSubPage(opts: {
     const view = viewBySlug(params.slug);
     if (!view || view.state.slug !== params.state) notFound();
     const dict = getDictionary(locale);
-    const content = getDestinationContent(getDb(), view.record.id);
+    const localized = localizedContent(view.record, locale);
+    const content = localized.content;
     if (!isServable(content.record.published_status)) notFound();
-    const sections = opts.sectionIds.map((id) => content.page.sections.find((s) => s.id === id)).filter((s): s is NonNullable<typeof s> => Boolean(s));
-    const name = view.record.name;
+    const sections = opts.sectionIds.map((id) => localized.page.sections.find((s) => s.id === id)).filter((s): s is NonNullable<typeof s> => Boolean(s));
+    const name = localized.translator?.localName ?? view.record.name;
 
     return (
       <>
@@ -71,7 +75,7 @@ export function createSectionSubPage(opts: {
             { label: opts.crumb(dict), href: `/${locale}${view.path}/${opts.path}` }
           ]}
         />
-        <SubPageHeader view={view} locale={locale} title={opts.title(name)} />
+        <SubPageHeader view={view} locale={locale} name={name} title={opts.heading ? opts.heading(dict, name) : opts.title(name)} />
         {sections.map((s, i) => (
           <GeneratedSectionView key={s.id} section={s} name={name} locale={locale} dict={dict} images={view.watermarkImages} tone={i % 2 ? "tinted" : "plain"} />
         ))}

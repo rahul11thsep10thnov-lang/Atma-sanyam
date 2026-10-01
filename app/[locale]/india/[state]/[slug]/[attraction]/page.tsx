@@ -12,6 +12,7 @@ import { AttractionJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { SmartImage } from "@/components/ui/SmartImage";
 import { VerificationBadge } from "@/components/ui/VerificationBadge";
 import { WatermarkSection } from "@/components/watermark/WatermarkSection";
+import { translatorForDestination } from "@/lib/master/translation/localized";
 import { placeholderImage } from "@/lib/data/placeholder";
 
 interface PageParams {
@@ -77,6 +78,10 @@ export default function AttractionPage({ params }: { params: PageParams }) {
   const t = dict.destination.attraction as Record<string, string>;
   const db = getDb();
   const path = attractionPath(a);
+  const tr = translatorForDestination(view.record, locale);
+  const T = (v: string | null): string | null => (v && tr ? tr.t(v) : v);
+  const destName = tr?.localName ?? view.record.name;
+  const stateName = tr ? tr.stateName(view.state.slug, view.state.name) : view.state.name;
 
   const media = db.media.filter((m) => m.entity_id === a.id);
   const hero = media[0] ? imageFromMedia(media[0]) : placeholderImage(a.name, 1600, 700);
@@ -88,20 +93,20 @@ export default function AttractionPage({ params }: { params: PageParams }) {
   const na = <span className="text-charcoal-light/70">{ui.notYetCollected}</span>;
 
   const facts: Array<[string, React.ReactNode]> = [
-    [t.type, labelize(a.attraction_type)],
-    [t.openingHours, a.opening_hours_text ?? na],
-    [t.weeklyClosed, a.weekly_closed_day ?? na],
+    [t.type, T(labelize(a.attraction_type))],
+    [t.openingHours, T(a.opening_hours_text) ?? na],
+    [t.weeklyClosed, T(a.weekly_closed_day) ?? na],
     [t.entry, entryText(a, t) ?? na],
     [t.childFee, a.child_entry_fee !== null ? formatINR(a.child_entry_fee) : na],
     [t.seniorFee, a.senior_entry_fee !== null ? formatINR(a.senior_entry_fee) : na],
     [t.visitTime, a.average_visit_minutes !== null ? `${a.average_visit_minutes} ${t.minutes}` : na],
-    [t.bestTimeOfDay, a.best_time_of_day ?? na],
+    [t.bestTimeOfDay, T(a.best_time_of_day) ?? na],
     [t.booking, a.advance_booking_required === null ? na : a.advance_booking_required ? t.required : t.notRequired],
-    [t.nearbyTransport, a.nearby_transport ?? na]
+    [t.nearbyTransport, T(a.nearby_transport) ?? na]
   ];
   const rules: Array<[string, React.ReactNode]> = [
-    [t.dressCode, a.dress_code ?? na],
-    [t.footwear, a.footwear_rules ?? na],
+    [t.dressCode, T(a.dress_code) ?? na],
+    [t.footwear, T(a.footwear_rules) ?? na],
     [t.photography, a.photography_allowed === null ? na : yesNo(a.photography_allowed, t as never)],
     [t.video, a.video_allowed === null ? na : yesNo(a.video_allowed, t as never)],
     [t.drone, a.drone_allowed === null ? na : yesNo(a.drone_allowed, t as never)]
@@ -117,8 +122,8 @@ export default function AttractionPage({ params }: { params: PageParams }) {
 
   const crumbs = [
     { label: dict.common.nav.home, href: `/${locale}` },
-    { label: view.state.name, href: `/${locale}/india/${view.state.slug}` },
-    { label: view.record.name, href: `/${locale}${view.path}` },
+    { label: stateName, href: `/${locale}/india/${view.state.slug}` },
+    { label: destName, href: `/${locale}${view.path}` },
     { label: a.name, href: `/${locale}${path}` }
   ];
 
@@ -145,7 +150,7 @@ export default function AttractionPage({ params }: { params: PageParams }) {
         <div className="container-page absolute bottom-4 left-0 right-0 text-white">
           <h1 className="font-display text-3xl font-bold sm:text-4xl">{a.name}</h1>
           <p className="mt-1 text-sm text-white/90">
-            <Link href={`/${locale}${view.path}`} className="underline underline-offset-2">{view.record.name}</Link>, {view.state.name}
+            <Link href={`/${locale}${view.path}`} className="underline underline-offset-2">{destName}</Link>, {stateName}
             {a.is_hidden_gem && ` · ${t.hiddenGem}`}
           </p>
         </div>
@@ -157,7 +162,7 @@ export default function AttractionPage({ params }: { params: PageParams }) {
             <h2 className="section-heading">{t.overview.replace("{name}", a.name)}</h2>
             <VerificationBadge status={verified ? "VERIFIED" : "UNVERIFIED"} ui={ui} />
           </div>
-          <p className="mt-3 text-sm leading-relaxed text-charcoal sm:text-base">{a.current_description}</p>
+          <p className="mt-3 text-sm leading-relaxed text-charcoal sm:text-base">{T(a.current_description)}</p>
 
           <h2 className="section-heading mt-10">{t.quickFacts}</h2>
           <Table rows={facts} />
@@ -165,9 +170,9 @@ export default function AttractionPage({ params }: { params: PageParams }) {
 
           {(a.historical_importance || a.cultural_importance || a.religious_importance) && (
             <div className="mt-8 space-y-4">
-              {a.historical_importance && (<div><h3 className="font-semibold text-charcoal">{t.history}</h3><p className="mt-1 text-sm text-charcoal-light sm:text-base">{a.historical_importance}</p></div>)}
-              {a.cultural_importance && (<div><h3 className="font-semibold text-charcoal">{t.culture}</h3><p className="mt-1 text-sm text-charcoal-light sm:text-base">{a.cultural_importance}</p></div>)}
-              {a.religious_importance && (<div><h3 className="font-semibold text-charcoal">{t.religion}</h3><p className="mt-1 text-sm text-charcoal-light sm:text-base">{a.religious_importance}</p></div>)}
+              {a.historical_importance && (<div><h3 className="font-semibold text-charcoal">{t.history}</h3><p className="mt-1 text-sm text-charcoal-light sm:text-base">{T(a.historical_importance)}</p></div>)}
+              {a.cultural_importance && (<div><h3 className="font-semibold text-charcoal">{t.culture}</h3><p className="mt-1 text-sm text-charcoal-light sm:text-base">{T(a.cultural_importance)}</p></div>)}
+              {a.religious_importance && (<div><h3 className="font-semibold text-charcoal">{t.religion}</h3><p className="mt-1 text-sm text-charcoal-light sm:text-base">{T(a.religious_importance)}</p></div>)}
             </div>
           )}
 
@@ -176,7 +181,7 @@ export default function AttractionPage({ params }: { params: PageParams }) {
               <h3 className="font-semibold text-charcoal">{t.events}</h3>
               <ul className="mt-2 space-y-2 text-sm text-charcoal-light">
                 {events.map((e) => (
-                  <li key={e.id}><strong className="text-charcoal">{e.approximate_date}:</strong> {e.title} — {e.description}</li>
+                  <li key={e.id}><strong className="text-charcoal">{e.approximate_date}:</strong> {T(e.title)} — {T(e.description)}</li>
                 ))}
               </ul>
             </div>
@@ -188,7 +193,7 @@ export default function AttractionPage({ params }: { params: PageParams }) {
               {traditions.map((x) => (
                 <p key={x.id} className="mt-2 border-l-4 border-saffron-400 bg-saffron-50/70 py-2 pl-4 pr-3 text-sm italic text-charcoal">
                   <span className="mr-2 rounded-full bg-white/80 px-2 py-0.5 text-[11px] font-semibold not-italic text-saffron-700">{t.tradition}</span>
-                  {x.title}: {x.short_story}
+                  {T(x.title)}: {T(x.short_story)}
                 </p>
               ))}
             </div>
@@ -215,13 +220,13 @@ export default function AttractionPage({ params }: { params: PageParams }) {
       {siblings.length > 0 && (
         <section className="border-t border-forest-100 py-9">
           <div className="container-page">
-            <h2 className="section-heading">{t.nearbyPlaces.replace("{destination}", view.record.name)}</h2>
+            <h2 className="section-heading">{t.nearbyPlaces.replace("{destination}", destName)}</h2>
             <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {siblings.map((s) => (
                 <li key={s.id}>
                   <Link href={`/${locale}${attractionPath(s)}`} className="block h-full rounded-xl bg-white p-4 shadow-sm ring-1 ring-black/5 hover:shadow-md">
                     <span className="font-medium text-charcoal">{s.name}</span>
-                    <span className="mt-1 line-clamp-2 block text-xs text-charcoal-light">{s.short_description}</span>
+                    <span className="mt-1 line-clamp-2 block text-xs text-charcoal-light">{T(s.short_description)}</span>
                   </Link>
                 </li>
               ))}

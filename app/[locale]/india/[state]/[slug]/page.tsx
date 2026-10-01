@@ -6,6 +6,7 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getDb, stateById, childrenOf } from "@/lib/master/repo";
 import { attractionHrefs, viewBySlug, watermarkImagesOf } from "@/lib/master/view";
 import { getDestinationContent, isServable } from "@/lib/master/generation/pipeline";
+import { localizedContent } from "@/lib/master/translation/localized";
 import { planItinerary } from "@/lib/master/engine/itinerary";
 import { DestinationHero } from "@/components/destination/DestinationHero";
 import { SectionNav } from "@/components/destination/SectionNav";
@@ -60,16 +61,20 @@ export default function DestinationPage({ params }: { params: PageParams }) {
   const dict = getDictionary(locale);
   const db = getDb();
   const d = view.record;
-  const content = getDestinationContent(db, d.id);
+  const localized = localizedContent(d, locale);
+  const content = localized.content;
   // Content that failed its fact-check or SEO validation (or awaits editor approval when required) is never served.
   if (!isServable(content.record.published_status)) notFound();
-  const { page } = content;
+  const page = localized.page;
+  const tr = localized.translator;
+  const localName = tr?.localName ?? d.name;
+  const stateName = tr ? tr.stateName(view.state.slug, view.state.name) : view.state.name;
 
   const breadcrumbItems = [
     { label: dict.common.nav.home, href: `/${locale}` },
-    { label: "India", href: `/${locale}/explore` },
-    { label: view.state.name, href: `/${locale}/india/${view.state.slug}` },
-    { label: d.name, href: `/${locale}${view.path}` }
+    { label: dict.common.ui.india, href: `/${locale}/explore` },
+    { label: stateName, href: `/${locale}/india/${view.state.slug}` },
+    { label: localName, href: `/${locale}${view.path}` }
   ];
 
   // The starter plan shown on the page: the destination's recommended length, built from stored data.
@@ -103,7 +108,7 @@ export default function DestinationPage({ params }: { params: PageParams }) {
       <FaqJsonLd faqs={page.faq} />
 
       <Breadcrumbs items={breadcrumbItems} />
-      <DestinationHero view={view} locale={locale} dict={dict} />
+      <DestinationHero view={view} locale={locale} dict={dict} tr={localized.translator} coverage={localized.coverage} />
       {parent && (
         <p className="container-page pt-3 text-xs text-charcoal-light">
           {dict.common.ui.partOf}{" "}
@@ -112,8 +117,8 @@ export default function DestinationPage({ params }: { params: PageParams }) {
           </Link>
         </p>
       )}
-      <nav aria-label={dict.common.ui.moreOn.replace("{name}", d.name)} className="container-page flex flex-wrap items-center gap-2 pt-4 text-xs">
-        <span className="font-semibold text-charcoal">{dict.common.ui.moreOn.replace("{name}", d.name)}:</span>
+      <nav aria-label={dict.common.ui.moreOn.replace("{name}", localName)} className="container-page flex flex-wrap items-center gap-2 pt-4 text-xs">
+        <span className="font-semibold text-charcoal">{dict.common.ui.moreOn.replace("{name}", localName)}:</span>
         {(
           [
             ["history", dict.destination.sections.history],
@@ -128,11 +133,11 @@ export default function DestinationPage({ params }: { params: PageParams }) {
           </Link>
         ))}
       </nav>
-      <SectionNav sections={page.sections} name={d.name} dict={dict} extra={extraNav} />
+      <SectionNav sections={page.sections} name={localName} dict={dict} extra={extraNav} />
 
       {page.sections.map((section, i) => (
         <div key={section.id}>
-          <GeneratedSectionView section={section} name={d.name} locale={locale} dict={dict} images={sectionImages(i)} tone={i % 2 ? "tinted" : "plain"}>
+          <GeneratedSectionView section={section} name={localName} locale={locale} dict={dict} images={sectionImages(i)} tone={i % 2 ? "tinted" : "plain"}>
             {section.id === "top-places" && children.length > 0 && (
               <p className="mt-4 text-sm text-charcoal-light">
                 {dict.common.ui.alsoNear}:{" "}

@@ -1,6 +1,7 @@
 import { placeholderImage } from "@/lib/data/placeholder";
 import type { DestinationSummary, ImageAsset } from "@/lib/types";
 import { getDb, destinationById, destinationBySlug, stateById } from "./repo";
+import { translationFile } from "./translation/memory";
 import type { AttractionRecord, DestinationRecord, MediaRecord, StateRecord } from "./types";
 
 /**
@@ -133,17 +134,24 @@ export interface SuggestionItem {
   href: string; // locale-less
 }
 
-export function suggestionIndex(): SuggestionItem[] {
+export function suggestionIndex(locale = "en"): SuggestionItem[] {
   const db = getDb();
+  const file = locale === "en" ? undefined : translationFile(locale);
   const states = new Map(db.states.map((s) => [s.id, s]));
-  const dests: SuggestionItem[] = db.destinations.map((d) => ({
-    label: d.name,
-    sublabel: states.get(d.state_id)!.name,
-    href: `/india/${states.get(d.state_id)!.slug}/${d.slug}`
-  }));
+  const stateName = (slug: string, name: string) => file?.states[slug] ?? name;
+  // Local name first; the English name stays in the sublabel so typing either finds the place.
+  const dests: SuggestionItem[] = db.destinations.map((d) => {
+    const st = states.get(d.state_id)!;
+    const local = file?.names[d.slug];
+    return {
+      label: local ?? d.name,
+      sublabel: local ? `${d.name} · ${stateName(st.slug, st.name)}` : st.name,
+      href: `/india/${st.slug}/${d.slug}`
+    };
+  });
   const stateItems: SuggestionItem[] = db.states
     .filter((s) => db.destinations.some((d) => d.state_id === s.id))
-    .map((s) => ({ label: s.name, sublabel: s.type === "STATE" ? "State" : "Union Territory", href: `/india/${s.slug}` }));
+    .map((s) => ({ label: stateName(s.slug, s.name), sublabel: file ? s.name : s.type === "STATE" ? "State" : "Union Territory", href: `/india/${s.slug}` }));
   return [...dests, ...stateItems];
 }
 

@@ -36,6 +36,9 @@ export function hoursText(minutes: number): string {
   return Number.isInteger(h) ? `${h} h` : `${h.toFixed(1)} h`;
 }
 
+/** "1 day", "2 days". */
+export const daysText = (n: number) => `${n} ${n === 1 ? "day" : "days"}`;
+
 export const sentenceCase = (s: string) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
 
 export function labelize(value: string): string {

@@ -16,7 +16,8 @@
     "prisma:seed": "tsx prisma/seed.ts",
     "verify:engine": "tsx --tsconfig tsconfig.seed.json scripts/verify-engine.ts",
     "verify:seed-types": "tsc --noEmit -p tsconfig.seed.json",
-    "import:facts": "tsx --tsconfig tsconfig.seed.json scripts/import-facts.ts"
+    "import:facts": "tsx --tsconfig tsconfig.seed.json scripts/import-facts.ts",
+    "translate": "tsx --tsconfig tsconfig.seed.json scripts/translate.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.129.0",

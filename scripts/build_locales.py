@@ -1,7 +1,7 @@
 # Writes locale JSON files from scripts/i18n_data.py. Existing translations are kept; only the listed keys are (re)written.
 import json, os, sys
 sys.path.insert(0, os.path.dirname(__file__))
-from i18n_data import DATA
+from i18n_data import DATA, ATTRACTION_LABELS
 root = os.path.join(os.path.dirname(__file__), "..", "locales")
 
 def load(lang, name):
@@ -24,6 +24,7 @@ for lang, d in DATA.items():
     common.setdefault("siteName", "budgettourism")
     dest.setdefault("sectionTitles", {}).update(d["st"])
     dest.setdefault("pages", {}).update(d["pages"])
+    if lang in ATTRACTION_LABELS: dest.setdefault("attraction", {}).update(ATTRACTION_LABELS[lang])
     for k, v in d["home"].items():
         if isinstance(v, dict): home.setdefault(k, {}).update(v)
         else: home[k] = v

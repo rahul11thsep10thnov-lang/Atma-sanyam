@@ -2,6 +2,8 @@ import { getDestinationContent } from "@/lib/master/generation/pipeline";
 import { assessAll, auditLinks, pendingVerification, staleFacts } from "@/lib/master/engine/verification";
 import { validateDatabase } from "@/lib/master/engine/validation";
 import type { MasterDatabase } from "@/lib/master/types";
+import { coverageReport } from "@/lib/master/translation/todo";
+import { TRANSLATED_LANGUAGES, translationFile } from "@/lib/master/translation/memory";
 
 /**
  * The admin dashboard's sections (spec section 55). Each one is a read-only view over the master
@@ -158,8 +160,20 @@ export const ADMIN_SECTIONS: AdminSection[] = [
   {
     slug: "translations",
     title: "Translations",
-    description: "Stored translations of record fields. UI labels are translated in /locales; guide text falls back to English until a translation is stored here.",
-    build: (db) => [table("Translations", db.translations, ["ID", "Entity", "Language", "Field", "Status"], (t) => [t.id, nameOf(db)(t.entity_id), t.language_code, t.field_name, t.translation_status], db.translations.length === 0 ? "No translations stored yet — every page falls back to English text with translated interface labels." : undefined)]
+    description: "Guide text is translated sentence by sentence into a translation memory (data/translations). A translation is only used while its English source is unchanged; numbers, prices and times must match the original exactly. All of it is machine-drafted until a native speaker reviews it.",
+    build: (db) => [
+      {
+        title: "Guide-text coverage by language",
+        columns: ["Language", "Sentences", "Translated", "Share of text", "Review status"],
+        rows: TRANSLATED_LANGUAGES.map((l) => {
+          const c = coverageReport(db, l);
+          return [l, c.total, c.translated, `${Math.round((c.chars_translated / Math.max(1, c.chars_total)) * 100)}%`, translationFile(l)?.status === "MACHINE" ? "Machine-drafted, not reviewed" : String(translationFile(l)?.status)];
+        }),
+        total: TRANSLATED_LANGUAGES.length,
+        note: "Languages without a translation memory (bn, mr, kn, te, ml) show English guide text with a translated interface."
+      },
+      table("Per-record translations", db.translations, ["ID", "Entity", "Language", "Field", "Status"], (t) => [t.id, nameOf(db)(t.entity_id), t.language_code, t.field_name, t.translation_status])
+    ]
   },
   {
     slug: "media",

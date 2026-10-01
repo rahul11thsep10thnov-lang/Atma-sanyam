@@ -2,6 +2,7 @@ import { CircuitEngine } from "@/lib/master/engine/circuits";
 import { getDb, stateById } from "@/lib/master/repo";
 import type { DestinationRecord } from "@/lib/master/types";
 import { attractionPath } from "@/lib/master/view";
+import { localNamesOf } from "@/lib/master/translation/memory";
 
 export type SearchIntent = "TRIP_FROM" | "TRIP_TO" | "NEARBY" | "SECTION" | "PLACE" | "NONE";
 
@@ -70,7 +71,7 @@ function findDestination(phrase: string): { dest: DestinationRecord; score: numb
   if (!q) return null;
   let best: { dest: DestinationRecord; score: number } | null = null;
   for (const d of db.destinations) {
-    const s = Math.max(similarity(q, d.name), similarity(q, d.slug.replace(/-/g, " ")), ...d.alternate_names.map((n) => similarity(q, n)));
+    const s = Math.max(similarity(q, d.name), similarity(q, d.slug.replace(/-/g, " ")), ...d.alternate_names.map((n) => similarity(q, n)), ...localNamesOf(d.slug).map((n) => similarity(q, n)));
     if (s > 0 && (!best || s + d.popularity / 1000 > best.score + best.dest.popularity / 1000)) best = { dest: d, score: s };
   }
   return best && best.score >= 45 ? best : null;
@@ -169,7 +170,7 @@ export function search(query: string, limit = 12): SearchResponse {
   };
   const needle = phrase || cleaned || q;
   for (const d of db.destinations) {
-    const s = Math.max(similarity(needle, d.name), similarity(needle, ALIASES[needle] ?? ""));
+    const s = Math.max(similarity(needle, d.name), similarity(needle, ALIASES[needle] ?? ""), ...localNamesOf(d.slug).map((n) => similarity(needle, n)));
     if (s > 0) push({ kind: "destination", title: d.name, subtitle: `${stateById(d.state_id)!.name} · ${d.one_line_description}`, href: `/india/${stateById(d.state_id)!.slug}/${d.slug}`, score: s + d.popularity / 100 });
   }
   for (const s of db.states) {

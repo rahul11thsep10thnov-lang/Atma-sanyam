@@ -18,6 +18,10 @@ import { factCheck } from "../lib/master/generation/validator";
 import { onboardDestination } from "../lib/master/pipeline/onboard";
 import { runImport } from "../lib/master/pipeline/import";
 import { search } from "../lib/search/search";
+import { checkFaithful } from "../lib/master/translation/faithful";
+import { TRANSLATED_LANGUAGES, properNames, translatePage, translationFile, translatorFor } from "../lib/master/translation/memory";
+import { coverageReport, orphanStrings } from "../lib/master/translation/todo";
+import { getDestinationContent } from "../lib/master/generation/pipeline";
 
 let failed = 0;
 let passed = 0;
@@ -159,7 +163,29 @@ console.log("Pipelines");
 console.log("Search");
 check("“3 day trip from Delhi” is understood as a route request", search("3 day trip from Delhi").intent === "TRIP_FROM");
 check("“hotels in Goa” goes to the stay section", search("hotels in Goa").hits[0]?.href.includes("goa") === true);
+check("a Hindi name finds the place (“वाराणसी”)", search("वाराणसी").hits[0]?.title === "Varanasi");
+check("a Tamil name finds the place (“வாரணாசி”)", search("வாரணாசி").hits[0]?.title === "Varanasi");
 check("a misspelling still finds the place (“varansi”)", search("varansi").hits[0]?.title === "Varanasi");
+
+console.log("Translations");
+for (const lang of TRANSLATED_LANGUAGES) {
+  const file = translationFile(lang)!;
+  const bad = Object.entries(file.strings).filter(([en, tr]) => !checkFaithful(en, tr).ok);
+  check(`${lang}: every stored translation keeps all numbers, prices, times and placeholders`, bad.length === 0, bad.slice(0, 2).map(([e]) => e.slice(0, 50)).join("; "));
+  const cov = coverageReport(db, lang);
+  check(`${lang}: guide text is fully covered (${cov.translated}/${cov.total} sentences)`, cov.translated === cov.total);
+  check(`${lang}: no stale translations (English source unchanged)`, orphanStrings(db, lang).length === 0, orphanStrings(db, lang).slice(0, 2).join("; "));
+  check(`${lang}: every destination has a local name`, db.destinations.every((d) => Boolean(file.names[d.slug])));
+  const names = properNames(db);
+  const vns = bySlug("varanasi");
+  const page = getDestinationContent(db, vns.id).page;
+  const out = translatePage(page, translatorFor(lang, vns, names));
+  check(`${lang}: translated page keeps the same sections, rows and FAQ as the English page`,
+    out.sections.length === page.sections.length && out.faq.length === page.faq.length && out.sections.every((s, i) => s.table?.rows.length === page.sections[i].table?.rows.length && s.bullets.length === page.sections[i].bullets.length));
+  check(`${lang}: link targets are untouched by translation`,
+    JSON.stringify(out.sections.flatMap((s) => [...s.bullets, ...(s.table?.rows.flat() ?? [])]).map((c) => (typeof c === "string" ? null : c.href))) ===
+    JSON.stringify(page.sections.flatMap((s) => [...s.bullets, ...(s.table?.rows.flat() ?? [])]).map((c) => (typeof c === "string" ? null : c.href))));
+}
 
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed ? 1 : 0);

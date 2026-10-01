@@ -34,7 +34,7 @@ export default function HomePage({ params }: { params: { locale: string } }) {
   const { home } = dict;
 
   const homepageRails = homepageSections();
-  const suggestions = suggestionIndex();
+  const suggestions = suggestionIndex(locale);
   const popular = popularSearchSlugs
     .map((slug) => suggestions.find((x) => x.href.endsWith(`/${slug}`)))
     .filter((x): x is NonNullable<typeof x> => Boolean(x));

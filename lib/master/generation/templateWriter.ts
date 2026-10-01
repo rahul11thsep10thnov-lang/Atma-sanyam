@@ -2,7 +2,7 @@ import { STATABLE_CONFIDENCE } from "../policy";
 import { estimateBudget } from "../engine/budget";
 import type { MasterDatabase } from "../types";
 import { emptyDatabase } from "../types";
-import { formatINR, hoursText, joinList, labelize, monthName, monthRangeText, rangeINR, yearText } from "./format";
+import { daysText, formatINR, hoursText, joinList, labelize, monthName, monthRangeText, rangeINR, yearText } from "./format";
 import type {
   Cell, ContentWriter, GeneratedPage, GeneratedSection, GenerationInput, VerificationStatus
 } from "./types";
@@ -207,7 +207,7 @@ export class TemplateWriter implements ContentWriter {
           kind: "fact",
           text: r.min === r.max
             ? `${d.name} is usually covered in ${r.min} ${r.min === 1 ? "day" : "days"}.`
-            : `${d.name} works as a ${r.min}–${r.max} day stop; ${r.recommended} days suits a relaxed pace.`
+            : `${d.name} works as a ${r.min}–${r.max} day stop; ${daysText(r.recommended)} suits a relaxed pace.`
         });
         input.itineraries.forEach((i) => s.bullets.push({ text: `${i.days}-${i.days === 1 ? "day" : "days"} ${d.name} itinerary`, href: `/itinerary/${d.slug}/${i.days}-${i.days === 1 ? "day" : "days"}` }));
         s.notices.push("Recommended durations are editorial estimates and have not been verified.");
@@ -296,7 +296,7 @@ export class TemplateWriter implements ContentWriter {
         });
         if (rows.length) {
           s.table = { headers: ["Style", "Estimated total for 2", "Range", "Per person per day"], rows };
-          s.paragraphs.push({ kind: "estimate", text: `Estimated cost for two travellers over ${days} days, excluding travel to ${d.name}. Estimated cost — actual prices may vary.` });
+          s.paragraphs.push({ kind: "estimate", text: `Estimated cost for two travellers over ${daysText(days)}, excluding travel to ${d.name}. Estimated cost — actual prices may vary.` });
           s.notices.push("These are planning estimates from default cost ranges, not quotes, and are not yet verified.");
         } else s.missing.push("No cost data has been collected yet.");
       })
@@ -386,7 +386,7 @@ export class TemplateWriter implements ContentWriter {
       section("circuits", "Combine with a circuit", [], (s) => {
         input.circuits.forEach(({ circuit, stops }) =>
           s.bullets.push({
-            text: `${circuit.name} — ${stops.map((x) => x.name).join(" → ")} (${circuit.recommended_days} days suggested)`,
+            text: `${circuit.name} — ${stops.map((x) => x.name).join(" → ")} (${daysText(circuit.recommended_days)} suggested)`,
             href: `/trips/${circuit.slug}`
           })
         );
@@ -400,7 +400,7 @@ export class TemplateWriter implements ContentWriter {
     const r = d.recommended_days;
     faq.push({
       question: `How many days do I need in ${d.name}?`,
-      answer: r.min === r.max ? `Most visitors spend ${r.min} ${r.min === 1 ? "day" : "days"} in ${d.name}.` : `Most visitors spend ${r.min} to ${r.max} days in ${d.name}; ${r.recommended} days suits a relaxed pace.`
+      answer: r.min === r.max ? `Most visitors spend ${r.min} ${r.min === 1 ? "day" : "days"} in ${d.name}.` : `Most visitors spend ${r.min} to ${r.max} days in ${d.name}; ${daysText(r.recommended)} suits a relaxed pace.`
     });
     if (bestText) faq.push({ question: `When is the best time to visit ${d.name}?`, answer: `The usual best time is ${bestText}.` });
     if (d.best_known_for.length) faq.push({ question: `What is ${d.name} known for?`, answer: `${d.name} is best known for ${joinList(d.best_known_for)}.` });

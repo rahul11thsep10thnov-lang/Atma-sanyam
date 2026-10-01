@@ -4,6 +4,7 @@ const sub = createSectionSubPage({
   path: "history",
   crumb: (dict) => dict.destination.sections.history,
   sectionIds: ["story","periods","today"],
+  heading: (dict, name) => dict.destination.pages.history.replace("{name}", name),
   title: (name) => `History of ${name}`,
   description: (name, state) => `The ancient and historical story of ${name}, ${state} — traditions are kept separate from documented history.`
 });

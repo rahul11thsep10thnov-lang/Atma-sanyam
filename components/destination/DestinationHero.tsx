@@ -1,23 +1,25 @@
 import Link from "next/link";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { labelize } from "@/lib/master/generation/format";
-import { translated, type DestinationView } from "@/lib/master/view";
+import type { DestinationView } from "@/lib/master/view";
+import type { Coverage, Translator } from "@/lib/master/translation/memory";
 import { SmartImage } from "@/components/ui/SmartImage";
 import { WatermarkSection } from "@/components/watermark/WatermarkSection";
 
-export function DestinationHero({ view, locale, dict }: { view: DestinationView; locale: string; dict: Dictionary }) {
+export function DestinationHero({ view, locale, dict, tr, coverage }: { view: DestinationView; locale: string; dict: Dictionary; tr: Translator | null; coverage: Coverage | null }) {
+  const t = (s: string | null) => (s && tr ? tr.t(s) : s);
   const d = view.record;
   const { quickInfo, buttons } = dict.destination;
   const base = `/${locale}${view.path}`;
-  const tagline = translated(d.id, "one_line_description", locale, d.one_line_description);
+  const tagline = t(d.one_line_description) ?? d.one_line_description;
 
   const facts: Array<[string, string | null]> = [
-    [quickInfo.bestTimeToVisit, d.best_time_text],
-    [quickInfo.idealDuration, d.ideal_duration_text],
-    [quickInfo.approximateBudget, d.budget_category ? labelize(d.budget_category) : null],
-    [quickInfo.nearestAirport, d.nearest_airport],
-    [quickInfo.nearestRailway, d.nearest_railway_station],
-    [quickInfo.languages, [d.primary_language, ...d.secondary_languages].filter(Boolean).join(", ") || null],
+    [quickInfo.bestTimeToVisit, t(d.best_time_text)],
+    [quickInfo.idealDuration, t(d.ideal_duration_text)],
+    [quickInfo.approximateBudget, d.budget_category ? t(labelize(d.budget_category)) : null],
+    [quickInfo.nearestAirport, t(d.nearest_airport)],
+    [quickInfo.nearestRailway, t(d.nearest_railway_station)],
+    [quickInfo.languages, t([d.primary_language, ...d.secondary_languages].filter(Boolean).join(", ") || null)],
     [quickInfo.timeZone, view.state.timezone]
   ];
 
@@ -41,19 +43,19 @@ export function DestinationHero({ view, locale, dict }: { view: DestinationView;
           </span>
         )}
         <div className="container-page absolute bottom-4 left-0 right-0 text-white">
-          <h1 className="font-display text-3xl font-bold uppercase tracking-wide sm:text-5xl">{d.name}</h1>
+          <h1 className="font-display text-3xl font-bold uppercase tracking-wide sm:text-5xl">{tr?.localName ?? d.name}</h1>
           <p className="mt-1 text-sm text-white/90 sm:text-base">
             <Link href={`/${locale}/india/${view.state.slug}`} className="underline decoration-white/40 underline-offset-2 hover:decoration-white">
-              {view.state.name}
+              {tr ? tr.stateName(view.state.slug, view.state.name) : view.state.name}
             </Link>
-            , India · {tagline}
+            , {dict.common.ui.india} · {tagline}
           </p>
         </div>
       </div>
 
       <WatermarkSection images={view.watermarkImages} className="border-b border-forest-100 bg-offwhite py-6">
         <div className="container-page">
-          <p className="max-w-3xl text-sm text-charcoal-light sm:text-base">{d.short_description}</p>
+          <p className="max-w-3xl text-sm text-charcoal-light sm:text-base">{t(d.short_description)}</p>
 
           <dl className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {facts.map(([label, value]) => (
@@ -71,7 +73,11 @@ export function DestinationHero({ view, locale, dict }: { view: DestinationView;
               </Link>
             ))}
           </div>
-          {locale !== "en" && <p className="mt-4 text-xs text-charcoal-light">{dict.common.ui.contentInEnglish}</p>}
+          {locale !== "en" && (
+            <p className="mt-4 text-xs text-charcoal-light">
+              {coverage === null ? dict.common.ui.contentInEnglish : coverage.ratio >= 0.98 ? dict.common.ui.machineTranslated : dict.common.ui.partlyTranslated}
+            </p>
+          )}
         </div>
       </WatermarkSection>
     </header>

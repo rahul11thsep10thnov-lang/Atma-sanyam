@@ -40,7 +40,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         </nav>
 
         <div className="hidden flex-1 max-w-sm md:block">
-          <HeaderSearch locale={locale} placeholder={dict.home.searchPlaceholder} suggestions={suggestionIndex()} />
+          <HeaderSearch locale={locale} placeholder={dict.home.searchPlaceholder} suggestions={suggestionIndex(locale)} />
         </div>
 
         <div className="flex items-center gap-2">

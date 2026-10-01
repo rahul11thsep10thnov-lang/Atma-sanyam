@@ -4,6 +4,7 @@ const sub = createSectionSubPage({
   path: "food",
   crumb: (dict) => dict.destination.sections.food,
   sectionIds: ["local-food"],
+  heading: (dict, name) => dict.destination.sectionTitles["local-food"],
   title: (name) => `Local food in ${name}`,
   description: (name, state) => `Dishes and food places to look for in ${name}, ${state}, with verification status for every claim.`
 });

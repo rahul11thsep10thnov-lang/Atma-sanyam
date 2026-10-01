@@ -4,6 +4,7 @@ const sub = createSectionSubPage({
   path: "where-to-stay",
   crumb: (dict) => dict.destination.sectionTitles["where-to-stay"],
   sectionIds: ["where-to-stay"],
+  heading: (dict, name) => dict.destination.sectionTitles["where-to-stay"],
   title: (name) => `Where to stay in ${name}`,
   description: (name, state) => `Areas to stay in ${name}, ${state}, what each suits, and what we have not verified yet.`
 });
