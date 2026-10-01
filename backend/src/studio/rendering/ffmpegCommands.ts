@@ -20,7 +20,7 @@ export interface SceneClipSpec {
   transitionIn: Transition;
   transitionOut: Transition;
   /** ASS file with the scene's on-screen caption (libass: complex shaping + font fallback for mixed scripts). */
-  caption?: { assPath: string };
+  caption?: { assPath: string; fontsDir?: string };
   label?: { textFile: string; fontFile: string };
   outputPath: string;
 }
@@ -60,7 +60,10 @@ function escapeFilterPath(p: string): string {
 
 function textOverlays(spec: SceneClipSpec): string[] {
   const out: string[] = [];
-  if (spec.caption) out.push(`ass='${escapeFilterPath(spec.caption.assPath)}':shaping=complex`);
+  if (spec.caption) {
+    const fontsDir = spec.caption.fontsDir ? `:fontsdir='${escapeFilterPath(spec.caption.fontsDir)}'` : "";
+    out.push(`ass='${escapeFilterPath(spec.caption.assPath)}'${fontsDir}:shaping=complex`);
+  }
   if (spec.label) {
     const size = Math.round(spec.height / 48);
     out.push(

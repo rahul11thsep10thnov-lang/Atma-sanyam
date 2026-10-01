@@ -141,11 +141,11 @@ export async function renderWithFfmpeg(job: RenderJob): Promise<{ tracks: Record
     const t = job.timeline.find((s) => s.sceneNumber === scene.sceneNumber);
     if (!t) throw new Error(`Timeline has no entry for scene ${scene.sceneNumber}`);
     const clipPath = path.join(job.workDir, `scene_${String(scene.sceneNumber).padStart(3, "0")}.mp4`);
-    let caption: { assPath: string } | undefined;
+    let caption: { assPath: string; fontsDir?: string } | undefined;
     if (scene.caption) {
       const assPath = path.join(job.workDir, `caption_${scene.sceneNumber}.ass`);
       await writeFile(assPath, captionToAss(scene.caption, t.durationSeconds, { fontName: job.captionFontFamily, width: job.width, height: job.height }));
-      caption = { assPath };
+      caption = { assPath, fontsDir: env.studio.fontDir || undefined };
     }
     let label: { textFile: string; fontFile: string } | undefined;
     if (job.labelText && labelFont) {
