@@ -794,10 +794,46 @@ act on rather than guessing.
   itself (Server Actions calling these rules) is still only ever
   exercised live as `SUPER_ADMIN`, per the Phase 12/15 follow-ups.
 
-## Phases 19–20
+## Phase 19 — Production deployment ✅
 
-Not started. See `PROJECT_PLAN.md` for the full ordered list
-(production deployment → Android API readiness).
+- `DEPLOYMENT.md` — step-by-step: provision Postgres, provision
+  S3-compatible object storage, set environment variables, run `npm
+  run db:migrate:deploy` (not `db:migrate`, which is dev-only and
+  interactive), build/start, bootstrap the first `SUPER_ADMIN` via
+  `npm run seed:admin`. Includes a Vercel-specific section (the
+  recommended host, matching the original spec) covering per-
+  environment variable scoping and running migrations as a deploy
+  step rather than from inside the running app.
+- `ENVIRONMENT_VARIABLES.md` — every variable actually read by the
+  app, cross-checked against the code that reads it (not aspirational
+  documentation), split into required-everywhere,
+  required-in-production-only, optional, and "reserved but nothing
+  reads it yet" (the EMAIL/PUSH/TELEGRAM/WHATSAPP/ANDROID
+  notification channels).
+- **Fixed `.env.example` to match reality while writing this**: it
+  previously listed `AI_PROVIDER_API_KEY` (the actual code reads
+  `AI_EXTRACTION_PROVIDER`, a provider *name*, not an API key — no
+  API key exists to read because only the mock provider is
+  implemented) and `EMAIL_FROM`/`RESEND_API_KEY`/
+  `ANALYTICS_WRITE_KEY` (none of which any code in this app reads —
+  analytics is first-party, not a third-party service, and no email
+  provider is wired up). These were placeholders written speculatively
+  in an earlier phase, before Phase 14/16/17 landed and settled on
+  what was actually built; leaving them unfixed would have quietly
+  misled a deployer into thinking they needed to set variables that do
+  nothing.
+- **Also found while committing this phase's docs**: `.env.example`
+  had never actually been committed at all, in any earlier phase — the
+  `.gitignore`'s blanket `.env*` pattern silently matched it too, so
+  it only ever existed as a local, untracked file in this environment.
+  A fresh clone of the repo would have had no `.env.example` despite
+  every phase since Phase 3 writing code and docs that assume it
+  exists ("copy `.env.example` to `.env`"). Fixed with a `!.env.example`
+  negation in `.gitignore` and committing it for the first time here.
+
+## Phase 20
+
+Not started. See `PROJECT_PLAN.md` (Android API readiness).
 
 ## Known follow-ups / decisions to revisit
 
