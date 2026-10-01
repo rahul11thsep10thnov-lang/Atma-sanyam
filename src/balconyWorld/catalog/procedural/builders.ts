@@ -7,7 +7,18 @@ import { foliageClump, materials } from '../../engine/materials';
 // -Z (toward the railing and the view). Replace any one of these by changing
 // its catalog entry to kind:'glb'; the engine never calls these by name.
 
-type Builder = () => THREE.Group;
+/** Growth 0..1 (visual size/fullness) and health 0..1 (below the wilt
+ * threshold the foliage browns and droops). Non-plants ignore both. */
+export interface BuildOptions {
+  growth: number;
+  health: number;
+}
+export const FULL: BuildOptions = { growth: 1, health: 1 };
+
+type Builder = (opts?: BuildOptions) => THREE.Group;
+
+const WILT_AT = 0.35;
+const WILT_TINT = new THREE.Color(0x8a7a3a);
 
 function mesh(geometry: THREE.BufferGeometry, material: THREE.Material, x = 0, y = 0, z = 0) {
   const m = new THREE.Mesh(geometry, material);
@@ -71,24 +82,30 @@ const tableCoffeeLow: Builder = () => {
   return g;
 };
 
-/** Charcoal planter trough with a clipped hedge. 1.6 m long, hedge to ~1.1 m. */
-const planterTroughHedge: Builder = () => {
+/** Charcoal planter trough with a clipped hedge. 1.6 m long, hedge to ~1.1 m
+ * when fully grown; a seedling row of small tufts when new. */
+const planterTroughHedge: Builder = (opts = FULL) => {
   const M = materials();
   const g = new THREE.Group();
   g.add(mesh(new RoundedBoxGeometry(1.6, 0.46, 0.45, 2, 0.02), M.planterCharcoal, 0, 0.23, 0));
   const soil = mesh(new THREE.BoxGeometry(1.52, 0.02, 0.37), M.soil, 0, 0.455, 0);
   soil.castShadow = false;
   g.add(soil);
+  const grow = 0.18 + 0.82 * opts.growth;
   const foliage = new THREE.Group();
   foliage.position.set(0, 0.46, 0);
   foliage.userData.sway = true;
-  foliage.add(foliageClump(70, [1.5, 0.5, 0.36], [0.09, 0.16], seeded(5)));
+  const clump = foliageClump(Math.round(16 + 54 * opts.growth), [1.5, 0.5 * grow, 0.36], [0.09 * grow, 0.16 * grow], seeded(5));
+  if (opts.health < WILT_AT) tintWilted(clump, opts.health);
+  foliage.add(clump);
+  if (opts.health < WILT_AT) foliage.rotation.x = 0.12;
   g.add(foliage);
   return g;
 };
 
-/** Tall charcoal pot with a broad-leaf plant. Pot 0.62 high, leaves to ~1.7 m. */
-const planterTallBroadleaf: Builder = () => {
+/** Tall charcoal pot with a broad-leaf plant. Pot 0.62 high, leaves to
+ * ~1.7 m when grown; a short stem with three small leaves when new. */
+const planterTallBroadleaf: Builder = (opts = FULL) => {
   const M = materials();
   const g = new THREE.Group();
   g.add(mesh(new THREE.CylinderGeometry(0.24, 0.2, 0.62, 20), M.planterCharcoal, 0, 0.31, 0));
@@ -96,26 +113,43 @@ const planterTallBroadleaf: Builder = () => {
   soil.castShadow = false;
   g.add(soil);
 
+  const grow = 0.3 + 0.7 * opts.growth;
+  const wilted = opts.health < WILT_AT;
   const plant = new THREE.Group();
   plant.position.set(0, 0.62, 0);
   plant.userData.sway = true;
-  plant.add(mesh(new THREE.CylinderGeometry(0.018, 0.026, 0.7, 8), M.leaf, 0, 0.35, 0));
+  plant.add(mesh(new THREE.CylinderGeometry(0.018, 0.026, 0.7 * grow, 8), M.leaf, 0, 0.35 * grow, 0));
   const leafGeo = new THREE.SphereGeometry(1, 8, 6);
-  leafGeo.scale(0.14, 0.025, 0.42);
+  leafGeo.scale(0.14 * grow, 0.025, 0.42 * grow);
+  const leafMat = wilted ? M.leafWilted : M.leaf;
+  const leafMatLight = wilted ? M.leafWilted : M.leafLight;
   const rand = seeded(21);
-  for (let i = 0; i < 9; i++) {
-    const a = (i / 9) * Math.PI * 2 + rand() * 0.4;
-    const h = 0.45 + rand() * 0.55;
-    const leaf = new THREE.Mesh(leafGeo, i % 3 === 0 ? M.leafLight : M.leaf);
-    leaf.position.set(Math.cos(a) * 0.2, h, Math.sin(a) * 0.2);
+  const count = 3 + Math.round(6 * opts.growth);
+  for (let i = 0; i < count; i++) {
+    const a = (i / count) * Math.PI * 2 + rand() * 0.4;
+    const h = (0.45 + rand() * 0.55) * grow;
+    const leaf = new THREE.Mesh(leafGeo, i % 3 === 0 ? leafMatLight : leafMat);
+    leaf.position.set(Math.cos(a) * 0.2 * grow, h, Math.sin(a) * 0.2 * grow);
     leaf.rotation.y = -a + Math.PI / 2;
-    leaf.rotation.x = -0.45 - rand() * 0.3;
+    leaf.rotation.x = (wilted ? -1.1 : -0.45) - rand() * 0.3;
     leaf.castShadow = true;
     plant.add(leaf);
   }
   g.add(plant);
   return g;
 };
+
+/** Browns an instanced foliage clump in place (per-instance colours). */
+function tintWilted(clump: THREE.InstancedMesh, health: number) {
+  const c = new THREE.Color();
+  const t = 1 - health / WILT_AT; // 0 at the threshold → 1 fully dry
+  for (let i = 0; i < clump.count; i++) {
+    clump.getColorAt(i, c);
+    c.lerp(WILT_TINT, 0.35 + 0.5 * t);
+    clump.setColorAt(i, c);
+  }
+  if (clump.instanceColor) clump.instanceColor.needsUpdate = true;
+}
 
 /** Slim black arc floor lamp with a white drum shade, 1.9 m. */
 const lampFloorArc: Builder = () => {

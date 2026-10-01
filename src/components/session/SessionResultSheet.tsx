@@ -6,22 +6,29 @@ import { Animated, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '../../ui/AppText';
 import { Button } from '../../ui/Button';
-import { Icon } from '../../ui/Icon';
+import { Icon, IconName } from '../../ui/Icon';
 import { radii } from '../../theme/radii';
 import { space } from '../../theme/spacing';
 import { duration, easing } from '../../theme/motion';
 import { useTheme } from '../../theme/ThemeContext';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
+export interface RewardLine {
+  icon: IconName;
+  text: string;
+}
+
 interface Props {
   outcome: 'completed' | 'failed';
   title: string;
   message: string;
+  /** What this session did to the balcony: coins, growth, milestones. */
+  lines?: RewardLine[];
   primaryLabel: string;
   onPrimary: () => void;
 }
 
-export function SessionResultSheet({ outcome, title, message, primaryLabel, onPrimary }: Props) {
+export function SessionResultSheet({ outcome, title, message, lines = [], primaryLabel, onPrimary }: Props) {
   const { colors, shadow } = useTheme();
   const insets = useSafeAreaInsets();
   const reduced = useReducedMotion();
@@ -68,6 +75,16 @@ export function SessionResultSheet({ outcome, title, message, primaryLabel, onPr
         <AppText variant="body" tone="secondary" align="center" style={styles.message}>
           {message}
         </AppText>
+        {lines.length > 0 && (
+          <View style={[styles.lines, { backgroundColor: colors.surfaceTinted }]} accessibilityLiveRegion="polite">
+            {lines.map((l, i) => (
+              <View key={i} style={styles.line}>
+                <Icon name={l.icon} size="xs" color={l.icon === 'coins' ? colors.accent : l.icon === 'leaf' ? colors.textSecondary : colors.growth} />
+                <AppText variant="bodySmallStrong" style={{ flex: 1 }}>{l.text}</AppText>
+              </View>
+            ))}
+          </View>
+        )}
         <Button label={primaryLabel} icon={done ? 'sprout' : undefined} size="lg" fullWidth onPress={onPrimary} style={styles.button} />
       </Animated.View>
     </View>
@@ -89,5 +106,7 @@ const styles = StyleSheet.create({
   },
   badge: { width: 72, height: 72, borderRadius: 36, alignItems: 'center', justifyContent: 'center', marginBottom: space.lg },
   message: { marginTop: space.sm },
+  lines: { alignSelf: 'stretch', marginTop: space.lg, borderRadius: radii.md, padding: space.md, gap: space.sm },
+  line: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   button: { marginTop: space.xxl },
 });

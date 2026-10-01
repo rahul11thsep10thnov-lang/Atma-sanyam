@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { AssetDefinition, UserPlacedObject } from '../state/types';
 import { getAsset } from '../catalog/AssetCatalog';
-import { PROCEDURAL_BUILDERS } from '../catalog/procedural/builders';
+import { FULL, PROCEDURAL_BUILDERS } from '../catalog/procedural/builders';
+import { growthFraction } from '../state/RewardState';
 import { blobShadowTexture } from './materials';
 import { QualityProfile } from './QualityProfile';
 
@@ -32,7 +33,7 @@ export class ObjectSystem {
     const build = def.kind === 'procedural' ? PROCEDURAL_BUILDERS[def.ref] : undefined;
     if (!build) return null; // glb loading arrives with the asset pipeline step
 
-    const group = build();
+    const group = build(record.growth && def.growable ? { growth: growthFraction(record.growth.focusMinutes), health: record.growth.health } : FULL);
     group.userData.objectId = record.id;
     group.position.set(...record.position);
     group.rotation.set(...record.rotation);
@@ -61,6 +62,18 @@ export class ObjectSystem {
     if (!obj) return;
     this.scene.remove(obj.group);
     this.objects.delete(id);
+  }
+
+  /** Replace every object with the given records (after another screen
+   * wrote growth, or a purchase). Objects whose record is unchanged are
+   * left alone so the scene doesn't flicker. */
+  replaceAll(records: UserPlacedObject[]) {
+    const incoming = new Map(records.map((r) => [r.id, r]));
+    for (const [id, obj] of this.objects) {
+      const next = incoming.get(id);
+      if (!next || next.updatedAt !== obj.record.updatedAt || JSON.stringify(next.growth) !== JSON.stringify(obj.record.growth)) this.remove(id);
+    }
+    for (const r of records) if (!this.objects.has(r.id)) this.add(r);
   }
 
   get(id: string) {

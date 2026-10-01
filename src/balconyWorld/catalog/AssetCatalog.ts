@@ -7,6 +7,7 @@ import { AssetDefinition } from '../state/types';
 export const ASSET_CATALOG: Record<string, AssetDefinition> = {
   sofa_sectional_white_01: {
     id: 'sofa_sectional_white_01',
+    price: { coins: 240 },
     name: 'White sectional sofa',
     category: 'FURNITURE',
     kind: 'procedural',
@@ -19,6 +20,7 @@ export const ASSET_CATALOG: Record<string, AssetDefinition> = {
   },
   table_coffee_low_01: {
     id: 'table_coffee_low_01',
+    price: { coins: 90 },
     name: 'Low walnut coffee table',
     category: 'TABLES',
     kind: 'procedural',
@@ -31,6 +33,8 @@ export const ASSET_CATALOG: Record<string, AssetDefinition> = {
   },
   planter_trough_hedge_01: {
     id: 'planter_trough_hedge_01',
+    price: { coins: 60 },
+    growable: true,
     name: 'Hedge trough planter',
     category: 'PLANTS',
     kind: 'procedural',
@@ -43,6 +47,9 @@ export const ASSET_CATALOG: Record<string, AssetDefinition> = {
   },
   planter_tall_broadleaf_01: {
     id: 'planter_tall_broadleaf_01',
+    price: { coins: 80 },
+    growable: true,
+    unlockMinutes: 45,
     name: 'Tall broad-leaf plant',
     category: 'PLANTS',
     kind: 'procedural',
@@ -55,6 +62,8 @@ export const ASSET_CATALOG: Record<string, AssetDefinition> = {
   },
   lamp_floor_arc_01: {
     id: 'lamp_floor_arc_01',
+    price: { coins: 120 },
+    unlockMinutes: 90,
     name: 'Arc floor lamp',
     category: 'LIGHTING',
     kind: 'procedural',
@@ -67,6 +76,8 @@ export const ASSET_CATALOG: Record<string, AssetDefinition> = {
   },
   lantern_black_01: {
     id: 'lantern_black_01',
+    price: { coins: 35 },
+    unlockMinutes: 10,
     name: 'Candle lantern',
     category: 'DECOR',
     kind: 'procedural',
@@ -79,6 +90,8 @@ export const ASSET_CATALOG: Record<string, AssetDefinition> = {
   },
   rug_outdoor_01: {
     id: 'rug_outdoor_01',
+    price: { coins: 70 },
+    unlockMinutes: 180,
     name: 'Outdoor rug',
     category: 'RUGS',
     kind: 'procedural',
