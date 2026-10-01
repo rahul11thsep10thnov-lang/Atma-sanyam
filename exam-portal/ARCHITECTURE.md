@@ -314,6 +314,19 @@ other services assume without re-checking (e.g. `extraction.ts`'s
 `title`, which `provider.test.ts` now asserts directly rather than
 just hoping).
 
+## Public JSON API (Phase 20) ✅
+
+Every route under `src/app/api/{jobs,results,admit-cards,answer-keys,
+syllabus,admissions,scholarships,articles,exams,search,notifications}`
+calls the same service functions (`listPublishedJobs`,
+`getPublishedJobBySlug`, ...) that the public website pages already
+call — the API is a second presentation layer over the existing
+services, not a second copy of their logic. `src/lib/api/respond.ts`
+normalizes every list/detail response into one consistent shape
+regardless of what a given service's return object happens to be
+named internally. Detail routes call Phase 17's `recordView()` too, so
+Android traffic isn't an uncounted blind spot in analytics.
+
 ## Deployment topology
 
 - **App**: Vercel (or any Node 20+ host) — same as the spec recommends.

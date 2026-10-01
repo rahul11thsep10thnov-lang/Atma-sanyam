@@ -831,9 +831,37 @@ act on rather than guessing.
   exists ("copy `.env.example` to `.env`"). Fixed with a `!.env.example`
   negation in `.gitignore` and committing it for the first time here.
 
-## Phase 20
+## Phase 20 — Android API readiness ✅
 
-Not started. See `PROJECT_PLAN.md` (Android API readiness).
+- `src/lib/api/respond.ts` — a shared JSON envelope
+  (`{ data, page, pageSize, total, totalPages }` for lists, `{ data }`/
+  `{ error }` + 404 for detail lookups) so a mobile client sees one
+  consistent shape across every content type, instead of a different
+  one per route just because the underlying admin service happened to
+  name its return key `jobs` vs `items` vs `results`.
+- 17 new public, read-only route handlers, all calling the exact same
+  service functions the public website pages already use (no parallel
+  business logic to keep in sync): list + detail for Job, Result,
+  AdmitCard, AnswerKey, Syllabus, Admission, and Scholarship; a
+  not-yet-paginated list (mirrors the public `/articles` page, which
+  also isn't paginated yet) + detail for Article; detail-only for Exam
+  (there's no public exam index to mirror either); plus
+  `GET /api/search` (same filters as the public search page, with a
+  400 for a too-short query instead of silently returning nothing) and
+  `GET /api/notifications` (the public feed Phase 16 built but never
+  wired to a page — this is its first real consumer).
+- Every detail route also calls `recordView()` (Phase 17's analytics),
+  so API traffic from a future Android app counts the same as a
+  browser visiting the page — not a second, uncounted surface.
+
+Verified live against the running dev server: list endpoints return
+correctly paginated, consistently-shaped JSON; a nonexistent slug
+returns a real `404` with a JSON error body, not a crash; an
+out-of-range `?page=` returns an empty `data` array rather than an
+error; `?q=a` (too short) returns a `400`; a detail hit recorded a
+`content_view_events` row with the API's own path, same as a page
+view. `npm run typecheck`, `npm run lint`, `npm run test`, and `npm
+run build` all pass clean.
 
 ## Known follow-ups / decisions to revisit
 
