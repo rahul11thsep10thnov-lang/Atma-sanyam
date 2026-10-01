@@ -3,7 +3,8 @@ import { RemoteImageRef, SessionConfig } from '../types';
 
 export type RootTabParamList = {
   Home: undefined;
-  History: undefined;
+  History: undefined; // the Balcony tab (route name kept for saved navigation state)
+  Progress: undefined;
   Settings: undefined;
 };
 

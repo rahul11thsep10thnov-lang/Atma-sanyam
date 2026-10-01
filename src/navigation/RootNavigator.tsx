@@ -6,6 +6,7 @@ import { RootStackParamList, RootTabParamList } from './types';
 import { HomeScreen } from '../screens/HomeScreen';
 import { BalconyWorldScreen } from '../balconyWorld/ui/BalconyWorldScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
+import { ProgressScreen } from '../screens/ProgressScreen';
 import { ActiveSessionScreen } from '../screens/ActiveSessionScreen';
 import { ContentBrowserScreen } from '../screens/ContentBrowserScreen';
 import { AuthScreen } from '../screens/AuthScreen';
@@ -19,6 +20,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const TABS: Record<keyof RootTabParamList, TabSpec> = {
   Home: { icon: 'home', label: 'Home' },
   History: { icon: 'sprout', label: 'Balcony' },
+  Progress: { icon: 'chart', label: 'Progress' },
   Settings: { icon: 'settings', label: 'Settings' },
 };
 
@@ -30,6 +32,7 @@ function Tabs() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="History" component={BalconyWorldScreen} options={{ title: 'Balcony' }} />
+      <Tab.Screen name="Progress" component={ProgressScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );

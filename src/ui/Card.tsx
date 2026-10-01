@@ -12,6 +12,8 @@ export type CardVariant = 'base' | 'raised' | 'floating' | 'tinted' | 'outline';
 export interface CardProps extends ViewProps {
   variant?: CardVariant;
   padding?: keyof typeof space | 0;
+  /** Horizontal padding only (e.g. a list card whose rows draw their own dividers). */
+  paddingX?: keyof typeof space;
   radius?: keyof typeof radii;
   style?: StyleProp<ViewStyle>;
   onPress?: TactileProps['onPress'];
@@ -30,9 +32,10 @@ export function useCardStyle(variant: CardVariant): ViewStyle {
   return styles[variant];
 }
 
-export function Card({ variant = 'base', padding = 'card', radius = 'md', style, onPress, children, ...rest }: CardProps) {
+export function Card({ variant = 'base', padding = 'card', paddingX, radius = 'md', style, onPress, children, ...rest }: CardProps) {
   const surface = useCardStyle(variant);
-  const box: ViewStyle = { borderRadius: radii[radius], padding: padding === 0 ? 0 : space[padding], overflow: 'hidden' };
+  const pad = padding === 0 ? 0 : space[padding];
+  const box: ViewStyle = { borderRadius: radii[radius], paddingVertical: pad, paddingHorizontal: paddingX ? space[paddingX] : pad, overflow: 'hidden' };
   if (onPress) {
     return (
       <Tactile onPress={onPress} scaleTo={0.985} accessibilityRole="button" style={[base.card, surface, box, style]} {...(rest as object)}>

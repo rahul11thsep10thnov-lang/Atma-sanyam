@@ -109,7 +109,7 @@ export const darkColors: ThemeColors = {
   surfaceRaised: palette.nightRaised,
   surfaceMuted: '#2A2320',
   surfaceTinted: '#33271F',
-  navSurface: 'rgba(36,30,26,0.94)',
+  navSurface: 'rgba(36,30,26,0.975)',
   overlay: 'rgba(0,0,0,0.5)',
   scrim: 'rgba(0,0,0,0.65)',
   text: palette.moonlit,

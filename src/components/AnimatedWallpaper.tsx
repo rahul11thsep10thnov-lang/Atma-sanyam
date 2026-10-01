@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, View, ViewStyle } from 'react-native';
 import Svg, { Defs, LinearGradient, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 import { useReducedMotion } from '../hooks/useReducedMotion';
+import { useTheme } from '../theme/ThemeContext';
 
 type Props = {
   style?: ViewStyle;
@@ -13,10 +14,10 @@ const AnimatedRadialGradient = Animated.createAnimatedComponent(RadialGradient);
 
 // Colors sampled straight from the wallpaper photo, so this vector version is the
 // same design — nothing added, its own curves and shading just move themselves.
-const CREAM = '#FDF3EC';
-const BLUSH = '#FCE2DE';
-const TAN = '#FBD0AE';
-const PINK = '#FBA2A4';
+// The night set is the same drawing lit by lantern light: deep warm charcoal
+// paper, embers for the shading, a faint moonlit highlight.
+const DAY = { base: '#FDF3EC', blush: '#FCE2DE', tan: '#FBD0AE', pink: '#FBA2A4', highlight: '#FFFFFF', highlightOpacity: 0.55, ribbonOpacity: 0.4 };
+const NIGHT = { base: '#1B1714', blush: '#241B18', tan: '#5A3A2C', pink: '#6B3A44', highlight: '#F3E7DA', highlightOpacity: 0.08, ribbonOpacity: 0.35 };
 
 const SHADE_MS = 24000; // one slow breath of the color shading
 const CURVE_MS = 28000; // one slow undulation of the ribbon curves
@@ -61,6 +62,8 @@ const RIBBON_PINK = [
  */
 export function AnimatedWallpaper({ style, children }: Props) {
   const reducedMotion = useReducedMotion();
+  const { isDark } = useTheme();
+  const { base: CREAM, blush: BLUSH, tan: TAN, pink: PINK, highlight: HIGHLIGHT, highlightOpacity, ribbonOpacity } = isDark ? NIGHT : DAY;
   const curve = useLoop(CURVE_MS, !reducedMotion);
   const shade = useLoop(SHADE_MS, !reducedMotion);
 
@@ -83,7 +86,7 @@ export function AnimatedWallpaper({ style, children }: Props) {
   const pinkR = shade.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0.52, 0.44, 0.52] });
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, { backgroundColor: CREAM }, style]}>
       <Svg width="100%" height="100%" viewBox="0 0 360 640" preserveAspectRatio="xMidYMid slice">
         <Defs>
           <LinearGradient id="base" x1="0" y1="0" x2="0.3" y2="1">
@@ -117,7 +120,7 @@ export function AnimatedWallpaper({ style, children }: Props) {
         <AnimatedPath
           d={(reducedMotion ? RIBBON_TAN[0] : dTan) as unknown as string}
           stroke={TAN}
-          strokeOpacity={0.4}
+          strokeOpacity={ribbonOpacity}
           strokeWidth={64}
           fill="none"
           strokeLinecap="round"
@@ -125,15 +128,15 @@ export function AnimatedWallpaper({ style, children }: Props) {
         <AnimatedPath
           d={(reducedMotion ? RIBBON_PINK[0] : dPink) as unknown as string}
           stroke={PINK}
-          strokeOpacity={0.35}
+          strokeOpacity={ribbonOpacity - 0.05}
           strokeWidth={56}
           fill="none"
           strokeLinecap="round"
         />
         <AnimatedPath
           d={(reducedMotion ? RIBBON_HIGHLIGHT[0] : dHighlight) as unknown as string}
-          stroke="#FFFFFF"
-          strokeOpacity={0.55}
+          stroke={HIGHLIGHT}
+          strokeOpacity={highlightOpacity}
           strokeWidth={16}
           fill="none"
           strokeLinecap="round"
@@ -145,6 +148,6 @@ export function AnimatedWallpaper({ style, children }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, overflow: 'hidden', backgroundColor: CREAM },
+  container: { flex: 1, overflow: 'hidden' },
   content: { flex: 1, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
 });
