@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import type { ExpoWebGLRenderingContext } from 'expo-gl';
+import { prepareContextForThree } from './glCompat';
 
 /** The expo-gl ⇄ three.js bridge. expo-gl hands us a WebGL2 context with no
  * DOM canvas, so three gets a minimal stand-in object; the drawing buffer is
@@ -10,6 +11,9 @@ export function createRenderer(
   gl: ExpoWebGLRenderingContext,
   options: { antialias: boolean; resolutionScale: number; shadowMap: boolean },
 ): THREE.WebGLRenderer {
+  // Without this, three throws "WebGL 1 is not supported" on every phone
+  // (see glCompat.ts). No-op in browsers.
+  prepareContextForThree(gl);
   const width = gl.drawingBufferWidth;
   const height = gl.drawingBufferHeight;
   const canvas = {
