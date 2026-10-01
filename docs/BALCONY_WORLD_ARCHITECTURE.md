@@ -301,3 +301,18 @@ docs/BALCONY_WORLD_ARCHITECTURE.md   this document
 | 15 — monetization | IAP products for premium environments/items, server-side receipt verification via existing API, personal wall uploads (private) | Paid flow end-to-end on test accounts; nothing paid trusted client-side |
 
 Not in V1 (architected for): real-time day/night, weather, social sharing, true stereo panning.
+
+### Status
+
+| Step | State |
+|---|---|
+| 6 — prototype | Done (PR #4), restyled to the modern-terrace reference (PR #5) |
+| 7 — run on device | expo-gl ⇄ three WebGL-2 shim landed (PR #6); awaiting the first on-device report (look, fps line, gestures, Home snapshot orientation) |
+| 8 — performance | Pending: needs the device numbers from step 7 |
+| 9 — placement | Floor placement with rotation-aware clamping/collision and free-spot search done; wall/railing/ceiling surfaces, rotate/scale handles pending |
+| 10 — persistence | World, camera, audio, rewards and snapshot persisted locally; migration versioning pending |
+| 11 — plants | Growth stages, wilt/revive on the procedural plants done; GLB-per-stage pending |
+| 12 — focus integration | Done: completed sessions credit coins, milestones and growth; result sheet reports it; balcony reloads on return |
+| 13 — store | Coin store with milestone unlocks, free-spot placement, remove-for-refund done; remote catalog merge and real-money packs pending |
+| 14 — environments | Registry + one environment; environments 2–10 pending |
+| 15 — monetization | Pending (after 14) |
