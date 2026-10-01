@@ -1,11 +1,14 @@
-import React, { useCallback, useEffect, useRef } from 'react';
-import { Alert, Dimensions, Platform, StyleSheet, Text, View, Pressable, BackHandler } from 'react-native';
+// The focus session (PHASE 8): the picture reveals itself tile by tile
+// while a quiet timer floats over it. Controls shrink to one close button;
+// the end of the session is a warm sheet, never an OS alert.
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Alert, Animated, BackHandler, Dimensions, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { colors, typography } from '../theme/colors';
 import { PuzzleGrid } from '../components/PuzzleGrid';
 import { PuzzleContent, attributionFor } from '../components/PuzzleContent';
+import { SessionResultSheet } from '../components/session/SessionResultSheet';
 import { useFocusTimer } from '../hooks/useFocusTimer';
 import { RootStackParamList } from '../navigation/types';
 import { saveSessionRecord } from '../storage/history';
@@ -13,6 +16,13 @@ import { SessionRecord } from '../types';
 import { useSettings } from '../context/SettingsContext';
 import { useRemoteConfig } from '../context/RemoteConfigContext';
 import { track } from '../services/analytics';
+import { AppText } from '../ui/AppText';
+import { IconButton } from '../ui/Button';
+import { Icon } from '../ui/Icon';
+import { typography } from '../theme/typography';
+import { radii } from '../theme/radii';
+import { space } from '../theme/spacing';
+import { useTheme } from '../theme/ThemeContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>;
 
@@ -24,16 +34,20 @@ function formatTime(totalSeconds: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
+type Result = { outcome: 'completed' } | { outcome: 'failed'; reason: 'left_app' | 'gave_up' };
+
 export function ActiveSessionScreen({ route, navigation }: Props) {
   const { config } = route.params;
   const { settings } = useSettings();
   const { config: remote } = useRemoteConfig();
+  const { colors } = useTheme();
   const texts = remote.texts;
   const insets = useSafeAreaInsets();
   const totalSeconds = config.durationMinutes * 60;
   const totalPieces = config.grid.rows * config.grid.cols;
   const startedAtRef = useRef(Date.now());
-  const finishedNavigatingRef = useRef(false);
+  const [result, setResult] = useState<Result | null>(null);
+  const resultRef = useRef<Result | null>(null);
 
   const finalizeSession = useCallback(
     async (outcome: SessionRecord['outcome'], failureReason: SessionRecord['failureReason'], revealedFraction: number) => {
@@ -67,35 +81,28 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const show = (next: Result) => {
+    if (resultRef.current) return;
+    resultRef.current = next;
+    setResult(next);
+  };
+
   const handleComplete = useCallback(() => {
     finalizeSession('completed', null, 1);
-    if (settings.soundEnabled) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => undefined);
-    }
-    if (finishedNavigatingRef.current) return;
-    finishedNavigatingRef.current = true;
-    Alert.alert(texts.sessionCompleteTitle, texts.sessionCompleteMessage, [
-      { text: 'Nice', onPress: () => navigation.replace('Tabs', { screen: 'Home' }) },
-    ]);
-  }, [finalizeSession, navigation, settings.soundEnabled, texts]);
+    if (settings.soundEnabled) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => undefined);
+    show({ outcome: 'completed' });
+  }, [finalizeSession, settings.soundEnabled]);
 
   const handleFail = useCallback(
     (reason: 'left_app' | 'gave_up', revealedFraction: number) => {
       finalizeSession('failed', reason, revealedFraction);
-      if (settings.soundEnabled) {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => undefined);
-      }
-      if (finishedNavigatingRef.current) return;
-      finishedNavigatingRef.current = true;
-      const message = reason === 'left_app' ? texts.sessionLeftAppMessage : texts.sessionGaveUpMessage;
-      Alert.alert(texts.sessionFailedTitle, message, [
-        { text: 'OK', onPress: () => navigation.replace('Tabs', { screen: 'Home' }) },
-      ]);
+      if (settings.soundEnabled) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => undefined);
+      show({ outcome: 'failed', reason });
     },
-    [finalizeSession, navigation, settings.soundEnabled, texts]
+    [finalizeSession, settings.soundEnabled]
   );
 
-  const { remainingSeconds, revealedCount, status, awaySecondsRemaining, giveUp } = useFocusTimer({
+  const { remainingSeconds, revealedCount, status, awaySecondsRemaining, giveUp, progress } = useFocusTimer({
     totalSeconds,
     totalPieces,
     notificationsEnabled: settings.notificationsEnabled,
@@ -114,15 +121,24 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
   }, []);
 
   const confirmGiveUp = () => {
-    if (finishedNavigatingRef.current) return;
-    Alert.alert('Give up on this puzzle?', 'Your progress will be lost and this session marked incomplete.', [
+    if (resultRef.current) return;
+    Alert.alert('End this session?', 'The picture will stay unfinished.', [
       { text: 'Keep going', style: 'cancel' },
-      { text: 'Give up', style: 'destructive', onPress: giveUp },
+      { text: 'End session', style: 'destructive', onPress: giveUp },
     ]);
   };
 
+  // Progress bar width animates with the native driver via scaleX.
+  const barScale = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.timing(barScale, { toValue: Math.max(0.002, progress), duration: 900, useNativeDriver: true }).start();
+  }, [progress, barScale]);
+
+  const leave = () => navigation.replace('Tabs', { screen: 'Home' });
+  const attribution = attributionFor(config.image);
+
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, { backgroundColor: colors.background }]}>
       <PuzzleGrid
         rows={config.grid.rows}
         cols={config.grid.cols}
@@ -135,94 +151,100 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
         <PuzzleContent image={config.image} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} />
       </PuzzleGrid>
 
-      <View style={styles.watermark} pointerEvents="none">
-        <Text style={styles.watermarkText} accessibilityRole="timer" accessibilityLabel={`${Math.ceil(remainingSeconds / 60)} minutes remaining`}>
-          {formatTime(remainingSeconds)}
-        </Text>
+      {/* top: FOCUS chip · progress · close */}
+      <View style={[styles.topRow, { top: insets.top + space.sm }]} pointerEvents="box-none">
+        <View style={styles.chip}>
+          <Icon name="timer" size="xs" color="#FFFFFF" />
+          <AppText variant="overline" style={styles.white}>
+            FOCUS
+          </AppText>
+        </View>
+        <View style={styles.barTrack} pointerEvents="none">
+          <Animated.View style={[styles.barFill, { backgroundColor: colors.accent, transform: [{ scaleX: barScale }] }]} />
+        </View>
+        {!result && <IconButton icon="close" label="End this session" variant="onImage" size={40} onPress={confirmGiveUp} haptic={false} />}
       </View>
 
-      {attributionFor(config.image) && (
-        <View style={[styles.attributionBadge, { bottom: insets.bottom + 12 }]} pointerEvents="none">
-          <Text style={styles.attributionText}>{attributionFor(config.image)}</Text>
+      {!result && (
+        <View style={styles.center} pointerEvents="none">
+          <AppText style={[styles.timer, typography.timer]} accessibilityRole="timer" accessibilityLabel={`${Math.ceil(remainingSeconds / 60)} minutes remaining`}>
+            {formatTime(remainingSeconds)}
+          </AppText>
+          <AppText variant="bodySmall" style={styles.tagline}>
+            Your world is waiting.
+          </AppText>
+        </View>
+      )}
+
+      {attribution && !result && (
+        <View style={[styles.attribution, { bottom: insets.bottom + space.md }]} pointerEvents="none">
+          <AppText variant="caption" style={styles.attributionText} numberOfLines={2}>
+            {attribution}
+          </AppText>
         </View>
       )}
 
       {status === 'grace' && (
-        <View style={[styles.graceBanner, { top: insets.top + 12 }]}>
-          <Text style={styles.graceBannerText}>
-            Come back within {awaySecondsRemaining}s or this session fails
-          </Text>
+        <View style={[styles.grace, { top: insets.top + 64, backgroundColor: colors.warningSoft, borderColor: colors.warning }]} accessibilityLiveRegion="assertive">
+          <Icon name="alert" size="sm" color={colors.warning} />
+          <AppText variant="bodySmallStrong" style={{ color: colors.text, flex: 1 }}>
+            Come back within {awaySecondsRemaining}s to keep this session.
+          </AppText>
         </View>
       )}
 
-      <Pressable
-        style={[styles.giveUpBtn, { top: insets.top + 8 }]}
-        onPress={confirmGiveUp}
-        hitSlop={12}
-        accessibilityRole="button"
-        accessibilityLabel="Give up this session"
-      >
-        <Text style={styles.giveUpBtnText}>✕</Text>
-      </Pressable>
+      {result?.outcome === 'completed' && (
+        <SessionResultSheet outcome="completed" title={texts.sessionCompleteTitle} message={texts.sessionCompleteMessage} primaryLabel="Back to my balcony" onPrimary={leave} />
+      )}
+      {result?.outcome === 'failed' && (
+        <SessionResultSheet
+          outcome="failed"
+          title={texts.sessionFailedTitle}
+          message={result.reason === 'left_app' ? texts.sessionLeftAppMessage : texts.sessionGaveUpMessage}
+          primaryLabel="Give it another moment"
+          onPrimary={leave}
+        />
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.background },
-  watermark: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+  screen: { flex: 1 },
+  topRow: { position: 'absolute', left: space.lg, right: space.lg, flexDirection: 'row', alignItems: 'center', gap: space.md },
+  chip: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(20,12,8,0.35)',
+    paddingHorizontal: 10,
+    height: 32,
+    borderRadius: radii.pill,
   },
-  watermarkText: {
-    ...typography.heading,
-    fontSize: 64,
-    color: colors.white,
-    opacity: 0.9,
-    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
-    fontVariant: ['tabular-nums'],
-    textShadowColor: 'rgba(0,0,0,0.35)',
+  white: { color: '#FFFFFF' },
+  barTrack: { flex: 1, height: 3, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.35)', overflow: 'hidden' },
+  barFill: { height: 3, width: '100%', borderRadius: 2, transformOrigin: 'left' },
+  center: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' },
+  timer: {
+    color: '#FFFFFF',
+    opacity: 0.94,
+    textShadowColor: 'rgba(20,12,8,0.45)',
     textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 8,
+    textShadowRadius: 18,
   },
-  graceBanner: {
+  tagline: { color: 'rgba(255,255,255,0.8)', marginTop: space.xs, textShadowColor: 'rgba(20,12,8,0.4)', textShadowRadius: 8 },
+  attribution: { position: 'absolute', left: space.lg, right: space.lg, alignItems: 'center' },
+  attributionText: { color: 'rgba(255,255,255,0.78)', textAlign: 'center', textShadowColor: 'rgba(0,0,0,0.4)', textShadowRadius: 4 },
+  grace: {
     position: 'absolute',
-    left: 24,
-    right: 24,
-    backgroundColor: colors.danger,
+    left: space.lg,
+    right: space.lg,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
     paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  graceBannerText: { ...typography.caption, color: colors.white, fontWeight: '700' },
-  giveUpBtn: {
-    position: 'absolute',
-    right: 20,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(0,0,0,0.25)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  giveUpBtnText: { color: colors.white, fontSize: 16, fontWeight: '700' },
-  attributionBadge: {
-    position: 'absolute',
-    left: 12,
-    right: 12,
-    alignItems: 'center',
-  },
-  attributionText: {
-    ...typography.caption,
-    color: 'rgba(255,255,255,0.75)',
-    textShadowColor: 'rgba(0,0,0,0.4)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
+    paddingHorizontal: 14,
+    borderRadius: radii.md,
+    borderWidth: 1,
   },
 });
