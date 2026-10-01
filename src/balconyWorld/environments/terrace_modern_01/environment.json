@@ -1,0 +1,35 @@
+{
+  "id": "terrace_modern_01",
+  "name": "Modern Terrace",
+  "price": { "coins": 0 },
+  "shell": {
+    "kind": "procedural",
+    "params": {
+      "width": 5.2, "balconyDepth": 2.6, "roomDepth": 3.0, "height": 2.9,
+      "features": { "glassDoors": "left", "greenWall": "right", "downlights": 3 }
+    }
+  },
+  "sky": { "topColor": "#6f82a8", "horizonColor": "#f2b47f", "sunColor": "#ffd3a0", "sunAzimuth": 24, "sunElevation": 7 },
+  "lighting": { "sunIntensity": 1.7, "sunColor": "#ffb97f", "ambient": 0.32, "hemisphereSky": "#e6ecf5", "hemisphereGround": "#5a5048" },
+  "fog": { "color": "#e9b48e", "near": 24, "far": 150 },
+  "zones": [
+    { "id": "floor-main", "surface": "floor", "center": [0, 0, -1.3], "size": [4.9, 2.4], "maxObjects": 24 },
+    { "id": "wall-right", "surface": "wallRight", "center": [2.6, 1.5, 1.2], "size": [1.6, 1.4], "maxObjects": 6 },
+    { "id": "rail", "surface": "railing", "center": [0, 1.11, -2.54], "size": [5.0, 0.3], "maxObjects": 6 }
+  ],
+  "defaultObjects": [
+    { "assetId": "rug_outdoor_01", "position": [-1.05, 0, -1.2] },
+    { "assetId": "sofa_sectional_white_01", "position": [-2.05, 0, -1.35], "rotationY": -1.5708 },
+    { "assetId": "table_coffee_low_01", "position": [-1.05, 0, -1.35], "rotationY": 1.5708 },
+    { "assetId": "planter_trough_hedge_01", "position": [-0.75, 0, -2.25] },
+    { "assetId": "planter_trough_hedge_01", "position": [0.9, 0, -2.25] },
+    { "assetId": "planter_tall_broadleaf_01", "position": [2.1, 0, -2.0] },
+    { "assetId": "lamp_floor_arc_01", "position": [2.15, 0, -0.3], "rotationY": 0.6 },
+    { "assetId": "lantern_black_01", "position": [-0.3, 0, -1.85] }
+  ],
+  "audio": [
+    { "layer": "birds", "clip": "ambient_placeholder", "gain": 0.7 }
+  ],
+  "camera": { "target": [-0.9, 0.9, -1.5], "default": { "yaw": 0.38, "pitch": 0.12, "distance": 3.2 }, "zoom": [1.6, 4.0] },
+  "limits": { "maxObjects": 40 }
+}

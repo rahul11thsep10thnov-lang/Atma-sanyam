@@ -36,6 +36,12 @@ export class BalconyEngine {
   private rafId: number | null = null;
   private lastAmbientAt = 0;
   private disposed = false;
+  private bufferWidth = 0;
+  private bufferHeight = 0;
+  private lastRenderAt = 0;
+  /** Exponential moving average of rendered frames per second — what the
+   * stats overlay shows and what the performance step tunes against. */
+  fps = 0;
 
   constructor(
     private readonly gl: ExpoWebGLRenderingContext,
@@ -49,15 +55,17 @@ export class BalconyEngine {
       shadowMap: profile.shadowMap,
     });
 
+    // A phone held upright has a narrow horizontal field of view; a wider
+    // vertical FOV in portrait keeps the whole balcony width in frame.
     const aspect = gl.drawingBufferWidth / gl.drawingBufferHeight;
-    this.camera = new THREE.PerspectiveCamera(viewport.width > viewport.height ? 42 : 52, aspect, 0.1, 120);
+    this.camera = new THREE.PerspectiveCamera(viewport.width > viewport.height ? 46 : 62, aspect, 0.1, 260);
 
     const shell = definition.shell.params;
     const cam = definition.camera;
     this.controller = new CameraController(
       {
-        yaw: [-0.6, 0.6],
-        pitch: [-0.07, 0.5],
+        yaw: [-0.85, 0.85],
+        pitch: [-0.05, 0.45],
         distance: cam.zoom,
         targetBox: { min: [-shell.width / 2 + 0.6, 0.6, -shell.balconyDepth + 0.3], max: [shell.width / 2 - 0.6, 1.7, 0.5] },
         eyeBox: {
@@ -153,7 +161,24 @@ export class BalconyEngine {
     this.dirty = true;
   }
 
+  /** expo-gl resizes its drawing buffer on rotation/layout without a new
+   * context; keep the renderer and camera aspect in step with it. */
+  private resizeIfNeeded() {
+    const w = this.gl.drawingBufferWidth;
+    const h = this.gl.drawingBufferHeight;
+    if (w === this.bufferWidth && h === this.bufferHeight) return;
+    if (w <= 0 || h <= 0) return;
+    this.bufferWidth = w;
+    this.bufferHeight = h;
+    this.renderer.setSize(w, h, false);
+    this.camera.aspect = w / h;
+    this.camera.fov = w > h ? 46 : 62;
+    this.camera.updateProjectionMatrix();
+    this.dirty = true;
+  }
+
   private frame(now: number) {
+    this.resizeIfNeeded();
     const cameraMoved = this.controller.update(now);
     if (cameraMoved) this.dirty = true;
 
@@ -169,6 +194,11 @@ export class BalconyEngine {
     this.controller.applyTo(this.camera);
     this.renderer.render(this.scene, this.camera);
     this.gl.endFrameEXP();
+    if (this.lastRenderAt > 0) {
+      const instant = 1000 / Math.max(1, now - this.lastRenderAt);
+      this.fps = this.fps === 0 ? instant : this.fps * 0.9 + instant * 0.1;
+    }
+    this.lastRenderAt = now;
     if (cameraMoved && this.onCameraChanged) this.onCameraChanged();
   }
 }

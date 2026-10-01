@@ -1,12 +1,19 @@
 import * as THREE from 'three';
 import { ShellParams } from '../state/types';
-import { materials } from './materials';
+import { foliageClump, materials } from './materials';
 
-// PLACEHOLDER SHELL — a parametric balcony + the room it opens from, built
+// PLACEHOLDER SHELL — a parametric terrace + the room it opens from, built
 // from boxes and planes so the camera, lighting, placement zones and
 // outside view all work today. A per-environment GLB shell with baked
 // lightmaps replaces this through EnvironmentLoader without touching
 // anything that consumes the returned group (section J/K).
+//
+// Layout (metres, +Y up, the view is toward -Z):
+//   z ∈ [0, roomDepth]        the room the camera stands in
+//   z ∈ [-balconyDepth, 0]    the terrace: timber deck, frameless glass
+//                             railing at the front, dark flat overhang
+//   x = ±width/2              side walls; features (glass doors, living
+//                             wall) come from ShellParams.features
 
 function plane(w: number, h: number, mat: THREE.Material) {
   const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
@@ -25,80 +32,143 @@ export function buildShell(p: ShellParams): THREE.Group {
   const M = materials();
   const g = new THREE.Group();
   const { width: W, balconyDepth: B, roomDepth: R, height: H } = p;
+  const F = p.features ?? {};
 
-  // floors
-  const balconyFloor = plane(W, B, M.floorTile);
-  balconyFloor.rotation.x = -Math.PI / 2;
-  balconyFloor.position.set(0, 0, -B / 2);
-  g.add(balconyFloor);
+  // ---- floors ------------------------------------------------------------
+  const deck = plane(W, B, M.deck);
+  deck.rotation.x = -Math.PI / 2;
+  deck.position.set(0, 0, -B / 2);
+  g.add(deck);
 
   const roomFloor = plane(W, R, M.roomFloor);
   roomFloor.rotation.x = -Math.PI / 2;
   roomFloor.position.set(0, 0, R / 2);
   g.add(roomFloor);
 
-  const threshold = box(W, 0.03, 0.14, M.handrailWood);
-  threshold.position.set(0, 0.015, 0);
+  const threshold = box(W, 0.02, 0.08, M.darkMetal);
+  threshold.position.set(0, 0.01, 0);
   g.add(threshold);
 
-  // walls — one continuous plaster surface per side, from railing to back wall
+  // ---- side walls ----------------------------------------------------------
   const sideLen = B + R;
   const sideZ = (R - B) / 2;
-  const left = plane(sideLen, H, M.plaster);
-  left.rotation.y = Math.PI / 2;
-  left.position.set(-W / 2, H / 2, sideZ);
-  g.add(left);
+  for (const side of ['left', 'right'] as const) {
+    const sign = side === 'left' ? -1 : 1;
+    const x = sign * (W / 2);
+    const facing = side === 'left' ? Math.PI / 2 : -Math.PI / 2;
+    const hasDoors = F.glassDoors === side;
 
-  const right = plane(sideLen, H, M.plaster);
-  right.rotation.y = -Math.PI / 2;
-  right.position.set(W / 2, H / 2, sideZ);
-  g.add(right);
+    // the room part of the wall is always render; the balcony part is
+    // render too unless it is the glass-door side
+    const wallLen = hasDoors ? R : sideLen;
+    const wallZ = hasDoors ? R / 2 : sideZ;
+    const wall = plane(wallLen, H, M.wall);
+    wall.rotation.y = facing;
+    wall.position.set(x, H / 2, wallZ);
+    g.add(wall);
 
-  const back = plane(W, H, M.plasterDark);
+    if (hasDoors) {
+      // dark interior beyond the glass, with a strip of floor so the
+      // reflections read as a room rather than a void
+      const backdrop = plane(B, H, M.interiorDark);
+      backdrop.rotation.y = facing;
+      backdrop.position.set(x + sign * 0.45, H / 2, -B / 2);
+      g.add(backdrop);
+      const innerFloor = plane(0.45, B, M.roomFloor);
+      innerFloor.rotation.x = -Math.PI / 2;
+      innerFloor.position.set(x + sign * 0.225, 0.005, -B / 2);
+      g.add(innerFloor);
+
+      const panes = 3;
+      const paneLen = B / panes;
+      for (let i = 0; i <= panes; i++) {
+        const mullion = box(0.05, H, 0.05, M.darkMetal);
+        mullion.position.set(x, H / 2, -i * paneLen);
+        g.add(mullion);
+      }
+      for (const y of [0.035, H - 0.04]) {
+        const track = box(0.07, 0.07, B, M.darkMetal);
+        track.position.set(x, y, -B / 2);
+        g.add(track);
+      }
+      for (let i = 0; i < panes; i++) {
+        const pane = plane(paneLen - 0.05, H - 0.14, M.glassDoor);
+        pane.rotation.y = facing;
+        pane.position.set(x, H / 2, -(i + 0.5) * paneLen);
+        pane.receiveShadow = false;
+        g.add(pane);
+      }
+    }
+
+    if (F.greenWall === side) {
+      // a living-wall panel on the balcony part of this wall
+      const panelLen = B - 0.5;
+      const panelH = 1.9;
+      const panelY = 0.5 + panelH / 2;
+      const backing = box(0.08, panelH, panelLen, M.hedge);
+      backing.position.set(x - sign * 0.05, panelY, -B / 2);
+      g.add(backing);
+      let seed = side === 'left' ? 31 : 47;
+      const rand = () => {
+        seed = (seed * 9301 + 49297) % 233280;
+        return seed / 233280;
+      };
+      const clump = foliageClump(170, [0.1, panelH - 0.1, panelLen - 0.1], [0.07, 0.12], rand);
+      clump.position.set(x - sign * 0.13, 0.55, -B / 2);
+      g.add(clump);
+    }
+  }
+
+  const back = plane(W, H, M.wallDark);
   back.rotation.y = Math.PI;
   back.position.set(0, H / 2, R);
   g.add(back);
 
+  // ---- overhang ------------------------------------------------------------
   const ceiling = plane(W, sideLen, M.ceiling);
   ceiling.rotation.x = Math.PI / 2;
   ceiling.position.set(0, H, sideZ);
   g.add(ceiling);
 
-  // the opening between room and balcony: a teak lintel and jambs
-  const lintel = box(W, 0.34, 0.24, M.teak);
-  lintel.position.set(0, H - 0.17, 0);
-  g.add(lintel);
+  const fascia = box(W, 0.3, 0.18, M.fascia);
+  fascia.position.set(0, H - 0.15, -B + 0.09);
+  g.add(fascia);
+  const beam = box(W, 0.14, 0.14, M.fascia);
+  beam.position.set(0, H - 0.07, 0);
+  g.add(beam);
   for (const s of [-1, 1]) {
-    const jamb = box(0.12, H, 0.24, M.teak);
-    jamb.position.set(s * (W / 2 - 0.06), H / 2, 0);
-    g.add(jamb);
+    const column = box(0.09, H, 0.09, M.fascia);
+    column.position.set(s * (W / 2 - 0.045), H / 2, -B + 0.045);
+    g.add(column);
+  }
+  const downlights = F.downlights ?? 0;
+  for (let i = 0; i < downlights; i++) {
+    const d = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.01, 16), M.downlight);
+    d.position.set(-W / 2 + ((i + 0.5) * W) / downlights, H - 0.006, -B / 2);
+    g.add(d);
   }
 
-  // railing at the front edge
-  const railZ = -B + 0.04;
-  const plinth = box(W, 0.08, 0.1, M.darkMetal);
-  plinth.position.set(0, 0.04, railZ);
-  g.add(plinth);
-  const postCount = Math.floor(W / 0.55) + 1;
-  for (let i = 0; i < postCount; i++) {
-    const x = -W / 2 + 0.06 + (i * (W - 0.12)) / (postCount - 1);
-    const post = box(0.035, 1.02, 0.035, M.darkMetal);
-    post.position.set(x, 0.55, railZ);
-    g.add(post);
+  // ---- frameless glass railing --------------------------------------------
+  const railZ = -B + 0.06;
+  const channel = box(W, 0.07, 0.09, M.darkMetal);
+  channel.position.set(0, 0.035, railZ);
+  g.add(channel);
+  const panels = Math.max(2, Math.round(W / 1.3));
+  const panelW = W / panels;
+  for (let i = 0; i < panels; i++) {
+    const pane = new THREE.Mesh(new THREE.BoxGeometry(panelW - 0.025, 1.0, 0.012), M.glass);
+    pane.position.set(-W / 2 + (i + 0.5) * panelW, 0.57, railZ);
+    pane.renderOrder = 2;
+    g.add(pane);
   }
-  for (const y of [0.32, 0.58, 0.84]) {
-    const cable = box(W, 0.012, 0.012, M.darkMetal);
-    cable.position.set(0, y, railZ);
-    g.add(cable);
-  }
-  const handrail = box(W, 0.06, 0.1, M.handrailWood);
-  handrail.position.set(0, 1.09, railZ);
-  g.add(handrail);
+  const cap = box(W, 0.035, 0.07, M.darkMetal);
+  cap.position.set(0, 1.09, railZ);
+  g.add(cap);
 
-  // the world beyond: ground far below (we're a few floors up) and a city
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(220, 220), M.ground);
+  // ---- the world beyond: a high floor over a dusk city ---------------------
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), M.ground);
   ground.rotation.x = -Math.PI / 2;
-  ground.position.set(0, -6, -60);
+  ground.position.set(0, -14, -140);
   g.add(ground);
 
   let seed = 11;
@@ -106,14 +176,16 @@ export function buildShell(p: ShellParams): THREE.Group {
     seed = (seed * 9301 + 49297) % 233280;
     return seed / 233280;
   };
-  for (let i = 0; i < 30; i++) {
-    const far = i >= 18;
-    const w = 1.4 + rand() * 2.6;
-    const h = 5 + rand() * (far ? 26 : 18);
-    const x = -24 + (i % 18) * 2.8 + (rand() - 0.5) * 1.6;
-    const z = -(far ? 30 + rand() * 18 : 13 + rand() * 12);
+  // Two bands of towers: a nearer mid-rise band and a far high-rise band
+  // that the fog turns into a hazy silhouette against the sunset.
+  for (let i = 0; i < 64; i++) {
+    const far = i >= 32;
+    const w = 3 + rand() * 6;
+    const h = far ? 14 + rand() * 34 : 8 + rand() * 20;
+    const x = -78 + (i % 32) * 5 + (rand() - 0.5) * 3;
+    const z = -(far ? 80 + rand() * 40 : 40 + rand() * 30);
     const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, w * 0.8), far ? M.cityFar : M.city);
-    b.position.set(x, -6 + h / 2, z);
+    b.position.set(x, -14 + h / 2, z);
     g.add(b);
   }
 

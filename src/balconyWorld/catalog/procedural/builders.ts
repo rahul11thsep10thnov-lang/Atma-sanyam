@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { materials } from '../../engine/materials';
+import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
+import { foliageClump, materials } from '../../engine/materials';
 
 // PLACEHOLDER PROPS — low-poly stand-ins built from primitives, each with the
 // same origin convention a final GLB will use: base centre at (0,0,0), facing
@@ -16,99 +17,142 @@ function mesh(geometry: THREE.BufferGeometry, material: THREE.Material, x = 0, y
   return m;
 }
 
-const sofaRattan: Builder = () => {
+function seeded(seed: number) {
+  return () => {
+    seed = (seed * 9301 + 49297) % 233280;
+    return seed / 233280;
+  };
+}
+
+/** Low white sectional: plinth base, three seat cushions, three loose back
+ * cushions and four throw pillows. 2.2 m long, 0.9 m deep, seat at 0.46. */
+const sofaSectionalWhite: Builder = () => {
   const M = materials();
   const g = new THREE.Group();
-  for (const [x, z] of [[-0.78, -0.36], [0.78, -0.36], [-0.78, 0.36], [0.78, 0.36]]) {
-    g.add(mesh(new THREE.BoxGeometry(0.06, 0.12, 0.06), M.teak, x, 0.06, z));
+  const recess = mesh(new THREE.BoxGeometry(2.0, 0.06, 0.7), M.darkMetal, 0, 0.03, 0.02);
+  recess.castShadow = false;
+  g.add(recess);
+  g.add(mesh(new RoundedBoxGeometry(2.2, 0.34, 0.9, 2, 0.03), M.whiteFabric, 0, 0.23, 0));
+  for (const x of [-0.73, 0, 0.73]) {
+    g.add(mesh(new RoundedBoxGeometry(0.7, 0.16, 0.8, 3, 0.05), M.whiteFabric, x, 0.46, -0.03));
+    const back = mesh(new RoundedBoxGeometry(0.7, 0.42, 0.16, 3, 0.05), M.whiteFabric, x, 0.7, 0.36);
+    back.rotation.x = -0.14;
+    g.add(back);
   }
-  g.add(mesh(new THREE.BoxGeometry(1.7, 0.3, 0.85), M.rattan, 0, 0.27, 0));
-  g.add(mesh(new THREE.BoxGeometry(1.56, 0.14, 0.72), M.linen, 0, 0.49, -0.03));
-  g.add(mesh(new THREE.BoxGeometry(1.7, 0.46, 0.14), M.rattan, 0, 0.63, 0.36));
-  g.add(mesh(new THREE.BoxGeometry(0.14, 0.26, 0.85), M.rattan, -0.78, 0.55, 0));
-  g.add(mesh(new THREE.BoxGeometry(0.14, 0.26, 0.85), M.rattan, 0.78, 0.55, 0));
-  for (const x of [-0.45, 0.42]) {
-    const c = mesh(new THREE.BoxGeometry(0.42, 0.38, 0.12), M.cushionTerracotta, x, 0.73, 0.26);
-    c.rotation.x = -0.12;
-    c.rotation.z = x < 0 ? 0.06 : -0.05;
-    g.add(c);
+  for (const x of [-1.04, 1.04]) {
+    g.add(mesh(new RoundedBoxGeometry(0.12, 0.2, 0.88, 2, 0.03), M.whiteFabric, x, 0.5, 0.01));
+  }
+  const pillows: [number, THREE.Material, number][] = [
+    [-0.8, M.cushionSand, 0.08],
+    [-0.38, M.cushionOlive, -0.05],
+    [0.32, M.cushionGrey, 0.06],
+    [0.78, M.cushionCharcoal, -0.07],
+  ];
+  for (const [x, mat, tilt] of pillows) {
+    const p = mesh(new RoundedBoxGeometry(0.42, 0.42, 0.12, 3, 0.06), mat, x, 0.76, 0.22);
+    p.rotation.x = -0.18;
+    p.rotation.z = tilt;
+    g.add(p);
   }
   return g;
 };
 
-const tableTeakSmall: Builder = () => {
+/** Low walnut coffee table with a bowl and a book on it. 1.1 × 0.6, 0.34 high. */
+const tableCoffeeLow: Builder = () => {
   const M = materials();
   const g = new THREE.Group();
-  g.add(mesh(new THREE.CylinderGeometry(0.34, 0.34, 0.04, 28), M.teak, 0, 0.4, 0));
-  for (let i = 0; i < 3; i++) {
-    const a = (i / 3) * Math.PI * 2 + Math.PI / 6;
-    g.add(mesh(new THREE.CylinderGeometry(0.02, 0.025, 0.38, 10), M.teak, Math.cos(a) * 0.25, 0.19, Math.sin(a) * 0.25));
+  g.add(mesh(new RoundedBoxGeometry(1.1, 0.05, 0.6, 2, 0.015), M.walnut, 0, 0.315, 0));
+  for (const x of [-0.42, 0.42]) {
+    g.add(mesh(new THREE.BoxGeometry(0.05, 0.29, 0.5), M.walnut, x, 0.145, 0));
   }
+  g.add(mesh(new THREE.CylinderGeometry(0.11, 0.08, 0.05, 20), M.planterConcrete, -0.22, 0.365, 0.05));
+  g.add(mesh(new THREE.BoxGeometry(0.24, 0.03, 0.17), M.cushionCharcoal, 0.26, 0.355, -0.06));
+  g.add(mesh(new THREE.BoxGeometry(0.22, 0.02, 0.15), M.cushionSand, 0.27, 0.38, -0.05));
   return g;
 };
 
-const lampFloorBrass: Builder = () => {
+/** Charcoal planter trough with a clipped hedge. 1.6 m long, hedge to ~1.1 m. */
+const planterTroughHedge: Builder = () => {
   const M = materials();
   const g = new THREE.Group();
-  g.add(mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.03, 28), M.brass, 0, 0.015, 0));
-  g.add(mesh(new THREE.CylinderGeometry(0.014, 0.014, 1.32, 10), M.brass, 0, 0.69, 0));
-  const shade = mesh(new THREE.CylinderGeometry(0.14, 0.21, 0.3, 28, 1, true), M.lampShade, 0, 1.46, 0);
+  g.add(mesh(new RoundedBoxGeometry(1.6, 0.46, 0.45, 2, 0.02), M.planterCharcoal, 0, 0.23, 0));
+  const soil = mesh(new THREE.BoxGeometry(1.52, 0.02, 0.37), M.soil, 0, 0.455, 0);
+  soil.castShadow = false;
+  g.add(soil);
+  const foliage = new THREE.Group();
+  foliage.position.set(0, 0.46, 0);
+  foliage.userData.sway = true;
+  foliage.add(foliageClump(70, [1.5, 0.5, 0.36], [0.09, 0.16], seeded(5)));
+  g.add(foliage);
+  return g;
+};
+
+/** Tall charcoal pot with a broad-leaf plant. Pot 0.62 high, leaves to ~1.7 m. */
+const planterTallBroadleaf: Builder = () => {
+  const M = materials();
+  const g = new THREE.Group();
+  g.add(mesh(new THREE.CylinderGeometry(0.24, 0.2, 0.62, 20), M.planterCharcoal, 0, 0.31, 0));
+  const soil = mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.02, 20), M.soil, 0, 0.62, 0);
+  soil.castShadow = false;
+  g.add(soil);
+
+  const plant = new THREE.Group();
+  plant.position.set(0, 0.62, 0);
+  plant.userData.sway = true;
+  plant.add(mesh(new THREE.CylinderGeometry(0.018, 0.026, 0.7, 8), M.leaf, 0, 0.35, 0));
+  const leafGeo = new THREE.SphereGeometry(1, 8, 6);
+  leafGeo.scale(0.14, 0.025, 0.42);
+  const rand = seeded(21);
+  for (let i = 0; i < 9; i++) {
+    const a = (i / 9) * Math.PI * 2 + rand() * 0.4;
+    const h = 0.45 + rand() * 0.55;
+    const leaf = new THREE.Mesh(leafGeo, i % 3 === 0 ? M.leafLight : M.leaf);
+    leaf.position.set(Math.cos(a) * 0.2, h, Math.sin(a) * 0.2);
+    leaf.rotation.y = -a + Math.PI / 2;
+    leaf.rotation.x = -0.45 - rand() * 0.3;
+    leaf.castShadow = true;
+    plant.add(leaf);
+  }
+  g.add(plant);
+  return g;
+};
+
+/** Slim black arc floor lamp with a white drum shade, 1.9 m. */
+const lampFloorArc: Builder = () => {
+  const M = materials();
+  const g = new THREE.Group();
+  g.add(mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.025, 24), M.lampBlack, 0, 0.0125, 0));
+  g.add(mesh(new THREE.CylinderGeometry(0.014, 0.014, 1.78, 10), M.lampBlack, 0, 0.9, 0));
+  const arm = mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.42, 10), M.lampBlack, 0, 1.79, -0.2);
+  arm.rotation.x = Math.PI / 2;
+  g.add(arm);
+  const shade = mesh(new THREE.CylinderGeometry(0.15, 0.17, 0.2, 28, 1, true), M.lampShade, 0, 1.68, -0.4);
   shade.castShadow = false;
   g.add(shade);
-  const bulb = mesh(new THREE.SphereGeometry(0.035, 12, 10), M.glassWarm, 0, 1.41, 0);
+  const bulb = mesh(new THREE.SphereGeometry(0.035, 12, 10), M.glassWarm, 0, 1.64, -0.4);
   bulb.castShadow = false;
   g.add(bulb);
-  const light = new THREE.PointLight(0xffd9a0, 6, 3.6, 2);
-  light.position.set(0, 1.42, 0);
+  const light = new THREE.PointLight(0xffd9a0, 6, 3.8, 2);
+  light.position.set(0, 1.62, -0.4);
   light.name = 'prop-light';
   g.add(light);
   return g;
 };
 
-const planterTerracotta: Builder = () => {
+/** Black metal candle lantern with warm glass, 0.5 m. */
+const lanternBlack: Builder = () => {
   const M = materials();
   const g = new THREE.Group();
-  g.add(mesh(new THREE.CylinderGeometry(0.21, 0.15, 0.4, 24), M.terracotta, 0, 0.2, 0));
-  g.add(mesh(new THREE.CylinderGeometry(0.235, 0.235, 0.045, 24), M.terracotta, 0, 0.395, 0));
-  const soil = mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.02, 24), M.soil, 0, 0.41, 0);
-  soil.castShadow = false;
-  g.add(soil);
-
-  // foliage sways gently (ObjectSystem animates children flagged `sway`)
-  const foliage = new THREE.Group();
-  foliage.position.set(0, 0.42, 0);
-  foliage.userData.sway = true;
-  foliage.add(mesh(new THREE.CylinderGeometry(0.012, 0.016, 0.5, 8), M.leaf, 0, 0.25, 0));
-  const leafGeo = new THREE.SphereGeometry(1, 8, 6);
-  leafGeo.scale(0.055, 0.02, 0.19);
-  for (let i = 0; i < 11; i++) {
-    const a = (i / 11) * Math.PI * 2 + (i % 2) * 0.3;
-    const h = 0.18 + (i % 4) * 0.09;
-    const leaf = new THREE.Mesh(leafGeo, i % 3 === 0 ? M.leafLight : M.leaf);
-    leaf.position.set(Math.cos(a) * 0.1, h, Math.sin(a) * 0.1);
-    leaf.rotation.y = -a + Math.PI / 2;
-    leaf.rotation.x = -0.55 - (i % 3) * 0.12;
-    leaf.castShadow = true;
-    foliage.add(leaf);
+  g.add(mesh(new THREE.BoxGeometry(0.28, 0.02, 0.28), M.lampBlack, 0, 0.01, 0));
+  for (const [x, z] of [[-0.12, -0.12], [0.12, -0.12], [-0.12, 0.12], [0.12, 0.12]]) {
+    g.add(mesh(new THREE.BoxGeometry(0.014, 0.36, 0.014), M.lampBlack, x, 0.2, z));
   }
-  g.add(foliage);
-  return g;
-};
-
-const lanternBrass: Builder = () => {
-  const M = materials();
-  const g = new THREE.Group();
-  g.add(mesh(new THREE.BoxGeometry(0.26, 0.03, 0.26), M.brass, 0, 0.015, 0));
-  for (const [x, z] of [[-0.11, -0.11], [0.11, -0.11], [-0.11, 0.11], [0.11, 0.11]]) {
-    g.add(mesh(new THREE.BoxGeometry(0.016, 0.34, 0.016), M.brass, x, 0.2, z));
-  }
-  const glass = mesh(new THREE.BoxGeometry(0.2, 0.3, 0.2), M.glassWarm, 0, 0.19, 0);
+  const glass = mesh(new THREE.BoxGeometry(0.22, 0.32, 0.22), M.glassWarm, 0, 0.2, 0);
   glass.castShadow = false;
   g.add(glass);
-  g.add(mesh(new THREE.BoxGeometry(0.26, 0.03, 0.26), M.brass, 0, 0.385, 0));
-  g.add(mesh(new THREE.ConeGeometry(0.17, 0.12, 4), M.brass, 0, 0.46, 0));
-  const ring = mesh(new THREE.TorusGeometry(0.04, 0.008, 8, 16), M.brass, 0, 0.55, 0);
-  g.add(ring);
+  g.add(mesh(new THREE.BoxGeometry(0.28, 0.02, 0.28), M.lampBlack, 0, 0.39, 0));
+  g.add(mesh(new THREE.ConeGeometry(0.19, 0.1, 4), M.lampBlack, 0, 0.45, 0));
+  g.add(mesh(new THREE.TorusGeometry(0.035, 0.007, 8, 16), M.lampBlack, 0, 0.53, 0));
   const light = new THREE.PointLight(0xffc46a, 2.2, 2.2, 2);
   light.position.set(0, 0.2, 0);
   light.name = 'prop-light';
@@ -116,14 +160,15 @@ const lanternBrass: Builder = () => {
   return g;
 };
 
-const rugJute: Builder = () => {
+/** Flat-weave outdoor rug, 2.2 × 1.6, pale with a dark border. */
+const rugOutdoor: Builder = () => {
   const M = materials();
   const g = new THREE.Group();
-  const base = mesh(new THREE.BoxGeometry(1.9, 0.014, 1.4), M.rug, 0, 0.007, 0);
+  const base = mesh(new THREE.BoxGeometry(2.2, 0.012, 1.6), M.rug, 0, 0.006, 0);
   base.castShadow = false;
   g.add(base);
-  for (const [w, d, x, z] of [[1.9, 0.08, 0, -0.66], [1.9, 0.08, 0, 0.66], [0.08, 1.4, -0.91, 0], [0.08, 1.4, 0.91, 0]]) {
-    const b = mesh(new THREE.BoxGeometry(w, 0.016, d), M.rugBorder, x, 0.008, z);
+  for (const [w, d, x, z] of [[2.2, 0.06, 0, -0.77], [2.2, 0.06, 0, 0.77], [0.06, 1.6, -1.07, 0], [0.06, 1.6, 1.07, 0]]) {
+    const b = mesh(new THREE.BoxGeometry(w, 0.014, d), M.rugBorder, x, 0.007, z);
     b.castShadow = false;
     g.add(b);
   }
@@ -131,10 +176,11 @@ const rugJute: Builder = () => {
 };
 
 export const PROCEDURAL_BUILDERS: Record<string, Builder> = {
-  sofa_rattan: sofaRattan,
-  table_teak_small: tableTeakSmall,
-  lamp_floor_brass: lampFloorBrass,
-  planter_terracotta: planterTerracotta,
-  lantern_brass: lanternBrass,
-  rug_jute: rugJute,
+  sofa_sectional_white: sofaSectionalWhite,
+  table_coffee_low: tableCoffeeLow,
+  planter_trough_hedge: planterTroughHedge,
+  planter_tall_broadleaf: planterTallBroadleaf,
+  lamp_floor_arc: lampFloorArc,
+  lantern_black: lanternBlack,
+  rug_outdoor: rugOutdoor,
 };
