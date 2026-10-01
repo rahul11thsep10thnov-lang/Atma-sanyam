@@ -1,37 +1,54 @@
+// The picture library: search, collections as chips, sort, and a grid of
+// cached thumbnails. Opened from Home (optionally inside one collection).
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors, radius, spacing, typography, buttonHeight } from '../theme/colors';
 import { RootStackParamList } from '../navigation/types';
 import { useContentCategories, useContentLibrary } from '../content/useContentLibrary';
 import { RemoteThumb } from '../content/RemoteThumb';
 import { resolveImageUri } from '../content/repository';
 import { CategoryNode, ContentImage, SortOrder } from '../content/types';
+import { AppText } from '../ui/AppText';
+import { Button, IconButton } from '../ui/Button';
+import { Icon } from '../ui/Icon';
+import { Tactile } from '../ui/Pressable';
+import { SegmentedControl } from '../ui/SegmentedControl';
+import { TextField } from '../ui/TextField';
+import { radii } from '../theme/radii';
+import { space } from '../theme/spacing';
+import { useTheme } from '../theme/ThemeContext';
 
-const SORTS: { key: SortOrder; label: string }[] = [
-  { key: 'popular', label: 'Popular' },
-  { key: 'newest', label: 'Newest' },
-  { key: 'title', label: 'A–Z' },
+const SORTS: { value: SortOrder; label: string }[] = [
+  { value: 'popular', label: 'Popular' },
+  { value: 'newest', label: 'Newest' },
+  { value: 'title', label: 'A–Z' },
 ];
 
-const GRID_GAP = 10;
+const GRID_GAP = space.md;
 const NUM_COLUMNS = 3;
 
 export function ContentBrowserScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<any>();
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
 
   const { categories } = useContentCategories();
   const initialCategoryId: string | undefined = route.params?.initialCategoryId;
   const [path, setPath] = useState<CategoryNode[]>([]);
   const [searchInput, setSearchInput] = useState('');
   const [resolvingId, setResolvingId] = useState<string | null>(null);
+  const [gridWidth, setGridWidth] = useState(0);
 
   const { images, loading, loadingMore, error, hasMore, filters, setSearch, setCategoryId, setSort, loadMore, retry } =
     useContentLibrary(initialCategoryId ? { categoryId: initialCategoryId } : {});
+
+  useEffect(() => {
+    const handle = setTimeout(() => setSearch(searchInput), 300);
+    return () => clearTimeout(handle);
+  }, [searchInput, setSearch]);
 
   // Opened from a Home collection chip: land inside that category.
   useEffect(() => {
@@ -40,11 +57,6 @@ export function ContentBrowserScreen() {
     if (node) setPath([node]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialCategoryId, categories]);
-
-  useEffect(() => {
-    const handle = setTimeout(() => setSearch(searchInput), 300);
-    return () => clearTimeout(handle);
-  }, [searchInput, setSearch]);
 
   const currentParentId = path.length > 0 ? path[path.length - 1].id : null;
   const visibleCategories = categories.filter((c) => c.parentId === currentParentId);
@@ -82,34 +94,28 @@ export function ContentBrowserScreen() {
     }
   };
 
+  const thumb = gridWidth > 0 ? (gridWidth - GRID_GAP * (NUM_COLUMNS - 1)) / NUM_COLUMNS : 100;
+
   return (
-    <View style={[styles.screen, { paddingTop: insets.top + 12 }]}>
+    <View style={[styles.screen, { backgroundColor: colors.background, paddingTop: insets.top + space.md }]}>
       <View style={styles.headerRow}>
-        <Pressable onPress={() => navigation.goBack()} style={styles.closeBtn}>
-          <Text style={styles.closeBtnText}>✕</Text>
-        </Pressable>
-        <Text style={styles.title}>Browse library</Text>
-        <View style={styles.closeBtn} />
+        <IconButton icon="close" label="Close the library" variant="filled" size={40} onPress={() => navigation.goBack()} />
+        <AppText variant="subheading">Picture library</AppText>
+        <View style={{ width: 40 }} />
       </View>
 
-      <TextInput
-        value={searchInput}
-        onChangeText={setSearchInput}
-        placeholder="Search title, category, or tag"
-        placeholderTextColor={colors.textSecondary}
-        style={styles.searchInput}
-      />
+      <TextField icon="search" value={searchInput} onChangeText={setSearchInput} placeholder="Search pictures, places, tags" returnKeyType="search" accessibilityLabel="Search the library" />
 
       <View style={styles.breadcrumbRow}>
-        <Pressable onPress={() => selectBreadcrumb(-1)}>
-          <Text style={[styles.breadcrumb, path.length === 0 && styles.breadcrumbActive]}>All</Text>
-        </Pressable>
+        <Tactile onPress={() => selectBreadcrumb(-1)} haptic={false} accessibilityRole="button" accessibilityLabel="All collections">
+          <AppText variant="bodySmallStrong" tone={path.length === 0 ? 'primary' : 'muted'}>All</AppText>
+        </Tactile>
         {path.map((node, i) => (
           <View key={node.id} style={styles.breadcrumbItem}>
-            <Text style={styles.breadcrumbSep}>›</Text>
-            <Pressable onPress={() => selectBreadcrumb(i)}>
-              <Text style={[styles.breadcrumb, i === path.length - 1 && styles.breadcrumbActive]}>{node.name}</Text>
-            </Pressable>
+            <Icon name="chevronRight" size="xs" color="icon" />
+            <Tactile onPress={() => selectBreadcrumb(i)} haptic={false} accessibilityRole="button" accessibilityLabel={node.name}>
+              <AppText variant="bodySmallStrong" tone={i === path.length - 1 ? 'primary' : 'muted'}>{node.name}</AppText>
+            </Tactile>
           </View>
         ))}
       </View>
@@ -120,120 +126,82 @@ export function ContentBrowserScreen() {
           showsHorizontalScrollIndicator={false}
           data={visibleCategories}
           keyExtractor={(c) => c.id}
+          style={styles.chipStrip}
           contentContainerStyle={styles.chipRow}
-          renderItem={({ item }) => (
-            <Pressable
-              onPress={() => selectCategory(item)}
-              style={[styles.chip, filters.categoryId === item.id && styles.chipActive]}
-            >
-              <Text style={[styles.chipText, filters.categoryId === item.id && styles.chipTextActive]}>{item.name}</Text>
-            </Pressable>
-          )}
+          renderItem={({ item }) => {
+            const active = filters.categoryId === item.id;
+            return (
+              <Tactile
+                onPress={() => selectCategory(item)}
+                scaleTo={0.96}
+                accessibilityRole="button"
+                accessibilityState={{ selected: active }}
+                style={[styles.chip, { backgroundColor: active ? colors.primary : colors.surfaceRaised, borderColor: active ? colors.primary : colors.border }]}
+              >
+                <AppText variant="bodySmallStrong" style={{ color: active ? colors.textOnAccent : colors.text }}>{item.name}</AppText>
+              </Tactile>
+            );
+          }}
         />
       )}
 
       <View style={styles.sortRow}>
-        {SORTS.map((s) => (
-          <Pressable key={s.key} onPress={() => setSort(s.key)} style={styles.sortBtn}>
-            <Text style={[styles.sortText, filters.sort === s.key && styles.sortTextActive]}>{s.label}</Text>
-          </Pressable>
-        ))}
+        <SegmentedControl<SortOrder> segments={SORTS} value={filters.sort} onChange={setSort} accessibilityLabel="Sort order" />
       </View>
 
-      {loading ? (
-        <View style={styles.centerFill}>
-          <ActivityIndicator color={colors.primary} size="large" />
-        </View>
-      ) : error ? (
-        <View style={styles.centerFill}>
-          <Text style={styles.errorText}>{error}</Text>
-          <Pressable style={styles.retryBtn} onPress={retry}>
-            <Text style={styles.retryBtnText}>Retry</Text>
-          </Pressable>
-        </View>
-      ) : images.length === 0 ? (
-        <View style={styles.centerFill}>
-          <Text style={styles.emptyText}>No images match.</Text>
-        </View>
-      ) : (
-        <FlatList
-          data={images}
-          keyExtractor={(img) => img.imageId}
-          numColumns={NUM_COLUMNS}
-          contentContainerStyle={styles.grid}
-          columnWrapperStyle={{ gap: GRID_GAP }}
-          onEndReachedThreshold={0.4}
-          onEndReached={() => hasMore && loadMore()}
-          ListFooterComponent={loadingMore ? <ActivityIndicator style={{ marginVertical: 16 }} color={colors.primary} /> : null}
-          renderItem={({ item }) => (
-            <View style={{ marginBottom: GRID_GAP }}>
-              <RemoteThumb
-                image={item}
-                size={THUMB_SIZE}
-                onPress={() => handlePick(item)}
-                selected={resolvingId === item.imageId}
-              />
-            </View>
-          )}
-        />
-      )}
+      <View style={styles.gridWrap} onLayout={(e) => setGridWidth(e.nativeEvent.layout.width)}>
+        {loading ? (
+          <View style={styles.centerFill}>
+            <ActivityIndicator color={colors.primary} size="large" />
+          </View>
+        ) : error ? (
+          <View style={styles.centerFill}>
+            <Icon name="alert" size="lg" color="warning" />
+            <AppText variant="body" tone="secondary" align="center" style={styles.stateText}>
+              Something interrupted the connection.
+            </AppText>
+            <Button label="Try again" icon="reset" variant="secondary" onPress={retry} />
+          </View>
+        ) : images.length === 0 ? (
+          <View style={styles.centerFill}>
+            <Icon name="images" size="lg" color="icon" />
+            <AppText variant="body" tone="secondary" align="center" style={styles.stateText}>
+              No pictures match yet.
+            </AppText>
+          </View>
+        ) : (
+          <FlatList
+            data={images}
+            keyExtractor={(img) => img.imageId}
+            numColumns={NUM_COLUMNS}
+            contentContainerStyle={{ paddingBottom: insets.bottom + space.xxl }}
+            columnWrapperStyle={{ gap: GRID_GAP }}
+            showsVerticalScrollIndicator={false}
+            onEndReachedThreshold={0.4}
+            onEndReached={() => hasMore && loadMore()}
+            ListFooterComponent={loadingMore ? <ActivityIndicator style={{ marginVertical: space.lg }} color={colors.primary} /> : null}
+            renderItem={({ item }) => (
+              <View style={{ marginBottom: GRID_GAP }}>
+                <RemoteThumb image={item} size={thumb} onPress={() => handlePick(item)} selected={resolvingId === item.imageId} />
+              </View>
+            )}
+          />
+        )}
+      </View>
     </View>
   );
 }
 
-const THUMB_SIZE = 108;
-
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.background, paddingHorizontal: spacing.screenPadding },
-  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 },
-  closeBtn: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
-  closeBtnText: { fontSize: 18, color: colors.text },
-  title: { ...typography.title, color: colors.text },
-  searchInput: {
-    height: buttonHeight,
-    borderRadius: radius.card,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.card,
-    paddingHorizontal: 14,
-    color: colors.text,
-    ...typography.body,
-    marginBottom: 12,
-  },
-  breadcrumbRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', marginBottom: 10 },
-  breadcrumbItem: { flexDirection: 'row', alignItems: 'center' },
-  breadcrumb: { ...typography.caption, color: colors.textSecondary },
-  breadcrumbActive: { color: colors.primary, fontWeight: '700' },
-  breadcrumbSep: { ...typography.caption, color: colors.textSecondary, marginHorizontal: 4 },
-  chipRow: { gap: 8, paddingBottom: 12 },
-  chip: {
-    paddingHorizontal: 14,
-    height: 34,
-    borderRadius: 17,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.card,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  chipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
-  chipText: { ...typography.caption, color: colors.text },
-  chipTextActive: { color: colors.white, fontWeight: '700' },
-  sortRow: { flexDirection: 'row', gap: 16, marginBottom: 12 },
-  sortBtn: { paddingVertical: 4 },
-  sortText: { ...typography.caption, color: colors.textSecondary },
-  sortTextActive: { color: colors.primary, fontWeight: '700' },
-  grid: { paddingBottom: 24 },
-  centerFill: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12 },
-  errorText: { ...typography.body, color: colors.textSecondary, textAlign: 'center', paddingHorizontal: 24 },
-  emptyText: { ...typography.body, color: colors.textSecondary },
-  retryBtn: {
-    height: buttonHeight,
-    paddingHorizontal: 24,
-    borderRadius: radius.card,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  retryBtnText: { ...typography.title, color: colors.white },
+  screen: { flex: 1, paddingHorizontal: space.screen },
+  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: space.xs },
+  breadcrumbRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 4, marginTop: space.md, marginBottom: space.sm },
+  breadcrumbItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  chipStrip: { flexGrow: 0, marginHorizontal: -space.screen },
+  chipRow: { gap: space.sm, paddingHorizontal: space.screen, paddingVertical: 4 },
+  chip: { paddingHorizontal: 14, height: 36, borderRadius: radii.pill, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  sortRow: { marginTop: space.md, marginBottom: space.md },
+  gridWrap: { flex: 1 },
+  centerFill: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.md, paddingHorizontal: space.xxl },
+  stateText: { marginBottom: space.xs },
 });

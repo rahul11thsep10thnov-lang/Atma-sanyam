@@ -1,7 +1,11 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors, radius, typography, buttonHeight } from '../theme/colors';
+import { StyleSheet, View } from 'react-native';
 import { trackError } from '../services/analytics';
+import { AppText } from '../ui/AppText';
+import { Button } from '../ui/Button';
+import { Icon } from '../ui/Icon';
+import { lightColors } from '../theme/colors';
+import { space } from '../theme/spacing';
 
 interface State {
   hasError: boolean;
@@ -9,6 +13,7 @@ interface State {
 
 // Last line of defense: a render crash shows a calm recovery screen instead
 // of a white screen, and is reported (anonymously) to the admin console.
+// Sits above ThemeProvider, so it paints with the light palette.
 export class ErrorBoundary extends React.Component<{ children: React.ReactNode }, State> {
   state: State = { hasError: false };
 
@@ -24,20 +29,21 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
     if (!this.state.hasError) return this.props.children;
     return (
       <View style={styles.screen}>
-        <Text style={styles.title}>Something went wrong</Text>
-        <Text style={styles.body}>Sorry about that. Your focus history is safe on this device.</Text>
-        <Pressable style={styles.btn} onPress={() => this.setState({ hasError: false })} accessibilityRole="button">
-          <Text style={styles.btnText}>Try again</Text>
-        </Pressable>
+        <View style={styles.badge}>
+          <Icon name="leaf" size="lg" color={lightColors.growth} />
+        </View>
+        <AppText variant="heading" align="center">Something went wrong</AppText>
+        <AppText variant="body" tone="secondary" align="center" style={styles.body}>
+          Sorry about that. Your focus history is safe on this device.
+        </AppText>
+        <Button label="Try again" icon="reset" onPress={() => this.setState({ hasError: false })} />
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.background, alignItems: 'center', justifyContent: 'center', padding: 32 },
-  title: { ...typography.heading, color: colors.text, textAlign: 'center' },
-  body: { ...typography.body, color: colors.textSecondary, textAlign: 'center', marginTop: 8, marginBottom: 24 },
-  btn: { height: buttonHeight, paddingHorizontal: 28, borderRadius: radius.card, backgroundColor: colors.primary, justifyContent: 'center' },
-  btnText: { ...typography.title, color: colors.white },
+  screen: { flex: 1, backgroundColor: lightColors.background, alignItems: 'center', justifyContent: 'center', padding: space.xxxl },
+  badge: { width: 64, height: 64, borderRadius: 32, backgroundColor: lightColors.growthSoft, alignItems: 'center', justifyContent: 'center', marginBottom: space.lg },
+  body: { marginTop: space.sm, marginBottom: space.xxl },
 });
