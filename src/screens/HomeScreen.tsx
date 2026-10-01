@@ -112,10 +112,7 @@ export function HomeScreen() {
   const quotePalette = paletteForQuote(selectedQuote.id);
 
   return (
-    <AnimatedWallpaper
-      source={require('../../assets/images/backgrounds/home-wallpaper.jpg')}
-      style={styles.screen}
-    >
+    <AnimatedWallpaper style={styles.screen}>
       <View style={[styles.topSection, { paddingTop: insets.top + 16 }]}>
         {!!config.texts.announcement && (
           <View style={styles.announcement} accessibilityRole="summary">
