@@ -30,10 +30,23 @@ export interface PlacementZone {
   maxObjects: number;
 }
 
+/** Growth record for a plant-type object: focus minutes credited to it and
+ * its health (0..1, lowered by broken sessions, restored by focus). */
+export interface PlantGrowthState {
+  focusMinutes: number;
+  health: number;
+}
+
 export interface AssetDefinition {
   id: string;
   name: string;
   category: AssetCategory;
+  /** Store price. 0 = part of the starter set (still re-purchasable). */
+  price: { coins: number };
+  /** Lifetime focus minutes before this asset appears in the store. */
+  unlockMinutes?: number;
+  /** Grows with focus and wilts after broken sessions (plants). */
+  growable?: boolean;
   /** 'procedural' builds a stand-in from code; 'glb' loads a real model. */
   kind: 'procedural' | 'glb';
   /** Builder key (procedural) or bundled/remote uri (glb). */
@@ -57,6 +70,7 @@ export interface UserPlacedObject {
   zoneId: string;
   createdAt: number;
   updatedAt: number;
+  growth?: PlantGrowthState;
 }
 
 export interface CameraState {
@@ -107,6 +121,9 @@ export interface EnvironmentDefinition {
 
 export interface WorldSaveState {
   schemaVersion: number;
+  /** Bumped on every save; the balcony screen reloads when another screen
+   * (the focus session) has written a newer world. */
+  version?: number;
   environmentId: string;
   placedObjects: UserPlacedObject[];
   camera: CameraState | null;

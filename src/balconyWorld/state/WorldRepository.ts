@@ -21,16 +21,34 @@ export async function loadWorld(environmentId: string): Promise<WorldSaveState |
 
 let pending: ReturnType<typeof setTimeout> | null = null;
 
+function serialize(state: WorldSaveState): string {
+  return JSON.stringify({ ...state, schemaVersion: SCHEMA_VERSION, version: Date.now() });
+}
+
 /** Debounced: a drag emits many moves a second; one write 300 ms after the
  * last one is plenty. */
 export function saveWorld(state: WorldSaveState): void {
   if (pending) clearTimeout(pending);
   pending = setTimeout(() => {
     pending = null;
-    AsyncStorage.setItem(KEY_PREFIX + state.environmentId, JSON.stringify({ ...state, schemaVersion: SCHEMA_VERSION })).catch(() => {
+    AsyncStorage.setItem(KEY_PREFIX + state.environmentId, serialize(state)).catch(() => {
       // best effort; the in-memory world is still correct and the next save retries
     });
   }, 300);
+}
+
+/** Immediate write — for the focus session crediting growth while the
+ * balcony screen is not mounted. */
+export async function saveWorldNow(state: WorldSaveState): Promise<void> {
+  if (pending) {
+    clearTimeout(pending);
+    pending = null;
+  }
+  try {
+    await AsyncStorage.setItem(KEY_PREFIX + state.environmentId, serialize(state));
+  } catch {
+    // best effort
+  }
 }
 
 export async function clearWorld(environmentId: string): Promise<void> {

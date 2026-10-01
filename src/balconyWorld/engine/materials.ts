@@ -100,6 +100,7 @@ export function materials() {
     leaf: new THREE.MeshStandardMaterial({ color: 0x3e6b38, roughness: 0.8, metalness: 0, side: THREE.DoubleSide }),
     leafLight: new THREE.MeshStandardMaterial({ color: 0x6a9a4a, roughness: 0.8, metalness: 0, side: THREE.DoubleSide }),
     hedge: new THREE.MeshStandardMaterial({ color: 0x2f5a2d, roughness: 0.95, metalness: 0 }),
+    leafWilted: new THREE.MeshStandardMaterial({ color: 0x8a7a3a, roughness: 0.9, metalness: 0, side: THREE.DoubleSide }),
     lampBlack: new THREE.MeshStandardMaterial({ color: 0x1f1f21, roughness: 0.4, metalness: 0.6 }),
     lampShade: new THREE.MeshStandardMaterial({ color: 0xf4f1ea, roughness: 1, metalness: 0, emissive: 0xffd9a0, emissiveIntensity: 0.35, side: THREE.DoubleSide }),
     glassWarm: new THREE.MeshStandardMaterial({ color: 0xffe7b8, roughness: 0.2, metalness: 0, transparent: true, opacity: 0.55, emissive: 0xffc46a, emissiveIntensity: 0.6 }),

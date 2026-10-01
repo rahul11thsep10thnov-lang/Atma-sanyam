@@ -8,7 +8,9 @@ import * as Haptics from 'expo-haptics';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PuzzleGrid } from '../components/PuzzleGrid';
 import { PuzzleContent, attributionFor } from '../components/PuzzleContent';
-import { SessionResultSheet } from '../components/session/SessionResultSheet';
+import { SessionResultSheet, RewardLine } from '../components/session/SessionResultSheet';
+import { creditCompletedSession, recordPausedSession } from '../balconyWorld/state/FocusRewards';
+import { STAGE_LABEL } from '../balconyWorld/state/RewardState';
 import { useFocusTimer } from '../hooks/useFocusTimer';
 import { RootStackParamList } from '../navigation/types';
 import { saveSessionRecord } from '../storage/history';
@@ -48,6 +50,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
   const startedAtRef = useRef(Date.now());
   const [result, setResult] = useState<Result | null>(null);
   const resultRef = useRef<Result | null>(null);
+  const [rewardLines, setRewardLines] = useState<RewardLine[]>([]);
 
   const finalizeSession = useCallback(
     async (outcome: SessionRecord['outcome'], failureReason: SessionRecord['failureReason'], revealedFraction: number) => {
@@ -91,13 +94,29 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
     finalizeSession('completed', null, 1);
     if (settings.soundEnabled) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => undefined);
     show({ outcome: 'completed' });
-  }, [finalizeSession, settings.soundEnabled]);
+    creditCompletedSession(config.durationMinutes)
+      .then((summary) => {
+        const lines: RewardLine[] = [{ icon: 'coins', text: `+${summary.coinsEarned + summary.bonusCoins} coins for your balcony` }];
+        if (summary.plant) {
+          const grew = summary.plant.after !== summary.plant.before;
+          lines.push({ icon: 'sprout', text: summary.plant.revived ? `${summary.plant.name} revived` : grew ? `${summary.plant.name} is now ${STAGE_LABEL[summary.plant.after]}` : `${summary.plant.name} kept growing` });
+        }
+        for (const m of summary.milestones) lines.push({ icon: 'sparkles', text: `${m.title} — ${m.unlocksAssetId ? 'something new in the store' : `+${m.coins} coins`}` });
+        setRewardLines(lines);
+      })
+      .catch(() => undefined);
+  }, [finalizeSession, settings.soundEnabled, config.durationMinutes]);
 
   const handleFail = useCallback(
     (reason: 'left_app' | 'gave_up', revealedFraction: number) => {
       finalizeSession('failed', reason, revealedFraction);
       if (settings.soundEnabled) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => undefined);
       show({ outcome: 'failed', reason });
+      recordPausedSession()
+        .then((summary) => {
+          if (summary.plant) setRewardLines([{ icon: 'leaf', text: summary.plant.wilted ? `${summary.plant.name} is wilting — give it another moment` : `${summary.plant.name} drooped a little` }]);
+        })
+        .catch(() => undefined);
     },
     [finalizeSession, settings.soundEnabled]
   );
@@ -194,13 +213,14 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
       )}
 
       {result?.outcome === 'completed' && (
-        <SessionResultSheet outcome="completed" title={texts.sessionCompleteTitle} message={texts.sessionCompleteMessage} primaryLabel="Back to my balcony" onPrimary={leave} />
+        <SessionResultSheet outcome="completed" title={texts.sessionCompleteTitle} message={texts.sessionCompleteMessage} lines={rewardLines} primaryLabel="Back to my balcony" onPrimary={leave} />
       )}
       {result?.outcome === 'failed' && (
         <SessionResultSheet
           outcome="failed"
           title={texts.sessionFailedTitle}
           message={result.reason === 'left_app' ? texts.sessionLeftAppMessage : texts.sessionGaveUpMessage}
+          lines={rewardLines}
           primaryLabel="Give it another moment"
           onPrimary={leave}
         />
