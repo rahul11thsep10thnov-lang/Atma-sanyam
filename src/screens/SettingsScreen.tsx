@@ -14,6 +14,7 @@ import { friendlyError } from '../services/apiClient';
 import { appVersion } from '../services/appInfo';
 import { env, isBackendConfigured } from '../config/env';
 import { RootStackParamList } from '../navigation/types';
+import { useTabBarInset } from '../ui/TabBar';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -58,6 +59,7 @@ function LinkRow({ label, onPress }: { label: string; onPress: () => void }) {
 export function SettingsScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const insets = useSafeAreaInsets();
+  const tabInset = useTabBarInset();
   const { settings, updateSettings } = useSettings();
   const { status, user, signOut, deleteAccount } = useAuth();
   const { config } = useRemoteConfig();
@@ -137,7 +139,7 @@ export function SettingsScreen() {
   return (
     <ScrollView
       style={styles.screen}
-      contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: 40, paddingHorizontal: spacing.screenPadding }}
+      contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: 40 + tabInset, paddingHorizontal: spacing.screenPadding }}
       keyboardShouldPersistTaps="handled"
     >
       <Text style={styles.title} accessibilityRole="header">Settings</Text>

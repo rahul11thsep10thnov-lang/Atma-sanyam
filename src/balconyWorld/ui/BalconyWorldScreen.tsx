@@ -15,6 +15,7 @@ import { getEnvironment, STARTER_ENVIRONMENT_ID } from '../environments/Environm
 import { loadWorld, saveWorld } from '../state/WorldRepository';
 import { AudioSettings, UserPlacedObject } from '../state/types';
 import { getAsset } from '../catalog/AssetCatalog';
+import { useTabBarInset } from '../../ui/TabBar';
 
 const DEFAULT_AUDIO: AudioSettings = { enabled: true, master: 0.8 };
 
@@ -25,6 +26,7 @@ const DEFAULT_AUDIO: AudioSettings = { enabled: true, master: 0.8 };
 export function BalconyWorldScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const insets = useSafeAreaInsets();
+  const tabInset = useTabBarInset();
   const isFocused = useIsFocused();
 
   const engineRef = useRef<BalconyEngine | null>(null);
@@ -305,12 +307,12 @@ export function BalconyWorldScreen() {
       )}
 
       {hint && (
-        <View style={styles.hintWrap} pointerEvents="none">
+        <View style={[styles.hintWrap, { bottom: tabInset + 64 }]} pointerEvents="none">
           <Text style={styles.hint}>{hint}</Text>
         </View>
       )}
 
-      <View style={[styles.actionBar, { paddingBottom: insets.bottom + 12 }]} pointerEvents="box-none">
+      <View style={[styles.actionBar, { paddingBottom: tabInset }]} pointerEvents="box-none">
         <ActionButton label="Focus" onPress={() => navigation.navigate('Tabs', { screen: 'Home' })} />
         <ActionButton label={editMode ? 'Done' : 'Edit'} active={editMode} onPress={() => setEditMode((v) => !v)} />
         <ActionButton label={soundOn ? 'Sound on' : 'Sound off'} onPress={toggleSound} />

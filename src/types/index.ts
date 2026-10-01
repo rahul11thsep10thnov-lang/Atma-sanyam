@@ -74,4 +74,6 @@ export interface AppSettings {
   analyticsEnabled: boolean;
   // "News & announcements" push notifications from the admin console.
   pushEnabled: boolean;
+  // Colour scheme: follow the OS, or force Golden Morning / Night Balcony.
+  appearance?: 'system' | 'light' | 'dark';
 }

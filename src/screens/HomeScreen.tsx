@@ -12,6 +12,7 @@ import { ART_PACK } from '../data/artPacks';
 import { QUOTES, paletteForQuote } from '../data/quotes';
 import { DialTimerPicker } from '../components/DialTimerPicker';
 import { AnimatedWallpaper } from '../components/AnimatedWallpaper';
+import { useTabBarInset } from '../ui/TabBar';
 import { ImageRef, Quote, RemoteImageRef, SessionConfig } from '../types';
 import { RootStackParamList } from '../navigation/types';
 
@@ -20,6 +21,7 @@ type SourceKind = 'art' | 'quote' | 'custom' | 'remote';
 export function HomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const insets = useSafeAreaInsets();
+  const tabInset = useTabBarInset();
   const { config } = useRemoteConfig();
   const { features } = config;
   const [duration, setDuration] = useState(30);
@@ -190,7 +192,7 @@ export function HomeScreen() {
         </ScrollView>
       </View>
 
-      <View style={styles.bottomSection}>
+      <View style={[styles.bottomSection, { paddingBottom: tabInset }]}>
         <DialTimerPicker value={duration} onChange={setDuration} />
         <Pressable style={styles.startBtn} onPress={handleStart} accessibilityRole="button">
           <Text style={styles.startBtnText}>Start focus session</Text>
