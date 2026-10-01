@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -11,6 +11,7 @@ import { gridForDuration } from '../utils/grid';
 import { ART_PACK } from '../data/artPacks';
 import { QUOTES, paletteForQuote } from '../data/quotes';
 import { DialTimerPicker } from '../components/DialTimerPicker';
+import { AnimatedWallpaper } from '../components/AnimatedWallpaper';
 import { ImageRef, Quote, RemoteImageRef, SessionConfig } from '../types';
 import { RootStackParamList } from '../navigation/types';
 
@@ -111,11 +112,7 @@ export function HomeScreen() {
   const quotePalette = paletteForQuote(selectedQuote.id);
 
   return (
-    <ImageBackground
-      source={require('../../assets/images/backgrounds/home-wallpaper.jpg')}
-      style={styles.screen}
-      resizeMode="cover"
-    >
+    <AnimatedWallpaper style={styles.screen}>
       <View style={[styles.topSection, { paddingTop: insets.top + 16 }]}>
         {!!config.texts.announcement && (
           <View style={styles.announcement} accessibilityRole="summary">
@@ -199,7 +196,7 @@ export function HomeScreen() {
           <Text style={styles.startBtnText}>Start focus session</Text>
         </Pressable>
       </View>
-    </ImageBackground>
+    </AnimatedWallpaper>
   );
 }
 
