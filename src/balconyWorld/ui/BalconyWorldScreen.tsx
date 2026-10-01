@@ -15,7 +15,12 @@ import { getEnvironment, STARTER_ENVIRONMENT_ID } from '../environments/Environm
 import { loadWorld, saveWorld } from '../state/WorldRepository';
 import { AudioSettings, UserPlacedObject } from '../state/types';
 import { getAsset } from '../catalog/AssetCatalog';
+import { saveSnapshot } from '../state/SnapshotStore';
 import { useTabBarInset } from '../../ui/TabBar';
+import { Icon, IconName } from '../../ui/Icon';
+import { AppText } from '../../ui/AppText';
+import { Tactile } from '../../ui/Pressable';
+import { useTheme } from '../../theme/ThemeContext';
 
 const DEFAULT_AUDIO: AudioSettings = { enabled: true, master: 0.8 };
 
@@ -30,6 +35,7 @@ export function BalconyWorldScreen() {
   const isFocused = useIsFocused();
 
   const engineRef = useRef<BalconyEngine | null>(null);
+  const glRef = useRef<ExpoWebGLRenderingContext | null>(null);
   const audioRef = useRef<AudioEngine | null>(null);
   const viewportRef = useRef({ width: 1, height: 1 });
   const dragRef = useRef<{ id: string; lastValid: THREE.Vector3 } | null>(null);
@@ -59,10 +65,27 @@ export function BalconyWorldScreen() {
     });
   }, [definition.id]);
 
+  // A picture of the balcony for the Home hero: after the first frames and
+  // whenever editing ends. Best effort; Home falls back to the bundled render.
+  const captureSnapshot = useCallback(async () => {
+    const gl = glRef.current;
+    const engine = engineRef.current;
+    if (!gl || !engine) return;
+    try {
+      engine.setDirty();
+      const shot = await GLView.takeSnapshotAsync(gl.contextId, { format: 'jpeg', compress: 0.8, flip: SNAPSHOT_FLIP });
+      // Native returns a file uri; web may hand back a Blob, which Home can't show.
+      if (shot && typeof shot.uri === 'string') await saveSnapshot({ uri: shot.uri, width: shot.width, height: shot.height, takenAt: Date.now() });
+    } catch (error) {
+      if (__DEV__) console.warn('Balcony snapshot failed', error);
+    }
+  }, []);
+
   const onContextCreate = useCallback(
     async (gl: ExpoWebGLRenderingContext) => {
       engineRef.current?.dispose();
       audioRef.current?.dispose();
+      glRef.current = gl;
       setFailure(null);
 
       const saved = await loadWorld(definition.id);
@@ -102,6 +125,7 @@ export function BalconyWorldScreen() {
 
       engine.start();
       setReady(true);
+      setTimeout(() => void captureSnapshot(), 1500);
 
       const audioSettings = saved?.audio ?? DEFAULT_AUDIO;
       audioSettingsRef.current = audioSettings;
@@ -116,7 +140,7 @@ export function BalconyWorldScreen() {
       }
       if (!saved) persist();
     },
-    [definition, profile, persist],
+    [definition, profile, persist, captureSnapshot],
   );
 
   // Pause rendering and sound when the tab isn't visible or the app is in
@@ -158,8 +182,11 @@ export function BalconyWorldScreen() {
   useEffect(() => {
     editModeRef.current = editMode;
     setHint(editMode ? 'Drag an object to move it' : null);
-    if (!editMode) dragRef.current = null;
-  }, [editMode]);
+    if (!editMode) {
+      dragRef.current = null;
+      if (ready) setTimeout(() => void captureSnapshot(), 400);
+    }
+  }, [editMode, ready, captureSnapshot]);
 
   // Stats line (tap the title to toggle, on in dev builds): the numbers the
   // performance step needs from a real device.
@@ -313,20 +340,35 @@ export function BalconyWorldScreen() {
       )}
 
       <View style={[styles.actionBar, { paddingBottom: tabInset }]} pointerEvents="box-none">
-        <ActionButton label="Focus" onPress={() => navigation.navigate('Tabs', { screen: 'Home' })} />
-        <ActionButton label={editMode ? 'Done' : 'Edit'} active={editMode} onPress={() => setEditMode((v) => !v)} />
-        <ActionButton label={soundOn ? 'Sound on' : 'Sound off'} onPress={toggleSound} />
-        <ActionButton label="Reset view" onPress={resetView} />
+        <ActionButton icon="timer" label="Focus" onPress={() => navigation.navigate('Tabs', { screen: 'Home' })} />
+        <ActionButton icon={editMode ? 'check' : 'move'} label={editMode ? 'Done' : 'Edit'} active={editMode} onPress={() => setEditMode((v) => !v)} />
+        <ActionButton icon={soundOn ? 'volume' : 'volumeOff'} label={soundOn ? 'Sound' : 'Muted'} onPress={toggleSound} />
+        <ActionButton icon="reset" label="Reset" onPress={resetView} />
       </View>
     </View>
   );
 }
 
-function ActionButton({ label, onPress, active }: { label: string; onPress: () => void; active?: boolean }) {
+// Set to true if a device shows the Home preview upside down: GL reads the
+// framebuffer bottom-up and expo-gl's native snapshot path may not undo it.
+const SNAPSHOT_FLIP = false;
+
+function ActionButton({ icon, label, onPress, active }: { icon: IconName; label: string; onPress: () => void; active?: boolean }) {
+  const { colors } = useTheme();
   return (
-    <Pressable onPress={onPress} style={[styles.actionBtn, active && styles.actionBtnActive]} accessibilityRole="button">
-      <Text style={[styles.actionBtnText, active && styles.actionBtnTextActive]}>{label}</Text>
-    </Pressable>
+    <Tactile
+      onPress={onPress}
+      scaleTo={0.94}
+      style={[styles.actionBtn, { backgroundColor: active ? colors.primary : 'rgba(255,252,248,0.92)' }]}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ selected: !!active }}
+    >
+      <Icon name={icon} size="sm" color={active ? colors.textOnAccent : colors.text} />
+      <AppText variant="caption" style={{ color: active ? colors.textOnAccent : colors.text }}>
+        {label}
+      </AppText>
+    </Tactile>
   );
 }
 
@@ -376,8 +418,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     paddingHorizontal: spacing.screenPadding,
   },
-  actionBtn: { backgroundColor: 'rgba(255,255,255,0.92)', borderRadius: radius.card, paddingHorizontal: 14, paddingVertical: 9 },
-  actionBtnActive: { backgroundColor: colors.primary },
-  actionBtnText: { ...typography.caption, color: colors.text, fontWeight: '700' },
-  actionBtnTextActive: { color: colors.white },
+  actionBtn: { borderRadius: 999, paddingHorizontal: 16, paddingVertical: 8, alignItems: 'center', gap: 2, minWidth: 68 },
 });

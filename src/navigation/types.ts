@@ -10,6 +10,6 @@ export type RootTabParamList = {
 export type RootStackParamList = {
   Tabs: NavigatorScreenParams<RootTabParamList>;
   ActiveSession: { config: SessionConfig };
-  ContentBrowser: { onSelect: (image: RemoteImageRef) => void };
+  ContentBrowser: { onSelect: (image: RemoteImageRef) => void; initialCategoryId?: string };
   Auth: undefined;
 };

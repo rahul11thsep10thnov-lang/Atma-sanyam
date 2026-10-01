@@ -25,12 +25,21 @@ export function ContentBrowserScreen() {
   const insets = useSafeAreaInsets();
 
   const { categories } = useContentCategories();
+  const initialCategoryId: string | undefined = route.params?.initialCategoryId;
   const [path, setPath] = useState<CategoryNode[]>([]);
   const [searchInput, setSearchInput] = useState('');
   const [resolvingId, setResolvingId] = useState<string | null>(null);
 
   const { images, loading, loadingMore, error, hasMore, filters, setSearch, setCategoryId, setSort, loadMore, retry } =
-    useContentLibrary();
+    useContentLibrary(initialCategoryId ? { categoryId: initialCategoryId } : {});
+
+  // Opened from a Home collection chip: land inside that category.
+  useEffect(() => {
+    if (!initialCategoryId || path.length > 0) return;
+    const node = categories.find((c) => c.id === initialCategoryId);
+    if (node) setPath([node]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialCategoryId, categories]);
 
   useEffect(() => {
     const handle = setTimeout(() => setSearch(searchInput), 300);

@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { AccessibilityInfo, Animated, StyleSheet, View, ViewStyle } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Animated, StyleSheet, View, ViewStyle } from 'react-native';
 import Svg, { Defs, LinearGradient, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
+import { useReducedMotion } from '../hooks/useReducedMotion';
 
 type Props = {
   style?: ViewStyle;
@@ -19,24 +20,6 @@ const PINK = '#FBA2A4';
 
 const SHADE_MS = 24000; // one slow breath of the color shading
 const CURVE_MS = 28000; // one slow undulation of the ribbon curves
-
-function useReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    let mounted = true;
-    AccessibilityInfo.isReduceMotionEnabled?.()
-      .then((value) => mounted && setReduced(!!value))
-      .catch(() => {});
-    const subscription = AccessibilityInfo.addEventListener?.('reduceMotionChanged', (value) =>
-      setReduced(!!value),
-    );
-    return () => {
-      mounted = false;
-      subscription?.remove?.();
-    };
-  }, []);
-  return reduced;
-}
 
 function useLoop(durationMs: number, enabled: boolean) {
   const value = useRef(new Animated.Value(0)).current;
