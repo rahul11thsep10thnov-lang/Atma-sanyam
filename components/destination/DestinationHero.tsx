@@ -75,7 +75,7 @@ export function DestinationHero({ view, locale, dict, tr, coverage }: { view: De
           </div>
           {locale !== "en" && (
             <p className="mt-4 text-xs text-charcoal-light">
-              {coverage === null ? dict.common.ui.contentInEnglish : coverage.ratio >= 0.98 ? dict.common.ui.machineTranslated : dict.common.ui.partlyTranslated}
+              {coverage === null || coverage.translated === 0 ? dict.common.ui.contentInEnglish : coverage.ratio >= 0.98 ? dict.common.ui.machineTranslated : dict.common.ui.partlyTranslated}
             </p>
           )}
         </div>

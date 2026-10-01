@@ -187,5 +187,31 @@ for (const lang of TRANSLATED_LANGUAGES) {
     JSON.stringify(page.sections.flatMap((s) => [...s.bullets, ...(s.table?.rows.flat() ?? [])]).map((c) => (typeof c === "string" ? null : c.href))));
 }
 
+console.log("Interface labels");
+{
+  const leaves = (v: unknown, path = ""): Record<string, unknown> =>
+    v !== null && typeof v === "object" && !Array.isArray(v)
+      ? Object.entries(v as Record<string, unknown>).reduce((acc, [k, x]) => ({ ...acc, ...leaves(x, path ? `${path}.${k}` : k) }), {})
+      : { [path]: v };
+  const load = (lang: string, name: string) => leaves(JSON.parse(readFileSync(join(process.cwd(), "locales", lang, `${name}.json`), "utf8")));
+  for (const lang of TRANSLATED_LANGUAGES) {
+    const missing: string[] = [];
+    const badPlaceholders: string[] = [];
+    for (const name of ["common", "home", "destination"]) {
+      const en = load("en", name);
+      const tr = load(lang, name);
+      for (const [k, v] of Object.entries(en)) {
+        if (!(k in tr)) { missing.push(`${name}.${k}`); continue; }
+        if (typeof v === "string" && typeof tr[k] === "string") {
+          const ph = (x: string) => (x.match(/\{\w+\}/g) ?? []).sort().join(",");
+          if (ph(v) !== ph(tr[k] as string)) badPlaceholders.push(`${name}.${k}`);
+        }
+      }
+    }
+    check(`${lang}: every interface label is translated`, missing.length === 0, missing.slice(0, 3).join(", "));
+    check(`${lang}: interface labels keep their {placeholders}`, badPlaceholders.length === 0, badPlaceholders.slice(0, 3).join(", "));
+  }
+}
+
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed ? 1 : 0);

@@ -48,28 +48,27 @@ Old URLs (`/hotels`, `/restaurants`, `/attractions/{slug}`, `/itinerary`) redire
 
 English, Hindi, Bengali, Marathi, Tamil, Telugu, Kannada, Malayalam (`en hi bn mr ta te kn ml`).
 
-**Interface** (menus, headings, badges, search, route finder) is translated in `locales/<code>/*.json` for all eight languages; anything missing falls back to English key by key (`lib/i18n/dictionaries.ts`).
+**Interface** (menus, headings, badges, search, route finder, attraction labels, transport modes) is translated in `locales/<code>/*.json` for all eight languages. `npm run verify:engine` fails if any label or `{placeholder}` is missing in any language; at runtime a missing key would still fall back to English (`lib/i18n/dictionaries.ts`).
 
 **Guide text** (descriptions, history, food, transport, attraction pages, FAQs) comes from the database in English and is translated sentence by sentence into a *translation memory* in `data/translations/<code>.json`:
 
 | Language | Guide text |
 |---|---|
-| Hindi (`hi`), Tamil (`ta`) | Fully translated — 1,240 sentences each |
-| Bengali, Marathi, Telugu, Kannada, Malayalam | English text under a translated interface (a notice says so) |
+| Hindi (`hi`), Bengali (`bn`), Marathi (`mr`), Tamil (`ta`), Telugu (`te`), Kannada (`kn`), Malayalam (`ml`) | Fully translated — 1,240 sentences each, all machine-drafted |
 
 How it works (`lib/master/translation/*`):
 - Each entry is keyed by the exact English sentence with the destination's name replaced by `{name}`, so one translation of a templated sentence serves every destination. If the English changes, the old translation is simply no longer used — a stale translation can never sit next to new facts. Missing sentences fall back to English.
 - `faithful.ts` rejects any translation that changes a number, price, time or `{name}`/`₹` — checked on every import and by `npm run verify:engine`.
 - Proper names (places, dishes, stations) stay as written; destination and state names have transliterations in the same file.
 - Pages show *"machine-translated, not yet reviewed by a native speaker"* (or *"partly translated"* while coverage is below 98%).
-- **All current Hindi and Tamil text is machine-drafted and must be reviewed by native speakers before launch** (Admin → Translations lists status and coverage).
+- **All current guide text in the seven Indian languages is machine-drafted and must be reviewed by native speakers before launch** (Admin → Translations lists status and coverage).
 
 Commands:
 ```bash
 npm run translate -- report                       # coverage + stale entries per language
 npm run translate -- export --lang hi --limit 60  # untranslated sentences, as JSON
 npm run translate -- import --lang hi batch.json  # merge { "English": "translation" } (validated)
-ANTHROPIC_API_KEY=… npm run translate -- auto --lang hi,ta   # translate whatever is missing with Claude (validated)
+ANTHROPIC_API_KEY=… npm run translate -- auto --lang hi,bn,mr,ta,te,kn,ml   # translate whatever is missing with Claude (validated)
 ```
 When you add or change data, run `report`, then `auto` (or export/import) to translate the new sentences. Adding a language: add `data/translations/<code>.json` (copy `hi.json`'s shape), register it in `lib/master/translation/memory.ts` and `scripts/translate.ts`.
 
@@ -84,7 +83,7 @@ npm run dev                    # http://localhost:3000  → /en
 npm run lint
 npm run typecheck
 npm run build && npm start
-npm run verify:engine          # 90+ assertions on the engines, pipelines and translations
+npm run verify:engine          # 140+ assertions on the engines, pipelines, translations and interface labels
 npm run verify:seed-types      # type-checks prisma/seed.ts and scripts against the Prisma client
 ```
 

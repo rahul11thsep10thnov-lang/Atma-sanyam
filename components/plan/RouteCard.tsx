@@ -45,7 +45,7 @@ export function RouteCard({ route, locale, dict }: { route: RouteCardData; local
         <ul className="mt-2 space-y-1">
           {route.legs.map((l) => (
             <li key={`${l.from}-${l.to}`}>
-              {l.from} → {l.to}: {Math.round(l.km)} {dict.home.routes.kmLabel}, {t.legTime.replace("{h}", l.hours.toFixed(1)).replace("{mode}", l.mode.toLowerCase())}
+              {l.from} → {l.to}: {Math.round(l.km)} {dict.home.routes.kmLabel}, {t.legTime.replace("{h}", l.hours.toFixed(1)).replace("{mode}", dict.destination.modes[l.mode as keyof typeof dict.destination.modes] ?? l.mode.toLowerCase())}
               {l.extended && <span className="ml-1 text-terracotta-700">· {t.extendedLeg}</span>}
             </li>
           ))}

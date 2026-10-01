@@ -16,7 +16,9 @@ import { getDb } from "../lib/master/repo";
 import { checkFaithful } from "../lib/master/translation/faithful";
 import { coverageReport, orphanStrings, untranslated } from "../lib/master/translation/todo";
 
-const LANGS: Record<string, string> = { hi: "Hindi (Devanagari)", ta: "Tamil" };
+const LANGS: Record<string, string> = {
+  hi: "Hindi (Devanagari)", bn: "Bengali", mr: "Marathi (Devanagari)", ta: "Tamil", te: "Telugu", kn: "Kannada", ml: "Malayalam"
+};
 const arg = (name: string) => {
   const i = process.argv.indexOf(`--${name}`);
   return i >= 0 ? process.argv[i + 1] : undefined;

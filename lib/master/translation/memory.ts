@@ -1,5 +1,10 @@
 import hi from "@/data/translations/hi.json";
 import ta from "@/data/translations/ta.json";
+import bn from "@/data/translations/bn.json";
+import mr from "@/data/translations/mr.json";
+import te from "@/data/translations/te.json";
+import kn from "@/data/translations/kn.json";
+import ml from "@/data/translations/ml.json";
 import type { GeneratedPage, GeneratedSection, Cell } from "../generation/types";
 import type { MasterDatabase } from "../types";
 
@@ -22,7 +27,10 @@ export interface TranslationFile {
   strings: Record<string, string>;
 }
 
-const FILES: Record<string, TranslationFile> = { hi: hi as TranslationFile, ta: ta as TranslationFile };
+const FILES: Record<string, TranslationFile> = {
+  hi: hi as TranslationFile, bn: bn as TranslationFile, mr: mr as TranslationFile, ta: ta as TranslationFile,
+  te: te as TranslationFile, kn: kn as TranslationFile, ml: ml as TranslationFile
+};
 
 export const TRANSLATED_LANGUAGES = Object.keys(FILES);
 export const hasTranslations = (lang: string) => lang in FILES;
