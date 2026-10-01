@@ -145,5 +145,8 @@ export function coverageOf(lang: string, strings: string[]): Coverage {
   return { total: strings.length, translated, ratio: strings.length ? translated / strings.length : 1 };
 }
 
+/** A state's name in the reader's language (English where none is stored). */
+export const localStateName = (lang: string, slug: string, fallback: string): string => FILES[lang]?.states[slug] ?? fallback;
+
 /** A destination's names in every translated language (for search and autocomplete). */
 export const localNamesOf = (slug: string): string[] => Object.values(FILES).map((f) => f.names[slug]).filter((n): n is string => Boolean(n));

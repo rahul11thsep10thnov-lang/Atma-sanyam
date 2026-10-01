@@ -1,3 +1,4 @@
+import { localStateName } from "@/lib/master/translation/memory";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -34,7 +35,7 @@ export default function ExplorePage({ params, searchParams }: { params: { locale
       <div className="mt-4 flex flex-wrap gap-2">
         <Link href={`/${locale}/explore`} className={pill(!searchParams.state && !searchParams.tag)}>{t.all}</Link>
         {stateOptions.map((s) => (
-          <Link key={s.slug} href={`/${locale}/explore?state=${s.slug}`} className={pill(searchParams.state === s.slug)}>{s.name}</Link>
+          <Link key={s.slug} href={`/${locale}/explore?state=${s.slug}`} className={pill(searchParams.state === s.slug)}>{localStateName(locale, s.slug, s.name)}</Link>
         ))}
       </div>
 

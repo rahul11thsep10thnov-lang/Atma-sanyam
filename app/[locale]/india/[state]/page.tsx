@@ -1,3 +1,4 @@
+import { localStateName } from "@/lib/master/translation/memory";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
@@ -45,7 +46,7 @@ export default function StatePage({ params }: { params: PageParams }) {
   const crumbs = [
     { label: dict.common.nav.home, href: `/${locale}` },
     { label: "India", href: `/${locale}/explore` },
-    { label: state.name, href: `/${locale}/india/${state.slug}` }
+    { label: localStateName(locale, state.slug, state.name), href: `/${locale}/india/${state.slug}` }
   ];
   const facts: Array<[string, string | null]> = [
     [t.stateCapital, state.capital],
@@ -61,7 +62,7 @@ export default function StatePage({ params }: { params: PageParams }) {
       <Breadcrumbs items={crumbs} />
       <header className="border-b border-forest-100 bg-forest-50/60 py-8">
         <div className="container-page">
-          <h1 className="font-display text-3xl font-bold text-charcoal sm:text-4xl">{t.stateGuide.replace("{name}", state.name)}</h1>
+          <h1 className="font-display text-3xl font-bold text-charcoal sm:text-4xl">{t.stateGuide.replace("{name}", localStateName(locale, state.slug, state.name))}</h1>
           <p className="mt-2 max-w-3xl text-sm text-charcoal-light sm:text-base">{state.description ?? state.short_description ?? t.stateDescriptionMissing}</p>
           <dl className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {facts.map(([label, value]) => (
@@ -82,7 +83,7 @@ export default function StatePage({ params }: { params: PageParams }) {
       </header>
 
       <section className="container-page py-8">
-        <h2 className="section-heading">{t.destinationsIn.replace("{name}", state.name)}</h2>
+        <h2 className="section-heading">{t.destinationsIn.replace("{name}", localStateName(locale, state.slug, state.name))}</h2>
         {dests.length === 0 ? (
           <p className="mt-4 text-sm text-charcoal-light">{t.stateNoDestinations}</p>
         ) : (
