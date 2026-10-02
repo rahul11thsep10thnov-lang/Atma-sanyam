@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAdminApi, UnauthorizedError, ForbiddenError } from "@/lib/auth/session";
 import { runPipeline, listPipelineRuns } from "@/lib/pipeline/runner";
 import { recordAuditLog } from "@/lib/services/auditLog";
+import { cronAuthorized } from "@/lib/pipeline/cronAuth";
 
 /**
  * The scheduler entry point (spec §19). Two callers:
@@ -14,14 +15,6 @@ import { recordAuditLog } from "@/lib/services/auditLog";
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
-function cronAuthorized(request: Request): boolean {
-  const secret = process.env.CRON_SECRET;
-  if (!secret) return false;
-  const header = request.headers.get("authorization") ?? "";
-  const bearer = header.startsWith("Bearer ") ? header.slice(7) : null;
-  const alt = request.headers.get("x-cron-secret");
-  return bearer === secret || alt === secret;
-}
 
 async function adminOrNull() {
   try {
@@ -33,7 +26,7 @@ async function adminOrNull() {
 }
 
 export async function GET(request: Request) {
-  if (cronAuthorized(request)) {
+  if (cronAuthorized(request.headers)) {
     const summary = await runPipeline({ trigger: "CRON" });
     return NextResponse.json({ ok: summary.status !== "FAILED", ...summary });
   }
@@ -52,7 +45,7 @@ export async function POST(request: Request) {
   const sourceIds = Array.isArray(body.sourceIds) ? body.sourceIds.filter((x) => typeof x === "string").slice(0, 100) : undefined;
   const force = body.force === true;
 
-  if (cronAuthorized(request)) {
+  if (cronAuthorized(request.headers)) {
     const summary = await runPipeline({ trigger: "CRON", sourceIds, force });
     return NextResponse.json({ ok: summary.status !== "FAILED", ...summary });
   }

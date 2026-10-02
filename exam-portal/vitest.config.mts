@@ -15,5 +15,9 @@ export default defineConfig({
     // the real database; give it room.
     testTimeout: 30_000,
     hookTimeout: 30_000,
+    // The pipeline integration tests share one database and one
+    // "single run at a time" lock; run files one after another so two
+    // runPipeline() calls never race each other.
+    fileParallelism: false,
   },
 });

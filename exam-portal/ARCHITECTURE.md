@@ -327,6 +327,72 @@ regardless of what a given service's return object happens to be
 named internally. Detail routes call Phase 17's `recordView()` too, so
 Android traffic isn't an uncounted blind spot in analytics.
 
+## Automated notice pipeline (Automation Phases 1–12) ✅
+
+The portal is automation-first: official sites are watched, notices are
+fetched, extracted, resolved onto the catalogue, de-duplicated, scored
+and queued for review; publishing turns a reviewed notice into public
+content, alerts subscribers and (optionally) produces Hindi text. The
+**Recruitment** is the central object; Job / AdmitCard / AnswerKey /
+Result rows hang off it. Full design history: `AUTOMATION_ASSESSMENT.md`
+and the per-phase entries in `DEVELOPMENT_STATUS.md`.
+
+```
+Source (admin-managed) ──checkSource()──▶ Document + DocumentVersion (bytes, text, diff)
+        │ robots.txt, ETag/304, content hash, per-host throttle, retries
+        ▼
+  extractNotice()  rules always → Claude only when unsure, with verbatim-evidence check
+        ▼
+  resolveEntities() Organization (alias/exact/fuzzy/same-source/create) → Category → Exam → Recruitment
+        ▼
+  findDuplicate()   URL → file hash → advertisement no. → title+dates
+        ▼
+  RecruitmentNotice (status NEW / NEEDS_REVIEW / AUTO_APPROVED / DUPLICATE; provenance per field)
+        ▼                                   ▲
+  Admin → Automation (inbox, review, runs, failed, duplicates)   runPipeline() ◀── cron / worker / button
+        ▼
+  publishNotice()   Recruitment PUBLISHED (+ Job / AdmitCard / AnswerKey / Result) → notifications → alerts → Hindi
+        ▼
+  /recruitments/[slug] timeline · /organizations · /categories · search · sitemap · e-mail alerts
+```
+
+Code map (`src/lib/pipeline/` unless noted; everything imports the
+**unguarded** Prisma client `src/lib/db/prisma.ts` so it runs in Next.js,
+the worker and vitest alike — app-only code keeps using `db/client.ts`):
+
+| Concern | Module |
+|---|---|
+| HTTP fetch, robots, parsers (HTML/RSS/sitemap/PDF), OCR hook | `http.ts`, `robots.ts`, `parsers/*`, `ocr.ts` |
+| Document ingest + versions + line diffs | `ingest.ts`, `changeDetection.ts` |
+| One source check (fetch → parse → ingest → extract) | `sourceCheck.ts` |
+| Extraction (rules, Claude with evidence, merge, validation, status) | `extract/*` |
+| Entity resolution (aliases, acronyms, fuzzy, categories, recruitment dates) | `resolve/*` |
+| Deduplication | `dedup.ts` |
+| Notice persistence, change-as-update, reprocess | `notices.ts` |
+| Scheduler, retries, run lock, pause switch | `runner.ts`, `settings.ts`, `cronAuth.ts`, `scripts/pipelineWorker.ts`, `src/app/api/admin/pipeline/run/route.ts`, `vercel.json` |
+| Review operations and publishing | `review.ts`, `publish.ts` |
+| Hindi translation (labelled) | `translate.ts`, `src/lib/i18n/lang.ts` |
+| Reader alerts | `src/lib/alerts/*`, `src/app/(public)/alerts/*`, `src/app/api/alerts/*` |
+| Public recruitment pages, deadline engine | `src/lib/services/recruitments.ts`, `src/lib/deadline.ts`, `src/app/(public)/recruitments/*` |
+| Admin UI | `src/app/admin/(protected)/automation/*`, `organizations/*`, `categories/*`, `recruitments/*`, `alerts/*` |
+
+Rules that hold everywhere:
+
+- **Nothing is invented.** Unstated fields are `null`; Claude must quote
+  evidence for every value and an unfound quote marks the field
+  unverified (capped confidence) — it can never auto-publish.
+- **Confidence engine**: `confidence × source authority` ≥ 0.95 with no
+  validation errors, no unverified field and no newly created entity →
+  AUTO_APPROVED; ≥ 0.80 → NEEDS_REVIEW; else NEW. Thresholds are env-tunable.
+- **A changed document is an update**, never a second notice; a copy on
+  another URL/site is a DUPLICATE pointing at the original.
+- **Every action is audited** — admin id for humans, `actor = "pipeline"`
+  for automation; failures become retryable `PipelineError` rows with
+  exponential backoff, never silent drops.
+- **Honest degradation**: no Anthropic key → rules only + more review; no
+  mail provider → alerts recorded FAILED with the reason; government
+  sites unreachable → failing checks visible in Sources / Failed items.
+
 ## Deployment topology
 
 - **App**: Vercel (or any Node 20+ host) — same as the spec recommends.

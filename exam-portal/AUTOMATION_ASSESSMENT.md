@@ -1,5 +1,12 @@
 # Automated Government Notification Pipeline — Architecture Assessment
 
+> **Status (2 Oct 2026): implemented.** All twelve phases proposed below
+> shipped on `claude/govt-exam-portal-2a6yid`; see the "Automation
+> pipeline — Phase 1…12" entries in `DEVELOPMENT_STATUS.md` and the
+> pipeline section of `ARCHITECTURE.md`. This document is kept as the
+> record of the pre-implementation assessment.
+
+
 Written before any pipeline code, per the owner's instruction to inspect
 first. Everything below was read from the repository as it stands after
 Phase 20 + the SarkariChayan rebrand.

@@ -36,3 +36,28 @@ npm run dev                # http://localhost:3000
 | `npm run db:migrate` | Apply Prisma migrations (dev) |
 | `npm run db:migrate:deploy` | Apply Prisma migrations (production) |
 | `npm run db:studio` | Prisma Studio (browse the database) |
+
+## Automated notice pipeline
+
+The portal watches official sites itself. After the quick start:
+
+```bash
+npm run seed:sources       # five starter official sources (SSC, UPSC, IBPS, RRB, UPPRPB)
+npm run pipeline:run       # one pass: check due sources, extract, resolve, dedup, queue for review
+npm run pipeline:worker    # keep running one pass every PIPELINE_INTERVAL_MINUTES (default 15)
+```
+
+Then open **Admin → Automation** (`/admin/automation`): Inbox / Review
+queue to approve, correct and publish notices; Pipeline runs, Failed items,
+Duplicates, Sources. Publishing creates the public recruitment page
+(`/recruitments/<slug>`) and the job / admit card / answer key / result
+rows, and e-mails subscribers (`/alerts`).
+
+For hosted deployments a cron can call `GET /api/admin/pipeline/run` with
+`Authorization: Bearer $CRON_SECRET` (a 30-minute Vercel cron ships in
+`vercel.json`). Optional: `ANTHROPIC_API_KEY` for Claude extraction and
+Hindi translation, `RESEND_API_KEY` + `ALERTS_FROM_EMAIL` for e-mail
+alerts, `OCR_ENABLED=true` for scanned images. See
+`ENVIRONMENT_VARIABLES.md`, `ARCHITECTURE.md` (pipeline section) and
+`DEVELOPMENT_STATUS.md`.
+

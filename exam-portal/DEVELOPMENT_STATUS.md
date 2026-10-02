@@ -1586,6 +1586,54 @@ x-default and `og:locale hi_IN`; the index card carries the label;
 toggling back restores English (`lang=en`); `/lang/hi?to=//evil…` lands
 on `/`; `?lang=hi` still overrides an English cookie. No errors.
 
+## Automation pipeline — Phase 12: Testing, acceptance, CI ✅
+
+- **Acceptance run (spec §42)** — `acceptance.integration.test.ts` drives
+  the real pipeline end to end against a loopback "official site" and
+  the real database: a job advertisement → one document, one `JOB`
+  notice (NEEDS_REVIEW/NEW, never auto-approved because a new
+  organization was created), organization STATE + Police category +
+  exam + recruitment (year 2027, closing 16 Jan 2027, vacancies 60244);
+  an admit card appears → attaches to the **same** recruitment and sets
+  its exam date; the advertisement PDF is replaced with an extended
+  deadline → the **same** notice is updated (document version 2, diff
+  carries "26-01-2027", recruitment closing date moves), still exactly
+  one JOB notice; a mirror site serving the same bytes → `DUPLICATE` of
+  the original; approve + publish → published `Job` (closing 26 Jan,
+  60244) and `AdmitCard` on the same recruitment, the recruitment page
+  query returns the two-entry timeline, and a verified subscriber gets
+  exactly two alert e-mails (after the double-opt-in confirmation).
+- **Security**: `cronAuthorized()` moved to `cronAuth.ts` with a
+  constant-time comparison and tests (Bearer / `x-cron-secret`, wrong
+  length, no secret → closed). Live spot-checks: every admin page
+  (`/admin`, `/admin/automation`, inbox, organizations, alerts) → 307 to
+  `/admin/login?callbackUrl=…` when signed out; `GET`/`POST
+  /api/admin/pipeline/run` → 401 without the secret or with a wrong one;
+  public `/api/notifications` → 200; `robots.txt` disallows `/admin`.
+- **Migrations without data loss**: all 8 migrations applied with
+  `prisma migrate deploy` to a brand-new database, followed by
+  `seed:content` (37 states, 8 categories), `seed:admin` and
+  `seed:sources` (5) — then the scratch database was dropped. Every
+  automation migration is additive (new tables/columns, backfills with
+  `ON CONFLICT DO NOTHING`); the integration tests create and delete
+  their own rows on the dev database.
+- **Production build** (`npm run build`) passes with the new routes
+  (`/recruitments`, `/organizations`, `/categories`, `/alerts`,
+  `/lang/[code]`, admin automation pages, API routes).
+- **CI**: `.github/workflows/ci.yml` gains an `exam-portal` job
+  (Postgres 16 service → `prisma migrate deploy` → `seed:content` →
+  typecheck → lint → `npm test` → `npm run build`).
+- `vitest.config.mts` runs test files sequentially: the integration
+  files share one database and the pipeline's single-run lock, so two
+  `runPipeline()` calls must never race (they did when the acceptance
+  test joined the suite). The whole suite runs in ~18 s.
+- Docs: `ARCHITECTURE.md` gains the pipeline section (flow diagram, code
+  map, invariants); `README.md` the pipeline quick start;
+  `AUTOMATION_ASSESSMENT.md` is marked implemented.
+
+Tests: **111 passing** across 25 files (`npm run test`), typecheck and
+lint clean, production build green.
+
 ## Known follow-ups / decisions to revisit
 
 - `prisma@8` will move out of RC eventually — re-run `npm audit` and

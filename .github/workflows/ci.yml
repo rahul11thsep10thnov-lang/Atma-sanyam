@@ -75,3 +75,42 @@ jobs:
       - run: npm ci
       - run: npx tsc --noEmit
       - run: npx expo export --platform android --platform ios --output-dir /tmp/expo-export
+
+  exam-portal:
+    name: SarkariChayan portal (migrate + typecheck + lint + tests + build)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: sarkarichayan
+          POSTGRES_PASSWORD: sarkarichayan-ci
+          POSTGRES_DB: sarkarichayan_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U sarkarichayan" --health-interval 5s --health-timeout 5s --health-retries 10
+    defaults:
+      run:
+        working-directory: exam-portal
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      DATABASE_URL: postgresql://sarkarichayan:sarkarichayan-ci@localhost:5432/sarkarichayan_test?schema=public
+      NEXTAUTH_SECRET: ci-only-secret-at-least-32-characters-long-0123456789
+      NEXTAUTH_URL: http://localhost:3000
+      CRON_SECRET: ci-cron-secret
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: exam-portal/package-lock.json
+      - run: npm ci --legacy-peer-deps
+      # Migrations must apply cleanly to an empty database (no data loss
+      # path is exercised in the integration tests' own fixtures).
+      - run: npx prisma migrate deploy
+      - run: npm run seed:content
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
