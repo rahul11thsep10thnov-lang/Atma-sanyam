@@ -35,6 +35,8 @@ Every variable actually read by the app, cross-checked against the code
 | `CLAUDE_TRIGGER_CONFIDENCE` | `src/lib/pipeline/extract/index.ts` | Rules score below which Claude is consulted (default `0.9`). Raise it to spend more on AI, lower it to spend less. |
 | `AUTO_PUBLISH_MIN_CONFIDENCE` | same | Default `0.95`. A notice is auto-approved only when `confidence × source authority` reaches this, every field is verified against the document text, and validation found nothing wrong. |
 | `REVIEW_MIN_CONFIDENCE` | same | Default `0.8`. At or above → `NEEDS_REVIEW`; below → stays `NEW`. |
+| `CRON_SECRET` | `src/app/api/admin/pipeline/run/route.ts` | Shared secret a scheduler presents as `Authorization: Bearer …` (or `x-cron-secret`) to trigger a pipeline pass. `vercel.json` defines a 30-minute cron for this route and Vercel sends the header automatically when the variable is set. Unset → cron calls are refused; admins can still run the pipeline from the dashboard and `npm run pipeline:worker` needs no secret (it talks to the DB directly). |
+| `PIPELINE_INTERVAL_MINUTES` | `scripts/pipelineWorker.ts` | Pass interval for the standalone worker (default 15). |
 | `OCR_ENABLED` | `src/lib/pipeline/ocr.ts` | `true` turns on tesseract.js OCR (English + Hindi) for scanned PDFs and images. Off by default; scanned documents are then recorded as an `OCR` pipeline error instead of being silently skipped. |
 
 ## Not currently read by anything

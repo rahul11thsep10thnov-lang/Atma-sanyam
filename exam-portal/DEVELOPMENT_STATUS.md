@@ -1268,6 +1268,69 @@ Live (admin UI): created a second source pointing at the fixture's
 `DUPLICATE` of the original (`reason = checksum`, same recruitment);
 the original stays `NEEDS_REVIEW`.
 
+## Automation pipeline — Phase 7: Scheduler, runs and retries ✅
+
+The pipeline now runs itself. `src/lib/pipeline/runner.ts` is the single
+orchestration entry point; three schedulers call it, all optional and
+interchangeable:
+
+- **`vercel.json`** cron (every 30 min) hitting `GET /api/admin/pipeline/run`
+  with `Authorization: Bearer $CRON_SECRET` (Vercel sends it automatically).
+- **Any external cron** (GitHub Action, crontab + curl, Cloud Scheduler)
+  doing the same GET/POST with the secret.
+- **`npm run pipeline:worker`** (`scripts/pipelineWorker.ts`) — a
+  long-running loop for hosts without a cron, one pass every
+  `PIPELINE_INTERVAL_MINUTES` (default 15); `npm run pipeline:run` does a
+  single pass and exits. Both talk to the database directly, no secret.
+
+What one pass does (`runPipeline()`): closes out RUNNING runs older than
+30 min as FAILED/stale → refuses to start while a live run exists
+(`skipped: "running"`) → honours the admin pause switch for scheduled
+triggers (`skipped: "paused"`; a MANUAL run still works so an admin can
+test while paused) → picks **due** sources (active, and
+`lastCheckedAt + checkFrequencyMinutes` has passed; HIGH priority first,
+longest-waiting first, capped at 20 per pass so a cron tick stays inside
+its timeout) → `checkSource()` each (fetch → ingest → extract → resolve →
+dedup) → **retries failed items** whose backoff has elapsed (up to 25
+per pass, max 6 attempts): a document-level failure (EXTRACTION /
+RESOLUTION / OCR / VALIDATION) is re-run from the *stored* document via
+`reprocessDocument()` with no re-download and resolved on success; a
+source-level failure (FETCH / PARSE) re-checks the source unless this
+pass already did → writes the `PipelineRun` row with counters
+(sources checked, pages scanned, new documents, new/updated notices,
+duplicates, needs-review, auto-approved, failures) and a JSON log of
+per-source results and retry outcomes. `force` + `sourceIds` re-checks
+specific sources regardless of schedule (the admin "run now" path).
+
+- `src/lib/pipeline/settings.ts` + new `AppSetting` table (migration
+  `pipeline_settings`, additive): runtime switches such as
+  `pipeline.paused`, flipped from the admin UI in Phase 8 without a
+  redeploy.
+- `POST|GET /api/admin/pipeline/run` — cron secret (Bearer or
+  `x-cron-secret`) → CRON trigger; signed-in SUPER_ADMIN/EDITOR → MANUAL
+  trigger with an audit-log row; anything else → 401. GET without the
+  secret returns the last 20 runs for admins. `maxDuration = 300`.
+- `.env.example` / `ENVIRONMENT_VARIABLES.md`: `CRON_SECRET`,
+  `PIPELINE_INTERVAL_MINUTES`.
+
+Tests (`npm run test`, 94 passing): `runner.integration.test.ts`
+(loopback server + real DB) covers: only the due, active source is
+checked and the run row/log/counters/SourceCheck rows say so; a second
+pass with nothing due checks nothing while `force` re-checks and finds
+nothing new; pause skips CRON but not MANUAL; a live run blocks a
+parallel run; a stale run is closed as FAILED and the next pass
+proceeds; a failed extraction with elapsed backoff is retried from the
+stored document, resolved, and updates the existing notice rather than
+creating a second; an item past the retry cap is left alone.
+
+Live: `POST /api/admin/pipeline/run` without auth and with a wrong
+secret → 401; `GET` with the cron secret ran a real pass (6 sources
+checked; the five seeded government sites return HTTP 403 through this
+sandbox's egress proxy and were recorded as failing checks + retryable
+FETCH errors, exactly as designed); `POST` with the secret and
+`{sourceIds:[loopback], force:true}` → 1 source, 0 new; `npm run
+pipeline:run` completed a pass from the command line.
+
 ## Known follow-ups / decisions to revisit
 
 - `prisma@8` will move out of RC eventually — re-run `npm audit` and

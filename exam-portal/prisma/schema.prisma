@@ -1247,3 +1247,14 @@ model RecruitmentNotice {
   @@index([createdAt])
   @@map("recruitment_notices")
 }
+
+/// Small key/value store for operational switches the admin flips at
+/// runtime (pipeline paused, …) — no redeploy, no env edit.
+model AppSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+
+  @@map("app_settings")
+}

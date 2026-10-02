@@ -263,3 +263,32 @@ export async function createNoticeFromIngest(ingested: IngestResult, ctx: Notice
   });
   return { noticeId: created.id, status, noticeType: extracted.data.notice_type, created: true, overallConfidence: extracted.overallConfidence, duplicateOfId: duplicate?.duplicateOfId ?? null };
 }
+
+/**
+ * Re-runs the notice stage for a stored document from its latest version
+ * (used by the retry loop after an extraction/resolution failure, and by
+ * the admin "re-extract" button). No network access.
+ */
+export async function reprocessDocument(documentId: string, ctx: NoticeContext = {}): Promise<NoticeResult | null> {
+  const doc = await prisma.document.findUnique({
+    where: { id: documentId },
+    select: { id: true, filename: true, mimeType: true, extractedText: true, sourceId: true, versions: { orderBy: { versionNumber: "desc" }, take: 1, select: { id: true, versionNumber: true, extractedText: true } } },
+  });
+  if (!doc) return null;
+  const latest = doc.versions[0];
+  if (!latest) return null;
+  return createNoticeFromIngest(
+    {
+      documentId: doc.id,
+      versionId: latest.id,
+      versionNumber: latest.versionNumber,
+      isNew: false,
+      changed: false,
+      diff: null,
+      extractedText: latest.extractedText ?? doc.extractedText,
+      title: doc.filename.replace(/\.[a-z0-9]+$/i, "").replace(/[_-]+/g, " "),
+      mimeType: doc.mimeType ?? "application/octet-stream",
+    },
+    { sourceId: ctx.sourceId ?? doc.sourceId, pipelineRunId: ctx.pipelineRunId ?? null },
+  );
+}

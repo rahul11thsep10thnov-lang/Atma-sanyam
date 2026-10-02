@@ -15,7 +15,9 @@
     "db:studio": "prisma studio",
     "seed:admin": "tsx --env-file-if-exists=.env prisma/seedAdmin.ts",
     "seed:content": "tsx --env-file-if-exists=.env prisma/seedContent.ts",
-    "seed:sources": "tsx --env-file-if-exists=.env prisma/seedSources.ts"
+    "seed:sources": "tsx --env-file-if-exists=.env prisma/seedSources.ts",
+    "pipeline:run": "tsx --env-file-if-exists=.env scripts/pipelineWorker.ts --once",
+    "pipeline:worker": "tsx --env-file-if-exists=.env scripts/pipelineWorker.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.131.0",
