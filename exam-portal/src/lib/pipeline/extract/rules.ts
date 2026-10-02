@@ -95,8 +95,11 @@ export function ruleExtract(input: RuleInput): ExtractedNotice {
 
   // --- organization / exam / department (header lines) ----------------
   const headLines = text.split(/\r?\n|\f/).map((l) => l.trim()).filter(Boolean).slice(0, 15);
+  // A line naming the body — but never an exam/post/notice line that
+  // merely contains "police" or "board" ("Constable (Civil Police) 2027").
+  const notAnOrgLine = /\b(examination|exam|admit\s*cards?|results?|answer\s*keys?|merit|recruitment\s+(?:of|for|to)|post(?:s)?\s+of|notification|notice|corrigendum|advertisement|advt|apply|application)\b|\(|(?<!\d)20\d{2}(?!\d)/i;
   const orgLine = headLines.find((l) =>
-    /\b(commission|board|university|department|directorate|corporation|council|authority|bank|police|railway|institute|limited|ltd\.?|ministry|court|municipal|nigam|ayog|parishad)\b/i.test(l) && l.length < 160,
+    /\b(commission|board|university|department|directorate|corporation|council|authority|bank|police|railway|institute|limited|ltd\.?|ministry|court|municipal|nigam|ayog|parishad)\b/i.test(l) && l.length < 160 && !notAnOrgLine.test(l),
   );
   if (orgLine) {
     data.organization = orgLine.replace(/\s+/g, " ");

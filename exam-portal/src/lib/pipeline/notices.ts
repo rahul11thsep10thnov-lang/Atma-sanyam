@@ -5,6 +5,7 @@ import { recordAuditLog, PIPELINE_ACTOR } from "@/lib/services/auditLog";
 import { recordPipelineError } from "./errors";
 import { extractNotice, validateExtraction, decideStatus, type ExtractedNotice, type ProvenanceMap } from "./extract";
 import type { IngestResult } from "./ingest";
+import { resolveEntities, type ResolutionResult } from "./resolve";
 
 /**
  * Turns an ingested document (or a new version of one) into a
@@ -122,7 +123,6 @@ export async function createNoticeFromIngest(ingested: IngestResult, ctx: Notice
   const validationErrors = validateExtraction(extracted.data, document.sourcePublishedAt);
   const authority = sourceAuthority(document.sourceUrl, document.source?.officialDomain);
   const unverified = hasUnverified(extracted.provenance);
-  const decided = decideStatus({ overallConfidence: extracted.overallConfidence, validationErrors, sourceAuthority: authority, hasUnverifiedFields: unverified });
   const priority = decidePriority(extracted.data.notice_type, extracted.data.application_end_date);
 
   let sourceDomain: string | null = null;
@@ -131,6 +131,42 @@ export async function createNoticeFromIngest(ingested: IngestResult, ctx: Notice
   } catch {
     sourceDomain = null;
   }
+
+  const existing = await prisma.recruitmentNotice.findFirst({
+    where: { documentId: document.id, duplicateOfId: null },
+    orderBy: { createdAt: "desc" },
+    select: { id: true, status: true, recruitmentId: true, organizationId: true, examId: true },
+  });
+
+  // Phase 5: organization → categories → exam → recruitment. Resolution
+  // problems are recorded but never lose the notice itself.
+  let resolution: ResolutionResult | null = null;
+  try {
+    resolution = await resolveEntities({
+      data: extracted.data,
+      title: ingested.title,
+      sourceId,
+      sourceOrganizationId: document.source?.organizationId ?? null,
+      sourceDomain,
+      existing,
+    });
+  } catch (err) {
+    await recordPipelineError({
+      errorType: "RESOLUTION",
+      message: `${document.sourceUrl ?? document.filename}: ${err instanceof Error ? err.message : String(err)}`,
+      sourceId,
+      documentId: document.id,
+      pipelineRunId: ctx.pipelineRunId ?? null,
+    });
+  }
+  const resolutionErrors = resolution && !resolution.organization.id ? ["Organization could not be resolved or created."] : [];
+  const decided = decideStatus({
+    overallConfidence: extracted.overallConfidence,
+    validationErrors: [...validationErrors, ...resolutionErrors],
+    sourceAuthority: authority,
+    hasUnverifiedFields: unverified,
+    entitiesCreated: resolution?.createdAny ?? true,
+  });
 
   const common = {
     noticeType: extracted.data.notice_type,
@@ -143,19 +179,22 @@ export async function createNoticeFromIngest(ingested: IngestResult, ctx: Notice
     sourcePublishedAt: document.sourcePublishedAt,
     extracted: extracted.data as unknown as Prisma.InputJsonValue,
     overallConfidence: extracted.overallConfidence,
-    fieldConfidence: fieldConfidence(extracted.provenance),
-    validationErrors,
+    fieldConfidence: {
+      ...(fieldConfidence(extracted.provenance) as Record<string, unknown>),
+      // How each canonical link was made (alias / exact / fuzzy / created…)
+      // so the review screen can show it next to the field confidences.
+      __resolution: resolution
+        ? { organization: resolution.organization, exam: resolution.exam, recruitment: resolution.recruitment, year: resolution.year, createdAny: resolution.createdAny }
+        : null,
+    } as Prisma.InputJsonValue,
+    validationErrors: [...validationErrors, ...resolutionErrors],
     sourceId,
     documentId: document.id,
     documentVersionId: ingested.versionId,
-    organizationId: document.source?.organizationId ?? null,
+    organizationId: resolution?.organization.id ?? existing?.organizationId ?? document.source?.organizationId ?? null,
+    examId: resolution?.exam.id ?? existing?.examId ?? null,
+    recruitmentId: resolution?.recruitment.id ?? existing?.recruitmentId ?? null,
   };
-
-  const existing = await prisma.recruitmentNotice.findFirst({
-    where: { documentId: document.id, duplicateOfId: null },
-    orderBy: { createdAt: "desc" },
-    select: { id: true, status: true, recruitmentId: true, organizationId: true, examId: true },
-  });
 
   if (existing) {
     // A document that changed after its notice was approved/published must
@@ -170,13 +209,7 @@ export async function createNoticeFromIngest(ingested: IngestResult, ctx: Notice
     };
     await prisma.recruitmentNotice.update({
       where: { id: existing.id },
-      data: {
-        ...common,
-        status,
-        changeSummary,
-        // Resolution results from Phase 5 survive a re-extraction.
-        organizationId: existing.organizationId ?? common.organizationId,
-      },
+      data: { ...common, status, changeSummary },
     });
     await recordAuditLog({ actor: PIPELINE_ACTOR, action: "UPDATE", contentType: "RecruitmentNotice", contentId: existing.id, newValue: { versionNumber: ingested.versionNumber, status, overallConfidence: extracted.overallConfidence } });
     return { noticeId: existing.id, status, noticeType: extracted.data.notice_type, created: false, overallConfidence: extracted.overallConfidence };

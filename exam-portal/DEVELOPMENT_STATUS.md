@@ -1149,6 +1149,80 @@ alternative (every labelled date silently came back `null`), the
 deadline-extension rule picked the *old* date, the fee rule missed
 "Fee payable: Rs. 100/-", and the department rule was case-sensitive.
 
+## Automation pipeline — Phase 5: Organization / category / exam / recruitment resolution ✅
+
+`src/lib/pipeline/resolve/` maps the free-text names an extractor
+produced onto canonical rows, and `createNoticeFromIngest()` now links
+every notice to its organization, exam and — the central object —
+**recruitment** before it is stored.
+
+- `names.ts` — pure helpers: `normalizeName()` (same key the Phase 1
+  alias backfill used, so "S.S.C." = "SSC"), `nameMatchScore()` (the
+  better of bigram similarity and stop-word-free token containment, so
+  "Constable 2027" matches "Constable Recruitment 2027" while "SSC CGL"
+  does not match "SSC CHSL"), `acronymOf()` ("Uttar Pradesh Police
+  Recruitment and Promotion Board" → UPPRPB), `yearOf()`, `stripYear()`,
+  `canonicalCase()` (title-cases shouted header lines but keeps UP/SSC/
+  RRB…), `inferOrganizationType()` (CENTRAL/STATE/PSU/UNIVERSITY/COURT/
+  DEFENCE/MUNICIPAL/…) and keyword rules for the seeded categories
+  (UPSC, SSC, Railway, Banking, Defence, Police, Teaching, State PSC;
+  anything else → an auto-created "Other Government Jobs").
+- `index.ts` — `resolveOrganization()` in trust order: links an earlier
+  version already had → the organization an admin pinned on the source →
+  alias table (normalised) → organization name/short name → fuzzy ≥ 0.92
+  over names + aliases → *same-source* fallback (a notice with no
+  organization line, e.g. an admit card, goes to the organization the
+  same source has been feeding) → create, flagged `isAutoCreated`, with
+  inferred type, state (from the name), website (from the source domain)
+  and two aliases (the raw line and the acronym). Every successful match
+  also records the raw spelling as an alias, so the next notice matches
+  exactly. `resolveCategories()`, `resolveExam()` (alias → exact → fuzzy
+  ≥ 0.85 within the organization → create as a DRAFT exam, year stripped
+  from the title, `createdBy = "pipeline"`), `resolveRecruitment()`
+  (same exam + year, or title ≥ 0.85 within the organization and the same
+  year → reuse and **update its dates from the notice** — a JOB sets the
+  application window, a DEADLINE_EXTENSION moves the closing date, an
+  ADMIT_CARD/EXAM_DATE sets the exam date — else create with the
+  categories attached, primary first). Each entity link records its
+  method (`source` / `alias` / `exact` / `fuzzy` / `same-source` /
+  `created`) and confidence; the notice stores that under
+  `fieldConfidence.__resolution`.
+- Confidence engine: a notice that **created** any entity can never be
+  `AUTO_APPROVED` (`decideStatus({ entitiesCreated })`) — a human
+  confirms the new organization/recruitment first. An unresolvable
+  organization is a validation error and a `RESOLUTION` pipeline error,
+  never a lost notice.
+- Rule extractor fix found by the new tests: an exam/post line that
+  merely contains "police" or "board" ("Constable (Civil Police) 2027 -
+  Written Examination") was being taken for the organization line.
+
+Tests (`npm run test`, 82 passing): `names.test.ts` covers
+normalisation, match scores, acronyms, years, canonical case, type and
+category inference. `resolve.integration.test.ts` (real DB) runs the
+fixture job advertisement through resolution → creates the organization
+(STATE, aliases incl. the normalised raw line), the Police category, the
+exam and the recruitment (year 2027, closing 2027-01-16, primary
+category); the same notice spelled differently ("… Police Recruitment &
+Promotion Board") matches without creating anything; the deadline
+extension lands on the same recruitment and moves its closing date to
+2027-01-26; an admit card with no organization line, from a source that
+has been feeding that organization, attaches to the same recruitment
+via the same-source fallback and sets its exam date; a different
+commission is never merged in; a holiday list resolves to nothing
+without crashing. The loopback source-check test now asserts both
+ingested PDFs share one auto-created organization ("UP Police
+Recruitment and Promotion Board", alias UPRPB) and one recruitment with
+year/dates/category, that the job notice is not auto-approved, and
+that a changed PDF moves the recruitment's closing date on the same row.
+
+Live (admin UI "Check now" against the loopback fixture): both notices
+link to *Uttar Pradesh Police Recruitment and Promotion Board*
+(auto-created, method `created` / `same-source`), the recruitment
+*Recruitment of Constable (Civil Police) 2027* (year 2027, closing
+2027-01-16, exam date 2027-02-17 set by the admit card), the exam
+*Recruitment of Constable (Civil Police)* and the primary category
+`police`.
+
 ## Known follow-ups / decisions to revisit
 
 - `prisma@8` will move out of RC eventually — re-run `npm audit` and

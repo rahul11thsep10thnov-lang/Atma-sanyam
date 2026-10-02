@@ -102,9 +102,12 @@ export function decideStatus(input: {
   validationErrors: string[];
   sourceAuthority: number;
   hasUnverifiedFields: boolean;
+  /** A new organization/exam/recruitment was created for this notice —
+   * a human confirms the new entity before anything auto-publishes. */
+  entitiesCreated?: boolean;
 }): "AUTO_APPROVED" | "NEEDS_REVIEW" | "NEW" {
   const score = input.overallConfidence * input.sourceAuthority;
-  if (input.validationErrors.length === 0 && !input.hasUnverifiedFields && score >= THRESHOLDS.autoPublish) return "AUTO_APPROVED";
+  if (input.validationErrors.length === 0 && !input.hasUnverifiedFields && !input.entitiesCreated && score >= THRESHOLDS.autoPublish) return "AUTO_APPROVED";
   if (score >= THRESHOLDS.review) return "NEEDS_REVIEW";
   return "NEW";
 }

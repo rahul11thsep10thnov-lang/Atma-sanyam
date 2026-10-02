@@ -58,10 +58,15 @@ describe.skipIf(!HAS_DB)("checkSource (loopback integration)", () => {
     const { prisma } = await import("@/lib/db/prisma");
     const docs = await prisma.document.findMany({ where: { sourceId }, select: { id: true } });
     await prisma.pipelineError.deleteMany({ where: { OR: [{ sourceId }, { documentId: { in: docs.map((d) => d.id) } }] } });
-    const notices = await prisma.recruitmentNotice.findMany({ where: { sourceId }, select: { id: true } });
+    const notices = await prisma.recruitmentNotice.findMany({ where: { sourceId }, select: { id: true, organizationId: true, recruitmentId: true, examId: true } });
     await prisma.auditLog.deleteMany({ where: { contentType: "RecruitmentNotice", contentId: { in: notices.map((n) => n.id) } } });
     await prisma.recruitmentNotice.deleteMany({ where: { sourceId } });
     await prisma.document.deleteMany({ where: { sourceId } });
+    // Phase 5 auto-created entities (only the ones flagged as auto-created).
+    const orgIds = [...new Set(notices.map((n) => n.organizationId).filter((x): x is string => !!x))];
+    await prisma.recruitment.deleteMany({ where: { organizationId: { in: orgIds }, isAutoCreated: true } });
+    await prisma.exam.deleteMany({ where: { organizationId: { in: orgIds }, isAutoCreated: true } });
+    await prisma.organization.deleteMany({ where: { id: { in: orgIds }, isAutoCreated: true } });
     await prisma.source.delete({ where: { id: sourceId } });
     await new Promise<void>((r) => server.close(() => r()));
   });
@@ -107,6 +112,23 @@ describe.skipIf(!HAS_DB)("checkSource (loopback integration)", () => {
     expect(admit.noticeType).toBe("ADMIT_CARD");
     expect(admit.priority).toBe("HIGH");
     expect(await prisma.auditLog.count({ where: { actor: "pipeline", action: "CREATE", contentType: "RecruitmentNotice", contentId: job.id } })).toBe(1);
+
+    // Phase 5: both notices resolve to ONE auto-created organization and
+    // ONE recruitment (the admit card attaches to the job's recruitment, §42).
+    expect(job.organizationId).not.toBeNull();
+    expect(job.recruitmentId).not.toBeNull();
+    expect(admit.organizationId).toBe(job.organizationId);
+    expect(admit.recruitmentId).toBe(job.recruitmentId);
+    const org = await prisma.organization.findUniqueOrThrow({ where: { id: job.organizationId! }, include: { aliases: true } });
+    expect(org.isAutoCreated).toBe(true);
+    expect(org.name).toBe("UP Police Recruitment and Promotion Board");
+    expect(org.aliases.map((a) => a.alias)).toContain("UPRPB");
+    const recruitment = await prisma.recruitment.findUniqueOrThrow({ where: { id: job.recruitmentId! }, include: { categories: { include: { category: true } } } });
+    expect(recruitment.isAutoCreated).toBe(true);
+    expect(recruitment.year).toBe(2027);
+    expect(recruitment.applicationEndDate?.toISOString().slice(0, 10)).toBe("2027-01-10");
+    expect(recruitment.categories.map((c) => c.category.slug)).toContain("police");
+    expect(job.status).not.toBe("AUTO_APPROVED"); // a created organization always needs a human
 
     const source = await prisma.source.findUniqueOrThrow({ where: { id: sourceId } });
     expect(source.lastSuccessAt).not.toBeNull();
@@ -155,6 +177,9 @@ describe.skipIf(!HAS_DB)("checkSource (loopback integration)", () => {
     const change = updated.changeSummary as { versionNumber: number; diff: Array<{ old: string | null; new: string | null }> };
     expect(change.versionNumber).toBe(2);
     expect(change.diff[0].new).toBe("Last date of application: 20-01-2027");
+    // …and the recruitment's deadline followed the change, on the same row.
+    expect(await prisma.recruitment.count({ where: { id: updated.recruitmentId! } })).toBe(1);
+    expect((await prisma.recruitment.findUniqueOrThrow({ where: { id: updated.recruitmentId! } })).applicationEndDate?.toISOString().slice(0, 10)).toBe("2027-01-20");
   });
 
   it("dry-run lists candidates without storing anything", async () => {
