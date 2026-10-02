@@ -22,6 +22,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     organizations,
     categories,
     states,
+    recruitments,
   ] = await Promise.all([
     prisma.exam.findMany({
       where: { status: "PUBLISHED" },
@@ -62,10 +63,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     prisma.organization.findMany({ select: { slug: true, updatedAt: true } }),
     prisma.category.findMany({ select: { slug: true } }),
     prisma.state.findMany({ select: { slug: true } }),
+    prisma.recruitment.findMany({ where: { status: "PUBLISHED" }, select: { slug: true, updatedAt: true } }),
   ]);
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: `${SITE_URL}/`, changeFrequency: "daily", priority: 1 },
+    { url: `${SITE_URL}/recruitments`, changeFrequency: "daily", priority: 0.9 },
+    { url: `${SITE_URL}/organizations`, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${SITE_URL}/categories`, changeFrequency: "weekly", priority: 0.5 },
     { url: `${SITE_URL}/jobs`, changeFrequency: "daily", priority: 0.9 },
     { url: `${SITE_URL}/results`, changeFrequency: "daily", priority: 0.9 },
     { url: `${SITE_URL}/admit-card`, changeFrequency: "daily", priority: 0.8 },
@@ -91,6 +96,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...staticPages,
+    ...entries(recruitments, "/recruitments", 0.9),
     ...entries(exams, "/exam", 0.9),
     ...entries(jobs, "/jobs", 0.9),
     ...entries(results, "/results", 0.8),

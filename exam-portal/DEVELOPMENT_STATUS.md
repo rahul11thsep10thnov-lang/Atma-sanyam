@@ -1428,6 +1428,60 @@ Known UI follow-ups: the bug caught by the publish test — the fee parser
 read the "." in "Rs." as the amount — is fixed; the Next.js dev badge
 overlaps the bottom of the sidebar in development only.
 
+## Automation pipeline — Phase 9: Public recruitment pages, deadline engine, alias-aware search ✅
+
+The public site now shows what the pipeline publishes, with the
+**recruitment** as the page people land on (spec §22/§25/§26).
+
+- `/recruitments` — every published recruitment as a card (organization,
+  primary category, deadline badge, exam date, number of updates), with
+  Open / Closed / All windows, category chips with counts, search by
+  recruitment or organization (alias-aware: "UPPRPB" works), pagination,
+  and an English ⇄ हिन्दी switch (`?lang=hi`) that uses `titleHi` when
+  present and translated chrome always.
+- `/recruitments/[slug]` — the timeline page: organization/category/
+  year, deadline badge ("106 days left to apply · Apply by 16 Jan 2027"),
+  Apply online (hidden once closed) and Official notification (PDF)
+  buttons, Important dates (only known ones), At a glance (vacancies,
+  qualification, age, fee, pay, selection stages, advt. no.) from the
+  published job, then the **Timeline**: every published notice newest
+  first with a typed badge (Notification / Admit card / Answer key /
+  Result / Last date extended / Corrigendum / Exam postponed …), its
+  date, summary, the key dates it carried, the old → new lines when a
+  document changed, and a link to the official source; Documents
+  (admit cards / answer keys / results), the organization block, and
+  related recruitments. JobPosting JSON-LD, canonical URL, 404 for
+  unknown or unpublished slugs, Hindi variant.
+- `/organizations` (grouped by type, with counts) and `/categories`
+  indexes; `/organization/[slug]` and `/category/[slug]` now list the
+  organization's/category's recruitments above its exams. Home page:
+  "Last dates approaching" (recruitments closing within two weeks, with
+  the deadline badge) and "Latest Recruitments".
+- `src/lib/deadline.ts` — the deadline engine: calendar-day arithmetic
+  in UTC so a deadline today reads "Last day to apply — today", 1–7 days
+  → "N days left" (amber), more → green, past → "Applications closed",
+  unknown → "Last date not announced"; English and Hindi labels.
+  `DeadlineBadge` renders it everywhere.
+- Search: new "Recruitment" content type, and organization matching by
+  name, short name **or alias** for both organizations and recruitments.
+  Sitemap includes `/recruitments`, `/organizations`, `/categories` and
+  every published recruitment.
+
+Tests (`npm run test`, 100 passing): `deadline.test.ts` covers today /
+1 day / 7 days / 8 days / past / unknown and the Hindi label.
+
+Live (Playwright): home shows Latest Recruitments; `/recruitments`
+lists the constable recruitment with the Police chip; `?lang=hi`,
+`?window=closed`, `?category=police`, `?q=UPPRPB` all work; the detail
+page renders dates, at-a-glance (60,244 vacancies, 18–22 years,
+PRPB-01/2027), the two-entry timeline (Admit card 10 Feb 2027 above the
+Notification of 27 Dec 2026), documents and JSON-LD; the Hindi page
+renders Devanagari headings; `/organizations`, `/categories`,
+organization and category pages list the recruitment; `/search?q=UPPRPB`
+and `?q=Bharti Board` (an alias added in the admin) both find it; the
+sitemap lists the index and the detail URL; unknown slug → 404; no
+horizontal overflow at 390 px; no page errors or 5xx.
+
 ## Known follow-ups / decisions to revisit
 
 - `prisma@8` will move out of RC eventually — re-run `npm audit` and

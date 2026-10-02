@@ -4,6 +4,8 @@ import { getOrganizationBySlug } from "@/lib/services/directory";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ExamCard } from "@/components/cards/ExamCard";
 import { EmptyState } from "@/components/EmptyState";
+import { RecruitmentCard } from "@/components/cards/RecruitmentCard";
+import { listPublishedRecruitments } from "@/lib/services/recruitments";
 
 type Params = { slug: string };
 
@@ -31,6 +33,7 @@ export default async function OrganizationPage({
   const { slug } = await params;
   const org = await getOrganizationBySlug(slug);
   if (!org) notFound();
+  const recruitments = await listPublishedRecruitments({ organizationSlug: slug, window: "all" });
 
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6">
@@ -54,6 +57,16 @@ export default async function OrganizationPage({
         ) : null}
       </div>
 
+      {recruitments.rows.length > 0 ? (
+        <section className="flex flex-col gap-3">
+          <h2 className="text-lg font-semibold text-slate-900">Recruitments</h2>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {recruitments.rows.map((r) => <RecruitmentCard key={r.slug} recruitment={r} />)}
+          </div>
+        </section>
+      ) : null}
+
+      <h2 className="text-lg font-semibold text-slate-900">Exams</h2>
       {org.exams.length > 0 ? (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {org.exams.map((exam) => (

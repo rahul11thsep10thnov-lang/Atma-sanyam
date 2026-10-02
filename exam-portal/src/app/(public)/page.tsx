@@ -9,6 +9,9 @@ import { ResultCard } from "@/components/cards/ResultCard";
 import { AdmitCard } from "@/components/cards/AdmitCard";
 import { AnswerKeyCard } from "@/components/cards/AnswerKeyCard";
 import { ArticleCard } from "@/components/cards/ArticleCard";
+import { RecruitmentCard } from "@/components/cards/RecruitmentCard";
+import { DeadlineBadge } from "@/components/DeadlineBadge";
+import { getLatestRecruitments, getClosingSoonRecruitments } from "@/lib/services/recruitments";
 import { formatDate } from "@/lib/format";
 import {
   getLatestJobs,
@@ -37,6 +40,8 @@ export default async function HomePage() {
     popularOrganizations,
     states,
     closingSoon,
+    recruitments,
+    closingRecruitments,
   ] = await Promise.all([
     getLatestJobs(),
     getLatestResults(),
@@ -47,6 +52,8 @@ export default async function HomePage() {
     getPopularOrganizations(),
     getStatesWithExams(),
     getClosingSoonExams(),
+    getLatestRecruitments(6),
+    getClosingSoonRecruitments(8),
   ]);
 
   return (
@@ -60,6 +67,34 @@ export default async function HomePage() {
           scholarships — sourced from official notifications, reviewed
           before publishing.
         </p>
+      </section>
+
+      {closingRecruitments.length > 0 ? (
+        <section aria-labelledby="closing-recruitments-heading" className="flex flex-col gap-3">
+          <SectionHeading id="closing-recruitments-heading" title="Last dates approaching" subtitle="Recruitments closing in the next two weeks" />
+          <ul className="flex flex-col gap-2">
+            {closingRecruitments.map((r) => (
+              <li key={r.slug} className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-amber-200 bg-amber-50 px-4 py-2 text-sm">
+                <Link href={`/recruitments/${r.slug}`} className="font-medium text-slate-900 hover:underline">{r.title}</Link>
+                <DeadlineBadge endDate={r.applicationEndDate} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      <section id="recruitments" className="flex flex-col gap-3 scroll-mt-20">
+        <div className="flex items-baseline justify-between gap-3">
+          <SectionHeading title="Latest Recruitments" subtitle="One page per recruitment: notification, admit card, answer key, result" />
+          <Link href="/recruitments" className="text-sm text-brand-700 hover:underline">All recruitments →</Link>
+        </div>
+        {recruitments.length > 0 ? (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {recruitments.map((r) => <RecruitmentCard key={r.slug} recruitment={r} />)}
+          </div>
+        ) : (
+          <EmptyState message="No recruitments published yet." />
+        )}
       </section>
 
       {closingSoon.length > 0 ? (

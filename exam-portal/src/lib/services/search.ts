@@ -10,6 +10,7 @@ export interface SearchFilters {
 }
 
 export type SearchContentType =
+  | "recruitment"
   | "exam"
   | "job"
   | "result"
@@ -31,6 +32,7 @@ const PAGE_SIZE = 15;
 const MAX_QUERY_LENGTH = 100;
 
 const CONTENT_TYPE_LABELS: Record<SearchContentType, string> = {
+  recruitment: "Recruitment",
   exam: "Exam",
   job: "Job",
   result: "Result",
@@ -75,8 +77,32 @@ export async function searchSite(
 
   const wantsType = (t: SearchContentType) => !filters.type || filters.type === t;
 
-  const [exams, jobs, results, admitCards, answerKeys, syllabi, articles, organizations] =
+  // Alias-aware (spec §26): "UPPRPB" finds everything from the Uttar
+  // Pradesh Police Recruitment and Promotion Board.
+  const orgByAlias = {
+    OR: [
+      { name: { contains: q, mode: "insensitive" as const } },
+      { shortName: { contains: q, mode: "insensitive" as const } },
+      { aliases: { some: { alias: { contains: q, mode: "insensitive" as const } } } },
+    ],
+  };
+
+  const [recruitments, exams, jobs, results, admitCards, answerKeys, syllabi, articles, organizations] =
     await Promise.all([
+      wantsType("recruitment")
+        ? prisma.recruitment.findMany({
+            where: {
+              status: "PUBLISHED",
+              OR: [{ title: { contains: q, mode: "insensitive" } }, { organization: orgByAlias }],
+              ...orgFilter,
+              ...(filters.categoryId ? { categories: { some: { categoryId: filters.categoryId } } } : {}),
+              ...(filters.stateId ? { organization: { stateId: filters.stateId } } : {}),
+            },
+            select: { title: true, slug: true, applicationEndDate: true, organization: { select: { name: true } } },
+            orderBy: { publishedAt: "desc" },
+            take: 50,
+          })
+        : [],
       wantsType("exam")
         ? prisma.exam.findMany({
             where: {
@@ -189,7 +215,7 @@ export async function searchSite(
         : [],
       wantsType("organization")
         ? prisma.organization.findMany({
-            where: { name: { contains: q, mode: "insensitive" } },
+            where: orgByAlias,
             select: { name: true, slug: true },
             take: 50,
           })
@@ -197,6 +223,13 @@ export async function searchSite(
     ]);
 
   const items: SearchResultItem[] = [
+    ...recruitments.map((r) => ({
+      type: "recruitment" as const,
+      title: r.title,
+      href: `/recruitments/${r.slug}`,
+      subtitle: r.organization.name,
+      date: r.applicationEndDate,
+    })),
     ...exams.map((e) => ({
       type: "exam" as const,
       title: e.title,

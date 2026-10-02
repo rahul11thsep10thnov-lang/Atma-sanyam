@@ -16,6 +16,7 @@ export const metadata: Metadata = {
 };
 
 const TYPE_OPTIONS: SearchContentType[] = [
+  "recruitment",
   "exam",
   "job",
   "result",
