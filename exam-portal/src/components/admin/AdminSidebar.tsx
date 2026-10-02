@@ -50,6 +50,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: "Dashboard", href: "/admin" },
       { label: "Notifications", href: "/admin/notifications" },
+      { label: "Alerts", href: "/admin/alerts" },
       { label: "Analytics", href: "/admin/analytics" },
       { label: "Users", roles: ["SUPER_ADMIN"] },
       { label: "Settings", roles: ["SUPER_ADMIN"] },

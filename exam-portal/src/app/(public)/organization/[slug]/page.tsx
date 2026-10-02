@@ -5,6 +5,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ExamCard } from "@/components/cards/ExamCard";
 import { EmptyState } from "@/components/EmptyState";
 import { RecruitmentCard } from "@/components/cards/RecruitmentCard";
+import { AlertSubscribeForm } from "@/components/AlertSubscribeForm";
 import { listPublishedRecruitments } from "@/lib/services/recruitments";
 
 type Params = { slug: string };
@@ -65,6 +66,8 @@ export default async function OrganizationPage({
           </div>
         </section>
       ) : null}
+
+      <AlertSubscribeForm scope={{ organizationId: org.id, label: org.name }} compact />
 
       <h2 className="text-lg font-semibold text-slate-900">Exams</h2>
       {org.exams.length > 0 ? (

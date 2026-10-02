@@ -39,6 +39,13 @@ Every variable actually read by the app, cross-checked against the code
 | `PIPELINE_INTERVAL_MINUTES` | `scripts/pipelineWorker.ts` | Pass interval for the standalone worker (default 15). |
 | `OCR_ENABLED` | `src/lib/pipeline/ocr.ts` | `true` turns on tesseract.js OCR (English + Hindi) for scanned PDFs and images. Off by default; scanned documents are then recorded as an `OCR` pipeline error instead of being silently skipped. |
 
+## Reader alerts (optional)
+
+| Variable | Read by | Notes |
+|---|---|---|
+| `RESEND_API_KEY` | `src/lib/alerts/email.ts` | API key for Resend's HTTP e-mail API. Unset → no e-mail is sent: subscriptions are still stored, confirmation links are shown in the form in development only, and each alert delivery is recorded `FAILED` with "EMAIL provider not configured". |
+| `ALERTS_FROM_EMAIL` | same | The From address, e.g. `SarkariChayan Alerts <alerts@yourdomain.in>` (a domain verified in Resend). Required together with the key. |
+
 ## Not currently read by anything
 
 These channels exist as `NotificationChannel` enum values and have a

@@ -11,6 +11,7 @@ import { DeadlineBadge } from "@/components/DeadlineBadge";
 import { ImportantDates } from "@/components/ImportantDates";
 import { RecruitmentCard } from "@/components/cards/RecruitmentCard";
 import { JsonLd } from "@/components/JsonLd";
+import { AlertSubscribeForm } from "@/components/AlertSubscribeForm";
 import type { NoticeType } from "@/generated/prisma/enums";
 
 type Params = { slug: string };
@@ -175,6 +176,8 @@ export default async function RecruitmentPage({ params, searchParams }: { params
           </ul>
         </section>
       ) : null}
+
+      <AlertSubscribeForm scope={{ recruitmentId: r.id, label: r.title }} lang={lang} compact />
 
       <section className="flex flex-col gap-1 text-sm text-slate-600">
         <h2 className="text-lg font-semibold text-slate-900">{r.organization.name}</h2>

@@ -296,6 +296,8 @@ model Organization {
   sources      Source[]
   notices      RecruitmentNotice[]
 
+  alertSubscriptions AlertSubscription[]
+
   @@index([name])
   @@index([stateId])
   @@index([parentId])
@@ -316,6 +318,8 @@ model Category {
   admissions            Admission[]
   recruitmentCategories RecruitmentCategory[]
 
+  alertSubscriptions AlertSubscription[]
+
   @@index([parentId])
   @@map("categories")
 }
@@ -332,6 +336,8 @@ model State {
   admissions    Admission[]
   scholarships  Scholarship[]
   organizations Organization[]
+
+  alertSubscriptions AlertSubscription[]
 
   @@map("states")
 }
@@ -770,6 +776,8 @@ model Notification {
 
   deliveries NotificationDelivery[]
 
+  alertDeliveries AlertDelivery[]
+
   @@index([type])
   @@index([createdAt])
   @@index([recruitmentNoticeId])
@@ -1035,6 +1043,8 @@ model Recruitment {
   admitCards AdmitCard[]
   answerKeys AnswerKey[]
 
+  alertSubscriptions AlertSubscription[]
+
   @@index([organizationId])
   @@index([examId])
   @@index([status])
@@ -1238,6 +1248,8 @@ model RecruitmentNotice {
   alerts Notification[]
   errors PipelineError[]
 
+  alertDeliveries AlertDelivery[]
+
   @@index([status])
   @@index([noticeType])
   @@index([recruitmentId])
@@ -1257,4 +1269,62 @@ model AppSetting {
   updatedBy String?
 
   @@map("app_settings")
+}
+
+/// A reader's standing request for alerts (spec §23): e-mail, a scope
+/// (one recruitment / organization / category / state, or a keyword, or
+/// everything), the notice types they care about and a minimum priority.
+/// Double opt-in: nothing is sent until `verifiedAt` is set.
+model AlertSubscription {
+  id               String              @id @default(cuid())
+  email            String
+  channel          NotificationChannel @default(EMAIL)
+  recruitmentId    String?
+  recruitment      Recruitment?        @relation(fields: [recruitmentId], references: [id], onDelete: Cascade)
+  organizationId   String?
+  organization     Organization?       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  categoryId       String?
+  category         Category?           @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  stateId          String?
+  state            State?              @relation(fields: [stateId], references: [id], onDelete: Cascade)
+  keyword          String?
+  noticeTypes      NoticeType[]
+  minPriority      NoticePriority      @default(LOW)
+  locale           String              @default("en")
+  verifiedAt       DateTime?
+  verifyToken      String              @unique
+  unsubscribeToken String              @unique
+  active           Boolean             @default(true)
+  createdAt        DateTime            @default(now())
+  lastNotifiedAt   DateTime?
+
+  deliveries AlertDelivery[]
+
+  @@index([email])
+  @@index([active, verifiedAt])
+  @@index([recruitmentId])
+  @@index([organizationId])
+  @@index([categoryId])
+  @@map("alert_subscriptions")
+}
+
+/// One alert actually matched to one subscriber: the audit trail of who
+/// was told what, and whether the e-mail went out.
+model AlertDelivery {
+  id                  String                     @id @default(cuid())
+  subscriptionId      String
+  subscription        AlertSubscription          @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  notificationId      String?
+  notification        Notification?              @relation(fields: [notificationId], references: [id])
+  recruitmentNoticeId String?
+  recruitmentNotice   RecruitmentNotice?         @relation(fields: [recruitmentNoticeId], references: [id])
+  channel             NotificationChannel        @default(EMAIL)
+  status              NotificationDeliveryStatus @default(PENDING)
+  error               String?
+  createdAt           DateTime                   @default(now())
+  sentAt              DateTime?
+
+  @@unique([subscriptionId, recruitmentNoticeId])
+  @@index([status, createdAt])
+  @@map("alert_deliveries")
 }

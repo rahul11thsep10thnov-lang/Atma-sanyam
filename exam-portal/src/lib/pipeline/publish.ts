@@ -4,6 +4,7 @@ import { uniqueSlug } from "@/lib/slug";
 import { recordAuditLog, PIPELINE_ACTOR } from "@/lib/services/auditLog";
 import { dispatchNotification } from "@/lib/services/notifications";
 import type { NoticeExtraction } from "./extract/schema";
+import { dispatchAlertsForNotice } from "@/lib/alerts/subscriptions";
 
 /**
  * Publishing a notice (spec §17/§29): the reviewed notice becomes public
@@ -208,5 +209,12 @@ export async function publishNotice(noticeId: string, by: { adminId?: string | n
     data: { status: "PUBLISHED", publishedAt: now, publishedContentType: result.contentType, publishedContentId: result.contentId, ...(by.adminId ? { reviewedBy: by.adminId, reviewedAt: now } : {}) },
   });
   await audit("RecruitmentNotice", noticeId, { contentType: result.contentType, contentId: result.contentId });
+
+  // Subscriber alerts (Phase 10). A mail provider outage never un-publishes anything.
+  try {
+    await dispatchAlertsForNotice(noticeId);
+  } catch (err) {
+    console.error("alert dispatch failed for notice", noticeId, err instanceof Error ? err.message : err);
+  }
   return result;
 }

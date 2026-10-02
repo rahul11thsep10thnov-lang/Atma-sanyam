@@ -1482,6 +1482,65 @@ and `?q=Bharti Board` (an alias added in the admin) both find it; the
 sitemap lists the index and the detail URL; unknown slug → 404; no
 horizontal overflow at 390 px; no page errors or 5xx.
 
+## Automation pipeline — Phase 10: Reader alerts and subscriptions ✅
+
+Spec §23/§24: readers can ask to be told when something they care about
+is published, and every published notice is matched and delivered.
+
+- Schema (migration `alert_subscriptions`, additive): `AlertSubscription`
+  (e-mail, channel, scope = one recruitment / organization / category /
+  state, optional keyword, notice types, minimum priority, locale,
+  double-opt-in `verifiedAt` + `verifyToken`, `unsubscribeToken`,
+  `active`) and `AlertDelivery` (one row per subscriber × notice:
+  PENDING → SENT / FAILED with the reason; unique per pair so a retry
+  never double-sends).
+- `src/lib/alerts/subscriptions.ts` — `subscriptionMatches()` (pure rule:
+  priority floor, notice types, every scope set must hold, keyword over
+  title/summary/organization), `createSubscription()` (same e-mail +
+  scope reuses the row and re-activates it; sends the confirmation mail
+  when a provider exists), `verifySubscription()`, `unsubscribe()`,
+  `dispatchAlertsForNotice()` (candidate pre-filter in SQL, exact rule in
+  JS, bilingual e-mail with the recruitment link, the official source and
+  an unsubscribe link, idempotent per pair) and `retryFailedAlerts()`.
+  `publishNotice()` dispatches alerts after publishing; a mail outage
+  never un-publishes anything.
+- `src/lib/alerts/email.ts` — `EmailSender` interface with a Resend HTTP
+  implementation (no SDK; `RESEND_API_KEY` + `ALERTS_FROM_EMAIL`). Without
+  a provider, deliveries are recorded `FAILED: EMAIL provider not
+  configured`, never faked; in development the subscribe form shows the
+  confirmation link so the flow can be completed locally.
+- Public: `/alerts` (full form: types, category, organization, state,
+  keyword, minimum priority; EN/HI), compact "Get alerts" forms on every
+  recruitment page (scoped to that recruitment), organization page and
+  category page; `/alerts/verify?token=` and `/alerts/unsubscribe?token=`
+  pages; footer link. JSON API for the Android app:
+  `POST /api/alerts/subscribe`, `GET /api/alerts/verify`,
+  `POST|GET /api/alerts/unsubscribe`.
+- Admin: `/admin/alerts` (System group) — active / unconfirmed / sent /
+  failed counts, provider status, latest subscriptions with scope, latest
+  deliveries with errors, "Retry failed deliveries".
+- Env docs for `RESEND_API_KEY` and `ALERTS_FROM_EMAIL`.
+
+Tests (`npm run test`, 105 passing): matching-rule unit tests (every
+scope, types, priority floor, keyword incl. organization name) and a DB
+integration test: subscribe → verify → dispatch sends exactly one mail to
+the matching, verified subscriber (unverified and non-matching ones get
+nothing), re-dispatch sends nothing, a second notice reaches both
+matching subscribers with a Hindi subject for the Hindi subscriber; no
+provider → FAILED with reason, then `retryFailedAlerts` with a sender
+turns it SENT; unsubscribe stops alerts and re-subscribing the same scope
+reuses the row.
+
+Live (Playwright): `/alerts` rejects `a@b` with a readable error, saves
+a subscription with JOB-only + Normal-and-above options and shows the
+dev confirmation link; the verify page says "Alerts switched on ✓" and
+is idempotent; the recruitment page carries a scoped form (hidden
+recruitmentId) in English and Hindi, as do the organization and category
+pages; `POST /api/alerts/subscribe` → 201, invalid → 400, bad verify
+token → 404, bad unsubscribe link → "Link not valid"; `/admin/alerts`
+lists the three subscriptions (active / unconfirmed, keyword scope) and
+reports the provider as not configured. No page errors or 5xx.
+
 ## Known follow-ups / decisions to revisit
 
 - `prisma@8` will move out of RC eventually — re-run `npm audit` and

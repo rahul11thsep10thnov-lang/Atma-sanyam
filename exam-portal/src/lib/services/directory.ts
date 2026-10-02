@@ -33,6 +33,7 @@ export async function getOrganizationBySlug(slug: string) {
   const organization = await prisma.organization.findUnique({
     where: { slug },
     select: {
+      id: true,
       name: true,
       slug: true,
       description: true,
@@ -53,6 +54,7 @@ export async function getCategoryBySlug(slug: string) {
   const category = await prisma.category.findUnique({
     where: { slug },
     select: {
+      id: true,
       name: true,
       slug: true,
       description: true,

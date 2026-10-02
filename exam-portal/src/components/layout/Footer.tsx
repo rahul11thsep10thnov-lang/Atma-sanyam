@@ -6,6 +6,7 @@ import { CTA_ITEMS } from "@/components/layout/CtaTabs";
 const SECONDARY_LINKS = [
   { label: "Scholarships", href: "/scholarship" },
   { label: "Articles", href: "/articles" },
+  { label: "Alerts", href: "/alerts" },
 ];
 
 export function Footer() {
