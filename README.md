@@ -90,6 +90,16 @@ npm run dev:all    # starts website, API and admin console together
 `npm run setup` prints your admin email and password (also saved in
 `backend/.env`). Change the password under **Settings** after signing in.
 
+**Forgot or want to change the admin password?** Stop the app (Ctrl+C), edit
+`ADMIN_BOOTSTRAP_PASSWORD` in `backend/.env` (at least 12 characters with a
+letter and a number), and start it again with `npm run dev:all` — the new
+password is applied on start. (With a real `DATABASE_URL`, run
+`cd backend && npm run seed:admin` instead.) A password you later change
+inside the console is kept; `.env` is applied again only when you edit it.
+The local database can be used by one program at a time, so commands such as
+`seed:admin` or `setup` refuse to run while the app is running and tell you
+to stop it first.
+
 Environment files (all git-ignored; examples are committed):
 
 | File | Key settings |

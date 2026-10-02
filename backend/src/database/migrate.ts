@@ -1,12 +1,16 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { createDatabase } from './client.js';
 import { loadDotEnv } from '../config/dotenv.js';
+import { isMainModule } from '../lib/isMain.js';
 
-const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
-if (isMain) {
+if (isMainModule(import.meta.url)) {
   loadDotEnv();
-  const database = createDatabase(process.env.DATABASE_URL, 1);
+  let database: ReturnType<typeof createDatabase>;
+  try {
+    database = createDatabase(process.env.DATABASE_URL, 1);
+  } catch (err) {
+    console.error(`\n${err instanceof Error ? err.message : err}\n`);
+    process.exit(1);
+  }
   database
     .migrate()
     .then(async () => {

@@ -1,9 +1,9 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { sql } from 'drizzle-orm';
+import { createHash } from 'node:crypto';
+import { eq, sql } from 'drizzle-orm';
 import { createDatabase, type Db } from './client.js';
 import { loadDotEnv } from '../config/dotenv.js';
-import { admins } from './schema.js';
+import { isMainModule } from '../lib/isMain.js';
+import { admins, appSettings } from './schema.js';
 import { hashPassword } from '../lib/password.js';
 import { ROLES } from '../lib/roles.js';
 
@@ -31,8 +31,27 @@ export async function upsertAdmin(db: Db, email: string, password: string, name:
   return { id: row!.id, created: true };
 }
 
-const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
-if (isMain) {
+/**
+ * Applies ADMIN_BOOTSTRAP_EMAIL / ADMIN_BOOTSTRAP_PASSWORD from .env.
+ * The pair is remembered (as a fingerprint, never the password), so it is
+ * applied again only when you CHANGE it in .env — a password changed later
+ * inside the console is not undone on the next start. `force` always applies it.
+ */
+export async function syncBootstrapAdmin(db: Db, email: string, password: string, opts: { force?: boolean } = {}) {
+  const fingerprint = createHash('sha256').update(`${email.toLowerCase()}\n${password}`).digest('hex');
+  const [saved] = await db.select().from(appSettings).where(eq(appSettings.key, 'admin_bootstrap')).limit(1);
+  if (!opts.force && (saved?.value as { fingerprint?: string } | undefined)?.fingerprint === fingerprint) {
+    return { changed: false as const };
+  }
+  const result = await upsertAdmin(db, email, password, 'Super Admin');
+  await db
+    .insert(appSettings)
+    .values({ key: 'admin_bootstrap', value: { fingerprint } })
+    .onConflictDoUpdate({ target: appSettings.key, set: { value: { fingerprint }, updatedAt: new Date() } });
+  return { changed: true as const, created: result.created };
+}
+
+if (isMainModule(import.meta.url)) {
   loadDotEnv();
   const email = process.env.ADMIN_BOOTSTRAP_EMAIL;
   const password = process.env.ADMIN_BOOTSTRAP_PASSWORD;
@@ -40,12 +59,18 @@ if (isMain) {
     console.error('Set ADMIN_BOOTSTRAP_EMAIL and ADMIN_BOOTSTRAP_PASSWORD.');
     process.exit(1);
   }
-  const database = createDatabase(process.env.DATABASE_URL, 1);
+  let database: ReturnType<typeof createDatabase>;
+  try {
+    database = createDatabase(process.env.DATABASE_URL, 1);
+  } catch (err) {
+    console.error(`\n${err instanceof Error ? err.message : err}\n`);
+    process.exit(1);
+  }
   database
     .migrate()
-    .then(() => upsertAdmin(database.db, email, password, process.env.ADMIN_BOOTSTRAP_NAME ?? 'Super Admin'))
+    .then(() => syncBootstrapAdmin(database.db, email, password, { force: true }))
     .then(async (r) => {
-      console.log(r.created ? `Super admin ${email} created.` : `Admin ${email} already existed: password reset, role set to super_admin.`);
+      console.log(r.created ? `Super admin ${email} created.` : `Password for ${email} has been reset. Start the app and sign in with it.`);
       await database.close();
     })
     .catch(async (err) => {

@@ -5,10 +5,12 @@
 // ADMIN_BOOTSTRAP_EMAIL / ADMIN_BOOTSTRAP_PASSWORD also create the first admin.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import { sql } from 'drizzle-orm';
 import { createDatabase } from './client.js';
+import { admins } from './schema.js';
 import { loadDotEnv } from '../config/dotenv.js';
 import { SEED_DIR, seedTaxonomy } from './seedTaxonomy.js';
-import { upsertAdmin } from './seedAdmin.js';
+import { syncBootstrapAdmin } from './seedAdmin.js';
 import { importQuestions } from '../services/importService.js';
 
 async function main() {
@@ -21,9 +23,14 @@ async function main() {
 
     let adminId: string | null = null;
     if (process.env.ADMIN_BOOTSTRAP_EMAIL && process.env.ADMIN_BOOTSTRAP_PASSWORD) {
-      const r = await upsertAdmin(database.db, process.env.ADMIN_BOOTSTRAP_EMAIL, process.env.ADMIN_BOOTSTRAP_PASSWORD, 'Super Admin');
-      adminId = r.id;
-      console.log(`Super admin ${process.env.ADMIN_BOOTSTRAP_EMAIL} ${r.created ? 'created' : 'updated'}.`);
+      await syncBootstrapAdmin(database.db, process.env.ADMIN_BOOTSTRAP_EMAIL, process.env.ADMIN_BOOTSTRAP_PASSWORD, { force: true });
+      const [admin] = await database.db
+        .select({ id: admins.id })
+        .from(admins)
+        .where(sql`lower(${admins.email}) = ${process.env.ADMIN_BOOTSTRAP_EMAIL.toLowerCase()}`)
+        .limit(1);
+      adminId = admin!.id;
+      console.log(`Super admin ${process.env.ADMIN_BOOTSTRAP_EMAIL} is ready.`);
     }
 
     if (process.argv.includes('--with-sample-questions')) {
