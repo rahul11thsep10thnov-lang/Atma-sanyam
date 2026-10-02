@@ -149,3 +149,46 @@ test('QC catches values outside the fixed vocabularies', () => {
   assert.ok(errors.some((e) => e.startsWith('time_of_day')));
   assert.ok(errors.some((e) => e === 'state must be written "Ladakh"'));
 });
+
+import { compactPrompt, generateImage, saveWebp, StopRun } from '../src/images.mjs';
+import sharp from 'sharp';
+import { mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
+const pngBlob = async () => new Blob([await sharp({ create: { width: 64, height: 36, channels: 3, background: '#789' } }).png().toBuffer()]);
+const httpError = (status) => Object.assign(new Error(`HTTP ${status}`), { httpResponse: { status } });
+
+test('compact prompt keeps the place and the shot, and stays short enough for Stable Diffusion', () => {
+  const p = compactPrompt(samples[1].package);
+  assert.match(p, /Jaisalmer Fort, Jaisalmer, Rajasthan, India/);
+  assert.match(p, /120 m altitude, 30° downward/);
+  assert.ok(p.split(/\s+/).length <= 90, `${p.split(/\s+/).length} words`);
+});
+
+test('image generation retries rate limits, stops cleanly when credits run out', async () => {
+  const rec = { package: samples[2].package, prompt: 'long prompt' };
+  const opts = { model: 'm', width: 1344, height: 768, compact: true };
+  const calls = [];
+  const flaky = { textToImage: async (req, o) => { calls.push({ req, o }); if (calls.length < 3) throw httpError(429); return pngBlob(); } };
+  const buf = await generateImage(flaky, rec, opts, { wait: async () => {} });
+  assert.equal(calls.length, 3);
+  assert.equal(calls[0].req.model, 'm');
+  assert.equal(calls[0].req.parameters.width, 1344);
+  assert.ok(calls[0].req.parameters.negative_prompt.startsWith('AI art'));
+  assert.equal(calls[0].o.outputType, 'blob');
+  assert.ok(buf.length > 0);
+
+  const broke = { textToImage: async () => { throw httpError(402); } };
+  await assert.rejects(generateImage(broke, rec, opts, { wait: async () => {} }), StopRun);
+  const bad = { textToImage: async () => { throw httpError(400); } };
+  await assert.rejects(generateImage(bad, rec, opts, { wait: async () => {} }), /400/);
+});
+
+test('saveWebp writes WebP and can resize to 3840×2160', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'img-'));
+  const buf = Buffer.from(await (await pngBlob()).arrayBuffer());
+  assert.deepEqual(await saveWebp(buf, join(dir, 'a.webp')), { width: 64, height: 36 });
+  assert.deepEqual(await saveWebp(buf, join(dir, 'b.webp'), { upscaleTo: { width: 3840, height: 2160 } }), { width: 3840, height: 2160 });
+  assert.equal((await sharp(join(dir, 'b.webp')).metadata()).format, 'webp');
+});

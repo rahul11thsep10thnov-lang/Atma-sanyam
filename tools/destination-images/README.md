@@ -103,7 +103,32 @@ If a same-named pair is missing a state, it is flagged as a possible duplicate.
 See [`examples/sample-output/`](examples/sample-output) for three finished reference
 packages: Triveni Sangam, Jaisalmer Fort and Pangong Lake.
 
-## Generating the images
+## Generating the images with Hugging Face (free tier)
+
+```bash
+export HF_TOKEN=hf_...        # free token: https://huggingface.co/settings/tokens
+npm run images -- out/my-destinations --limit 5      # try 5 first
+npm run images -- out/my-destinations                # the rest; resumable
+```
+
+Pictures are saved to `out/<list>/images/<filename>.webp`, and `manifest.json` records each
+picture's real width and height. Re-running skips finished images. If the free credits run
+out (HTTP 402) or the token is rejected, the run stops cleanly and keeps what it made.
+
+- **Prompt:** Stable Diffusion models only read roughly the first 77 tokens, so the command
+  sends a compact prompt built from the same package fields (place, subject, altitude, angle,
+  light, weather). Use `--full-prompt` to send the long one instead.
+- **Size:** the default 1344×768 is a native SDXL size and close to 16:9. `--upscale` resizes
+  to exactly 3840×2160, which adds pixels but no detail. For true 4K, run a dedicated
+  upscaler such as Real-ESRGAN.
+- **Model:** `--model` (or `HF_MODEL`) picks any Hugging Face text-to-image model, and
+  `--provider` picks the inference provider. Which models are free on the serverless tier
+  changes, so if the default fails, try another.
+- **Not verified live:** this was written against the official `@huggingface/inference`
+  client and tested with a fake client. It hasn't run against Hugging Face's servers, so run
+  `--limit 1` first.
+
+## Generating the images by hand
 
 - **Leonardo:** paste `IMAGE GENERATION PROMPT` and `NEGATIVE PROMPT`, use a photoreal
   model and a 16:9 output size, then upscale to 3840×2160.

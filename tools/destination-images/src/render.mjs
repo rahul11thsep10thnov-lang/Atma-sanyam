@@ -122,8 +122,8 @@ export function manifestEntry(rec) {
     description: p.image_description,
     caption: p.website_caption,
     tags: p.tags,
-    width: 3840,
-    height: 2160,
+    width: rec.image?.width ?? null,
+    height: rec.image?.height ?? null,
     qc: rec.qc.errors.length ? 'review' : 'pass',
   };
 }

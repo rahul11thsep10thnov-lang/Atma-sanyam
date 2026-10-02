@@ -15,6 +15,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.131.0",
+    "@huggingface/inference": "^4.13.30",
+    "sharp": "^0.35.5",
     "zod": "^4.6.5"
   }
 }

@@ -1,0 +1,94 @@
+// Image generation through Hugging Face Inference Providers.
+//
+// The 150-word prompts written for FLUX/Leonardo are too long for Stable
+// Diffusion models (their text encoder reads roughly the first 77 tokens), so
+// this builds a compact prompt from the same package fields instead.
+
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { InferenceClient } from '@huggingface/inference';
+import sharp from 'sharp';
+import { NEGATIVE_PROMPT } from './spec.mjs';
+
+export const DEFAULT_HF_MODEL = 'stabilityai/stable-diffusion-xl-base-1.0';
+// 1344×768 is one of SDXL's native training sizes (≈16:9). Other models may prefer others.
+export const DEFAULT_SIZE = { width: 1344, height: 768 };
+
+const firstClause = (s, maxWords) => (s ?? '').split(/[.;]/)[0].trim().split(/\s+/).slice(0, maxWords).join(' ');
+
+/** ≈60-word prompt that keeps what identifies the place and the shot. */
+export function compactPrompt(pkg) {
+  const place = [pkg.name, pkg.city_district, pkg.state].filter(Boolean).join(', ');
+  const parts = [
+    `aerial drone photograph of ${place}, India`,
+    firstClause(pkg.primary_subject, 22),
+    firstClause(pkg.environmental_details, 16),
+    `${pkg.drone_altitude_m} m altitude, ${pkg.camera_angle_deg}° downward oblique view, 28mm`,
+    `${pkg.time_of_day} light`,
+    firstClause(pkg.weather, 10),
+    'ultra-realistic professional travel photograph, natural colors, realistic shadows, high detail, 16:9',
+  ];
+  return parts.filter(Boolean).join(', ');
+}
+
+export function createHfClient(token = process.env.HF_TOKEN) {
+  if (!token) throw new Error('Set HF_TOKEN to a Hugging Face access token (https://huggingface.co/settings/tokens).');
+  return new InferenceClient(token);
+}
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+export class StopRun extends Error {}
+
+function statusOf(err) {
+  if (err?.httpResponse?.status) return err.httpResponse.status;
+  const m = /\b([45]\d\d)\b/.exec(String(err?.message));
+  return m ? Number(m[1]) : null;
+}
+
+/** Calls the model, retrying rate limits / cold starts. Throws StopRun when the account can't continue. */
+export async function generateImage(client, record, opts, { retries = 4, wait = sleep } = {}) {
+  const request = {
+    model: opts.model,
+    ...(opts.provider ? { provider: opts.provider } : {}),
+    inputs: opts.compact ? compactPrompt(record.package) : record.prompt,
+    parameters: {
+      negative_prompt: NEGATIVE_PROMPT,
+      width: opts.width,
+      height: opts.height,
+      ...(opts.steps ? { num_inference_steps: opts.steps } : {}),
+    },
+  };
+  for (let attempt = 0; ; attempt++) {
+    try {
+      const blob = await client.textToImage(request, { outputType: 'blob' });
+      return Buffer.from(await blob.arrayBuffer());
+    } catch (err) {
+      const status = statusOf(err);
+      if (status === 401 || status === 403) throw new StopRun(`Hugging Face rejected the token (${status}). Check HF_TOKEN permissions.`);
+      if (status === 402) throw new StopRun('Hugging Face reports your free credits are used up (402). Resume later or switch provider/model; finished images are kept.');
+      const retryable = status === 429 || status === 503 || status === 504 || status === 500 || status == null;
+      if (!retryable || attempt >= retries) throw err;
+      await wait(Math.min(60_000, 2_000 * 2 ** attempt));
+    }
+  }
+}
+
+/** Saves a WebP (optionally resized to exactly width×height) and returns its dimensions. */
+export async function saveWebp(buffer, file, { upscaleTo } = {}) {
+  let img = sharp(buffer);
+  if (upscaleTo) img = img.resize(upscaleTo.width, upscaleTo.height, { fit: 'cover', kernel: 'lanczos3' });
+  const { data, info } = await img.webp({ quality: 88 }).toBuffer({ resolveWithObject: true });
+  writeFileSync(file, data);
+  return { width: info.width, height: info.height };
+}
+
+export function imagePath(dir, record) {
+  return join(dir, 'images', record.filename);
+}
+
+export function ensureImagesDir(dir) {
+  mkdirSync(join(dir, 'images'), { recursive: true });
+}
+
+export const hasImage = (dir, record) => existsSync(imagePath(dir, record));
