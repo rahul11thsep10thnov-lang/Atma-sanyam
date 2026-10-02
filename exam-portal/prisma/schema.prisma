@@ -132,6 +132,97 @@ enum ContactMessageStatus {
   RESOLVED
 }
 
+// --- Automated notification pipeline (see AUTOMATION_ASSESSMENT.md) -------
+
+enum SourceType {
+  HTML
+  PDF
+  RSS
+  API
+  SITEMAP
+  JSON
+  XML
+}
+
+enum SourcePriority {
+  HIGH
+  NORMAL
+  LOW
+}
+
+enum OrganizationType {
+  CENTRAL
+  STATE
+  PSU
+  UNIVERSITY
+  COURT
+  DEFENCE
+  MUNICIPAL
+  AUTONOMOUS
+  OTHER
+}
+
+/// What a single government notice is about. One recruitment accumulates
+/// many of these over its lifecycle.
+enum NoticeType {
+  JOB
+  ADMIT_CARD
+  EXAM_DATE
+  ANSWER_KEY
+  RESULT
+  MERIT_LIST
+  SELECTION_LIST
+  INTERVIEW
+  DOCUMENT_VERIFICATION
+  CORRIGENDUM
+  DEADLINE_EXTENSION
+  EXAM_POSTPONED
+  EXAM_CANCELLED
+  OTHER
+}
+
+enum NoticeStatus {
+  NEW
+  NEEDS_REVIEW
+  AUTO_APPROVED
+  APPROVED
+  REJECTED
+  PUBLISHED
+  DUPLICATE
+  FAILED
+}
+
+enum NoticePriority {
+  URGENT
+  HIGH
+  NORMAL
+  LOW
+}
+
+enum PipelineRunStatus {
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+enum PipelineTrigger {
+  CRON
+  MANUAL
+  SOURCE_CHECK
+  RETRY
+}
+
+enum PipelineErrorType {
+  FETCH
+  PARSE
+  OCR
+  EXTRACTION
+  RESOLUTION
+  VALIDATION
+  PUBLISH
+  UNKNOWN
+}
+
 // ---------------------------------------------------------------------------
 // Users & access
 // ---------------------------------------------------------------------------
@@ -184,27 +275,46 @@ model Organization {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  /// Canonical record fields filled by the pipeline's entity resolver
+  /// (Phase 5); all optional so existing rows are untouched.
+  shortName        String?
+  organizationType OrganizationType?
+  stateId          String?
+  state            State?            @relation(fields: [stateId], references: [id])
+  parentId         String?
+  parent           Organization?     @relation("OrganizationHierarchy", fields: [parentId], references: [id])
+  children         Organization[]    @relation("OrganizationHierarchy")
+  isAutoCreated    Boolean           @default(false)
+
   exams        Exam[]
   jobs         Job[]
   admissions   Admission[]
   scholarships Scholarship[]
   documents    Document[]
+  aliases      OrganizationAlias[]
+  recruitments Recruitment[]
+  sources      Source[]
+  notices      RecruitmentNotice[]
 
   @@index([name])
+  @@index([stateId])
+  @@index([parentId])
   @@map("organizations")
 }
 
 model Category {
-  id          String     @id @default(cuid())
-  name        String
-  slug        String     @unique
-  description String?
-  parentId    String?
-  parent      Category?  @relation("CategoryToParent", fields: [parentId], references: [id])
-  children    Category[] @relation("CategoryToParent")
+  id            String     @id @default(cuid())
+  name          String
+  slug          String     @unique
+  description   String?
+  parentId      String?
+  parent        Category?  @relation("CategoryToParent", fields: [parentId], references: [id])
+  children      Category[] @relation("CategoryToParent")
+  isAutoCreated Boolean    @default(false)
 
-  exams      Exam[]
-  admissions Admission[]
+  exams                 Exam[]
+  admissions            Admission[]
+  recruitmentCategories RecruitmentCategory[]
 
   @@index([parentId])
   @@map("categories")
@@ -218,9 +328,10 @@ model State {
   code String @unique
   slug String @unique
 
-  exams        Exam[]
-  admissions   Admission[]
-  scholarships Scholarship[]
+  exams         Exam[]
+  admissions    Admission[]
+  scholarships  Scholarship[]
+  organizations Organization[]
 
   @@map("states")
 }
@@ -260,6 +371,7 @@ model Exam {
   examDate             DateTime?
   applicationStartDate DateTime?
   applicationEndDate   DateTime?
+  isAutoCreated        Boolean      @default(false)
 
   jobs           Job[]
   results        Result[]
@@ -269,6 +381,9 @@ model Exam {
   importantLinks ImportantLink[]
   examTags       ExamTag[]
   documents      Document[]
+  aliases        ExamAlias[]
+  recruitments   Recruitment[]
+  notices        RecruitmentNotice[]
 
   @@index([organizationId])
   @@index([categoryId])
@@ -339,8 +454,12 @@ model Job {
 
   importantLinks ImportantLink[]
 
+  recruitmentId String?
+  recruitment   Recruitment? @relation(fields: [recruitmentId], references: [id])
+
   @@index([examId])
   @@index([organizationId])
+  @@index([recruitmentId])
   @@index([status])
   @@index([publishedAt])
   @@index([applicationEndDate])
@@ -370,7 +489,11 @@ model Result {
   relatedAnswerKeyId String?
   relatedAnswerKey   AnswerKey? @relation(fields: [relatedAnswerKeyId], references: [id])
 
+  recruitmentId String?
+  recruitment   Recruitment? @relation(fields: [recruitmentId], references: [id])
+
   @@index([examId])
+  @@index([recruitmentId])
   @@index([status])
   @@index([publishedAt])
   @@index([resultDate])
@@ -400,7 +523,11 @@ model AdmitCard {
 
   results Result[]
 
+  recruitmentId String?
+  recruitment   Recruitment? @relation(fields: [recruitmentId], references: [id])
+
   @@index([examId])
+  @@index([recruitmentId])
   @@index([status])
   @@index([publishedAt])
   @@index([examDate])
@@ -429,7 +556,11 @@ model AnswerKey {
 
   results Result[]
 
+  recruitmentId String?
+  recruitment   Recruitment? @relation(fields: [recruitmentId], references: [id])
+
   @@index([examId])
+  @@index([recruitmentId])
   @@index([status])
   @@index([publishedAt])
   @@map("answer_keys")
@@ -630,13 +761,18 @@ model Notification {
   body       String
   targetType String?
   targetId   String?
+  priority   NoticePriority   @default(NORMAL)
   createdAt  DateTime         @default(now())
   sentAt     DateTime?
+
+  recruitmentNoticeId String?
+  recruitmentNotice   RecruitmentNotice? @relation(fields: [recruitmentNoticeId], references: [id])
 
   deliveries NotificationDelivery[]
 
   @@index([type])
   @@index([createdAt])
+  @@index([recruitmentNoticeId])
   @@map("notifications")
 }
 
@@ -659,8 +795,11 @@ model NotificationDelivery {
 /// Every important admin action (Section 27).
 model AuditLog {
   id            String      @id @default(cuid())
-  adminUserId   String
-  adminUser     AdminUser   @relation(fields: [adminUserId], references: [id])
+  /// Null for automated pipeline actions; `actor` then names the system
+  /// ("pipeline") so "Approved by: AUTO" is a real, queryable fact.
+  adminUserId   String?
+  adminUser     AdminUser?  @relation(fields: [adminUserId], references: [id])
+  actor         String?
   action        AuditAction
   contentType   String?
   contentId     String?
@@ -702,16 +841,34 @@ model Document {
   storageUrl         String
   sourceUrl          String?
   checksum           String
-  uploadedBy         String
+  /// Null when the pipeline fetched the file (no admin involved).
+  uploadedBy         String?
   uploadedAt         DateTime                   @default(now())
   verificationStatus DocumentVerificationStatus @default(UNVERIFIED)
 
+  /// Pipeline provenance + extracted content (Phase 3). The original file
+  /// is never modified; a changed hash becomes a new DocumentVersion.
+  sourceId          String?
+  source            Source?   @relation(fields: [sourceId], references: [id])
+  mimeType          String?
+  fileSize          Int?
+  pageCount         Int?
+  extractedText     String?
+  ocrUsed           Boolean   @default(false)
+  sourcePublishedAt DateTime?
+  lastFetchedAt     DateTime?
+
   extractionJobs        ExtractionJob[]
   jobsUsingNotification Job[]
+  versions              DocumentVersion[]
+  notices               RecruitmentNotice[]
+  errors                PipelineError[]
 
   @@index([examId])
   @@index([organizationId])
   @@index([documentType])
+  @@index([sourceId])
+  @@index([checksum])
   @@map("documents")
 }
 
@@ -800,14 +957,293 @@ model ContentVersion {
 // ---------------------------------------------------------------------------
 
 model ContentViewEvent {
-  id             String   @id @default(cuid())
-  contentType    String
-  contentId      String
-  path           String
-  referrerHost   String?
-  createdAt      DateTime @default(now())
+  id           String   @id @default(cuid())
+  contentType  String
+  contentId    String
+  path         String
+  referrerHost String?
+  createdAt    DateTime @default(now())
 
   @@index([contentType, contentId])
   @@index([createdAt])
   @@map("content_view_events")
+}
+
+// ---------------------------------------------------------------------------
+// Automated government-notification pipeline (AUTOMATION_ASSESSMENT.md).
+// Recruitment is the central object; every notice hangs off it.
+// ---------------------------------------------------------------------------
+
+/// Alternate names an organization is known by (UPPRPB / U.P. Police
+/// Recruitment and Promotion Board / UP Police Recruitment Board …).
+/// `normalized` is the lowercase alphanumeric key the resolver matches on.
+model OrganizationAlias {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  alias          String
+  normalized     String       @unique
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId])
+  @@map("organization_aliases")
+}
+
+model ExamAlias {
+  id         String   @id @default(cuid())
+  examId     String
+  exam       Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
+  alias      String
+  normalized String   @unique
+  createdAt  DateTime @default(now())
+
+  @@index([examId])
+  @@map("exam_aliases")
+}
+
+/// One recruitment drive (e.g. "UP Police Constable Recruitment 2027").
+/// The job advertisement, deadline extensions, admit card, answer key,
+/// result and document verification are all notices on this one row, so
+/// the public site shows a single lifecycle instead of N unrelated entries.
+model Recruitment {
+  id                   String        @id @default(cuid())
+  title                String
+  titleHi              String?
+  slug                 String        @unique
+  summary              String?
+  summaryHi            String?
+  year                 Int?
+  status               ContentStatus @default(DRAFT)
+  publishedAt          DateTime?
+  applicationStartDate DateTime?
+  applicationEndDate   DateTime?
+  examDate             DateTime?
+  isAutoCreated        Boolean       @default(false)
+  createdBy            String?
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  examId         String?
+  exam           Exam?        @relation(fields: [examId], references: [id])
+
+  categories RecruitmentCategory[]
+  notices    RecruitmentNotice[]
+  jobs       Job[]
+  results    Result[]
+  admitCards AdmitCard[]
+  answerKeys AnswerKey[]
+
+  @@index([organizationId])
+  @@index([examId])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([applicationEndDate])
+  @@map("recruitments")
+}
+
+/// A recruitment belongs to many categories (Police + State Government +
+/// 10+2 + Uniformed Services) — never forced into one.
+model RecruitmentCategory {
+  recruitmentId String
+  recruitment   Recruitment @relation(fields: [recruitmentId], references: [id], onDelete: Cascade)
+  categoryId    String
+  category      Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  isPrimary     Boolean     @default(false)
+
+  @@id([recruitmentId, categoryId])
+  @@index([categoryId])
+  @@map("recruitment_categories")
+}
+
+/// An official page/feed the pipeline watches. etag/lastModified/
+/// lastContentHash make re-checks cheap (HTTP caching + change detection).
+model Source {
+  id                    String         @id @default(cuid())
+  name                  String
+  organizationId        String?
+  organization          Organization?  @relation(fields: [organizationId], references: [id])
+  officialDomain        String
+  listingUrl            String         @unique
+  sourceType            SourceType     @default(HTML)
+  rssUrl                String?
+  apiUrl                String?
+  parserType            String?
+  priority              SourcePriority @default(NORMAL)
+  checkFrequencyMinutes Int            @default(360)
+  active                Boolean        @default(true)
+  robotsStatus          String?
+  etag                  String?
+  lastModified          String?
+  lastContentHash       String?
+  lastCheckedAt         DateTime?
+  lastSuccessAt         DateTime?
+  lastError             String?
+  discoveredCount       Int            @default(0)
+  failureCount          Int            @default(0)
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  checks    SourceCheck[]
+  documents Document[]
+  notices   RecruitmentNotice[]
+  errors    PipelineError[]
+
+  @@index([organizationId])
+  @@index([active, priority])
+  @@map("sources")
+}
+
+model SourceCheck {
+  id            String       @id @default(cuid())
+  sourceId      String
+  source        Source       @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  pipelineRunId String?
+  pipelineRun   PipelineRun? @relation(fields: [pipelineRunId], references: [id])
+  startedAt     DateTime     @default(now())
+  finishedAt    DateTime?
+  ok            Boolean      @default(false)
+  httpStatus    Int?
+  changed       Boolean      @default(false)
+  itemsFound    Int          @default(0)
+  newItems      Int          @default(0)
+  error         String?
+
+  @@index([sourceId, startedAt])
+  @@index([pipelineRunId])
+  @@map("source_checks")
+}
+
+model PipelineRun {
+  id             String            @id @default(cuid())
+  trigger        PipelineTrigger   @default(MANUAL)
+  status         PipelineRunStatus @default(RUNNING)
+  startedAt      DateTime          @default(now())
+  finishedAt     DateTime?
+  sourcesChecked Int               @default(0)
+  pagesScanned   Int               @default(0)
+  newDocuments   Int               @default(0)
+  newNotices     Int               @default(0)
+  updatedNotices Int               @default(0)
+  duplicates     Int               @default(0)
+  needsReview    Int               @default(0)
+  autoPublished  Int               @default(0)
+  failures       Int               @default(0)
+  log            Json?
+
+  checks SourceCheck[]
+  errors PipelineError[]
+
+  @@index([startedAt])
+  @@map("pipeline_runs")
+}
+
+/// Dead-letter queue: anything that fails lands here with an exponential
+/// retry schedule instead of crashing the run.
+model PipelineError {
+  id            String             @id @default(cuid())
+  pipelineRunId String?
+  pipelineRun   PipelineRun?       @relation(fields: [pipelineRunId], references: [id])
+  sourceId      String?
+  source        Source?            @relation(fields: [sourceId], references: [id])
+  documentId    String?
+  document      Document?          @relation(fields: [documentId], references: [id])
+  noticeId      String?
+  notice        RecruitmentNotice? @relation(fields: [noticeId], references: [id])
+  errorType     PipelineErrorType  @default(UNKNOWN)
+  message       String
+  payload       Json?
+  retryCount    Int                @default(0)
+  lastAttemptAt DateTime           @default(now())
+  nextRetryAt   DateTime?
+  resolvedAt    DateTime?
+
+  @@index([resolvedAt, nextRetryAt])
+  @@index([sourceId])
+  @@map("pipeline_errors")
+}
+
+/// Every distinct version of a fetched document. A changed hash never
+/// overwrites — it adds a version, and `diff` drives UPDATE notices.
+model DocumentVersion {
+  id            String   @id @default(cuid())
+  documentId    String
+  document      Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  versionNumber Int
+  checksum      String
+  storageUrl    String
+  extractedText String?
+  pageCount     Int?
+  ocrUsed       Boolean  @default(false)
+  fetchedAt     DateTime @default(now())
+  diff          Json?
+
+  notices RecruitmentNotice[]
+
+  @@unique([documentId, versionNumber])
+  @@index([checksum])
+  @@map("document_versions")
+}
+
+/// One government notice — the spec's universal "Notification", named
+/// RecruitmentNotice so it never collides with the outbound-alert
+/// `Notification` model. `extracted` holds structured JSON with per-field
+/// provenance; `publishedContentType/Id` point at the Job/Result/
+/// AdmitCard/AnswerKey row created when it was published.
+model RecruitmentNotice {
+  id                   String         @id @default(cuid())
+  noticeType           NoticeType     @default(OTHER)
+  status               NoticeStatus   @default(NEW)
+  priority             NoticePriority @default(NORMAL)
+  title                String
+  titleHi              String?
+  summary              String?
+  summaryHi            String?
+  slug                 String?        @unique
+  sourceUrl            String?
+  canonicalUrl         String?
+  sourceDomain         String?
+  sourcePublishedAt    DateTime?
+  extracted            Json?
+  overallConfidence    Float?
+  fieldConfidence      Json?
+  validationErrors     Json?
+  changeSummary        Json?
+  publishedAt          DateTime?
+  publishedContentType String?
+  publishedContentId   String?
+  reviewedBy           String?
+  reviewedAt           DateTime?
+  reviewNote           String?
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+
+  recruitmentId     String?
+  recruitment       Recruitment?        @relation(fields: [recruitmentId], references: [id])
+  organizationId    String?
+  organization      Organization?       @relation(fields: [organizationId], references: [id])
+  examId            String?
+  exam              Exam?               @relation(fields: [examId], references: [id])
+  sourceId          String?
+  source            Source?             @relation(fields: [sourceId], references: [id])
+  documentId        String?
+  document          Document?           @relation(fields: [documentId], references: [id])
+  documentVersionId String?
+  documentVersion   DocumentVersion?    @relation(fields: [documentVersionId], references: [id])
+  duplicateOfId     String?
+  duplicateOf       RecruitmentNotice?  @relation("NoticeDuplicates", fields: [duplicateOfId], references: [id])
+  duplicates        RecruitmentNotice[] @relation("NoticeDuplicates")
+
+  alerts Notification[]
+  errors PipelineError[]
+
+  @@index([status])
+  @@index([noticeType])
+  @@index([recruitmentId])
+  @@index([organizationId])
+  @@index([sourceUrl])
+  @@index([canonicalUrl])
+  @@index([createdAt])
+  @@map("recruitment_notices")
 }

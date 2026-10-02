@@ -913,6 +913,49 @@ orange stretch of the animated button background. A `drop-shadow`
 helps; switching `.cta-button > span` to white text is a one-line
 change if preferred.
 
+## Automation pipeline — Phase 1: Schema ✅
+
+See `AUTOMATION_ASSESSMENT.md` for the inspection (A–H) that preceded
+this. Migration `20261002143901_automation_pipeline_core`:
+
+- **`Recruitment` is now the central object** (Organization → Recruitment
+  → notices), with `RecruitmentCategory` as a many-to-many so a drive can
+  be Police + State Government + 10+2 at once. `Job`, `Result`,
+  `AdmitCard`, `AnswerKey` gained an optional `recruitmentId`.
+- **`RecruitmentNotice`** — one government notice (JOB / ADMIT_CARD /
+  EXAM_DATE / ANSWER_KEY / RESULT / MERIT_LIST / SELECTION_LIST /
+  INTERVIEW / DOCUMENT_VERIFICATION / CORRIGENDUM / DEADLINE_EXTENSION /
+  EXAM_POSTPONED / EXAM_CANCELLED / OTHER) with status, priority,
+  source/canonical URL, structured `extracted` JSON, per-field
+  confidence, validation errors, change summary, duplicate-of link, and
+  a pointer to the content row it publishes to. Named this rather than
+  "Notification" so the Phase 16 outbound-alert model keeps its name.
+- **Entity resolution tables**: `OrganizationAlias`, `ExamAlias`
+  (`normalized` = lowercase alphanumerics, unique). `Organization` gained
+  `shortName`, `organizationType`, `state`, `parent`, `isAutoCreated`;
+  `Category`/`Exam` gained `isAutoCreated`.
+- **Pipeline tables**: `Source` (type, priority, check frequency,
+  ETag/Last-Modified/content-hash for cheap re-checks, health counters),
+  `SourceCheck`, `PipelineRun` (per-run counters), `PipelineError`
+  (dead-letter queue with `retryCount`/`nextRetryAt`),
+  `DocumentVersion` (a changed hash adds a version, never overwrites).
+- `Document` gained pipeline provenance (`sourceId`, `mimeType`,
+  `fileSize`, `pageCount`, `extractedText`, `ocrUsed`); `uploadedBy` is
+  now optional for pipeline-fetched files. `AuditLog.adminUserId` is
+  optional with a new `actor` column (`recordAuditLog` defaults it to
+  `"admin"` or `"pipeline"`), so "Approved by: AUTO" is a real row.
+  `Notification` (alerts) gained `priority` and a `recruitmentNoticeId`.
+- **Backfill in the same migration, idempotent**: one `Recruitment` per
+  existing `Exam` (carrying its dates/status), existing Jobs/Results/
+  AdmitCards/AnswerKeys pointed at it, the exam's category as the
+  primary `RecruitmentCategory`, and one alias per existing
+  organization/exam name. Verified on the dev DB: 2 exams → 2
+  recruitments, 2/2 jobs linked, aliases and categories populated.
+  Nothing existing was altered or duplicated; every manual admin form
+  still works unchanged.
+
+`typecheck`, `lint`, `test` pass.
+
 ## Known follow-ups / decisions to revisit
 
 - `prisma@8` will move out of RC eventually — re-run `npm audit` and
