@@ -14,7 +14,8 @@
     "db:migrate:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "seed:admin": "tsx --env-file-if-exists=.env prisma/seedAdmin.ts",
-    "seed:content": "tsx --env-file-if-exists=.env prisma/seedContent.ts"
+    "seed:content": "tsx --env-file-if-exists=.env prisma/seedContent.ts",
+    "seed:sources": "tsx --env-file-if-exists=.env prisma/seedSources.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1142.0",

@@ -956,6 +956,40 @@ this. Migration `20261002143901_automation_pipeline_core`:
 
 `typecheck`, `lint`, `test` pass.
 
+## Automation pipeline — Phase 2: Source management ✅
+
+- `src/lib/validation/source.ts` — Zod schema for a watched source
+  (name, listing URL, optional organization, official domain derived
+  from the URL when blank, type HTML/PDF/RSS/API/SITEMAP/JSON/XML,
+  priority HIGH/NORMAL/LOW with spec-default intervals 30 / 360 / 1440
+  min, custom `checkFrequencyMinutes` 5–10080, parser hint, active).
+- `src/lib/services/sources.ts` — CRUD with audit logging, plus
+  `sourceHealth()` derived (never stored) from the check timestamps:
+  `never` / `healthy` / `stale` (no success within 3 intervals) /
+  `failing` (last check errored). Deleting a source detaches its
+  documents/notices/errors rather than cascading them away.
+- Admin UI at `/admin/automation/sources` (list with health badge, last
+  checked/success, discovered + failure counters, enable/disable/delete
+  per row), `/new` and `/[id]/edit` (form + the last 10 `SourceCheck`
+  rows). Gated to `SUPER_ADMIN`/`EDITOR` on both the page and the Server
+  Action (spec §31). Sidebar link added.
+- `npm run seed:sources` — an **optional** starter list of five official
+  national boards (SSC, UPSC, IBPS, RRB Chandigarh, UPPRPB). Pure data,
+  upserted by URL, meant to be verified with "Check now" (Phase 3) and
+  edited freely — the pipeline is not limited to these.
+- "Check now" / "Test source" buttons land with the fetcher in Phase 3
+  so they call real code rather than a stub.
+
+Verified live (Playwright, after a dev-server restart — the running
+process still had the pre-migration Prisma client, which made the
+login's audit-log write fail with a 401 until restarted; same gotcha as
+Phase 17): sidebar link present; 5 seeded rows with health `never`;
+creating a source redirects to its edit page with "Saved." and the
+domain derived from the URL; a duplicate listing URL returns an inline
+error (checked by Prisma code `P2002`); disable flips the row to
+"disabled"/"Enable"; delete removes it and shows the banner.
+`typecheck` and `lint` pass.
+
 ## Known follow-ups / decisions to revisit
 
 - `prisma@8` will move out of RC eventually — re-run `npm audit` and

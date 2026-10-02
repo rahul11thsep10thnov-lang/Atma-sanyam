@@ -29,6 +29,7 @@ const NAV_SECTIONS: Array<{
   { label: "Categories" },
   { label: "States" },
   { label: "Documents", href: "/admin/documents" },
+  { label: "Sources", href: "/admin/automation/sources", roles: ["SUPER_ADMIN", "EDITOR"] },
   { label: "Notifications", href: "/admin/notifications" },
   { label: "Analytics", href: "/admin/analytics" },
   { label: "Users", roles: ["SUPER_ADMIN"] },
