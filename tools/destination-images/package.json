@@ -1,0 +1,20 @@
+{
+  "name": "trip-toe-destination-images",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Trip-Toe: turns a list of Indian destinations into photorealistic aerial image-generation packages (prompts, filenames, SEO text, QC).",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "plan": "node bin/cli.mjs plan",
+    "generate": "node bin/cli.mjs generate",
+    "render": "node bin/cli.mjs render",
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
+    "zod": "^4.6.5"
+  }
+}
