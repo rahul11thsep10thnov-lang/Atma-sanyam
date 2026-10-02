@@ -141,6 +141,12 @@
           "resizeMode": "contain",
           "backgroundColor": "#FFF3E8"
         }
+      ],
+      [
+        "expo-sensors",
+        {
+          "motionPermission": "FOCUS uses gentle device motion to give your balcony a sense of depth. Nothing is recorded."
+        }
       ]
     ],
     "extra": {

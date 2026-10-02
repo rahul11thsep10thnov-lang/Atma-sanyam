@@ -38,7 +38,7 @@ export function HomeScreen() {
   const { features } = config;
   const [duration, setDuration] = useState(30);
 
-  const [sourceKind, setSourceKind] = useState<SourceKind>('art');
+  const [sourceKind, setSourceKind] = useState<SourceKind>('balcony');
   const [selectedArtId, setSelectedArtId] = useState(ART_PACK[0].id);
   const [selectedQuote, setSelectedQuote] = useState<Quote>(QUOTES[0]);
   const [customUri, setCustomUri] = useState<string | null>(null);
@@ -107,6 +107,7 @@ export function HomeScreen() {
       : sourceKind;
 
   const resolveImage = (): ImageRef | null => {
+    if (effectiveKind === 'balcony') return { kind: 'balcony' };
     if (effectiveKind === 'art') return ART_PACK.find((a) => a.id === selectedArtId) ?? ART_PACK[0];
     if (effectiveKind === 'quote') return { kind: 'quote', quote: selectedQuote, ...paletteForQuote(selectedQuote.id) };
     if (effectiveKind === 'remote') return remoteImage;
@@ -153,6 +154,7 @@ export function HomeScreen() {
           quoteBackground={quotePalette.background}
           quoteTextColor={quotePalette.textColor}
           features={features}
+          onPickBalcony={() => setSourceKind('balcony')}
           onPickArt={(id) => {
             setSourceKind('art');
             setSelectedArtId(id);

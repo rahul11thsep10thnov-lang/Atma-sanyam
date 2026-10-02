@@ -2,7 +2,7 @@
 // that hovers above the content; the active item scales up a touch and gets
 // a small accent dot. Used through the Tab.Navigator `tabBar` prop.
 import React, { useEffect, useRef } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import { Animated, StyleSheet, View, ViewStyle } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from './AppText';
@@ -54,6 +54,10 @@ function TabItem({ spec, focused, onPress, onLongPress }: { spec: TabSpec; focus
 export function FloatingTabBar({ state, descriptors, navigation, specs }: BottomTabBarProps & { specs: Record<string, TabSpec> }) {
   const { colors, shadow } = useTheme();
   const insets = useSafeAreaInsets();
+  // A screen can step out of the way of its own content (the balcony hides
+  // every control for a clean look) with tabBarStyle: { display: 'none' }.
+  const focusedStyle = descriptors[state.routes[state.index].key]?.options.tabBarStyle as ViewStyle | undefined;
+  if (focusedStyle?.display === 'none') return null;
   return (
     <View pointerEvents="box-none" style={[styles.wrap, { paddingBottom: Math.max(insets.bottom, TAB_BAR_MARGIN) }]}>
       <View style={[styles.bar, { backgroundColor: colors.navSurface, borderColor: colors.border }, shadow.level3]}>

@@ -3,6 +3,10 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 import { ImageRef } from '../types';
 import { colors } from '../theme/colors';
 
+// A still photograph of the balcony for history thumbnails (re-rendered with
+// the pack; see tools/balcony-render).
+const BALCONY_PREVIEW = require('../../assets/balcony/environment/preview.webp');
+
 interface PuzzleContentProps {
   image: ImageRef;
   width: number;
@@ -23,6 +27,7 @@ export function PuzzleContent({ image, width, height }: PuzzleContentProps) {
     );
   }
 
+  if (image.kind === 'balcony') return <Image source={BALCONY_PREVIEW} style={{ width, height: h }} resizeMode="cover" />;
   const source = image.kind === 'art' ? image.uri : { uri: image.uri };
   return <Image source={source} style={{ width, height: h }} resizeMode="cover" />;
 }

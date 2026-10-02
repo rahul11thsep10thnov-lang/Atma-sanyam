@@ -9,8 +9,9 @@ import { radii } from '../../theme/radii';
 import { space } from '../../theme/spacing';
 import { useTheme } from '../../theme/ThemeContext';
 import { ART_PACK } from '../../data/artPacks';
+import { BalconyPreview } from '../../photoBalcony/ui/BalconyPreview';
 
-export type SourceKind = 'art' | 'quote' | 'custom' | 'remote';
+export type SourceKind = 'balcony' | 'art' | 'quote' | 'custom' | 'remote';
 
 interface Props {
   kind: SourceKind;
@@ -20,6 +21,7 @@ interface Props {
   quoteBackground: string;
   quoteTextColor: string;
   features: { quoteTiles: boolean; customPhotos: boolean; contentLibrary: boolean };
+  onPickBalcony: () => void;
   onPickArt: (id: string) => void;
   onPickQuote: () => void;
   onPickCustom: () => void;
@@ -76,6 +78,9 @@ export function PuzzlePicker(p: Props) {
         TODAY'S PICTURE
       </AppText>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.strip} style={styles.stripWrap}>
+        <Tile selected={p.kind === 'balcony'} onPress={p.onPickBalcony} label="My balcony" hint="Focus on your balcony; its plant grows while you focus">
+          <BalconyPreview width={TILE} height={TILE} focus={[0.62, 0.68]} />
+        </Tile>
         {ART_PACK.map((art) => (
           <Tile key={art.id} selected={p.kind === 'art' && art.id === p.selectedArtId} onPress={() => p.onPickArt(art.id)} label={`${art.id} artwork`}>
             <Image source={art.uri} style={styles.image} />
