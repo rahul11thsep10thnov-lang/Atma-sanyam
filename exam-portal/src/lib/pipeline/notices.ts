@@ -6,6 +6,7 @@ import { recordPipelineError } from "./errors";
 import { extractNotice, validateExtraction, decideStatus, type ExtractedNotice, type ProvenanceMap } from "./extract";
 import type { IngestResult } from "./ingest";
 import { resolveEntities, type ResolutionResult } from "./resolve";
+import { canonicalizeUrl, findDuplicate } from "./dedup";
 
 /**
  * Turns an ingested document (or a new version of one) into a
@@ -27,6 +28,7 @@ export interface NoticeResult {
   noticeType: NoticeType;
   created: boolean;
   overallConfidence: number;
+  duplicateOfId?: string | null;
 }
 
 const OFFICIAL_TLDS = [".gov.in", ".nic.in", ".gov", ".ac.in", ".edu.in", ".res.in"];
@@ -103,7 +105,7 @@ function noticeTitle(extracted: ExtractedNotice, fallback: string): string {
 export async function createNoticeFromIngest(ingested: IngestResult, ctx: NoticeContext = {}): Promise<NoticeResult | null> {
   const document = await prisma.document.findUnique({
     where: { id: ingested.documentId },
-    include: { source: { select: { id: true, officialDomain: true, organizationId: true } } },
+    select: { id: true, sourceId: true, sourceUrl: true, filename: true, checksum: true, sourcePublishedAt: true, source: { select: { id: true, officialDomain: true, organizationId: true } } },
   });
   if (!document) return null;
   const sourceId = ctx.sourceId ?? document.sourceId ?? null;
@@ -174,7 +176,7 @@ export async function createNoticeFromIngest(ingested: IngestResult, ctx: Notice
     title: noticeTitle(extracted, ingested.title),
     summary: extracted.data.summary,
     sourceUrl: document.sourceUrl,
-    canonicalUrl: extracted.data.official_notification_url ?? document.sourceUrl,
+    canonicalUrl: canonicalizeUrl(extracted.data.official_notification_url ?? document.sourceUrl),
     sourceDomain,
     sourcePublishedAt: document.sourcePublishedAt,
     extracted: extracted.data as unknown as Prisma.InputJsonValue,
@@ -200,7 +202,8 @@ export async function createNoticeFromIngest(ingested: IngestResult, ctx: Notice
     // A document that changed after its notice was approved/published must
     // be looked at again; one that was still unreviewed just gets re-scored.
     const settled: NoticeStatus[] = ["APPROVED", "AUTO_APPROVED", "PUBLISHED"];
-    const status: NoticeStatus = settled.includes(existing.status) ? "NEEDS_REVIEW" : existing.status === "REJECTED" ? "REJECTED" : decided;
+    const keep: NoticeStatus[] = ["REJECTED", "DUPLICATE"];
+    const status: NoticeStatus = settled.includes(existing.status) ? "NEEDS_REVIEW" : keep.includes(existing.status) ? existing.status : decided;
     const changeSummary: Prisma.InputJsonValue = {
       versionNumber: ingested.versionNumber,
       changedAt: new Date().toISOString(),
@@ -215,10 +218,48 @@ export async function createNoticeFromIngest(ingested: IngestResult, ctx: Notice
     return { noticeId: existing.id, status, noticeType: extracted.data.notice_type, created: false, overallConfidence: extracted.overallConfidence };
   }
 
+  // Phase 6: the same notice through another door becomes a DUPLICATE row
+  // pointing at the canonical one (kept, so the admin can undo a wrong call).
+  let duplicate: Awaited<ReturnType<typeof findDuplicate>> = null;
+  try {
+    duplicate = await findDuplicate({
+      documentId: document.id,
+      documentChecksum: document.checksum,
+      canonicalUrl: common.canonicalUrl,
+      sourceUrl: document.sourceUrl,
+      organizationId: common.organizationId,
+      recruitmentId: common.recruitmentId,
+      noticeType: extracted.data.notice_type,
+      title: common.title,
+      advertisementNumber: extracted.data.advertisement_number,
+      applicationEndDate: extracted.data.application_end_date,
+      examDate: extracted.data.exam_date,
+    });
+  } catch (err) {
+    await recordPipelineError({
+      errorType: "VALIDATION",
+      message: `${document.sourceUrl ?? document.filename}: duplicate check failed: ${err instanceof Error ? err.message : String(err)}`,
+      sourceId,
+      documentId: document.id,
+      pipelineRunId: ctx.pipelineRunId ?? null,
+    });
+  }
+  const status: NoticeStatus = duplicate ? "DUPLICATE" : decided;
   const created = await prisma.recruitmentNotice.create({
-    data: { ...common, status: decided },
+    data: {
+      ...common,
+      status,
+      duplicateOfId: duplicate?.duplicateOfId ?? null,
+      ...(duplicate ? { changeSummary: { duplicate: { of: duplicate.duplicateOfId, reason: duplicate.reason, score: duplicate.score } } } : {}),
+    },
     select: { id: true },
   });
-  await recordAuditLog({ actor: PIPELINE_ACTOR, action: "CREATE", contentType: "RecruitmentNotice", contentId: created.id, newValue: { status: decided, noticeType: extracted.data.notice_type, overallConfidence: extracted.overallConfidence, extractors: extracted.extractors } });
-  return { noticeId: created.id, status: decided, noticeType: extracted.data.notice_type, created: true, overallConfidence: extracted.overallConfidence };
+  await recordAuditLog({
+    actor: PIPELINE_ACTOR,
+    action: "CREATE",
+    contentType: "RecruitmentNotice",
+    contentId: created.id,
+    newValue: { status, noticeType: extracted.data.notice_type, overallConfidence: extracted.overallConfidence, extractors: extracted.extractors, ...(duplicate ? { duplicateOf: duplicate.duplicateOfId, reason: duplicate.reason } : {}) },
+  });
+  return { noticeId: created.id, status, noticeType: extracted.data.notice_type, created: true, overallConfidence: extracted.overallConfidence, duplicateOfId: duplicate?.duplicateOfId ?? null };
 }

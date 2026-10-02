@@ -34,6 +34,11 @@ describe.skipIf(!HAS_DB)("checkSource (loopback integration)", () => {
             <li><a href="/about">About the Board</a></li>
             <li><a href="/secret/hidden.pdf">Hidden</a></li>
           </ul><!-- listing v${listingVersion} --></body></html>`);
+      } else if (req.url === "/mirror") {
+        res.writeHead(200, { "content-type": "text/html" }).end(`<html><body><ul>
+            <li><a href="/mirror/constable-2027-copy.pdf">Constable Recruitment 2027 Notification (mirror)</a></li></ul></body></html>`);
+      } else if (req.url === "/mirror/constable-2027-copy.pdf") {
+        res.writeHead(200, { "content-type": "application/pdf" }).end(buildMinimalPdf(noticeLines));
       } else if (req.url === "/files/constable-2027.pdf") {
         res.writeHead(200, { "content-type": "application/pdf" }).end(buildMinimalPdf(noticeLines));
       } else if (req.url === "/files/admit.pdf") {
@@ -180,6 +185,35 @@ describe.skipIf(!HAS_DB)("checkSource (loopback integration)", () => {
     // …and the recruitment's deadline followed the change, on the same row.
     expect(await prisma.recruitment.count({ where: { id: updated.recruitmentId! } })).toBe(1);
     expect((await prisma.recruitment.findUniqueOrThrow({ where: { id: updated.recruitmentId! } })).applicationEndDate?.toISOString().slice(0, 10)).toBe("2027-01-20");
+  });
+
+  it("marks the same PDF reached through a mirror page as a DUPLICATE of the original notice (Phase 6)", async () => {
+    const { checkSource } = await import("./sourceCheck");
+    const { prisma } = await import("@/lib/db/prisma");
+    const mirror = await prisma.source.create({ data: { name: "Loopback mirror", listingUrl: `${base}/mirror`, officialDomain: "127.0.0.1", sourceType: "HTML" } });
+    try {
+      const result = await checkSource(mirror.id, { fetchOptions: noWait });
+      expect(result.ok).toBe(true);
+      expect(result.newItems).toBe(1);
+      expect(result.notices).toHaveLength(1);
+      const original = await prisma.recruitmentNotice.findFirstOrThrow({ where: { sourceId, document: { filename: "constable-2027.pdf" } } });
+      expect(result.notices[0].status).toBe("DUPLICATE");
+      expect(result.notices[0].duplicateOfId).toBe(original.id);
+      const dup = await prisma.recruitmentNotice.findUniqueOrThrow({ where: { id: result.notices[0].noticeId } });
+      expect(dup.duplicateOfId).toBe(original.id);
+      expect((dup.changeSummary as { duplicate: { reason: string } }).duplicate.reason).toBe("checksum");
+      expect(dup.recruitmentId).toBe(original.recruitmentId); // still linked, so merging later is trivial
+      // The canonical notice is untouched and still the only non-duplicate for that recruitment+type.
+      expect(await prisma.recruitmentNotice.count({ where: { recruitmentId: original.recruitmentId, noticeType: "JOB", status: { not: "DUPLICATE" } } })).toBe(1);
+    } finally {
+      const docs = await prisma.document.findMany({ where: { sourceId: mirror.id }, select: { id: true } });
+      await prisma.pipelineError.deleteMany({ where: { OR: [{ sourceId: mirror.id }, { documentId: { in: docs.map((d) => d.id) } }] } });
+      const ns = await prisma.recruitmentNotice.findMany({ where: { sourceId: mirror.id }, select: { id: true } });
+      await prisma.auditLog.deleteMany({ where: { contentType: "RecruitmentNotice", contentId: { in: ns.map((n) => n.id) } } });
+      await prisma.recruitmentNotice.deleteMany({ where: { sourceId: mirror.id } });
+      await prisma.document.deleteMany({ where: { sourceId: mirror.id } });
+      await prisma.source.delete({ where: { id: mirror.id } });
+    }
   });
 
   it("dry-run lists candidates without storing anything", async () => {

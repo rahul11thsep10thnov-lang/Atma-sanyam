@@ -1223,6 +1223,51 @@ link to *Uttar Pradesh Police Recruitment and Promotion Board*
 *Recruitment of Constable (Civil Police)* and the primary category
 `police`.
 
+## Automation pipeline — Phase 6: Deduplication ✅
+
+`src/lib/pipeline/dedup.ts` — the same notice reaching us through several
+doors (official PDF, a mirror of it on another page, a feed item, a
+"what's new" link) becomes ONE canonical notice plus `DUPLICATE` rows
+that point at it, never two published entries.
+
+- `canonicalizeUrl()` — scheme-less, `www.`-less, lower-cased host,
+  tracking parameters (`utm_*`, `fbclid`, `gclid`, session ids…) removed,
+  remaining query sorted, fragment and trailing slash dropped. Stored in
+  `RecruitmentNotice.canonicalUrl` (official notification URL when the
+  extractor found one, else the document URL) so equality is an indexed
+  lookup.
+- `findDuplicate()` — in order of certainty: same canonical/raw URL →
+  same file bytes (`Document.checksum`) under a different URL → same
+  advertisement number for the same organization **and notice type**
+  (an admit card legitimately shares the advertisement number with its
+  job notice) → near-identical title (≥ 0.9) for the same organization/
+  recruitment and type within a year, only when the application-end and
+  exam dates agree (the same title with a different closing date is a
+  new round, not a duplicate). A notice is never a duplicate of itself,
+  and the target is always the canonical row, never another duplicate.
+- `createNoticeFromIngest()` runs the check on creation: a match is
+  stored with `status = DUPLICATE`, `duplicateOfId`, and the reason/score
+  in `changeSummary.duplicate`, still linked to the same organization/
+  recruitment so a later merge is trivial and an admin can undo a wrong
+  call. Re-extraction of a changed document keeps `DUPLICATE`/`REJECTED`
+  statuses. A failing duplicate check is a `VALIDATION` pipeline error,
+  never a lost notice.
+
+Tests (`npm run test`, 89 passing): `dedup.test.ts` (URL canonical
+form), `dedup.integration.test.ts` (real DB: URL with tracking noise,
+same bytes/different URL, advertisement number only for same org + type,
+title match only with agreeing dates, never self / never another
+duplicate), and the loopback source-check test now adds a **mirror
+page** serving the same PDF under a different URL: the second source's
+check yields one new document whose notice is `DUPLICATE` of the
+original job notice (reason `checksum`), linked to the same recruitment,
+leaving exactly one non-duplicate JOB notice for that recruitment.
+
+Live (admin UI): created a second source pointing at the fixture's
+`/mirror` listing → Check now ingested 1 document → its notice is
+`DUPLICATE` of the original (`reason = checksum`, same recruitment);
+the original stays `NEEDS_REVIEW`.
+
 ## Known follow-ups / decisions to revisit
 
 - `prisma@8` will move out of RC eventually — re-run `npm audit` and
