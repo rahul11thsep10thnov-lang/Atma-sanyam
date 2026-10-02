@@ -130,8 +130,10 @@ export async function runPipeline(options: RunOptions = {}): Promise<RunSummary>
 
     // Retry failed items whose backoff has elapsed (spec §19 "retry failed").
     const checkedIds = new Set(sources.map((s) => s.id));
+    // A run restricted to specific sources only retries their own items.
+    const scope = options.sourceIds?.length ? { sourceId: { in: options.sourceIds } } : {};
     const retryable = await prisma.pipelineError.findMany({
-      where: { resolvedAt: null, nextRetryAt: { lte: now }, retryCount: { lt: options.maxRetries ?? MAX_ERROR_RETRIES } },
+      where: { resolvedAt: null, nextRetryAt: { lte: now }, retryCount: { lt: options.maxRetries ?? MAX_ERROR_RETRIES }, ...scope },
       orderBy: { nextRetryAt: "asc" },
       take: 25,
     });

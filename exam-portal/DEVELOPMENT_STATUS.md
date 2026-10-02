@@ -1331,6 +1331,103 @@ FETCH errors, exactly as designed); `POST` with the secret and
 `{sourceIds:[loopback], force:true}` → 1 source, 0 new; `npm run
 pipeline:run` completed a pass from the command line.
 
+## Automation pipeline — Phase 8: Admin automation dashboard ✅
+
+The admin is now automation-first (spec §18). Sidebar groups: **Automation**
+(Overview, Inbox, Review queue, Pipeline runs, Failed items, Duplicates,
+Sources) → **Catalogue** (Organizations, Categories, Exams, Recruitments) →
+**Content** (Jobs … Documents) → **System**. The old dashboard links into
+the automation counts.
+
+- `/admin/automation` — counts (inbox, needs review, ready to publish,
+  published, duplicates, failed items, sources failing), last-run summary,
+  **Run pipeline now**, **Pause / Resume schedule** (the `pipeline.paused`
+  switch; manual runs still work while paused), and the notices waiting.
+- `/admin/automation/inbox` — status tabs with counts (Inbox = new + needs
+  review + auto-approved + approved, New, Needs review, Auto-approved,
+  Approved, Published, Rejected, Duplicate, All), type filter, search
+  (title / organization / recruitment / URL), priority + type + status
+  badges, confidence bar, "new" flag on an auto-created organization,
+  validation-issue count, inline **Approve / Publish / Reject**.
+  `/admin/automation/review` is the same table fixed to NEEDS_REVIEW.
+- `/admin/automation/inbox/[id]` — the review screen: every extracted
+  field with its value, **confidence, extractor, verified/UNVERIFIED,
+  page number and the source line it came from**; validation warnings;
+  how each organization/exam/recruitment link was made (alias / exact /
+  fuzzy / same-source / created); the stored document with its versions
+  and line diffs; duplicates pointing here; unresolved errors. Actions:
+  Approve, Publish, Reject (with reason), Re-open, Mark duplicate of
+  `<id>` (optionally **merge** its missing fields into the original),
+  Re-extract. An edit form (title EN/HI, type, priority, exam,
+  recruitment, advertisement number, vacancies, every date, fee, salary,
+  URLs, summary EN/HI) saves human corrections as `extractor: "admin"`,
+  verified, confidence 1.0.
+- `/admin/automation/pipeline` — every run with trigger, status,
+  duration and counters, expandable per-source/retry log; Run now, Run
+  all sources (force), Pause/Resume.
+- `/admin/automation/failed` — unresolved errors with type, what failed
+  (source / document / notice links), message, attempts, next retry;
+  **Retry now** (ignores backoff; re-extracts from the stored document or
+  re-checks the source) and **Resolve**.
+- `/admin/automation/duplicates` — each duplicate with its reason/score
+  and the original; **Not a duplicate** sends it back to review.
+- `/admin/organizations` (+ edit): search by name/short name/alias,
+  auto-created flag, counts; edit name/short name/type/state/website
+  (saving confirms an auto-created organization), alias add/remove, and
+  **Merge into another organization** (moves exams, recruitments,
+  notices, jobs, sources, documents, aliases; the merged name becomes an
+  alias; one transaction). `/admin/categories`: list, add, rename.
+  `/admin/recruitments`: the central object with status, organization,
+  categories, dates, attached counts, public URL, Publish/Archive.
+- `src/lib/pipeline/publish.ts` — **publishNotice()**: the recruitment
+  (and a DRAFT auto-created exam) go PUBLISHED; a JOB becomes a published
+  `Job` (vacancies, advertisement no., fee, ages, qualification, salary,
+  apply/notification URLs, closing date, selection process, the stored
+  notification document) with a NEW_JOB notification; ADMIT_CARD →
+  `AdmitCard`; ANSWER_KEY → `AnswerKey`; RESULT/MERIT_LIST/SELECTION_LIST
+  → `Result`; DEADLINE_EXTENSION/CORRIGENDUM **update the recruitment's
+  existing job** (closing date, vacancies) with a DEADLINE_UPDATE
+  notification instead of creating a second job; other types publish the
+  recruitment timeline only. Refuses duplicates, rejected notices and
+  notices without a recruitment (or exam where a content row needs one)
+  with a readable `PublishError` shown in the UI. Idempotent.
+- `src/lib/pipeline/review.ts` — list/filter/count, approve, reject,
+  re-open, update (admin corrections), mark duplicate (always points at
+  the root), merge, re-extract, failed-item retry/resolve, duplicate
+  groups; every action audited with the admin id. Roles: REVIEWER can
+  approve/reject/edit, SUPER_ADMIN/EDITOR can also publish, re-extract,
+  run/pause the pipeline, retry/resolve errors; AUTHOR is read-only.
+- `src/lib/services/catalogue.ts` — organization edit/alias/merge,
+  category create/rename, recruitment list/status. Notification and
+  audit services now use the unguarded Prisma client so the pipeline can
+  publish/notify from the worker too.
+
+Tests (`npm run test`, 98 passing): `publish.integration.test.ts` —
+JOB → published Job with the right fields, recruitment + auto-created
+exam published, notice marked PUBLISHED with content pointer, idempotent
+re-publish; DEADLINE_EXTENSION updates the same job's closing date to
+2027-01-26 (one job, one DEADLINE_UPDATE notification); ADMIT_CARD →
+AdmitCard on the same recruitment with release/exam dates; duplicate,
+rejected and recruitment-less notices are refused.
+
+Live (Playwright, signed in as SUPER_ADMIN): every new page renders
+(overview, inbox, review, pipeline, failed, duplicates, organizations,
+categories, recruitments, notice detail with provenance "page 1 ·
+verified" and "matched by created"); edited the job notice's title
+(saved, shown), Approve → APPROVED, Publish → `Job:up-police-constable-
+civil-police-recruitment-2027`, and the **public job page** served it
+with title and 60244 vacancies; the admit card approved + published from
+the list → `AdmitCard:…`; "Not a duplicate" re-opened the mirror notice
+(NEEDS REVIEW) and "Mark duplicate" put it back; Retry now on a 403
+source reported failure honestly, Resolve removed a row (5 → 4); Pause
+showed the badge, Run now still completed (manual), Resume cleared it;
+organization short name saved (auto-created badge gone) and an alias
+added; a category added. No page errors or 5xx.
+
+Known UI follow-ups: the bug caught by the publish test — the fee parser
+read the "." in "Rs." as the amount — is fixed; the Next.js dev badge
+overlaps the bottom of the sidebar in development only.
+
 ## Known follow-ups / decisions to revisit
 
 - `prisma@8` will move out of RC eventually — re-run `npm audit` and

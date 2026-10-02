@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db/client";
+import { prisma } from "@/lib/db/prisma";
 import { getChannelDispatcher } from "@/lib/notifications/dispatcher";
 import type { NotificationChannel, NotificationType } from "@/generated/prisma/enums";
 
