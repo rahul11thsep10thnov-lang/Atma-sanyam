@@ -23,6 +23,9 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
+  // Node-only pipeline libraries (WASM/worker files, dynamic requires)
+  // are loaded from node_modules at runtime rather than bundled.
+  serverExternalPackages: ["pdfjs-dist", "tesseract.js", "cheerio"],
   // The repo root also has a lockfile (for the unrelated FOCUS app), which
   // makes Next.js guess the wrong workspace root. Pin it explicitly.
   turbopack: {

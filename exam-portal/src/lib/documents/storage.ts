@@ -1,4 +1,6 @@
-import "server-only";
+// No `server-only` marker here on purpose: the pipeline worker and tests
+// use this storage layer under plain Node, where the marker throws. It is
+// Node-only regardless (fs, AWS SDK) and is never imported by client code.
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";

@@ -990,6 +990,81 @@ error (checked by Prisma code `P2002`); disable flips the row to
 "disabled"/"Enable"; delete removes it and shows the banner.
 `typecheck` and `lint` pass.
 
+## Automation pipeline — Phase 3: Fetcher, parsers, change detection ✅
+
+`src/lib/pipeline/` — the ingestion engine, runnable both inside Next.js
+and under plain Node (worker, scripts, tests). To make that possible the
+Prisma client moved to `src/lib/db/prisma.ts` (unguarded) with
+`src/lib/db/client.ts` re-exporting it behind `server-only` for app code;
+`storage.ts`/`checksum.ts` dropped the marker for the same reason.
+
+- `http.ts` — `fetchUrl()`: truthful `User-Agent`, 20 s timeout, retries
+  with exponential backoff on network errors/429/5xx (never on 404), 25 MB
+  cap, conditional requests (`If-None-Match`/`If-Modified-Since` → 304
+  handled as not-modified), and a process-wide per-host minimum interval
+  so no site is hammered. `fetchImpl`/`sleep` injectable for tests.
+- `robots.ts` — robots.txt parsed per origin (cached 6 h), our token's
+  group over `*`, longest-match Allow/Disallow with `*`/`$`. Applied to
+  the listing **and to every document link** before fetching.
+- `parsers/html.ts` — candidate links = every PDF + any link whose
+  text/URL carries a recruitment keyword, scoped by an optional CSS hint
+  (`Source.parserType`), relative URLs resolved, duplicates dropped, a
+  date picked up from the surrounding row/list item (dd-mm-yyyy,
+  dd/mm/yyyy, "15 Jan 2027", ISO). `parsers/feed.ts` — RSS 2.0, Atom,
+  sitemap. `parsers/pdf.ts` — pdf.js text per page (page breaks kept for
+  provenance) + `looksScanned()`.
+- `ocr.ts` — `OcrEngine` interface; tesseract.js (eng+hin) behind
+  `OCR_ENABLED=true` for **image** notices. Scanned **PDFs** need a page
+  rasteriser this project doesn't ship, so they're recorded as an
+  `OCR`-type `PipelineError` ("needs rasteriser") rather than silently
+  treated as empty text.
+- `changeDetection.ts` — line-level diff + OLD→NEW pairing
+  ("Last date: 10-01-2027" → "20-01-2027"), and Dice bigram similarity
+  (reused by dedup in Phase 6).
+- `ingest.ts` — fetch → store original bytes untouched → extract text →
+  `Document` + `DocumentVersion`. Same hash = no-op; different hash =
+  new version with a diff, never an overwrite. Pipeline-fetched docs
+  have `uploadedBy = null` and a cheap keyword `documentType`.
+- `sourceCheck.ts` — robots → conditional fetch → content-hash check →
+  parse by source type (HTML/RSS/SITEMAP/PDF; API/JSON/XML record an
+  honest "parser not implemented" error instead of guessing) → ingest
+  unseen links (capped per check) → re-fetch known links only when the
+  listing changed → `SourceCheck` row + source counters. A per-source or
+  per-document failure becomes a retryable `PipelineError`
+  (15 min → 30 → 1 h … 24 h cap), never a crashed run. `dryRun` mode
+  parses without storing.
+- Admin: "Check now" (real, forces a full pass) and "Test source" (dry
+  run page listing candidates, HTTP status, robots status) on the source
+  edit page.
+
+Tests (`npm run test`, 63 passing): HTML/feed/sitemap parsing, Indian
+date formats, pdf.js extraction on a generated PDF + scanned detection,
+robots precedence/wildcards/fallback, diff pairing, fetch retry/304/
+conditional headers/size cap, and a **loopback integration test**
+(`sourceCheck.integration.test.ts`, skipped without `DATABASE_URL`) that
+runs a real HTTP server + the real DB through: first check ingests two
+PDFs with extracted text and correct types while a robots-blocked link
+is never requested; second check is a 304 no-op with no document
+re-fetches; a changed PDF yields version 2 with the exact
+`10-01-2027 → 20-01-2027` diff; dry run stores nothing; a dead listing
+produces a failing source + retryable error, not a crash.
+
+Live (Playwright against a loopback "UPPRPB" fixture, since real
+government sites are unreachable from this sandbox): created the source
+in the admin UI with a `table.notices` hint → Test source showed
+`ok / 200 / robots.txt applied / 2 candidates` (the "About" link
+filtered) → Check now ingested 2 docs (check row ok/200/changed/2/2) →
+second Check now found 0 new → Documents page listed both PDFs as JOB
+NOTIFICATION and ADMIT CARD → Sources list showed `healthy`, 2
+discovered. Build passes with `pdfjs-dist`/`tesseract.js`/`cheerio` as
+server externals.
+
+Bugs caught by the tests before any commit: pdf.js v6 has no
+`PDFDocumentProxy.destroy()` (every PDF ingest threw until switched to
+`loadingTask.destroy()`), and cheerio's `.text()` glues adjacent table
+cells ("12-01-2027Notification"), defeating the date regex's word
+boundary until element text was space-joined.
+
 ## Known follow-ups / decisions to revisit
 
 - `prisma@8` will move out of RC eventually — re-run `npm audit` and

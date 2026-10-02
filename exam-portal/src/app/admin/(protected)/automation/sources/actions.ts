@@ -10,6 +10,7 @@ import {
   setSourceActive,
   deleteSource,
 } from "@/lib/services/sources";
+import { recordAuditLog } from "@/lib/services/auditLog";
 
 export interface FormState {
   error?: string;
@@ -77,6 +78,25 @@ export async function toggleSourceActiveAction(formData: FormData) {
   await setSourceActive(id, active, admin.id);
   revalidatePath(LIST);
   redirect(`${LIST}?updated=${Date.now()}`);
+}
+
+/** "Check now": a real check (stores documents), bypassing ETag/hash
+ * short-circuits so the admin sees a full pass. */
+export async function checkSourceNowAction(formData: FormData) {
+  const admin = await requireAdminApi([...SOURCE_ADMIN_ROLES]);
+  const id = String(formData.get("id"));
+  const { checkSource } = await import("@/lib/pipeline/sourceCheck");
+  const result = await checkSource(id, { force: true });
+  await recordAuditLog({
+    adminUserId: admin.id,
+    action: "UPDATE",
+    contentType: "Source",
+    contentId: id,
+    newValue: { manualCheck: true, ok: result.ok, newItems: result.newItems, error: result.error },
+  });
+  revalidatePath(LIST);
+  revalidatePath(`${LIST}/${id}/edit`);
+  redirect(`${LIST}/${id}/edit?checked=${Date.now()}`);
 }
 
 export async function deleteSourceAction(formData: FormData) {

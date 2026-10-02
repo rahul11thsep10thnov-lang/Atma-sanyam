@@ -1,29 +1,16 @@
 import "server-only";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@/generated/prisma/client";
 
 /**
- * Centralized database access point.
+ * Centralized database access point for the Next.js app.
  *
- * Every server-side module that needs the database imports `prisma` from
- * here — never instantiate PrismaClient directly elsewhere, and never run
- * raw queries from inside a UI component or route handler body. This keeps
- * connection pooling correct in serverless/Next.js dev (hot reload would
- * otherwise open a new pool per reload) and gives us one place to add
- * middleware (e.g. audit-log hooks) later.
+ * Every Server Component / Server Action / route handler imports `prisma`
+ * from here — never instantiate PrismaClient directly elsewhere, and never
+ * run raw queries from inside a UI component. The `server-only` marker
+ * makes any accidental import from a Client Component a build error.
+ *
+ * Code that also runs outside Next's bundler (the pipeline worker,
+ * `prisma/*.ts` scripts, vitest) imports `./prisma` instead: the marker
+ * package throws unconditionally under plain Node, where there is no
+ * client/server distinction to guard.
  */
-
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-};
-
-function createPrismaClient() {
-  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
-  return new PrismaClient({ adapter });
-}
-
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
-
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
-}
+export { prisma } from "./prisma";

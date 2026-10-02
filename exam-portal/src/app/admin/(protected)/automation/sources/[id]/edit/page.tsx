@@ -6,7 +6,7 @@ import { getSourceForAdmin, sourceHealth } from "@/lib/services/sources";
 import { listOrganizations } from "@/lib/services/lookups";
 import { formatDate } from "@/lib/format";
 import { SourceForm } from "../../SourceForm";
-import { updateSourceAction } from "../../actions";
+import { updateSourceAction, checkSourceNowAction } from "../../actions";
 
 export const metadata: Metadata = { title: "Edit Source" };
 
@@ -15,11 +15,11 @@ export default async function EditSourcePage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ saved?: string; error?: string }>;
+  searchParams: Promise<{ saved?: string; error?: string; checked?: string }>;
 }) {
   await requireAdmin(["SUPER_ADMIN", "EDITOR"]);
   const { id } = await params;
-  const { saved, error } = await searchParams;
+  const { saved, error, checked } = await searchParams;
   const [source, organizations] = await Promise.all([getSourceForAdmin(id), listOrganizations()]);
   if (!source) notFound();
 
@@ -40,11 +40,37 @@ export default async function EditSourcePage({
       {saved ? (
         <p className="rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700">Saved.</p>
       ) : null}
+      {checked ? (
+        <p className="rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+          Check finished — see the latest row under &quot;Recent checks&quot;.
+        </p>
+      ) : null}
       {error ? (
         <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
           {error}
         </p>
       ) : null}
+
+      <div className="flex flex-wrap items-center gap-3">
+        <form action={checkSourceNowAction}>
+          <input type="hidden" name="id" value={id} />
+          <button
+            type="submit"
+            className="rounded-md bg-brand-700 px-3 py-2 text-sm font-medium text-white hover:bg-brand-900"
+          >
+            Check now
+          </button>
+        </form>
+        <Link
+          href={`/admin/automation/sources/${id}/test`}
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+        >
+          Test source (dry run)
+        </Link>
+        {source.robotsStatus ? (
+          <span className="text-xs text-slate-500">robots: {source.robotsStatus}</span>
+        ) : null}
+      </div>
 
       <SourceForm
         action={updateSourceAction.bind(null, id)}
