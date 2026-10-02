@@ -52,7 +52,7 @@ const TRICK_SECTIONS = [
 
 export default function TricksPage() {
   return (
-    <div className="container-page py-8 max-w-2xl">
+    <div className="container-page container-narrow py-8">
       <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">Police Exam Smart Tricks</h1>
       <p className="mt-1 text-sm text-gray-600 mb-6">
         Realistic, practical tips — koi &quot;100% selection guarantee&quot; wali

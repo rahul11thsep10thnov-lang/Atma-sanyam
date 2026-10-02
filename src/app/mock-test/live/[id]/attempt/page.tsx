@@ -1,7 +1,9 @@
 "use client";
 
 import { use, useCallback, useEffect, useMemo, useState } from "react";
-import { ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { Lock, ShieldCheck } from "lucide-react";
+import { openEnrollPopup } from "@/lib/enroll";
 import ExamRunner, { type RunnerAnswers } from "@/components/exam/ExamRunner";
 import ExamResult from "@/components/exam/ExamResult";
 import { LiveState } from "@/components/mock/LiveState";
@@ -35,6 +37,7 @@ export default function LiveAttemptPage({ params }: { params: Promise<{ id: stri
   const [phase, setPhase] = useState<Phase>("starting");
   const [attempt, setAttempt] = useState<(StartedAttempt & { remainingSeconds: number }) | null>(null);
   const [startError, setStartError] = useState<string | null>(null);
+  const [paywall, setPaywall] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [result, setResult] = useState<LiveResult | null>(null);
 
@@ -55,6 +58,12 @@ export default function LiveAttemptPage({ params }: { params: Promise<{ id: stri
       setAttempt({ ...a, remainingSeconds });
       setPhase("running");
     } catch (e) {
+      if (e instanceof LiveApiError && e.status === 402) {
+        // Free quota used up: the server decided; show the enrolment popup.
+        setPaywall(e.message);
+        openEnrollPopup(e.message);
+        return;
+      }
       setStartError(e instanceof LiveApiError && e.status !== 0 ? e.message : "Unable to start the test. Check your connection and try again.");
     }
   }, [id]);
@@ -140,6 +149,25 @@ export default function LiveAttemptPage({ params }: { params: Promise<{ id: stri
   if (loadError) return <LiveState message={loadError} onRetry={reload} />;
   if (!test) return <LiveState message="Questions load ho rahe hain…" busy />;
   if (startError) return <LiveState message={startError} onRetry={() => void start()} />;
+  if (paywall) {
+    return (
+      <div className="exam-shell container-page container-narrow py-10 text-center">
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#ffece9] text-brand-coral">
+          <Lock size={26} />
+        </span>
+        <h1 className="mt-4 font-display text-[1.5rem] font-bold">Yeh test Mock Test Pass ke saath available hai</h1>
+        <p className="mt-2 text-[16px] text-slate-600">{paywall}</p>
+        <div className="mt-5 flex flex-col justify-center gap-2.5 sm:flex-row">
+          <button onClick={() => openEnrollPopup(paywall)} className="btn-cta px-6 py-3 text-[16px]">
+            Enrol karein →
+          </button>
+          <Link href="/mock-test" className="btn-secondary px-6 py-3 text-[16px]">
+            Sabhi Mock Tests
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (phase === "done" && result) {
     const s = result.summary;

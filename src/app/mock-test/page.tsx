@@ -56,13 +56,13 @@ export default async function MockTestPage({
   return (
     <div>
       <div className="bg-[#eef1f6]">
-        <h1 className="container-page max-w-3xl py-5 font-display text-[1.45rem] font-semibold leading-snug text-brand-dark">
-          Free State Police Mock Tests — Online in Hinglish
+        <h1 className="container-page py-5 font-display text-[1.45rem] font-semibold leading-snug text-brand-dark">
+          State Police Mock Tests — Full, Subject-wise &amp; PYQ papers in Hinglish
         </h1>
       </div>
       <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Mock Tests", href: "/mock-test" }, { label: examLabel }]} />
 
-      <div className="container-page max-w-3xl space-y-5 py-5">
+      <div className="container-page space-y-5 py-5">
         <DarkHero
           icon={<Rocket size={30} className="text-white" />}
           title={`Police ${examLabel} Mock Tests`}

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function OfficialSourcesPage() {
   return (
-    <div className="container-page py-10 max-w-2xl">
+    <div className="container-page container-narrow py-10">
       <h1 className="text-2xl font-extrabold text-gray-900 mb-4">Official Sources</h1>
       <p className="text-sm text-gray-600 mb-4">
         Recruitment-related sabhi final information (notification, vacancy,

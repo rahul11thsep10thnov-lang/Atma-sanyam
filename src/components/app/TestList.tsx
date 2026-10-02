@@ -114,7 +114,7 @@ export function ExamToggle({ options }: { options: { href: string; label: string
 export function Breadcrumb({ items }: { items: { label: string; href?: string }[] }) {
   return (
     <nav aria-label="Breadcrumb" className="border-y border-[var(--card-border)] bg-white">
-      <ol className="container-page max-w-3xl flex flex-wrap items-center gap-2 py-3 font-display text-[15px] font-medium">
+      <ol className="container-page flex flex-wrap items-center gap-2 py-3 font-display text-[15px] font-medium">
         {items.map((it, i) => (
           <li key={i} className="flex items-center gap-2">
             {i > 0 && <span className="text-slate-400">›</span>}

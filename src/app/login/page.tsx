@@ -1,17 +1,28 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { setDisplayName } from "@/lib/localStore";
+import { markLoggedIn, safeNext } from "@/lib/session";
 import { Shield, Smartphone } from "lucide-react";
 
 const SUPABASE_CONFIGURED =
   !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const router = useRouter();
+  // ?next=/enroll — where to go after login (same-site paths only).
+  const next = safeNext(useSearchParams().get("next"));
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
@@ -28,7 +39,7 @@ export default function LoginPage() {
     }
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}` },
     });
   }
 
@@ -58,16 +69,25 @@ export default function LoginPage() {
     const { error: err } = await supabase.auth.verifyOtp({ phone: mobile, token: otp, type: "sms" });
     setLoading(false);
     if (err) setError(err.message);
-    else router.push("/dashboard");
+    else {
+      markLoggedIn();
+      router.push(next);
+    }
   }
 
   function handleGuestContinue() {
     if (name.trim()) setDisplayName(name.trim());
-    router.push("/dashboard");
+    markLoggedIn();
+    router.push(next);
   }
 
   return (
     <div className="container-page max-w-md py-6">
+      {next === "/enroll" && (
+        <p className="mb-3 rounded-2xl border border-[#bfe9d2] bg-brand-green-light px-4 py-2.5 text-center text-[15px] font-medium text-[#0b7a45]">
+          Pehle login karein — phir seedha payment page par le jaayenge.
+        </p>
+      )}
       <div className="overflow-hidden rounded-3xl border border-[var(--card-border)] bg-white shadow-sm">
         {/* Sheet header */}
         <div className="bg-gradient-to-br from-[#fff4ea] via-white to-white px-5 pt-6 pb-5">

@@ -79,14 +79,16 @@ export function SubjectTile({
   );
 }
 
+// The bar itself always carries the animated brand gradient (#25D482 →
+// #FF6A5A); the variant only tints the "Start ›" pill text.
 const BAR_VARIANTS = {
-  orange: { bg: "linear-gradient(90deg,#ff6a00,#ff8b3d)", shadow: "rgba(255,106,0,.7)", pill: "#ff6a13" },
-  green: { bg: "linear-gradient(90deg,#0fa35e,#16b86c)", shadow: "rgba(16,167,96,.6)", pill: "#0b8a4e" },
-  purple: { bg: "linear-gradient(90deg,#5b5bf0,#8b5cf6)", shadow: "rgba(99,91,240,.6)", pill: "#5b3fd1" },
-  dark: { bg: "linear-gradient(90deg,#1c2333,#2b3448)", shadow: "rgba(28,35,51,.6)", pill: "#1c2333" },
+  orange: { pill: "#e85a46" },
+  green: { pill: "#0b8a4e" },
+  purple: { pill: "#5b3fd1" },
+  dark: { pill: "#1c2333" },
 } as const;
 
-/** Full-width gradient action bar with a white "Start ›" pill. */
+/** Full-width action bar with a white "Start ›" pill. */
 export function CtaBar({
   href,
   label,
@@ -107,11 +109,7 @@ export function CtaBar({
     <Link
       href={href}
       className={cn("cta-bar", className)}
-      style={{
-        ["--bar-bg" as string]: v.bg,
-        ["--bar-shadow" as string]: v.shadow,
-        ["--bar-pill-text" as string]: v.pill,
-      }}
+      style={{ ["--bar-pill-text" as string]: v.pill }}
     >
       {Icon && (
         <span className="cta-bar-icon">

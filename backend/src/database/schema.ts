@@ -60,6 +60,12 @@ export const reviewDecision = pgEnum('review_decision', ['approved', 'needs_revi
 
 export const mockTestStatus = pgEnum('mock_test_status', ['draft', 'published', 'archived']);
 
+// Full-paper tests and subject-wise tests have separate free quotas
+// (see services/enrollmentService.ts).
+export const mockTestKind = pgEnum('mock_test_kind', ['full', 'subject']);
+
+export const subscriptionStatus = pgEnum('subscription_status', ['pending', 'active', 'expired', 'cancelled']);
+
 export const attemptStatus = pgEnum('attempt_status', ['in_progress', 'submitted']);
 
 export const sourceKind = pgEnum('source_kind', ['text', 'url', 'syllabus', 'pyq', 'pdf']);
@@ -468,6 +474,7 @@ export const mockTests = pgTable(
     title: text('title').notNull(),
     description: text('description'),
     language: text('language').notNull(),
+    kind: mockTestKind('kind').notNull().default('full'),
     durationMinutes: integer('duration_minutes').notNull(),
     totalQuestions: integer('total_questions').notNull(),
     marksPerQuestion: numeric('marks_per_question', { precision: 6, scale: 2 }).notNull().default('1'),
@@ -556,6 +563,35 @@ export const testAnswers = pgTable(
     uniqueIndex('test_answers_attempt_question_uq').on(t.attemptId, t.questionId),
     index('test_answers_question_idx').on(t.questionId),
   ]
+);
+
+// ---------------------------------------------------------------------------
+// Enrolment: one paid plan (yearly). Free quotas are counted from attempts;
+// an active subscription row lifts them. Payment details stay with the
+// provider — only its order/payment ids are stored here.
+// ---------------------------------------------------------------------------
+
+export const subscriptions = pgTable(
+  'subscriptions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    plan: text('plan').notNull().default('yearly'),
+    status: subscriptionStatus('status').notNull().default('pending'),
+    amountInr: integer('amount_inr').notNull(),
+    listPriceInr: integer('list_price_inr'),
+    provider: text('provider').notNull(), // 'razorpay' | 'dev' | 'manual'
+    providerOrderId: text('provider_order_id'),
+    providerPaymentId: text('provider_payment_id'),
+    startsAt: timestamp('starts_at', { withTimezone: true }),
+    expiresAt: timestamp('expires_at', { withTimezone: true }),
+    grantedBy: uuid('granted_by').references(() => admins.id, { onDelete: 'set null' }),
+    note: text('note'),
+    ...timestamps,
+  },
+  (t) => [index('subscriptions_user_idx').on(t.userId, t.status), uniqueIndex('subscriptions_order_uq').on(t.providerOrderId)]
 );
 
 // ---------------------------------------------------------------------------

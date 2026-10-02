@@ -15,6 +15,7 @@ interface UserRow {
   last_seen_at: string | null;
   attempts: number;
   avg_percentage: number | null;
+  subscription: { status: string; expiresAt: string | null; provider: string } | null;
 }
 
 export default function UsersPage() {
@@ -31,6 +32,7 @@ export default function UsersPage() {
               <tr>
                 <th>User</th>
                 <th>Login</th>
+                <th>Plan</th>
                 <th className="num">Tests</th>
                 <th className="num">Avg score</th>
                 <th>Last seen</th>
@@ -46,6 +48,15 @@ export default function UsersPage() {
                   </td>
                   <td>
                     <span className={`badge ${u.auth_provider === 'guest' ? '' : 'badge-info'}`}>{u.auth_provider === 'guest' ? 'guest' : 'Google / OTP'}</span>
+                  </td>
+                  <td className="small">
+                    {u.subscription ? (
+                      <span className="badge badge-good" title={`via ${u.subscription.provider}`}>
+                        Pass · till {u.subscription.expiresAt ? new Date(u.subscription.expiresAt).toLocaleDateString('en-IN') : '—'}
+                      </span>
+                    ) : (
+                      <span className="muted">free</span>
+                    )}
                   </td>
                   <td className="num">{u.attempts}</td>
                   <td className="num">{u.avg_percentage == null ? '—' : `${Math.round(u.avg_percentage)}%`}</td>

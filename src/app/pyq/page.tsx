@@ -8,7 +8,7 @@ import { ClipboardList, Library, Languages, CheckCircle2, Target, BarChart3, Inf
 import type { ExamType } from "@/types";
 
 export const metadata: Metadata = {
-  title: "Police PYQ — Practice Papers Online (Constable & SI)",
+  title: "Police PYQ Mock Tests — Previous-year papers online (Constable & SI)",
   description: "State-wise Police Constable aur SI practice papers online — answers, explanation aur score ke saath. UP, MP, Rajasthan, Bihar aur 5 aur states.",
   alternates: { canonical: "/pyq" },
 };
@@ -55,16 +55,16 @@ export default async function PyqPage({
   return (
     <div>
       <div className="bg-[#eef1f6]">
-        <h1 className="container-page max-w-3xl py-5 font-display text-[1.45rem] font-semibold leading-snug text-brand-dark">
-          Free Police PYQ Practice Papers — Online in Hinglish
+        <h1 className="container-page py-5 font-display text-[1.45rem] font-semibold leading-snug text-brand-dark">
+          Police PYQ Mock Tests — Previous-year papers in Hinglish
         </h1>
       </div>
       <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "PYQ Bank", href: "/pyq" }, { label: `${examLabel} Papers` }]} />
 
-      <div className="container-page max-w-3xl space-y-5 py-5">
+      <div className="container-page space-y-5 py-5">
         <DarkHero
           icon={<ClipboardList size={30} className="text-white" />}
-          title={`Police ${examLabel} Practice Papers`}
+          title={`Police ${examLabel} PYQ Mock Tests`}
           meta={`Constable & SI · ${STATES.length} states · ${papers.length} sets`}
           chips={[
             { icon: <Library size={15} className="text-orange-300" />, label: `${papers.length} Sets · ${totalQs} Qs` },
@@ -110,7 +110,7 @@ export default async function PyqPage({
           ))}
         </div>
 
-        <SectionTitle title={`Police ${examLabel} — Practice Papers`} count={`${papers.length} Papers`} />
+        <SectionTitle title={`Police ${examLabel} — PYQ Mock Tests`} count={`${papers.length} Papers`} />
 
         <div className="space-y-4">
           {groups.map((g, i) => (

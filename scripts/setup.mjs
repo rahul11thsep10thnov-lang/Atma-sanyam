@@ -47,6 +47,7 @@ if (!existsSync(apiEnv)) {
       'CORS_ORIGINS=http://localhost:3000',
       '# true = questions are generated locally, no AI key, no cost',
       'MOCK_AI=true',
+      'ENROLL_DEV_ACTIVATE=true',
       'AI_API_KEY=',
       '',
     ].join('\n')

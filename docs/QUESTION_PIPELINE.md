@@ -249,6 +249,17 @@ approval. Generated questions keep the source name, reference and (for
 dated material) a "correct as of" date. Uploading PDF files directly is not
 built yet: paste the text.
 
+## Previous-year papers
+
+`npm run seed:pyq` loads a transcribed paper
+(`backend/seed/pyq/*.json`): the paper becomes Source Material (kind *pyq*,
+unapproved, reference only), each text question is imported through the
+validator as `source = pyq` into NEEDS_REVIEW, and a blueprint for the
+official pattern is saved. Figure-based questions are listed and skipped.
+`npm run plan:queue` queues a chapter-by-chapter generation plan
+(`backend/seed/plans/*.json`) through the same path as the console form.
+See docs/UP_CONSTABLE_2024_PAPER_ANALYSIS.md.
+
 ## Imports
 
 Console → **Import**: CSV or JSON (columns: exam, subject, chapter, topic,

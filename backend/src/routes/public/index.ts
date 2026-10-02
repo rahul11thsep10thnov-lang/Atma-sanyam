@@ -2,13 +2,16 @@ import { Router } from 'express';
 import { and, asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { chapters, exams, subjects } from '../../database/schema.js';
-import { badRequest, unauthorized } from '../../lib/httpError.js';
+import { badRequest, notFound, unauthorized } from '../../lib/httpError.js';
 import { parse } from '../../middleware/validate.js';
 import type { Auth } from '../../middleware/auth.js';
 import type { RateLimits } from '../../middleware/rateLimits.js';
 import { getResult, listAttempts, startAttempt, submitAttempt } from '../../services/attemptService.js';
 import { getMockTest, listMockTests } from '../../services/mockTestService.js';
 import { guestSignIn, linkSupabase, logoutUser, profile } from '../../services/userService.js';
+import { assertCanStart, confirmOrder, createOrder, getEntitlement } from '../../services/enrollmentService.js';
+import { getSiteSettings } from '../../services/siteSettingsService.js';
+import { mockTests } from '../../database/schema.js';
 import type { AppDeps } from '../../types.js';
 import { idParam, optionalUuid, pageQuery } from '../util.js';
 
@@ -44,7 +47,34 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: RateLimits) {
   });
 
   r.get('/me', auth.requireUser, async (req, res) => {
-    res.json(await profile(db, req.user!.id));
+    const [me, entitlement] = await Promise.all([profile(db, req.user!.id), getEntitlement(db, req.user!.id)]);
+    res.json({ ...me, entitlement });
+  });
+
+  // --- Site settings + enrolment --------------------------------------------
+  // The quotation under the site name, the plan and the popup text, as
+  // edited in the admin console.
+  r.get('/site', async (_req, res) => {
+    res.set('Cache-Control', cache(60)).json(await getSiteSettings(db));
+  });
+
+  r.post('/enroll/order', limits.userAuth, auth.requireUser, async (req, res) => {
+    res.status(201).json(await createOrder(db, env, req.user!.id));
+  });
+
+  // Razorpay: { orderId, paymentId, signature } — the signature is verified
+  // with the secret on the server. Dev orders: { orderId } only.
+  r.post('/enroll/confirm', limits.userAuth, auth.requireUser, async (req, res) => {
+    const body = parse(
+      z.object({
+        orderId: z.uuid(),
+        paymentId: z.string().trim().min(1).max(100).optional(),
+        signature: z.string().trim().regex(/^[0-9a-f]{64}$/).optional(),
+      }),
+      req.body
+    );
+    const subscription = await confirmOrder(db, env, req.user!.id, body);
+    res.json({ subscription, entitlement: await getEntitlement(db, req.user!.id) });
   });
 
   // --- Catalogue ------------------------------------------------------------
@@ -105,6 +135,7 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: RateLimits) {
         stateCode: t.stateCode,
         examType: t.examType,
         language: t.language,
+        kind: t.kind,
         durationMinutes: t.durationMinutes,
         totalQuestions: t.totalQuestions,
         marksPerQuestion: t.marksPerQuestion,
@@ -121,8 +152,14 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: RateLimits) {
     res.set('Cache-Control', cache(60)).json(test);
   });
 
+  // Free quota (2 full + 2 subject-wise by default) and the paid plan are
+  // enforced here, never in the browser.
   r.post('/mock-tests/:id/start', limits.attempts, auth.requireUser, async (req, res) => {
-    res.status(201).json(await startAttempt(db, req.user!.id, idParam(req), env.ATTEMPT_GRACE_SECONDS));
+    const id = idParam(req);
+    const [test] = await db.select({ kind: mockTests.kind }).from(mockTests).where(and(eq(mockTests.id, id), eq(mockTests.status, 'published'))).limit(1);
+    if (!test) throw notFound('Mock test not found');
+    await assertCanStart(db, req.user!.id, id, test.kind);
+    res.status(201).json(await startAttempt(db, req.user!.id, id, env.ATTEMPT_GRACE_SECONDS));
   });
 
   r.post('/mock-tests/:id/submit', limits.attempts, auth.requireUser, async (req, res) => {

@@ -21,7 +21,7 @@ export default function MistakesPage() {
     .filter((e) => e.question);
 
   return (
-    <div className="container-page py-8 max-w-2xl">
+    <div className="container-page container-narrow py-8">
       <h1 className="text-2xl font-extrabold text-gray-900">Meri Mistakes</h1>
       <p className="mt-1 text-sm text-gray-600 mb-6">
         Jo questions galat hue hain, wo yahan automatically save hote hain.

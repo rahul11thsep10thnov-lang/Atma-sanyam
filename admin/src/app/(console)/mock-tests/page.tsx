@@ -60,6 +60,7 @@ function Builder({ onBlueprintSaved }: { onBlueprintSaved: () => void }) {
   const [duration, setDuration] = useState(120);
   const [marks, setMarks] = useState(2);
   const [negative, setNegative] = useState(0.5);
+  const [kind, setKind] = useState<'auto' | 'full' | 'subject'>('auto');
   const [pct, setPct] = useState({ easy: 30, medium: 50, hard: 20 });
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [error, setError] = useState<string | null>(null);
@@ -81,6 +82,7 @@ function Builder({ onBlueprintSaved }: { onBlueprintSaved: () => void }) {
     negativeMarks: negative,
     difficulty: pct,
     sections,
+    ...(kind === 'auto' ? {} : { kind }),
   };
 
   async function generate() {
@@ -175,6 +177,15 @@ function Builder({ onBlueprintSaved }: { onBlueprintSaved: () => void }) {
           <span>Negative marks per wrong answer</span>
           <input className="input" type="number" min={0} step="0.25" value={negative} onChange={(e) => setNegative(Number(e.target.value))} />
         </label>
+        <label className="field">
+          <span>Test kind</span>
+          <select className="input" value={kind} onChange={(e) => setKind(e.target.value as 'auto' | 'full' | 'subject')}>
+            <option value="auto">Automatic (one subject → subject-wise, otherwise full paper)</option>
+            <option value="full">Full paper</option>
+            <option value="subject">Subject-wise</option>
+          </select>
+          <small>Full-paper and subject-wise tests count against separate free quotas (Settings → Website).</small>
+        </label>
       </div>
       <fieldset style={{ border: 0, padding: 0, margin: '0 0 14px' }}>
         <legend style={{ fontWeight: 600, marginBottom: 6 }}>
@@ -256,6 +267,7 @@ function TestList() {
             <tr>
               <th>Test</th>
               <th>Status</th>
+              <th>Kind</th>
               <th className="num">Questions</th>
               <th className="num">Minutes</th>
               <th>Marking</th>
@@ -277,6 +289,7 @@ function TestList() {
                 <td>
                   <StatusBadge status={t.status} />
                 </td>
+                <td className="small">{t.kind === 'subject' ? 'Subject-wise' : 'Full paper'}</td>
                 <td className="num">{t.totalQuestions}</td>
                 <td className="num">{t.durationMinutes}</td>
                 <td className="small">

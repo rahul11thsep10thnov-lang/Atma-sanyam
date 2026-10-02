@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Search as SearchIcon } from "lucide-react";
 import { EXAM_CONFIGS } from "@/data/examConfigs";
 import { STATES } from "@/data/states";
@@ -19,7 +20,17 @@ interface Result {
 }
 
 export default function SearchPage() {
-  const [q, setQ] = useState("");
+  return (
+    <Suspense fallback={null}>
+      <SearchView />
+    </Suspense>
+  );
+}
+
+function SearchView() {
+  // /search?q=… from the home-page search box and the header.
+  const initial = useSearchParams().get("q") ?? "";
+  const [q, setQ] = useState(initial);
 
   const results = useMemo<Result[]>(() => {
     const query = q.trim().toLowerCase();
@@ -93,8 +104,8 @@ export default function SearchPage() {
   }, {});
 
   return (
-    <div className="container-page py-8 max-w-2xl">
-      <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">Search</h1>
+    <div className="container-page container-narrow py-8">
+      <h1 className="text-2xl md:text-3xl font-extrabold">Search</h1>
       <p className="mt-1 text-sm text-gray-600 mb-5">
         Exam, state, question, topic, PYQ, mock, study note ya update search karein.
       </p>
@@ -105,8 +116,8 @@ export default function SearchPage() {
           autoFocus
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="e.g. UP SI, State GK, Percentage..."
-          className="w-full rounded-xl border border-[var(--card-border)] py-3.5 pl-11 pr-4 text-sm outline-none focus:border-brand-navy"
+          placeholder="🔍 Search an exam, subject, question or state"
+          className="w-full rounded-2xl border-2 border-[var(--card-border)] bg-white py-4 pl-11 pr-4 text-[17px] outline-none focus:border-brand-coral"
         />
       </div>
 

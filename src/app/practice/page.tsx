@@ -172,7 +172,7 @@ function PracticeForm() {
 
 export default function PracticePage() {
   return (
-    <div className="container-page max-w-3xl py-5">
+    <div className="container-page py-5">
       <div className="mb-5 flex items-start gap-3">
         <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-purple-light text-brand-purple">
           <PenSquare size={24} />

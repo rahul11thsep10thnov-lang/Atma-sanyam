@@ -36,7 +36,7 @@ export default async function StudyNoteDetailPage({
   const practiceQuestions = note.practiceQuestionIds.map((id) => getQuestion(id)).filter(Boolean);
 
   return (
-    <div className="container-page py-8 max-w-2xl">
+    <div className="container-page container-narrow py-8">
       <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">{note.title}</h1>
 
       <div className="card p-4 mt-5">

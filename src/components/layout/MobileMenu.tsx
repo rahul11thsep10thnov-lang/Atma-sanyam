@@ -69,7 +69,7 @@ export default function MobileMenu() {
         onClick={() => setOpen((o) => !o)}
         aria-label={open ? "Close menu" : "Open menu"}
         aria-expanded={open}
-        className="flex h-11 w-11 items-center justify-center rounded-xl text-brand-dark hover:bg-gray-100"
+        className="flex h-11 w-11 items-center justify-center rounded-xl text-brand-dark hover:bg-gray-100 md:hidden"
       >
         {open ? <X size={26} /> : <Menu size={26} />}
       </button>
@@ -79,7 +79,7 @@ export default function MobileMenu() {
       {mounted &&
         open &&
         createPortal(
-          <div className="fixed inset-x-0 bottom-0 top-16 z-50">
+          <div className="fixed inset-x-0 bottom-0 top-[4.75rem] z-50">
             <button
               aria-label="Close menu"
               onClick={() => setOpen(false)}

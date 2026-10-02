@@ -22,15 +22,117 @@ interface Settings {
   worker: { enabled: boolean; concurrency: number };
 }
 
+interface SiteSettings {
+  quote: string;
+  quoteAttribution: string;
+  plan: { name: string; priceInr: number; listPriceInr: number; durationDays: number };
+  freeQuota: { full: number; subject: number };
+  popup: { enabled: boolean; title: string; body: string; cta: string };
+}
+
 export default function SettingsPage() {
   const can = useCan();
   return (
     <>
-      <PageHead title="Settings" subtitle="AI pipeline and spending controls, console accounts and your password." />
+      <PageHead title="Settings" subtitle="Website text and plan, AI pipeline and spending controls, console accounts and your password." />
+      <WebsiteSettings />
       <PipelineSettings />
       {can('admins:write') && <Admins />}
       <Password />
     </>
+  );
+}
+
+/** Quotation under the website name, the Mock Test Pass plan, free quotas
+ * and the welcome popup — served to the website by GET /api/site. */
+function WebsiteSettings() {
+  const can = useCan();
+  const { data, error, setData } = useApi<{ site: SiteSettings; payments: { razorpay: boolean; devActivate: boolean } }>('site-settings');
+  const [msg, setMsg] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  if (!data) return error ? <ErrorAlert error={error} /> : <Loading />;
+  const s = data.site;
+  const editable = can('settings:write');
+  const set = (patch: Partial<SiteSettings>) => setData({ ...data, site: { ...s, ...patch } });
+
+  async function save(e: React.FormEvent) {
+    e.preventDefault();
+    setErr(null);
+    setMsg(null);
+    try {
+      const r = await api<{ site: SiteSettings }>('site-settings', { method: 'PUT', body: s });
+      setData({ ...data!, site: r.site });
+      setMsg('Website settings saved. The site picks them up within a minute.');
+    } catch (e2) {
+      setErr(errorMessage(e2));
+    }
+  }
+
+  return (
+    <form className="card" onSubmit={save}>
+      <h2 style={{ marginBottom: 10 }}>Website</h2>
+      <OkAlert message={msg} />
+      <ErrorAlert error={err} />
+      <div className="form-grid">
+        <label className="field" style={{ gridColumn: '1 / -1' }}>
+          <span>Quotation under the website name</span>
+          <input className="input" lang="hi" disabled={!editable} maxLength={160} value={s.quote} onChange={(e) => set({ quote: e.target.value })} />
+          <small>Shown in a Devanagari display font right below “PoliceExams”.</small>
+        </label>
+        <label className="field">
+          <span>Attribution (optional)</span>
+          <input className="input" disabled={!editable} maxLength={80} value={s.quoteAttribution} onChange={(e) => set({ quoteAttribution: e.target.value })} />
+        </label>
+        <label className="field">
+          <span>Plan name</span>
+          <input className="input" disabled={!editable} maxLength={60} value={s.plan.name} onChange={(e) => set({ plan: { ...s.plan, name: e.target.value } })} />
+        </label>
+        <label className="field">
+          <span>Price (₹)</span>
+          <input className="input" type="number" min={1} disabled={!editable} value={s.plan.priceInr} onChange={(e) => set({ plan: { ...s.plan, priceInr: Number(e.target.value) } })} />
+          <small>What the user pays.</small>
+        </label>
+        <label className="field">
+          <span>List price (₹, shown struck through)</span>
+          <input className="input" type="number" min={1} disabled={!editable} value={s.plan.listPriceInr} onChange={(e) => set({ plan: { ...s.plan, listPriceInr: Number(e.target.value) } })} />
+        </label>
+        <label className="field">
+          <span>Validity (days)</span>
+          <input className="input" type="number" min={1} max={3650} disabled={!editable} value={s.plan.durationDays} onChange={(e) => set({ plan: { ...s.plan, durationDays: Number(e.target.value) } })} />
+          <small>365 = one full year from enrolment.</small>
+        </label>
+        <label className="field">
+          <span>Free full-paper tests per user</span>
+          <input className="input" type="number" min={0} max={100} disabled={!editable} value={s.freeQuota.full} onChange={(e) => set({ freeQuota: { ...s.freeQuota, full: Number(e.target.value) } })} />
+        </label>
+        <label className="field">
+          <span>Free subject-wise tests per user</span>
+          <input className="input" type="number" min={0} max={100} disabled={!editable} value={s.freeQuota.subject} onChange={(e) => set({ freeQuota: { ...s.freeQuota, subject: Number(e.target.value) } })} />
+          <small>After these, the enrolment popup appears when a test is attempted.</small>
+        </label>
+        <label className="field">
+          <span>Popup title</span>
+          <input className="input" lang="hi" disabled={!editable} maxLength={120} value={s.popup.title} onChange={(e) => set({ popup: { ...s.popup, title: e.target.value } })} />
+        </label>
+        <label className="field">
+          <span>Popup button</span>
+          <input className="input" lang="hi" disabled={!editable} maxLength={40} value={s.popup.cta} onChange={(e) => set({ popup: { ...s.popup, cta: e.target.value } })} />
+        </label>
+        <label className="field" style={{ gridColumn: '1 / -1' }}>
+          <span>Popup text</span>
+          <textarea className="input" lang="hi" rows={3} disabled={!editable} maxLength={600} value={s.popup.body} onChange={(e) => set({ popup: { ...s.popup, body: e.target.value } })} />
+        </label>
+      </div>
+      <label className="check">
+        <input type="checkbox" disabled={!editable} checked={s.popup.enabled} onChange={(e) => set({ popup: { ...s.popup, enabled: e.target.checked } })} />
+        Show the welcome popup on the first page open of each visit.
+      </label>
+      <p className="small muted">
+        Payments: {data.payments.razorpay ? 'Razorpay configured on the server.' : 'Razorpay keys not set — '}
+        {!data.payments.razorpay && (data.payments.devActivate ? 'dev activation is ON (test mode, no money moves).' : 'enrolment is disabled until RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET are set.')}
+      </p>
+      {editable && <button className="btn btn-primary">Save website settings</button>}
+    </form>
   );
 }
 

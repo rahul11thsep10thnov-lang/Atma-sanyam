@@ -1,7 +1,9 @@
 "use client";
 
-import { use, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { Lock } from "lucide-react";
+import { demoCanStart, openEnrollPopup, recordDemoTestStart } from "@/lib/enroll";
 import { getMockTest } from "@/data/mockTests";
 import { getQuestion } from "@/data/questions";
 import { SUBJECT_MAP } from "@/data/subjects";
@@ -21,6 +23,22 @@ export default function MockAttemptPage({ params }: { params: Promise<{ id: stri
   ) as NonNullable<ReturnType<typeof getQuestion>>[];
   const [startedAt] = useState(() => Date.now());
   const [result, setResult] = useState<{ answers: RunnerAnswers; timeTaken: number } | null>(null);
+  // Free quota (2 full + 2 subject-wise), then the Mock Test Pass is needed.
+  const [gate, setGate] = useState<{ ok: true } | { ok: false; message: string } | null>(null);
+
+  useEffect(() => {
+    if (!mock) return;
+    let cancelled = false;
+    void demoCanStart(mock.id).then((g) => {
+      if (cancelled) return;
+      if (g.ok) recordDemoTestStart(mock.id);
+      else openEnrollPopup(g.message);
+      setGate(g);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [mock]);
 
   const runnerQuestions = useMemo(
     () =>
@@ -74,6 +92,30 @@ export default function MockAttemptPage({ params }: { params: Promise<{ id: stri
         <Link href="/mock-test" className="exam-btn exam-btn-primary inline-flex mt-4 px-5 py-2.5 text-sm">
           Sabhi Mock Tests
         </Link>
+      </div>
+    );
+  }
+
+  if (gate === null) {
+    return <div className="exam-shell container-page py-10 text-center text-sm text-gray-600">Test taiyar ho raha hai…</div>;
+  }
+
+  if (!gate.ok) {
+    return (
+      <div className="exam-shell container-page container-narrow py-10 text-center">
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#ffece9] text-brand-coral">
+          <Lock size={26} />
+        </span>
+        <h1 className="mt-4 font-display text-[1.5rem] font-bold">Yeh test Mock Test Pass ke saath available hai</h1>
+        <p className="mt-2 text-[16px] text-slate-600">{gate.message}</p>
+        <div className="mt-5 flex flex-col justify-center gap-2.5 sm:flex-row">
+          <button onClick={() => openEnrollPopup(gate.message)} className="btn-cta px-6 py-3 text-[16px]">
+            Enrol karein →
+          </button>
+          <Link href="/mock-test" className="btn-secondary px-6 py-3 text-[16px]">
+            Sabhi Mock Tests
+          </Link>
+        </div>
       </div>
     );
   }

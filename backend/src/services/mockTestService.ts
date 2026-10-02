@@ -37,6 +37,9 @@ export interface MockSpec {
   difficulty: DifficultyDistribution;
   /** Optional subject (and chapter) distribution; counts must add up to totalQuestions. */
   sections?: BlueprintSection[];
+  /** Full paper or subject-wise test (separate free quotas). Defaults to
+   * 'subject' when the test covers exactly one subject. */
+  kind?: 'full' | 'subject';
   blueprintId?: string | null;
   /** Deterministic selection for tests. */
   random?: () => number;
@@ -234,6 +237,7 @@ export async function generateMockTest(db: Db, spec: MockSpec, adminId: string) 
         title: spec.title,
         description: spec.description ?? null,
         language: spec.language,
+        kind: spec.kind ?? (spec.sections && spec.sections.length === 1 ? 'subject' : 'full'),
         durationMinutes: spec.durationMinutes,
         totalQuestions: picks.length,
         marksPerQuestion: String(spec.marksPerQuestion),
@@ -375,7 +379,12 @@ export async function setMockTestStatus(db: Db, id: string, action: 'publish' | 
   return { id, status };
 }
 
-export async function updateMockTest(db: Db, id: string, patch: { title?: string; description?: string | null; durationMinutes?: number }, adminId: string) {
+export async function updateMockTest(
+  db: Db,
+  id: string,
+  patch: { title?: string; description?: string | null; durationMinutes?: number; kind?: 'full' | 'subject' },
+  adminId: string
+) {
   const [row] = await db.update(mockTests).set({ ...patch, updatedAt: new Date() }).where(eq(mockTests.id, id)).returning();
   if (!row) throw notFound('Mock test not found');
   await audit(db, adminId, 'mocktest.updated', 'mock_test', id, patch);
@@ -480,6 +489,7 @@ export async function getMockTest(db: Db, id: string, opts: { includeAnswers: bo
     title: row.t.title,
     description: row.t.description,
     language: row.t.language,
+    kind: row.t.kind,
     status: row.t.status,
     durationMinutes: row.t.durationMinutes,
     totalQuestions: qs.length,

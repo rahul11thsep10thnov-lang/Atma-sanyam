@@ -145,6 +145,7 @@ export interface MockTestRow {
   status: 'draft' | 'published' | 'archived';
   examName: string;
   language: string;
+  kind: 'full' | 'subject';
   durationMinutes: number;
   totalQuestions: number;
   marksPerQuestion: number;

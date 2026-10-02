@@ -39,8 +39,9 @@ exams ─< subjects ─< chapters ─< topics
 generation_jobs ─< generation_batches        (questions keep job + batch ids)
 source_materials  (approved text the generator may use)
 
-mock_blueprints ─< mock_tests ─< mock_test_questions >─ questions
+mock_blueprints ─< mock_tests (kind: full | subject) ─< mock_test_questions >─ questions
 users ─< test_attempts ─< test_answers >─ questions
+users ─< subscriptions          (pending → active; provider order/payment ids only)
 admins ─< admin_sessions        users ─< user_sessions
 audit_logs · app_settings
 ```
@@ -87,6 +88,7 @@ change. Each entry names its script, which the validator checks.
 | Admin auth | Email + password (scrypt), opaque 256-bit session tokens stored hashed, 12-hour sessions (revoked on password or role change), login rate limit, same timing for unknown emails. Console: httpOnly `SameSite=Strict` cookie (`Secure` in production), same-origin proxy with origin check and path allow-list. |
 | Authorization | Roles `super_admin`, `admin`, `reviewer` with permissions checked on every API route (`middleware/auth.ts` + `lib/roles.ts`); the console hides what a role can't do, but the API is the enforcement point. |
 | User auth | Guest sessions issued by the API; Supabase Google/OTP logins verified with Supabase (`/auth/v1/user`) and exchanged for an API session; a guest's attempts merge into the account. Users only ever see their own attempts. |
+| Enrolment / payments | Free quotas (full / subject-wise) and the yearly plan are checked on `POST /mock-tests/:id/start` (402 `subscription_required`), never in the browser. Razorpay keys live only in server env; orders are created server-side and the checkout result is verified by HMAC signature before a subscription becomes active. Dev activation (`ENROLL_DEV_ACTIVATE`) is off unless set. |
 | Scoring integrity | Server-side scoring from the stored key; answers limited to served questions; resubmission idempotent; late submissions flagged; expired attempts closed when a new one starts. |
 | Input validation | zod on every body and query; UUID path params; size limits (100 KB default, 1 MB source material, 5 MB import); consistent `{ error: { code, message, details } }` responses without stack traces. |
 | Rate limits | General 300/min, admin login 10/15 min per IP+email, user sign-in 30/h, attempts 30/min, generation jobs 30/h, imports 20/h (in-memory; use a shared store when running several API instances). |

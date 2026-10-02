@@ -4,6 +4,8 @@ import { usePathname } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import MobileNav from "@/components/layout/MobileNav";
+import Watermark from "@/components/layout/Watermark";
+import EnrollPopup from "@/components/enroll/EnrollPopup";
 
 // The mock-test instructions screen and the live test run full-screen with
 // their own header and sticky actions — no site header, footer or tab bar
@@ -16,15 +18,22 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
   const pathname = usePathname();
 
   if (isExamRoute(pathname)) {
-    return <main className="flex-1">{children}</main>;
+    return (
+      <main className="flex-1">
+        {children}
+        <EnrollPopup auto={false} />
+      </main>
+    );
   }
 
   return (
     <div className="flex min-h-full flex-1 flex-col has-mobile-nav">
+      <Watermark />
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />
       <MobileNav />
+      <EnrollPopup auto />
     </div>
   );
 }

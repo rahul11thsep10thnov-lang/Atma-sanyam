@@ -131,7 +131,7 @@ export async function importQuestions(
   format: 'csv' | 'json',
   content: string,
   adminId: string,
-  opts: { dryRun: boolean }
+  opts: { dryRun: boolean; source?: 'import' | 'pyq'; sourceMaterialId?: string | null }
 ): Promise<ImportReport> {
   const rows = format === 'csv' ? rowsFromCsv(content) : rowsFromJson(content);
   if (rows.length === 0) throw unprocessable('No questions found in the file.');
@@ -192,9 +192,10 @@ export async function importQuestions(
     if (!opts.dryRun) {
       const row = await insertQuestion(db, ev, {
         status: 'needs_review',
-        source: 'import',
+        source: opts.source ?? 'import',
         sourceName: r.source_name || null,
         sourceReference: r.source_reference || null,
+        sourceMaterialId: opts.sourceMaterialId ?? null,
         validAsOf: /^\d{4}-\d{2}-\d{2}$/.test(r.valid_as_of ?? '') ? r.valid_as_of! : null,
         createdBy: adminId,
       });
@@ -211,6 +212,7 @@ export async function importQuestions(
   if (!opts.dryRun) {
     await audit(db, adminId, 'questions.imported', 'import', null, {
       format,
+      source: opts.source ?? 'import',
       total: report.total,
       imported: report.imported,
       failed: report.failed,

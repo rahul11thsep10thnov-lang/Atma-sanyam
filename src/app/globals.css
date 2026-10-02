@@ -25,6 +25,11 @@
   --card-border: #e6e9f1;
   --radius-card: 1.125rem;
   --radius-btn: 0.875rem;
+  /* Brand pair used for every heading and call-to-action */
+  --brand-mint: #25d482;
+  --brand-coral: #ff6a5a;
+  --brand-gradient: linear-gradient(90deg, #25d482 0%, #ff6a5a 100%);
+  --cta-gradient: linear-gradient(90deg, #25d482 0%, #ff6a5a 50%, #25d482 100%);
 }
 
 @theme inline {
@@ -47,8 +52,12 @@
   --color-brand-purple-light: var(--brand-purple-light);
   --color-brand-blue: var(--brand-blue);
   --color-brand-blue-light: var(--brand-blue-light);
+  --color-brand-mint: var(--brand-mint);
+  --color-brand-coral: var(--brand-coral);
   --font-sans: var(--font-hind);
   --font-display: var(--font-rubik);
+  --font-brand: var(--font-cinzel);
+  --font-quote: var(--font-yatra);
 }
 
 html {
@@ -66,6 +75,73 @@ body {
    text uses Hind. */
 h1, h2, h3, h4, button, .font-display, .ui {
   font-family: var(--font-rubik), system-ui, sans-serif;
+}
+
+/* Every heading is painted with the brand pair (#25D482 → #FF6A5A).
+   Headings on dark or coloured surfaces opt out with .heading-plain or
+   via the containers listed below. */
+h1, h2, h3, .heading-grad {
+  background-image: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.heading-plain,
+.hero-dark h1, .hero-dark h2, .hero-dark h3,
+.on-dark h1, .on-dark h2, .on-dark h3,
+.exam-header h1, .exam-header h2 {
+  background-image: none;
+  color: inherit;
+  -webkit-text-fill-color: currentColor;
+}
+.heading-grad {
+  font-family: var(--font-rubik), system-ui, sans-serif;
+}
+
+/* Website name: a classic serif wordmark, 6pt larger than before. */
+.brand-wordmark {
+  font-family: var(--font-cinzel), "Times New Roman", serif;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+/* Quotation under the website name: Devanagari display face. */
+.brand-quote {
+  font-family: var(--font-yatra), var(--font-hind), serif;
+  line-height: 1.35;
+}
+
+/* Low-opacity watermark behind every page (photo + logo). */
+.watermark {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  background: var(--background);
+}
+.watermark-photo {
+  position: absolute;
+  inset: 0;
+  background-image: url("/brand/police-group.jpg");
+  background-size: cover;
+  background-position: center 30%;
+  opacity: 0.09;
+  filter: saturate(0.7);
+}
+.watermark-logo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(70vw, 34rem);
+  aspect-ratio: 1262 / 1008;
+  transform: translate(-50%, -50%);
+  background-image: url("/brand/logo.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.08;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -91,19 +167,31 @@ h1, h2, h3, h4, button, .font-display, .ui {
   }
 }
 
-/* App column: content sits in a comfortable, app-like width even on
-   desktop instead of stretching edge to edge like a marketing site. */
+/* Page column: full width on phones (app-like), and only a small side
+   margin on laptops instead of a narrow centred strip. */
 .container-page {
-  max-width: 60rem;
+  max-width: 84rem;
   margin-left: auto;
   margin-right: auto;
   padding-left: 1rem;
   padding-right: 1rem;
 }
+@media (min-width: 1024px) {
+  .container-page {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+/* Narrower reading column for long text and forms */
+.container-narrow {
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 /* ---------- Cards ---------- */
 .card {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.94);
   border: 1px solid var(--card-border);
   border-radius: var(--radius-card);
   box-shadow: 0 1px 2px rgba(16, 24, 40, 0.03);
@@ -158,8 +246,10 @@ h1, h2, h3, h4, button, .font-display, .ui {
   color: #fff;
   font-family: var(--font-rubik), system-ui, sans-serif;
   font-weight: 600;
-  background: var(--bar-bg, linear-gradient(90deg, #ff6a00, #ff8b3d));
-  box-shadow: 0 8px 18px -10px var(--bar-shadow, rgba(255, 106, 0, 0.7));
+  background: var(--cta-gradient);
+  background-size: 300% 100%;
+  animation: ctaGradient 5s ease-in-out infinite;
+  box-shadow: 0 8px 24px rgba(220, 40, 120, 0.25);
   transition: transform 0.15s ease, filter 0.15s ease;
 }
 .cta-bar:hover {
@@ -176,7 +266,7 @@ h1, h2, h3, h4, button, .font-display, .ui {
   padding: 0.35rem 0.85rem;
   font-size: 0.875rem;
   font-weight: 700;
-  color: var(--bar-pill-text, var(--brand-orange));
+  color: var(--bar-pill-text, #e85a46);
 }
 .cta-bar-icon {
   display: flex;
@@ -202,7 +292,7 @@ h1, h2, h3, h4, button, .font-display, .ui {
   align-self: stretch;
   min-height: 1.25rem;
   border-radius: 999px;
-  background: var(--brand-orange);
+  background: var(--brand-gradient);
 }
 
 /* Small uppercase eyebrow label */
@@ -257,15 +347,24 @@ h1, h2, h3, h4, button, .font-display, .ui {
 }
 
 /* ---------- Buttons ---------- */
+/* Call-to-action fill: the brand pair, slowly sweeping. */
+@keyframes ctaGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.cta-button,
 .btn-cta,
 .btn-primary,
 .btn-orange {
-  background: linear-gradient(90deg, #ff6a00, #ff8b3d);
+  background: var(--cta-gradient);
+  background-size: 300% 100%;
+  animation: ctaGradient 5s ease-in-out infinite;
   color: #fff;
-  border-radius: var(--radius-btn);
+  border-radius: 16px;
   font-family: var(--font-rubik), system-ui, sans-serif;
-  font-weight: 600;
-  box-shadow: 0 8px 18px -10px rgba(255, 106, 0, 0.75);
+  font-weight: 800;
+  box-shadow: 0 8px 24px rgba(220, 40, 120, 0.25);
   transition: filter 0.15s ease, transform 0.1s ease;
 }
 .btn-cta:hover,
@@ -362,9 +461,12 @@ h1, h2, h3, h4, button, .font-display, .ui {
   outline-offset: 2px;
 }
 .exam-btn-primary {
-  background: linear-gradient(90deg, #ff6a00, #ff8b3d);
+  background: var(--cta-gradient);
+  background-size: 300% 100%;
+  animation: ctaGradient 5s ease-in-out infinite;
   color: #fff;
-  box-shadow: 0 8px 18px -10px rgba(255, 106, 0, 0.75);
+  font-weight: 800;
+  box-shadow: 0 8px 24px rgba(220, 40, 120, 0.25);
 }
 .exam-btn-dark {
   background: var(--brand-dark);
@@ -394,6 +496,35 @@ h1, h2, h3, h4, button, .font-display, .ui {
 .exam-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+/* State tabs on the home page: bold, large and clearly selectable */
+.state-tab {
+  flex-shrink: 0;
+  border-radius: 999px;
+  border: 2px solid var(--card-border);
+  background: #fff;
+  padding: 0.6rem 1.15rem;
+  font-family: var(--font-rubik), system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #334155;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+}
+.state-tab:hover {
+  border-color: var(--brand-coral);
+  color: #111827;
+}
+.state-tab[aria-selected="true"] {
+  border-color: transparent;
+  background: var(--brand-gradient);
+  color: #fff;
+  box-shadow: 0 8px 20px -8px rgba(255, 106, 90, 0.7);
+  transform: translateY(-1px);
+}
+.state-tab:focus-visible {
+  outline: 2px solid var(--brand-coral);
+  outline-offset: 2px;
 }
 
 /* Hide horizontal scrollbars on chip rows while keeping them scrollable */

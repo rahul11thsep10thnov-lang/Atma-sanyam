@@ -20,7 +20,7 @@ export default function BookmarksPage() {
   >[];
 
   return (
-    <div className="container-page py-8 max-w-2xl">
+    <div className="container-page container-narrow py-8">
       <h1 className="text-2xl font-extrabold text-gray-900">My Saved Questions</h1>
       <p className="mt-1 text-sm text-gray-600 mb-6">{questions.length} questions bookmarked.</p>
 

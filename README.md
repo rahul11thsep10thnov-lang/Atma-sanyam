@@ -104,13 +104,14 @@ Environment files (all git-ignored; examples are committed):
 
 | File | Key settings |
 |---|---|
-| `backend/.env` ([example](backend/.env.example)) | `DATABASE_URL`, `CORS_ORIGINS`, `MOCK_AI`, `AI_API_KEY`, models, budget, `SUPABASE_URL`/`SUPABASE_ANON_KEY` |
+| `backend/.env` ([example](backend/.env.example)) | `DATABASE_URL`, `CORS_ORIGINS`, `MOCK_AI`, `AI_API_KEY`, models, budget, `SUPABASE_URL`/`SUPABASE_ANON_KEY`, `RAZORPAY_KEY_ID`/`RAZORPAY_KEY_SECRET`, `ENROLL_DEV_ACTIVATE` |
 | `admin/.env.local` ([example](admin/.env.example)) | `API_URL` (server-side only) |
 | `.env.local` ([example](.env.example)) | `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` |
 
 `NEXT_PUBLIC_*` values are public by design (an API address, Supabase's anon
-key). Secrets — `AI_API_KEY`, `DATABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` —
-go only in server-side env files or your host's secret settings.
+key). Secrets — `AI_API_KEY`, `DATABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`,
+`RAZORPAY_KEY_SECRET` — go only in server-side env files or your host's
+secret settings.
 
 ## 4. Database setup
 
@@ -229,6 +230,44 @@ filters and bulk approve / reject / publish.
    picking the least-used questions so the series repeats as little as
    possible.
 
+## 14. Enrolment: free tests and the ₹49 Mock Test Pass
+
+Every logged-in user may attempt **2 full-paper** and **2 subject-wise**
+mock tests free (retaking a test you already started never costs a slot).
+After that, starting a test shows the Hindi enrolment popup — the same one
+shown once on the first page open — offering the **Mock Test Pass**: all
+mock tests for one year from enrolment at **₹49** (list price ₹299, shown
+struck through). "हमसे जुड़िये" goes to login first if needed, then to
+`/enroll`.
+
+- The **API decides**: `POST /api/mock-tests/:id/start` answers
+  `402 subscription_required` when the quota is used up; the website only
+  shows the popup. In demo mode (no API) the same rule runs on the device.
+- **Payments** use Razorpay: `POST /api/enroll/order` creates the order with
+  the server-side keys and returns only the public key id; the browser's
+  checkout result is verified on the server (HMAC signature) by
+  `POST /api/enroll/confirm` before the plan is activated. Set
+  `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET` in `backend/.env`.
+- Without Razorpay keys, `ENROLL_DEV_ACTIVATE=true` (written by `npm run
+  setup`) lets you complete enrolment with a dev order for testing. Keep
+  it `false` in production.
+- Console → **Settings → Website** edits the quotation under the site name,
+  the plan name/price/list price/validity, the free quotas and the popup
+  text. Console → **Users** shows who holds the pass; support can grant it
+  with `POST /api/admin/users/:id/subscription`.
+
+## 15. Previous-year papers and the 5,000-question plan
+
+```bash
+cd backend && npm run seed:pyq                  # UP Constable 25 Aug 2024 (shift 1) → PYQ, NEEDS_REVIEW
+cd backend && npm run plan:queue -- --dry-run   # cost estimate for the 5,000-question plan
+cd backend && npm run plan:queue                # queue the 82 jobs (one per chapter)
+```
+
+See [docs/UP_CONSTABLE_2024_PAPER_ANALYSIS.md](docs/UP_CONSTABLE_2024_PAPER_ANALYSIS.md)
+for the paper analysis, the difficulty calibration (30/50/20 ⇒ index 0.40)
+and what the plan does with and without a real AI key.
+
 ---
 
 ## Website features
@@ -241,7 +280,8 @@ filters and bulk approve / reject / publish.
 | Mock tests — built-in demo | `/mock-test` → `/mock-test/[id]` → `/attempt` |
 | Mock tests — published from the console | `/mock-test/live/[id]` → `/attempt` (server-scored) |
 | PYQ practice sets, State GK, Daily Quiz, Current Affairs, Physical Test, Study Notes, Exam Updates, Search | `/pyq`, `/state-gk`, `/daily-quiz`, `/current-affairs`, `/physical-test`, `/study-notes`, `/exam-updates`, `/search` |
-| Login (Google / Mobile OTP via Supabase, or guest) | `/login` |
+| Login (Google / Mobile OTP via Supabase, or guest) | `/login` (`?next=` returns you to the page that needed it) |
+| Enrolment / Mock Test Pass | `/enroll`; popup in `src/components/enroll/EnrollPopup.tsx` |
 | Dashboard, bookmarks, mistakes, leaderboard | `/dashboard`, `/leaderboard` |
 
 The website never invents official recruitment data: vacancies, dates and
@@ -260,6 +300,8 @@ npm run build        # build the website
 cd backend && npm test          # API tests (embedded Postgres; TEST_DATABASE_URL=… for a real one)
 cd backend && npm run worker    # standalone generation worker (needs DATABASE_URL)
 npm run export:seed  # re-export website taxonomy/sample questions into backend/seed
+cd backend && npm run seed:pyq      # load the transcribed UP Constable 2024 paper (PYQ → NEEDS_REVIEW)
+cd backend && npm run plan:queue    # queue the 5,000-question generation plan
 ```
 
 `npm audit` in `backend/` reports advisories only in the development tool

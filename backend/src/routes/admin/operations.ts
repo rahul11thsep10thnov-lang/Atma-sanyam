@@ -19,6 +19,8 @@ import {
   updateMockTest,
 } from '../../services/mockTestService.js';
 import { getSettings, pipelineSettingsSchema, updateSettings } from '../../services/settingsService.js';
+import { getSiteSettings, siteSettingsPatchSchema, updateSiteSettings } from '../../services/siteSettingsService.js';
+import { grantSubscription, listSubscriptionsFor } from '../../services/enrollmentService.js';
 import type { AppDeps } from '../../types.js';
 import { idParam, optionalUuid, pageQuery } from '../util.js';
 
@@ -70,7 +72,13 @@ export function adminOperationsRouter(deps: AppDeps, auth: Auth) {
 
   r.post('/mock-tests/generate', A, auth.can('mocktests:write'), async (req, res) => {
     const body = parse(
-      z.object({ ...common, title: z.string().trim().min(1).max(200), description: z.string().max(2000).nullable().optional(), sections: sections.optional() }),
+      z.object({
+        ...common,
+        title: z.string().trim().min(1).max(200),
+        description: z.string().max(2000).nullable().optional(),
+        sections: sections.optional(),
+        kind: z.enum(['full', 'subject']).optional(),
+      }),
       req.body
     );
     const { test, report } = await generateMockTest(db, body, req.admin!.id);
@@ -79,7 +87,12 @@ export function adminOperationsRouter(deps: AppDeps, auth: Auth) {
 
   r.put('/mock-tests/:id', A, auth.can('mocktests:write'), async (req, res) => {
     const body = parse(
-      z.object({ title: z.string().trim().min(1).max(200).optional(), description: z.string().max(2000).nullable().optional(), durationMinutes: z.number().int().min(1).max(600).optional() }),
+      z.object({
+        title: z.string().trim().min(1).max(200).optional(),
+        description: z.string().max(2000).nullable().optional(),
+        durationMinutes: z.number().int().min(1).max(600).optional(),
+        kind: z.enum(['full', 'subject']).optional(),
+      }),
       req.body
     );
     res.json(await updateMockTest(db, idParam(req), body, req.admin!.id));
@@ -126,7 +139,29 @@ export function adminOperationsRouter(deps: AppDeps, auth: Auth) {
   // --- Users, settings, audit ----------------------------------------------
   r.get('/users', A, auth.can('users:read'), async (req, res) => {
     const q = parse(z.object(pageQuery), req.query);
-    res.json(await listUsers(db, q.page, q.pageSize));
+    const page = await listUsers(db, q.page, q.pageSize);
+    const subs = await listSubscriptionsFor(
+      db,
+      page.items.map((u) => u.id)
+    );
+    res.json({ ...page, items: page.items.map((u) => ({ ...u, subscription: subs.find((s) => s.userId === u.id) ?? null })) });
+  });
+
+  // Support: activate the plan for a user without a payment.
+  r.post('/users/:id/subscription', A, auth.can('settings:write'), async (req, res) => {
+    const body = parse(z.object({ days: z.number().int().min(1).max(3650).default(365), note: z.string().trim().max(200).optional() }), req.body ?? {});
+    res.status(201).json({ subscription: await grantSubscription(db, idParam(req), body.days, req.admin!.id, body.note) });
+  });
+
+  r.get('/site-settings', A, auth.can('dashboard:read'), async (_req, res) => {
+    res.json({ site: await getSiteSettings(db), payments: { razorpay: !!env.RAZORPAY_KEY_ID, devActivate: env.ENROLL_DEV_ACTIVATE } });
+  });
+
+  r.put('/site-settings', A, auth.can('settings:write'), async (req, res) => {
+    const patch = parse(siteSettingsPatchSchema, req.body);
+    const next = await updateSiteSettings(db, patch, req.admin!.id);
+    await audit(db, req.admin!.id, 'settings.updated', 'settings', 'site', patch);
+    res.json({ site: next });
   });
 
   r.get('/settings', A, auth.can('dashboard:read'), async (_req, res) => {

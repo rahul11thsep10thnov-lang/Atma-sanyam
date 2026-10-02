@@ -22,7 +22,10 @@ interface StoredSession {
 export class LiveApiError extends Error {
   constructor(
     public status: number,
-    message: string
+    message: string,
+    /** Machine-readable code from the API, e.g. `subscription_required`. */
+    public code?: string,
+    public details?: unknown
   ) {
     super(message);
   }
@@ -58,7 +61,8 @@ async function request<T>(path: string, init: RequestInit & { token?: string } =
   if (res.status === 204) return undefined as T;
   const body = await res.json().catch(() => null);
   if (!res.ok) {
-    throw new LiveApiError(res.status, (body as { error?: { message?: string } } | null)?.error?.message ?? `Request failed (${res.status})`);
+    const err = (body as { error?: { message?: string; code?: string; details?: unknown } } | null)?.error;
+    throw new LiveApiError(res.status, err?.message ?? `Request failed (${res.status})`, err?.code, err?.details);
   }
   return body as T;
 }
@@ -125,6 +129,7 @@ export interface LiveTestSummary {
   stateCode: string | null;
   examType: string | null;
   language: string;
+  kind?: "full" | "subject";
   durationMinutes: number;
   totalQuestions: number;
   marksPerQuestion: number;
@@ -194,7 +199,33 @@ export interface AttemptSummary {
   unanswered: number;
 }
 
+export interface Entitlement {
+  subscribed: boolean;
+  expiresAt: string | null;
+  plan: { name: string; priceInr: number; listPriceInr: number; durationDays: number };
+  freeQuota: Record<"full" | "subject", { used: number; limit: number; remaining: number }>;
+}
+
+export interface EnrollOrder {
+  provider: "razorpay" | "dev";
+  orderId: string;
+  amountInr: number;
+  listPriceInr: number;
+  currency: "INR";
+  planName: string;
+  durationDays: number;
+  keyId?: string;
+  providerOrderId?: string;
+}
+
 export const liveApi = {
+  me: () => authed<{ id: string; displayName: string | null; authProvider: string; entitlement: Entitlement }>("/me"),
+  enrollOrder: () => authed<EnrollOrder>("/enroll/order", { method: "POST" }),
+  enrollConfirm: (body: { orderId: string; paymentId?: string; signature?: string }) =>
+    authed<{ subscription: { status: string; expiresAt: string | null }; entitlement: Entitlement }>("/enroll/confirm", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
   listTests: (q: { state?: string; examType?: string }) => {
     const p = new URLSearchParams();
     if (q.state) p.set("state", q.state);

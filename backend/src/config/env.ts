@@ -74,6 +74,15 @@ const envSchema = z.object({
   WORKER_CONCURRENCY: z.coerce.number().int().min(1).max(10).default(2),
   WORKER_POLL_MS: z.coerce.number().int().min(200).default(2000),
 
+  // --- Enrolment / payments ---------------------------------------------------
+  // Razorpay checkout for the yearly plan. Both keys stay on the server; the
+  // website only ever receives the public key id inside an order response.
+  RAZORPAY_KEY_ID: optionalString,
+  RAZORPAY_KEY_SECRET: optionalString,
+  // Without Razorpay keys, enrolment can be completed with a "dev" order so
+  // the flow can be tested locally. Never on in production unless set.
+  ENROLL_DEV_ACTIVATE: bool(false),
+
   // Answers submitted this long after the deadline are still scored but the
   // attempt is flagged `late` (network hiccups, slow phones).
   ATTEMPT_GRACE_SECONDS: z.coerce.number().int().min(0).default(120),
@@ -91,6 +100,9 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
   const env = parsed.data;
   if (env.NODE_ENV === 'production' && !env.DATABASE_URL) {
     throw new Error('DATABASE_URL is required in production (the embedded PGlite database is for development only).');
+  }
+  if (env.RAZORPAY_KEY_ID && !env.RAZORPAY_KEY_SECRET) {
+    throw new Error('RAZORPAY_KEY_SECRET is required when RAZORPAY_KEY_ID is set.');
   }
   if (!env.MOCK_AI && !env.AI_API_KEY) {
     throw new Error('AI_API_KEY is required when MOCK_AI=false. Set MOCK_AI=true to test the pipeline without an AI provider.');

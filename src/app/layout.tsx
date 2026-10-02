@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Rubik, Hind } from "next/font/google";
+import { Rubik, Hind, Cinzel, Yatra_One } from "next/font/google";
 import "./globals.css";
 import SiteChrome from "@/components/layout/SiteChrome";
 
@@ -15,6 +15,20 @@ const hind = Hind({
   variable: "--font-hind",
   subsets: ["latin", "devanagari"],
   weight: ["400", "500", "600"],
+});
+
+// Cinzel: classic serif capitals for the website name.
+const cinzel = Cinzel({
+  variable: "--font-cinzel",
+  subsets: ["latin"],
+  weight: ["700", "800"],
+});
+
+// Yatra One: Devanagari display face for the quotation under the name.
+const yatra = Yatra_One({
+  variable: "--font-yatra",
+  subsets: ["devanagari", "latin"],
+  weight: "400",
 });
 
 export const viewport: Viewport = {
@@ -68,7 +82,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${rubik.variable} ${hind.variable} h-full antialiased`}
+      className={`${rubik.variable} ${hind.variable} ${cinzel.variable} ${yatra.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <script
