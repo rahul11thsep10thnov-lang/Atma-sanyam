@@ -1,4 +1,4 @@
-# Exam Portal
+# SarkariChayan
 
 An original, mobile-first Indian government examination information
 portal — Jobs, Results, Admit Cards, Answer Keys, Syllabus, Admissions,

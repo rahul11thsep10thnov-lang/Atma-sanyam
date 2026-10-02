@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { LoginForm } from "./LoginForm";
+import { SITE_NAME } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
   title: "Admin sign in",
@@ -13,7 +14,7 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-sm rounded-lg border border-slate-200 bg-white p-8 shadow-sm">
         <h1 className="text-xl font-semibold text-slate-900">Admin sign in</h1>
         <p className="mt-1 text-sm text-slate-500">
-          Exam Portal content management console.
+          {SITE_NAME} content management console.
         </p>
         <div className="mt-6">
           <Suspense fallback={null}>

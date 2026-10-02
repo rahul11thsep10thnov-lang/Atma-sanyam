@@ -1,12 +1,15 @@
 import { Header } from "@/components/layout/Header";
+import { MottoBand } from "@/components/layout/MottoBand";
+import { CtaTabs } from "@/components/layout/CtaTabs";
 import { Footer } from "@/components/layout/Footer";
 import { JsonLd } from "@/components/JsonLd";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/siteConfig";
 
 /**
  * Wraps every public-facing page (homepage, search, and every content
- * page added from Phase 5 onward) with the shared Header/Footer shell.
- * `/admin/*` and `/api/*` are outside this route group and unaffected.
+ * page added from Phase 5 onward) with the shared shell: header, the
+ * motto band, the CTA tabs that serve as primary navigation, and the
+ * footer. `/admin/*` and `/api/*` are outside this route group.
  */
 export default function PublicLayout({
   children,
@@ -33,6 +36,8 @@ export default function PublicLayout({
         }}
       />
       <Header />
+      <MottoBand />
+      <CtaTabs />
       <div className="flex-1">{children}</div>
       <Footer />
     </div>

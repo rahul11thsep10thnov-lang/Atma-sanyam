@@ -1,16 +1,34 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Josefin_Sans, Nunito, Tillana, Kalam } from "next/font/google";
 import "./globals.css";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/siteConfig";
+import { BackgroundWatermark } from "@/components/layout/BackgroundWatermark";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Headings everywhere (see globals.css h1–h6 rule).
+const josefinSans = Josefin_Sans({
+  variable: "--font-heading",
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+});
+
+// Body/content text everywhere (wired to Tailwind's --font-sans).
+const nunito = Nunito({
+  variable: "--font-nunito",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+// Sanskrit shloka in the motto band.
+const tillana = Tillana({
+  variable: "--font-tillana",
+  subsets: ["devanagari", "latin"],
+  weight: ["400", "500"],
+});
+
+// Hindi translation in the motto band.
+const kalam = Kalam({
+  variable: "--font-kalam",
+  subsets: ["devanagari", "latin"],
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
@@ -34,9 +52,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${josefinSans.variable} ${nunito.variable} ${tillana.variable} ${kalam.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <BackgroundWatermark />
+        <div className="website-content flex min-h-full flex-1 flex-col">{children}</div>
+      </body>
     </html>
   );
 }

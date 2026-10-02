@@ -863,6 +863,56 @@ error; `?q=a` (too short) returns a `400`; a detail hit recorded a
 view. `npm run typecheck`, `npm run lint`, `npm run test`, and `npm
 run build` all pass clean.
 
+## Branding & layout update — SarkariChayan ✅
+
+Post-Phase-20 rebrand and header redesign, per the project owner's
+spec:
+
+- Site name is now **SarkariChayan** (`SITE_NAME` in
+  `src/lib/siteConfig.ts` — one constant drives the header wordmark,
+  `<title>` template, OpenGraph, JSON-LD, footer and admin titles). The
+  wordmark is 26px, 6pt (8px) up from the previous 18px.
+- Fonts via `next/font/google` in `src/app/layout.tsx`: **Josefin
+  Sans** for every heading (`h1`–`h6`, public and admin), **Nunito** for
+  all body/content text (wired to Tailwind's `--font-sans`), **Tillana**
+  for the Sanskrit shloka and **Kalam** for its Hindi explanation. The
+  Devanagari faces load the `devanagari` subset explicitly.
+- Every heading renders in a `#25D482 → #FF6A5A` gradient
+  (`--heading-gradient`, unlayered `h1–h6` rule in `globals.css` so it
+  overrides existing `text-slate-*` utilities without touching 60+
+  files).
+- The old Jobs/Results/… tab bar is gone (`MobileNav.tsx` and
+  `navLinks.ts` deleted). In its place, site-wide under the header:
+  `MottoBand` (shloka left, Hindi right) and `CtaTabs` — six animated
+  gradient tabs (Jobs, Results, Admit Cards, Answer Keys, Syllabus,
+  Admissions) using the owner's `.cta-button` CSS verbatim, plus a
+  `prefers-reduced-motion` guard. Scholarships and Articles, which the
+  tab spec omits, stay reachable from the footer nav so nothing is
+  orphaned.
+- `BackgroundWatermark` (rendered once in the root layout): a fixed,
+  `pointer-events: none`, `aria-hidden` artwork layer + a translucent
+  white wash, with page content lifted to `z-index: 1`. Everything is a
+  `:root` variable in `globals.css`: `--watermark-image`
+  (`/watermark.webp`), `--watermark-size`, `--watermark-opacity` (0.08
+  desktop / 0.06 tablet / 0.05 mobile) and `--watermark-overlay`.
+  **The artwork file itself was not supplied** — drop it at
+  `public/watermark.webp` and it appears; until then the layer is
+  simply blank.
+
+Verified live with Playwright at 1280px and 390px: all four fonts
+report `loaded`, headings/wordmark use Josefin Sans + the gradient, body
+is Nunito, `p[lang=sa]` is Tillana, `p[lang=hi]` is Kalam, six
+`.cta-button` links animate (`ctaGradient`), no `header nav` remains,
+both watermark layers are click-through, and there is no horizontal
+overflow at either width. `typecheck`, `lint`, `test` and `build` all
+pass.
+
+Readability note for the owner: the CTA label gradient (green→coral) is
+exactly as specified, but the coral end has low contrast against the
+orange stretch of the animated button background. A `drop-shadow`
+helps; switching `.cta-button > span` to white text is a one-line
+change if preferred.
+
 ## Known follow-ups / decisions to revisit
 
 - `prisma@8` will move out of RC eventually — re-run `npm audit` and

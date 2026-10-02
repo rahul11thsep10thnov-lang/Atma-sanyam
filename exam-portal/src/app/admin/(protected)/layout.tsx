@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { requireAdmin } from "@/lib/auth/session";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { LogoutButton } from "@/components/admin/LogoutButton";
+import { SITE_NAME } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
-  title: { template: "%s — Exam Portal Admin", default: "Exam Portal Admin" },
+  title: { template: `%s — ${SITE_NAME} Admin`, default: `${SITE_NAME} Admin` },
   robots: { index: false, follow: false },
 };
 

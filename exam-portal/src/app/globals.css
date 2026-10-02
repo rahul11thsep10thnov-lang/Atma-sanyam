@@ -1,11 +1,9 @@
 @import "tailwindcss";
 
 /*
- * Design tokens (Section 32). An original palette, deliberately not the
- * red/orange associated with existing government-jobs sites: a calm
- * teal for brand/primary actions, amber reserved for time-sensitive
- * badges ("closing soon"), slate for text/surfaces. Single light theme
- * for now — no dark mode toggle to keep this phase's scope in check.
+ * Design tokens (Section 32). Brand pair: green #25D482 + coral #FF6A5A,
+ * used together as a gradient on every heading and on CTA text. Slate
+ * for body text/surfaces, amber for time-sensitive badges.
  */
 :root {
   --background: #ffffff;
@@ -16,6 +14,29 @@
   --color-brand-700: #0f766e;
   --color-brand-900: #134e4a;
   --color-accent-500: #f59e0b;
+  --brand-green: #25d482;
+  --brand-coral: #ff6a5a;
+  --heading-gradient: linear-gradient(90deg, var(--brand-green) 0%, var(--brand-coral) 100%);
+
+  /* Background watermark (see .background-watermark below). The image
+   * lives at public/watermark.webp — change this one line to point
+   * somewhere else. Opacity is the single knob to tune prominence. */
+  --watermark-image: url("/watermark.webp");
+  --watermark-size: cover; /* switch to `contain` if `cover` crops the six panels too much */
+  --watermark-opacity: 0.08;
+  --watermark-overlay: 0.35; /* white wash above the artwork; raise toward 0.8 if it's still too strong */
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --watermark-opacity: 0.06;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --watermark-opacity: 0.05;
+  }
 }
 
 @theme inline {
@@ -27,11 +48,136 @@
   --color-brand-700: var(--color-brand-700);
   --color-brand-900: var(--color-brand-900);
   --color-accent-500: var(--color-accent-500);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-brand-green: var(--brand-green);
+  --color-brand-coral: var(--brand-coral);
+  --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+  --font-tillana: var(--font-tillana), serif;
+  --font-kalam: var(--font-kalam), cursive;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+/* Every heading, public and admin alike: Josefin Sans in the green→coral
+ * brand gradient. Unlayered on purpose so it wins over Tailwind's
+ * layered `text-*` utilities already on existing headings. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+  background-image: var(--heading-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* --- Call-to-action tabs (primary navigation) ------------------------- */
+
+.cta-button {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  min-width: 9rem;
+
+  background: linear-gradient(
+    110deg,
+    #b51fc4 0%,
+    #d8239b 25%,
+    #f04468 50%,
+    #ff6335 75%,
+    #b51fc4 100%
+  );
+  background-size: 300% 100%;
+  animation: ctaGradient 5s ease-in-out infinite;
+
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  border: 0;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(220, 40, 120, 0.25);
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+
+/* The text itself carries the brand pair as a gradient; the span keeps
+ * `background-clip: text` separate from the button's own animated
+ * background. */
+.cta-button > span {
+  background-image: linear-gradient(90deg, var(--brand-green), var(--brand-coral));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45));
+}
+
+.cta-button:hover,
+.cta-button:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(220, 40, 120, 0.35);
+  outline: none;
+}
+
+@keyframes ctaGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-button {
+    animation: none;
+  }
+}
+
+/* --- Full-site background watermark ----------------------------------- */
+/* Layer 1: artwork. Layer 2: translucent white wash. Layer 3: content
+ * (.website-content). Both background layers are fixed, click-through and
+ * decorative, so scrolling, modals and keyboard focus are unaffected. */
+
+.background-watermark {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--watermark-image);
+  background-size: var(--watermark-size);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: var(--background);
+  opacity: var(--watermark-opacity);
+  filter: saturate(0.7);
+}
+
+.watermark-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: rgba(255, 255, 255, var(--watermark-overlay));
+}
+
+.website-content {
+  position: relative;
+  z-index: 1;
 }
