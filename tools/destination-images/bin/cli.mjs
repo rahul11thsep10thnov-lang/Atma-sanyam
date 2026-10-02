@@ -206,7 +206,12 @@ if (!target || !['plan', 'generate', 'render', 'images'].includes(command)) {
   console.log(header.slice(0, header.findIndex((l) => !l.startsWith('//'))).map((l) => l.replace(/^\/\/ ?/, '')).join('\n'));
   process.exit(command ? 1 : 0);
 }
-if (command === 'plan') plan(target);
-else if (command === 'render') render(target);
-else if (command === 'images') await images(target, flags);
-else await generate(target, flags);
+try {
+  if (command === 'plan') plan(target);
+  else if (command === 'render') render(target);
+  else if (command === 'images') await images(target, flags);
+  else await generate(target, flags);
+} catch (err) {
+  console.error(`Error: ${err?.message ?? err}`);
+  process.exit(1);
+}
