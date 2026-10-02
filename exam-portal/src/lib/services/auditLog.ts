@@ -1,6 +1,6 @@
 import type { Prisma } from "@/generated/prisma/client";
 import type { AuditAction } from "@/generated/prisma/enums";
-import { prisma } from "@/lib/db/client";
+import { prisma } from "@/lib/db/prisma";
 
 /** Actor string recorded for automated pipeline actions (no admin). */
 export const PIPELINE_ACTOR = "pipeline";

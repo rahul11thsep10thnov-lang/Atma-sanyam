@@ -7,6 +7,7 @@ import { extractCandidates } from "./parsers/html";
 import { parseFeed, parseSitemap } from "./parsers/feed";
 import { ingestDocument, type IngestResult } from "./ingest";
 import { recordPipelineError, resolvePipelineErrors } from "./errors";
+import { createNoticeFromIngest, type NoticeResult } from "./notices";
 import type { CandidateItem } from "./types";
 
 export interface CheckOptions {
@@ -29,6 +30,8 @@ export interface CheckResult {
   newItems: number;
   candidates: CandidateItem[];
   ingested: IngestResult[];
+  /** Notices created or updated from the ingested documents (Phase 4). */
+  notices: NoticeResult[];
   error: string | null;
   robotsStatus: string;
 }
@@ -62,6 +65,7 @@ export async function checkSource(sourceId: string, options: CheckOptions = {}):
     newItems: 0,
     candidates: [],
     ingested: [],
+    notices: [],
     error: null,
     robotsStatus: "",
   };
@@ -174,6 +178,22 @@ export async function checkSource(sourceId: string, options: CheckOptions = {}):
   const fetchImpl = options.fetchOptions?.fetchImpl;
   const allowedByRobots = async (url: string) => (await checkRobots(url, fetchImpl)).allowed;
   const fresh = candidates.filter((c) => !known.has(c.url)).slice(0, maxNewItems);
+  // Extraction failures are recorded, never fatal: the document is stored
+  // and the retry loop (Phase 7) picks the error up later.
+  const extractInto = async (into: CheckResult, ingested: IngestResult) => {
+    try {
+      const notice = await createNoticeFromIngest(ingested, { sourceId, pipelineRunId });
+      if (notice) into.notices.push(notice);
+    } catch (err) {
+      await recordPipelineError({
+        errorType: "EXTRACTION",
+        message: `${ingested.title}: ${err instanceof Error ? err.message : String(err)}`,
+        sourceId,
+        documentId: ingested.documentId,
+        pipelineRunId,
+      });
+    }
+  };
 
   for (const candidate of fresh) {
     if (!(await allowedByRobots(candidate.url))) continue;
@@ -188,6 +208,7 @@ export async function checkSource(sourceId: string, options: CheckOptions = {}):
       });
       result.ingested.push(ingested);
       if (ingested.isNew) result.newItems += 1;
+      await extractInto(result, ingested);
     } catch (err) {
       // One bad document never aborts the whole source.
       await recordPipelineError({
@@ -213,7 +234,10 @@ export async function checkSource(sourceId: string, options: CheckOptions = {}):
         pipelineRunId,
         fetchOptions: options.fetchOptions,
       });
-      if (ingested.changed) result.ingested.push(ingested);
+      if (ingested.changed) {
+        result.ingested.push(ingested);
+        await extractInto(result, ingested);
+      }
     } catch (err) {
       await recordPipelineError({
         errorType: "FETCH",

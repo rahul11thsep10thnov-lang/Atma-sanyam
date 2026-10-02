@@ -25,6 +25,18 @@ Every variable actually read by the app, cross-checked against the code
 | `NEXT_PUBLIC_SITE_URL` | `src/lib/siteConfig.ts` | Public site URL used by the sitemap, `robots.txt`, canonical URLs, and JSON-LD. Defaults to `http://localhost:3000`. **Set this in production** — the default will otherwise leak into your sitemap and structured data. |
 | `AI_EXTRACTION_PROVIDER` | `src/lib/ai/provider.ts` | Defaults to `mock` (a deterministic stub — no external calls, no cost, clearly-labeled placeholder output). Setting it to anything else throws immediately rather than silently using mock data, until a real provider is implemented in `provider.ts` and wired into `getAIProvider()`. There is currently no real provider implemented — see `DEVELOPMENT_STATUS.md`'s Phase 14 entry. |
 
+## Automated notice pipeline (optional)
+
+| Variable | Read by | Notes |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | `src/lib/pipeline/extract/claude.ts` | Enables the Claude extraction stage. Unset → rules-only extraction; the pipeline still works, it just sends more notices to the review queue. The key is read by the official `@anthropic-ai/sdk` client, never logged. |
+| `AI_EXTRACTION_MODEL` | same | Defaults to `claude-opus-5-5`. |
+| `AI_EXTRACTION_EFFORT` | same | `low` / `medium` / `high`; defaults to `medium`. |
+| `CLAUDE_TRIGGER_CONFIDENCE` | `src/lib/pipeline/extract/index.ts` | Rules score below which Claude is consulted (default `0.9`). Raise it to spend more on AI, lower it to spend less. |
+| `AUTO_PUBLISH_MIN_CONFIDENCE` | same | Default `0.95`. A notice is auto-approved only when `confidence × source authority` reaches this, every field is verified against the document text, and validation found nothing wrong. |
+| `REVIEW_MIN_CONFIDENCE` | same | Default `0.8`. At or above → `NEEDS_REVIEW`; below → stays `NEW`. |
+| `OCR_ENABLED` | `src/lib/pipeline/ocr.ts` | `true` turns on tesseract.js OCR (English + Hindi) for scanned PDFs and images. Off by default; scanned documents are then recorded as an `OCR` pipeline error instead of being silently skipped. |
+
 ## Not currently read by anything
 
 These channels exist as `NotificationChannel` enum values and have a

@@ -58,6 +58,9 @@ describe.skipIf(!HAS_DB)("checkSource (loopback integration)", () => {
     const { prisma } = await import("@/lib/db/prisma");
     const docs = await prisma.document.findMany({ where: { sourceId }, select: { id: true } });
     await prisma.pipelineError.deleteMany({ where: { OR: [{ sourceId }, { documentId: { in: docs.map((d) => d.id) } }] } });
+    const notices = await prisma.recruitmentNotice.findMany({ where: { sourceId }, select: { id: true } });
+    await prisma.auditLog.deleteMany({ where: { contentType: "RecruitmentNotice", contentId: { in: notices.map((n) => n.id) } } });
+    await prisma.recruitmentNotice.deleteMany({ where: { sourceId } });
     await prisma.document.deleteMany({ where: { sourceId } });
     await prisma.source.delete({ where: { id: sourceId } });
     await new Promise<void>((r) => server.close(() => r()));
@@ -85,6 +88,25 @@ describe.skipIf(!HAS_DB)("checkSource (loopback integration)", () => {
     expect(notice.mimeType).toBe("application/pdf");
     expect(notice.versions).toHaveLength(1);
     expect(docs.find((d) => d.filename === "admit.pdf")!.documentType).toBe("ADMIT_CARD");
+
+    // Phase 4: every ingested document gets a structured notice.
+    expect(result.notices).toHaveLength(2);
+    const job = await prisma.recruitmentNotice.findFirstOrThrow({ where: { sourceId, documentId: notice.id } });
+    expect(job.noticeType).toBe("JOB");
+    // Loopback host is not an official domain and the rules extractor
+    // alone is never trusted blindly: queued for a human, never auto-approved.
+    expect(["NEW", "NEEDS_REVIEW"]).toContain(job.status);
+    expect(job.overallConfidence).toBeGreaterThan(0.5);
+    expect(job.sourceDomain).toBe("127.0.0.1");
+    const extracted = job.extracted as { vacancies: number; application_end_date: string; organization: string };
+    expect(extracted.vacancies).toBe(60244);
+    expect(extracted.application_end_date).toBe("2027-01-10");
+    expect(extracted.organization).toBe("UP POLICE RECRUITMENT AND PROMOTION BOARD");
+    expect((job.fieldConfidence as Record<string, { verified: boolean }>).vacancies.verified).toBe(true);
+    const admit = await prisma.recruitmentNotice.findFirstOrThrow({ where: { sourceId, document: { filename: "admit.pdf" } } });
+    expect(admit.noticeType).toBe("ADMIT_CARD");
+    expect(admit.priority).toBe("HIGH");
+    expect(await prisma.auditLog.count({ where: { actor: "pipeline", action: "CREATE", contentType: "RecruitmentNotice", contentId: job.id } })).toBe(1);
 
     const source = await prisma.source.findUniqueOrThrow({ where: { id: sourceId } });
     expect(source.lastSuccessAt).not.toBeNull();
@@ -122,6 +144,17 @@ describe.skipIf(!HAS_DB)("checkSource (loopback integration)", () => {
     expect(notice.versions.map((v) => v.versionNumber)).toEqual([1, 2]);
     expect(notice.versions[0].checksum).not.toBe(notice.versions[1].checksum);
     expect(notice.extractedText).toContain("20-01-2027");
+
+    // Phase 4: the changed PDF updates the same notice (an UPDATE, not a duplicate).
+    expect(result.notices).toHaveLength(1);
+    expect(result.notices[0].created).toBe(false);
+    expect(await prisma.recruitmentNotice.count({ where: { documentId: notice.id } })).toBe(1);
+    const updated = await prisma.recruitmentNotice.findFirstOrThrow({ where: { documentId: notice.id } });
+    expect(updated.documentVersionId).toBe(notice.versions[1].id);
+    expect((updated.extracted as { application_end_date: string }).application_end_date).toBe("2027-01-20");
+    const change = updated.changeSummary as { versionNumber: number; diff: Array<{ old: string | null; new: string | null }> };
+    expect(change.versionNumber).toBe(2);
+    expect(change.diff[0].new).toBe("Last date of application: 20-01-2027");
   });
 
   it("dry-run lists candidates without storing anything", async () => {

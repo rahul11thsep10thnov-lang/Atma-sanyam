@@ -18,6 +18,7 @@
     "seed:sources": "tsx --env-file-if-exists=.env prisma/seedSources.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
     "@aws-sdk/client-s3": "^3.1142.0",
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",

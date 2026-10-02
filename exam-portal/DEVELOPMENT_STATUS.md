@@ -1065,6 +1065,90 @@ Bugs caught by the tests before any commit: pdf.js v6 has no
 cells ("12-01-2027Notification"), defeating the date regex's word
 boundary until element text was space-joined.
 
+## Automation pipeline — Phase 4: AI extraction with provenance ✅
+
+`src/lib/pipeline/extract/` turns a document's text into the structured
+notice JSON the spec asks for (§8/§9), field by field with provenance,
+and `src/lib/pipeline/notices.ts` persists it as a `RecruitmentNotice`.
+Every source check now ends with a notice per ingested document.
+
+- `schema.ts` — the Zod schema for the extraction (`notice_type`,
+  organization, exam, posts, department, advertisement number, vacancies,
+  application/exam/admit-card/result dates as ISO, eligibility, salary,
+  fee, selection process, official URLs, important dates, reservation,
+  physical requirements, language, summary). `FieldProvenance` records,
+  per field, the confidence, the source line, the **page number**, which
+  extractor produced it and whether it was verified against the text.
+- `rules.ts` — deterministic extractor that always runs: notice-type
+  rules ordered most-specific first (deadline extension / corrigendum /
+  postponed … before the generic JOB), header-line organization/exam/
+  department detection, advertisement number, vacancies, labelled dates
+  (incl. the *new* date of an extension — "extended from X **to Y**"),
+  fee, age range, salary, education keywords, selection stages in
+  document order, apply/notification URLs, Devanagari-ratio language
+  detection, and a weighted overall score. Nothing is ever filled from
+  what is "typical" for an organization: unstated → `null`.
+- `claude.ts` — the Claude stage (official `@anthropic-ai/sdk`,
+  `messages.parse` with a strict Zod output format, cached system prompt,
+  `claude-opus-5-5` by default, effort configurable). **Hallucination
+  guard (§38):** the model must quote verbatim evidence for every
+  non-null field; each quote is searched in the document, and a field
+  whose quote is not found is marked unverified with its confidence
+  capped at 0.4, so an invented value can never reach auto-publish.
+  Only consulted when `ANTHROPIC_API_KEY` is set *and* the rules are not
+  confident (cost control, §36); refusals/parse failures/API errors
+  degrade to rules-only instead of failing the ingest.
+- `index.ts` — `extractNotice()` (staged run + field-wise merge:
+  verified Claude > rules > unverified Claude), `validateExtraction()`
+  (start after end, exam before closing, non-positive vacancies, min age
+  above max, closing date a year before publication, unknown type,
+  missing organization) and `decideStatus()`: `confidence × source
+  authority` (1.0 for the organization's own `.gov.in`/official domain,
+  0.85 otherwise) ≥ 0.95 with no validation errors and no unverified
+  field → `AUTO_APPROVED`; ≥ 0.80 → `NEEDS_REVIEW`; else `NEW`.
+  Thresholds are env-tunable (`AUTO_PUBLISH_MIN_CONFIDENCE`,
+  `REVIEW_MIN_CONFIDENCE`, `CLAUDE_TRIGGER_CONFIDENCE`).
+- `notices.ts` — `createNoticeFromIngest()`: one `RecruitmentNotice` per
+  document with `extracted`, `fieldConfidence`, `validationErrors`,
+  `overallConfidence`, type, priority (URGENT for extensions/
+  postponements/cancellations/corrigenda, HIGH for admit cards/exam
+  dates/interviews or a deadline inside a week), source URL/domain, the
+  document + version it came from, and a pipeline audit-log row. A
+  **changed document updates the same notice** (new `documentVersionId`,
+  `changeSummary` with the version diff) instead of creating a second
+  one; a notice that was already approved/published drops back to
+  `NEEDS_REVIEW` when its document changes. Empty text (scanned PDF
+  without OCR) is an `EXTRACTION` pipeline error, never a blank notice.
+- `sourceCheck.ts` runs extraction after each new/changed ingest; an
+  extraction failure is a recorded, retryable error and never aborts the
+  source check. `CheckResult.notices` reports what was created/updated.
+- `auditLog.ts` now imports the unguarded Prisma client so the pipeline
+  can write audit rows from the worker/tests too.
+- `.env.example` / `ENVIRONMENT_VARIABLES.md` document `ANTHROPIC_API_KEY`,
+  `AI_EXTRACTION_MODEL`, `AI_EXTRACTION_EFFORT`, the three thresholds and
+  `OCR_ENABLED`.
+
+Tests (`npm run test`, 75 passing): `rules.test.ts` runs five realistic
+notice texts (UPPRPB constable advertisement, SSC CGL notice, admit card,
+deadline-extension corrigendum, RRB result) and checks every extracted
+fact, provenance line/page, `null` for unstated dates, the extension's
+*new* date, the validation and status matrix, and the Claude evidence
+path with an injected parse function: a verified quote scores 0.9 and
+wins the merge, a hallucinated `exam_date` whose quote is not in the
+text is kept only as a flagged, unverified field. The loopback
+integration test now also asserts that the first check creates a `JOB`
+notice (vacancies 60244, closing date 2027-01-10, organization line,
+verified provenance, pipeline audit row) plus a HIGH-priority
+`ADMIT_CARD` notice, and that the changed PDF **updates** that one notice
+(version 2, `changeSummary` diff, closing date 2027-01-20) rather than
+adding a duplicate.
+
+Failures the tests caught before commit: concatenating an alternation
+regex with the date suffix only applied the suffix to the last
+alternative (every labelled date silently came back `null`), the
+deadline-extension rule picked the *old* date, the fee rule missed
+"Fee payable: Rs. 100/-", and the department rule was case-sensitive.
+
 ## Known follow-ups / decisions to revisit
 
 - `prisma@8` will move out of RC eventually — re-run `npm audit` and
