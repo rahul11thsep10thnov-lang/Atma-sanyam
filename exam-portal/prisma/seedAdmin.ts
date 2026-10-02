@@ -4,7 +4,7 @@
 //   ADMIN_BOOTSTRAP_EMAIL=you@example.com \
 //   ADMIN_BOOTSTRAP_PASSWORD='a-long-Strong-passw0rd' \
 //   ADMIN_BOOTSTRAP_NAME='Your Name' npm run seed:admin
-import { prisma } from "../src/lib/db/client";
+import { prisma } from "./scriptDb";
 import { hashPassword } from "../src/lib/auth/password";
 
 async function main() {

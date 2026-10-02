@@ -9,7 +9,7 @@
 //
 //   npm run seed:content                  # states, categories, tags only
 //   npm run seed:content -- --with-samples  # + demo exam/job/result/etc.
-import { prisma } from "../src/lib/db/client";
+import { prisma } from "./scriptDb";
 
 const STATES: Array<{ name: string; code: string }> = [
   { name: "Andhra Pradesh", code: "AP" },
