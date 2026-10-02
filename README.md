@@ -197,6 +197,9 @@ npm run db:generate -- --name describe-change   # writes drizzle/NNNN_*.sql — 
 npm run db:migrate                              # apply locally; production applies on container start
 ```
 
+> Day-to-day playbook for the exam team (generate, review, publish, build
+> tests, add exams): [docs/OPERATOR_GUIDE.md](docs/OPERATOR_GUIDE.md).
+
 ## 11. How to generate questions
 
 Console → **Generate Questions** → choose exam, subject, chapter (and topic),
