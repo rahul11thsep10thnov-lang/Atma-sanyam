@@ -8,6 +8,7 @@ const cardSelect = {
   id: true,
   title: true,
   titleHi: true,
+  translationSource: true,
   slug: true,
   year: true,
   summary: true,
@@ -86,7 +87,7 @@ export async function getPublishedRecruitmentBySlug(slug: string) {
       notices: {
         where: { status: "PUBLISHED" },
         orderBy: [{ publishedAt: "desc" }],
-        select: { id: true, noticeType: true, priority: true, title: true, titleHi: true, summary: true, summaryHi: true, sourceUrl: true, sourceDomain: true, sourcePublishedAt: true, publishedAt: true, publishedContentType: true, publishedContentId: true, extracted: true, changeSummary: true },
+        select: { id: true, noticeType: true, priority: true, title: true, titleHi: true, summary: true, summaryHi: true, translationSource: true, sourceUrl: true, sourceDomain: true, sourcePublishedAt: true, publishedAt: true, publishedContentType: true, publishedContentId: true, extracted: true, changeSummary: true },
       },
       jobs: { where: { status: "PUBLISHED" }, orderBy: { publishedAt: "desc" }, select: { slug: true, title: true, vacancies: true, applicationEndDate: true, applyUrl: true, officialWebsite: true, qualification: true, ageLimitMin: true, ageLimitMax: true, applicationFee: true, salary: true, selectionProcess: true, advertisementNumber: true, notificationDocument: { select: { storageUrl: true, filename: true } } } },
       admitCards: { where: { status: "PUBLISHED" }, orderBy: { publishedAt: "desc" }, select: { slug: true, title: true, releaseDate: true, examDate: true, downloadUrl: true } },

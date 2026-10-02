@@ -7,6 +7,7 @@ import { extractNotice, validateExtraction, decideStatus, type ExtractedNotice, 
 import type { IngestResult } from "./ingest";
 import { resolveEntities, type ResolutionResult } from "./resolve";
 import { canonicalizeUrl, findDuplicate } from "./dedup";
+import { translateNotice, isTranslationEnabled } from "./translate";
 
 /**
  * Turns an ingested document (or a new version of one) into a
@@ -261,6 +262,14 @@ export async function createNoticeFromIngest(ingested: IngestResult, ctx: Notice
     contentId: created.id,
     newValue: { status, noticeType: extracted.data.notice_type, overallConfidence: extracted.overallConfidence, extractors: extracted.extractors, ...(duplicate ? { duplicateOf: duplicate.duplicateOfId, reason: duplicate.reason } : {}) },
   });
+  // Phase 11: Hindi text for the public site (only when Claude is configured; labelled as machine translation).
+  if (!duplicate && isTranslationEnabled()) {
+    try {
+      await translateNotice(created.id);
+    } catch (err) {
+      console.error("translation failed for notice", created.id, err instanceof Error ? err.message : err);
+    }
+  }
   return { noticeId: created.id, status, noticeType: extracted.data.notice_type, created: true, overallConfidence: extracted.overallConfidence, duplicateOfId: duplicate?.duplicateOfId ?? null };
 }
 

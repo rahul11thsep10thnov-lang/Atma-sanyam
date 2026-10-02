@@ -5,18 +5,20 @@ import { RecruitmentCard } from "@/components/cards/RecruitmentCard";
 import { EmptyState } from "@/components/EmptyState";
 import { Pagination } from "@/components/Pagination";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { resolveLang } from "@/lib/i18n/lang";
 
 export const metadata: Metadata = {
   title: "Government Recruitments — every notice in one place",
   description: "Every government recruitment with its job notification, admit card, answer key, result and corrigenda on one timeline, straight from official sources.",
-  alternates: { canonical: "/recruitments" },
+  alternates: { canonical: "/recruitments", languages: { en: "/recruitments", hi: "/recruitments?lang=hi", "x-default": "/recruitments" } },
+  openGraph: { title: "Government Recruitments", description: "Every recruitment with its notification, admit card, answer key and result on one timeline.", url: "/recruitments", type: "website" },
 };
 
 export default async function RecruitmentsIndexPage({ searchParams }: { searchParams: Promise<{ page?: string; category?: string; window?: string; q?: string; lang?: string }> }) {
   const sp = await searchParams;
   const page = Math.max(1, Number(sp.page) || 1);
   const window = sp.window === "closed" ? "closed" : sp.window === "all" ? "all" : "open";
-  const lang = sp.lang === "hi" ? "hi" : "en";
+  const lang = await resolveLang(sp.lang);
   const [list, categories] = await Promise.all([
     listPublishedRecruitments({ page, categorySlug: sp.category || undefined, window, q: sp.q?.trim() || undefined }),
     listPublicCategories(),

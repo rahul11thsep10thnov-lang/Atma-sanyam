@@ -5,7 +5,8 @@ import { requireAdmin } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/client";
 import { getNoticeDetail, NOTICE_TYPES_ALL, NOTICE_PRIORITIES } from "@/lib/pipeline/review";
 import { ConfidenceBar, NoticeStatusBadge, NoticeTypeBadge, PriorityBadge } from "@/components/admin/NoticeBadges";
-import { approveNoticeAction, rejectNoticeAction, reopenNoticeAction, publishNoticeAction, markDuplicateAction, reextractNoticeAction } from "../actions";
+import { approveNoticeAction, rejectNoticeAction, reopenNoticeAction, publishNoticeAction, markDuplicateAction, reextractNoticeAction, translateNoticeAction } from "../actions";
+import { isTranslationEnabled } from "@/lib/pipeline/translate";
 import { NoticeEditForm } from "./NoticeEditForm";
 
 export const metadata: Metadata = { title: "Notice" };
@@ -54,7 +55,7 @@ export default async function NoticeDetailPage({ params, searchParams }: { param
           <ConfidenceBar value={notice.overallConfidence} />
         </div>
         <h1 className="mt-2 text-xl font-semibold text-slate-900">{notice.title}</h1>
-        {notice.titleHi ? <p className="text-slate-700" lang="hi">{notice.titleHi}</p> : null}
+        {notice.titleHi ? <p className="text-slate-700" lang="hi">{notice.titleHi} <span className="text-[10px] text-slate-400">{notice.translationSource === "claude" ? "AI translation" : notice.translationSource === "admin" ? "human translation" : ""}</span></p> : null}
         <p className="mt-1 text-sm text-slate-600">{notice.summary ?? "No summary."}</p>
         <p className="mt-1 text-xs text-slate-500">
           Found {fmt(notice.createdAt)} from {notice.source ? <Link href={`/admin/automation/sources/${notice.source.id}/edit`} className="text-brand-700 hover:underline">{notice.source.name}</Link> : notice.sourceDomain}
@@ -107,6 +108,9 @@ export default async function NoticeDetailPage({ params, searchParams }: { param
           ) : null}
           {canPublish && notice.documentId ? (
             <form action={reextractNoticeAction}><input type="hidden" name="id" value={id} /><input type="hidden" name="returnTo" value={here} /><button className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Re-extract</button></form>
+          ) : null}
+          {canReview && isTranslationEnabled() ? (
+            <form action={translateNoticeAction}><input type="hidden" name="id" value={id} /><input type="hidden" name="returnTo" value={here} /><button className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Translate to Hindi (AI)</button></form>
           ) : null}
           <span className="ml-auto font-mono text-[11px] text-slate-400" title="notice id">{id}</span>
         </section>

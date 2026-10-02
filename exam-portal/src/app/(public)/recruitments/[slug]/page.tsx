@@ -13,19 +13,26 @@ import { RecruitmentCard } from "@/components/cards/RecruitmentCard";
 import { JsonLd } from "@/components/JsonLd";
 import { AlertSubscribeForm } from "@/components/AlertSubscribeForm";
 import type { NoticeType } from "@/generated/prisma/enums";
+import { resolveLang } from "@/lib/i18n/lang";
 
 type Params = { slug: string };
 
-export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: { params: Promise<Params>; searchParams: Promise<{ lang?: string }> }): Promise<Metadata> {
   const { slug } = await params;
+  const lang = await resolveLang((await searchParams).lang);
   const data = await getPublishedRecruitmentBySlug(slug);
   if (!data) return {};
   const r = data.recruitment;
   const info = deadlineInfo(r.applicationEndDate);
+  const canonical = `/recruitments/${r.slug}`;
+  const title = lang === "hi" && r.titleHi ? r.titleHi : r.title;
+  const description = (lang === "hi" && r.summaryHi ? r.summaryHi : r.summary) ?? `${r.title} by ${r.organization.name}: notification, dates, admit card, answer key and result updates. ${info.label}.`;
   return {
-    title: `${r.title} — ${r.organization.shortName ?? r.organization.name}`,
-    description: r.summary ?? `${r.title} by ${r.organization.name}: notification, dates, admit card, answer key and result updates. ${info.label}.`,
-    alternates: { canonical: `/recruitments/${r.slug}` },
+    title: `${title} — ${r.organization.shortName ?? r.organization.name}`,
+    description,
+    alternates: { canonical, languages: { en: canonical, hi: `${canonical}?lang=hi`, "x-default": canonical } },
+    openGraph: { title, description, url: `${SITE_URL}${canonical}`, siteName: SITE_NAME, type: "article", locale: lang === "hi" ? "hi_IN" : "en_IN", modifiedTime: r.updatedAt.toISOString() },
+    twitter: { card: "summary", title, description },
   };
 }
 
@@ -52,7 +59,7 @@ const contentHref = (type: string | null, slug: string | null | undefined) =>
 export default async function RecruitmentPage({ params, searchParams }: { params: Promise<Params>; searchParams: Promise<{ lang?: string }> }) {
   const { slug } = await params;
   const { lang: langParam } = await searchParams;
-  const lang = langParam === "hi" ? "hi" : "en";
+  const lang = await resolveLang(langParam);
   const data = await getPublishedRecruitmentBySlug(slug);
   if (!data) notFound();
   const { recruitment: r, related } = data;
@@ -95,7 +102,10 @@ export default async function RecruitmentPage({ params, searchParams }: { params
           {r.year ? <span>{r.year}</span> : null}
           <Link href={`/recruitments/${r.slug}${lang === "hi" ? "" : "?lang=hi"}`} className="ml-auto rounded-md border border-slate-300 bg-white px-2 py-0.5 text-slate-700 hover:bg-slate-50" lang={lang === "hi" ? "en" : "hi"}>{lang === "hi" ? "English" : "हिन्दी"}</Link>
         </div>
-        <h1 className="text-2xl font-semibold text-slate-900" lang={lang === "hi" && r.titleHi ? "hi" : undefined}>{title}</h1>
+        <h1 className="text-2xl font-semibold text-slate-900" lang={lang === "hi" && r.titleHi ? "hi" : undefined}>
+          {title}
+          {lang === "hi" && r.titleHi && r.translationSource === "claude" ? <span className="ml-2 align-middle rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-normal text-slate-500" title="यह शीर्षक और सारांश AI द्वारा अनूदित हैं; मूल अंग्रेज़ी पाठ आधिकारिक है।">AI अनुवाद</span> : null}
+        </h1>
         {summary ? <p className="text-sm text-slate-600" lang={lang === "hi" && r.summaryHi ? "hi" : undefined}>{summary}</p> : null}
         <div className="flex flex-wrap items-center gap-2">
           <DeadlineBadge endDate={r.applicationEndDate} lang={lang} />
@@ -148,7 +158,10 @@ export default async function RecruitmentPage({ params, searchParams }: { params
                   <time dateTime={(n.sourcePublishedAt ?? n.publishedAt ?? r.updatedAt).toISOString()} className="text-slate-500">{formatDate(n.sourcePublishedAt ?? n.publishedAt)}</time>
                   {n.priority === "URGENT" ? <span className="rounded-full bg-red-600 px-2 py-0.5 font-medium text-white">{lang === "hi" ? "तत्काल" : "urgent"}</span> : null}
                 </div>
-                <h3 className="mt-1 text-sm font-medium text-slate-900" lang={lang === "hi" && n.titleHi ? "hi" : undefined}>{href ? <Link href={href} className="hover:underline">{nTitle}</Link> : nTitle}</h3>
+                <h3 className="mt-1 text-sm font-medium text-slate-900" lang={lang === "hi" && n.titleHi ? "hi" : undefined}>
+                  {href ? <Link href={href} className="hover:underline">{nTitle}</Link> : nTitle}
+                  {lang === "hi" && n.titleHi && n.translationSource === "claude" ? <span className="ml-1 align-middle rounded bg-slate-100 px-1 text-[10px] font-normal text-slate-500">AI अनुवाद</span> : null}
+                </h3>
                 {nSummary ? <p className="mt-0.5 text-sm text-slate-600" lang={lang === "hi" && n.summaryHi ? "hi" : undefined}>{nSummary}</p> : null}
                 <ul className="mt-1 flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-slate-600">
                   {ex.application_end_date ? <li>{t.end}: <b>{ex.application_end_date}</b></li> : null}

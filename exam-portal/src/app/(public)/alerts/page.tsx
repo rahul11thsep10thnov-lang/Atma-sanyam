@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/db/client";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { AlertSubscribeForm } from "@/components/AlertSubscribeForm";
+import { resolveLang } from "@/lib/i18n/lang";
 
 export const metadata: Metadata = {
   title: "Job alerts by e-mail",
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 
 export default async function AlertsPage({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
   const { lang: l } = await searchParams;
-  const lang = l === "hi" ? "hi" : "en";
+  const lang = await resolveLang(l);
   const [categories, organizations, states] = await Promise.all([
     prisma.category.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } }),
     prisma.organization.findMany({ where: { recruitments: { some: { status: "PUBLISHED" } } }, orderBy: { name: "asc" }, select: { id: true, name: true } }),

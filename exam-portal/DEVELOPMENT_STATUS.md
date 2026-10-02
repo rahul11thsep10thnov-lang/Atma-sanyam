@@ -1541,6 +1541,51 @@ token → 404, bad unsubscribe link → "Link not valid"; `/admin/alerts`
 lists the three subscriptions (active / unconfirmed, keyword scope) and
 reports the provider as not configured. No page errors or 5xx.
 
+## Automation pipeline — Phase 11: Bilingual EN/HI and SEO ✅
+
+Spec §22/§27: the public site reads in English or Hindi, machine
+translations are labelled as such, and recruitment pages carry the
+metadata search engines expect.
+
+- `src/lib/i18n/lang.ts` — `pickLang()` (`?lang=` beats the `lang`
+  cookie beats English), `resolveLang()`, `withLang()`.
+  `GET /lang/hi?to=/path` stores the cookie and returns to the page
+  (same-site paths only; `//evil` is refused). A **हिन्दी / English**
+  toggle in the header (every public page) keeps the choice; the
+  recruitments index/detail and the alerts page honour it, and `?lang=`
+  still overrides for shared links.
+- Translation: `src/lib/pipeline/translate.ts` — Claude produces
+  `titleHi`/`summaryHi` for every new notice and its recruitment when
+  `ANTHROPIC_API_KEY` is set (`AI_TRANSLATION_ENABLED=false` to skip),
+  stored with `translationSource = "claude"` (new column on
+  `recruitments` and `recruitment_notices`, additive migration
+  `translation_source`); nothing is invented without a key. An admin
+  editing the Hindi fields marks them `"admin"`, and a machine
+  translation never overwrites a human one (unless forced from the
+  "Translate to Hindi (AI)" button on the notice page). The site labels
+  machine text **AI अनुवाद** on cards, the recruitment title and timeline
+  entries; the admin page shows "AI translation" / "human translation".
+- SEO: recruitment pages emit `hreflang` alternates (en / hi /
+  x-default), canonical, Open Graph (title, description, url, siteName,
+  `article`, locale `en_IN`/`hi_IN`, modifiedTime) and Twitter card, on
+  top of the JobPosting + BreadcrumbList JSON-LD and sitemap entries from
+  Phase 9. Hindi pages get the Hindi title/description.
+- Env docs for `AI_TRANSLATION_ENABLED`, `AI_TRANSLATION_MODEL`.
+
+Tests (`npm run test`, 108 passing): language resolution/URL helpers;
+`translateNotice` with an injected translator stores Hindi for the
+notice and its recruitment labelled `claude`, refuses to overwrite a
+human translation, and does nothing (no invented text) when no
+translator/key exists.
+
+Live (Playwright): header toggle shows हिन्दी → click → cookie `lang=hi`,
+`/recruitments` renders "सरकारी भर्तियाँ" without a query parameter and
+the toggle flips to English; the recruitment page shows the Hindi title
+with the AI अनुवाद label (`lang="hi"`), Hindi `<title>`, hreflang en/hi/
+x-default and `og:locale hi_IN`; the index card carries the label;
+toggling back restores English (`lang=en`); `/lang/hi?to=//evil…` lands
+on `/`; `?lang=hi` still overrides an English cookie. No errors.
+
 ## Known follow-ups / decisions to revisit
 
 - `prisma@8` will move out of RC eventually — re-run `npm audit` and

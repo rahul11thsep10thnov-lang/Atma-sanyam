@@ -32,6 +32,8 @@ Every variable actually read by the app, cross-checked against the code
 | `ANTHROPIC_API_KEY` | `src/lib/pipeline/extract/claude.ts` | Enables the Claude extraction stage. Unset → rules-only extraction; the pipeline still works, it just sends more notices to the review queue. The key is read by the official `@anthropic-ai/sdk` client, never logged. |
 | `AI_EXTRACTION_MODEL` | same | Defaults to `claude-opus-5-5`. |
 | `AI_EXTRACTION_EFFORT` | same | `low` / `medium` / `high`; defaults to `medium`. |
+| `AI_TRANSLATION_ENABLED` | `src/lib/pipeline/translate.ts` | Default on whenever `ANTHROPIC_API_KEY` is set: every new notice (and its recruitment) gets a Hindi title/summary, stored with `translationSource = "claude"` and shown with an "AI अनुवाद" label. `false` disables it; an admin edit of the Hindi text marks it human. |
+| `AI_TRANSLATION_MODEL` | same | Optional model override for translation (defaults to `AI_EXTRACTION_MODEL`, then `claude-opus-5-5`). |
 | `CLAUDE_TRIGGER_CONFIDENCE` | `src/lib/pipeline/extract/index.ts` | Rules score below which Claude is consulted (default `0.9`). Raise it to spend more on AI, lower it to spend less. |
 | `AUTO_PUBLISH_MIN_CONFIDENCE` | same | Default `0.95`. A notice is auto-approved only when `confidence × source authority` reaches this, every field is verified against the document text, and validation found nothing wrong. |
 | `REVIEW_MIN_CONFIDENCE` | same | Default `0.8`. At or above → `NEEDS_REVIEW`; below → stays `NEW`. |

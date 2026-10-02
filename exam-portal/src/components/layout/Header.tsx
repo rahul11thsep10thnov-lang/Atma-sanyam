@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { SearchBar } from "@/components/layout/SearchBar";
 import { SITE_NAME } from "@/lib/siteConfig";
+import { resolveLang } from "@/lib/i18n/lang";
+import { LangToggle } from "@/components/layout/LangToggle";
+import { Suspense } from "react";
 
-export function Header() {
+export async function Header() {
+  const lang = await resolveLang();
   return (
     <header className="relative border-b border-slate-200 bg-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
@@ -22,7 +26,12 @@ export function Header() {
           {SITE_NAME}
         </Link>
 
-        <SearchBar className="hidden max-w-xs flex-1 sm:flex md:max-w-sm" />
+        <div className="flex flex-1 items-center justify-end gap-3">
+          <SearchBar className="hidden max-w-xs flex-1 sm:flex md:max-w-sm" />
+          <Suspense fallback={null}>
+            <LangToggle lang={lang} />
+          </Suspense>
+        </div>
       </div>
 
       <div className="border-t border-slate-100 px-4 py-2 sm:hidden">

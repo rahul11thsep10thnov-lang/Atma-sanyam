@@ -8,7 +8,10 @@ export function RecruitmentCard({ recruitment: r, lang = "en" }: { recruitment: 
   const title = lang === "hi" && r.titleHi ? r.titleHi : r.title;
   return (
     <Link href={`/recruitments/${r.slug}`} className="flex flex-col gap-1.5 rounded-lg border border-slate-200 bg-white p-4 transition-colors hover:border-brand-600">
-      <h3 className="text-sm font-medium text-slate-900" lang={lang === "hi" && r.titleHi ? "hi" : undefined}>{title}</h3>
+      <h3 className="text-sm font-medium text-slate-900" lang={lang === "hi" && r.titleHi ? "hi" : undefined}>
+        {title}
+        {lang === "hi" && r.titleHi && r.translationSource === "claude" ? <span className="ml-1 align-middle rounded bg-slate-100 px-1 text-[10px] font-normal text-slate-500" title="मशीन अनुवाद">AI अनुवाद</span> : null}
+      </h3>
       <p className="text-xs text-slate-500">
         {r.organization.name}
         {primary ? <> · {primary.name}</> : null}

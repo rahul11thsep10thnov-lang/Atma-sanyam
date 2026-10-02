@@ -16,6 +16,7 @@ import {
   type NoticePatch,
 } from "@/lib/pipeline/review";
 import { publishNotice, PublishError } from "@/lib/pipeline/publish";
+import { translateNotice, isTranslationEnabled } from "@/lib/pipeline/translate";
 import type { NoticePriority, NoticeType } from "@/generated/prisma/enums";
 
 const REVIEW_ROLES = ["SUPER_ADMIN", "EDITOR", "REVIEWER"] as const;
@@ -146,4 +147,12 @@ export async function updateNoticeAction(_prev: FormState, formData: FormData): 
   }
   revalidatePath("/admin/automation", "layout");
   redirect(`/admin/automation/inbox/${id}?done=saved&t=${Date.now()}`);
+}
+
+export async function translateNoticeAction(formData: FormData) {
+  const admin = await requireAdminApi([...REVIEW_ROLES]);
+  const id = idOf(formData);
+  if (!isTranslationEnabled()) go(formData, `/admin/automation/inbox/${id}`, { error: "AI translation needs ANTHROPIC_API_KEY." });
+  const r = await translateNotice(id, { force: true, adminId: admin.id });
+  go(formData, `/admin/automation/inbox/${id}`, { done: r.translated ? "translated to Hindi (AI)" : "translation produced nothing" });
 }

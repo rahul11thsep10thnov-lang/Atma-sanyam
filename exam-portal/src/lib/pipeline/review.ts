@@ -156,10 +156,12 @@ export async function updateNotice(id: string, adminId: string, patch: NoticePat
   }
   const { extracted: _e, ...scalar } = patch;
   void _e;
+  const hindiEdited = (patch.titleHi !== undefined && patch.titleHi !== before.titleHi) || (patch.summaryHi !== undefined && patch.summaryHi !== before.summaryHi);
   const updated = await prisma.recruitmentNotice.update({
     where: { id },
     data: {
       ...scalar,
+      ...(hindiEdited ? { translationSource: patch.titleHi || patch.summaryHi ? "admin" : null } : {}),
       extracted: extracted as Prisma.InputJsonValue,
       fieldConfidence: fieldConfidence as Prisma.InputJsonValue,
       reviewedBy: adminId,

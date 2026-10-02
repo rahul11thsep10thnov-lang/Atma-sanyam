@@ -1020,6 +1020,9 @@ model Recruitment {
   slug                 String        @unique
   summary              String?
   summaryHi            String?
+  /// Who produced titleHi/summaryHi: "claude" (machine, labelled as such
+  /// on the site) or "admin" (human). Null = no Hindi text.
+  translationSource    String?
   year                 Int?
   status               ContentStatus @default(DRAFT)
   publishedAt          DateTime?
@@ -1210,6 +1213,7 @@ model RecruitmentNotice {
   titleHi              String?
   summary              String?
   summaryHi            String?
+  translationSource    String?
   slug                 String?        @unique
   sourceUrl            String?
   canonicalUrl         String?
