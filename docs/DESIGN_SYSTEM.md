@@ -42,9 +42,9 @@ accent, 10% highlight.
 
 ## Screens
 
-- **Home** — greeting · balcony hero (latest snapshot) · today's picture · collections · dial · one breathing Start.
+- **Home** — greeting · balcony hero (the person's own balcony, composited live) · today's picture ("My balcony" first) · collections · dial · one breathing Start.
 - **Session** — picture reveals tile by tile; FOCUS chip, hairline progress, one close; Manrope timer with glow; result sheet (bloom + sprout / calm pause).
-- **Balcony** — the 3D world (`src/balconyWorld/`), icon pill actions, snapshot for Home.
+- **Balcony** — the photographic balcony (`src/photoBalcony/`, see `docs/PHOTO_BALCONY.md`): the picture fills the screen; one smoked-glass dock (Focus · Customize · Collection · Gallery) floats above the tab bar; tapping the balcony hides every control, the tab bar included. Placement guides exist only in Customize. A balcony focus session shows no controls but the timer and close.
 - **Progress** — stat tiles, seven-day bars (single series, direct labels, no grid), session pictures, planted empty state.
 - **Settings** — grouped iconed cards, appearance control, calm destructive actions.
 - **Library** — search, breadcrumbs, collection chips, sort control, cached grid.
@@ -62,4 +62,4 @@ accent, 10% highlight.
 
 1 tokens · 2 typography · 3 icons · 4 buttons · 5 cards · 6 navigation · 7 home · 8 timer · 9 balcony · 10 plants · 11 rewards · 12 progress · 13 settings · 14 dark mode · 15 accessibility · 16 performance.
 
-Done: 1–8, 12–14 (plus the library and auth on the kit). In progress: 9 (the 3D balcony roadmap), 10–11 (growth and rewards, tied to the balcony's focus→coin loop), 15–16 (audit passes).
+Done: 1–14 (plus the library and auth on the kit; 9–11 are the photographic balcony, the focus plant's growth, coins and the jigsaw art wall). In progress: 15–16 (audit passes).

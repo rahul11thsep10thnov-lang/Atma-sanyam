@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { RootStackParamList, RootTabParamList } from './types';
 import { HomeScreen } from '../screens/HomeScreen';
-import { BalconyWorldScreen } from '../balconyWorld/ui/BalconyWorldScreen';
+import { BalconyScreen } from '../photoBalcony/ui/BalconyScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { ProgressScreen } from '../screens/ProgressScreen';
 import { ActiveSessionScreen } from '../screens/ActiveSessionScreen';
@@ -31,7 +31,7 @@ function Tabs() {
       screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: 'transparent' } }}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="History" component={BalconyWorldScreen} options={{ title: 'Balcony' }} />
+      <Tab.Screen name="History" component={BalconyScreen} options={{ title: 'Balcony' }} />
       <Tab.Screen name="Progress" component={ProgressScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>

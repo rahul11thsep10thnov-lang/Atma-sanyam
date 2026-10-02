@@ -15,7 +15,4 @@ const ignored = ['backend', 'admin'].map((dir) => new RegExp(`^${escape(path.joi
 const existing = config.resolver.blockList;
 config.resolver.blockList = [...(Array.isArray(existing) ? existing : existing ? [existing] : []), ...ignored];
 
-// 3D models for the Balcony World ship as bundled assets.
-config.resolver.assetExts = [...config.resolver.assetExts, 'glb', 'gltf'];
-
 module.exports = config;

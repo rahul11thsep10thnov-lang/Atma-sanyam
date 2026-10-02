@@ -37,7 +37,13 @@ export interface RemoteImageRef {
   attributionText: string | null;
 }
 
-export type ImageRef = ArtImageRef | QuoteImageRef | CustomImageRef | RemoteImageRef;
+// Focus on the balcony itself: the session shows the person's balcony and
+// its focus plant grows while they focus (src/photoBalcony).
+export interface BalconyImageRef {
+  kind: 'balcony';
+}
+
+export type ImageRef = ArtImageRef | QuoteImageRef | CustomImageRef | RemoteImageRef | BalconyImageRef;
 
 export interface GridDims {
   rows: number;

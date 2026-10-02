@@ -9,8 +9,10 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PuzzleGrid } from '../components/PuzzleGrid';
 import { PuzzleContent, attributionFor } from '../components/PuzzleContent';
 import { SessionResultSheet, RewardLine } from '../components/session/SessionResultSheet';
-import { creditCompletedSession, recordPausedSession } from '../balconyWorld/state/FocusRewards';
-import { STAGE_LABEL } from '../balconyWorld/state/RewardState';
+import { creditCompletedSession, recordPausedSession } from '../photoBalcony/focusEngine';
+import { STAGE_WORDS } from '../photoBalcony/model';
+import { PACK } from '../photoBalcony/pack.generated';
+import { BalconySession } from '../photoBalcony/ui/BalconySession';
 import { useFocusTimer } from '../hooks/useFocusTimer';
 import { RootStackParamList } from '../navigation/types';
 import { saveSessionRecord } from '../storage/history';
@@ -97,11 +99,17 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
     creditCompletedSession(config.durationMinutes)
       .then((summary) => {
         const lines: RewardLine[] = [{ icon: 'coins', text: `+${summary.coinsEarned + summary.bonusCoins} coins for your balcony` }];
-        if (summary.plant) {
-          const grew = summary.plant.after !== summary.plant.before;
-          lines.push({ icon: 'sprout', text: summary.plant.revived ? `${summary.plant.name} revived` : grew ? `${summary.plant.name} is now ${STAGE_LABEL[summary.plant.after]}` : `${summary.plant.name} kept growing` });
+        const name = PACK.focusPlant.name;
+        const grew = summary.plant.after !== summary.plant.before;
+        lines.push({ icon: 'sprout', text: summary.plant.revived ? `Your ${name.toLowerCase()} perked back up` : grew ? `Your ${name.toLowerCase()} is now ${STAGE_WORDS[summary.plant.after]}` : `Your ${name.toLowerCase()} kept growing` });
+        if (summary.art) {
+          const a = summary.art;
+          lines.push({
+            icon: 'puzzle',
+            text: a.finished ? `${a.title} is complete — frame it in the Gallery` : a.started ? `A new artwork arrived: ${a.title}` : `+${a.newPieces} pieces of ${a.title}`,
+          });
         }
-        for (const m of summary.milestones) lines.push({ icon: 'sparkles', text: `${m.title} — ${m.unlocksAssetId ? 'something new in the store' : `+${m.coins} coins`}` });
+        for (const m of summary.milestones) lines.push({ icon: 'sparkles', text: `${m.title} — +${m.coins} coins` });
         setRewardLines(lines);
       })
       .catch(() => undefined);
@@ -114,7 +122,8 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
       show({ outcome: 'failed', reason });
       recordPausedSession()
         .then((summary) => {
-          if (summary.plant) setRewardLines([{ icon: 'leaf', text: summary.plant.wilted ? `${summary.plant.name} is wilting — give it another moment` : `${summary.plant.name} drooped a little` }]);
+          const name = PACK.focusPlant.name.toLowerCase();
+          setRewardLines([{ icon: 'leaf', text: summary.wilted ? `Your ${name} is drooping — a full session will revive it` : `Your ${name} drooped a little` }]);
         })
         .catch(() => undefined);
     },
@@ -153,22 +162,28 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
     Animated.timing(barScale, { toValue: Math.max(0.002, progress), duration: 900, useNativeDriver: true }).start();
   }, [progress, barScale]);
 
-  const leave = () => navigation.replace('Tabs', { screen: 'Home' });
+  const onBalcony = config.image.kind === 'balcony';
+  const leave = () => navigation.replace('Tabs', { screen: onBalcony ? 'History' : 'Home' });
   const attribution = attributionFor(config.image);
 
   return (
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
-      <PuzzleGrid
-        rows={config.grid.rows}
-        cols={config.grid.cols}
-        width={SCREEN_WIDTH}
-        height={SCREEN_HEIGHT}
-        revealedCount={revealedCount}
-        frozen={status === 'failed'}
-        fullBleed
-      >
-        <PuzzleContent image={config.image} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} />
-      </PuzzleGrid>
+      {onBalcony ? (
+        // the balcony itself: the focus plant grows as the minutes pass
+        <BalconySession elapsedMinutes={result?.outcome === 'failed' ? 0 : (totalSeconds - remainingSeconds) / 60} />
+      ) : (
+        <PuzzleGrid
+          rows={config.grid.rows}
+          cols={config.grid.cols}
+          width={SCREEN_WIDTH}
+          height={SCREEN_HEIGHT}
+          revealedCount={revealedCount}
+          frozen={status === 'failed'}
+          fullBleed
+        >
+          <PuzzleContent image={config.image} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} />
+        </PuzzleGrid>
+      )}
 
       {/* top: FOCUS chip · progress · close */}
       <View style={[styles.topRow, { top: insets.top + space.sm }]} pointerEvents="box-none">
@@ -178,19 +193,23 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
             FOCUS
           </AppText>
         </View>
-        <View style={styles.barTrack} pointerEvents="none">
-          <Animated.View style={[styles.barFill, { backgroundColor: colors.accent, transform: [{ scaleX: barScale }] }]} />
-        </View>
+        {onBalcony ? (
+          <View style={{ flex: 1 }} />
+        ) : (
+          <View style={styles.barTrack} pointerEvents="none">
+            <Animated.View style={[styles.barFill, { backgroundColor: colors.accent, transform: [{ scaleX: barScale }] }]} />
+          </View>
+        )}
         {!result && <IconButton icon="close" label="End this session" variant="onImage" size={40} onPress={confirmGiveUp} haptic={false} />}
       </View>
 
       {!result && (
-        <View style={styles.center} pointerEvents="none">
+        <View style={[styles.center, onBalcony && { justifyContent: 'flex-start', paddingTop: insets.top + 72 }]} pointerEvents="none">
           <AppText style={[styles.timer, typography.timer]} accessibilityRole="timer" accessibilityLabel={`${Math.ceil(remainingSeconds / 60)} minutes remaining`}>
             {formatTime(remainingSeconds)}
           </AppText>
           <AppText variant="bodySmall" style={styles.tagline}>
-            Your world is waiting.
+            {onBalcony ? `Your ${PACK.focusPlant.name.toLowerCase()} is growing.` : 'Your world is waiting.'}
           </AppText>
         </View>
       )}
