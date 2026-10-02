@@ -42,9 +42,9 @@ accent, 10% highlight.
 
 ## Screens
 
-- **Home** — greeting · balcony hero (the person's own balcony, composited live) · today's picture ("My balcony" first) · collections · dial · one breathing Start.
+- **Home** — greeting · my spaces (balcony, garden, room composited live) · Grow plants / Jigsaw pictures · dial · one breathing Start.
 - **Session** — picture reveals tile by tile; FOCUS chip, hairline progress, one close; Manrope timer with glow; result sheet (bloom + sprout / calm pause).
-- **Balcony** — the photographic balcony (`src/photoBalcony/`, see `docs/PHOTO_BALCONY.md`): the picture fills the screen; one smoked-glass dock (Focus · Customize · Collection · Gallery) floats above the tab bar; tapping the balcony hides every control, the tab bar included. Placement guides exist only in Customize. A balcony focus session shows no controls but the timer and close.
+- **Balcony · Garden · Room** — the photographic spaces (`src/spaces/`, see `docs/SPACES.md`): the picture fills the screen; one smoked-glass dock (Focus · Customize · Store · Inventory · Gallery) floats above the tab bar; tapping the picture hides every control, the tab bar included. Placement guides exist only in Customize. The garden and room carry a time-of-day chip. A space focus session shows no controls but the timer and close.
 - **Progress** — stat tiles, seven-day bars (single series, direct labels, no grid), session pictures, planted empty state.
 - **Settings** — grouped iconed cards, appearance control, calm destructive actions.
 - **Library** — search, breadcrumbs, collection chips, sort control, cached grid.

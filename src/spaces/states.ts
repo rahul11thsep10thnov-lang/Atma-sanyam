@@ -26,6 +26,8 @@ export interface Veil {
 export function sourceState(pack: SpacePack, wanted: LightState): { source: LightState; veil: Veil | null } {
   const have = new Set(pack.renderedStates);
   if (have.has(wanted)) return { source: wanted, veil: null };
+  // a space photographed in one light only (the balcony) always shows it
+  if (pack.renderedStates.length <= 1) return { source: pack.renderedStates[0] ?? 'morning', veil: null };
   const derive: Partial<Record<LightState, [LightState, Veil][]>> = {
     afternoon: [['morning', { color: '#FFFFFF', opacity: 0.06 }]],
     evening: [['sunset', { color: '#1B2140', opacity: 0.42 }], ['night', { color: '#FFB070', opacity: 0.12 }]],

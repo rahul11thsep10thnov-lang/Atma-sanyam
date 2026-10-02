@@ -70,6 +70,8 @@ export function RootNavigator() {
   };
   const navRef = useNavigationContainerRef<RootStackParamList>();
   const lastRoute = useRef<string | undefined>(undefined);
+  // the first screen depends on whether a language was chosen
+  if (loading) return null;
 
   // One screen_view per screen change (feeds "Top screens" in the admin).
   const onRouteChange = () => {
