@@ -29,6 +29,7 @@ ap.add_argument("--item-samples", type=int, default=40)
 ap.add_argument("--only", default=None)
 ap.add_argument("--skip-plates", action="store_true")
 ap.add_argument("--skip-items", action="store_true")
+ap.add_argument("--fresh", action="store_true", help="re-render even when a sidecar from an earlier run exists")
 ap.add_argument("--out", default=None)
 ap.add_argument("--quality", type=int, default=86)
 args = ap.parse_args(sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else sys.argv[1:])
@@ -304,6 +305,12 @@ def remove_collection(col):
 
 
 def render_item(item_id, builder, kwargs, slot_id, rz, variant, folder, key):
+    # resume: every finished render leaves a sidecar next to its PNG so an interrupted
+    # queue can pick up where it stopped without re-rendering
+    side = TMP / f"{key}__{STATE}.json"
+    if not args.fresh and side.exists() and (OUT / f"{folder}/{key}__{STATE}.webp").exists():
+        print(f"  kept {key} (already rendered)", flush=True)
+        return json.loads(side.read_text())
     slot = catalog.SLOTS[slot_id]
     col = collection(f"item_{key}")
     kw = dict(kwargs)
@@ -339,6 +346,7 @@ def render_item(item_id, builder, kwargs, slot_id, rz, variant, folder, key):
             corners = [mw @ Vector((-aw / 2, inset, ah / 2)), mw @ Vector((aw / 2, inset, ah / 2)), mw @ Vector((aw / 2, inset, -ah / 2)), mw @ Vector((-aw / 2, inset, -ah / 2))]
             entry["artQuad"] = [[round(c, 1) for c in to_px(p)] for p in corners]
     remove_collection(col)
+    side.write_text(json.dumps(entry))
     return entry
 
 
