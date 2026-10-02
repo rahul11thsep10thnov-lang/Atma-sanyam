@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppText } from '../../ui/AppText';
 import { space } from '../../theme/spacing';
+import { t } from '../../i18n';
 
 function partOfDay(hour: number) {
   if (hour < 5) return 'night';
@@ -11,14 +12,15 @@ function partOfDay(hour: number) {
 }
 
 /** "Good evening, Rahul" + one quiet line. Never more text than this. */
-export function Greeting({ name, tagline = 'Your world grows when you focus.' }: { name?: string | null; tagline?: string }) {
+export function Greeting({ name, tagline }: { name?: string | null; tagline?: string }) {
   const part = partOfDay(new Date().getHours());
   const first = name?.trim().split(/\s+/)[0];
+  const greeting = part === 'morning' ? t('home.greetingMorning') : part === 'afternoon' ? t('home.greetingAfternoon') : t('home.greetingEvening');
   return (
     <View style={styles.wrap} accessibilityRole="header">
-      <AppText variant="headingLarge">{`Good ${part}${first ? `, ${first}` : ''}`}</AppText>
+      <AppText variant="headingLarge">{`${greeting}${first ? `, ${first}` : ''}`}</AppText>
       <AppText variant="body" tone="secondary" style={styles.tagline}>
-        {tagline}
+        {tagline ?? t('home.tagline')}
       </AppText>
     </View>
   );

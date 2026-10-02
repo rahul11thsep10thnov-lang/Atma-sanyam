@@ -3,9 +3,13 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 import { ImageRef } from '../types';
 import { colors } from '../theme/colors';
 
-// A still photograph of the balcony for history thumbnails (re-rendered with
-// the pack; see tools/balcony-render).
-const BALCONY_PREVIEW = require('../../assets/balcony/environment/preview.webp');
+// Still photographs of the spaces for history thumbnails (re-rendered with
+// their packs; see tools/balcony-render).
+const SPACE_PREVIEW = {
+  balcony: require('../../assets/balcony/environment/preview.webp'),
+  garden: require('../../assets/garden/environment/preview.webp'),
+  room: require('../../assets/room/environment/preview.webp'),
+};
 
 interface PuzzleContentProps {
   image: ImageRef;
@@ -27,7 +31,8 @@ export function PuzzleContent({ image, width, height }: PuzzleContentProps) {
     );
   }
 
-  if (image.kind === 'balcony') return <Image source={BALCONY_PREVIEW} style={{ width, height: h }} resizeMode="cover" />;
+  if (image.kind === 'balcony') return <Image source={SPACE_PREVIEW.balcony} style={{ width, height: h }} resizeMode="cover" />;
+  if (image.kind === 'space') return <Image source={SPACE_PREVIEW[image.space]} style={{ width, height: h }} resizeMode="cover" />;
   const source = image.kind === 'art' ? image.uri : { uri: image.uri };
   return <Image source={source} style={{ width, height: h }} resizeMode="cover" />;
 }

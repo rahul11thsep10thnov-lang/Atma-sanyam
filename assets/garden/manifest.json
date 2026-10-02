@@ -1,0 +1,63 @@
+{
+ "version": 2,
+ "space": "garden",
+ "plate": {
+  "width": 1080,
+  "height": 2340
+ },
+ "states": {
+  "morning": {
+   "sky": {
+    "file": "environment/sky__morning.webp",
+    "rect": [
+     0,
+     0,
+     1080,
+     2340
+    ]
+   },
+   "landscape": {
+    "file": "environment/landscape__morning.webp",
+    "rect": [
+     0,
+     0,
+     1080,
+     2340
+    ]
+   },
+   "base": {
+    "file": "terrain/base__morning.webp",
+    "rect": [
+     0,
+     0,
+     1080,
+     2340
+    ]
+   },
+   "sunMask": {
+    "file": "lighting/sun_mask__morning.webp",
+    "rect": [
+     0,
+     0,
+     1080,
+     2340
+    ]
+   }
+  }
+ },
+ "items": {},
+ "slots": {},
+ "clouds": {
+  "file": "animations/clouds.webp",
+  "width": 2160,
+  "height": 780,
+  "top": 0,
+  "rect": [
+   0,
+   0,
+   1080,
+   780
+  ]
+ },
+ "dust": "animations/dust.webp"
+}

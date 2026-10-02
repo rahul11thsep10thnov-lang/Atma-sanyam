@@ -4,7 +4,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { RootStackParamList, RootTabParamList } from './types';
 import { HomeScreen } from '../screens/HomeScreen';
-import { BalconyScreen } from '../photoBalcony/ui/BalconyScreen';
+import { SpaceScreen } from '../spaces/ui/SpaceScreen';
+import { LanguageScreen } from '../screens/LanguageScreen';
+import { useSettings } from '../context/SettingsContext';
+import { setLanguage, useLanguage, t } from '../i18n';
+import { useEffect } from 'react';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { ProgressScreen } from '../screens/ProgressScreen';
 import { ActiveSessionScreen } from '../screens/ActiveSessionScreen';
@@ -17,21 +21,29 @@ import { FloatingTabBar, TabSpec } from '../ui/TabBar';
 const Tab = createBottomTabNavigator<RootTabParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const TABS: Record<keyof RootTabParamList, TabSpec> = {
-  Home: { icon: 'home', label: 'Home' },
-  History: { icon: 'sprout', label: 'Balcony' },
-  Progress: { icon: 'chart', label: 'Progress' },
-  Settings: { icon: 'settings', label: 'Settings' },
-};
+const BalconyTab = () => <SpaceScreen space="balcony" />;
+const GardenTab = () => <SpaceScreen space="garden" />;
+const RoomTab = () => <SpaceScreen space="room" />;
 
 function Tabs() {
+  useLanguage();
+  const TABS: Record<keyof RootTabParamList, TabSpec> = {
+    Home: { icon: 'home', label: t('tabs.home') },
+    History: { icon: 'sprout', label: t('tabs.balcony') },
+    Garden: { icon: 'trees', label: t('tabs.garden') },
+    Room: { icon: 'lamp', label: t('tabs.room') },
+    Progress: { icon: 'chart', label: t('tabs.progress') },
+    Settings: { icon: 'settings', label: t('tabs.settings') },
+  };
   return (
     <Tab.Navigator
       tabBar={(props) => <FloatingTabBar {...props} specs={TABS} />}
       screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: 'transparent' } }}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="History" component={BalconyScreen} options={{ title: 'Balcony' }} />
+      <Tab.Screen name="History" component={BalconyTab} options={{ title: 'Balcony' }} />
+      <Tab.Screen name="Garden" component={GardenTab} />
+      <Tab.Screen name="Room" component={RoomTab} />
       <Tab.Screen name="Progress" component={ProgressScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
@@ -40,6 +52,11 @@ function Tabs() {
 
 export function RootNavigator() {
   const { colors, isDark } = useTheme();
+  const { settings, loading } = useSettings();
+  // the chosen language applies before anything renders
+  useEffect(() => {
+    if (settings.language) setLanguage(settings.language);
+  }, [settings.language]);
   const navTheme = {
     ...(isDark ? DarkTheme : DefaultTheme),
     colors: {
@@ -66,6 +83,7 @@ export function RootNavigator() {
   return (
     <NavigationContainer theme={navTheme} ref={navRef} onReady={onRouteChange} onStateChange={onRouteChange}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {!loading && !settings.language && <Stack.Screen name="Language" component={LanguageScreen} options={{ animation: 'fade' }} />}
         <Stack.Screen name="Tabs" component={Tabs} />
         <Stack.Screen
           name="ActiveSession"

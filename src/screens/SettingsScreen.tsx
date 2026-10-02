@@ -25,6 +25,8 @@ import { space } from '../theme/spacing';
 import { radii } from '../theme/radii';
 import { typography } from '../theme/typography';
 import { Appearance, useTheme } from '../theme/ThemeContext';
+import { MembershipCard } from '../components/settings/MembershipCard';
+import { LANGUAGES, t, useLanguage } from '../i18n';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -109,12 +111,22 @@ export function SettingsScreen() {
 
   const openUrl = (url: string) => void Linking.openURL(url);
   const appearance: Appearance = settings.appearance ?? 'system';
+  const language = useLanguage();
+  const languageName = LANGUAGES.find((l) => l.id === language)?.native ?? 'English';
 
   return (
     <Screen scroll bottomInset={tabInset}>
       <AppText variant="headingLarge" accessibilityRole="header">
-        Settings
+        {t('settings.title')}
       </AppText>
+
+      <Section title={t('membership.section')}>
+        <MembershipCard />
+      </Section>
+
+      <Section title={t('settings.language')}>
+        <SettingLink icon="quote" label={t('settings.language')} hint={languageName} onPress={() => navigation.navigate('Language')} last />
+      </Section>
 
       {showAccounts && (
         <Section title="Account">

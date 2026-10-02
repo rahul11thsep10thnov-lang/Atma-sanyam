@@ -110,3 +110,7 @@ class Rng:
 
     def choice(self, seq):
         return seq[int(self.random() * len(seq)) % len(seq)]
+
+    def randint(self, a, b):
+        """Integer in [a, b], inclusive."""
+        return a + int(self.random() * (b - a + 1)) % (b - a + 1)

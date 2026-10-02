@@ -1,4 +1,4 @@
-# Balcony renderer
+# Space renderer (balcony, garden, room)
 
 Everything you see on the Focus Balcony is a photograph rendered here, in
 Blender's Cycles path tracer, from procedural models and materials (no
@@ -6,9 +6,13 @@ downloaded assets). The app never draws a plant or a chair itself: it only
 stacks these pictures (see `docs/PHOTO_BALCONY.md`).
 
 ```
-focusbalcony/      the scene: architecture, landscape, light, camera,
-                   plants, furniture, decor, textiles, materials, catalog
-render.py          render every layer + manifest.json  → assets/balcony/
+focusbalcony/      the scenes: scene.py (balcony), garden.py, room.py;
+                   lighting.py (six states); trees, ground, plants,
+                   furniture, decor, textiles, materials; a catalog per space
+render.py          balcony: every layer + manifest.json   → assets/balcony/
+render_space.py    garden/room, one lighting state per run → assets/<space>/
+gen_space_pack.py  any space: crop, feather, preview, thumbs, TS module
+compose_space.py   compose any state of a garden/room pack (the UI-off check)
 artworks.py        the three framed artworks            → assets/balcony/artwork/
 gen_pack.py        crop layers, preview + thumbnails,
                    write src/photoBalcony/pack.generated.ts
