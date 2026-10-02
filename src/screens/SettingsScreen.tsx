@@ -60,7 +60,7 @@ export function SettingsScreen() {
     if (value) {
       const perm = await requestNotificationPermissionsAsync();
       if (!perm.granted) {
-        Alert.alert('Permission needed', 'Allow notifications for FOCUS in your device settings to get away-from-app reminders.');
+        Alert.alert(t('settings.permissionNeeded'), t('settings.permissionBody'));
         return;
       }
     }
@@ -76,9 +76,9 @@ export function SettingsScreen() {
   };
 
   const handleClearHistory = () => {
-    Alert.alert('Clear your history?', 'This removes every saved session from this device.', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Clear', style: 'destructive', onPress: async () => { await clearHistory(); Alert.alert('History cleared'); } },
+    Alert.alert(t('settings.clearHistoryTitle'), t('settings.clearHistoryBody'), [
+      { text: t('cancel'), style: 'cancel' },
+      { text: t('settings.clear'), style: 'destructive', onPress: async () => { await clearHistory(); Alert.alert(t('settings.historyCleared')); } },
     ]);
   };
 
@@ -129,7 +129,7 @@ export function SettingsScreen() {
       </Section>
 
       {showAccounts && (
-        <Section title="Account">
+        <Section title={t('settings.account')}>
           {status === 'signedIn' && user ? (
             <View style={styles.accountBox}>
               <View style={styles.rowBetween}>
@@ -137,13 +137,13 @@ export function SettingsScreen() {
                   <AppText variant="bodyStrong">{user.displayName || 'Signed in'}</AppText>
                   <AppText variant="bodySmall" tone="secondary">{user.email}</AppText>
                 </View>
-                <Button label="Sign out" variant="secondary" size="sm" icon="logOut" onPress={() => void signOut()} />
+                <Button label={t('settings.signOut')} variant="secondary" size="sm" icon="logOut" onPress={() => void signOut()} />
               </View>
               {!deleting ? (
-                <Button label="Delete account" variant="tertiary" size="sm" onPress={() => setDeleting(true)} style={styles.deleteLink} />
+                <Button label={t('settings.deleteAccount')} variant="tertiary" size="sm" onPress={() => setDeleting(true)} style={styles.deleteLink} />
               ) : (
                 <View style={[styles.deleteBox, { borderTopColor: colors.divider }]}>
-                  <AppText variant="bodySmall" tone="secondary">Enter your password to permanently delete your account.</AppText>
+                  <AppText variant="bodySmall" tone="secondary">{t('settings.deleteHint')}</AppText>
                   <TextInput
                     style={[styles.input, typography.body, { borderColor: colors.border, backgroundColor: colors.background, color: colors.text }]}
                     secureTextEntry
@@ -155,8 +155,8 @@ export function SettingsScreen() {
                     accessibilityLabel="Password to confirm deletion"
                   />
                   <View style={styles.rowBetween}>
-                    <Button label="Cancel" variant="tertiary" size="sm" onPress={() => { setDeleting(false); setDeletePassword(''); }} />
-                    <Button label="Delete permanently" variant="destructive" size="sm" loading={deleteBusy} disabled={!deletePassword} onPress={confirmDelete} />
+                    <Button label={t('cancel')} variant="tertiary" size="sm" onPress={() => { setDeleting(false); setDeletePassword(''); }} />
+                    <Button label={t('settings.deleteForever')} variant="destructive" size="sm" loading={deleteBusy} disabled={!deletePassword} onPress={confirmDelete} />
                   </View>
                 </View>
               )}
@@ -164,54 +164,54 @@ export function SettingsScreen() {
           ) : status === 'loading' ? (
             <ActivityIndicator color={colors.primary} style={{ padding: space.lg }} />
           ) : (
-            <SettingLink icon="user" label="Sign in or create an account" hint="Optional. Get announcements and manage your data." onPress={() => navigation.navigate('Auth')} last />
+            <SettingLink icon="user" label={t('settings.signIn')} hint={t('settings.signInHint')} onPress={() => navigation.navigate('Auth')} last />
           )}
         </Section>
       )}
 
-      <Section title="Focus sessions">
-        <SettingToggle icon="bell" label="Away-from-app reminders" hint="A notification if you leave mid-session" value={settings.notificationsEnabled} onValueChange={toggleNotifications} />
-        <SettingToggle icon="music" label="Sound & haptics" hint="A gentle cue when a session ends" value={settings.soundEnabled} onValueChange={(v) => updateSettings({ soundEnabled: v })} last />
+      <Section title={t('settings.focusSessions')}>
+        <SettingToggle icon="bell" label={t('settings.reminders')} hint={t('settings.remindersHint')} value={settings.notificationsEnabled} onValueChange={toggleNotifications} />
+        <SettingToggle icon="music" label={t('settings.sound')} hint={t('settings.soundHint')} value={settings.soundEnabled} onValueChange={(v) => updateSettings({ soundEnabled: v })} last />
       </Section>
 
-      <Section title="Appearance">
-        <SettingBlock icon={appearance === 'dark' ? 'moon' : 'sun'} label="Theme" hint="Golden Morning by day, Night Balcony after dark" last>
+      <Section title={t('settings.appearance')}>
+        <SettingBlock icon={appearance === 'dark' ? 'moon' : 'sun'} label={t('settings.theme')} hint={t('settings.themeHint')} last>
           <SegmentedControl<Appearance>
             value={appearance}
             onChange={(v) => updateSettings({ appearance: v })}
             accessibilityLabel="Theme"
             segments={[
-              { value: 'system', label: 'Automatic' },
-              { value: 'light', label: 'Morning' },
-              { value: 'dark', label: 'Night' },
+              { value: 'system', label: t('settings.themeAuto') },
+              { value: 'light', label: t('settings.themeMorning') },
+              { value: 'dark', label: t('settings.themeNight') },
             ]}
           />
         </SettingBlock>
       </Section>
 
       {showPush && (
-        <Section title="Notifications">
-          <SettingToggle icon="sparkles" label="News & announcements" hint="Occasional updates like new picture collections" value={settings.pushEnabled} onValueChange={togglePush} busy={pushBusy} last />
+        <Section title={t('settings.notifications')}>
+          <SettingToggle icon="sparkles" label={t('settings.news')} hint={t('settings.newsHint')} value={settings.pushEnabled} onValueChange={togglePush} busy={pushBusy} last />
         </Section>
       )}
 
       {isBackendConfigured && (
-        <Section title="Privacy">
-          <SettingToggle icon="shield" label="Share usage analytics" hint="Anonymous stats like screens opened and sessions completed. Never your photos." value={settings.analyticsEnabled} onValueChange={(v) => updateSettings({ analyticsEnabled: v })} last />
+        <Section title={t('settings.privacy')}>
+          <SettingToggle icon="shield" label={t('settings.analytics')} hint={t('settings.analyticsHint')} value={settings.analyticsEnabled} onValueChange={(v) => updateSettings({ analyticsEnabled: v })} last />
         </Section>
       )}
 
-      <Section title="About">
-        {env.privacyPolicyUrl ? <SettingLink icon="lock" label="Privacy policy" onPress={() => openUrl(env.privacyPolicyUrl!)} /> : null}
-        {env.termsUrl ? <SettingLink icon="info" label="Terms of use" onPress={() => openUrl(env.termsUrl!)} /> : null}
-        {env.supportEmail ? <SettingLink icon="mail" label="Contact support" onPress={() => openUrl(`mailto:${env.supportEmail}`)} /> : null}
+      <Section title={t('settings.about')}>
+        {env.privacyPolicyUrl ? <SettingLink icon="lock" label={t('settings.privacyPolicy')} onPress={() => openUrl(env.privacyPolicyUrl!)} /> : null}
+        {env.termsUrl ? <SettingLink icon="info" label={t('settings.terms')} onPress={() => openUrl(env.termsUrl!)} /> : null}
+        {env.supportEmail ? <SettingLink icon="mail" label={t('settings.support')} onPress={() => openUrl(`mailto:${env.supportEmail}`)} /> : null}
         <View style={styles.version}>
           <AppText variant="bodySmall" tone="muted">FOCUS {appVersion}</AppText>
         </View>
       </Section>
 
-      <Section title="Your data">
-        <SettingLink icon="trash" label="Clear history" hint="Removes every saved session from this device" tone="danger" onPress={handleClearHistory} last />
+      <Section title={t('settings.yourData')}>
+        <SettingLink icon="trash" label={t('settings.clearHistory')} hint={t('settings.clearHistoryHint')} tone="danger" onPress={handleClearHistory} last />
       </Section>
     </Screen>
   );

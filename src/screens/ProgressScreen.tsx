@@ -18,6 +18,7 @@ import { space } from '../theme/spacing';
 import { radii } from '../theme/radii';
 import { useTheme } from '../theme/ThemeContext';
 import { RootStackParamList } from '../navigation/types';
+import { t, useLanguage } from '../i18n';
 
 const COLUMNS = 3;
 const GAP = space.md;
@@ -78,7 +79,7 @@ function WeekBars({ week }: { week: { day: number; minutes: number }[] }) {
   return (
     <Card variant="base" padding="lg" style={styles.weekCard}>
       <View style={styles.rowBetween}>
-        <AppText variant="subheading">This week</AppText>
+        <AppText variant="subheading">{t('progress.thisWeek')}</AppText>
         <AppText variant="bodySmall" tone="secondary">{formatMinutes(week.reduce((s, d) => s + d.minutes, 0))} focused</AppText>
       </View>
       <View style={styles.bars} accessibilityLabel={`Minutes focused per day: ${week.map((d) => `${new Date(d.day).toLocaleDateString(undefined, { weekday: 'short' })} ${d.minutes}`).join(', ')}`}>
@@ -103,6 +104,7 @@ function WeekBars({ week }: { week: { day: number; minutes: number }[] }) {
 }
 
 export function ProgressScreen() {
+  useLanguage();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const insets = useSafeAreaInsets();
   const tabInset = useTabBarInset();
@@ -123,14 +125,14 @@ export function ProgressScreen() {
 
   const header = (
     <View>
-      <AppText variant="headingLarge" accessibilityRole="header">Progress</AppText>
+      <AppText variant="headingLarge" accessibilityRole="header">{t('progress.title')}</AppText>
       <AppText variant="body" tone="secondary" style={styles.subtitle}>
-        {history.length === 0 ? 'Every session leaves a picture here.' : `${stats.completed} completed · ${history.length - stats.completed} paused`}
+        {history.length === 0 ? t('progress.empty') : t('progress.summary', { completed: stats.completed, paused: history.length - stats.completed })}
       </AppText>
       <View style={styles.statsRow}>
-        <StatTile icon="timer" value={formatMinutes(stats.totalMinutes)} label="Focused" />
-        <StatTile icon="flame" value={`${stats.streak}`} label={stats.streak === 1 ? 'Day streak' : 'Day streak'} />
-        <StatTile icon="trophy" value={stats.longest ? formatMinutes(stats.longest) : '—'} label="Longest" />
+        <StatTile icon="timer" value={formatMinutes(stats.totalMinutes)} label={t('progress.focusTime')} />
+        <StatTile icon="flame" value={`${stats.streak}`} label={t('progress.streak')} />
+        <StatTile icon="trophy" value={stats.longest ? formatMinutes(stats.longest) : '—'} label={t('progress.longest')} />
       </View>
       <WeekBars week={stats.week} />
       {history.length > 0 && (
@@ -155,7 +157,7 @@ export function ProgressScreen() {
             <AppText variant="bodySmall" tone="secondary" align="center" style={styles.emptyText}>
               Your first focus session can grow something here.
             </AppText>
-            <Button label="Start focus" icon="play" onPress={() => navigation.navigate('Tabs', { screen: 'Home' })} style={styles.emptyBtn} />
+            <Button label={t('home.start')} icon="play" onPress={() => navigation.navigate('Tabs', { screen: 'Home' })} style={styles.emptyBtn} />
           </Card>
         }
         contentContainerStyle={{ paddingTop: insets.top + space.lg, paddingBottom: tabInset, paddingHorizontal: space.screen }}
