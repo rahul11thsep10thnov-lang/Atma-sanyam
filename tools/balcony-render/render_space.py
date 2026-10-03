@@ -316,7 +316,7 @@ def render_item(item_id, builder, kwargs, slot_id, rz, variant, folder, key):
     col = collection(f"item_{key}")
     kw = dict(kwargs)
     if item_id in catalog.LIT_ITEMS:
-        kw["lit"] = lighting.lamps_on(STATE)
+        kw["lit"] = getattr(space, "lamps_on", lighting.lamps_on)(STATE)
     root = BUILDERS[builder](col, **kw)
     root.location = slot["pos"]
     rot = slot.get("rot", 0) + rz

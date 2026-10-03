@@ -263,11 +263,17 @@ def build_outside(state):
     return col
 
 
+def lamps_on(state):
+    """Indoors the lamps also come on for rain: an overcast sky through one
+    window leaves the room nearly black."""
+    return lighting.lamps_on(state) or state == "rain"
+
+
 def build_lamps(state):
     """Interior lighting for the dark states: a warm bedside lamp glow is
     part of the bedside lamp item; here the ceiling pendant's light."""
     col = collection("interior")
-    if lighting.lamps_on(state):
+    if lamps_on(state):
         lighting.point_lamp(col, "ceiling_light", (0.2, 0.3, H - 0.35), energy=60.0, color=(1.0, 0.8, 0.6), radius=0.15)
         glow = M.emissive((1.0, 0.85, 0.65), 4.0, "pendant_glow")
         cylinder("pendant_shade", 0.16, 0.16, (0.2, 0.3, H - 0.35), M.matte((0.9, 0.86, 0.78), 0.6, "shade_paper"), col, verts=32)

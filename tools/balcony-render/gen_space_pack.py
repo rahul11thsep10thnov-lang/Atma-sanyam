@@ -165,7 +165,7 @@ def feather(layer):
 
 
 CLEAN_VERSION = 2
-LAMP_STATES = {"evening", "night"}
+LAMP_STATES = {"evening", "night", "rain"} if space == "room" else {"evening", "night"}  # the room lights its lamps in rain
 
 
 def clean_shadow(layer, state="morning", lit=False):
