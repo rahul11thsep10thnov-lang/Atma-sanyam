@@ -61,8 +61,8 @@
    "group": "plant",
    "label": "Focus plant",
    "anchor": [
-    679.8,
-    1684.9
+    540.0,
+    1170.0
    ],
    "depth": 3.687
   },
@@ -71,8 +71,8 @@
    "group": "plant",
    "label": "By the doors",
    "anchor": [
-    193.3,
-    1691.4
+    540.0,
+    1170.0
    ],
    "depth": 3.719
   },
@@ -81,8 +81,8 @@
    "group": "plant",
    "label": "Railing",
    "anchor": [
-    795.6,
-    1488.2
+    540.0,
+    1170.0
    ],
    "depth": 4.832
   },
@@ -91,8 +91,8 @@
    "group": "plant",
    "label": "Far railing",
    "anchor": [
-    656.3,
-    1287.0
+    540.0,
+    1170.0
    ],
    "depth": 7.297
   },
@@ -101,8 +101,8 @@
    "group": "plant",
    "label": "Far corner",
    "anchor": [
-    216.2,
-    1240.5
+    540.0,
+    1170.0
    ],
    "depth": 8.502
   },
@@ -111,8 +111,8 @@
    "group": "seating",
    "label": "Seating",
    "anchor": [
-    238.7,
-    1426.3
+    540.0,
+    1170.0
    ],
    "depth": 5.406
   },
@@ -121,8 +121,8 @@
    "group": "table",
    "label": "Table",
    "anchor": [
-    521.7,
-    1415.0
+    540.0,
+    1170.0
    ],
    "depth": 5.437
   },
@@ -131,8 +131,8 @@
    "group": "rug",
    "label": "Rug",
    "anchor": [
-    397.7,
-    1417.9
+    540.0,
+    1170.0
    ],
    "depth": 5.426
   },
@@ -141,8 +141,8 @@
    "group": "small",
    "label": "Beside the table",
    "anchor": [
-    413.3,
-    1505.0
+    540.0,
+    1170.0
    ],
    "depth": 4.665
   },
@@ -151,8 +151,8 @@
    "group": "lounge",
    "label": "Along the glass",
    "anchor": [
-    204.3,
-    1294.8
+    540.0,
+    1170.0
    ],
    "depth": 7.274
   },
@@ -161,8 +161,8 @@
    "group": "hanging",
    "label": "Hook by the railing",
    "anchor": [
-    767.1,
-    367.6
+    30.1,
+    1794.9
    ],
    "depth": 4.395
   },
@@ -171,8 +171,8 @@
    "group": "hanging",
    "label": "Far hook",
    "anchor": [
-    552.7,
-    569.6
+    217.9,
+    3029.5
    ],
    "depth": 6.537
   },
@@ -181,8 +181,8 @@
    "group": "art",
    "label": "Art wall",
    "anchor": [
-    413.3,
-    936.0
+    488.1,
+    7574.9
    ],
    "depth": 8.84
   },
@@ -191,8 +191,8 @@
    "group": "shelf",
    "label": "Wall shelf",
    "anchor": [
-    63.6,
-    964.6
+    1839.4,
+    4601.0
    ],
    "depth": 5.879
   }
@@ -843,6 +843,110 @@
      }
     ]
    }
+  },
+  "dead_sapling": {
+   "name": "Wilted sapling",
+   "category": "PENALTY",
+   "variants": {
+    "near_left": [
+     {
+      "rotation": 0,
+      "pivot": [
+       193.3,
+       1691.4
+      ],
+      "depth": 3.719,
+      "files": {
+       "morning": {
+        "file": "fixtures/dead_sapling__near_left__0.webp",
+        "rect": [
+         0,
+         1211,
+         394,
+         635
+        ],
+        "feathered": true
+       }
+      },
+      "feathered": true
+     }
+    ],
+    "corner_far": [
+     {
+      "rotation": 0,
+      "pivot": [
+       216.2,
+       1240.5
+      ],
+      "depth": 8.502,
+      "files": {
+       "morning": {
+        "file": "fixtures/dead_sapling__corner_far__0.webp",
+        "rect": [
+         86,
+         1011,
+         233,
+         312
+        ],
+        "feathered": true
+       }
+      },
+      "feathered": true
+     }
+    ]
+   }
+  },
+  "broken_frame": {
+   "name": "Broken picture",
+   "category": "PENALTY",
+   "variants": {
+    "lantern": [
+     {
+      "rotation": 0,
+      "pivot": [
+       413.3,
+       1505.0
+      ],
+      "depth": 4.665,
+      "files": {
+       "morning": {
+        "file": "fixtures/broken_frame__lantern__0.webp",
+        "rect": [
+         0,
+         1165,
+         560,
+         443
+        ],
+        "feathered": true
+       }
+      },
+      "feathered": true
+     }
+    ],
+    "near_left": [
+     {
+      "rotation": 0,
+      "pivot": [
+       193.3,
+       1691.4
+      ],
+      "depth": 3.719,
+      "files": {
+       "morning": {
+        "file": "fixtures/broken_frame__near_left__0.webp",
+        "rect": [
+         0,
+         1258,
+         386,
+         562
+        ],
+        "feathered": true
+       }
+      },
+      "feathered": true
+     }
+    ]
+   }
   }
  },
  "clouds": {
@@ -872,7 +976,9 @@
   "pothos_hanging": "thumbs/pothos_hanging.webp",
   "wind_chime": "thumbs/wind_chime.webp",
   "wall_shelf": "thumbs/wall_shelf.webp",
-  "art_frame": "thumbs/art_frame.webp"
+  "art_frame": "thumbs/art_frame.webp",
+  "dead_sapling": "thumbs/dead_sapling.webp",
+  "broken_frame": "thumbs/broken_frame.webp"
  },
  "focusPlant": {
   "slot": "focus",
