@@ -14,7 +14,7 @@ The balcony's v1 manifest is upgraded to the same shape (one state,
 """
 import json, os, pathlib, sys
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFilter
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 from compose_space import compose
@@ -164,6 +164,31 @@ def feather(layer):
     layer["feathered"] = True
 
 
+def clean_shadow(layer):
+    """Denoise the caught-shadow alpha of an object layer.
+
+    Cycles denoises colour but not the shadow catcher's alpha, so at low
+    sample counts a faint speckle of 1-10/255 alpha covers the whole crop
+    (very visible on plain walls). Shadow pixels are dark with partial
+    alpha; the object's own pixels (opaque or coloured) are left alone."""
+    if layer is None or layer.get("cleaned"):
+        return
+    path = pack / layer["file"]
+    img = np.array(Image.open(path).convert("RGBA"))
+    a = img[..., 3]
+    rgb_max = img[..., :3].max(axis=2)
+    shadow = (a < 250) & (rgb_max < 60)
+    if shadow.any():
+        al = Image.fromarray(a, "L")
+        med = np.array(al.filter(ImageFilter.MedianFilter(5)))
+        soft = np.array(Image.fromarray(med, "L").filter(ImageFilter.GaussianBlur(1.2)))
+        cleaned = np.where(shadow, soft, a).astype(np.uint8)
+        cleaned[(cleaned < 12) & shadow] = 0
+        img[..., 3] = cleaned
+        Image.fromarray(img, "RGBA").save(path, "WEBP", quality=Q, method=6)
+    layer["cleaned"] = True
+
+
 def each_variant_layer():
     for rec in m["items"].values():
         for vs in rec.get("variants", {}).values():
@@ -188,8 +213,11 @@ def each_variant_layer():
 for v, f in each_variant_layer():
     if not v.get("feathered"):
         feather(f)
+    if not v.get("cleaned"):
+        clean_shadow(f)
 for v, f in each_variant_layer():
     v["feathered"] = True
+    v["cleaned"] = True
 
 # ---- art shade: the light on each frame opening, as a dark veil ---------------------
 # (the frame's own layer is rendered with a white canvas; the opening's
