@@ -23,6 +23,7 @@
 //   --upscale            resize each result to exactly 3840x2160 (Lanczos; adds pixels, not detail)
 //   --full-prompt        send the long FLUX-style prompt instead of the compact one
 //   --steps N            denoising steps
+//   --timeout SECONDS    give up on one image after this long (default 180)
 //   --limit N / --only 001,014 / --concurrency N (default 2) / --redo
 
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -168,6 +169,7 @@ async function images(dir, flags) {
     provider: flags.provider, width, height,
     compact: !flags['full-prompt'],
     steps: flags.steps ? Number(flags.steps) : undefined,
+    timeoutMs: flags.timeout ? Number(flags.timeout) * 1000 : undefined,
   };
   const upscaleTo = flags.upscale ? { width: 3840, height: 2160 } : undefined;
   console.log(`${records.length} records; ${todo.length} images to make (${opts.model}, ${width}×${height}${upscaleTo ? ' → 3840×2160' : ''}).`);
@@ -206,6 +208,14 @@ if (!target || !['plan', 'generate', 'render', 'images'].includes(command)) {
   console.log(header.slice(0, header.findIndex((l) => !l.startsWith('//'))).map((l) => l.replace(/^\/\/ ?/, '')).join('\n'));
   process.exit(command ? 1 : 0);
 }
+// Node exits with code 13 when a top-level await can never finish. Say so plainly.
+process.on('exit', (code) => {
+  if (code === 13) {
+    console.error('\nError: the program stopped because a request never finished (no error was returned).\n' +
+      'If this was "images", try a specific provider, e.g.  --provider hf-inference  or  --provider together');
+  }
+});
+
 try {
   if (command === 'plan') plan(target);
   else if (command === 'render') render(target);

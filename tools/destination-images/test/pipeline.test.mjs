@@ -192,3 +192,12 @@ test('saveWebp writes WebP and can resize to 3840×2160', async () => {
   assert.deepEqual(await saveWebp(buf, join(dir, 'b.webp'), { upscaleTo: { width: 3840, height: 2160 } }), { width: 3840, height: 2160 });
   assert.equal((await sharp(join(dir, 'b.webp')).metadata()).format, 'webp');
 });
+
+test('a request that never answers fails with a clear message instead of hanging', async () => {
+  const hung = { textToImage: () => new Promise(() => {}) };
+  const rec = { package: samples[2].package, prompt: 'x' };
+  await assert.rejects(
+    generateImage(hung, rec, { model: 'm', width: 8, height: 8, compact: true, timeoutMs: 50 }, { wait: async () => {} }),
+    /No answer from the auto-selected provider after 0 s.*--provider/,
+  );
+});

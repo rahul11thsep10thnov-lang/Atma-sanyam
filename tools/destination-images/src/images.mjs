@@ -40,6 +40,21 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export class StopRun extends Error {}
 
+const DEFAULT_TIMEOUT_MS = 180_000;
+
+/** Rejects after `ms` even if the client ignores the abort signal; keeps the process alive meanwhile. */
+function withTimeout(start, ms, label) {
+  const controller = new AbortController();
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => {
+      controller.abort();
+      reject(new Error(`No answer from ${label} after ${Math.round(ms / 1000)} s. Try another provider, for example --provider hf-inference.`));
+    }, ms);
+  });
+  return Promise.race([start(controller.signal), timeout]).finally(() => clearTimeout(timer));
+}
+
 function statusOf(err) {
   if (err?.httpResponse?.status) return err.httpResponse.status;
   const m = /\b([45]\d\d)\b/.exec(String(err?.message));
@@ -61,12 +76,17 @@ export async function generateImage(client, record, opts, { retries = 4, wait = 
   };
   for (let attempt = 0; ; attempt++) {
     try {
-      const blob = await client.textToImage(request, { outputType: 'blob' });
+      const blob = await withTimeout(
+        (signal) => client.textToImage(request, { outputType: 'blob', signal }),
+        opts.timeoutMs ?? DEFAULT_TIMEOUT_MS,
+        opts.provider ?? 'the auto-selected provider',
+      );
       return Buffer.from(await blob.arrayBuffer());
     } catch (err) {
       const status = statusOf(err);
       if (status === 401 || status === 403) throw new StopRun(`Hugging Face rejected the token (${status}). Check HF_TOKEN permissions.`);
       if (status === 402) throw new StopRun('Hugging Face reports your free credits are used up (402). Resume later or switch provider/model; finished images are kept.');
+      if (/^No answer from/.test(err.message)) throw err;
       const retryable = status === 429 || status === 503 || status === 504 || status === 500 || status == null;
       if (!retryable || attempt >= retries) throw err;
       await wait(Math.min(60_000, 2_000 * 2 ** attempt));
