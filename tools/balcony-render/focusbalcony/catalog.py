@@ -45,6 +45,8 @@ ITEMS = {
     "wind_chime": ("wind_chime", {}, {"hang_near": [0], "hang_far": [0]}, {"name": "Brass wind chime", "category": "DECOR"}),
     "wall_shelf": ("wall_shelf", {}, {"shelf": [0]}, {"name": "Teak wall shelf", "category": "DECOR"}),
     "art_frame": ("art_frame", {}, {"art": [0]}, {"name": "Teak frame", "category": "WALL_ART"}),
+    "dead_sapling": ("dead_sapling", {}, {"near_left": [0], "corner_far": [0]}, {"name": "Wilted sapling", "category": "PENALTY"}),
+    "broken_frame": ("broken_frame", {}, {"lantern": [0], "near_left": [0]}, {"name": "Broken picture", "category": "PENALTY"}),
 }
 
 FOCUS_SLOT = "focus"

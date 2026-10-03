@@ -1,6 +1,8 @@
-// The focus session (PHASE 8): the picture reveals itself tile by tile
-// while a quiet timer floats over it. Controls shrink to one close button;
-// the end of the session is a warm sheet, never an OS alert.
+// The focus session (PHASE 8): a picture reveals itself tile by tile, or
+// one of the person's spaces lives around them, while a quiet timer floats
+// over it. The first ten seconds are a grace period — leaving then costs
+// nothing. After that, abandoning a session droops the focus plant and
+// leaves a wilted sapling and a broken picture behind.
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Animated, BackHandler, Dimensions, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,10 +11,12 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PuzzleGrid } from '../components/PuzzleGrid';
 import { PuzzleContent, attributionFor } from '../components/PuzzleContent';
 import { SessionResultSheet, RewardLine } from '../components/session/SessionResultSheet';
-import { creditCompletedSession, recordPausedSession } from '../photoBalcony/focusEngine';
-import { STAGE_WORDS } from '../photoBalcony/model';
-import { PACK } from '../photoBalcony/pack.generated';
-import { BalconySession } from '../photoBalcony/ui/BalconySession';
+import { creditCompletedSession, recordPausedSession } from '../spaces/focusEngine';
+import { STAGE_WORDS } from '../spaces/model';
+import { GRACE_SECONDS } from '../spaces/catalog';
+import { SpaceId } from '../spaces/packTypes';
+import { packFor } from '../spaces/packs';
+import { SpaceSession } from '../spaces/ui/SpaceSession';
 import { useFocusTimer } from '../hooks/useFocusTimer';
 import { RootStackParamList } from '../navigation/types';
 import { saveSessionRecord } from '../storage/history';
@@ -27,6 +31,7 @@ import { typography } from '../theme/typography';
 import { radii } from '../theme/radii';
 import { space } from '../theme/spacing';
 import { useTheme } from '../theme/ThemeContext';
+import { t } from '../i18n';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>;
 
@@ -53,6 +58,12 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
   const [result, setResult] = useState<Result | null>(null);
   const resultRef = useRef<Result | null>(null);
   const [rewardLines, setRewardLines] = useState<RewardLine[]>([]);
+  const leftFreeRef = useRef(false);
+
+  // where this session happens: a space, or the balcony for picture sessions
+  const sessionSpace: SpaceId = config.image.kind === 'space' ? config.image.space : config.image.kind === 'balcony' ? 'balcony' : 'balcony';
+  const inSpace = config.image.kind === 'space' || config.image.kind === 'balcony';
+  const plantName = packFor(sessionSpace).focusPlant.name.toLowerCase();
 
   const finalizeSession = useCallback(
     async (outcome: SessionRecord['outcome'], failureReason: SessionRecord['failureReason'], revealedFraction: number) => {
@@ -96,38 +107,43 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
     finalizeSession('completed', null, 1);
     if (settings.soundEnabled) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => undefined);
     show({ outcome: 'completed' });
-    creditCompletedSession(config.durationMinutes)
+    creditCompletedSession(config.durationMinutes, sessionSpace)
       .then((summary) => {
-        const lines: RewardLine[] = [{ icon: 'coins', text: `+${summary.coinsEarned + summary.bonusCoins} coins for your balcony` }];
-        const name = PACK.focusPlant.name;
+        const lines: RewardLine[] = [{ icon: 'coins', text: t('session.coinsLine', { coins: summary.coinsEarned + summary.bonusCoins }) }];
+        const name = summary.plant.name.toLowerCase();
         const grew = summary.plant.after !== summary.plant.before;
-        lines.push({ icon: 'sprout', text: summary.plant.revived ? `Your ${name.toLowerCase()} perked back up` : grew ? `Your ${name.toLowerCase()} is now ${STAGE_WORDS[summary.plant.after]}` : `Your ${name.toLowerCase()} kept growing` });
+        lines.push({
+          icon: 'sprout',
+          text: summary.plant.revived ? t('session.plantRevived', { plant: name }) : grew ? t('session.plantNow', { plant: name, stage: STAGE_WORDS[summary.plant.after] ?? summary.plant.after }) : t('session.plantKept', { plant: name }),
+        });
         if (summary.art) {
           const a = summary.art;
-          lines.push({
-            icon: 'puzzle',
-            text: a.finished ? `${a.title} is complete — frame it in the Gallery` : a.started ? `A new artwork arrived: ${a.title}` : `+${a.newPieces} pieces of ${a.title}`,
-          });
+          lines.push({ icon: 'puzzle', text: a.finished ? t('session.artComplete', { title: a.title }) : a.started ? t('session.artStarted', { title: a.title }) : t('session.artPieces', { pieces: a.newPieces, title: a.title }) });
         }
-        for (const m of summary.milestones) lines.push({ icon: 'sparkles', text: `${m.title} — +${m.coins} coins` });
+        for (const m of summary.milestones) lines.push({ icon: 'sparkles', text: t('session.milestone', { title: m.title, coins: m.coins }) });
         setRewardLines(lines);
       })
       .catch(() => undefined);
-  }, [finalizeSession, settings.soundEnabled, config.durationMinutes]);
+  }, [finalizeSession, settings.soundEnabled, config.durationMinutes, sessionSpace]);
 
   const handleFail = useCallback(
     (reason: 'left_app' | 'gave_up', revealedFraction: number) => {
+      if (leftFreeRef.current) return;
+      const elapsed = (Date.now() - startedAtRef.current) / 1000;
       finalizeSession('failed', reason, revealedFraction);
       if (settings.soundEnabled) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => undefined);
       show({ outcome: 'failed', reason });
-      recordPausedSession()
+      recordPausedSession(sessionSpace, elapsed)
         .then((summary) => {
-          const name = PACK.focusPlant.name.toLowerCase();
-          setRewardLines([{ icon: 'leaf', text: summary.wilted ? `Your ${name} is drooping — a full session will revive it` : `Your ${name} drooped a little` }]);
+          if (!summary) return;
+          setRewardLines([
+            { icon: 'leaf', text: summary.wilted ? t('space.plantDrooping') : t('session.droopLine', { plant: summary.plantName.toLowerCase() }) },
+            { icon: 'alert', text: t('session.penaltyLine', { space: t(`space.${sessionSpace}`).toLowerCase() }) },
+          ]);
         })
         .catch(() => undefined);
     },
-    [finalizeSession, settings.soundEnabled]
+    [finalizeSession, settings.soundEnabled, sessionSpace]
   );
 
   const { remainingSeconds, revealedCount, status, awaySecondsRemaining, giveUp, progress } = useFocusTimer({
@@ -139,6 +155,28 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
     onFail: handleFail,
   });
 
+  const elapsedSeconds = totalSeconds - remainingSeconds;
+  const inGrace = elapsedSeconds < GRACE_SECONDS && !result;
+
+  const leaveFree = () => {
+    // within the grace period: no record, no penalty, no droop
+    leftFreeRef.current = true;
+    track('session_withdrawn', { properties: { durationMinutes: config.durationMinutes, imageKind: config.image.kind } });
+    navigation.replace('Tabs', { screen: inSpace ? spaceTab(sessionSpace) : 'Home' });
+  };
+
+  const confirmGiveUp = () => {
+    if (resultRef.current) return;
+    if ((Date.now() - startedAtRef.current) / 1000 < GRACE_SECONDS) {
+      leaveFree();
+      return;
+    }
+    Alert.alert(t('session.endTitle'), t('session.endBody'), [
+      { text: t('session.keepGoing'), style: 'cancel' },
+      { text: t('session.endSession'), style: 'destructive', onPress: giveUp },
+    ]);
+  };
+
   useEffect(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
       confirmGiveUp();
@@ -148,68 +186,48 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const confirmGiveUp = () => {
-    if (resultRef.current) return;
-    Alert.alert('End this session?', 'The picture will stay unfinished.', [
-      { text: 'Keep going', style: 'cancel' },
-      { text: 'End session', style: 'destructive', onPress: giveUp },
-    ]);
-  };
-
-  // Progress bar width animates with the native driver via scaleX.
   const barScale = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     Animated.timing(barScale, { toValue: Math.max(0.002, progress), duration: 900, useNativeDriver: true }).start();
   }, [progress, barScale]);
 
-  const onBalcony = config.image.kind === 'balcony';
-  const leave = () => navigation.replace('Tabs', { screen: onBalcony ? 'History' : 'Home' });
+  const leave = () => navigation.replace('Tabs', { screen: inSpace ? spaceTab(sessionSpace) : 'Home' });
   const attribution = attributionFor(config.image);
 
   return (
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
-      {onBalcony ? (
-        // the balcony itself: the focus plant grows as the minutes pass
-        <BalconySession elapsedMinutes={result?.outcome === 'failed' ? 0 : (totalSeconds - remainingSeconds) / 60} />
+      {inSpace ? (
+        <SpaceSession space={sessionSpace} elapsedMinutes={result?.outcome === 'failed' ? 0 : elapsedSeconds / 60} />
       ) : (
-        <PuzzleGrid
-          rows={config.grid.rows}
-          cols={config.grid.cols}
-          width={SCREEN_WIDTH}
-          height={SCREEN_HEIGHT}
-          revealedCount={revealedCount}
-          frozen={status === 'failed'}
-          fullBleed
-        >
+        <PuzzleGrid rows={config.grid.rows} cols={config.grid.cols} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} revealedCount={revealedCount} frozen={status === 'failed'} fullBleed>
           <PuzzleContent image={config.image} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} />
         </PuzzleGrid>
       )}
 
-      {/* top: FOCUS chip · progress · close */}
       <View style={[styles.topRow, { top: insets.top + space.sm }]} pointerEvents="box-none">
         <View style={styles.chip}>
           <Icon name="timer" size="xs" color="#FFFFFF" />
           <AppText variant="overline" style={styles.white}>
-            FOCUS
+            {t('session.focus')}
           </AppText>
         </View>
-        {onBalcony ? (
+        {inSpace ? (
           <View style={{ flex: 1 }} />
         ) : (
           <View style={styles.barTrack} pointerEvents="none">
             <Animated.View style={[styles.barFill, { backgroundColor: colors.accent, transform: [{ scaleX: barScale }] }]} />
           </View>
         )}
-        {!result && <IconButton icon="close" label="End this session" variant="onImage" size={40} onPress={confirmGiveUp} haptic={false} />}
+        {!result && <IconButton icon="close" label={t('session.end')} variant="onImage" size={40} onPress={confirmGiveUp} haptic={false} />}
       </View>
 
       {!result && (
-        <View style={[styles.center, onBalcony && { justifyContent: 'flex-start', paddingTop: insets.top + 72 }]} pointerEvents="none">
+        <View style={[styles.center, inSpace && { justifyContent: 'flex-start', paddingTop: insets.top + 72 }]} pointerEvents="none">
           <AppText style={[styles.timer, typography.timer]} accessibilityRole="timer" accessibilityLabel={`${Math.ceil(remainingSeconds / 60)} minutes remaining`}>
             {formatTime(remainingSeconds)}
           </AppText>
           <AppText variant="bodySmall" style={styles.tagline}>
-            {onBalcony ? `Your ${PACK.focusPlant.name.toLowerCase()} is growing.` : 'Your world is waiting.'}
+            {inGrace ? t('session.graceHint', { seconds: GRACE_SECONDS - elapsedSeconds }) : inSpace ? t('session.plantGrowing', { plant: plantName }) : t('session.worldWaiting')}
           </AppText>
         </View>
       )}
@@ -226,13 +244,13 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
         <View style={[styles.grace, { top: insets.top + 64, backgroundColor: colors.warningSoft, borderColor: colors.warning }]} accessibilityLiveRegion="assertive">
           <Icon name="alert" size="sm" color={colors.warning} />
           <AppText variant="bodySmallStrong" style={{ color: colors.text, flex: 1 }}>
-            Come back within {awaySecondsRemaining}s to keep this session.
+            {t('session.comeBack', { seconds: awaySecondsRemaining })}
           </AppText>
         </View>
       )}
 
       {result?.outcome === 'completed' && (
-        <SessionResultSheet outcome="completed" title={texts.sessionCompleteTitle} message={texts.sessionCompleteMessage} lines={rewardLines} primaryLabel="Back to my balcony" onPrimary={leave} />
+        <SessionResultSheet outcome="completed" title={texts.sessionCompleteTitle} message={texts.sessionCompleteMessage} lines={rewardLines} primaryLabel={inSpace ? t('session.backTo', { space: t(`space.${sessionSpace}`).toLowerCase() }) : t('session.backHome')} onPrimary={leave} />
       )}
       {result?.outcome === 'failed' && (
         <SessionResultSheet
@@ -240,7 +258,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
           title={texts.sessionFailedTitle}
           message={result.reason === 'left_app' ? texts.sessionLeftAppMessage : texts.sessionGaveUpMessage}
           lines={rewardLines}
-          primaryLabel="Give it another moment"
+          primaryLabel={t('session.anotherMoment')}
           onPrimary={leave}
         />
       )}
@@ -248,42 +266,21 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
   );
 }
 
+function spaceTab(space: SpaceId): 'History' | 'Garden' | 'Room' {
+  return space === 'balcony' ? 'History' : space === 'garden' ? 'Garden' : 'Room';
+}
+
 const styles = StyleSheet.create({
   screen: { flex: 1 },
   topRow: { position: 'absolute', left: space.lg, right: space.lg, flexDirection: 'row', alignItems: 'center', gap: space.md },
-  chip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: 'rgba(20,12,8,0.35)',
-    paddingHorizontal: 10,
-    height: 32,
-    borderRadius: radii.pill,
-  },
+  chip: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: 'rgba(20,12,8,0.35)', paddingHorizontal: 10, height: 32, borderRadius: radii.pill },
   white: { color: '#FFFFFF' },
   barTrack: { flex: 1, height: 3, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.35)', overflow: 'hidden' },
   barFill: { height: 3, width: '100%', borderRadius: 2, transformOrigin: 'left' },
   center: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' },
-  timer: {
-    color: '#FFFFFF',
-    opacity: 0.94,
-    textShadowColor: 'rgba(20,12,8,0.45)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 18,
-  },
-  tagline: { color: 'rgba(255,255,255,0.8)', marginTop: space.xs, textShadowColor: 'rgba(20,12,8,0.4)', textShadowRadius: 8 },
+  timer: { color: '#FFFFFF', opacity: 0.94, textShadowColor: 'rgba(20,12,8,0.45)', textShadowOffset: { width: 0, height: 2 }, textShadowRadius: 18 },
+  tagline: { color: 'rgba(255,255,255,0.8)', marginTop: space.xs, textShadowColor: 'rgba(20,12,8,0.4)', textShadowRadius: 8, paddingHorizontal: space.xl, textAlign: 'center' },
   attribution: { position: 'absolute', left: space.lg, right: space.lg, alignItems: 'center' },
   attributionText: { color: 'rgba(255,255,255,0.78)', textAlign: 'center', textShadowColor: 'rgba(0,0,0,0.4)', textShadowRadius: 4 },
-  grace: {
-    position: 'absolute',
-    left: space.lg,
-    right: space.lg,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    borderRadius: radii.md,
-    borderWidth: 1,
-  },
+  grace: { position: 'absolute', left: space.lg, right: space.lg, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: 10, paddingHorizontal: 14, borderRadius: radii.md, borderWidth: 1 },
 });

@@ -59,3 +59,26 @@ the ones to source elsewhere or re-query with a different search string.
 - Review the `report.csv` licence column once; the allow-list is
   deliberately strict, but a licence string you don't recognise deserves a
   look at its Commons page.
+
+## India Jigsaw 160 (Wikimedia Commons)
+
+`backend/content-packs/india_jigsaw_160/manifest.csv` lists the 160 subjects
+of the Home screen's **Jigsaw pictures** tab in four collections — Heritage
+(40), Nature (40), Wildlife (40), Spirituality (40): the Taj Mahal at
+sunrise, Pangong Lake, a Bengal tiger in Ranthambore, Ganga Aarti at
+Varanasi and so on. They were written as prompts for a consistent travel-
+photography look (16:9, natural light, no HDR, respectful depictions);
+rather than generating pictures, the pack resolves each subject to a real,
+freely licensed photograph of the real place on Commons:
+
+```powershell
+cd backend
+npm run ingest:wikimedia -- --manifest content-packs/india_jigsaw_160/manifest.csv --dry-run --limit 5
+npm run ingest:wikimedia -- --manifest content-packs/india_jigsaw_160/manifest.csv
+```
+
+The app shows the four collections as sub-headings under **Jigsaw
+pictures** as soon as their categories exist. Queries that find no
+suitable photo appear in `report.csv`; for those, or wherever a generated
+image is preferred, upload a 16:9 image through the admin console into
+the same category — the prompt text in the manifest describes the shot.

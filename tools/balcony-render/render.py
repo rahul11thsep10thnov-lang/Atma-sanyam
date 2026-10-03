@@ -22,7 +22,7 @@ from bpy_extras.object_utils import world_to_camera_view
 from PIL import Image
 
 from focusbalcony.common import DEG, clear_scene, collection
-from focusbalcony import scene, plants, furniture, decor, catalog
+from focusbalcony import scene, plants, furniture, decor, catalog, garden_items
 from focusbalcony import materials as M
 
 ap = argparse.ArgumentParser()
@@ -37,12 +37,12 @@ args = ap.parse_args(sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv els
 
 OUT = pathlib.Path(args.out)
 TMP = OUT / "_tmp"
-for sub in ("environment", "architecture", "plants", "furniture", "decor", "artwork", "lighting", "animations", "_tmp"):
+for sub in ("environment", "architecture", "plants", "furniture", "decor", "artwork", "lighting", "animations", "fixtures", "_tmp"):
     (OUT / sub).mkdir(parents=True, exist_ok=True)
 W, H = int(round(1080 * args.scale)), int(round(2340 * args.scale))
-BUILDERS = {**plants.BUILDERS, **furniture.BUILDERS, **decor.BUILDERS}
+BUILDERS = {**plants.BUILDERS, **furniture.BUILDERS, **decor.BUILDERS, "dead_sapling": garden_items.dead_sapling, "broken_frame": garden_items.broken_frame}
 FOLDER = {"PLANTS": "plants", "FURNITURE": "furniture", "TABLES": "furniture", "RUGS": "decor", "LIGHTING": "decor",
-          "DECOR": "decor", "WALL_ART": "artwork"}
+          "DECOR": "decor", "WALL_ART": "artwork", "PENALTY": "fixtures"}
 
 manifest_path = OUT / "manifest.json"
 manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() and args.skip_plates else {}

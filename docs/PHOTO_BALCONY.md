@@ -70,23 +70,28 @@ and hang it" closes the seams and the artwork appears, framed in teak, on
 the far wall, lit by the morning light. Finished artworks can be swapped
 from the Gallery.
 
-## Code map — `src/photoBalcony/`
+## Code map
+
+The balcony now runs on the shared spaces engine in `src/spaces/` (see
+`docs/SPACES.md`); the table below maps the balcony's concepts onto it.
+
+### `src/spaces/`
 
 | File | |
 | --- | --- |
-| `pack.generated.ts` | the asset manifest + a `require()` per image (generated) |
+| `packs/balcony.generated.ts` | the asset manifest + a `require()` per image (generated) |
 | `packTypes.ts` | its shape |
 | `catalog.ts` | prices, unlock times, artworks, jigsaw size |
 | `model.ts` | the balcony state and every rule that changes it (pure) |
-| `repository.ts`, `useBalcony.ts` | persistence and live subscription |
+| `repository.ts`, `useSpaces.ts` | persistence and live subscription |
 | `rewards.ts` | coins, lifetime minutes, milestones |
 | `focusEngine.ts` | what a completed or abandoned session does |
-| `scene/BalconyScene.tsx` | the layered compositor (live or still) |
+| `scene/SpaceScene.tsx` | the layered compositor (live or still) |
 | `scene/JigsawArt.tsx`, `scene/jigsaw.ts` | interlocking jigsaw pieces |
-| `ui/BalconyScreen.tsx` | the tab: full-bleed scene, dock, customize |
+| `ui/SpaceScreen.tsx` | the tab: full-bleed scene, dock, customize |
 | `ui/EditLayer.tsx` | Customize: select, drag-to-snap, guides |
-| `ui/CollectionSheet.tsx`, `ui/GallerySheet.tsx` | buying/placing, art |
-| `ui/BalconySession.tsx`, `ui/BalconyPreview.tsx` | the session view, Home hero |
+| `ui/StoreSheet.tsx`, `ui/InventorySheet.tsx`, `ui/GallerySheet.tsx` | buying, owning, art |
+| `ui/SpaceSession.tsx`, `ui/SpacePreview.tsx` | the session view, Home hero |
 
 ## Asset slots
 

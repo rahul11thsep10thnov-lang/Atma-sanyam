@@ -43,7 +43,14 @@ export interface BalconyImageRef {
   kind: 'balcony';
 }
 
-export type ImageRef = ArtImageRef | QuoteImageRef | CustomImageRef | RemoteImageRef | BalconyImageRef;
+// Focus inside one of the person's spaces (src/spaces): the space shows
+// and its focus plant grows while they focus.
+export interface SpaceImageRef {
+  kind: 'space';
+  space: 'balcony' | 'garden' | 'room';
+}
+
+export type ImageRef = ArtImageRef | QuoteImageRef | CustomImageRef | RemoteImageRef | BalconyImageRef | SpaceImageRef;
 
 export interface GridDims {
   rows: number;
@@ -82,4 +89,6 @@ export interface AppSettings {
   pushEnabled: boolean;
   // Colour scheme: follow the OS, or force Golden Morning / Night Balcony.
   appearance?: 'system' | 'light' | 'dark';
+  // Chosen on first launch; undefined until then (the language screen shows).
+  language?: 'en' | 'fr' | 'de' | 'it' | 'es' | 'ar' | 'zh' | 'ru';
 }

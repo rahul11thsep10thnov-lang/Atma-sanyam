@@ -3,9 +3,15 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 import { ImageRef } from '../types';
 import { colors } from '../theme/colors';
 
-// A still photograph of the balcony for history thumbnails (re-rendered with
-// the pack; see tools/balcony-render).
-const BALCONY_PREVIEW = require('../../assets/balcony/environment/preview.webp');
+// Still photographs of the spaces for history thumbnails come from each
+// space's rendered pack (tools/balcony-render).
+import { img, packFor } from '../spaces/packs';
+import { SpaceId } from '../spaces/packTypes';
+
+function spacePreview(space: SpaceId) {
+  const file = packFor(space).preview;
+  return file ? img(space, file) : null;
+}
 
 interface PuzzleContentProps {
   image: ImageRef;
@@ -27,7 +33,10 @@ export function PuzzleContent({ image, width, height }: PuzzleContentProps) {
     );
   }
 
-  if (image.kind === 'balcony') return <Image source={BALCONY_PREVIEW} style={{ width, height: h }} resizeMode="cover" />;
+  if (image.kind === 'balcony' || image.kind === 'space') {
+    const src = spacePreview(image.kind === 'space' ? image.space : 'balcony');
+    return src ? <Image source={src} style={{ width, height: h }} resizeMode="cover" /> : <View style={{ width, height: h, backgroundColor: '#3a2e26' }} />;
+  }
   const source = image.kind === 'art' ? image.uri : { uri: image.uri };
   return <Image source={source} style={{ width, height: h }} resizeMode="cover" />;
 }

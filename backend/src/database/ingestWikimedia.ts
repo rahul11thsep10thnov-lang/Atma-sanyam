@@ -81,6 +81,10 @@ function splitCsvLine(line: string): string[] {
 
 // ---- naming -----------------------------------------------------------------
 const COLLECTION_NAMES: Record<string, string> = {
+  heritage: 'Heritage',
+  nature: 'Nature',
+  wildlife: 'Wildlife',
+  spirituality: 'Spirituality',
   hindu: 'Hindu Temples & Deities',
   islam: 'Mosques & Dargahs',
   sikh: 'Gurdwaras',
