@@ -63,6 +63,13 @@ export const REALISM_SUFFIX =
   'controlled highlights, moderate saturation and contrast. ' +
   '16:9 landscape frame. No text, no logo, no watermark, no border, no frame.';
 
+// Short ending used when the prompt goes straight to an image model. FLUX.1-schnell reads
+// only about the first 256 tokens, so the destination detail comes first and this stays brief.
+export const IMAGE_SUFFIX =
+  'Unretouched aerial photograph on a full-frame camera, natural colours, fine surface texture ' +
+  'and weathering, realistic shadows, subtle atmospheric haze, pale natural sky, true scale, ' +
+  'high detail, 16:9 landscape, clean frame.';
+
 /** Words that make image models draw an aircraft into the picture. */
 export const AIRCRAFT_WORDS = /\b(drones?|uavs?|quadcopters?|multicopters?)\b/i;
 

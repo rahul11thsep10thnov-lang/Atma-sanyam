@@ -229,3 +229,14 @@ test('image prompts never mention a drone, and QC rejects ones that do', () => {
   const bad = { ...clone(samples[1].package), image_prompt: `${samples[1].package.image_prompt} Drone positioned south-west.` };
   assert.ok(checkPackage(bad, {}).errors.some((e) => e.includes('drone/UAV')));
 });
+
+import { imagePrompt } from '../src/images.mjs';
+
+test('the image-model prompt keeps all destination detail and stays near FLUX-schnell\'s window', () => {
+  for (const s of samples) {
+    const p = imagePrompt(s.package);
+    assert.ok(p.startsWith(s.package.image_prompt.slice(0, 40)), s.package.name);
+    assert.ok(p.split(/\s+/).length <= 215, `${s.package.name}: ${p.split(/\s+/).length} words`);
+    assert.doesNotMatch(p, /drone|\bno\b|\bnot\b/i, s.package.name);
+  }
+});

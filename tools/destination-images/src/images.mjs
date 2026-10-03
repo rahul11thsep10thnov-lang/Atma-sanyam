@@ -8,8 +8,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { InferenceClient } from '@huggingface/inference';
 import sharp from 'sharp';
-import { NEGATIVE_PROMPT } from './spec.mjs';
-import { fullPrompt } from './render.mjs';
+import { IMAGE_SUFFIX, NEGATIVE_PROMPT, sanitizeForImage } from './spec.mjs';
 
 export const DEFAULT_HF_MODEL = 'stabilityai/stable-diffusion-xl-base-1.0';
 // 1344×768 is one of SDXL's native training sizes (≈16:9). Other models may prefer others.
@@ -42,6 +41,11 @@ export function resolveImageSize(flag, provider) {
     return m ? { width: Number(m[1]), height: Number(m[2]) } : flag;
   }
   return provider === 'fal-ai' ? 'landscape_16_9' : undefined;
+}
+
+/** The destination description first, then a brief realism ending (fits FLUX's prompt window). */
+export function imagePrompt(pkg) {
+  return sanitizeForImage(`${pkg.image_prompt.trim().replace(/\s*\.?$/, '.')} ${IMAGE_SUFFIX}`);
 }
 
 export function createHfClient(token = process.env.HF_TOKEN) {
@@ -79,7 +83,7 @@ export async function generateImage(client, record, opts, { retries = 4, wait = 
   const request = {
     model: opts.model,
     ...(opts.provider ? { provider: opts.provider } : {}),
-    inputs: opts.compact ? compactPrompt(record.package) : fullPrompt(record.package),
+    inputs: opts.compact ? compactPrompt(record.package) : imagePrompt(record.package),
     parameters: {
       negative_prompt: NEGATIVE_PROMPT,
       width: opts.width,
