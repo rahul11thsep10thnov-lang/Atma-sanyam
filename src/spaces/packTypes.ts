@@ -80,6 +80,8 @@ export interface StateLayers {
 }
 
 export interface SpacePack {
+  /** Four walls: rain and clouds show only through the window (states[].openAir). */
+  enclosed?: boolean;
   version: 2;
   space: SpaceId;
   plate: { width: number; height: number };

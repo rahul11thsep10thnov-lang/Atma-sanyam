@@ -75,6 +75,7 @@ if m.get("version", 1) == 1:
     manifest_out = pack / "manifest.v2.json"
 
 W, H = m["plate"]["width"], m["plate"]["height"]
+m["enclosed"] = space == "room"  # rain and clouds stay in the window
 m["renderedStates"] = sorted(m["states"].keys(), key=lambda s: ["morning", "afternoon", "sunset", "evening", "night", "rain"].index(s))
 
 
@@ -104,6 +105,9 @@ for state, L in m["states"].items():
     if len(cols) and len(rows):
         core[rows.min():rows.max() + 1, cols.min():cols.max() + 1] = True
     open_air = bbox(see & core, 0.03)
+    if not see.any() and L.get("window"):
+        # an enclosed space: the base plate is opaque (glass included); open air is the window
+        open_air = L["window"]
     x, y, w, h = open_air
     outside = np.ones_like(see)
     outside[y:y + h, x:x + w] = False

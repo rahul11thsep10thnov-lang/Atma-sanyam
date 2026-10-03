@@ -116,7 +116,13 @@ export function SpaceScene({ space, state, art, light, rackCount = 0, focusMinut
             {live && !isDark(light) && light !== 'rain' && pack.dust && <Dust space={space} file={pack.dust} PW={PW} PH={PH} s={s} />}
           </Animated.View>
           {veil && <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: veil.color, opacity: veil.opacity }]} />}
-          {light === 'rain' && pack.rain && live && <Rain space={space} rain={pack.rain} width={size.w} height={size.h} />}
+          {light === 'rain' && pack.rain && live && (pack.enclosed && L.openAir ? (
+            <View pointerEvents="none" style={[{ position: 'absolute', left: ox + L.openAir[0] * s, top: oy + L.openAir[1] * s, width: L.openAir[2] * s, height: L.openAir[3] * s, overflow: 'hidden' }]}>
+              <Rain space={space} rain={pack.rain} width={L.openAir[2] * s} height={L.openAir[3] * s} />
+            </View>
+          ) : (
+            <Rain space={space} rain={pack.rain} width={size.w} height={size.h} />
+          ))}
           {children}
         </>
       )}

@@ -160,6 +160,13 @@ def plates():
         visible(c, True)
     img = render(TMP / f"base_{STATE}.png", args.plate_samples, True)
     st["base"] = {"file": save_webp(img, f"{'terrain' if args.space == 'garden' else 'architecture'}/base__{STATE}.webp"), "rect": [0, 0, W, H]}
+    if args.space == "room":
+        # the only open air in the room is the window: rain and clouds are clipped to it
+        y0, y1, sz, hz = space.WIN
+        pts = [to_px((-space.HW, y, z)) for y in (y0, y1) for z in (sz, hz)]
+        xs, ys = [q[0] for q in pts], [q[1] for q in pts]
+        x0, y0_, x1, y1_ = max(0, min(xs)), max(0, min(ys)), min(W, max(xs)), min(H, max(ys))
+        st["window"] = [int(x0), int(y0_), int(x1 - x0) + 1, int(y1_ - y0_) + 1]
     # where the sun falls: lit minus unlit, normalised
     if sun_dir is not None:
         sun = next((o for o in sc.objects if o.type == "LIGHT" and o.data.type == "SUN"), None)

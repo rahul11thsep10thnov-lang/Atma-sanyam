@@ -118,6 +118,11 @@ def compose(pack, m, state, lighting="morning"):
         for yy in range(0, H, r.height):
             for xx in range(0, W, r.width):
                 tile.alpha_composite(r, (xx, yy))
+        if m.get("enclosed") and m["states"][src].get("openAir"):
+            x, y, w, h = m["states"][src]["openAir"]
+            mask = Image.new("L", (W, H), 0)
+            mask.paste(255, (x, y, x + w, y + h))
+            tile.putalpha(Image.fromarray(np.minimum(np.asarray(tile.split()[3]), np.asarray(mask))))
         canvas.alpha_composite(tile)
     return canvas.convert("RGB")
 

@@ -46,9 +46,15 @@
    "cropped": true,
    "openAir": [
     0,
+    810,
+    147,
+    505
+   ],
+   "window": [
     0,
-    1080,
-    2340
+    810,
+    147,
+    505
    ]
   },
   "night": {
@@ -82,9 +88,15 @@
    "cropped": true,
    "openAir": [
     0,
+    810,
+    147,
+    505
+   ],
+   "window": [
     0,
-    1080,
-    2340
+    810,
+    147,
+    505
    ]
   },
   "rain": {
@@ -118,9 +130,15 @@
    "cropped": true,
    "openAir": [
     0,
+    810,
+    147,
+    505
+   ],
+   "window": [
     0,
-    1080,
-    2340
+    810,
+    147,
+    505
    ]
   }
  },
@@ -6963,12 +6981,12 @@
   "file": "animations/clouds.webp",
   "width": 2160,
   "height": 780,
-  "top": 0,
+  "top": 810,
   "rect": [
    0,
-   0,
-   1080,
-   780
+   810,
+   147,
+   505
   ]
  },
  "dust": "animations/dust.webp",
@@ -7541,5 +7559,6 @@
   "file": "weather/rain.webp",
   "width": 540,
   "height": 1200
- }
+ },
+ "enclosed": true
 }
