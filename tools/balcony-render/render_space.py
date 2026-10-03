@@ -373,6 +373,21 @@ def items():
     for c in PLATE_COLS:
         visible(c, True)
         catcher(c, True)
+    if args.space == "room":
+        # item passes only need the room as a shadow/bounce catcher: drop the garden outside
+        # the window and most of the interior bounces, which cost minutes per item otherwise
+        for o in objs("landscape"):
+            o.hide_render = True
+        sc.cycles.max_bounces = 6
+        sc.cycles.diffuse_bounces = 3
+        sc.cycles.glossy_bounces = 3
+        sc.cycles.transmission_bounces = 6
+        sc.cycles.transparent_max_bounces = 8
+        sc.cycles.adaptive_threshold = 0.05
+    # the lawn only has to catch shadows here; a third of the child hairs renders ~2x faster
+    for o in objs("terrain"):
+        for ps in o.particle_systems:
+            ps.settings.rendered_child_count = 8
     bpy.context.view_layer.update()  # camera matrix (anchors were garbage with --skip-plates)
     for sid, s in catalog.SLOTS.items():
         px = to_px(s["pos"])
