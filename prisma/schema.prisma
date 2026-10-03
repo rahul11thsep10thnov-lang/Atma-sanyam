@@ -1511,3 +1511,51 @@ model AnalyticsEvent {
   @@index([occurred_at])
   @@map("analytics_events")
 }
+
+// ---------------------------------------------------------------------------
+// Content CMS — image candidates (mirrors CmsImage in lib/cms/types.ts).
+// The running CMS keeps these inside each destination document under
+// data/cms/; this model is the table they map to when PostgreSQL is attached.
+// Binary files are never stored here: approved files live in media storage
+// (data/media or an object store) and only their URL is recorded.
+// ---------------------------------------------------------------------------
+
+enum ImageApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model ImageCandidate {
+  id                String              @id
+  destination_id    String
+  /// Attraction id, or null for the destination gallery / hero.
+  attraction_id     String?
+  /// wikimedia | pixabay | unsplash | pexels | manual
+  provider          String
+  provider_image_id String?
+  thumbnail_url     String?
+  preview_url       String?
+  original_url      String?
+  /// URL served on the site: /media/… once stored, or the provider URL where hotlinking is required (Unsplash).
+  served_url        String
+  source_page_url   String?
+  photographer      String?
+  photographer_url  String?
+  license           String?
+  license_url       String?
+  attribution_text  String?
+  width             Int?
+  height            Int?
+  source_query      String?
+  discovered_at     DateTime            @default(now())
+  approval_status   ImageApprovalStatus @default(PENDING)
+  rejection_reason  String?
+  download_status   String              @default("NOT_DOWNLOADED")
+  download_event_sent_at DateTime?
+  sort_order        Int                 @default(0)
+
+  @@unique([destination_id, attraction_id, provider, provider_image_id])
+  @@index([destination_id, approval_status])
+  @@index([attraction_id])
+}

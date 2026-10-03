@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { authorizeAdmin } from "@/lib/auth/admin";
 import { badRequest, json, notFound } from "@/lib/api/http";
-import { approveAndContinue, clearQueue, enqueue, overview, publishFromPipeline, runUntilCheckpoint, sendBackToResearch, skipDestination, stepDestination } from "@/lib/cms/pipeline/runner";
+import { clearQueue, continueInBackground, enqueue, finalize, overview, prepareAhead, publishFromPipeline, researchImages, runUntilCheckpoint, sendBackToResearch, skipDestination, stepDestination } from "@/lib/cms/pipeline/runner";
 import { getDestination } from "@/lib/cms/store";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   return json(overview());
 }
 
-const ACTIONS = ["run", "step", "retry", "skip", "reset", "approve", "finalize", "publish", "clear", "enqueue"] as const;
+const ACTIONS = ["run", "step", "retry", "skip", "reset", "finalize", "publish", "clear", "enqueue", "search_images", "prepare", "continue"] as const;
 
 /**
  * POST /api/admin/cms/pipeline — { action, id? , ids? }
@@ -22,16 +22,18 @@ const ACTIONS = ["run", "step", "retry", "skip", "reset", "approve", "finalize",
  *   retry    — resume a FAILED destination at the stage that failed
  *   skip     — mark `id` SKIPPED and move the cursor on
  *   reset    — send `id` back to the start of the pipeline
- *   approve  — AWAITING_APPROVAL → FINALIZING (after images were approved) and run finalisation
- *   finalize — alias of approve
- *   publish  — READY_TO_PUBLISH → PUBLISHED + COMPLETED, cursor moves to the next destination
+ *   finalize — finalise `id` with its currently approved images (the review screen uses /destinations/{id}/images)
+ *   publish  — legacy READY_TO_PUBLISH records → PUBLISHED + COMPLETED
+ *   search_images — re-run the image search for `id` (`target`: attraction id, "__destination" or "all")
+ *   prepare  — research + image-search the next N destinations now (N = settings.prepare_ahead)
+ *   continue — run the current destination and prepare the next ones in the background
  *   enqueue  — add existing destinations `ids` to the queue
  *   clear    — empty the queue
  */
 export async function POST(request: NextRequest) {
   const denied = await authorizeAdmin(request);
   if (denied) return denied;
-  let body: { action?: unknown; id?: unknown; ids?: unknown };
+  let body: { action?: unknown; id?: unknown; ids?: unknown; target?: unknown };
   try {
     body = await request.json();
   } catch {
@@ -50,6 +52,7 @@ export async function POST(request: NextRequest) {
     switch (action) {
       case "run": {
         const d = await runUntilCheckpoint();
+        continueInBackground();
         return json({ destination: d, ...overview() });
       }
       case "step": {
@@ -65,12 +68,24 @@ export async function POST(request: NextRequest) {
       }
       case "skip": return json({ destination: skipDestination(need().id), ...overview() });
       case "reset": return json({ destination: sendBackToResearch(need().id), ...overview() });
-      case "approve":
       case "finalize": {
         const d = need();
-        let next = d.pipeline.stage === "AWAITING_APPROVAL" ? approveAndContinue(d.id) : d;
-        if (next && next.pipeline.stage === "FINALIZING") next = await stepDestination(next.id);
+        const next = await finalize(d);
+        continueInBackground();
         return json({ destination: next, ...overview() });
+      }
+      case "search_images": {
+        const d = need();
+        const target = typeof body.target === "string" ? body.target : "all";
+        return json({ destination: await researchImages(d.id, target), ...overview() });
+      }
+      case "prepare": {
+        const prepared = await prepareAhead();
+        return json({ prepared, ...overview() });
+      }
+      case "continue": {
+        continueInBackground();
+        return json(overview());
       }
       case "publish": {
         const d = need();

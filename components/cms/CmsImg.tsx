@@ -10,7 +10,8 @@ import { OPTIMISED_IMAGE_HOSTS } from "@/lib/cms/hosts";
  */
 export function CmsImg({ image, className, sizes, priority, fill }: { image: ImageAsset; className?: string; sizes?: string; priority?: boolean; fill?: boolean }) {
   const url = image.url;
-  let optimisable = url.startsWith("/");
+  // Runtime files under /media are served by a route handler; they are already web-sized.
+  let optimisable = url.startsWith("/") && !url.startsWith("/media/");
   if (!optimisable && url.startsWith("https://")) {
     try {
       const host = new URL(url).hostname;

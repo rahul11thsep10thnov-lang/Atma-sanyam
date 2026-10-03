@@ -1,6 +1,6 @@
 import type { CmsAttraction } from "@/lib/cms/types";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
-import { assetOf, attributionLine, isPlaceholder } from "@/lib/cms/images";
+import { assetOf, creditOf, isPlaceholder } from "@/lib/cms/images";
 import { ImageGallery } from "./ImageGallery";
 
 /**
@@ -16,7 +16,7 @@ export function AttractionList({ attractions, dict }: { attractions: CmsAttracti
     <ol className="space-y-8">
       {list.map((a, i) => {
         const approved = a.images.filter((img) => img.approval_status === "APPROVED" && !isPlaceholder(img)).sort((x, y) => x.sort_order - y.sort_order);
-        const gallery = approved.map((img) => ({ asset: assetOf(img, a.name, 1200, 750), caption: img.caption, credit: attributionLine(img) }));
+        const gallery = approved.map((img) => ({ asset: assetOf(img, a.name, 1200, 750), caption: img.caption, credit: creditOf(img) }));
         const sources = a.sources.filter((s) => s.status !== "SEED" || true);
         return (
           <li key={a.id} id={`attraction-${a.slug}`} className="scroll-mt-32 grid gap-5 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5 md:grid-cols-[1fr_1.15fr] md:p-6">

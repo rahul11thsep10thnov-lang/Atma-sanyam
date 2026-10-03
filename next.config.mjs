@@ -14,14 +14,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "**.amazonaws.com"
       },
-      // Openly licensed image sources used by the admin image pipeline (candidates are only
-      // shown to admins; approved files are downloaded to /public/media with their licence).
+      // Wikimedia Commons / Pexels files may be optimised. Unsplash (must be hotlinked as-is) and
+      // Pixabay (shown publicly only from our own /media storage) are intentionally not listed.
       { protocol: "https", hostname: "upload.wikimedia.org" },
       { protocol: "https", hostname: "commons.wikimedia.org" },
-      { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "images.pexels.com" },
-      { protocol: "https", hostname: "pixabay.com" },
-      { protocol: "https", hostname: "cdn.pixabay.com" }
     ],
     formats: ["image/avif", "image/webp"]
   },

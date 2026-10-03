@@ -5,7 +5,7 @@ import { createDestination } from "@/lib/cms/admin";
 import { bootstrapFromSeed } from "@/lib/cms/bootstrap";
 import { candidatesFromText, extractFromPdf } from "@/lib/cms/pipeline/pdf";
 import { enqueue } from "@/lib/cms/pipeline/runner";
-import { getImport, listImports, saveImport } from "@/lib/cms/store";
+import { getDestination, getImport, listImports, saveImport } from "@/lib/cms/store";
 import type { ImportRecord } from "@/lib/cms/types";
 
 export const dynamic = "force-dynamic";
@@ -100,6 +100,11 @@ export async function PUT(request: NextRequest) {
   });
   for (const c of candidates) {
     if (!c.selected) continue;
+    // An existing record is queued as it is (its content is kept; empty fields and images are filled in).
+    if (c.duplicate_of && getDestination(c.duplicate_of)) {
+      created.push(c.duplicate_of);
+      continue;
+    }
     const doc = createDestination(c.name, c.state ?? null, { provenance: { created: [{ label: `PDF import ${rec.file_name}`, url: null, retrieved_at: new Date().toISOString(), status: "MANUAL" }] } });
     created.push(doc.id);
   }

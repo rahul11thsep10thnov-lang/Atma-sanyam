@@ -1,0 +1,198 @@
+{
+  "id": "CMS-jammu",
+  "name": "Jammu",
+  "slug": "jammu",
+  "state": "Jammu and Kashmir",
+  "state_slug": "jammu-and-kashmir",
+  "district": null,
+  "region": null,
+  "country": "India",
+  "latitude": null,
+  "longitude": null,
+  "hero_image": null,
+  "headline": null,
+  "short_description": null,
+  "about": null,
+  "history": null,
+  "history_verified": false,
+  "transportation": null,
+  "travel_info": null,
+  "best_time_text": null,
+  "ideal_duration_text": null,
+  "nearest_airport": null,
+  "nearest_railway_station": null,
+  "categories": [],
+  "companions": [],
+  "attractions": [],
+  "hotels": [],
+  "restaurants": [],
+  "images": [],
+  "faq": [],
+  "seo": {
+    "title": null,
+    "description": null,
+    "keywords": [],
+    "canonical_path": null,
+    "og_image": null
+  },
+  "provenance": {
+    "created": [
+      {
+        "label": "Admin entry",
+        "url": null,
+        "retrieved_at": "2026-10-03T15:50:03.464Z",
+        "status": "MANUAL"
+      }
+    ],
+    "about": [
+      {
+        "label": "Incredible India",
+        "url": "https://www.incredibleindia.gov.in/en/jammu-and-kashmir/jammu",
+        "retrieved_at": "2026-10-03T15:50:13.183Z",
+        "status": "SOURCE_UNAVAILABLE",
+        "note": "HTTP 403"
+      },
+      {
+        "label": "Wikipedia",
+        "url": null,
+        "retrieved_at": "2026-10-03T15:50:13.214Z",
+        "status": "SOURCE_UNAVAILABLE",
+        "note": "HTTP 403"
+      }
+    ],
+    "images": [
+      {
+        "label": "Image discovery service",
+        "url": null,
+        "retrieved_at": "2026-10-03T15:50:13.276Z",
+        "status": "SOURCE_UNAVAILABLE",
+        "note": "0 candidates"
+      }
+    ]
+  },
+  "pipeline": {
+    "stage": "QUEUED",
+    "import_id": "IMP-muskite7",
+    "position": 1,
+    "started_at": "2026-10-03T15:50:13.029Z",
+    "completed_at": null,
+    "last_error": null,
+    "log": [
+      {
+        "at": "2026-10-03T15:50:03.892Z",
+        "stage": "QUEUED",
+        "message": "Queued (position 1)",
+        "level": "info"
+      },
+      {
+        "at": "2026-10-03T15:50:13.029Z",
+        "stage": "RESEARCHING",
+        "message": "Research started",
+        "level": "info"
+      },
+      {
+        "at": "2026-10-03T15:50:13.184Z",
+        "stage": "RESEARCHING",
+        "message": "Incredible India: source unavailable (HTTP 403)",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.214Z",
+        "stage": "RESEARCHING",
+        "message": "Wikipedia: source unavailable (HTTP 403)",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.214Z",
+        "stage": "RESEARCHING",
+        "message": "No verifiable history retrieved — the page will say so",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.214Z",
+        "stage": "RESEARCHING",
+        "message": "No source supplied an About summary — left empty for the admin",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.214Z",
+        "stage": "ATTRACTIONS",
+        "message": "Research finished",
+        "level": "info"
+      },
+      {
+        "at": "2026-10-03T15:50:13.217Z",
+        "stage": "ATTRACTIONS",
+        "message": "Collecting attractions",
+        "level": "info"
+      },
+      {
+        "at": "2026-10-03T15:50:13.217Z",
+        "stage": "ATTRACTIONS",
+        "message": "Google Places API key not configured — ratings will show as unavailable",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.217Z",
+        "stage": "ATTRACTIONS",
+        "message": "No coordinates known — nearby search skipped",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.218Z",
+        "stage": "ATTRACTIONS",
+        "message": "No attractions could be collected from any reachable source",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.218Z",
+        "stage": "IMAGES",
+        "message": "0 attractions stored",
+        "level": "info"
+      },
+      {
+        "at": "2026-10-03T15:50:13.219Z",
+        "stage": "IMAGES",
+        "message": "Searching for image candidates",
+        "level": "info"
+      },
+      {
+        "at": "2026-10-03T15:50:13.276Z",
+        "stage": "IMAGES",
+        "message": "Destination gallery: FAILED — Wikimedia Commons PROVIDER_UNAVAILABLE, Pixabay PROVIDER_UNAVAILABLE; 0 candidates",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.276Z",
+        "stage": "IMAGES",
+        "message": "Wikimedia Commons: PROVIDER_UNAVAILABLE — Host not in allowlist: commons.wikimedia.org. Add this host to your network egress settings to allow access.. Marked unavailable for this destination; other providers were used.",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.276Z",
+        "stage": "IMAGES",
+        "message": "Pixabay: PROVIDER_UNAVAILABLE — Host not in allowlist: pixabay.com. Add this host to your network egress settings to allow access.. Marked unavailable for this destination; other providers were used.",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.276Z",
+        "stage": "IMAGES",
+        "message": "No candidates found. Re-run the image search when providers are reachable, or upload licensed photographs.",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.276Z",
+        "stage": "AWAITING_APPROVAL",
+        "message": "0 candidates ready for review",
+        "level": "info"
+      }
+    ]
+  },
+  "legacy_slug": null,
+  "is_sample_data": false,
+  "status": "DRAFT",
+  "created_at": "2026-10-03T15:50:03.464Z",
+  "updated_at": "2026-10-03T15:55:05.453Z",
+  "published_at": null,
+  "gallery_search": null
+}

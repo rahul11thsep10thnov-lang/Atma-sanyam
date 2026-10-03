@@ -86,10 +86,10 @@ export function PdfImport({ base, states, previous }: { base: string; states: st
         <div className="space-y-3">
           <div className="card-surface flex flex-wrap items-center gap-3 p-4">
             <div className="flex-1 text-sm">
-              <p className="font-medium text-charcoal">{rec.file_name}{rec.page_count ? ` · ${rec.page_count} pages` : ""} · {rec.raw_line_count} lines read · {rows.length} place names found{dupes > 0 && ` · ${dupes} already exist (un-ticked)`}</p>
+              <p className="font-medium text-charcoal">{rec.file_name}{rec.page_count ? ` · ${rec.page_count} pages` : ""} · {rec.raw_line_count} lines read · {rows.length} place names found{dupes > 0 && ` · ${dupes} already exist (queued as they are)`}</p>
               <p className="text-xs text-charcoal-light">Review the list: fix a name, choose a state where known, and un-tick anything that is not a destination. Nothing is created until you confirm.</p>
             </div>
-            <button type="button" className={btnSecondary} onClick={() => setRows((r) => r.map((x) => ({ ...x, selected: !x.duplicate_of })))}>Select all new</button>
+            <button type="button" className={btnSecondary} onClick={() => setRows((r) => r.map((x) => ({ ...x, selected: true })))}>Select all</button>
             <button type="button" className={btnSecondary} onClick={() => setRows((r) => r.map((x) => ({ ...x, selected: false })))}>Clear</button>
             <button type="button" className={btnSecondary} onClick={() => { setRec(null); setRows([]); }}>Start over</button>
             <button type="button" disabled={busy || selectedCount === 0} onClick={confirmImport} className={btnPrimary}>{busy ? "Creating…" : `Create ${selectedCount} and queue`}</button>
@@ -98,12 +98,13 @@ export function PdfImport({ base, states, previous }: { base: string; states: st
           <div className="overflow-x-auto rounded-xl border border-forest-100 bg-white">
             <table className="min-w-full divide-y divide-forest-100 text-sm">
               <thead className="bg-forest-50 text-left text-xs font-semibold uppercase tracking-wide text-forest-700">
-                <tr><th className="px-3 py-2">#</th><th className="px-3 py-2">Create</th><th className="px-3 py-2">Name</th><th className="px-3 py-2">State</th><th className="px-3 py-2">Slug</th><th className="px-3 py-2">Line in PDF</th><th className="px-3 py-2">Note</th></tr>
+                <tr><th className="px-3 py-2">#</th><th className="px-3 py-2">PDF no.</th><th className="px-3 py-2">Create</th><th className="px-3 py-2">Name</th><th className="px-3 py-2">State</th><th className="px-3 py-2">Slug</th><th className="px-3 py-2">Line in PDF</th><th className="px-3 py-2">Note</th></tr>
               </thead>
               <tbody className="divide-y divide-forest-100">
                 {rows.map((r, i) => (
                   <tr key={r.slug} className={r.selected ? undefined : "opacity-60"}>
                     <td className="px-3 py-1.5 text-charcoal-light">{i + 1}</td>
+                    <td className="px-3 py-1.5 text-charcoal-light">{r.position ?? "—"}</td>
                     <td className="px-3 py-1.5"><input type="checkbox" checked={r.selected} onChange={(e) => setRows((rs) => rs.map((x, j) => (j === i ? { ...x, selected: e.target.checked } : x)))} aria-label={`Create ${r.name}`} /></td>
                     <td className="px-3 py-1.5"><input value={r.name} onChange={(e) => setRows((rs) => rs.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)))} className="w-full rounded border border-forest-100 px-2 py-1" /></td>
                     <td className="px-3 py-1.5">
@@ -113,7 +114,7 @@ export function PdfImport({ base, states, previous }: { base: string; states: st
                     </td>
                     <td className="px-3 py-1.5 font-mono text-xs text-charcoal-light">{r.slug}</td>
                     <td className="px-3 py-1.5 text-xs text-charcoal-light">{r.raw}</td>
-                    <td className="px-3 py-1.5 text-xs">{r.duplicate_of ? <span className="text-saffron-700">Already exists ({r.duplicate_of})</span> : <span className="text-forest-700">New</span>}</td>
+                    <td className="px-3 py-1.5 text-xs">{r.duplicate_of ? <span className="text-saffron-700">Already exists — the existing page is queued (its content is kept)</span> : <span className="text-forest-700">New</span>}</td>
                   </tr>
                 ))}
               </tbody>

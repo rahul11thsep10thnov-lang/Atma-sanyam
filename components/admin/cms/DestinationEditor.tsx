@@ -69,7 +69,7 @@ export function DestinationEditor({ initial, base, siteBase, states }: { initial
   }
 
   const approvedPool: CmsImage[] = [...d.images, ...d.attractions.flatMap((a) => a.images)].filter((i) => i.approval_status === "APPROVED");
-  const pendingCandidates = d.attractions.reduce((n, a) => n + a.images.filter((i) => i.approval_status === "CANDIDATE").length, 0) + d.images.filter((i) => i.approval_status === "CANDIDATE").length;
+  const pendingCandidates = d.attractions.reduce((n, a) => n + a.images.filter((i) => i.approval_status === "PENDING").length, 0) + d.images.filter((i) => i.approval_status === "PENDING").length;
 
   return (
     <div className="space-y-4">

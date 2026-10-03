@@ -32,9 +32,11 @@ export default async function AdminLayout({ children, params }: { children: Reac
           <nav aria-label="Admin sections" className="flex flex-col gap-0.5">
             <p className="px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wide text-charcoal-light">Content (CMS)</p>
             <Link href={`${base}/cms`} className={link}>Content dashboard</Link>
+            <Link href={`${base}/cms/review`} className={`${link} font-semibold text-forest-700`}>Review next destination →</Link>
             <Link href={`${base}/cms/destinations`} className={link}>Destinations</Link>
             <Link href={`${base}/cms/import`} className={link}>Import PDF</Link>
             <Link href={`${base}/cms/pipeline`} className={link}>Pipeline</Link>
+            <Link href={`${base}/cms/providers`} className={link}>Image Providers</Link>
             <Link href={`${base}/cms/settings`} className={link}>Settings</Link>
             <p className="px-3 pb-1 pt-3 text-[11px] font-semibold uppercase tracking-wide text-charcoal-light">Master database</p>
             <Link href={base} className={link}>Dashboard</Link>

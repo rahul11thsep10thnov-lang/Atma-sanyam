@@ -13,7 +13,6 @@
     "id": "MEDIA-00040",
     "url": "placeholder://Jaipur%20skyline?w=1600&h=900",
     "thumbnail_url": null,
-    "direct_url": null,
     "source": "Placeholder (generated graphic, not a photograph)",
     "source_page_url": null,
     "photographer": null,
@@ -29,7 +28,9 @@
     "width": null,
     "height": null,
     "retrieved_at": null,
-    "sort_order": 0
+    "sort_order": 0,
+    "original_url": null,
+    "provider": "seed"
   },
   "headline": "The Pink City",
   "short_description": "Rajasthan's capital is famed for its rose-pink old city, hilltop forts and royal Rajput heritage.",
@@ -74,7 +75,6 @@
           "id": "MEDIA-00045",
           "url": "placeholder://Amber%20Fort?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -90,7 +90,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -126,7 +128,6 @@
           "id": "MEDIA-00046",
           "url": "placeholder://Hawa%20Mahal?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -142,7 +143,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -178,7 +181,6 @@
           "id": "MEDIA-00047",
           "url": "placeholder://City%20Palace?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -194,7 +196,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -230,7 +234,6 @@
           "id": "MEDIA-00048",
           "url": "placeholder://Jantar%20Mantar?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -246,7 +249,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -328,7 +333,6 @@
       "id": "MEDIA-00041",
       "url": "placeholder://Amber%20Fort?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -344,13 +348,14 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 0
+      "sort_order": 0,
+      "original_url": null,
+      "provider": "seed"
     },
     {
       "id": "MEDIA-00042",
       "url": "placeholder://Hawa%20Mahal?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -366,13 +371,14 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 1
+      "sort_order": 1,
+      "original_url": null,
+      "provider": "seed"
     },
     {
       "id": "MEDIA-00043",
       "url": "placeholder://City%20Palace?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -388,13 +394,14 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 2
+      "sort_order": 2,
+      "original_url": null,
+      "provider": "seed"
     },
     {
       "id": "MEDIA-00044",
       "url": "placeholder://Jantar%20Mantar?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -410,7 +417,9 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 3
+      "sort_order": 3,
+      "original_url": null,
+      "provider": "seed"
     }
   ],
   "faq": [],
@@ -469,18 +478,25 @@
     ]
   },
   "pipeline": {
-    "stage": "NOT_IN_PIPELINE",
-    "import_id": null,
-    "position": null,
+    "stage": "QUEUED",
+    "import_id": "IMP-muskite7",
+    "position": 430,
     "started_at": null,
     "completed_at": null,
     "last_error": null,
-    "log": []
+    "log": [
+      {
+        "at": "2026-10-03T15:50:04.488Z",
+        "stage": "QUEUED",
+        "message": "Queued (position 430)",
+        "level": "info"
+      }
+    ]
   },
   "legacy_slug": "jaipur",
   "is_sample_data": true,
   "status": "PUBLISHED",
   "created_at": "2026-10-03T10:35:37.122Z",
-  "updated_at": "2026-10-03T10:35:37.127Z",
+  "updated_at": "2026-10-03T15:50:04.488Z",
   "published_at": "2026-10-03T10:35:37.122Z"
 }

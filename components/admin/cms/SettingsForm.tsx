@@ -4,9 +4,7 @@ import { useState } from "react";
 import type { SiteSettings } from "@/lib/cms/types";
 import { api, btnPrimary, btnSecondary, field, label, Notice } from "./ui";
 
-type EnvKeys = { google_places: boolean; unsplash: boolean; pexels: boolean; pixabay: boolean };
-
-export function SettingsForm({ initial, envKeys }: { initial: SiteSettings; envKeys: EnvKeys }) {
+export function SettingsForm({ initial }: { initial: SiteSettings }) {
   const [s, setS] = useState<SiteSettings>(initial);
   const [msg, setMsg] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
@@ -33,7 +31,6 @@ export function SettingsForm({ initial, envKeys }: { initial: SiteSettings; envK
       <div className="mt-3 grid gap-3 sm:grid-cols-2">{children}</div>
     </section>
   );
-  const keyHint = (env: boolean) => (env ? <span className="ml-2 text-xs text-forest-700">set via environment variable (takes precedence)</span> : null);
 
   return (
     <form onSubmit={save} className="space-y-5">
@@ -69,19 +66,18 @@ export function SettingsForm({ initial, envKeys }: { initial: SiteSettings; envK
           </div>
         </div>
       </Section>
-      <Section title="Rating source (Google Places API)">
-        <label className={`${label} sm:col-span-2`}>Google Places API key{keyHint(envKeys.google_places)}<input {...text("google_places_api_key")} className={field} placeholder="Leave blank to show “Rating unavailable”" /></label>
-        <p className="text-xs text-charcoal-light sm:col-span-2">Ratings are only read through the official Places API. Without a key, the pipeline never invents a rating — attractions show “Rating unavailable”.</p>
-      </Section>
-      <Section title="Image sources">
-        {(["wikimedia_commons", "unsplash", "pexels", "pixabay"] as const).map((k) => (
-          <label key={k} className="flex items-center gap-2 text-sm text-charcoal"><input type="checkbox" checked={s.image_sources[k]} onChange={(e) => setS((p) => ({ ...p, image_sources: { ...p.image_sources, [k]: e.target.checked } }))} />{k === "wikimedia_commons" ? "Wikimedia Commons (free licences only)" : k[0].toUpperCase() + k.slice(1)}</label>
-        ))}
-        <label className={label}>Unsplash access key{keyHint(envKeys.unsplash)}<input {...text("unsplash_access_key")} className={field} /></label>
-        <label className={label}>Pexels API key{keyHint(envKeys.pexels)}<input {...text("pexels_api_key")} className={field} /></label>
-        <label className={label}>Pixabay API key{keyHint(envKeys.pixabay)}<input {...text("pixabay_api_key")} className={field} /></label>
-        <label className={label}>Candidate images per attraction<input type="number" min={4} max={20} value={s.images_per_attraction} onChange={(e) => setS((p) => ({ ...p, images_per_attraction: Number(e.target.value) }))} className={field} /></label>
-        <p className="text-xs text-charcoal-light sm:col-span-2">Keys are stored in <code>data/cms/settings.json</code>; a saved key is shown masked and is kept unless you type a new one. Only images whose licence permits publication are ever collected.</p>
+      <Section title="Content pipeline">
+        <label className={label}>Attractions per destination<input type="number" min={3} max={30} value={s.attractions_per_destination} onChange={(e) => setS((p) => ({ ...p, attractions_per_destination: Number(e.target.value) }))} className={field} /></label>
+        <label className={label}>Image candidates per attraction (target)<input type="number" min={4} max={20} value={s.images_per_attraction} onChange={(e) => setS((p) => ({ ...p, images_per_attraction: Number(e.target.value) }))} className={field} /></label>
+        <label className={label}>Minimum image size (longer side, px)<input type="number" min={600} max={4000} step={100} value={s.min_image_long_edge} onChange={(e) => setS((p) => ({ ...p, min_image_long_edge: Number(e.target.value) }))} className={field} /></label>
+        <label className={label}>Destinations prepared ahead in the background<input type="number" min={0} max={5} value={s.prepare_ahead} onChange={(e) => setS((p) => ({ ...p, prepare_ahead: Number(e.target.value) }))} className={field} /></label>
+        <label className={`${label} sm:col-span-2`}>When I finalise a destination
+          <select value={s.on_finalize} onChange={(e) => setS((p) => ({ ...p, on_finalize: e.target.value as SiteSettings["on_finalize"] }))} className={field}>
+            <option value="READY">Mark the page ready for review (publish later from the destinations table)</option>
+            <option value="PUBLISH">Publish the page immediately</option>
+          </select>
+        </label>
+        <p className="text-xs text-charcoal-light sm:col-span-2">Fewer candidates than the target are shown when fewer trustworthy images exist — the list is never padded. Destinations already published stay published when finalised again.</p>
       </Section>
       {msg && <Notice tone={msg.tone}>{msg.text}</Notice>}
       <button type="submit" disabled={busy} className={btnPrimary}>{busy ? "Saving…" : "Save settings"}</button>

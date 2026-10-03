@@ -15,6 +15,7 @@
     "prisma:studio": "prisma studio",
     "prisma:seed": "tsx prisma/seed.ts",
     "verify:engine": "tsx --tsconfig tsconfig.seed.json scripts/verify-engine.ts",
+    "test:discovery": "tsx --tsconfig tsconfig.seed.json scripts/test-discovery.ts",
     "verify:seed-types": "tsc --noEmit -p tsconfig.seed.json",
     "import:facts": "tsx --tsconfig tsconfig.seed.json scripts/import-facts.ts",
     "translate": "tsx --tsconfig tsconfig.seed.json scripts/translate.ts"

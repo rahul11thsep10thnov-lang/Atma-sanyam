@@ -13,7 +13,6 @@
     "id": "MEDIA-00172",
     "url": "placeholder://Ayodhya%20skyline?w=1600&h=900",
     "thumbnail_url": null,
-    "direct_url": null,
     "source": "Placeholder (generated graphic, not a photograph)",
     "source_page_url": null,
     "photographer": null,
@@ -29,7 +28,9 @@
     "width": null,
     "height": null,
     "retrieved_at": null,
-    "sort_order": 0
+    "sort_order": 0,
+    "original_url": null,
+    "provider": "seed"
   },
   "headline": "The Birthplace of Lord Rama",
   "short_description": "Ayodhya, on the banks of the Sarayu river, is revered as the birthplace of Lord Rama and a major centre of Hindu pilgrimage.",
@@ -71,7 +72,6 @@
           "id": "MEDIA-00176",
           "url": "placeholder://Ram%20Mandir?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -87,7 +87,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -123,7 +125,6 @@
           "id": "MEDIA-00177",
           "url": "placeholder://Hanuman%20Garhi?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -139,7 +140,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -175,7 +178,6 @@
           "id": "MEDIA-00178",
           "url": "placeholder://Sarayu%20Ghats?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -191,7 +193,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -244,7 +248,6 @@
       "id": "MEDIA-00173",
       "url": "placeholder://Ram%20Mandir?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -260,13 +263,14 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 0
+      "sort_order": 0,
+      "original_url": null,
+      "provider": "seed"
     },
     {
       "id": "MEDIA-00174",
       "url": "placeholder://Hanuman%20Garhi?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -282,13 +286,14 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 1
+      "sort_order": 1,
+      "original_url": null,
+      "provider": "seed"
     },
     {
       "id": "MEDIA-00175",
       "url": "placeholder://Sarayu%20Ghats?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -304,7 +309,9 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 2
+      "sort_order": 2,
+      "original_url": null,
+      "provider": "seed"
     }
   ],
   "faq": [],
@@ -363,18 +370,25 @@
     ]
   },
   "pipeline": {
-    "stage": "NOT_IN_PIPELINE",
-    "import_id": null,
-    "position": null,
+    "stage": "QUEUED",
+    "import_id": "IMP-muskite7",
+    "position": 458,
     "started_at": null,
     "completed_at": null,
     "last_error": null,
-    "log": []
+    "log": [
+      {
+        "at": "2026-10-03T15:50:04.536Z",
+        "stage": "QUEUED",
+        "message": "Queued (position 458)",
+        "level": "info"
+      }
+    ]
   },
   "legacy_slug": "ayodhya",
   "is_sample_data": true,
   "status": "PUBLISHED",
   "created_at": "2026-10-03T10:35:37.122Z",
-  "updated_at": "2026-10-03T10:35:37.131Z",
+  "updated_at": "2026-10-03T15:50:04.536Z",
   "published_at": "2026-10-03T10:35:37.122Z"
 }

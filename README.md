@@ -106,7 +106,9 @@ See `.env.example`. Nothing is required to browse the site.
 | `HOTEL_BOOKING_API_KEY`, `FLIGHT_AFFILIATE_API_KEY`, `ADVERTISING_*` | Monetisation adapters (`lib/providers/*`) |
 | `IMAGE_CDN_BASE_URL`, `S3_*` | Licensed image storage |
 | `GOOGLE_PLACES_API_KEY` | Attraction ratings through the official Places API (otherwise "Rating unavailable") |
-| `UNSPLASH_ACCESS_KEY`, `PEXELS_API_KEY`, `PIXABAY_API_KEY` | Extra licensed image sources for the content pipeline (Wikimedia Commons needs no key) |
+| `PIXABAY_API_KEY`, `UNSPLASH_ACCESS_KEY`, `PEXELS_API_KEY` | Image providers for the discovery service (Wikimedia Commons needs no key). Can instead be saved in Admin → Image Providers |
+| `WIKIMEDIA_CONTACT_EMAIL` | Contact address sent in the User-Agent to Wikimedia's API (falls back to the contact email in Settings) |
+| `CMS_MEDIA_DIR` | Where approved image files are stored (default `data/media`; served at `/media/…`) |
 
 ## Admin
 
@@ -133,19 +135,28 @@ Every page under `/{locale}/destinations/{slug}` is **one template rendering one
 - Image approval: all attractions of one destination on one screen, 1–4 images each, hero choice, one **Approve all selected images** button; the cap of 4 is enforced on the server too.
 - Settings: site name, tagline, logo, favicon, default hero, default SEO, social links, contact, footer, copyright, Google Places key, image-source toggles and keys, candidates per attraction, analytics id.
 
-**Pipeline** (`Import PDF` → `Pipeline`)
+**Pipeline** (`Import PDF` → `Review next destination`)
 
-1. Upload a PDF (or paste a list). The text layer is read with `pdf-parse`; numbering, bullets, headers and page numbers are stripped, "Name, State" lines are split, duplicates (in the file and against existing records) are flagged. You review the list, then confirm.
-2. One DRAFT record per confirmed name is created and queued. The pipeline processes **one destination at a time**: `QUEUED → RESEARCHING → ATTRACTIONS → IMAGES → AWAITING_APPROVAL → (you approve images) → FINALIZING → READY_TO_PUBLISH → (you publish) → COMPLETED → next`. Each stage is saved to the record before the next starts, so closing the browser or a crash resumes at the same destination; a failure stops the queue at that destination and *Retry* resumes at the failed stage.
-3. Sources: the project's seed database, Incredible India (primary) and Wikipedia (supplementary) for concise original summaries; Google Places API (key required) for attractions, ratings, review counts and Maps links — never scraped; Wikipedia geosearch for nearby places; Wikimedia Commons (free licences only) plus Unsplash / Pexels / Pixabay (keys) for ~10 image candidates per attraction, each stored with URL, thumbnail, source, photographer, licence, attribution requirement, source page, download status and approval status. Approved images are downloaded to `public/media/{slug}/`. Every source call is recorded; an unreachable source is stored as `SOURCE_UNAVAILABLE`, never guessed around.
-4. Nothing is published automatically. `npm run verify:engine` covers the store bootstrap, PDF cleaning/de-duplication, the 4-image cap, input sanitising, slug uniqueness and attraction ranking.
+```
+PDF → 500 destinations → destination 1 → ~10 attractions → Image Discovery Service
+    → ~10 candidates per attraction → you select 1–4 each → FINALIZE → destination 2 → …
+```
 
-Admin APIs (all behind `authorizeAdmin`): `/api/admin/cms/destinations` (+ `/{id}`, `/{id}/action`, `/{id}/images`, `/bulk`), `/api/admin/cms/upload`, `/api/admin/cms/settings`, `/api/admin/cms/import`, `/api/admin/cms/pipeline`.
+1. **Import.** Upload a PDF (or paste a list). The text layer is read with `pdf-parse`; numbers glued to names (`1Jammu`), bullets, headers, prose and page numbers are stripped; the state comes from "Name, State" or from the PDF's state headings; duplicates are removed. Names that already have a page are queued as they are (their content is kept). You confirm the list; records are created as DRAFTs and queued **in PDF order**.
+2. **Automatic stages, one destination at a time:** research (seed data, Incredible India, Wikipedia: summary, history, coordinates) → attractions (seed data, Google Places API if a key is set, Wikipedia nearby; up to *attractions per destination*, default 10) → **image discovery** → `AWAITING_APPROVAL`. The next *N* destinations (Settings → *prepared ahead*, default 2) are prepared in the background so the next review screen is ready when you finish the current one. Every stage is saved before the next starts; a closed browser or a crash resumes at the same destination.
+3. **Image Discovery Service** (`lib/cms/discovery/`), server-side, official APIs only: Wikimedia Commons (MediaWiki API: attraction name, + city, + state, geosearch around the coordinates, city + India; CC/public-domain licences only) → Pixabay → Pexels (disabled for now) → Unsplash (optional; only when still short of candidates). Results are normalised, de-duplicated, licence-checked and screened (low resolution, not a photograph, AI-generated, logo/watermark, placeholder, irrelevant, wrong location, missing licence, broken URL); every rejection keeps its reason. About 10 candidates are kept per attraction — fewer if fewer trustworthy ones exist, never padded. A provider that answers 403 / 429 / 404 / times out is recorded as `PROVIDER_UNAVAILABLE` / `RATE_LIMITED` and skipped for the rest of that destination; nothing tries to get around it. Each attraction records its search status (`COMPLETED` / `PARTIAL` / `NO_RESULTS` / `FAILED`) and per-provider counts. Responses are cached for 24 h (`data/cms/cache/`, required by Pixabay).
+4. **Review & FINALIZE** (`Admin → Review next destination`): all attractions of the destination on one screen, IMAGE 1…10 each with provider, photographer, licence, source, *Open source page* and *Select*. Pick 1–4 per attraction (optionally a hero) and press **FINALIZE**: the selection is validated, Pixabay and Commons images are copied to media storage (Pixabay forbids hotlinking), Unsplash photos stay hotlinked and their download event is reported, licence/credit metadata is saved, unselected candidates are discarded, the page is marked *ready for review* (or published — Settings → *When I finalise*), and the pipeline moves to the next destination.
+5. **Image Providers** (`Admin → Image Providers`): enable/disable each provider, save or replace keys (write-only — stored in git-ignored `data/cms/secrets.json`, never sent to the browser; environment variables take precedence), and *Test connection*.
+
+`npm run verify:engine` covers the store, PDF parsing (incl. this PDF's table layout), the 4-image cap, sanitising, ranking and the quality screen; `npm run test:discovery` runs the discovery service offline against recorded-format Commons/Pixabay responses (filters, de-duplication, fallback on 403, status reporting).
+
+Admin APIs (all behind `authorizeAdmin`): `/api/admin/cms/destinations` (+ `/{id}`, `/{id}/action`, `/{id}/images` = finalise, `/bulk`), `/api/admin/cms/upload`, `/api/admin/cms/settings`, `/api/admin/cms/providers`, `/api/admin/cms/import`, `/api/admin/cms/pipeline`.
 
 ## Honest limits (read before launching)
 
 - **CMS records are files.** `data/cms/` is a single-process, file-backed store — fine for one editor and one server; move to PostgreSQL (the Prisma schema already mirrors the records) before running several instances.
-- **Images.** The seed destinations carry generated placeholders labelled as such; real photographs enter only through the pipeline's licensed sources or the admin upload form with a recorded licence. Hotel and restaurant records start empty by design.
+- **Images.** The seed destinations carry generated placeholders labelled as such; real photographs enter only through the discovery service's licensed providers or the admin upload form with a recorded licence. Approved files live in `data/media` (git-ignored) — back it up, or point `CMS_MEDIA_DIR` at persistent storage. Hotel and restaurant records start empty by design.
+- **The automatic image screen is heuristic.** It reads metadata (licence, size, MIME type, titles, tags, categories, coordinates); it does not look at pixels, so the final judgement is always yours on the review screen.
 
 - **The seed data is unverified editorial data**, labelled *Draft · unverified* on every page. Before launch, work through Admin → Pending verification against each fact's official source. Nothing is presented as verified until a human verifies it.
 - **The repository layer is in-memory.** Pages read the seeded database through `lib/master/repo.ts`; the Prisma schema and `prisma/seed.ts` are ready to load the same data into PostgreSQL, but pages are not yet switched to Prisma queries, and the admin/import/onboarding endpoints do not persist. Reviews, trips and wishlist endpoints validate input and say plainly that nothing was stored.

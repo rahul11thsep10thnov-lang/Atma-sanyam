@@ -5,7 +5,8 @@ import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { anyBySlug, publishedBySlug, siteSettings } from "@/lib/cms/queries";
 import { adminAccess } from "@/lib/auth/admin";
-import { assetOf, attributionLine, isPlaceholder } from "@/lib/cms/images";
+import { assetOf, creditOf, isPlaceholder } from "@/lib/cms/images";
+import { Credit } from "@/components/cms/Credit";
 import { plainText } from "@/lib/cms/markdown";
 import { CmsImg } from "@/components/cms/CmsImg";
 import { DestinationTabs } from "@/components/cms/DestinationTabs";
@@ -69,7 +70,7 @@ export default async function CmsDestinationPage({ params, searchParams }: { par
   const dict = getDictionary(locale);
   const t = dict.destination.cms;
   const hero = assetOf(d.hero_image, d.name, 1600, 900);
-  const heroCredit = d.hero_image ? attributionLine(d.hero_image) : null;
+  const heroCredit = d.hero_image ? creditOf(d.hero_image) : null;
   const path = `/destinations/${d.slug}`;
 
   const crumbs = [
@@ -131,7 +132,7 @@ export default async function CmsDestinationPage({ params, searchParams }: { par
         <div className="relative h-[56vh] min-h-[340px] w-full overflow-hidden bg-forest-800 sm:h-[62vh]">
           <CmsImg image={hero} className="h-full w-full object-cover" priority sizes="100vw" fill />
           <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/30 to-transparent" />
-          {heroCredit && <span className="absolute bottom-2 right-3 rounded bg-black/40 px-2 py-0.5 text-[10px] text-white/80">{t.photoCredit}: {heroCredit}</span>}
+          {heroCredit && <span className="absolute bottom-2 right-3 z-10 rounded bg-black/40 px-2 py-0.5 text-[10px] text-white/80"><Credit credit={heroCredit} label={heroCredit.style === "unsplash" ? undefined : t.photoCredit} /></span>}
           <div className="container-page absolute inset-x-0 bottom-0 pb-8 text-white sm:pb-12">
             <Breadcrumbs items={crumbs} tone="light" />
             {d.state && <p className="text-xs font-semibold uppercase tracking-[0.2em] text-saffron-300">{d.state}{d.region ? ` · ${d.region} India` : ""}</p>}
@@ -234,7 +235,7 @@ export default async function CmsDestinationPage({ params, searchParams }: { par
               {d.images.filter((i) => i.approval_status === "APPROVED" && !isPlaceholder(i)).map((img) => (
                 <li key={img.id} className="relative aspect-[4/3] overflow-hidden rounded-xl bg-forest-100">
                   <CmsImg image={assetOf(img, d.name, 800, 600)} className="h-full w-full object-cover" sizes="(min-width: 1024px) 300px, 50vw" fill />
-                  {attributionLine(img) && <span className="absolute bottom-1 right-1 rounded bg-black/40 px-1.5 py-0.5 text-[9px] text-white/90">{attributionLine(img)}</span>}
+                  {creditOf(img) && <span className="absolute bottom-1 right-1 rounded bg-black/40 px-1.5 py-0.5 text-[9px] text-white/90"><Credit credit={creditOf(img)!} /></span>}
                 </li>
               ))}
             </ul>

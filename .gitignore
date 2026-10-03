@@ -32,8 +32,7 @@ next-env.d.ts
 .vscode/
 .idea/
 
-# public uploads and downloaded pipeline media are content, not code
-/public/uploads/*
-!/public/uploads/.gitkeep
-/public/media/*
-!/public/media/.gitkeep
+# CMS: image files (data/media), API keys and provider response cache never go into git
+/data/media/
+/data/cms/secrets.json
+/data/cms/cache/

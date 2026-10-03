@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import type { ImageAsset } from "@/lib/types";
+import type { ImageCredit } from "@/lib/cms/images";
 import { CmsImg } from "./CmsImg";
+import { Credit } from "./Credit";
 
 export interface GalleryImage {
   asset: ImageAsset;
   caption: string | null;
-  credit: string | null;
+  credit: ImageCredit | null;
 }
 
 /** Main image plus thumbnails; keyboard-operable. Credits are always shown when a licence asks for them. */
@@ -39,7 +41,7 @@ export function ImageGallery({ images, creditLabel }: { images: GalleryImage[]; 
       {(current.caption || current.credit) && (
         <figcaption className="px-3 pb-3 text-[11px] text-charcoal-light">
           {current.caption && <span>{current.caption}</span>}
-          {current.credit && <span className="block">{creditLabel}: {current.credit}</span>}
+          {current.credit && <span className="block"><Credit credit={current.credit} label={current.credit.style === "unsplash" ? undefined : creditLabel} /></span>}
         </figcaption>
       )}
     </figure>

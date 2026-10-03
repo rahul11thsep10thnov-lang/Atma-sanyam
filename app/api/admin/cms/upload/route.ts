@@ -1,9 +1,8 @@
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
 import { NextRequest } from "next/server";
 import { authorizeAdmin } from "@/lib/auth/admin";
 import { badRequest, json } from "@/lib/api/http";
 import type { CmsImage } from "@/lib/cms/types";
+import { saveMedia } from "@/lib/cms/storage";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +12,7 @@ const EXT: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "
 /**
  * POST /api/admin/cms/upload — multipart form: file, plus licence metadata
  * (photographer, license, license_url, source_page_url, attribution_text, caption, alt).
- * Stores the file under public/uploads and returns an APPROVED CmsImage record the
+ * Stores the file in media storage (/media/uploads/…) and returns an APPROVED CmsImage record the
  * editor attaches to a destination, attraction, hotel or restaurant. The licence
  * fields are recorded as entered — the person uploading is responsible for the rights.
  */
@@ -38,18 +37,15 @@ export async function POST(request: NextRequest) {
   const license = text("license", 120);
   if (!license) return badRequest("license is required — record the licence under which this image may be used");
 
-  const dir = join(process.cwd(), "public", "uploads");
-  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
   const id = `UPL-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-  const name = `${id}.${ext}`;
-  writeFileSync(join(dir, name), Buffer.from(await file.arrayBuffer()));
+  const local = saveMedia("uploads", id, ext, Buffer.from(await file.arrayBuffer()));
 
   const now = new Date().toISOString();
   const image: CmsImage = {
     id,
-    url: `/uploads/${name}`,
+    url: local,
     thumbnail_url: null,
-    direct_url: null,
+    original_url: null,
     source: "Manual upload",
     source_page_url: text("source_page_url", 500),
     photographer: text("photographer", 160),
@@ -58,7 +54,8 @@ export async function POST(request: NextRequest) {
     attribution_required: form.get("attribution_required") === "true",
     attribution_text: text("attribution_text", 300),
     download_status: "LOCAL",
-    local_path: `/uploads/${name}`,
+    local_path: local,
+    provider: "manual",
     approval_status: "APPROVED",
     caption: text("caption", 300),
     alt: text("alt", 200) ?? file.name.replace(/\.[a-z0-9]+$/i, ""),

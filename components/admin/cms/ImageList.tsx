@@ -26,8 +26,8 @@ export function ImageList({ images, onChange, max = 4, title, allowCandidates = 
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm font-medium text-charcoal">{title ?? "Images"} <span className="text-xs font-normal text-charcoal-light">· {approved}/{max} approved{allowCandidates ? `, ${images.filter((i) => i.approval_status === "CANDIDATE").length} candidates` : ""}</span></p>
-        <ImageUploader compact onUploaded={(img) => onChange([...images, { ...img, approval_status: approved < max ? "APPROVED" : "CANDIDATE", sort_order: images.length }])} />
+        <p className="text-sm font-medium text-charcoal">{title ?? "Images"} <span className="text-xs font-normal text-charcoal-light">· {approved}/{max} approved{allowCandidates ? `, ${images.filter((i) => i.approval_status === "PENDING").length} candidates` : ""}</span></p>
+        <ImageUploader compact onUploaded={(img) => onChange([...images, { ...img, approval_status: approved < max ? "APPROVED" : "PENDING", sort_order: images.length }])} />
       </div>
       {images.length === 0 ? (
         <p className="mt-2 rounded-lg border border-dashed border-charcoal/20 p-3 text-xs text-charcoal-light">No images yet — the page shows “No approved image available” until one is approved.</p>

@@ -13,7 +13,6 @@
     "id": "MEDIA-00102",
     "url": "placeholder://Chennai%20skyline?w=1600&h=900",
     "thumbnail_url": null,
-    "direct_url": null,
     "source": "Placeholder (generated graphic, not a photograph)",
     "source_page_url": null,
     "photographer": null,
@@ -29,7 +28,9 @@
     "width": null,
     "height": null,
     "retrieved_at": null,
-    "sort_order": 0
+    "sort_order": 0,
+    "original_url": null,
+    "provider": "seed"
   },
   "headline": "Gateway to South India",
   "short_description": "Chennai combines Tamil temple heritage, Marina Beach and colonial-era Fort St. George on the Bay of Bengal.",
@@ -77,7 +78,6 @@
           "id": "MEDIA-00106",
           "url": "placeholder://Marina%20Beach?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -93,7 +93,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -129,7 +131,6 @@
           "id": "MEDIA-00107",
           "url": "placeholder://Kapaleeshwarar%20Temple?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -145,7 +146,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -181,7 +184,6 @@
           "id": "MEDIA-00108",
           "url": "placeholder://Fort%20St.%20George?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -197,7 +199,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -279,7 +283,6 @@
       "id": "MEDIA-00103",
       "url": "placeholder://Marina%20Beach?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -295,13 +298,14 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 0
+      "sort_order": 0,
+      "original_url": null,
+      "provider": "seed"
     },
     {
       "id": "MEDIA-00104",
       "url": "placeholder://Kapaleeshwarar%20Temple?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -317,13 +321,14 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 1
+      "sort_order": 1,
+      "original_url": null,
+      "provider": "seed"
     },
     {
       "id": "MEDIA-00105",
       "url": "placeholder://Fort%20St.%20George?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -339,7 +344,9 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 2
+      "sort_order": 2,
+      "original_url": null,
+      "provider": "seed"
     }
   ],
   "faq": [],
@@ -398,18 +405,25 @@
     ]
   },
   "pipeline": {
-    "stage": "NOT_IN_PIPELINE",
-    "import_id": null,
-    "position": null,
+    "stage": "QUEUED",
+    "import_id": "IMP-muskite7",
+    "position": 264,
     "started_at": null,
     "completed_at": null,
     "last_error": null,
-    "log": []
+    "log": [
+      {
+        "at": "2026-10-03T15:50:04.237Z",
+        "stage": "QUEUED",
+        "message": "Queued (position 264)",
+        "level": "info"
+      }
+    ]
   },
   "legacy_slug": "chennai",
   "is_sample_data": true,
   "status": "PUBLISHED",
   "created_at": "2026-10-03T10:35:37.122Z",
-  "updated_at": "2026-10-03T10:35:37.129Z",
+  "updated_at": "2026-10-03T15:50:04.237Z",
   "published_at": "2026-10-03T10:35:37.122Z"
 }

@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { overview } from "@/lib/cms/pipeline/runner";
-import type { CmsDestination, PipelineStage } from "@/lib/cms/types";
-import { api, btnDanger, btnPrimary, btnSaffron, btnSecondary, fmtDate, Notice, StageBadge, StatusBadge } from "./ui";
+import { PROVIDER_LABEL, type CmsDestination, type PipelineStage } from "@/lib/cms/types";
+import { api, Badge, btnDanger, btnPrimary, btnSaffron, btnSecondary, fmtDate, Notice, StageBadge, StatusBadge } from "./ui";
 
 type Overview = ReturnType<typeof overview>;
 
@@ -22,13 +22,16 @@ export function PipelineDashboard({ initial, base }: { initial: Overview; base: 
   const [o, setO] = useState<Overview>(initial);
   const [busy, setBusy] = useState<string | null>(null);
   const [msg, setMsg] = useState<{ tone: "ok" | "error" | "warn"; text: string } | null>(null);
+  const PAGE = 25;
+  const [page, setPage] = useState(() => Math.max(0, Math.floor(((initial.current?.position ?? 1) - 1) / 25)));
+  const [filter, setFilter] = useState<"all" | "waiting" | "done" | "failed">("all");
 
   const refresh = useCallback(async () => {
     try { setO(await api<Overview>("/api/admin/cms/pipeline")); } catch { /* keep last state */ }
   }, []);
 
   useEffect(() => {
-    if (o.current && RUNNING.includes(o.current.stage)) {
+    if ((o.current && RUNNING.includes(o.current.stage)) || o.preparing) {
       const t = setTimeout(refresh, 2500);
       return () => clearTimeout(t);
     }
@@ -43,7 +46,7 @@ export function PipelineDashboard({ initial, base }: { initial: Overview; base: 
       const d = r.destination;
       if (d) {
         const s = d.pipeline.stage;
-        if (s === "AWAITING_APPROVAL") setMsg({ tone: "warn", text: `${d.name}: image candidates are ready — approve them to continue.` });
+        if (s === "AWAITING_APPROVAL") setMsg({ tone: "warn", text: `${d.name}: image candidates are ready — open the review screen, select 1–4 per attraction and finalise.` });
         else if (s === "READY_TO_PUBLISH") setMsg({ tone: "warn", text: `${d.name}: content and images are final. Review the page, then publish.` });
         else if (s === "FAILED") setMsg({ tone: "error", text: `${d.name} failed: ${d.pipeline.last_error}. Fix the cause and press Retry — the pipeline resumes at this destination, not at the start.` });
         else if (s === "COMPLETED") setMsg({ tone: "ok", text: `${d.name} published. ${r.current ? `Next: ${r.current.name}.` : "The queue is finished."}` });
@@ -66,11 +69,13 @@ export function PipelineDashboard({ initial, base }: { initial: Overview; base: 
       <div className="card-surface p-5">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="font-display text-3xl font-bold text-forest-700">{o.completed} / {o.total} <span className="text-base font-normal text-charcoal-light">destinations published</span></p>
-            <p className="text-xs text-charcoal-light">Processed strictly one at a time. Progress is saved after every stage; you can close this tab and resume later.</p>
+            <p className="font-display text-3xl font-bold text-forest-700">{o.completed} / {o.total} <span className="text-base font-normal text-charcoal-light">destinations finalised</span></p>
+            <p className="text-xs text-charcoal-light">Reviewed strictly one at a time, in PDF order. Progress is saved after every stage; you can close this tab and resume later.{o.preparing && <span className="ml-1 font-medium text-sky-700">Preparing the next destinations in the background…</span>}</p>
           </div>
           <div className="flex flex-wrap gap-2">
+            {cur?.stage === "AWAITING_APPROVAL" && <Link href={`${base}/destinations/${cur.id}/images`} className={btnSaffron}>Review {cur.name} →</Link>}
             <button type="button" disabled={Boolean(busy) || !cur || cur.stage === "AWAITING_APPROVAL" || cur.stage === "READY_TO_PUBLISH"} onClick={() => act("run")} className={btnPrimary}>{busy === "run" ? "Running…" : cur?.stage === "FAILED" ? "Retry current" : "Run next destination"}</button>
+            <button type="button" disabled={Boolean(busy) || !cur} onClick={() => act("prepare")} className={btnSecondary}>{busy === "prepare" ? "Preparing…" : "Prepare next destinations now"}</button>
             {o.total > 0 && <button type="button" disabled={Boolean(busy)} onClick={() => confirm("Remove every unfinished destination from the queue? Their drafts are kept.") && act("clear")} className={btnDanger}>Clear queue</button>}
           </div>
         </div>
@@ -89,7 +94,8 @@ export function PipelineDashboard({ initial, base }: { initial: Overview; base: 
             <StageBadge stage={cur.stage} />
             <span className="ml-auto flex flex-wrap gap-2">
               <Link href={`${base}/destinations/${cur.id}`} className={btnSecondary}>Open editor</Link>
-              {cur.stage === "AWAITING_APPROVAL" && <Link href={`${base}/destinations/${cur.id}/images`} className={btnSaffron}>Approve images</Link>}
+              {cur.stage === "AWAITING_APPROVAL" && <Link href={`${base}/destinations/${cur.id}/images`} className={btnSaffron}>Review images & finalise</Link>}
+              {cur.stage === "AWAITING_APPROVAL" && <button type="button" disabled={Boolean(busy)} onClick={() => act("search_images", cur.id)} className={btnSecondary}>{busy === "search_images" ? "Searching…" : "Re-run image search"}</button>}
               {cur.stage === "READY_TO_PUBLISH" && <a href={`${base.replace(/\/admin$/, "")}/destinations/${cur.slug}?preview=1`} target="_blank" rel="noreferrer" className={btnSecondary}>Preview page</a>}
               {cur.stage === "READY_TO_PUBLISH" && <button type="button" disabled={Boolean(busy)} onClick={() => act("publish", cur.id)} className={btnSaffron}>{busy === "publish" ? "Publishing…" : "Publish & continue"}</button>}
               {cur.stage === "FAILED" && <button type="button" disabled={Boolean(busy)} onClick={() => act("retry", cur.id)} className={btnPrimary}>Retry</button>}
@@ -102,8 +108,30 @@ export function PipelineDashboard({ initial, base }: { initial: Overview; base: 
             {cur.log.map((l, i) => <li key={i} className={l.level === "error" ? "text-terracotta-700" : l.level === "warn" ? "text-saffron-700" : "text-charcoal"}>{fmtDate(l.at)} · {l.stage} · {l.message}</li>)}
             {cur.log.length === 0 && <li className="text-charcoal-light">Not started yet — press “Run next destination”.</li>}
           </ol>
+          {cur.searches.some((x) => x.search) && (
+            <div className="mt-3 overflow-x-auto rounded-lg border border-forest-100">
+              <table className="min-w-full divide-y divide-forest-100 text-xs">
+                <thead className="bg-forest-50 text-left font-semibold uppercase tracking-wide text-forest-700">
+                  <tr><th className="px-2 py-1.5">Attraction</th><th className="px-2 py-1.5">Image search</th><th className="px-2 py-1.5">Wikimedia</th><th className="px-2 py-1.5">Pixabay</th><th className="px-2 py-1.5">Unsplash</th><th className="px-2 py-1.5">Pexels</th><th className="px-2 py-1.5">Final candidates</th></tr>
+                </thead>
+                <tbody className="divide-y divide-forest-100 bg-white">
+                  {cur.searches.map((x) => (
+                    <tr key={x.id}>
+                      <td className="px-2 py-1.5 font-medium text-charcoal">{x.name}</td>
+                      <td className="px-2 py-1.5"><Badge tone={x.search?.status === "COMPLETED" ? "bg-forest-100 text-forest-700" : x.search?.status === "PARTIAL" ? "bg-saffron-100 text-saffron-700" : x.search?.status === "FAILED" ? "bg-terracotta-100 text-terracotta-700" : "bg-charcoal/10 text-charcoal"}>{(x.search?.status ?? "NOT_RUN").replace("_", " ")}</Badge></td>
+                      {(["wikimedia", "pixabay", "unsplash", "pexels"] as const).map((p) => {
+                        const r = x.search?.providers.find((y) => y.provider === p);
+                        return <td key={p} className="px-2 py-1.5 text-charcoal-light" title={r?.note ?? PROVIDER_LABEL[p]}>{!r ? "—" : r.status === "OK" ? `${r.found} (${r.kept} kept)` : r.status.replace(/_/g, " ").toLowerCase()}</td>;
+                      })}
+                      <td className="px-2 py-1.5 font-medium text-charcoal">{x.search?.final_candidates ?? "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
           <ol className="mt-3 flex flex-wrap gap-1 text-[11px]">
-            {(["QUEUED", "RESEARCHING", "ATTRACTIONS", "IMAGES", "AWAITING_APPROVAL", "FINALIZING", "READY_TO_PUBLISH", "COMPLETED"] as PipelineStage[]).map((s, i, arr) => {
+            {(["QUEUED", "RESEARCHING", "ATTRACTIONS", "IMAGES", "AWAITING_APPROVAL", "COMPLETED"] as PipelineStage[]).map((s, i, arr) => {
               const idx = arr.indexOf(cur.stage);
               const tone = i < idx ? "bg-forest-600 text-white" : i === idx ? "bg-saffron-500 text-white" : "bg-forest-50 text-charcoal-light";
               return <li key={s} className={`rounded-full px-2 py-0.5 ${tone}`}>{s.replace(/_/g, " ")}</li>;
@@ -114,17 +142,29 @@ export function PipelineDashboard({ initial, base }: { initial: Overview; base: 
         <Notice tone="info">{o.total === 0 ? <>The queue is empty. <Link href={`${base}/import`} className="font-semibold underline">Import a PDF</Link> or add destinations from the table to start.</> : "Every queued destination is finished."}</Notice>
       )}
 
-      {o.items.length > 0 && (
+      {o.items.length > 0 && (() => {
+        const filtered = o.items.filter((it) => filter === "all" || (filter === "done" && ["COMPLETED", "SKIPPED"].includes(it.stage)) || (filter === "failed" && (it.stage === "FAILED" || it.search_failed > 0)) || (filter === "waiting" && !["COMPLETED", "SKIPPED"].includes(it.stage)));
+        const pages = Math.max(1, Math.ceil(filtered.length / PAGE));
+        const p = Math.min(page, pages - 1);
+        const rows = filtered.slice(p * PAGE, p * PAGE + PAGE);
+        return (
+        <div className="space-y-2">
+        <div className="flex flex-wrap items-center gap-2 text-sm">
+          {(["all", "waiting", "done", "failed"] as const).map((f) => <button key={f} type="button" onClick={() => { setFilter(f); setPage(0); }} className={`rounded-full px-3 py-1 text-xs ${filter === f ? "bg-forest-700 text-white" : "bg-white text-charcoal ring-1 ring-forest-100"}`}>{f === "all" ? `All (${o.items.length})` : f === "waiting" ? "Not finished" : f === "done" ? "Finished" : "Failed / provider problems"}</button>)}
+          <span className="ml-auto text-xs text-charcoal-light">Page {p + 1} of {pages}</span>
+          <button type="button" disabled={p === 0} onClick={() => setPage(p - 1)} className={`${btnSecondary} !px-2 !py-0.5`}>←</button>
+          <button type="button" disabled={p >= pages - 1} onClick={() => setPage(p + 1)} className={`${btnSecondary} !px-2 !py-0.5`}>→</button>
+        </div>
         <div className="overflow-x-auto rounded-xl border border-forest-100 bg-white">
           <table className="min-w-full divide-y divide-forest-100 text-sm">
             <thead className="bg-forest-50 text-left text-xs font-semibold uppercase tracking-wide text-forest-700">
               <tr><th className="px-3 py-2">#</th><th className="px-3 py-2">Destination</th><th className="px-3 py-2">Stage</th><th className="px-3 py-2">Status</th><th className="px-3 py-2">Attractions</th><th className="px-3 py-2">Candidates</th><th className="px-3 py-2">Approved</th><th className="px-3 py-2">Error</th><th className="px-3 py-2">Actions</th></tr>
             </thead>
             <tbody className="divide-y divide-forest-100">
-              {o.items.map((it) => (
+              {rows.map((it) => (
                 <tr key={it.id} className={cur?.id === it.id ? "bg-saffron-50/50" : undefined}>
                   <td className="px-3 py-2 text-charcoal-light">{it.position}</td>
-                  <td className="px-3 py-2"><Link href={`${base}/destinations/${it.id}`} className="font-medium text-charcoal hover:text-forest-700">{it.name}</Link></td>
+                  <td className="px-3 py-2"><Link href={`${base}/destinations/${it.id}`} className="font-medium text-charcoal hover:text-forest-700">{it.name}</Link><span className="block text-[11px] text-charcoal-light">{it.state ?? ""}</span></td>
                   <td className="px-3 py-2"><StageBadge stage={it.stage} /></td>
                   <td className="px-3 py-2"><StatusBadge status={it.status} /></td>
                   <td className="px-3 py-2 text-charcoal-light">{it.attractions}</td>
@@ -132,7 +172,7 @@ export function PipelineDashboard({ initial, base }: { initial: Overview; base: 
                   <td className="px-3 py-2 text-charcoal-light">{it.approved}</td>
                   <td className="max-w-xs truncate px-3 py-2 text-xs text-terracotta-700" title={it.last_error ?? ""}>{it.last_error ?? ""}</td>
                   <td className="whitespace-nowrap px-3 py-2 text-xs">
-                    {it.stage === "AWAITING_APPROVAL" && <Link href={`${base}/destinations/${it.id}/images`} className="mr-2 text-saffron-700 hover:underline">Approve images</Link>}
+                    {it.stage === "AWAITING_APPROVAL" && <Link href={`${base}/destinations/${it.id}/images`} className="mr-2 text-saffron-700 hover:underline">Review images</Link>}
                     {it.stage === "READY_TO_PUBLISH" && <button type="button" disabled={Boolean(busy)} onClick={() => act("publish", it.id)} className="mr-2 text-forest-700 hover:underline">Publish</button>}
                     {it.stage === "FAILED" && <button type="button" disabled={Boolean(busy)} onClick={() => act("retry", it.id)} className="mr-2 text-forest-700 hover:underline">Retry</button>}
                     {(it.stage === "SKIPPED" || it.stage === "FAILED") && <button type="button" disabled={Boolean(busy)} onClick={() => act("reset", it.id)} className="mr-2 text-charcoal hover:underline">Reset</button>}
@@ -143,7 +183,9 @@ export function PipelineDashboard({ initial, base }: { initial: Overview; base: 
             </tbody>
           </table>
         </div>
-      )}
+        </div>
+        );
+      })()}
     </div>
   );
 }

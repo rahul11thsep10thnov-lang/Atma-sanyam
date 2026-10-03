@@ -1,5 +1,6 @@
 import "@/lib/cms/server-guard";
 import { fetchJson, nowIso } from "../http";
+import { getSecret } from "../../secrets";
 import type { SiteSettings, SourceRef } from "../../types";
 
 /**
@@ -21,7 +22,7 @@ export interface PlaceHit {
   place_id: string;
 }
 
-export const placesKey = (settings: SiteSettings) => process.env.GOOGLE_PLACES_API_KEY || settings.google_places_api_key || null;
+export const placesKey = (_settings?: SiteSettings) => getSecret("google_places");
 
 const ATTRACTION_TYPES = new Set(["tourist_attraction", "museum", "park", "place_of_worship", "hindu_temple", "church", "mosque", "zoo", "aquarium", "art_gallery", "natural_feature", "amusement_park", "campground", "stadium", "landmark", "historical_landmark", "monument"]);
 

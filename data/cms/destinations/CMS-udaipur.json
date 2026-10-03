@@ -13,7 +13,6 @@
     "id": "MEDIA-00053",
     "url": "placeholder://City%20Palace%2C%20Udaipur?w=1200&h=800",
     "thumbnail_url": null,
-    "direct_url": null,
     "source": "Placeholder (generated graphic, not a photograph)",
     "source_page_url": null,
     "photographer": null,
@@ -29,7 +28,9 @@
     "width": null,
     "height": null,
     "retrieved_at": null,
-    "sort_order": 0
+    "sort_order": 0,
+    "original_url": null,
+    "provider": "seed"
   },
   "headline": "The City of Lakes",
   "short_description": "Udaipur's palaces rise from the waters of Lake Pichola, earning it a reputation as one of India's most romantic cities.",
@@ -102,7 +103,6 @@
           "id": "MEDIA-00053",
           "url": "placeholder://City%20Palace%2C%20Udaipur?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -118,7 +118,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -161,7 +163,6 @@
           "id": "MEDIA-00055",
           "url": "placeholder://Jag%20Mandir?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -177,7 +178,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -220,7 +223,6 @@
           "id": "MEDIA-00054",
           "url": "placeholder://Lake%20Pichola?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -236,7 +238,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -379,11 +383,11 @@
     ]
   },
   "pipeline": {
-    "stage": "COMPLETED",
-    "import_id": "IMP-musabg5p",
-    "position": 3,
-    "started_at": "2026-10-03T11:17:06.829Z",
-    "completed_at": "2026-10-03T11:17:07.462Z",
+    "stage": "QUEUED",
+    "import_id": "IMP-muskite7",
+    "position": 201,
+    "started_at": null,
+    "completed_at": null,
     "last_error": null,
     "log": [
       {
@@ -499,6 +503,12 @@
         "stage": "READY_TO_PUBLISH",
         "message": "Attractions and images saved — ready for final review",
         "level": "info"
+      },
+      {
+        "at": "2026-10-03T15:50:04.148Z",
+        "stage": "QUEUED",
+        "message": "Queued (position 201)",
+        "level": "info"
       }
     ]
   },
@@ -506,6 +516,6 @@
   "is_sample_data": false,
   "status": "PUBLISHED",
   "created_at": "2026-10-03T11:04:23.525Z",
-  "updated_at": "2026-10-03T11:17:07.462Z",
+  "updated_at": "2026-10-03T15:50:04.148Z",
   "published_at": "2026-10-03T11:17:07.459Z"
 }

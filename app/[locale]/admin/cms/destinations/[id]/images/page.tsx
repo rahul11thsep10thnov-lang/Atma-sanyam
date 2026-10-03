@@ -21,8 +21,8 @@ export default function ImageApprovalPage({ params }: { params: { locale: string
   return (
     <div className="space-y-4">
       <Crumbs items={[{ label: "Content", href: base }, { label: "Destinations", href: `${base}/destinations` }, { label: d.name, href: `${base}/destinations/${d.id}` }, { label: "Images" }]} />
-      <PageHeader title={`Approve images — ${d.name}`} intro="All attractions of this destination on one screen. Tick 1–4 images per attraction, optionally mark one as the hero, then press “Approve all selected images” once. Only images with a recorded licence are listed; the credit and licence shown is what the page will print." />
-      <ImageApproval initial={d} base={base} />
+      <PageHeader title={`Review images — ${d.name}${d.state ? `, ${d.state}` : ""}`} intro="Every attraction of this destination with its image candidates. Select 1–4 per attraction (and optionally a hero), then press FINALIZE once — the images are stored with their licence and credit, and the pipeline moves on to the next destination." />
+      <ImageApproval initial={d} base={base} siteBase={`/${params.locale}`} />
     </div>
   );
 }

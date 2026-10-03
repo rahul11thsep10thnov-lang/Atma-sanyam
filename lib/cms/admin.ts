@@ -6,7 +6,7 @@ import { allDestinations, deleteDestination, getDestination, saveDestination, se
 import {
   CMS_CATEGORIES, COMPANION_TYPES, PUBLICATION_STATUSES, emptyAttraction, emptyDestination, emptyHotel, emptyPipeline, emptyRestaurant,
   type CmsAttraction, type CmsCategory, type CmsDestination, type CmsFaq, type CmsHotel, type CmsImage, type CmsRestaurant, type CmsSeo,
-  type CompanionType, type ProvenanceMap, type PublicationStatus, type SourceRef
+  type CompanionType, type ImageSearchState, type ProvenanceMap, type PublicationStatus, type SourceRef, IMAGE_PROVIDERS
 } from "./types";
 
 /**
@@ -47,7 +47,7 @@ export function sanitiseImage(v: unknown, order = 0): CmsImage | null {
     id: id(o.id, "IMG"),
     url: u,
     thumbnail_url: url(o.thumbnail_url),
-    direct_url: url(o.direct_url),
+    original_url: url(o.original_url),
     source: str(o.source, 200) ?? "unknown",
     source_page_url: url(o.source_page_url),
     photographer: str(o.photographer, 200),
@@ -55,9 +55,23 @@ export function sanitiseImage(v: unknown, order = 0): CmsImage | null {
     license_url: url(o.license_url),
     attribution_required: bool(o.attribution_required) ?? false,
     attribution_text: str(o.attribution_text, 500),
-    download_status: enumOf(o.download_status, ["NOT_DOWNLOADED", "DOWNLOADED", "FAILED", "LOCAL"] as const, "NOT_DOWNLOADED"),
+    download_status: enumOf(o.download_status, ["NOT_DOWNLOADED", "DOWNLOADED", "FAILED", "LOCAL", "HOTLINKED"] as const, "NOT_DOWNLOADED"),
     local_path: typeof o.local_path === "string" && o.local_path.startsWith("/") ? o.local_path.slice(0, 500) : null,
-    approval_status: enumOf(o.approval_status, ["CANDIDATE", "APPROVED", "REJECTED"] as const, "CANDIDATE"),
+    approval_status: enumOf(o.approval_status === "CANDIDATE" ? "PENDING" : o.approval_status, ["PENDING", "APPROVED", "REJECTED"] as const, "PENDING"),
+    preview_url: url(o.preview_url),
+    provider: enumOf(o.provider, ["wikimedia", "pixabay", "unsplash", "pexels", "manual", "seed"] as const, "manual"),
+    provider_image_id: str(o.provider_image_id, 120),
+    photographer_url: url(o.photographer_url),
+    description: str(o.description, 1000),
+    source_query: str(o.source_query, 300),
+    discovered_at: str(o.discovered_at, 40),
+    rejection_reason: str(o.rejection_reason, 300),
+    latitude: num(o.latitude),
+    longitude: num(o.longitude),
+    hotlink_required: bool(o.hotlink_required) ?? false,
+    download_location: url(o.download_location),
+    download_event_sent_at: str(o.download_event_sent_at, 40),
+    relevance_score: num(o.relevance_score),
     caption: str(o.caption, 300),
     alt: str(o.alt, 300) ?? "",
     width: num(o.width),
@@ -67,12 +81,12 @@ export function sanitiseImage(v: unknown, order = 0): CmsImage | null {
   };
 }
 
-const images = (v: unknown): CmsImage[] => (Array.isArray(v) ? v.map(sanitiseImage).filter((x): x is CmsImage => Boolean(x)).slice(0, 60) : []);
+const images = (v: unknown): CmsImage[] => (Array.isArray(v) ? v.map(sanitiseImage).filter((x): x is CmsImage => Boolean(x)).slice(0, 80) : []);
 
 /** Approved images are capped per attraction; extras beyond the cap fall back to candidates. */
 export function capApproved(list: CmsImage[], max = MAX_APPROVED_PER_ATTRACTION): CmsImage[] {
   let n = 0;
-  return list.map((img) => (img.approval_status === "APPROVED" ? (++n <= max ? img : { ...img, approval_status: "CANDIDATE" as const }) : img));
+  return list.map((img) => (img.approval_status === "APPROVED" ? (++n <= max ? img : { ...img, approval_status: "PENDING" as const }) : img));
 }
 
 function sanitiseSource(v: unknown): SourceRef | null {
@@ -83,6 +97,19 @@ function sanitiseSource(v: unknown): SourceRef | null {
   return { label, url: url(o.url), retrieved_at: str(o.retrieved_at, 40), status: enumOf(o.status, ["OK", "SOURCE_UNAVAILABLE", "MANUAL", "SEED"] as const, "MANUAL"), note: str(o.note, 500) ?? undefined };
 }
 const sources = (v: unknown): SourceRef[] => (Array.isArray(v) ? v.map(sanitiseSource).filter((x): x is SourceRef => Boolean(x)).slice(0, 20) : []);
+
+/** Image-search state is written by the pipeline; an editor save may only carry it through unchanged in shape. */
+function searchState(v: unknown): ImageSearchState | null {
+  if (!v || typeof v !== "object") return null;
+  const o = v as Record<string, unknown>;
+  const status = enumOf(o.status, ["COMPLETED", "PARTIAL", "NO_RESULTS", "FAILED", "NOT_RUN"] as const, "NOT_RUN");
+  const providers = Array.isArray(o.providers) ? (o.providers as Array<Record<string, unknown>>).slice(0, 8).map((p) => ({
+    provider: enumOf(p.provider, IMAGE_PROVIDERS, "wikimedia"),
+    status: enumOf(p.status, ["OK", "NO_RESULTS", "PROVIDER_UNAVAILABLE", "RATE_LIMITED", "NOT_CONFIGURED", "DISABLED", "SKIPPED", "ERROR"] as const, "ERROR"),
+    found: num(p.found) ?? 0, kept: num(p.kept) ?? 0, requests: num(p.requests) ?? 0, http_status: num(p.http_status), note: str(p.note, 300)
+  })) : [];
+  return { status, searched_at: str(o.searched_at, 40), providers, final_candidates: num(o.final_candidates) ?? 0, auto_rejected: num(o.auto_rejected) ?? 0, queries: strList(o.queries, 30) };
+}
 
 export function sanitiseAttraction(v: unknown, order: number, destSlug: string): CmsAttraction | null {
   if (!v || typeof v !== "object") return null;
@@ -108,7 +135,8 @@ export function sanitiseAttraction(v: unknown, order: number, destSlug: string):
     sources: sources(o.sources),
     sort_order: num(o.sort_order) ?? order,
     manual_order: bool(o.manual_order) ?? false,
-    status: enumOf(o.status, ["ACTIVE", "HIDDEN"] as const, "ACTIVE")
+    status: enumOf(o.status, ["ACTIVE", "HIDDEN"] as const, "ACTIVE"),
+    image_search: searchState(o.image_search)
   };
 }
 
@@ -199,6 +227,7 @@ export function sanitiseDestination(input: unknown, existing: CmsDestination): C
     hotels: (Array.isArray(o.hotels) ? o.hotels : existing.hotels).map((h, i) => sanitiseHotel(h, i)).filter((h): h is CmsHotel => Boolean(h)).slice(0, 200),
     restaurants: (Array.isArray(o.restaurants) ? o.restaurants : existing.restaurants).map((r, i) => sanitiseRestaurant(r, i)).filter((r): r is CmsRestaurant => Boolean(r)).slice(0, 200),
     images: Array.isArray(o.images) ? images(o.images) : existing.images,
+    gallery_search: "gallery_search" in o ? searchState(o.gallery_search) : existing.gallery_search ?? null,
     faq,
     seo: sanitiseSeo(o.seo ?? existing.seo),
     provenance: o.provenance ? sanitiseProvenance(o.provenance) : existing.provenance,
@@ -278,7 +307,7 @@ export function adminRows() {
     categories: d.categories,
     attractions: d.attractions.length,
     images: d.attractions.reduce((n, a) => n + a.images.filter((i) => i.approval_status === "APPROVED").length, 0) + (d.hero_image && d.hero_image.approval_status === "APPROVED" ? 1 : 0),
-    pending_images: d.attractions.reduce((n, a) => n + a.images.filter((i) => i.approval_status === "CANDIDATE").length, 0),
+    pending_images: d.attractions.reduce((n, a) => n + a.images.filter((i) => i.approval_status === "PENDING").length, 0),
     hotels: d.hotels.length,
     restaurants: d.restaurants.length,
     stage: d.pipeline.stage,
@@ -303,35 +332,10 @@ export function dashboardCounts() {
     pending_approval: all.filter((d) => d.pipeline.stage === "AWAITING_APPROVAL" || d.pipeline.stage === "READY_TO_PUBLISH").length,
     incomplete: rows.filter((r) => r.incomplete).length,
     missing_images: rows.filter((r) => !r.has_photo).length,
-    attractions_pending_images: all.reduce((n, d) => n + d.attractions.filter((a) => a.images.some((i) => i.approval_status === "CANDIDATE") && !a.images.some((i) => i.approval_status === "APPROVED")).length, 0),
+    attractions_pending_images: all.reduce((n, d) => n + d.attractions.filter((a) => a.images.some((i) => i.approval_status === "PENDING") && !a.images.some((i) => i.approval_status === "APPROVED")).length, 0),
     attractions: all.reduce((n, d) => n + d.attractions.length, 0),
     hotels: all.reduce((n, d) => n + d.hotels.length, 0),
     restaurants: all.reduce((n, d) => n + d.restaurants.length, 0),
     recent: [...rows].sort((a, b) => b.updated_at.localeCompare(a.updated_at)).slice(0, 8)
   };
-}
-
-/** Records the admin's image selection for a destination: chosen ids become APPROVED (max 4 per attraction), the rest of the batch REJECTED. */
-export function applyImageApproval(id: string, selection: Record<string, string[]>, rejectOthers: boolean): CmsDestination | null {
-  const d = getDestination(id);
-  if (!d) return null;
-  const apply = (list: CmsImage[], chosen: string[]) => {
-    const set = new Set(chosen.slice(0, MAX_APPROVED_PER_ATTRACTION));
-    return list.map((img, i) => ({
-      ...img,
-      approval_status: set.has(img.id) ? ("APPROVED" as const) : rejectOthers && img.approval_status !== "APPROVED" ? ("REJECTED" as const) : img.approval_status === "APPROVED" && !set.has(img.id) && chosen.length ? ("CANDIDATE" as const) : img.approval_status,
-      sort_order: set.has(img.id) ? chosen.indexOf(img.id) : i + 100
-    }));
-  };
-  const next: CmsDestination = {
-    ...d,
-    attractions: d.attractions.map((a) => (selection[a.id] ? { ...a, images: apply(a.images, selection[a.id]) } : a)),
-    images: selection.__destination ? apply(d.images, selection.__destination) : d.images,
-    hero_image: selection.__hero?.[0] ? (() => {
-      const pool = [...d.images, ...d.attractions.flatMap((a) => a.images)];
-      const pick = pool.find((i) => i.id === selection.__hero![0]);
-      return pick ? { ...pick, approval_status: "APPROVED" as const } : d.hero_image;
-    })() : d.hero_image
-  };
-  return saveDestination(next);
 }

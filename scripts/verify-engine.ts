@@ -28,6 +28,8 @@ import { candidatesFromText, cleanLine } from "../lib/cms/pipeline/pdf";
 import { rankAttractions } from "../lib/cms/pipeline/runner";
 import { destinationCount, getDestinationBySlug, publishedDestinations, uniqueSlug } from "../lib/cms/store";
 import { emptyAttraction } from "../lib/cms/types";
+import { assess, dedupeKeys } from "../lib/cms/discovery/quality";
+import type { Found, Subject } from "../lib/cms/discovery/types";
 import type { CmsImage } from "../lib/cms/types";
 
 let failed = 0;
@@ -57,7 +59,8 @@ console.log("Prisma enums mirror lib/master/enums.ts");
   const schema = readFileSync(join(__dirname, "..", "prisma", "schema.prisma"), "utf8");
   const arrays = Object.entries(enums).filter(([, v]) => Array.isArray(v)) as Array<[string, readonly string[]]>;
   // Application enums (users, reviews, wishlists) belong to the site layer, not the master database.
-  const APP_ONLY = new Set(["UserRole", "ReviewTargetType", "UserReviewStatus", "WishlistTargetType"]);
+  // CMS enums (image candidates) belong to the content layer in lib/cms/types.ts.
+  const APP_ONLY = new Set(["UserRole", "ReviewTargetType", "UserReviewStatus", "WishlistTargetType", "ImageApprovalStatus"]);
   for (const m of schema.matchAll(/^enum\s+(\w+)\s*\{([^}]*)\}/gm)) {
     const values = m[2].split("\n").map((l) => l.trim().split(/\s+/)[0]).filter((l) => l && !l.startsWith("//")).sort();
     if (APP_ONLY.has(m[1])) continue;
@@ -236,13 +239,15 @@ console.log("Content CMS and pipeline");
   check("PDF extraction strips numbering/bullets and keeps place names", pdf.candidates.map((c) => c.name).join("|") === "Hampi|Orchha|Varanasi", pdf.candidates.map((c) => c.name).join("|"));
   check("PDF extraction drops headers, page numbers and URLs", !pdf.candidates.some((c) => /list|page|www/i.test(c.name)));
   check("PDF extraction splits a trailing state and de-duplicates within the file", pdf.candidates[0].state === "Karnataka" && pdf.candidates.filter((c) => c.slug === "hampi").length === 1);
-  check("PDF extraction flags destinations that already exist (not pre-selected)", pdf.candidates.find((c) => c.slug === "varanasi")?.duplicate_of === "CMS-varanasi" && pdf.candidates.find((c) => c.slug === "varanasi")?.selected === false);
+  check("PDF extraction flags destinations that already exist (queued as they are, not re-created)", pdf.candidates.find((c) => c.slug === "varanasi")?.duplicate_of === "CMS-varanasi");
+  const table = candidatesFromText("500 Indian Tourism Destinations\nPurpose: Use this PDF as the destination-name source.\nJammu & Kashmir\nNo.Place / Destination\n1Jammu\n2Srinagar\nLadakh\nNo.Place / Destination\n25Leh\n22Vaishno Devi (Katra)\nImportant: This is a seed list.");
+  check("PDF tables: numbers glued to names are stripped and section headings set the state", table.candidates.map((c) => `${c.position}:${c.name}:${c.state}`).join("|") === "1:Jammu:Jammu and Kashmir|2:Srinagar:Jammu and Kashmir|25:Leh:Ladakh|22:Vaishno Devi (Katra):Ladakh", table.candidates.map((c) => `${c.position}:${c.name}:${c.state}`).join("|"));
   check("cleanLine keeps a year that looks like a trailing number", cleanLine("12. Battle of Plassey 1757") === "Battle of Plassey 1757");
 
   // Image approval cap: never more than 4 approved images per attraction.
-  const img = (i: number, status: CmsImage["approval_status"]): CmsImage => ({ id: `I${i}`, url: `https://upload.wikimedia.org/x${i}.jpg`, thumbnail_url: null, direct_url: null, source: "Wikimedia Commons", source_page_url: null, photographer: null, license: "CC BY-SA 4.0", license_url: null, attribution_required: true, attribution_text: null, download_status: "NOT_DOWNLOADED", local_path: null, approval_status: status, caption: null, alt: "x", width: null, height: null, retrieved_at: null, sort_order: i });
+  const img = (i: number, status: CmsImage["approval_status"]): CmsImage => ({ id: `I${i}`, url: `https://upload.wikimedia.org/x${i}.jpg`, thumbnail_url: null, original_url: null, source: "Wikimedia Commons", source_page_url: null, photographer: null, license: "CC BY-SA 4.0", license_url: null, attribution_required: true, attribution_text: null, download_status: "NOT_DOWNLOADED", local_path: null, approval_status: status, caption: null, alt: "x", width: null, height: null, retrieved_at: null, sort_order: i });
   const capped = capApproved(Array.from({ length: 7 }, (_, i) => img(i, "APPROVED")));
-  check(`at most ${MAX_APPROVED_PER_ATTRACTION} images stay approved per attraction`, capped.filter((i) => i.approval_status === "APPROVED").length === MAX_APPROVED_PER_ATTRACTION && capped.filter((i) => i.approval_status === "CANDIDATE").length === 3);
+  check(`at most ${MAX_APPROVED_PER_ATTRACTION} images stay approved per attraction`, capped.filter((i) => i.approval_status === "APPROVED").length === MAX_APPROVED_PER_ATTRACTION && capped.filter((i) => i.approval_status === "PENDING").length === 3);
 
   // Editor input is re-validated: bad ratings, foreign protocols and over-long enums are dropped, slugs stay unique.
   const base = varanasi!;
@@ -250,6 +255,24 @@ console.log("Content CMS and pipeline");
   check("sanitiser keeps slugs unique when an edit collides with another record", edited.slug !== "agra" && edited.slug.startsWith("agra"), edited.slug);
   check("sanitiser rejects out-of-range ratings, unsafe URLs and unknown enums", edited.attractions[0].rating === null && edited.attractions[0].map_url === null && edited.attractions[0].status === "ACTIVE" && edited.categories.join() === "HISTORICAL");
   check("uniqueSlug returns the base slug when it is free", uniqueSlug("definitely-not-used") === "definitely-not-used");
+
+  // Image discovery quality screen.
+  const subject: Subject = { kind: "attraction", name: "Kashi Vishwanath Temple", city: "Varanasi", cityAliases: [], state: "Uttar Pradesh", lat: 25.3109, lon: 83.0107, otherPlaces: ["Agra", "Jaipur", "Ujjain"] };
+  const found = (over: Partial<CmsImage>, text: string, extra: Partial<Found> = {}): Found => ({
+    image: { ...img(1, "PENDING"), provider: "wikimedia", provider_image_id: String(Math.random()), source_page_url: "https://commons.wikimedia.org/wiki/File:x.jpg", photographer: "A. Photographer", width: 4000, height: 3000, alt: text, ...over },
+    text, mime: "image/jpeg", hardReject: null, distance_m: null, quality_mark: false, ...extra
+  });
+  check("screen keeps a licensed, large photo that names the attraction", assess(found({}, "Kashi Vishwanath Temple, Varanasi at dusk"), subject, 1000).ok);
+  check("screen rejects small images", assess(found({ width: 640, height: 480 }, "Kashi Vishwanath Temple Varanasi"), subject, 1000).reason === "LOW_RESOLUTION");
+  check("screen rejects missing licence metadata", assess(found({ license: null }, "Kashi Vishwanath Temple Varanasi"), subject, 1000).reason === "MISSING_LICENSE");
+  check("screen rejects non-free licences", assess(found({}, "Kashi Vishwanath Temple", { hardReject: "NON_FREE: Fair use" }), subject, 1000).reason === "NON_FREE_LICENSE");
+  check("screen rejects maps, drawings and illustrations", assess(found({}, "Map of Kashi Vishwanath Temple Varanasi"), subject, 1000).reason === "NOT_A_PHOTO" && assess(found({}, "Kashi Vishwanath Temple", { mime: "image/png" }), subject, 1000).reason === "NOT_A_PHOTO");
+  check("screen rejects AI-generated images even when labelled photo", assess(found({ provider: "pixabay" }, "varanasi, kashi vishwanath, temple, ai generated"), subject, 1000).reason === "AI_GENERATED");
+  check("screen rejects images of other places", assess(found({}, "Mahakaleshwar temple Ujjain"), subject, 1000).reason === "WRONG_LOCATION" && assess(found({ latitude: 27.17, longitude: 78.04 }, "Kashi Vishwanath Temple Varanasi"), subject, 1000).reason === "WRONG_LOCATION");
+  check("screen rejects unrelated images", assess(found({}, "Sunset over a beach"), subject, 1000).reason === "IRRELEVANT");
+  const dupA = found({ provider_image_id: "77" }, "Kashi Vishwanath Temple");
+  check("duplicates share a dedupe key", dedupeKeys(dupA).some((k) => dedupeKeys(found({ provider_image_id: "77" }, "other text")).includes(k)));
+  check("a series by one photographer is not de-duplicated", !dedupeKeys(found({ provider_image_id: "1", original_url: "https://x/1.jpg" }, "Temple 01")).some((k) => dedupeKeys(found({ provider_image_id: "2", original_url: "https://x/2.jpg" }, "Temple 02")).includes(k)));
 
   // Attraction ranking: rating, then review count; manually ordered items never move.
   const a = (id: string, rating: number | null, reviews: number | null, manual = false, order = 0) => ({ ...emptyAttraction(id, id, id), rating, review_count: reviews, manual_order: manual, sort_order: order });

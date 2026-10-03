@@ -36,16 +36,55 @@ export interface SourceRef {
 /** field name → sources that support it (e.g. about → [Incredible India, Wikipedia]). */
 export type ProvenanceMap = Record<string, SourceRef[]>;
 
-export type ImageApproval = "CANDIDATE" | "APPROVED" | "REJECTED";
-export type DownloadStatus = "NOT_DOWNLOADED" | "DOWNLOADED" | "FAILED" | "LOCAL";
+export type ImageApproval = "PENDING" | "APPROVED" | "REJECTED";
+/** HOTLINKED = the provider requires its own URLs to be used (Unsplash); nothing is copied. */
+export type DownloadStatus = "NOT_DOWNLOADED" | "DOWNLOADED" | "FAILED" | "LOCAL" | "HOTLINKED";
 
+/** Image providers queried by the discovery service, plus the non-API origins of an image. */
+export const IMAGE_PROVIDERS = ["wikimedia", "pixabay", "unsplash", "pexels"] as const;
+export type ImageProviderId = (typeof IMAGE_PROVIDERS)[number];
+export type ImageOrigin = ImageProviderId | "manual" | "seed";
+
+export const PROVIDER_LABEL: Record<ImageOrigin, string> = {
+  wikimedia: "Wikimedia Commons",
+  pixabay: "Pixabay",
+  unsplash: "Unsplash",
+  pexels: "Pexels",
+  manual: "Manual upload",
+  seed: "Seed dataset"
+};
+
+/**
+ * An image candidate / approved image (the ImageCandidate record of the spec).
+ * Binary files never live in the record: approved files are stored under the
+ * media storage directory and served from /media/…; this record is metadata.
+ */
 export interface CmsImage {
   id: string;
   /** Image URL as served on the site (local /media path once downloaded, else the source URL). */
   url: string;
   thumbnail_url: string | null;
-  /** Direct image URL at the source, if the source permits direct use. */
-  direct_url: string | null;
+  /** Full-size URL at the provider (what is downloaded on approval, or hotlinked where required). */
+  original_url: string | null;
+  /** Mid-size URL for the review screen. */
+  preview_url?: string | null;
+  provider?: ImageOrigin;
+  provider_image_id?: string | null;
+  photographer_url?: string | null;
+  description?: string | null;
+  /** The search query (or "geo:lat,lon") that found this candidate. */
+  source_query?: string | null;
+  discovered_at?: string | null;
+  /** Why the image was rejected (automatic quality filter or admin). */
+  rejection_reason?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  /** Provider terms require serving from the provider's URL (Unsplash). */
+  hotlink_required?: boolean;
+  /** Unsplash: endpoint that must be called when the photo is used. */
+  download_location?: string | null;
+  download_event_sent_at?: string | null;
+  relevance_score?: number | null;
   source: string; // "Wikimedia Commons", "Unsplash", "Pexels", "Pixabay", "Manual upload", "Placeholder"
   source_page_url: string | null;
   photographer: string | null;
@@ -62,6 +101,31 @@ export interface CmsImage {
   height: number | null;
   retrieved_at: string | null;
   sort_order: number;
+}
+
+export type ImageSearchStatus = "COMPLETED" | "PARTIAL" | "NO_RESULTS" | "FAILED" | "NOT_RUN";
+export type ProviderRunStatus = "OK" | "NO_RESULTS" | "PROVIDER_UNAVAILABLE" | "RATE_LIMITED" | "NOT_CONFIGURED" | "DISABLED" | "SKIPPED" | "ERROR";
+
+export interface ProviderRun {
+  provider: ImageProviderId;
+  status: ProviderRunStatus;
+  /** Results the provider returned (before filtering). */
+  found: number;
+  /** Candidates from this provider that made the final list. */
+  kept: number;
+  requests: number;
+  http_status: number | null;
+  note: string | null;
+}
+
+/** Outcome of the last image search for one attraction (or the destination gallery). */
+export interface ImageSearchState {
+  status: ImageSearchStatus;
+  searched_at: string | null;
+  providers: ProviderRun[];
+  final_candidates: number;
+  auto_rejected: number;
+  queries: string[];
 }
 
 export interface CmsAttraction {
@@ -86,6 +150,7 @@ export interface CmsAttraction {
   /** When true the admin fixed the order by hand; automatic re-ranking must not move it. */
   manual_order: boolean;
   status: "ACTIVE" | "HIDDEN";
+  image_search?: ImageSearchState | null;
 }
 
 export type CollaborationStatus = "NONE" | "CONTACTED" | "IN_TALKS" | "PARTNER" | "DECLINED";
@@ -231,6 +296,7 @@ export interface CmsDestination {
   hotels: CmsHotel[];
   restaurants: CmsRestaurant[];
   images: CmsImage[]; // destination-level gallery
+  gallery_search?: ImageSearchState | null;
   faq: CmsFaq[];
   seo: CmsSeo;
 
@@ -251,9 +317,11 @@ export interface ImportCandidate {
   raw: string;
   name: string;
   slug: string;
-  /** State detected from a "Name, State" line, if any. */
+  /** State detected from a "Name, State" line or the PDF section heading, if any. */
   state: string | null;
-  /** Existing destination with the same slug — the import will skip it unless the admin un-ticks "skip". */
+  /** Number printed next to the name in the PDF, if any. */
+  position?: number | null;
+  /** Existing destination with the same slug — confirming queues that record instead of creating a new one. */
   duplicate_of: string | null;
   selected: boolean;
 }
@@ -293,13 +361,18 @@ export interface SiteSettings {
   contact_address: string | null;
   footer_text: string | null;
   copyright_text: string;
-  /** API keys are read from environment variables first; these are fallbacks entered in the console. */
-  google_places_api_key: string | null;
-  unsplash_access_key: string | null;
-  pexels_api_key: string | null;
-  pixabay_api_key: string | null;
-  image_sources: { wikimedia_commons: boolean; unsplash: boolean; pexels: boolean; pixabay: boolean };
+  /** Which image providers the discovery service may query (API keys live in the server-only secrets store). */
+  image_providers: Record<ImageProviderId, { enabled: boolean }>;
+  /** Target number of candidates per attraction (fewer are shown when fewer trustworthy ones exist). */
   images_per_attraction: number;
+  /** Candidates whose longer side is below this many pixels are rejected automatically. */
+  min_image_long_edge: number;
+  /** How many attractions the pipeline keeps per destination. */
+  attractions_per_destination: number;
+  /** What "Finalize destination" does with the page: mark it ready for review, or publish it. */
+  on_finalize: "READY" | "PUBLISH";
+  /** Destinations after the current one that are researched and image-searched in the background. */
+  prepare_ahead: number;
   analytics_id: string | null;
   updated_at: string;
 }
@@ -318,12 +391,12 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   contact_address: null,
   footer_text: null,
   copyright_text: "All rights reserved.",
-  google_places_api_key: null,
-  unsplash_access_key: null,
-  pexels_api_key: null,
-  pixabay_api_key: null,
-  image_sources: { wikimedia_commons: true, unsplash: true, pexels: true, pixabay: true },
+  image_providers: { wikimedia: { enabled: true }, pixabay: { enabled: true }, unsplash: { enabled: true }, pexels: { enabled: false } },
   images_per_attraction: 10,
+  min_image_long_edge: 1000,
+  attractions_per_destination: 10,
+  on_finalize: "READY",
+  prepare_ahead: 2,
   analytics_id: null,
   updated_at: "2026-10-03T00:00:00.000Z"
 };

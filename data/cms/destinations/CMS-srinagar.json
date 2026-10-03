@@ -13,7 +13,6 @@
     "id": "MEDIA-00144",
     "url": "placeholder://Srinagar%20skyline?w=1600&h=900",
     "thumbnail_url": null,
-    "direct_url": null,
     "source": "Placeholder (generated graphic, not a photograph)",
     "source_page_url": null,
     "photographer": null,
@@ -29,7 +28,9 @@
     "width": null,
     "height": null,
     "retrieved_at": null,
-    "sort_order": 0
+    "sort_order": 0,
+    "original_url": null,
+    "provider": "seed"
   },
   "headline": "Paradise on Earth",
   "short_description": "Srinagar, on the shores of Dal Lake, is known for houseboats, Mughal gardens and the natural beauty of the Kashmir Valley.",
@@ -73,7 +74,6 @@
           "id": "MEDIA-00148",
           "url": "placeholder://Dal%20Lake?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -89,7 +89,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -97,65 +99,21 @@
           "label": "Seed dataset — budgettourism AI-assisted editorial draft",
           "url": null,
           "retrieved_at": "2026-10-03T10:35:37.122Z",
+          "status": "SEED",
+          "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+        },
+        {
+          "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+          "url": null,
+          "retrieved_at": "2026-10-03T15:50:13.455Z",
           "status": "SEED",
           "note": "Imported from the budgettourism master seed; facts are marked unverified there."
         }
       ],
       "sort_order": 0,
       "manual_order": false,
-      "status": "ACTIVE"
-    },
-    {
-      "id": "IN-JK-SXR-SHALI",
-      "slug": "shalimar-bagh",
-      "name": "Shalimar Bagh",
-      "short_description": "A Mughal garden built by Emperor Jahangir for Empress Nur Jahan, with terraced lawns and fountains.",
-      "location_text": null,
-      "latitude": null,
-      "longitude": null,
-      "map_url": "https://www.openstreetmap.org/search?query=Shalimar%20Bagh%20Srinagar",
-      "official_website": null,
-      "category": "Attraction",
-      "rating": null,
-      "review_count": null,
-      "rating_source": null,
-      "rating_retrieved_at": null,
-      "images": [
-        {
-          "id": "MEDIA-00149",
-          "url": "placeholder://Shalimar%20Bagh?w=1200&h=800",
-          "thumbnail_url": null,
-          "direct_url": null,
-          "source": "Placeholder (generated graphic, not a photograph)",
-          "source_page_url": null,
-          "photographer": null,
-          "license": null,
-          "license_url": null,
-          "attribution_required": false,
-          "attribution_text": null,
-          "download_status": "LOCAL",
-          "local_path": null,
-          "approval_status": "APPROVED",
-          "caption": "Shalimar Bagh",
-          "alt": "Shalimar Bagh",
-          "width": null,
-          "height": null,
-          "retrieved_at": null,
-          "sort_order": 0
-        }
-      ],
-      "sources": [
-        {
-          "label": "Seed dataset — budgettourism AI-assisted editorial draft",
-          "url": null,
-          "retrieved_at": "2026-10-03T10:35:37.122Z",
-          "status": "SEED",
-          "note": "Imported from the budgettourism master seed; facts are marked unverified there."
-        }
-      ],
-      "sort_order": 1,
-      "manual_order": false,
-      "status": "ACTIVE"
+      "status": "ACTIVE",
+      "image_search": null
     },
     {
       "id": "IN-JK-SXR-NISHA",
@@ -177,7 +135,6 @@
           "id": "MEDIA-00150",
           "url": "placeholder://Nishat%20Bagh?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -193,7 +150,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -203,11 +162,19 @@
           "retrieved_at": "2026-10-03T10:35:37.122Z",
           "status": "SEED",
           "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+        },
+        {
+          "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+          "url": null,
+          "retrieved_at": "2026-10-03T15:50:13.455Z",
+          "status": "SEED",
+          "note": "Imported from the budgettourism master seed; facts are marked unverified there."
         }
       ],
-      "sort_order": 2,
+      "sort_order": 1,
       "manual_order": false,
-      "status": "ACTIVE"
+      "status": "ACTIVE",
+      "image_search": null
     },
     {
       "id": "IN-JK-SXR-PMTGR",
@@ -232,11 +199,80 @@
           "retrieved_at": "2026-10-03T10:35:37.122Z",
           "status": "SEED",
           "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+        },
+        {
+          "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+          "url": null,
+          "retrieved_at": "2026-10-03T15:50:13.455Z",
+          "status": "SEED",
+          "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+        }
+      ],
+      "sort_order": 2,
+      "manual_order": false,
+      "status": "HIDDEN",
+      "image_search": null
+    },
+    {
+      "id": "IN-JK-SXR-SHALI",
+      "slug": "shalimar-bagh",
+      "name": "Shalimar Bagh",
+      "short_description": "A Mughal garden built by Emperor Jahangir for Empress Nur Jahan, with terraced lawns and fountains.",
+      "location_text": null,
+      "latitude": null,
+      "longitude": null,
+      "map_url": "https://www.openstreetmap.org/search?query=Shalimar%20Bagh%20Srinagar",
+      "official_website": null,
+      "category": "Attraction",
+      "rating": null,
+      "review_count": null,
+      "rating_source": null,
+      "rating_retrieved_at": null,
+      "images": [
+        {
+          "id": "MEDIA-00149",
+          "url": "placeholder://Shalimar%20Bagh?w=1200&h=800",
+          "thumbnail_url": null,
+          "source": "Placeholder (generated graphic, not a photograph)",
+          "source_page_url": null,
+          "photographer": null,
+          "license": null,
+          "license_url": null,
+          "attribution_required": false,
+          "attribution_text": null,
+          "download_status": "LOCAL",
+          "local_path": null,
+          "approval_status": "APPROVED",
+          "caption": "Shalimar Bagh",
+          "alt": "Shalimar Bagh",
+          "width": null,
+          "height": null,
+          "retrieved_at": null,
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
+        }
+      ],
+      "sources": [
+        {
+          "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+          "url": null,
+          "retrieved_at": "2026-10-03T10:35:37.122Z",
+          "status": "SEED",
+          "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+        },
+        {
+          "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+          "url": null,
+          "retrieved_at": "2026-10-03T15:50:13.455Z",
+          "status": "SEED",
+          "note": "Imported from the budgettourism master seed; facts are marked unverified there."
         }
       ],
       "sort_order": 3,
       "manual_order": false,
-      "status": "HIDDEN"
+      "status": "ACTIVE",
+      "image_search": null
     }
   ],
   "hotels": [],
@@ -246,7 +282,6 @@
       "id": "MEDIA-00145",
       "url": "placeholder://Dal%20Lake?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -262,13 +297,14 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 0
+      "sort_order": 0,
+      "original_url": null,
+      "provider": "seed"
     },
     {
       "id": "MEDIA-00146",
       "url": "placeholder://Shalimar%20Bagh?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -284,13 +320,14 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 1
+      "sort_order": 1,
+      "original_url": null,
+      "provider": "seed"
     },
     {
       "id": "MEDIA-00147",
       "url": "placeholder://Nishat%20Bagh?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -306,7 +343,9 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 2
+      "sort_order": 2,
+      "original_url": null,
+      "provider": "seed"
     }
   ],
   "faq": [],
@@ -325,6 +364,27 @@
         "retrieved_at": "2026-10-03T10:35:37.122Z",
         "status": "SEED",
         "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+      },
+      {
+        "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+        "url": null,
+        "retrieved_at": "2026-10-03T15:50:13.441Z",
+        "status": "SEED",
+        "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+      },
+      {
+        "label": "Incredible India",
+        "url": "https://www.incredibleindia.gov.in/en/jammu-and-kashmir/srinagar",
+        "retrieved_at": "2026-10-03T15:50:13.449Z",
+        "status": "SOURCE_UNAVAILABLE",
+        "note": "HTTP 403"
+      },
+      {
+        "label": "Wikipedia",
+        "url": null,
+        "retrieved_at": "2026-10-03T15:50:13.453Z",
+        "status": "SOURCE_UNAVAILABLE",
+        "note": "HTTP 403"
       }
     ],
     "history": [
@@ -332,6 +392,13 @@
         "label": "Seed dataset — budgettourism AI-assisted editorial draft",
         "url": null,
         "retrieved_at": "2026-10-03T10:35:37.122Z",
+        "status": "SEED",
+        "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+      },
+      {
+        "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+        "url": null,
+        "retrieved_at": "2026-10-03T15:50:13.441Z",
         "status": "SEED",
         "note": "Imported from the budgettourism master seed; facts are marked unverified there."
       }
@@ -343,6 +410,13 @@
         "retrieved_at": "2026-10-03T10:35:37.122Z",
         "status": "SEED",
         "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+      },
+      {
+        "label": "Wikipedia",
+        "url": null,
+        "retrieved_at": "2026-10-03T15:50:13.468Z",
+        "status": "SOURCE_UNAVAILABLE",
+        "note": "HTTP 403"
       }
     ],
     "transportation": [
@@ -350,6 +424,13 @@
         "label": "Seed dataset — budgettourism AI-assisted editorial draft",
         "url": null,
         "retrieved_at": "2026-10-03T10:35:37.122Z",
+        "status": "SEED",
+        "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+      },
+      {
+        "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+        "url": null,
+        "retrieved_at": "2026-10-03T15:50:13.441Z",
         "status": "SEED",
         "note": "Imported from the budgettourism master seed; facts are marked unverified there."
       }
@@ -361,22 +442,160 @@
         "retrieved_at": "2026-10-03T10:35:37.122Z",
         "status": "SEED",
         "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+      },
+      {
+        "label": "Placeholder graphic (no photograph collected yet)",
+        "url": null,
+        "retrieved_at": "2026-10-03T15:50:13.441Z",
+        "status": "SEED",
+        "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+      }
+    ],
+    "images": [
+      {
+        "label": "Image discovery service",
+        "url": null,
+        "retrieved_at": "2026-10-03T15:50:13.487Z",
+        "status": "SOURCE_UNAVAILABLE",
+        "note": "0 candidates"
       }
     ]
   },
   "pipeline": {
-    "stage": "NOT_IN_PIPELINE",
-    "import_id": null,
-    "position": null,
-    "started_at": null,
+    "stage": "QUEUED",
+    "import_id": "IMP-muskite7",
+    "position": 2,
+    "started_at": "2026-10-03T15:50:13.441Z",
     "completed_at": null,
     "last_error": null,
-    "log": []
+    "log": [
+      {
+        "at": "2026-10-03T15:50:03.894Z",
+        "stage": "QUEUED",
+        "message": "Queued (position 2)",
+        "level": "info"
+      },
+      {
+        "at": "2026-10-03T15:50:13.441Z",
+        "stage": "RESEARCHING",
+        "message": "Research started",
+        "level": "info"
+      },
+      {
+        "at": "2026-10-03T15:50:13.442Z",
+        "stage": "RESEARCHING",
+        "message": "Matched the master seed database — editorial draft text imported with its source ids",
+        "level": "info"
+      },
+      {
+        "at": "2026-10-03T15:50:13.449Z",
+        "stage": "RESEARCHING",
+        "message": "Incredible India: source unavailable (HTTP 403)",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.453Z",
+        "stage": "RESEARCHING",
+        "message": "Wikipedia: source unavailable (HTTP 403)",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.453Z",
+        "stage": "ATTRACTIONS",
+        "message": "Research finished",
+        "level": "info"
+      },
+      {
+        "at": "2026-10-03T15:50:13.455Z",
+        "stage": "ATTRACTIONS",
+        "message": "Collecting attractions",
+        "level": "info"
+      },
+      {
+        "at": "2026-10-03T15:50:13.456Z",
+        "stage": "ATTRACTIONS",
+        "message": "Seed database: 4 attractions",
+        "level": "info"
+      },
+      {
+        "at": "2026-10-03T15:50:13.456Z",
+        "stage": "ATTRACTIONS",
+        "message": "Google Places API key not configured — ratings will show as unavailable",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.468Z",
+        "stage": "ATTRACTIONS",
+        "message": "Wikipedia nearby: HTTP 403",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.469Z",
+        "stage": "IMAGES",
+        "message": "4 attractions stored",
+        "level": "info"
+      },
+      {
+        "at": "2026-10-03T15:50:13.472Z",
+        "stage": "IMAGES",
+        "message": "Searching for image candidates",
+        "level": "info"
+      },
+      {
+        "at": "2026-10-03T15:50:13.486Z",
+        "stage": "IMAGES",
+        "message": "Dal Lake: FAILED — Wikimedia Commons PROVIDER_UNAVAILABLE, Pixabay PROVIDER_UNAVAILABLE; 0 candidates",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.487Z",
+        "stage": "IMAGES",
+        "message": "Nishat Bagh: FAILED — Wikimedia Commons PROVIDER_UNAVAILABLE, Pixabay PROVIDER_UNAVAILABLE; 0 candidates",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.487Z",
+        "stage": "IMAGES",
+        "message": "Shalimar Bagh: FAILED — Wikimedia Commons PROVIDER_UNAVAILABLE, Pixabay PROVIDER_UNAVAILABLE; 0 candidates",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.487Z",
+        "stage": "IMAGES",
+        "message": "Destination gallery: FAILED — Wikimedia Commons PROVIDER_UNAVAILABLE, Pixabay PROVIDER_UNAVAILABLE; 0 candidates",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.487Z",
+        "stage": "IMAGES",
+        "message": "Wikimedia Commons: PROVIDER_UNAVAILABLE — Host not in allowlist: commons.wikimedia.org. Add this host to your network egress settings to allow access.. Marked unavailable for this destination; other providers were used.",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.487Z",
+        "stage": "IMAGES",
+        "message": "Pixabay: PROVIDER_UNAVAILABLE — Host not in allowlist: pixabay.com. Add this host to your network egress settings to allow access.. Marked unavailable for this destination; other providers were used.",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.488Z",
+        "stage": "IMAGES",
+        "message": "No candidates found. Re-run the image search when providers are reachable, or upload licensed photographs.",
+        "level": "warn"
+      },
+      {
+        "at": "2026-10-03T15:50:13.488Z",
+        "stage": "AWAITING_APPROVAL",
+        "message": "0 candidates ready for review",
+        "level": "info"
+      }
+    ]
   },
   "legacy_slug": "srinagar",
   "is_sample_data": true,
   "status": "PUBLISHED",
   "created_at": "2026-10-03T10:35:37.122Z",
-  "updated_at": "2026-10-03T10:35:37.130Z",
-  "published_at": "2026-10-03T10:35:37.122Z"
+  "updated_at": "2026-10-03T15:55:05.679Z",
+  "published_at": "2026-10-03T10:35:37.122Z",
+  "gallery_search": null
 }

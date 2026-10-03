@@ -34,7 +34,7 @@ export function AttractionsEditor({ attractions, destSlug, onChange }: { attract
       <ol className="space-y-2">
         {attractions.map((a, idx) => {
           const approved = a.images.filter((i) => i.approval_status === "APPROVED").length;
-          const candidates = a.images.filter((i) => i.approval_status === "CANDIDATE").length;
+          const candidates = a.images.filter((i) => i.approval_status === "PENDING").length;
           const isOpen = open === a.id;
           return (
             <li key={a.id} className={`rounded-xl border bg-white ${a.status === "HIDDEN" ? "border-charcoal/10 opacity-70" : "border-forest-100"}`}>
