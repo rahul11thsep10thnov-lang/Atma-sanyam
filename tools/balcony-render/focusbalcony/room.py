@@ -17,7 +17,7 @@ from .common import DEG, Rng, box, collection, cylinder, mesh_object
 from .nodes import Tree as NodeTree
 
 HW, HD, H = 1.8, 2.6, 2.9  # half width, half depth, height
-WIN = (0.9, 2.25, 0.95, 2.3)  # y0, y1, sill z, head z  (on the left wall)
+WIN = (0.75, 2.35, 0.85, 2.35)  # y0, y1, sill z, head z  (on the left wall)
 DOOR = (1.5, 2.4, 2.1)        # y0, y1, height (on the right wall)
 
 # sun azimuths so the light comes in through the left-wall window
@@ -39,7 +39,7 @@ def oak_floor():
     shifted = t.node("ShaderNodeCombineXYZ")
     t.set(shifted, "X", t.math("ADD", (sep, "X"), t.math("MULTIPLY", t.node("ShaderNodeSeparateColor", {"Color": plank_rand}), 7.0)))
     t.set(shifted, "Y", t.math("MULTIPLY", (sep, "Y"), 1.0))
-    grain = t.node("ShaderNodeTexWave", {"Vector": shifted, "Scale": 2.2, "Distortion": 9.0, "Detail": 5.0, "Detail Scale": 2.0, "Detail Roughness": 0.6},
+    grain = t.node("ShaderNodeTexWave", {"Vector": shifted, "Scale": 2.2, "Distortion": 2.5, "Detail": 5.0, "Detail Scale": 2.0, "Detail Roughness": 0.6},
                    wave_type="BANDS", bands_direction="Y")
     fibres = t.noise(t.coords("Object", scale=(2, 90, 90)), scale=5, detail=8)
     g = t.math("ADD", t.math("MULTIPLY", (grain, "Fac"), 0.7), t.math("MULTIPLY", (fibres, "Fac"), 0.3))
@@ -90,8 +90,8 @@ def painted_wood(color=(0.86, 0.84, 0.78), name="painted_wood"):
 
 def build_architecture(state):
     col = collection("architecture")
-    wall = M.plaster((0.76, 0.70, 0.60), "room_plaster")
-    ceil = M.plaster((0.82, 0.8, 0.76), "room_ceiling")
+    wall = M.plaster((0.84, 0.80, 0.72), "room_plaster")
+    ceil = M.plaster((0.9, 0.88, 0.84), "room_ceiling")
     trim = painted_wood((0.88, 0.86, 0.8), "trim_paint")
     teak = M.wood((0.11, 0.055, 0.025), (0.32, 0.17, 0.08), 0.4, 5.0, "door_teak")
     t = 0.2
@@ -189,7 +189,8 @@ def build_bed(state):
     bm = bmesh.new()
     bmesh.ops.create_grid(bm, x_segments=50, y_segments=66, size=1.0)
     for v in bm.verts:
-        v.co = Vector((cx + v.co.x * (bw + 0.16), cy - 0.08 + v.co.y * bl, 0.525))
+        # create_grid spans -1..1, so halve the size factors
+        v.co = Vector((cx + v.co.x * (bw + 0.16) / 2, cy - 0.08 + v.co.y * bl / 2, 0.525))
     sheet = mesh_object("sheet", bm, linen, col, smooth=True)
     sub = sheet.modifiers.new("sub", "SUBSURF")
     sub.levels = sub.render_levels = 2
@@ -288,7 +289,7 @@ def build_camera(width=1080, height=2340):
     cam_data.clip_end = 20000
     cam = bpy.data.objects.new("camera", cam_data)
     cam.location = (0.55, -2.4, 1.45)
-    cam.rotation_euler = (89 * DEG, 0, 7.0 * DEG)
+    cam.rotation_euler = (85 * DEG, 0, 7.0 * DEG)
     sc.collection.objects.link(cam)
     sc.camera = cam
     sc.render.resolution_x = width
@@ -305,7 +306,7 @@ def build_all(width=1080, height=2340, state="morning"):
     build_camera(width, height)
 
 
-EXPOSURE = {"morning": 1.9, "afternoon": 1.5, "sunset": 1.6, "evening": 1.6, "night": 1.8, "rain": 1.8}
+EXPOSURE = {"morning": 2.25, "afternoon": 1.8, "sunset": 1.9, "evening": 1.8, "night": 1.9, "rain": 2.1}
 
 
 def configure_render(samples=128, preview=False, state="morning"):
