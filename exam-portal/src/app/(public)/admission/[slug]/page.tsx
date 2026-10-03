@@ -34,7 +34,7 @@ export default async function AdmissionDetailPage({
   await recordView("Admission", admission.id, `/admission/${slug}`);
 
   return (
-    <main className="mx-auto flex max-w-3xl flex-col gap-8 px-4 py-8 sm:px-6">
+    <main className="flex w-full flex-col gap-8 px-4 py-8 sm:px-8 lg:px-12">
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },

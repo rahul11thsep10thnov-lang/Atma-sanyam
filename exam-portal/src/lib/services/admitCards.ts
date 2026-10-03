@@ -178,7 +178,7 @@ export async function transitionAdmitCardStatus(
   return admitCard;
 }
 
-const PUBLIC_PAGE_SIZE = 12;
+const PUBLIC_PAGE_SIZE = 40;
 
 /** Public `/admit-card` listing page (Section 14: paginated). */
 export async function listPublishedAdmitCards(

@@ -33,6 +33,11 @@ function readInput(formData: FormData) {
     seoTitle: String(formData.get("seoTitle") ?? ""),
     seoDescription: String(formData.get("seoDescription") ?? ""),
     seoKeywords: String(formData.get("seoKeywords") ?? ""),
+    postsText: String(formData.get("postsText") ?? ""),
+    feesText: String(formData.get("feesText") ?? ""),
+    datesText: String(formData.get("datesText") ?? ""),
+    syllabusUrl: String(formData.get("syllabusUrl") ?? ""),
+    examPatternUrl: String(formData.get("examPatternUrl") ?? ""),
   };
 }
 

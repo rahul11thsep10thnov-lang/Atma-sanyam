@@ -1,42 +1,25 @@
 import type { Metadata } from "next";
 import { listPublishedResults } from "@/lib/services/results";
-import { ResultCard } from "@/components/cards/ResultCard";
-import { EmptyState } from "@/components/EmptyState";
+import { NoticeList } from "@/components/NoticeList";
 import { Pagination } from "@/components/Pagination";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
-export const metadata: Metadata = {
-  title: "Latest Results",
-  description: "Browse the latest government exam results.",
-};
+export const metadata: Metadata = { title: "Results", description: "All government exam results, newest first.", alternates: { canonical: "/results" } };
 
-export default async function ResultsIndexPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}) {
+export default async function Page({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const { page: pageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
-  const { results, total, pageSize } = await listPublishedResults(page);
-
+  const data = await listPublishedResults(page);
+  const rows = data.results;
   return (
-    <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6">
+    <main className="flex w-full flex-col gap-4 px-4 pb-10 sm:px-8 lg:px-12">
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Results" }]} />
-      <h1 className="text-xl font-semibold text-slate-900 sm:text-2xl">
-        Latest Results
-      </h1>
-
-      {results.length > 0 ? (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {results.map((result) => (
-            <ResultCard key={result.slug} result={result} />
-          ))}
-        </div>
-      ) : (
-        <EmptyState message="No results published yet." />
-      )}
-
-      <Pagination page={page} pageSize={pageSize} total={total} basePath="/results" />
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h1 className="text-2xl font-semibold">Results</h1>
+        <p className="text-sm text-slate-600">{data.total} · newest first</p>
+      </div>
+      <NoticeList empty="No results published yet." items={rows.map((r) => ({ href: `/results/${r.slug}`, title: r.title, subtitle: r.examTitle, date: r.resultDate, dateLabel: "Declared" }))} />
+      <Pagination page={page} pageSize={data.pageSize} total={data.total} basePath="/results" />
     </main>
   );
 }

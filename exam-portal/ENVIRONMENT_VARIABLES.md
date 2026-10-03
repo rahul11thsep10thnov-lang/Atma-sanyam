@@ -48,6 +48,21 @@ Every variable actually read by the app, cross-checked against the code
 | `RESEND_API_KEY` | `src/lib/alerts/email.ts` | API key for Resend's HTTP e-mail API. Unset → no e-mail is sent: subscriptions are still stored, confirmation links are shown in the form in development only, and each alert delivery is recorded `FAILED` with "EMAIL provider not configured". |
 | `ALERTS_FROM_EMAIL` | same | The From address, e.g. `SarkariChayan Alerts <alerts@yourdomain.in>` (a domain verified in Resend). Required together with the key. |
 
+## Reader accounts, payments, Felicitation Board, ads
+
+| Variable | Read by | Notes |
+|---|---|---|
+| `SMS_PROVIDER` + `MSG91_*` or `TWILIO_*` | `src/lib/sms/index.ts` | OTP codes and member job-alert SMS. Indian numbers need DLT-registered templates (MSG91 Flow: `##otp##` / `##message##`). Unset: development shows the OTP on screen; production sign-up cannot work. Every attempt is logged in `sms_logs` (never the code). |
+| `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET` | `src/lib/payments/provider.ts` | Orders + checkout signature verification. The secret never reaches the browser. |
+| `RAZORPAY_WEBHOOK_SECRET` | same | Verifies `/api/payments/razorpay/webhook`. |
+| `PAYMENT_PROVIDER=mock` | same | Development only; refused when `NODE_ENV=production`. |
+| `MEMBERSHIP_PRICE_RUPEES` | `src/lib/payments/service.ts` | Default 10 (per 30 days). |
+| `IDENTITY_ENCRYPTION_KEY` | `src/lib/security/crypto.ts` | AES-256-GCM key for the last four Aadhaar digits. Required in production. |
+| `NEXT_PUBLIC_ADSENSE_CLIENT`, `NEXT_PUBLIC_ADSENSE_SLOT_HOME`, `NEXT_PUBLIC_ADSENSE_SLOT_JOB` | `src/app/(public)/layout.tsx`, `src/components/ads/AdSlot.tsx`, `src/app/ads.txt/route.ts` | AdSense loader + units; never loaded for members. |
+| `NEXT_PUBLIC_APP_DOWNLOAD_URL` | `src/components/AppPromo.tsx` | "Download the app" link. Screenshot file: `public/app-preview.png`. |
+
+Felicitation Board price, reference price, durations and animation settings are **not** env vars — they are edited in Admin → Board settings.
+
 ## Not currently read by anything
 
 These channels exist as `NotificationChannel` enum values and have a

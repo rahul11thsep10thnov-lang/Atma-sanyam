@@ -351,7 +351,7 @@ export async function deleteTopic(topicId: string, adminId: string) {
 // Public reads
 // ---------------------------------------------------------------------------
 
-const PUBLIC_PAGE_SIZE = 12;
+const PUBLIC_PAGE_SIZE = 40;
 
 export async function listPublishedSyllabi(page = 1) {
   const [items, total] = await Promise.all([

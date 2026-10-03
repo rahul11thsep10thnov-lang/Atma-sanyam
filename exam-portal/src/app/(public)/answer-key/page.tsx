@@ -1,42 +1,25 @@
 import type { Metadata } from "next";
 import { listPublishedAnswerKeys } from "@/lib/services/answerKeys";
-import { AnswerKeyCard } from "@/components/cards/AnswerKeyCard";
-import { EmptyState } from "@/components/EmptyState";
+import { NoticeList } from "@/components/NoticeList";
 import { Pagination } from "@/components/Pagination";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
-export const metadata: Metadata = {
-  title: "Latest Answer Keys",
-  description: "Official answer keys and objection information for the latest government exams.",
-};
+export const metadata: Metadata = { title: "Answer Keys", description: "All answer keys, newest first.", alternates: { canonical: "/answer-key" } };
 
-export default async function AnswerKeysIndexPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}) {
+export default async function Page({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const { page: pageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
-  const { answerKeys, total, pageSize } = await listPublishedAnswerKeys(page);
-
+  const data = await listPublishedAnswerKeys(page);
+  const rows = data.answerKeys;
   return (
-    <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6">
+    <main className="flex w-full flex-col gap-4 px-4 pb-10 sm:px-8 lg:px-12">
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Answer Keys" }]} />
-      <h1 className="text-xl font-semibold text-slate-900 sm:text-2xl">
-        Latest Answer Keys
-      </h1>
-
-      {answerKeys.length > 0 ? (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {answerKeys.map((answerKey) => (
-            <AnswerKeyCard key={answerKey.slug} answerKey={answerKey} />
-          ))}
-        </div>
-      ) : (
-        <EmptyState message="No answer keys published yet." />
-      )}
-
-      <Pagination page={page} pageSize={pageSize} total={total} basePath="/answer-key" />
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h1 className="text-2xl font-semibold">Answer Keys</h1>
+        <p className="text-sm text-slate-600">{data.total} · newest first</p>
+      </div>
+      <NoticeList empty="No answer keys published yet." items={rows.map((r) => ({ href: `/answer-key/${r.slug}`, title: r.title, subtitle: r.examTitle, date: r.answerKeyDate, dateLabel: "Released" }))} />
+      <Pagination page={page} pageSize={data.pageSize} total={data.total} basePath="/answer-key" />
     </main>
   );
 }

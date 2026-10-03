@@ -73,7 +73,7 @@ export default async function SearchPage({
   const basePath = `/search?${new URLSearchParams(baseQuery).toString()}`;
 
   return (
-    <main className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-10 sm:px-6">
+    <main className="flex w-full flex-col gap-6 px-4 py-10 sm:px-6">
       <h1 className="text-xl font-semibold text-slate-900">
         {q ? `Search results for "${q}"` : "Search"}
       </h1>

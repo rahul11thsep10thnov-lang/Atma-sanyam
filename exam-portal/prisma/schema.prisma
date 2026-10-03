@@ -252,14 +252,6 @@ model AdminUser {
 /// Public site visitor account (saved searches, notification subscriptions).
 /// Browsing/searching the site never requires an account — this is only
 /// for opt-in features added in a later phase.
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-
-  @@map("users")
-}
 
 // ---------------------------------------------------------------------------
 // Lookups shared across content types
@@ -391,6 +383,8 @@ model Exam {
   recruitments   Recruitment[]
   notices        RecruitmentNotice[]
 
+  felicitations FelicitationEntry[]
+
   @@index([organizationId])
   @@index([categoryId])
   @@index([stateId])
@@ -444,6 +438,13 @@ model Job {
   /// lives in applicationFeeByCategory since it varies by notification.
   applicationFee           Decimal?  @db.Decimal(10, 2)
   applicationFeeByCategory Json?
+  /// [{ name, eligibility, vacancies }] — post-wise table on the job page.
+  posts                    Json?
+  /// [{ label, date }] — free-form important dates (ISO or text).
+  importantDates           Json?
+  /// Short "broad eligibility" text shown beside the dates.
+  examPatternUrl           String?
+  syllabusUrl              String?
   notificationDocumentId   String?
   notificationDocument     Document? @relation(fields: [notificationDocumentId], references: [id])
   officialWebsite          String?
@@ -1331,4 +1332,204 @@ model AlertDelivery {
   @@unique([subscriptionId, recruitmentNoticeId])
   @@index([status, createdAt])
   @@map("alert_deliveries")
+}
+
+// ---------------------------------------------------------------------------
+// Reader accounts (mobile + OTP + password), membership and payments
+// ---------------------------------------------------------------------------
+
+enum OtpPurpose {
+  SIGNUP
+  LOGIN
+  RESET
+  FELICITATION
+}
+
+enum PaymentPurpose {
+  MEMBERSHIP
+  FELICITATION
+}
+
+enum PaymentStatus {
+  CREATED
+  PAID
+  FAILED
+}
+
+/// A website reader (not an admin). Identified by an OTP-verified Indian
+/// mobile number in E.164 form (+91XXXXXXXXXX).
+model User {
+  id                 String    @id @default(cuid())
+  /// Legacy columns from the original placeholder model, kept nullable.
+  email              String?   @unique
+  name               String?
+  mobile             String    @unique
+  passwordHash       String?
+  mobileVerifiedAt   DateTime?
+  fullName           String?
+  age                Int?
+  qualification      String?
+  examsAimed         String[]
+  profileCompletedAt DateTime?
+  membershipUntil    DateTime?
+  smsAlerts          Boolean   @default(true)
+  lastLoginAt        DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  sessions      UserSession[]
+  payments      Payment[]
+  felicitations FelicitationEntry[]
+  smsLogs       SmsLog[]
+
+  @@index([membershipUntil])
+  @@index([createdAt])
+  @@map("users")
+}
+
+/// Opaque session cookie → only the SHA-256 of the token is stored.
+model UserSession {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("user_sessions")
+}
+
+/// One-time codes are stored hashed, expire after a few minutes and allow
+/// a bounded number of attempts.
+model OtpCode {
+  id         String     @id @default(cuid())
+  mobile     String
+  purpose    OtpPurpose
+  codeHash   String
+  expiresAt  DateTime
+  attempts   Int        @default(0)
+  consumedAt DateTime?
+  ip         String?
+  createdAt  DateTime   @default(now())
+
+  @@index([mobile, purpose, createdAt])
+  @@index([ip, createdAt])
+  @@map("otp_codes")
+}
+
+/// Every payment the site takes (membership, felicitation listing), one
+/// row per provider order. Only a server-side verified signature/webhook
+/// may move it to PAID.
+model Payment {
+  id                  String             @id @default(cuid())
+  provider            String
+  purpose             PaymentPurpose
+  orderId             String             @unique
+  paymentId           String?            @unique
+  amountPaise         Int
+  currency            String             @default("INR")
+  status              PaymentStatus      @default(CREATED)
+  failureReason       String?
+  userId              String?
+  user                User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  felicitationEntryId String?
+  felicitationEntry   FelicitationEntry? @relation(fields: [felicitationEntryId], references: [id], onDelete: SetNull)
+  paidAt              DateTime?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  @@index([status, createdAt])
+  @@index([userId])
+  @@index([felicitationEntryId])
+  @@map("payments")
+}
+
+/// Outbound SMS log (OTP codes are never written here — only the purpose).
+model SmsLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  mobile    String
+  purpose   String
+  status    String
+  error     String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@map("sms_logs")
+}
+
+// ---------------------------------------------------------------------------
+// Felicitation Board
+// ---------------------------------------------------------------------------
+
+enum FelicitationStatus {
+  DRAFT
+  PAYMENT_PENDING
+  PAYMENT_FAILED
+  PAID_PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  SCHEDULED
+  BROADCASTING
+  PAUSED
+  EXPIRED
+}
+
+model FelicitationEntry {
+  id                String             @id @default(cuid())
+  refCode           String             @unique
+  candidateName     String
+  locality          String
+  city              String
+  state             String
+  examName          String
+  examId            String?
+  exam              Exam?              @relation(fields: [examId], references: [id], onDelete: SetNull)
+  /// Private: never returned by public APIs.
+  mobile            String
+  userId            String?
+  user              User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  /// AES-256-GCM ciphertext of the last four Aadhaar digits only.
+  identityLast4Enc  String?
+  identityConsentAt DateTime
+  identityPurgedAt  DateTime?
+  status            FelicitationStatus @default(DRAFT)
+  paymentStatus     PaymentStatus?
+  approvedAt        DateTime?
+  approvedBy        String?
+  rejectedReason    String?
+  startAt           DateTime?
+  expiresAt         DateTime?
+  pausedAt          DateTime?
+  pausedRemainingMs Int?
+  displayOrder      Int                @default(0)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  payments Payment[]
+  actions  FelicitationAdminAction[]
+
+  @@index([status, startAt, expiresAt])
+  @@index([mobile])
+  @@index([createdAt])
+  @@map("felicitation_entries")
+}
+
+model FelicitationAdminAction {
+  id          String              @id @default(cuid())
+  entryId     String
+  entry       FelicitationEntry   @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  adminUserId String?
+  actor       String
+  action      String
+  fromStatus  FelicitationStatus?
+  toStatus    FelicitationStatus?
+  note        String?
+  createdAt   DateTime            @default(now())
+
+  @@index([entryId, createdAt])
+  @@map("felicitation_admin_actions")
 }

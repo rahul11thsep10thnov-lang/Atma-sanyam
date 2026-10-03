@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default async function CategoriesIndexPage() {
   const cats = await listPublicCategories();
   return (
-    <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6">
+    <main className="flex w-full flex-col gap-6 px-4 py-8 sm:px-8 lg:px-12">
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Categories" }]} />
       <h1 className="text-xl font-semibold text-slate-900 sm:text-2xl">Job Categories</h1>
       <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">

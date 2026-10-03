@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import type { FormState } from "./actions";
+import { readPosts, readFees, readDates, postsToText, feesToText, datesToText } from "@/lib/jobDetails";
 
 export interface JobFormValues {
   title?: string;
@@ -22,6 +23,11 @@ export interface JobFormValues {
   seoTitle?: string | null;
   seoDescription?: string | null;
   seoKeywords?: string[];
+  posts?: unknown;
+  applicationFeeByCategory?: unknown;
+  importantDates?: unknown;
+  syllabusUrl?: string | null;
+  examPatternUrl?: string | null;
 }
 
 const inputClass =
@@ -206,6 +212,23 @@ export function JobForm({
       <Field label="Salary / Pay Level">
         <input name="salary" defaultValue={initial?.salary ?? ""} className={inputClass} />
       </Field>
+
+      <fieldset className="flex flex-col gap-4 rounded-md border border-orange-200 p-4">
+        <legend className="px-1 text-xs font-medium tracking-wide text-slate-500 uppercase">Job page tables (one row per line)</legend>
+        <Field label="Posts — Post | Eligibility | Vacancies">
+          <textarea name="postsText" rows={5} defaultValue={postsToText(readPosts(initial?.posts))} placeholder={"Constable (Civil Police) | 12th pass, 18–22 years | 52000\nJail Warder | 12th pass | 8244"} className={`${inputClass} font-mono`} />
+        </Field>
+        <Field label="Fees — Category | Fee">
+          <textarea name="feesText" rows={4} defaultValue={feesToText(readFees(initial?.applicationFeeByCategory))} placeholder={"General / OBC / EWS | ₹400\nSC / ST | ₹400\nFemale | ₹400"} className={`${inputClass} font-mono`} />
+        </Field>
+        <Field label="Extra important dates — Label | Date">
+          <textarea name="datesText" rows={4} defaultValue={datesToText(readDates(initial?.importantDates))} placeholder={"Fee payment last date | 18 Jan 2027\nCorrection window | 20–22 Jan 2027"} className={`${inputClass} font-mono`} />
+        </Field>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Field label="Syllabus URL (optional)"><input name="syllabusUrl" type="url" defaultValue={initial?.syllabusUrl ?? ""} className={inputClass} /></Field>
+          <Field label="Exam pattern URL (optional)"><input name="examPatternUrl" type="url" defaultValue={initial?.examPatternUrl ?? ""} className={inputClass} /></Field>
+        </div>
+      </fieldset>
 
       <fieldset className="flex flex-col gap-4 rounded-md border border-slate-200 p-4">
         <legend className="px-1 text-xs font-medium tracking-wide text-slate-500 uppercase">

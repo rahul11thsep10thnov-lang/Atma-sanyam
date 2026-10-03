@@ -33,6 +33,11 @@ export const jobInputSchema = z
     seoDescription: optionalTrimmedString,
     /** Comma-separated. */
     seoKeywords: optionalTrimmedString,
+    postsText: optionalTrimmedString,
+    feesText: optionalTrimmedString,
+    datesText: optionalTrimmedString,
+    syllabusUrl: urlField,
+    examPatternUrl: urlField,
   })
   .refine(
     (data) =>

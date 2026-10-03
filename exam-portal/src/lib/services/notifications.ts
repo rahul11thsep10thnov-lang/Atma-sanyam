@@ -59,6 +59,16 @@ export async function dispatchNotification(input: {
 
   await prisma.notification.update({ where: { id: notification.id }, data: { sentAt: new Date() } });
 
+  // Paid members get an SMS for every new job notification.
+  if (input.type === "NEW_JOB" && input.targetType === "Job") {
+    try {
+      const { notifyMembersOfNewJob } = await import("@/lib/users/memberAlerts");
+      await notifyMembersOfNewJob(input.targetId);
+    } catch (err) {
+      console.error("member SMS failed", err instanceof Error ? err.message : err);
+    }
+  }
+
   return notification;
 }
 

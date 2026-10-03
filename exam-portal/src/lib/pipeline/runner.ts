@@ -113,6 +113,14 @@ export async function runPipeline(options: RunOptions = {}): Promise<RunSummary>
     return summary;
   }
 
+  // Felicitation Board expiry is enforced in the database on every pass too.
+  try {
+    const { syncFelicitationStatuses } = await import("@/lib/felicitation/service");
+    await syncFelicitationStatuses(now);
+  } catch (e) {
+    console.error("felicitation sweep failed", e);
+  }
+
   const run = await prisma.pipelineRun.create({ data: { trigger, status: "RUNNING", startedAt: now }, select: { id: true } });
   summary.runId = run.id;
   const log: { sources: Array<{ id: string; name: string; ok: boolean; newItems: number; notices: number; error: string | null }>; retries: Array<{ errorId: string; ok: boolean; message?: string }>; error?: string } = { sources: [], retries: [] };

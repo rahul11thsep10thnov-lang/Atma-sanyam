@@ -178,7 +178,7 @@ export async function transitionResultStatus(
   return result;
 }
 
-const PUBLIC_PAGE_SIZE = 12;
+const PUBLIC_PAGE_SIZE = 40;
 
 /** Public `/results` listing page (Section 14: paginated). */
 export async function listPublishedResults(

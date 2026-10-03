@@ -1634,6 +1634,22 @@ on `/`; `?lang=hi` still overrides an English cookie. No errors.
 Tests: **111 passing** across 25 files (`npm run test`), typecheck and
 lint clean, production build green.
 
+## Site redesign, reader accounts, membership, job page, ads ✅
+
+- Full-width layout everywhere; the supplied line-art (`public/background.webp`) is the site-wide background.
+- "Rahul Heading" lettering (Rye + CSS bevel, 3D extrusion, clipped cream bulbs, SVG flourishes) for the stacked **Sarkari / Chayan** wordmark at 39 px (1.5× the old 26 px). The tabs use the same letterforms without bulbs/ornaments, larger, filled `#f6b483`.
+- Header: Felicitation Board (left), wordmark (centre), Login / Sign up (right). Accounts use an OTP-verified Indian mobile number + password (bcrypt); OTP login and password reset by OTP; hashed single-use OTPs (5 min, 5 attempts, 45 s resend gap, per-number and per-IP hourly caps); `sc_session` httpOnly cookie storing only a SHA-256 of the token. First sign-up opens the profile popup (full name, age, qualification, exams aimed) and then the ₹10/month membership offer. Members get no ads (AdSense loader not sent) and an SMS per new published job. Admin → Users lists every profile.
+- Big three-part search (State · Minimum qualification · Exam name) → `/jobs` filtered, newest first; any one field is enough.
+- "Latest …" sections removed from the home page. Every tab opens a full-width list of links, newest first.
+- Job page: exam name heading, last date, Important Dates | Eligibility split table, post-wise table with total, fee table, important links, disclaimer, app promo. Admin job form gained Posts / Fees / Extra dates text areas and syllabus / exam-pattern URLs; the pipeline fills dates and post names.
+- Google AdSense: loader in the public layout (not for members), `AdSlot` units with reserved height, `/ads.txt`, `/privacy` page with the cookie/ads disclosure.
+
+## Felicitation Board ✅
+
+Tables `felicitation_entries`, `felicitation_admin_actions`, shared `payments`; settings in `app_settings` (`felicitation.settings`). States DRAFT → PAYMENT_PENDING → PAID_PENDING_APPROVAL → (admin) SCHEDULED/BROADCASTING → EXPIRED, plus PAYMENT_FAILED, REJECTED, PAUSED; invalid transitions throw. Public visibility requires payment PAID **and** approval **and** start ≤ now < expiry **and** not paused — checked in SQL and again in code, with the database sweep (`syncFelicitationStatuses`) run on every read, every admin page and every pipeline pass. The public API returns only id, name, locality, city, exam. Rotation is deterministic from server time (`floor(serverNow / 7 s) mod n`), so all visitors see the same entry; the client corrects for its clock offset, re-syncs every minute, on tab focus and on reconnect. Petals + bunting are CSS only and disabled for reduced motion. Submissions need OTP, last four Aadhaar digits (AES-256-GCM, SUPER_ADMIN-only view, purged 30 days after expiry) and explicit consent. Payments are marked PAID only by a server-verified Razorpay signature or a verified webhook; duplicate orders/listings are prevented. Admin: dashboard counts, filters, search (name, mobile, reference, id), approve (now or scheduled), reject, pause/resume (pause time not charged), extend, display order, edit, delete (SUPER_ADMIN), pause/resume all, settings (enable, pause all, entries per cycle, seconds per entry, listing hours, animations, intensity, featured entry, auto-rotate, price ₹100, struck-out ₹299). Every action is logged.
+
+Tests: 125 passing (state machine, sync slot, eligibility, Indian mobile + encryption, Razorpay signature/webhook verification, OTP limits, DB end-to-end: paid/failed/unpaid, forged signature, idempotent replay, amount mismatch, approve/pause/resume/expire/extend/reject, public-field-only payload, duplicate prevention). Live browser run covered sign-up → profile → membership payment → login, search, all tab lists, admin job edit → job page, three felicitation submissions (two paid, one failed), admin approval, synchronized rotation between two visitors, mobile layout and minimise, pause-all, unauthorized admin access and a forged webhook (401).
+
 ## Known follow-ups / decisions to revisit
 
 - `prisma@8` will move out of RC eventually — re-run `npm audit` and

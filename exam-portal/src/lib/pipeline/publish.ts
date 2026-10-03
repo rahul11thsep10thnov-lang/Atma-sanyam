@@ -93,6 +93,8 @@ export async function publishNotice(noticeId: string, by: { adminId?: string | n
           salary: data.salary ?? null,
           applicationEndDate: d(data.application_end_date),
           notificationDocumentId: notice.documentId,
+          importantDates: (data.important_dates ?? []).map((d) => ({ label: d.label, date: d.date })),
+          posts: (data.post_names ?? []).length ? (data.post_names ?? []).map((name) => ({ name, eligibility: data.eligibility?.education?.join(", ") ?? "", vacancies: (data.post_names ?? []).length === 1 ? (data.vacancies ?? null) : null })) : undefined,
         },
         select: { id: true, slug: true },
       });

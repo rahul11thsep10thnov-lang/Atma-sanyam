@@ -177,7 +177,7 @@ export async function transitionAnswerKeyStatus(
   return answerKey;
 }
 
-const PUBLIC_PAGE_SIZE = 12;
+const PUBLIC_PAGE_SIZE = 40;
 
 /** Public `/answer-key` listing page (Section 14: paginated). */
 export async function listPublishedAnswerKeys(

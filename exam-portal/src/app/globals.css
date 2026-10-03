@@ -21,21 +21,23 @@
   /* Background watermark (see .background-watermark below). The image
    * lives at public/watermark.webp — change this one line to point
    * somewhere else. Opacity is the single knob to tune prominence. */
-  --watermark-image: url("/watermark.webp");
-  --watermark-size: cover; /* switch to `contain` if `cover` crops the six panels too much */
-  --watermark-opacity: 0.08;
-  --watermark-overlay: 0.35; /* white wash above the artwork; raise toward 0.8 if it's still too strong */
-}
-
-@media (max-width: 1024px) {
-  :root {
-    --watermark-opacity: 0.06;
-  }
+  --watermark-image: url("/background.webp");
+  --watermark-size: cover;
+  --watermark-opacity: 0.9;
+  --watermark-overlay: 0.18; /* white wash above the artwork; raise toward 0.6 if text ever feels busy */
+  /* Rahul Heading palette (brown marquee lettering) and the tab fill — a
+   * shade darker than the background's light orange. */
+  --rahul-brown: #6b3412;
+  --rahul-brown-dark: #4a220a;
+  --rahul-cream: #f6dcc0;
+  --tab-fill: #f6b483;
+  --tab-fill-hover: #f2a46c;
+  --tab-border: #e0823f;
 }
 
 @media (max-width: 640px) {
   :root {
-    --watermark-opacity: 0.05;
+    --watermark-overlay: 0.3;
   }
 }
 
@@ -54,6 +56,8 @@
   --font-heading: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   --font-tillana: var(--font-tillana), serif;
   --font-kalam: var(--font-kalam), cursive;
+  --font-rahul: var(--font-rahul), Georgia, serif;
+  --font-festive: var(--font-festive), cursive;
 }
 
 body {
@@ -164,9 +168,8 @@ h6 {
   background-size: var(--watermark-size);
   background-position: center;
   background-repeat: no-repeat;
-  background-color: var(--background);
+  background-color: #fff8f1;
   opacity: var(--watermark-opacity);
-  filter: saturate(0.7);
 }
 
 .watermark-overlay {
@@ -180,4 +183,114 @@ h6 {
 .website-content {
   position: relative;
   z-index: 1;
+}
+
+
+/* --- Rahul Heading ------------------------------------------------------ */
+/* Marquee-style lettering after the brand reference: a Western display
+ * serif (Rye) in brown, cream inline bevel, stacked 3D extrusion and a
+ * grid of cream "bulbs" clipped to the letter shapes. Pure CSS — the
+ * text stays real text (selectable, indexable, accessible). */
+.rahul-heading {
+  font-family: var(--font-rahul), Georgia, serif;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.02;
+  background-image:
+    radial-gradient(circle at 50% 50%, #fbe7cf 0 14%, #d9a173 19%, transparent 23%),
+    linear-gradient(180deg, #8a4519 0%, var(--rahul-brown) 55%, var(--rahul-brown-dark) 100%);
+  background-size: 0.36em 0.36em, 100% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1.2px var(--rahul-cream);
+  filter: drop-shadow(1px 1px 0 #5a2a0c) drop-shadow(1px 1px 0 #4a220a) drop-shadow(1px 1px 0 #3c1b07) drop-shadow(0 3px 4px rgba(60, 27, 7, 0.35));
+}
+/* Tabs: same letterforms, no bulbs, no ornaments — solid and legible. */
+.rahul-tab-text {
+  font-family: var(--font-rahul), Georgia, serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--rahul-brown-dark);
+  -webkit-text-stroke: 0.4px var(--rahul-brown-dark);
+  text-shadow: 1px 1px 0 #fbe2c8;
+}
+.rahul-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 11rem;
+  padding: 1rem 1.75rem;
+  border-radius: 16px;
+  background: var(--tab-fill);
+  border: 2px solid var(--tab-border);
+  box-shadow: 0 4px 0 #d9783a, 0 8px 18px rgba(176, 90, 30, 0.18);
+  font-size: 1.3rem;
+  transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+}
+.rahul-tab:hover,
+.rahul-tab:focus-visible {
+  background: var(--tab-fill-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #d9783a, 0 12px 22px rgba(176, 90, 30, 0.25);
+  outline: none;
+}
+.rahul-tab[aria-current="page"] {
+  background: var(--tab-fill-hover);
+  box-shadow: inset 0 3px 0 rgba(90, 42, 12, 0.18);
+  transform: translateY(2px);
+}
+@media (max-width: 640px) {
+  .rahul-tab { min-width: 0; flex: 1 1 42%; padding: 0.8rem 0.75rem; font-size: 1rem; }
+}
+
+/* --- Felicitation Board ------------------------------------------------ */
+.fb-title {
+  font-family: var(--font-festive), cursive;
+  background: linear-gradient(90deg, #d9480f, #f59f00 45%, #c2255c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.fb-board {
+  background: linear-gradient(180deg, #ffffff 0%, #fffaf3 100%);
+  border: 1px solid #f1d3b0;
+  box-shadow: 0 1px 0 #fff inset, 0 10px 24px rgba(160, 90, 30, 0.16), 0 3px 0 #ecc9a2;
+}
+.fb-enter { animation: fbEnter 600ms cubic-bezier(.2,.8,.2,1) both; }
+.fb-exit { animation: fbExit 400ms ease-in both; }
+@keyframes fbEnter { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes fbExit { to { opacity: 0; transform: translateY(-6px); } }
+.fb-petal {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 14px;
+  border-radius: 80% 0 80% 0;
+  opacity: 0;
+  pointer-events: none;
+  animation-duration: 1800ms;
+  animation-timing-function: cubic-bezier(.15,.7,.3,1);
+  animation-fill-mode: both;
+}
+.fb-petal.left { left: -6px; animation-name: fbPetalLeft; }
+.fb-petal.right { right: -6px; animation-name: fbPetalRight; }
+@keyframes fbPetalLeft {
+  0% { opacity: 0; transform: translate(0, var(--dy)) rotate(0deg); }
+  15% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dx), calc(var(--dy) + 30px)) rotate(var(--rot)); }
+}
+@keyframes fbPetalRight {
+  0% { opacity: 0; transform: translate(0, var(--dy)) rotate(0deg); }
+  15% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(var(--dx) * -1), calc(var(--dy) + 30px)) rotate(calc(var(--rot) * -1)); }
+}
+.fb-bunting { animation: fbSway 3.5s ease-in-out infinite; transform-origin: top center; }
+@keyframes fbSway { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(0.8deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .fb-enter, .fb-exit, .fb-bunting { animation: none !important; }
+  .fb-petal { display: none !important; }
+  .rahul-tab { transition: none; }
 }

@@ -1,51 +1,25 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { listPublishedSyllabi } from "@/lib/services/syllabi";
-import { EmptyState } from "@/components/EmptyState";
+import { NoticeList } from "@/components/NoticeList";
 import { Pagination } from "@/components/Pagination";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
-export const metadata: Metadata = {
-  title: "Exam Syllabus",
-  description: "Structured, paper-wise syllabus for the latest government exams.",
-};
+export const metadata: Metadata = { title: "Syllabus", description: "Exam syllabi, newest first.", alternates: { canonical: "/syllabus" } };
 
-export default async function SyllabusIndexPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}) {
+export default async function Page({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const { page: pageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
-  const { syllabi, total, pageSize } = await listPublishedSyllabi(page);
-
+  const data = await listPublishedSyllabi(page);
+  const rows = data.syllabi;
   return (
-    <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6">
+    <main className="flex w-full flex-col gap-4 px-4 pb-10 sm:px-8 lg:px-12">
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Syllabus" }]} />
-      <h1 className="text-xl font-semibold text-slate-900 sm:text-2xl">
-        Exam Syllabus
-      </h1>
-
-      {syllabi.length > 0 ? (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {syllabi.map((syllabus) => (
-            <Link
-              key={syllabus.slug}
-              href={`/syllabus/${syllabus.slug}`}
-              className="flex flex-col gap-1.5 rounded-lg border border-slate-200 bg-white p-4 transition-colors hover:border-brand-600"
-            >
-              <h3 className="text-sm font-medium text-slate-900">
-                {syllabus.title}
-              </h3>
-              <p className="text-xs text-slate-500">{syllabus.examTitle}</p>
-            </Link>
-          ))}
-        </div>
-      ) : (
-        <EmptyState message="No syllabus published yet." />
-      )}
-
-      <Pagination page={page} pageSize={pageSize} total={total} basePath="/syllabus" />
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h1 className="text-2xl font-semibold">Syllabus</h1>
+        <p className="text-sm text-slate-600">{data.total} · newest first</p>
+      </div>
+      <NoticeList empty="No syllabi published yet." items={rows.map((r) => ({ href: `/syllabus/${r.slug}`, title: r.title, subtitle: r.examTitle, date: null, dateLabel: "" }))} />
+      <Pagination page={page} pageSize={data.pageSize} total={data.total} basePath="/syllabus" />
     </main>
   );
 }

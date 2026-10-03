@@ -6,8 +6,8 @@
  */
 export function MottoBand() {
   return (
-    <section aria-label="Motto" className="border-b border-slate-200 bg-white/80">
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 px-4 py-5 sm:px-6 md:grid-cols-2 md:items-center md:gap-8">
+    <section aria-label="Motto" className="w-full border-b border-orange-200/70 bg-white/45">
+      <div className="grid w-full grid-cols-1 gap-4 px-4 py-5 sm:px-8 lg:px-12 md:grid-cols-2 md:items-center md:gap-8">
         <p
           lang="sa"
           className="font-tillana text-xl leading-relaxed text-slate-900 md:text-2xl"

@@ -7,6 +7,8 @@ import { applyTransition, type Transition } from "@/lib/services/workflow";
 import { parseList } from "@/lib/validation/shared";
 import type { JobInput } from "@/lib/validation/job";
 import type { AdminRole } from "@/generated/prisma/enums";
+import type { Prisma } from "@/generated/prisma/client";
+import { parsePostsText, parseFeesText, parseDatesText } from "@/lib/jobDetails";
 
 const PAGE_SIZE = 20;
 
@@ -54,6 +56,11 @@ function jobWriteData(input: JobInput) {
     seoTitle: input.seoTitle,
     seoDescription: input.seoDescription,
     seoKeywords: parseList(input.seoKeywords),
+    posts: parsePostsText(input.postsText) as unknown as Prisma.InputJsonValue,
+    applicationFeeByCategory: parseFeesText(input.feesText) as unknown as Prisma.InputJsonValue,
+    importantDates: parseDatesText(input.datesText) as unknown as Prisma.InputJsonValue,
+    syllabusUrl: input.syllabusUrl ?? null,
+    examPatternUrl: input.examPatternUrl ?? null,
   };
 }
 
@@ -206,14 +213,35 @@ export async function transitionJobStatus(
   return job;
 }
 
-const PUBLIC_PAGE_SIZE = 12;
+const PUBLIC_PAGE_SIZE = 40;
 
-/** Public `/jobs` listing page (Section 14: paginated, never unbounded). */
-export async function listPublishedJobs(page = 1) {
+export interface PublicJobFilter {
+  stateSlug?: string;
+  qualification?: string;
+  q?: string;
+}
+
+/** Public `/jobs` listing (newest first), filterable by state, minimum
+ * qualification and exam name — the three-part search bar. */
+export async function listPublishedJobs(page = 1, filter: PublicJobFilter = {}) {
+  const { qualificationByCode } = await import("@/lib/qualifications");
+  const and: Prisma.JobWhereInput[] = [{ status: "PUBLISHED" }];
+  if (filter.stateSlug) {
+    and.push({ OR: [{ exam: { state: { slug: filter.stateSlug } } }, { organization: { state: { slug: filter.stateSlug } } }] });
+  }
+  const qual = qualificationByCode(filter.qualification);
+  if (qual) {
+    and.push({ OR: qual.keywords.flatMap((k) => [{ qualification: { contains: k, mode: "insensitive" as const } }, { eligibility: { contains: k, mode: "insensitive" as const } }]) });
+  }
+  const q = filter.q?.trim().slice(0, 100);
+  if (q) {
+    and.push({ OR: [{ title: { contains: q, mode: "insensitive" } }, { exam: { title: { contains: q, mode: "insensitive" } } }, { organization: { OR: [{ name: { contains: q, mode: "insensitive" } }, { shortName: { contains: q, mode: "insensitive" } }, { aliases: { some: { alias: { contains: q, mode: "insensitive" } } } }] } }] });
+  }
+  const where: Prisma.JobWhereInput = { AND: and };
   const [items, total] = await Promise.all([
     prisma.job.findMany({
-      where: { status: "PUBLISHED" },
-      orderBy: { publishedAt: "desc" },
+      where,
+      orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
       skip: (page - 1) * PUBLIC_PAGE_SIZE,
       take: PUBLIC_PAGE_SIZE,
       select: {
@@ -221,10 +249,11 @@ export async function listPublishedJobs(page = 1) {
         slug: true,
         applicationEndDate: true,
         publishedAt: true,
+        vacancies: true,
         organization: { select: { name: true } },
       },
     }),
-    prisma.job.count({ where: { status: "PUBLISHED" } }),
+    prisma.job.count({ where }),
   ]);
   const jobs = items.map((job) => ({
     title: job.title,
@@ -232,6 +261,7 @@ export async function listPublishedJobs(page = 1) {
     organizationName: job.organization.name,
     applicationEndDate: job.applicationEndDate,
     publishedAt: job.publishedAt,
+    vacancies: job.vacancies,
   }));
   return { jobs, total, pageSize: PUBLIC_PAGE_SIZE };
 }
@@ -249,11 +279,19 @@ export async function getPublishedJobBySlug(slug: string) {
           title: true,
           slug: true,
           examDate: true,
+          applicationStartDate: true,
+          applicationEndDate: true,
           category: { select: { name: true, slug: true } },
           state: { select: { name: true, slug: true } },
+          syllabi: { where: { status: "PUBLISHED" }, select: { slug: true, title: true }, take: 1 },
+          admitCards: { where: { status: "PUBLISHED" }, select: { slug: true, releaseDate: true, examDate: true }, orderBy: { publishedAt: "desc" }, take: 1 },
+          results: { where: { status: "PUBLISHED" }, select: { slug: true, resultDate: true }, orderBy: { publishedAt: "desc" }, take: 1 },
+          answerKeys: { where: { status: "PUBLISHED" }, select: { slug: true, answerKeyDate: true }, orderBy: { publishedAt: "desc" }, take: 1 },
         },
       },
       importantLinks: { orderBy: { order: "asc" } },
+      notificationDocument: { select: { storageUrl: true, filename: true } },
+      recruitment: { select: { slug: true, status: true } },
     },
   });
   if (!job) return null;

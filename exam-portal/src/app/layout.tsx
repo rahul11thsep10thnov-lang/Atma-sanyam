@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Josefin_Sans, Nunito, Tillana, Kalam } from "next/font/google";
+import { Josefin_Sans, Nunito, Tillana, Kalam, Rye, Lobster } from "next/font/google";
 import "./globals.css";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/siteConfig";
 import { BackgroundWatermark } from "@/components/layout/BackgroundWatermark";
@@ -31,6 +31,12 @@ const kalam = Kalam({
   weight: ["400"],
 });
 
+// "Rahul Heading" — marquee lettering for the site name and the tabs.
+const rye = Rye({ variable: "--font-rahul", subsets: ["latin"], weight: ["400"] });
+
+// Funky, curvy celebratory lettering for "FELICITATION BOARD".
+const lobster = Lobster({ variable: "--font-festive", subsets: ["latin"], weight: ["400"] });
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: SITE_NAME, template: `%s — ${SITE_NAME}` },
@@ -52,7 +58,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${josefinSans.variable} ${nunito.variable} ${tillana.variable} ${kalam.variable} h-full antialiased`}
+      className={`${josefinSans.variable} ${nunito.variable} ${tillana.variable} ${kalam.variable} ${rye.variable} ${lobster.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <BackgroundWatermark />

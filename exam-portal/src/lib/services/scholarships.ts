@@ -141,7 +141,7 @@ export async function transitionScholarshipStatus(
   return scholarship;
 }
 
-const PUBLIC_PAGE_SIZE = 12;
+const PUBLIC_PAGE_SIZE = 40;
 
 export async function listPublishedScholarships(page = 1) {
   const [items, total] = await Promise.all([

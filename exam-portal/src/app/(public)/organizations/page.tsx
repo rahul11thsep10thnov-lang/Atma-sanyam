@@ -20,7 +20,7 @@ export default async function OrganizationsIndexPage() {
     groups.set(k, [...(groups.get(k) ?? []), o]);
   }
   return (
-    <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6">
+    <main className="flex w-full flex-col gap-6 px-4 py-8 sm:px-8 lg:px-12">
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Organizations" }]} />
       <h1 className="text-xl font-semibold text-slate-900 sm:text-2xl">Recruiting Organizations</h1>
       {orgs.length === 0 ? <EmptyState message="No organizations with published recruitments yet." /> : null}

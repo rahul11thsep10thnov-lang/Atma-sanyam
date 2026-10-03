@@ -1,42 +1,25 @@
 import type { Metadata } from "next";
 import { listPublishedAdmitCards } from "@/lib/services/admitCards";
-import { AdmitCard } from "@/components/cards/AdmitCard";
-import { EmptyState } from "@/components/EmptyState";
+import { NoticeList } from "@/components/NoticeList";
 import { Pagination } from "@/components/Pagination";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
-export const metadata: Metadata = {
-  title: "Latest Admit Cards",
-  description: "Download links and instructions for the latest government exam admit cards.",
-};
+export const metadata: Metadata = { title: "Admit Cards", description: "All admit cards, newest first.", alternates: { canonical: "/admit-card" } };
 
-export default async function AdmitCardsIndexPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}) {
+export default async function Page({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const { page: pageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
-  const { admitCards, total, pageSize } = await listPublishedAdmitCards(page);
-
+  const data = await listPublishedAdmitCards(page);
+  const rows = data.admitCards;
   return (
-    <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6">
+    <main className="flex w-full flex-col gap-4 px-4 pb-10 sm:px-8 lg:px-12">
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Admit Cards" }]} />
-      <h1 className="text-xl font-semibold text-slate-900 sm:text-2xl">
-        Latest Admit Cards
-      </h1>
-
-      {admitCards.length > 0 ? (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {admitCards.map((admitCard) => (
-            <AdmitCard key={admitCard.slug} admitCard={admitCard} />
-          ))}
-        </div>
-      ) : (
-        <EmptyState message="No admit cards published yet." />
-      )}
-
-      <Pagination page={page} pageSize={pageSize} total={total} basePath="/admit-card" />
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h1 className="text-2xl font-semibold">Admit Cards</h1>
+        <p className="text-sm text-slate-600">{data.total} · newest first</p>
+      </div>
+      <NoticeList empty="No admit cards published yet." items={rows.map((r) => ({ href: `/admit-card/${r.slug}`, title: r.title, subtitle: r.examTitle, date: r.examDate, dateLabel: "Exam" }))} />
+      <Pagination page={page} pageSize={data.pageSize} total={data.total} basePath="/admit-card" />
     </main>
   );
 }

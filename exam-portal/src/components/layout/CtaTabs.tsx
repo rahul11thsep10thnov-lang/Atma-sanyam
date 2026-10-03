@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-/** The site's primary navigation, as animated call-to-action tabs
- * (styles: `.cta-button` in globals.css). */
+/** Primary navigation: large filled tabs in the Rahul Heading letterforms
+ * (no bulbs, no ornaments). Styles: `.rahul-tab` in globals.css. */
 export const CTA_ITEMS: Array<{ label: string; href: string }> = [
   { label: "Jobs", href: "/jobs" },
   { label: "Results", href: "/results" },
@@ -13,11 +13,11 @@ export const CTA_ITEMS: Array<{ label: string; href: string }> = [
 
 export function CtaTabs() {
   return (
-    <nav aria-label="Primary" className="border-b border-slate-200">
-      <div className="mx-auto flex max-w-6xl flex-wrap justify-center gap-3 px-4 py-4 sm:justify-start sm:px-6">
+    <nav aria-label="Primary" className="w-full px-4 pb-6 sm:px-8 lg:px-12">
+      <div className="flex w-full flex-wrap justify-center gap-3 sm:gap-4">
         {CTA_ITEMS.map((item) => (
-          <Link key={item.href} href={item.href} className="cta-button">
-            <span>{item.label}</span>
+          <Link key={item.href} href={item.href} className="rahul-tab">
+            <span className="rahul-tab-text">{item.label}</span>
           </Link>
         ))}
       </div>

@@ -23,6 +23,13 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
+    heading: "Community",
+    items: [
+      { label: "Felicitation Board", href: "/admin/felicitation", roles: ["SUPER_ADMIN", "EDITOR", "REVIEWER"] },
+      { label: "Board settings", href: "/admin/felicitation/settings", roles: ["SUPER_ADMIN", "EDITOR"] },
+    ],
+  },
+  {
     heading: "Catalogue",
     items: [
       { label: "Organizations", href: "/admin/organizations" },
@@ -52,7 +59,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Notifications", href: "/admin/notifications" },
       { label: "Alerts", href: "/admin/alerts" },
       { label: "Analytics", href: "/admin/analytics" },
-      { label: "Users", roles: ["SUPER_ADMIN"] },
+      { label: "Users", href: "/admin/users", roles: ["SUPER_ADMIN", "EDITOR"] },
       { label: "Settings", roles: ["SUPER_ADMIN"] },
       { label: "Audit Logs", roles: ["SUPER_ADMIN", "EDITOR"] },
     ],

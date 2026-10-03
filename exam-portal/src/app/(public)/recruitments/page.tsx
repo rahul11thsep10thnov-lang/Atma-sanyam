@@ -34,7 +34,7 @@ export default async function RecruitmentsIndexPage({ searchParams }: { searchPa
     : { h1: "Government Recruitments", sub: "Each recruitment with its notification, admit card, answer key, result and corrigenda on one timeline, from official sources.", open: "Open", closed: "Closed", all: "All", allCats: "All categories", empty: "No recruitments published yet.", search: "Search" };
 
   return (
-    <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6">
+    <main className="flex w-full flex-col gap-6 px-4 py-8 sm:px-8 lg:px-12">
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: lang === "hi" ? "भर्तियाँ" : "Recruitments" }]} />
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>

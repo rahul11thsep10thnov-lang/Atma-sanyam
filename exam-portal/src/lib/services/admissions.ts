@@ -138,7 +138,7 @@ export async function transitionAdmissionStatus(
   return admission;
 }
 
-const PUBLIC_PAGE_SIZE = 12;
+const PUBLIC_PAGE_SIZE = 40;
 
 export async function listPublishedAdmissions(page = 1) {
   const [items, total] = await Promise.all([

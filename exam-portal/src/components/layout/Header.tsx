@@ -1,41 +1,37 @@
 import Link from "next/link";
-import { SearchBar } from "@/components/layout/SearchBar";
-import { SITE_NAME } from "@/lib/siteConfig";
+import { Suspense } from "react";
 import { resolveLang } from "@/lib/i18n/lang";
 import { LangToggle } from "@/components/layout/LangToggle";
-import { Suspense } from "react";
+import { RahulHeading } from "@/components/brand/RahulHeading";
+import { AccountMenu } from "@/components/account/AccountMenu";
+import { FelicitationBoard } from "@/components/felicitation/FelicitationBoard";
+import { getCurrentUser, isMember } from "@/lib/users/session";
+import { maskMobile } from "@/lib/phone";
+import { getBoardState } from "@/lib/felicitation/service";
+import { MEMBERSHIP_PRICE_RUPEES } from "@/lib/payments/service";
 
+/** Full-width header: Felicitation Board (left), the stacked Rahul
+ * Heading wordmark (centre, 1.5× the old 26px size → 39px), and the
+ * account controls (right). On phones the wordmark comes first and the
+ * board becomes a compact card under it. */
 export async function Header() {
-  const lang = await resolveLang();
+  const [lang, user, board] = await Promise.all([resolveLang(), getCurrentUser(), getBoardState()]);
+  const publicUser = user ? { id: user.id, mobileMasked: maskMobile(user.mobile), fullName: user.fullName, profileComplete: !!user.profileCompletedAt, member: isMember(user), membershipUntil: user.membershipUntil?.toISOString() ?? null } : null;
   return (
-    <header className="relative border-b border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-        {/* Site name: Josefin Sans in the brand gradient, 6pt (8px) larger
-            than the previous 18px wordmark. */}
-        <Link
-          href="/"
-          className="font-heading shrink-0 text-[26px] font-bold tracking-wide"
-          style={{
-            backgroundImage: "var(--heading-gradient)",
-            WebkitBackgroundClip: "text",
-            backgroundClip: "text",
-            color: "transparent",
-            WebkitTextFillColor: "transparent",
-          }}
-        >
-          {SITE_NAME}
-        </Link>
-
-        <div className="flex flex-1 items-center justify-end gap-3">
-          <SearchBar className="hidden max-w-xs flex-1 sm:flex md:max-w-sm" />
+    <header className="relative w-full border-b border-orange-200/70 bg-white/55 backdrop-blur-[2px]">
+      <div className="grid w-full grid-cols-1 items-start gap-4 px-4 py-4 sm:px-8 lg:grid-cols-[18rem_1fr_18rem] lg:px-12">
+        <div className="order-3 lg:order-1">{board.enabled ? <FelicitationBoard initial={board} /> : null}</div>
+        <div className="order-1 flex justify-center lg:order-2 lg:pt-2">
+          <Link href="/" aria-label="Sarkari Chayan — home" className="rounded-lg focus-visible:outline-2 focus-visible:outline-[#e0823f]">
+            <RahulHeading lines={["Sarkari", "Chayan"]} size={39} />
+          </Link>
+        </div>
+        <div className="order-2 flex items-center justify-center gap-2 lg:order-3 lg:justify-end lg:pt-3">
+          <AccountMenu initialUser={publicUser} membershipPrice={MEMBERSHIP_PRICE_RUPEES} />
           <Suspense fallback={null}>
             <LangToggle lang={lang} />
           </Suspense>
         </div>
-      </div>
-
-      <div className="border-t border-slate-100 px-4 py-2 sm:hidden">
-        <SearchBar />
       </div>
     </header>
   );

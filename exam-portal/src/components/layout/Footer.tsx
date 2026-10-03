@@ -7,13 +7,14 @@ const SECONDARY_LINKS = [
   { label: "Scholarships", href: "/scholarship" },
   { label: "Articles", href: "/articles" },
   { label: "Alerts", href: "/alerts" },
+  { label: "Privacy", href: "/privacy" },
 ];
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-sm text-slate-500 sm:px-6">
-        <p className="font-heading text-base font-semibold text-slate-700">{SITE_NAME}</p>
+    <footer className="mt-auto w-full border-t border-orange-200/70 bg-white/80">
+      <div className="flex w-full flex-col gap-3 px-4 py-8 text-sm text-slate-600 sm:px-8 lg:px-12">
+        <p className="rahul-tab-text text-lg">Sarkari Chayan</p>
         <nav aria-label="Footer" className="flex flex-wrap gap-x-4 gap-y-1">
           {[...CTA_ITEMS, ...SECONDARY_LINKS].map((link) => (
             <Link key={link.href} href={link.href} className="hover:text-slate-900 hover:underline">

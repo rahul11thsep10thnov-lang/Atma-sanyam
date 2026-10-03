@@ -19,7 +19,7 @@ export default async function AlertsPage({ searchParams }: { searchParams: Promi
     prisma.state.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } }),
   ]);
   return (
-    <main className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8 sm:px-6">
+    <main className="flex w-full flex-col gap-6 px-4 py-8 sm:px-8 lg:px-12">
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: lang === "hi" ? "अलर्ट" : "Alerts" }]} />
       <div>
         <h1 className="text-xl font-semibold text-slate-900 sm:text-2xl">{lang === "hi" ? "ई-मेल पर सरकारी नौकरी अलर्ट" : "Government job alerts by e-mail"}</h1>
