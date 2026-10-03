@@ -19,12 +19,15 @@ real-time 3D on low-end Android.
 | Space | Scene | Lighting states rendered |
 | --- | --- | --- |
 | Balcony | `focusbalcony/scene.py` | morning |
-| Garden | `focusbalcony/garden.py` — lawn with real grass, flagstone path, raised beds, neem, gulmohar, frangipani, hedges and fence, tree line and hills | morning, night, sunset, rain |
-| Room | `focusbalcony/room.py` — 3.6 × 5.2 m bedroom: four walls, oak floor, window on the left wall with a garden beyond, teak door on the right, bed with draped linen under the window, far wall kept for art | morning, night, sunset, rain |
+| Garden | `focusbalcony/garden.py` — mown lawn with real grass, flagstone path, raised beds, neem, gulmohar, frangipani, hedges and fence, tree line and hills | morning, night, rain |
+| Room | `focusbalcony/room.py` — 3.6 × 5.2 m bedroom: four walls, oak floor, window on the left wall with a garden beyond, teak door on the right, bed with draped linen under the window, far wall kept for art | morning, night, rain |
 
-**Afternoon** and **evening** are derived on the phone from the nearest
-rendered state with a colour veil (`src/spaces/states.ts`); every other
-state is a real render. The garden and room offer a chip that cycles
+**Afternoon**, **sunset** and **evening** are derived on the phone from the
+nearest rendered state with a colour veil (`src/spaces/states.ts`); the
+other states are real renders. A pack that has only one rendered state is
+shown as photographed, without veils, and hides the atmosphere chip.
+Rendering a state later (`render_space.py --state sunset`, then
+`gen_space_pack.py`) switches the phone to the real render automatically. The garden and room offer a chip that cycles
 *Now → Morning → Afternoon → Sunset → Evening → Night → Rain*; *Now*
 follows the clock. Rain adds a scrolling streak layer and wet, darker
 materials.
