@@ -3,6 +3,8 @@ import { getDb, stateById } from "@/lib/master/repo";
 import type { DestinationRecord } from "@/lib/master/types";
 import { attractionPath } from "@/lib/master/view";
 import { localNamesOf } from "@/lib/master/translation/memory";
+import { publishedDestinations } from "@/lib/cms/store";
+import { bootstrapFromSeed } from "@/lib/cms/bootstrap";
 
 export type SearchIntent = "TRIP_FROM" | "TRIP_TO" | "NEARBY" | "SECTION" | "PLACE" | "NONE";
 
@@ -185,6 +187,17 @@ export function search(query: string, limit = 12): SearchResponse {
   for (const c of db.circuits) {
     const sc = similarity(needle, c.name);
     if (sc >= 55) push({ kind: "circuit", title: c.name, subtitle: c.description, href: `/trips/${c.slug}`, score: sc - 3 });
+  }
+  // Database-driven destination pages and their attractions (published records only).
+  bootstrapFromSeed();
+  for (const d of publishedDestinations()) {
+    const sc = similarity(needle, d.name);
+    if (sc > 0) push({ kind: "destination", title: d.name, subtitle: `${d.state ?? "India"} · ${d.headline ?? d.short_description ?? "Destination guide"}`.slice(0, 160), href: `/destinations/${d.slug}`, score: sc - 0.5 });
+    for (const a of d.attractions) {
+      if (a.status !== "ACTIVE") continue;
+      const as = similarity(needle, a.name);
+      if (as >= 55) push({ kind: "attraction", title: a.name, subtitle: `${d.name} · ${a.short_description}`.slice(0, 160), href: `/destinations/${d.slug}#attraction-${a.slug}`, score: as - 2.5 });
+    }
   }
 
   if (intent === "NONE" && hits.length > 0) intent = "PLACE";

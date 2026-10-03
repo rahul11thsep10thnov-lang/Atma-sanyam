@@ -4,9 +4,13 @@ import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { HeaderSearch } from "@/components/search/HeaderSearch";
 import { suggestionIndex } from "@/lib/master/view";
+import { cmsSuggestions } from "@/lib/cms/queries";
 
 export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const { nav } = dict.common;
+  // CMS destinations and attractions first, then the seed index; duplicates by label+href are dropped.
+  const seen = new Set<string>();
+  const suggestions = [...cmsSuggestions(), ...suggestionIndex(locale)].filter((s) => (seen.has(s.label + s.href) ? false : (seen.add(s.label + s.href), true)));
 
   const links = [
     { href: `/${locale}`, label: nav.home },
@@ -40,7 +44,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         </nav>
 
         <div className="hidden flex-1 max-w-sm md:block">
-          <HeaderSearch locale={locale} placeholder={dict.home.searchPlaceholder} suggestions={suggestionIndex(locale)} />
+          <HeaderSearch locale={locale} placeholder={dict.home.searchPlaceholder} suggestions={suggestions} />
         </div>
 
         <div className="flex items-center gap-2">

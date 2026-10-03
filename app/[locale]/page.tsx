@@ -1,29 +1,28 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
-import Link from "next/link";
-import { homepageSections, popularSearchSlugs, suggestionIndex, upcomingFestivalCards } from "@/lib/master/view";
-import { getDb } from "@/lib/master/repo";
+import { suggestionIndex } from "@/lib/master/view";
+import { cmsSuggestions, homepageCms, siteSettings } from "@/lib/cms/queries";
+import { COMPANION_COOKIE, parseCompanion } from "@/lib/cms/companion";
 import { Hero } from "@/components/home/Hero";
-import { DestinationRail } from "@/components/home/DestinationRail";
-import { FestivalRail } from "@/components/home/FestivalRail";
-import { notFound } from "next/navigation";
+import { CmsRail } from "@/components/home/CmsRail";
+import { CmsCard } from "@/components/cms/CmsCard";
+import { CmsImg } from "@/components/cms/CmsImg";
+
+export const dynamic = "force-dynamic";
 
 export function generateMetadata({ params }: { params: { locale: string } }): Metadata {
   const locale: Locale = isLocale(params.locale) ? params.locale : "en";
   const dict = getDictionary(locale);
+  const settings = siteSettings();
   return {
-    title: dict.home.heroHeadline,
-    description: dict.home.heroSubheading,
-    alternates: {
-      canonical: `/${locale}`,
-      languages: Object.fromEntries(locales.map((l) => [l, `/${l}`]))
-    },
-    openGraph: {
-      title: `budgettourism — ${dict.home.heroHeadline}`,
-      description: dict.home.heroSubheading,
-      type: "website"
-    }
+    title: { absolute: settings.default_seo_title },
+    description: settings.default_seo_description,
+    alternates: { canonical: `/${locale}`, languages: Object.fromEntries(locales.map((l) => [l, `/${l}`])) },
+    openGraph: { title: `${settings.site_name} — ${dict.home.hero2.headline}`, description: settings.default_seo_description, type: "website", images: settings.default_hero_image ? [{ url: settings.default_hero_image }] : undefined }
   };
 }
 
@@ -31,147 +30,108 @@ export default function HomePage({ params }: { params: { locale: string } }) {
   if (!isLocale(params.locale)) notFound();
   const locale: Locale = params.locale;
   const dict = getDictionary(locale);
-  const { home } = dict;
+  const h = dict.home.hero2;
+  const settings = siteSettings();
+  const companion = parseCompanion(cookies().get(COMPANION_COOKIE)?.value);
+  const home = homepageCms(companion);
 
-  const homepageRails = homepageSections();
-  const suggestions = suggestionIndex(locale);
-  const popular = popularSearchSlugs
-    .map((slug) => suggestions.find((x) => x.href.endsWith(`/${slug}`)))
-    .filter((x): x is NonNullable<typeof x> => Boolean(x));
-  const circuits = getDb().circuits.slice(0, 6);
+  // Autocomplete covers CMS destinations and attractions first, then the seed guides and states.
+  const seen = new Set<string>();
+  const suggestions = [...cmsSuggestions(), ...suggestionIndex(locale)].filter((s) => (seen.has(s.label + s.href) ? false : (seen.add(s.label + s.href), true)));
 
-  const railProps = {
-    locale,
-    bestTimeLabel: home.card.bestTime,
-    exploreLabel: home.card.explore
-  };
+  const companionLabels = { COUPLE: h.couple, FAMILY: h.family, FRIENDS: h.friends, SOLO: h.solo } as const;
+  const rail = (title: string, cards: typeof home.popular, extra: Partial<Parameters<typeof CmsRail>[0]> = {}) => (
+    <CmsRail title={title} cards={cards} locale={locale} bestTimeLabel={dict.home.card.bestTime} seeAllHref={`/${locale}/destinations`} seeAllLabel={h.seeAll} {...extra} />
+  );
 
   return (
     <>
       <Hero
         locale={locale}
-        headline={home.heroHeadline}
-        subheading={home.heroSubheading}
-        placeholder={home.searchPlaceholder}
-        searchExamples={home.searchExamples}
-        popularSearchesLabel={home.popularSearches}
+        backgroundUrl={settings.default_hero_image ?? "/images/home-meadow.jpg"}
+        headline={h.headline}
+        subheading={h.sub}
+        placeholder={h.placeholder}
+        searchLabel={dict.common.ui.search}
         suggestions={suggestions}
-        popular={popular}
+        companion={companion}
+        who={{ title: h.whoTitle, labels: companionLabels, hint: h.selectedHint, clear: h.clear }}
       />
 
-      <div className="divide-y divide-forest-100/60">
-        <DestinationRail
-          title={home.sections.popularDestinations}
-          subtitle={home.sections.popularDestinationsSubtitle}
-          destinations={homepageRails.popularDestinations}
-          {...railProps}
-        />
-        <DestinationRail
-          title={home.sections.weekendGetaways}
-          subtitle={home.sections.weekendGetawaysSubtitle}
-          destinations={homepageRails.weekendGetaways}
-          {...railProps}
-        />
-        <DestinationRail
-          title={home.sections.historicalIndia}
-          subtitle={home.sections.historicalIndiaSubtitle}
-          destinations={homepageRails.historicalIndia}
-          {...railProps}
-        />
-        <DestinationRail
-          title={home.sections.spiritualIndia}
-          subtitle={home.sections.spiritualIndiaSubtitle}
-          destinations={homepageRails.spiritualIndia}
-          {...railProps}
-        />
-        <DestinationRail
-          title={home.sections.beaches}
-          subtitle={home.sections.beachesSubtitle}
-          destinations={homepageRails.beaches}
-          {...railProps}
-        />
-        <DestinationRail
-          title={home.sections.mountains}
-          subtitle={home.sections.mountainsSubtitle}
-          destinations={homepageRails.mountains}
-          {...railProps}
-        />
-        <DestinationRail
-          title={home.sections.wildlife}
-          subtitle={home.sections.wildlifeSubtitle}
-          destinations={homepageRails.wildlife}
-          {...railProps}
-        />
-        <DestinationRail
-          title={home.sections.heritageCities}
-          subtitle={home.sections.heritageCitiesSubtitle}
-          destinations={homepageRails.heritageCities}
-          {...railProps}
-        />
-        <DestinationRail
-          title={home.sections.familyDestinations}
-          subtitle={home.sections.familyDestinationsSubtitle}
-          destinations={homepageRails.familyDestinations}
-          {...railProps}
-        />
-        <DestinationRail
-          title={home.sections.romanticDestinations}
-          subtitle={home.sections.romanticDestinationsSubtitle}
-          destinations={homepageRails.romanticDestinations}
-          {...railProps}
-        />
-        <DestinationRail
-          title={home.sections.adventureDestinations}
-          subtitle={home.sections.adventureDestinationsSubtitle}
-          destinations={homepageRails.adventureDestinations}
-          {...railProps}
-        />
-        <DestinationRail
-          title={home.sections.authenticMarkets}
-          subtitle={home.sections.authenticMarketsSubtitle}
-          destinations={homepageRails.authenticMarkets}
-          {...railProps}
-        />
-        <DestinationRail
-          title={home.sections.famousFood}
-          subtitle={home.sections.famousFoodSubtitle}
-          destinations={homepageRails.famousFood}
-          {...railProps}
-        />
-        {circuits.length > 0 && (
-          <section className="container-page py-8">
-            <div className="mb-4 flex items-end justify-between gap-4">
+      {companion && rail(h.recommended.replace("{type}", companionLabels[companion]), home.recommended, { large: true, tone: "tinted" })}
+
+      {/* Explore India: states with published destinations */}
+      {home.byState.length > 0 && (
+        <section className="py-10">
+          <div className="container-page">
+            <div className="flex items-end justify-between gap-4">
               <div>
-                <h2 className="section-heading">{home.routes.title}</h2>
-                <p className="mt-1 text-sm text-charcoal-light">{home.routes.subtitle}</p>
+                <h2 className="section-heading">{h.exploreIndia}</h2>
+                <p className="mt-1 text-sm text-charcoal-light">{h.exploreIndiaSub.replace("{n}", String(home.total)).replace("{s}", String(home.byState.length))}</p>
               </div>
-              <Link href={`/${locale}/trips`} className="text-sm font-semibold text-forest-600 hover:underline">
-                {home.routes.seeAll}
-              </Link>
+              <Link href={`/${locale}/destinations`} className="shrink-0 text-sm font-semibold text-forest-600 hover:underline">{h.seeAll} →</Link>
             </div>
-            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {circuits.map((c) => (
-                <li key={c.id}>
-                  <Link href={`/${locale}/trips/${c.slug}`} className="block h-full rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
-                    <h3 className="font-display text-base font-semibold text-charcoal">{c.name}</h3>
-                    <p className="mt-1 line-clamp-2 text-sm text-charcoal-light">{c.description}</p>
-                    <p className="mt-2 text-xs font-medium text-forest-600">
-                      {c.minimum_days}–{c.maximum_days} {home.routes.daysLabel}
-                    </p>
+            <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+              {home.byState.slice(0, 12).map((s) => (
+                <li key={s.state}>
+                  <Link href={`/${locale}/destinations?state=${encodeURIComponent(s.state)}`} className="group relative block aspect-[5/4] overflow-hidden rounded-2xl bg-forest-100">
+                    <CmsImg image={s.sample.image} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" sizes="(min-width: 1024px) 200px, 45vw" fill />
+                    <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 to-transparent" />
+                    <span className="absolute inset-x-3 bottom-3 text-white">
+                      <span className="block font-display text-base font-semibold leading-tight">{s.state}</span>
+                      <span className="text-[11px] text-white/80">{s.count} {h.places}</span>
+                    </span>
                   </Link>
                 </li>
               ))}
             </ul>
-          </section>
-        )}
-        <FestivalRail
-          locale={locale}
-          festivals={upcomingFestivalCards(8)}
-          draftLabel={dict.common.ui.draftBadge}
-          title={home.sections.upcomingFestivals}
-          subtitle={home.sections.upcomingFestivalsSubtitle}
-        />
-      </div>
+          </div>
+        </section>
+      )}
+
+      {rail(h.popular, home.popular, { large: true })}
+
+      {home.attractions.length > 0 && (
+        <section className="bg-forest-50/50 py-10">
+          <div className="container-page">
+            <h2 className="section-heading">{h.attractions}</h2>
+            <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {home.attractions.map((a) => (
+                <li key={a.id}>
+                  <Link href={`/${locale}${a.href}`} className="group block">
+                    <span className="relative block aspect-[4/3] overflow-hidden rounded-2xl bg-forest-100">
+                      <CmsImg image={a.image} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" sizes="(min-width: 640px) 25vw, 50vw" fill />
+                    </span>
+                    <span className="mt-2 block font-display text-sm font-semibold text-charcoal group-hover:text-forest-700">{a.name}</span>
+                    <span className="block text-xs text-charcoal-light">{a.destination}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      {rail(h.historical, home.historical)}
+      {rail(h.nature, home.nature, { tone: "tinted" })}
+      {rail(h.spiritual, home.spiritual)}
+      {rail(h.family2, home.family, { tone: "tinted" })}
+      {rail(h.couple2, home.couple)}
+      {rail(h.solo2, home.solo, { tone: "tinted" })}
+      {rail(h.budget, home.budget)}
+
+      {home.recent.length > 0 && (
+        <section className="py-10">
+          <div className="container-page">
+            <h2 className="section-heading">{h.recent}</h2>
+            <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {home.recent.slice(0, 4).map((c) => (
+                <CmsCard key={c.id} card={c} locale={locale} bestTimeLabel={dict.home.card.bestTime} fluid />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </>
   );
 }

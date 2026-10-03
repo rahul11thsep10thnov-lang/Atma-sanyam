@@ -1,6 +1,7 @@
 import type { Crumb } from "./Breadcrumbs";
 import type { AttractionRecord } from "@/lib/master/types";
 import type { DestinationView } from "@/lib/master/view";
+import type { CmsDestination } from "@/lib/cms/types";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://budgettourism.com";
 
@@ -96,6 +97,34 @@ export function FaqJsonLd({ faqs }: { faqs: Array<{ question: string; answer: st
           name: faq.question,
           acceptedAnswer: { "@type": "Answer", text: faq.answer }
         }))
+      }}
+    />
+  );
+}
+
+/** TouristDestination schema for a CMS-managed destination page, with its attractions as TouristAttraction items. */
+export function CmsDestinationJsonLd({ destination: d, locale, description, image }: { destination: CmsDestination; locale: string; description: string; image: string | null }) {
+  const url = `${SITE_URL}/${locale}/destinations/${d.slug}`;
+  return (
+    <Script
+      data={{
+        "@context": "https://schema.org",
+        "@type": "TouristDestination",
+        name: d.name,
+        description,
+        url,
+        image: image ? (image.startsWith("http") ? image : `${SITE_URL}${image}`) : undefined,
+        geo: d.latitude !== null && d.longitude !== null ? { "@type": "GeoCoordinates", latitude: d.latitude, longitude: d.longitude } : undefined,
+        address: { "@type": "PostalAddress", addressRegion: d.state ?? undefined, addressCountry: "IN" },
+        includesAttraction: d.attractions
+          .filter((a) => a.status === "ACTIVE")
+          .map((a) => ({
+            "@type": "TouristAttraction",
+            name: a.name,
+            description: a.short_description || undefined,
+            url: `${url}#attraction-${a.slug}`,
+            geo: a.latitude !== null && a.longitude !== null ? { "@type": "GeoCoordinates", latitude: a.latitude, longitude: a.longitude } : undefined
+          }))
       }}
     />
   );

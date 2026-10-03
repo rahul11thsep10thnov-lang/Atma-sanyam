@@ -1,0 +1,486 @@
+{
+  "id": "CMS-mumbai",
+  "name": "Mumbai",
+  "slug": "mumbai",
+  "state": "Maharashtra",
+  "state_slug": "maharashtra",
+  "district": null,
+  "region": "West",
+  "country": "India",
+  "latitude": 19.076,
+  "longitude": 72.8777,
+  "hero_image": {
+    "id": "MEDIA-00072",
+    "url": "placeholder://Mumbai%20skyline?w=1600&h=900",
+    "thumbnail_url": null,
+    "direct_url": null,
+    "source": "Placeholder (generated graphic, not a photograph)",
+    "source_page_url": null,
+    "photographer": null,
+    "license": null,
+    "license_url": null,
+    "attribution_required": false,
+    "attribution_text": null,
+    "download_status": "LOCAL",
+    "local_path": null,
+    "approval_status": "APPROVED",
+    "caption": "Mumbai skyline",
+    "alt": "Mumbai skyline",
+    "width": null,
+    "height": null,
+    "retrieved_at": null,
+    "sort_order": 0
+  },
+  "headline": "The City of Dreams",
+  "short_description": "India's financial capital and home of Bollywood, Mumbai mixes colonial-era landmarks with a fast-paced modern skyline.",
+  "about": "Built across seven islands reclaimed into one landmass, Mumbai is India's largest city by population and its commercial and entertainment hub.\n\nA coastal city on the Arabian Sea in western Maharashtra, prone to monsoon flooding.\n\nHome to Bollywood, a cosmopolitan food scene and landmark colonial and Art Deco architecture.\n\nHighly diverse — major temples, mosques, churches, synagogues and the Haji Ali Dargah coexist.",
+  "history": "Grew from a Portuguese and then British trading post into India's leading port and industrial city; the islands were progressively joined through land reclamation.",
+  "history_verified": false,
+  "transportation": "- Chhatrapati Shivaji Maharaj International Airport (airport)\n- Chhatrapati Shivaji Maharaj Terminus (railway)\n- Mumbai Central Bus Depot (bus terminal)",
+  "travel_info": "Languages: Marathi, Hindi, English\nBudget: premium",
+  "best_time_text": "November to February",
+  "ideal_duration_text": "2–3 days",
+  "nearest_airport": "Chhatrapati Shivaji Maharaj International Airport (BOM)",
+  "nearest_railway_station": "Chhatrapati Shivaji Maharaj Terminus (CSMT)",
+  "categories": [
+    "HERITAGE",
+    "FAMILY",
+    "FOOD",
+    "HISTORICAL",
+    "SPIRITUAL"
+  ],
+  "companions": [
+    "FAMILY",
+    "SOLO"
+  ],
+  "attractions": [
+    {
+      "id": "IN-MH-BOM-GWI",
+      "slug": "gateway-of-india",
+      "name": "Gateway of India",
+      "short_description": "A 1924 monumental arch on the waterfront, Mumbai's most recognisable landmark.",
+      "location_text": null,
+      "latitude": null,
+      "longitude": null,
+      "map_url": "https://www.openstreetmap.org/search?query=Gateway%20of%20India%20Mumbai",
+      "official_website": null,
+      "category": "Monument",
+      "rating": null,
+      "review_count": null,
+      "rating_source": null,
+      "rating_retrieved_at": null,
+      "images": [
+        {
+          "id": "MEDIA-00077",
+          "url": "placeholder://Gateway%20of%20India?w=1200&h=800",
+          "thumbnail_url": null,
+          "direct_url": null,
+          "source": "Placeholder (generated graphic, not a photograph)",
+          "source_page_url": null,
+          "photographer": null,
+          "license": null,
+          "license_url": null,
+          "attribution_required": false,
+          "attribution_text": null,
+          "download_status": "LOCAL",
+          "local_path": null,
+          "approval_status": "APPROVED",
+          "caption": "Gateway of India",
+          "alt": "Gateway of India",
+          "width": null,
+          "height": null,
+          "retrieved_at": null,
+          "sort_order": 0
+        }
+      ],
+      "sources": [
+        {
+          "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+          "url": null,
+          "retrieved_at": "2026-10-03T10:35:37.122Z",
+          "status": "SEED",
+          "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+        }
+      ],
+      "sort_order": 0,
+      "manual_order": false,
+      "status": "ACTIVE"
+    },
+    {
+      "id": "IN-MH-BOM-ELEPH",
+      "slug": "elephanta-caves",
+      "name": "Elephanta Caves",
+      "short_description": "Rock-cut cave temples dedicated to Shiva on an island reachable by ferry, a UNESCO World Heritage Site.",
+      "location_text": null,
+      "latitude": null,
+      "longitude": null,
+      "map_url": "https://www.openstreetmap.org/search?query=Elephanta%20Caves%20Mumbai",
+      "official_website": null,
+      "category": "Cave",
+      "rating": null,
+      "review_count": null,
+      "rating_source": null,
+      "rating_retrieved_at": null,
+      "images": [
+        {
+          "id": "MEDIA-00078",
+          "url": "placeholder://Elephanta%20Caves?w=1200&h=800",
+          "thumbnail_url": null,
+          "direct_url": null,
+          "source": "Placeholder (generated graphic, not a photograph)",
+          "source_page_url": null,
+          "photographer": null,
+          "license": null,
+          "license_url": null,
+          "attribution_required": false,
+          "attribution_text": null,
+          "download_status": "LOCAL",
+          "local_path": null,
+          "approval_status": "APPROVED",
+          "caption": "Elephanta Caves",
+          "alt": "Elephanta Caves",
+          "width": null,
+          "height": null,
+          "retrieved_at": null,
+          "sort_order": 0
+        }
+      ],
+      "sources": [
+        {
+          "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+          "url": null,
+          "retrieved_at": "2026-10-03T10:35:37.122Z",
+          "status": "SEED",
+          "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+        }
+      ],
+      "sort_order": 1,
+      "manual_order": false,
+      "status": "ACTIVE"
+    },
+    {
+      "id": "IN-MH-BOM-MARIN",
+      "slug": "marine-drive",
+      "name": "Marine Drive",
+      "short_description": "A sweeping seafront promenade known as the 'Queen's Necklace' when lit at night.",
+      "location_text": null,
+      "latitude": null,
+      "longitude": null,
+      "map_url": "https://www.openstreetmap.org/search?query=Marine%20Drive%20Mumbai",
+      "official_website": null,
+      "category": "Attraction",
+      "rating": null,
+      "review_count": null,
+      "rating_source": null,
+      "rating_retrieved_at": null,
+      "images": [
+        {
+          "id": "MEDIA-00079",
+          "url": "placeholder://Marine%20Drive?w=1200&h=800",
+          "thumbnail_url": null,
+          "direct_url": null,
+          "source": "Placeholder (generated graphic, not a photograph)",
+          "source_page_url": null,
+          "photographer": null,
+          "license": null,
+          "license_url": null,
+          "attribution_required": false,
+          "attribution_text": null,
+          "download_status": "LOCAL",
+          "local_path": null,
+          "approval_status": "APPROVED",
+          "caption": "Marine Drive",
+          "alt": "Marine Drive",
+          "width": null,
+          "height": null,
+          "retrieved_at": null,
+          "sort_order": 0
+        }
+      ],
+      "sources": [
+        {
+          "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+          "url": null,
+          "retrieved_at": "2026-10-03T10:35:37.122Z",
+          "status": "SEED",
+          "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+        }
+      ],
+      "sort_order": 2,
+      "manual_order": false,
+      "status": "ACTIVE"
+    },
+    {
+      "id": "IN-MH-BOM-CSMT",
+      "slug": "chhatrapati-shivaji-maharaj-terminus",
+      "name": "Chhatrapati Shivaji Maharaj Terminus",
+      "short_description": "A Victorian Gothic railway terminus and UNESCO World Heritage Site, still in active use.",
+      "location_text": null,
+      "latitude": null,
+      "longitude": null,
+      "map_url": "https://www.openstreetmap.org/search?query=Chhatrapati%20Shivaji%20Maharaj%20Terminus%20Mumbai",
+      "official_website": null,
+      "category": "Attraction",
+      "rating": null,
+      "review_count": null,
+      "rating_source": null,
+      "rating_retrieved_at": null,
+      "images": [
+        {
+          "id": "MEDIA-00080",
+          "url": "placeholder://Chhatrapati%20Shivaji%20Maharaj%20Terminus?w=1200&h=800",
+          "thumbnail_url": null,
+          "direct_url": null,
+          "source": "Placeholder (generated graphic, not a photograph)",
+          "source_page_url": null,
+          "photographer": null,
+          "license": null,
+          "license_url": null,
+          "attribution_required": false,
+          "attribution_text": null,
+          "download_status": "LOCAL",
+          "local_path": null,
+          "approval_status": "APPROVED",
+          "caption": "Chhatrapati Shivaji Maharaj Terminus",
+          "alt": "Chhatrapati Shivaji Maharaj Terminus",
+          "width": null,
+          "height": null,
+          "retrieved_at": null,
+          "sort_order": 0
+        }
+      ],
+      "sources": [
+        {
+          "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+          "url": null,
+          "retrieved_at": "2026-10-03T10:35:37.122Z",
+          "status": "SEED",
+          "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+        }
+      ],
+      "sort_order": 3,
+      "manual_order": false,
+      "status": "ACTIVE"
+    },
+    {
+      "id": "IN-MH-BOM-BTAQS",
+      "slug": "banganga-tank-a-quiet-stepped-temple-pool-in-malabar-hill",
+      "name": "Banganga Tank, a quiet stepped temple pool in Malabar Hill",
+      "short_description": "Banganga Tank, a quiet stepped temple pool in Malabar Hill",
+      "location_text": null,
+      "latitude": null,
+      "longitude": null,
+      "map_url": null,
+      "official_website": null,
+      "category": "Temple",
+      "rating": null,
+      "review_count": null,
+      "rating_source": null,
+      "rating_retrieved_at": null,
+      "images": [],
+      "sources": [
+        {
+          "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+          "url": null,
+          "retrieved_at": "2026-10-03T10:35:37.122Z",
+          "status": "SEED",
+          "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+        }
+      ],
+      "sort_order": 4,
+      "manual_order": false,
+      "status": "HIDDEN"
+    },
+    {
+      "id": "IN-MH-BOM-SDAD",
+      "slug": "sassoon-docks-at-dawn",
+      "name": "Sassoon Docks at dawn",
+      "short_description": "Sassoon Docks at dawn",
+      "location_text": null,
+      "latitude": null,
+      "longitude": null,
+      "map_url": null,
+      "official_website": null,
+      "category": "Attraction",
+      "rating": null,
+      "review_count": null,
+      "rating_source": null,
+      "rating_retrieved_at": null,
+      "images": [],
+      "sources": [
+        {
+          "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+          "url": null,
+          "retrieved_at": "2026-10-03T10:35:37.122Z",
+          "status": "SEED",
+          "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+        }
+      ],
+      "sort_order": 5,
+      "manual_order": false,
+      "status": "HIDDEN"
+    }
+  ],
+  "hotels": [],
+  "restaurants": [],
+  "images": [
+    {
+      "id": "MEDIA-00073",
+      "url": "placeholder://Gateway%20of%20India?w=1600&h=900",
+      "thumbnail_url": null,
+      "direct_url": null,
+      "source": "Placeholder (generated graphic, not a photograph)",
+      "source_page_url": null,
+      "photographer": null,
+      "license": null,
+      "license_url": null,
+      "attribution_required": false,
+      "attribution_text": null,
+      "download_status": "LOCAL",
+      "local_path": null,
+      "approval_status": "APPROVED",
+      "caption": "Gateway of India",
+      "alt": "Gateway of India",
+      "width": null,
+      "height": null,
+      "retrieved_at": null,
+      "sort_order": 0
+    },
+    {
+      "id": "MEDIA-00074",
+      "url": "placeholder://Elephanta%20Caves?w=1600&h=900",
+      "thumbnail_url": null,
+      "direct_url": null,
+      "source": "Placeholder (generated graphic, not a photograph)",
+      "source_page_url": null,
+      "photographer": null,
+      "license": null,
+      "license_url": null,
+      "attribution_required": false,
+      "attribution_text": null,
+      "download_status": "LOCAL",
+      "local_path": null,
+      "approval_status": "APPROVED",
+      "caption": "Elephanta Caves",
+      "alt": "Elephanta Caves",
+      "width": null,
+      "height": null,
+      "retrieved_at": null,
+      "sort_order": 1
+    },
+    {
+      "id": "MEDIA-00075",
+      "url": "placeholder://Marine%20Drive?w=1600&h=900",
+      "thumbnail_url": null,
+      "direct_url": null,
+      "source": "Placeholder (generated graphic, not a photograph)",
+      "source_page_url": null,
+      "photographer": null,
+      "license": null,
+      "license_url": null,
+      "attribution_required": false,
+      "attribution_text": null,
+      "download_status": "LOCAL",
+      "local_path": null,
+      "approval_status": "APPROVED",
+      "caption": "Marine Drive",
+      "alt": "Marine Drive",
+      "width": null,
+      "height": null,
+      "retrieved_at": null,
+      "sort_order": 2
+    },
+    {
+      "id": "MEDIA-00076",
+      "url": "placeholder://Chhatrapati%20Shivaji%20Maharaj%20Terminus?w=1600&h=900",
+      "thumbnail_url": null,
+      "direct_url": null,
+      "source": "Placeholder (generated graphic, not a photograph)",
+      "source_page_url": null,
+      "photographer": null,
+      "license": null,
+      "license_url": null,
+      "attribution_required": false,
+      "attribution_text": null,
+      "download_status": "LOCAL",
+      "local_path": null,
+      "approval_status": "APPROVED",
+      "caption": "Chhatrapati Shivaji Maharaj Terminus",
+      "alt": "Chhatrapati Shivaji Maharaj Terminus",
+      "width": null,
+      "height": null,
+      "retrieved_at": null,
+      "sort_order": 3
+    }
+  ],
+  "faq": [],
+  "seo": {
+    "title": null,
+    "description": null,
+    "keywords": [],
+    "canonical_path": null,
+    "og_image": null
+  },
+  "provenance": {
+    "about": [
+      {
+        "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+        "url": null,
+        "retrieved_at": "2026-10-03T10:35:37.122Z",
+        "status": "SEED",
+        "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+      }
+    ],
+    "history": [
+      {
+        "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+        "url": null,
+        "retrieved_at": "2026-10-03T10:35:37.122Z",
+        "status": "SEED",
+        "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+      }
+    ],
+    "attractions": [
+      {
+        "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+        "url": null,
+        "retrieved_at": "2026-10-03T10:35:37.122Z",
+        "status": "SEED",
+        "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+      }
+    ],
+    "transportation": [
+      {
+        "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+        "url": null,
+        "retrieved_at": "2026-10-03T10:35:37.122Z",
+        "status": "SEED",
+        "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+      }
+    ],
+    "hero_image": [
+      {
+        "label": "Placeholder graphic (no photograph collected yet)",
+        "url": null,
+        "retrieved_at": "2026-10-03T10:35:37.122Z",
+        "status": "SEED",
+        "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+      }
+    ]
+  },
+  "pipeline": {
+    "stage": "NOT_IN_PIPELINE",
+    "import_id": null,
+    "position": null,
+    "started_at": null,
+    "completed_at": null,
+    "last_error": null,
+    "log": []
+  },
+  "legacy_slug": "mumbai",
+  "is_sample_data": true,
+  "status": "PUBLISHED",
+  "created_at": "2026-10-03T10:35:37.122Z",
+  "updated_at": "2026-10-03T10:35:37.128Z",
+  "published_at": "2026-10-03T10:35:37.122Z"
+}

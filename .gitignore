@@ -31,3 +31,9 @@ next-env.d.ts
 # IDE
 .vscode/
 .idea/
+
+# public uploads and downloaded pipeline media are content, not code
+/public/uploads/*
+!/public/uploads/.gitkeep
+/public/media/*
+!/public/media/.gitkeep

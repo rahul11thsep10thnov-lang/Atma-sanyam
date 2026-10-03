@@ -1,0 +1,409 @@
+{
+  "id": "CMS-agra",
+  "name": "Agra",
+  "slug": "agra",
+  "state": "Uttar Pradesh",
+  "state_slug": "uttar-pradesh",
+  "district": null,
+  "region": "North",
+  "country": "India",
+  "latitude": 27.1767,
+  "longitude": 78.0081,
+  "hero_image": {
+    "id": "MEDIA-00019",
+    "url": "placeholder://Agra%20skyline?w=1600&h=900",
+    "thumbnail_url": null,
+    "direct_url": null,
+    "source": "Placeholder (generated graphic, not a photograph)",
+    "source_page_url": null,
+    "photographer": null,
+    "license": null,
+    "license_url": null,
+    "attribution_required": false,
+    "attribution_text": null,
+    "download_status": "LOCAL",
+    "local_path": null,
+    "approval_status": "APPROVED",
+    "caption": "Agra skyline",
+    "alt": "Agra skyline",
+    "width": null,
+    "height": null,
+    "retrieved_at": null,
+    "sort_order": 0
+  },
+  "headline": "Home of the Taj Mahal",
+  "short_description": "Agra's Mughal-era monuments, above all the Taj Mahal, make it one of the most visited cities in India.",
+  "about": "Once the capital of the Mughal Empire under Akbar, Jahangir and Shah Jahan, Agra is best known worldwide for the Taj Mahal but holds a wider cluster of Mughal architecture along the Yamuna.\n\nSituated on the banks of the Yamuna river in western Uttar Pradesh.\n\nA centre of Mughal architecture, marble inlay (pietra dura) craftsmanship and leather goods.\n\nPredominantly Hindu and Muslim population; Mughal-era mosques stand alongside temples.",
+  "history": "Agra rose to prominence as the Mughal capital in the 16th–17th centuries, producing the Agra Fort and the Taj Mahal, before the capital shifted to Delhi.",
+  "history_verified": false,
+  "transportation": "- Agra Airport (airport)\n- Agra Cantt Railway Station (railway)\n- Idgah Bus Stand (bus terminal)",
+  "travel_info": "Languages: Hindi, English (tourist areas)\nBudget: mid range",
+  "best_time_text": "October to March",
+  "ideal_duration_text": "1–2 days",
+  "nearest_airport": "Agra Airport (AGR), limited service; most visitors fly via Delhi",
+  "nearest_railway_station": "Agra Cantt Railway Station",
+  "categories": [
+    "HISTORICAL",
+    "HERITAGE",
+    "ROMANTIC"
+  ],
+  "companions": [
+    "COUPLE"
+  ],
+  "attractions": [
+    {
+      "id": "IN-UP-AGR-TAJ",
+      "slug": "taj-mahal",
+      "name": "Taj Mahal",
+      "short_description": "Shah Jahan's white marble mausoleum for Mumtaz Mahal, a UNESCO World Heritage Site and one of the New7Wonders of the World.",
+      "location_text": null,
+      "latitude": null,
+      "longitude": null,
+      "map_url": "https://www.openstreetmap.org/search?query=Taj%20Mahal%20Agra",
+      "official_website": null,
+      "category": "Palace",
+      "rating": null,
+      "review_count": null,
+      "rating_source": null,
+      "rating_retrieved_at": null,
+      "images": [
+        {
+          "id": "MEDIA-00023",
+          "url": "placeholder://Taj%20Mahal?w=1200&h=800",
+          "thumbnail_url": null,
+          "direct_url": null,
+          "source": "Placeholder (generated graphic, not a photograph)",
+          "source_page_url": null,
+          "photographer": null,
+          "license": null,
+          "license_url": null,
+          "attribution_required": false,
+          "attribution_text": null,
+          "download_status": "LOCAL",
+          "local_path": null,
+          "approval_status": "APPROVED",
+          "caption": "Taj Mahal",
+          "alt": "Taj Mahal",
+          "width": null,
+          "height": null,
+          "retrieved_at": null,
+          "sort_order": 0
+        }
+      ],
+      "sources": [
+        {
+          "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+          "url": null,
+          "retrieved_at": "2026-10-03T10:35:37.122Z",
+          "status": "SEED",
+          "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+        }
+      ],
+      "sort_order": 0,
+      "manual_order": false,
+      "status": "ACTIVE"
+    },
+    {
+      "id": "IN-UP-AGR-AGF",
+      "slug": "agra-fort",
+      "name": "Agra Fort",
+      "short_description": "A red sandstone Mughal fort and UNESCO World Heritage Site overlooking the Yamuna.",
+      "location_text": null,
+      "latitude": null,
+      "longitude": null,
+      "map_url": "https://www.openstreetmap.org/search?query=Agra%20Fort%20Agra",
+      "official_website": null,
+      "category": "Fort",
+      "rating": null,
+      "review_count": null,
+      "rating_source": null,
+      "rating_retrieved_at": null,
+      "images": [
+        {
+          "id": "MEDIA-00024",
+          "url": "placeholder://Agra%20Fort?w=1200&h=800",
+          "thumbnail_url": null,
+          "direct_url": null,
+          "source": "Placeholder (generated graphic, not a photograph)",
+          "source_page_url": null,
+          "photographer": null,
+          "license": null,
+          "license_url": null,
+          "attribution_required": false,
+          "attribution_text": null,
+          "download_status": "LOCAL",
+          "local_path": null,
+          "approval_status": "APPROVED",
+          "caption": "Agra Fort",
+          "alt": "Agra Fort",
+          "width": null,
+          "height": null,
+          "retrieved_at": null,
+          "sort_order": 0
+        }
+      ],
+      "sources": [
+        {
+          "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+          "url": null,
+          "retrieved_at": "2026-10-03T10:35:37.122Z",
+          "status": "SEED",
+          "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+        }
+      ],
+      "sort_order": 1,
+      "manual_order": false,
+      "status": "ACTIVE"
+    },
+    {
+      "id": "IN-UP-AGR-FTS",
+      "slug": "fatehpur-sikri",
+      "name": "Fatehpur Sikri",
+      "short_description": "Akbar's short-lived capital city, now a UNESCO World Heritage Site ~40 km from Agra.",
+      "location_text": null,
+      "latitude": null,
+      "longitude": null,
+      "map_url": "https://www.openstreetmap.org/search?query=Fatehpur%20Sikri%20Agra",
+      "official_website": null,
+      "category": "Attraction",
+      "rating": null,
+      "review_count": null,
+      "rating_source": null,
+      "rating_retrieved_at": null,
+      "images": [
+        {
+          "id": "MEDIA-00025",
+          "url": "placeholder://Fatehpur%20Sikri?w=1200&h=800",
+          "thumbnail_url": null,
+          "direct_url": null,
+          "source": "Placeholder (generated graphic, not a photograph)",
+          "source_page_url": null,
+          "photographer": null,
+          "license": null,
+          "license_url": null,
+          "attribution_required": false,
+          "attribution_text": null,
+          "download_status": "LOCAL",
+          "local_path": null,
+          "approval_status": "APPROVED",
+          "caption": "Fatehpur Sikri",
+          "alt": "Fatehpur Sikri",
+          "width": null,
+          "height": null,
+          "retrieved_at": null,
+          "sort_order": 0
+        }
+      ],
+      "sources": [
+        {
+          "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+          "url": null,
+          "retrieved_at": "2026-10-03T10:35:37.122Z",
+          "status": "SEED",
+          "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+        }
+      ],
+      "sort_order": 2,
+      "manual_order": false,
+      "status": "ACTIVE"
+    },
+    {
+      "id": "IN-UP-AGR-MEHTA",
+      "slug": "mehtab-bagh",
+      "name": "Mehtab Bagh",
+      "short_description": "sunset Taj view across the river",
+      "location_text": null,
+      "latitude": null,
+      "longitude": null,
+      "map_url": null,
+      "official_website": null,
+      "category": "Attraction",
+      "rating": null,
+      "review_count": null,
+      "rating_source": null,
+      "rating_retrieved_at": null,
+      "images": [],
+      "sources": [
+        {
+          "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+          "url": null,
+          "retrieved_at": "2026-10-03T10:35:37.122Z",
+          "status": "SEED",
+          "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+        }
+      ],
+      "sort_order": 3,
+      "manual_order": false,
+      "status": "HIDDEN"
+    },
+    {
+      "id": "IN-UP-AGR-IBT",
+      "slug": "itmad-ud-daulah-baby-taj",
+      "name": "Itmad-ud-Daulah (Baby Taj)",
+      "short_description": "Itmad-ud-Daulah (Baby Taj)",
+      "location_text": null,
+      "latitude": null,
+      "longitude": null,
+      "map_url": null,
+      "official_website": null,
+      "category": "Attraction",
+      "rating": null,
+      "review_count": null,
+      "rating_source": null,
+      "rating_retrieved_at": null,
+      "images": [],
+      "sources": [
+        {
+          "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+          "url": null,
+          "retrieved_at": "2026-10-03T10:35:37.122Z",
+          "status": "SEED",
+          "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+        }
+      ],
+      "sort_order": 4,
+      "manual_order": false,
+      "status": "HIDDEN"
+    }
+  ],
+  "hotels": [],
+  "restaurants": [],
+  "images": [
+    {
+      "id": "MEDIA-00020",
+      "url": "placeholder://Taj%20Mahal?w=1600&h=900",
+      "thumbnail_url": null,
+      "direct_url": null,
+      "source": "Placeholder (generated graphic, not a photograph)",
+      "source_page_url": null,
+      "photographer": null,
+      "license": null,
+      "license_url": null,
+      "attribution_required": false,
+      "attribution_text": null,
+      "download_status": "LOCAL",
+      "local_path": null,
+      "approval_status": "APPROVED",
+      "caption": "Taj Mahal",
+      "alt": "Taj Mahal",
+      "width": null,
+      "height": null,
+      "retrieved_at": null,
+      "sort_order": 0
+    },
+    {
+      "id": "MEDIA-00021",
+      "url": "placeholder://Agra%20Fort?w=1600&h=900",
+      "thumbnail_url": null,
+      "direct_url": null,
+      "source": "Placeholder (generated graphic, not a photograph)",
+      "source_page_url": null,
+      "photographer": null,
+      "license": null,
+      "license_url": null,
+      "attribution_required": false,
+      "attribution_text": null,
+      "download_status": "LOCAL",
+      "local_path": null,
+      "approval_status": "APPROVED",
+      "caption": "Agra Fort",
+      "alt": "Agra Fort",
+      "width": null,
+      "height": null,
+      "retrieved_at": null,
+      "sort_order": 1
+    },
+    {
+      "id": "MEDIA-00022",
+      "url": "placeholder://Fatehpur%20Sikri?w=1600&h=900",
+      "thumbnail_url": null,
+      "direct_url": null,
+      "source": "Placeholder (generated graphic, not a photograph)",
+      "source_page_url": null,
+      "photographer": null,
+      "license": null,
+      "license_url": null,
+      "attribution_required": false,
+      "attribution_text": null,
+      "download_status": "LOCAL",
+      "local_path": null,
+      "approval_status": "APPROVED",
+      "caption": "Fatehpur Sikri",
+      "alt": "Fatehpur Sikri",
+      "width": null,
+      "height": null,
+      "retrieved_at": null,
+      "sort_order": 2
+    }
+  ],
+  "faq": [],
+  "seo": {
+    "title": null,
+    "description": null,
+    "keywords": [],
+    "canonical_path": null,
+    "og_image": null
+  },
+  "provenance": {
+    "about": [
+      {
+        "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+        "url": null,
+        "retrieved_at": "2026-10-03T10:35:37.122Z",
+        "status": "SEED",
+        "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+      }
+    ],
+    "history": [
+      {
+        "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+        "url": null,
+        "retrieved_at": "2026-10-03T10:35:37.122Z",
+        "status": "SEED",
+        "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+      }
+    ],
+    "attractions": [
+      {
+        "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+        "url": null,
+        "retrieved_at": "2026-10-03T10:35:37.122Z",
+        "status": "SEED",
+        "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+      }
+    ],
+    "transportation": [
+      {
+        "label": "Seed dataset — budgettourism AI-assisted editorial draft",
+        "url": null,
+        "retrieved_at": "2026-10-03T10:35:37.122Z",
+        "status": "SEED",
+        "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+      }
+    ],
+    "hero_image": [
+      {
+        "label": "Placeholder graphic (no photograph collected yet)",
+        "url": null,
+        "retrieved_at": "2026-10-03T10:35:37.122Z",
+        "status": "SEED",
+        "note": "Imported from the budgettourism master seed; facts are marked unverified there."
+      }
+    ]
+  },
+  "pipeline": {
+    "stage": "NOT_IN_PIPELINE",
+    "import_id": null,
+    "position": null,
+    "started_at": null,
+    "completed_at": null,
+    "last_error": null,
+    "log": []
+  },
+  "legacy_slug": "agra",
+  "is_sample_data": true,
+  "status": "PUBLISHED",
+  "created_at": "2026-10-03T10:35:37.122Z",
+  "updated_at": "2026-10-03T10:35:37.125Z",
+  "published_at": "2026-10-03T10:35:37.122Z"
+}

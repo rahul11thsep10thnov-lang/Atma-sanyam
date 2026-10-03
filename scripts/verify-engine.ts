@@ -22,6 +22,13 @@ import { checkFaithful } from "../lib/master/translation/faithful";
 import { TRANSLATED_LANGUAGES, properNames, translatePage, translationFile, translatorFor } from "../lib/master/translation/memory";
 import { coverageReport, orphanStrings } from "../lib/master/translation/todo";
 import { getDestinationContent } from "../lib/master/generation/pipeline";
+import { bootstrapFromSeed, cmsFromSeed } from "../lib/cms/bootstrap";
+import { capApproved, sanitiseDestination, MAX_APPROVED_PER_ATTRACTION } from "../lib/cms/admin";
+import { candidatesFromText, cleanLine } from "../lib/cms/pipeline/pdf";
+import { rankAttractions } from "../lib/cms/pipeline/runner";
+import { destinationCount, getDestinationBySlug, publishedDestinations, uniqueSlug } from "../lib/cms/store";
+import { emptyAttraction } from "../lib/cms/types";
+import type { CmsImage } from "../lib/cms/types";
 
 let failed = 0;
 let passed = 0;
@@ -211,6 +218,43 @@ console.log("Interface labels");
     check(`${lang}: every interface label is translated`, missing.length === 0, missing.slice(0, 3).join(", "));
     check(`${lang}: interface labels keep their {placeholders}`, badPlaceholders.length === 0, badPlaceholders.slice(0, 3).join(", "));
   }
+}
+
+
+console.log("Content CMS and pipeline");
+{
+  bootstrapFromSeed();
+  check("CMS store bootstraps every seed destination into an editable record", destinationCount() >= db.destinations.length, `${destinationCount()} records for ${db.destinations.length} seed destinations`);
+  const varanasi = getDestinationBySlug("varanasi");
+  check("seed record keeps provenance for about/history and links the full guide", Boolean(varanasi && varanasi.provenance.about?.length && varanasi.legacy_slug === "varanasi"));
+  check("public queries only ever return PUBLISHED records", publishedDestinations().every((d) => d.status === "PUBLISHED"));
+  const seedDoc = cmsFromSeed(db, bySlug("agra"), new Date().toISOString());
+  check("seed mapping never invents ratings or licences", seedDoc.attractions.every((a) => a.rating === null && a.rating_source === null) && seedDoc.attractions.flatMap((a) => a.images).every((i) => i.license === null || i.source.toLowerCase().includes("placeholder") === false || i.license === null));
+
+  // PDF extraction: numbering, headers, page numbers and states are handled; duplicates collapse.
+  const pdf = candidatesFromText("DESTINATIONS LIST\nSr. No.  Destination\n1. Hampi, Karnataka\n2) Hampi\n• Orchha – Madhya Pradesh\nDESTINATION 004 Varanasi\nPage 12\nwww.example.com\n");
+  check("PDF extraction strips numbering/bullets and keeps place names", pdf.candidates.map((c) => c.name).join("|") === "Hampi|Orchha|Varanasi", pdf.candidates.map((c) => c.name).join("|"));
+  check("PDF extraction drops headers, page numbers and URLs", !pdf.candidates.some((c) => /list|page|www/i.test(c.name)));
+  check("PDF extraction splits a trailing state and de-duplicates within the file", pdf.candidates[0].state === "Karnataka" && pdf.candidates.filter((c) => c.slug === "hampi").length === 1);
+  check("PDF extraction flags destinations that already exist (not pre-selected)", pdf.candidates.find((c) => c.slug === "varanasi")?.duplicate_of === "CMS-varanasi" && pdf.candidates.find((c) => c.slug === "varanasi")?.selected === false);
+  check("cleanLine keeps a year that looks like a trailing number", cleanLine("12. Battle of Plassey 1757") === "Battle of Plassey 1757");
+
+  // Image approval cap: never more than 4 approved images per attraction.
+  const img = (i: number, status: CmsImage["approval_status"]): CmsImage => ({ id: `I${i}`, url: `https://upload.wikimedia.org/x${i}.jpg`, thumbnail_url: null, direct_url: null, source: "Wikimedia Commons", source_page_url: null, photographer: null, license: "CC BY-SA 4.0", license_url: null, attribution_required: true, attribution_text: null, download_status: "NOT_DOWNLOADED", local_path: null, approval_status: status, caption: null, alt: "x", width: null, height: null, retrieved_at: null, sort_order: i });
+  const capped = capApproved(Array.from({ length: 7 }, (_, i) => img(i, "APPROVED")));
+  check(`at most ${MAX_APPROVED_PER_ATTRACTION} images stay approved per attraction`, capped.filter((i) => i.approval_status === "APPROVED").length === MAX_APPROVED_PER_ATTRACTION && capped.filter((i) => i.approval_status === "CANDIDATE").length === 3);
+
+  // Editor input is re-validated: bad ratings, foreign protocols and over-long enums are dropped, slugs stay unique.
+  const base = varanasi!;
+  const edited = sanitiseDestination({ ...base, slug: "agra", attractions: [{ ...emptyAttraction("x", "x", "Test"), rating: 9, map_url: "javascript:alert(1)", status: "WEIRD" }], categories: ["HISTORICAL", "NOT_A_CATEGORY"] }, base);
+  check("sanitiser keeps slugs unique when an edit collides with another record", edited.slug !== "agra" && edited.slug.startsWith("agra"), edited.slug);
+  check("sanitiser rejects out-of-range ratings, unsafe URLs and unknown enums", edited.attractions[0].rating === null && edited.attractions[0].map_url === null && edited.attractions[0].status === "ACTIVE" && edited.categories.join() === "HISTORICAL");
+  check("uniqueSlug returns the base slug when it is free", uniqueSlug("definitely-not-used") === "definitely-not-used");
+
+  // Attraction ranking: rating, then review count; manually ordered items never move.
+  const a = (id: string, rating: number | null, reviews: number | null, manual = false, order = 0) => ({ ...emptyAttraction(id, id, id), rating, review_count: reviews, manual_order: manual, sort_order: order });
+  const ranked = rankAttractions([a("low", 3.9, 100, false, 0), a("pinned", null, null, true, 1), a("high", 4.8, 50, false, 2), a("mid", 4.8, 10, false, 3)]);
+  check("attractions rank by rating then review count, with manual overrides fixed in place", ranked.map((x) => x.id).join(",") === "high,pinned,mid,low", ranked.map((x) => x.id).join(","));
 }
 
 console.log(`\n${passed} passed, ${failed} failed`);

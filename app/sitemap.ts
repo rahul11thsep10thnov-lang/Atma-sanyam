@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { locales } from "@/lib/i18n/config";
 import { getDb, stateById } from "@/lib/master/repo";
 import { attractionPath } from "@/lib/master/view";
+import { publishedCards } from "@/lib/cms/queries";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://budgettourism.com";
 const SUBPATHS = ["/where-to-stay", "/food", "/shopping", "/weather", "/history"];
@@ -29,6 +30,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
   for (const a of db.attractions) add(attractionPath(a), "monthly", 0.5);
   for (const c of db.circuits) add(`/trips/${c.slug}`, "monthly", 0.7);
+
+  // Database-driven destination pages: only PUBLISHED records, one URL per slug per locale.
+  add("/destinations", "daily", 0.8);
+  const seenSlugs = new Set<string>();
+  for (const c of publishedCards()) {
+    if (seenSlugs.has(c.slug)) continue;
+    seenSlugs.add(c.slug);
+    add(`/destinations/${c.slug}`, "weekly", 0.8);
+  }
 
   return entries;
 }

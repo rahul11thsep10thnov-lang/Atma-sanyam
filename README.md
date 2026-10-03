@@ -105,6 +105,8 @@ See `.env.example`. Nothing is required to browse the site.
 | `WEATHER_API_KEY`, `MAP_PROVIDER`, `GOOGLE_MAPS_API_KEY`, `MAPPLS_API_KEY` | Live weather, map provider |
 | `HOTEL_BOOKING_API_KEY`, `FLIGHT_AFFILIATE_API_KEY`, `ADVERTISING_*` | Monetisation adapters (`lib/providers/*`) |
 | `IMAGE_CDN_BASE_URL`, `S3_*` | Licensed image storage |
+| `GOOGLE_PLACES_API_KEY` | Attraction ratings through the official Places API (otherwise "Rating unavailable") |
+| `UNSPLASH_ACCESS_KEY`, `PEXELS_API_KEY`, `PIXABAY_API_KEY` | Extra licensed image sources for the content pipeline (Wikimedia Commons needs no key) |
 
 ## Admin
 
@@ -114,7 +116,36 @@ See `.env.example`. Nothing is required to browse the site.
 - Every section is a **read-only view** over the master database. `POST /api/admin/pipeline/onboard`, `POST /api/admin/import` and `GET /api/admin/quality` are dry runs (they work on a copy and report what would happen).
 - `npm run import:facts -- claims.json` prints the same import report from the command line.
 
+## Content CMS and destination pipeline
+
+Every page under `/{locale}/destinations/{slug}` is **one template rendering one record**. Records are JSON documents in `data/cms/destinations/` (bootstrapped from the 27 seed destinations on first run); the admin console edits them and the public page shows the change on its next request — no deploy, no code change, no JSON editing by hand. Settings live in `data/cms/settings.json`, PDF imports in `data/cms/imports/`, and the pipeline cursor in `data/cms/pipeline.json`. The same documents map 1:1 onto the Prisma models when a database is attached.
+
+**Public**
+
+- Homepage: full-width background from the owner's reference photograph at ~16 % opacity, headline *The Earth laughs in flowers.*, centred search with destination + attraction autocomplete, **Who's coming along?** (Couple / Family / Friends / Solo — remembered for the session in the `bt_companion` cookie and used for the *Recommended for …* rail), then Explore India, Popular, By state, Attractions, Historical, Nature & wildlife, Spiritual, Family, Couple-friendly, Solo, Budget and Recently added.
+- Destination page: hero (name, state, image, intro, travel facts), sticky tabs **About the place · Historical references · Attractions · Budget hotels · Budget restaurants**, numbered attractions with rating *or* "Rating unavailable", approved images *or* "No approved image available", sources per section, FAQ, `TouristDestination` / `TouristAttraction` / `BreadcrumbList` / `FAQPage` JSON-LD, unique title/description/canonical/OG, sitemap entries for published records only. Unverified history prints *Verified historical information is currently unavailable.* Drafts are invisible to visitors; admins can open them with `?preview=1`.
+
+**Admin → Content** (`/{locale}/admin/cms`)
+
+- Dashboard counts (total / published / draft / pending approval / incomplete / missing images / attractions awaiting image approval / hotels / restaurants / recently updated).
+- Destinations table: search, filter, sort, per-row edit / preview / publish / unpublish / duplicate / archive / delete, checkbox bulk edit (publish, unpublish, archive, delete, change state, add/remove category, companion types, SEO title/description templates with `{name}` and `{state}`).
+- Editor tabs: Basics, Content (markdown-lite), Attractions (add / edit / delete / reorder / pin manual order / rating with source / images / map URL / sources), Images (hero, gallery, licensed upload), Hotels and Restaurants (every field of the blueprint, add / edit / delete / duplicate / publish per record — nothing is pre-filled), FAQ, SEO, Sources (provenance + pipeline log).
+- Image approval: all attractions of one destination on one screen, 1–4 images each, hero choice, one **Approve all selected images** button; the cap of 4 is enforced on the server too.
+- Settings: site name, tagline, logo, favicon, default hero, default SEO, social links, contact, footer, copyright, Google Places key, image-source toggles and keys, candidates per attraction, analytics id.
+
+**Pipeline** (`Import PDF` → `Pipeline`)
+
+1. Upload a PDF (or paste a list). The text layer is read with `pdf-parse`; numbering, bullets, headers and page numbers are stripped, "Name, State" lines are split, duplicates (in the file and against existing records) are flagged. You review the list, then confirm.
+2. One DRAFT record per confirmed name is created and queued. The pipeline processes **one destination at a time**: `QUEUED → RESEARCHING → ATTRACTIONS → IMAGES → AWAITING_APPROVAL → (you approve images) → FINALIZING → READY_TO_PUBLISH → (you publish) → COMPLETED → next`. Each stage is saved to the record before the next starts, so closing the browser or a crash resumes at the same destination; a failure stops the queue at that destination and *Retry* resumes at the failed stage.
+3. Sources: the project's seed database, Incredible India (primary) and Wikipedia (supplementary) for concise original summaries; Google Places API (key required) for attractions, ratings, review counts and Maps links — never scraped; Wikipedia geosearch for nearby places; Wikimedia Commons (free licences only) plus Unsplash / Pexels / Pixabay (keys) for ~10 image candidates per attraction, each stored with URL, thumbnail, source, photographer, licence, attribution requirement, source page, download status and approval status. Approved images are downloaded to `public/media/{slug}/`. Every source call is recorded; an unreachable source is stored as `SOURCE_UNAVAILABLE`, never guessed around.
+4. Nothing is published automatically. `npm run verify:engine` covers the store bootstrap, PDF cleaning/de-duplication, the 4-image cap, input sanitising, slug uniqueness and attraction ranking.
+
+Admin APIs (all behind `authorizeAdmin`): `/api/admin/cms/destinations` (+ `/{id}`, `/{id}/action`, `/{id}/images`, `/bulk`), `/api/admin/cms/upload`, `/api/admin/cms/settings`, `/api/admin/cms/import`, `/api/admin/cms/pipeline`.
+
 ## Honest limits (read before launching)
+
+- **CMS records are files.** `data/cms/` is a single-process, file-backed store — fine for one editor and one server; move to PostgreSQL (the Prisma schema already mirrors the records) before running several instances.
+- **Images.** The seed destinations carry generated placeholders labelled as such; real photographs enter only through the pipeline's licensed sources or the admin upload form with a recorded licence. Hotel and restaurant records start empty by design.
 
 - **The seed data is unverified editorial data**, labelled *Draft · unverified* on every page. Before launch, work through Admin → Pending verification against each fact's official source. Nothing is presented as verified until a human verifies it.
 - **The repository layer is in-memory.** Pages read the seeded database through `lib/master/repo.ts`; the Prisma schema and `prisma/seed.ts` are ready to load the same data into PostgreSQL, but pages are not yet switched to Prisma queries, and the admin/import/onboarding endpoints do not persist. Reviews, trips and wishlist endpoints validate input and say plainly that nothing was stored.
