@@ -12,10 +12,12 @@ import com.rangepatte.app.domain.model.PlayMode
  */
 object Routes {
     const val LANGUAGE_SELECT = "languageSelect"
-    const val HOME = "home"
     const val GAMES = "games"
-    const val HISTORY = "history"
+    const val ENTERTAINMENT = "entertainment"
     const val SETTINGS = "settings"
+    const val LOGIN = "login"
+    const val MEMBERSHIP = "membership"
+    const val CHECKOUT = "checkout"
 
     const val ARG_GAME_ID = "gameId"
     const val ARG_MODE = "mode"

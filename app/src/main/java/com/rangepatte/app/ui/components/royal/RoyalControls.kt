@@ -66,7 +66,7 @@ fun RoyalPlaque(text: String, modifier: Modifier = Modifier) {
 fun RoyalSectionTitle(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text.uppercase(),
-        style = RoyalTitleStyle.copy(fontSize = 16.sp),
+        style = RoyalTitleStyle.copy(fontSize = 18.sp),
         color = ParchmentText,
         textAlign = TextAlign.Center,
         modifier = modifier
@@ -103,7 +103,7 @@ fun RoyalOptionRow(
         ) {
             Text(
                 text = label.uppercase(),
-                style = RoyalLabelStyle.copy(fontSize = 12.sp),
+                style = RoyalLabelStyle.copy(fontSize = 14.sp),
                 color = ParchmentText,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,

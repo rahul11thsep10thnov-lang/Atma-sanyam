@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rangepatte.app.R
 import com.rangepatte.app.domain.model.GameInfo
-import com.rangepatte.app.ui.components.royal.RoyalButton
 import com.rangepatte.app.ui.theme.BodyFont
 import com.rangepatte.app.ui.theme.ButtonCrimsonBottom
 import com.rangepatte.app.ui.theme.ButtonCrimsonTop
@@ -39,7 +38,7 @@ import com.rangepatte.app.ui.theme.GoldBevelLight
 import com.rangepatte.app.ui.theme.ParchmentText
 import com.rangepatte.app.ui.theme.ParchmentTextDim
 import com.rangepatte.app.ui.theme.RoyalLabelStyle
-import com.rangepatte.app.ui.theme.RoyalTitleStyle
+import com.rangepatte.app.ui.thumbnails.GameThumbnail
 
 /** Portrait backdrops cycle through four royal colours, like the coloured portrait cards of a strategy game. */
 private val portraitPalettes = listOf(
@@ -51,7 +50,7 @@ private val portraitPalettes = listOf(
 
 /**
  * A framed square "portrait" for a game: coloured radial backdrop, bevelled gold frame, and the
- * game's [GameEmblem] drawn in gold on top.
+ * game's [GameThumbnail] — its signature cards — on top.
  */
 @Composable
 fun GamePortrait(game: GameInfo, modifier: Modifier = Modifier, size: Dp? = null) {
@@ -66,12 +65,11 @@ fun GamePortrait(game: GameInfo, modifier: Modifier = Modifier, size: Dp? = null
             .border(1.dp, GoldBevelLight.copy(alpha = 0.6f), shape),
         contentAlignment = Alignment.Center
     ) {
-        GameEmblem(
+        GameThumbnail(
             gameId = game.id,
-            color = GoldBevelLight,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(4.dp)
         )
     }
 }
@@ -95,7 +93,7 @@ fun GameTile(
         NamePlaque(text = stringResource(game.nameRes))
         Text(
             text = stringResource(game.descriptionRes),
-            style = TextStyle(fontFamily = BodyFont, fontSize = 12.sp, lineHeight = 16.sp),
+            style = TextStyle(fontFamily = BodyFont, fontSize = 14.sp, lineHeight = 18.sp),
             color = ParchmentTextDim,
             textAlign = TextAlign.Center,
             maxLines = 2,
@@ -104,46 +102,11 @@ fun GameTile(
         )
         Text(
             text = playerCountLabel(game.minPlayers, game.maxPlayers, stringResource(R.string.players_suffix)),
-            style = RoyalLabelStyle.copy(fontSize = 10.sp),
+            style = RoyalLabelStyle.copy(fontSize = 12.sp),
             color = GoldBevelDark,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 2.dp)
         )
-    }
-}
-
-/** A wide card for the featured game: portrait on the left, name, summary and a Play button on the right. */
-@Composable
-fun FeaturedGameCard(game: GameInfo, onPlayClick: () -> Unit, modifier: Modifier = Modifier) {
-    Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        GamePortrait(game = game, size = 104.dp)
-        Column(modifier = Modifier
-            .weight(1f)
-            .padding(start = 14.dp)) {
-            Text(
-                text = stringResource(game.nameRes).uppercase(),
-                style = RoyalTitleStyle,
-                color = GoldBevelLight
-            )
-            Text(
-                text = stringResource(game.descriptionRes),
-                color = ParchmentText,
-                fontSize = 14.sp,
-                lineHeight = 19.sp,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-            Text(
-                text = playerCountLabel(game.minPlayers, game.maxPlayers, stringResource(R.string.players_suffix)),
-                style = RoyalLabelStyle.copy(fontSize = 11.sp),
-                color = GoldBevelDark,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-            RoyalButton(
-                text = stringResource(R.string.action_play),
-                onClick = onPlayClick,
-                modifier = Modifier.padding(top = 10.dp)
-            )
-        }
     }
 }
 
@@ -161,7 +124,7 @@ private fun NamePlaque(text: String) {
     ) {
         Text(
             text = text.uppercase(),
-            style = RoyalLabelStyle.copy(fontSize = 12.sp),
+            style = RoyalLabelStyle.copy(fontSize = 14.sp),
             color = ParchmentText,
             textAlign = TextAlign.Center,
             maxLines = 1,

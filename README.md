@@ -1,6 +1,6 @@
 # Indian Taash
 
-*"Classic Indian Card Games"* — a native Android app (Kotlin + Jetpack Compose) styled after a
+*"Bharatiya Khel, Bharatiya Tarike"* — a native Android app (Kotlin + Jetpack Compose) styled after a
 traditional Indian village courtyard: players seated around a woven jute charpai, antique
 gold-bordered cards, brass nameplates, warm lantern light. "Indian Taash" is a temporary internal
 name; see [Renaming the app](#renaming-the-app) to change it.
@@ -18,17 +18,21 @@ what exists today:
 | 1 | Project foundation (Gradle, manifest, app scaffold) | ✅ |
 | 2 | Theme (heritage color palette, typography, shapes) | ✅ |
 | 3 | Card engine (models, deck, card/back renderers, styles) | ✅ |
-| 4 | Home screen (featured/popular/more games grid) | ✅ |
+| 4 | Home screen — later replaced by the Khel page at the owner's request | ✅ |
 | 5 | Navigation (Compose Navigation, bottom nav, setup/table routes) | ✅ |
 | 6 | Game table shell (wooden table, header, hands, score panel) | ✅ |
 | — | Village-courtyard visual redesign (charpai table, antique cards, brass plaques, animation) | ✅ |
 | — | Language picker + 8-language UI translation (English, Hindi, Tamil, Telugu, Kannada, Marathi, Bengali, Punjabi) | ✅ |
-| — | Rules scroll popup with real researched rules content for all 9 games | ✅ |
-| — | Per-game vector emblem + one-clause summaries on game tiles | ✅ |
+| — | Rules scroll popup with real researched rules content for every game | ✅ |
+| — | One-clause summaries on game tiles | ✅ |
 | — | Classical tally-mark score display; gated Undo (AI games only, 3 uses) | ✅ |
 | — | Royal-court UI kit (strategy-game-style carved panels, crimson/steel buttons, options rows, portrait cards, command slots) applied to every screen | ✅ |
+| — | Owner feedback pass: language switches instantly (no restart); Home and categories removed — the app opens on **Khel** (all games in one grid); Teen Patti and Flush merged into "Teen Patti / Flush"; card-art thumbnails per game; rules in the chosen language with an English toggle; all text +2sp; History tab → empty **Entertainment** tab | ✅ |
+| — | Login / Sign up by mobile number + SMS OTP, user records in an online database (Firebase) | ✅ (needs your Firebase project — demo mode until then) |
+| — | Google AdMob ads (banner on every page, occasional full-screen ad after a game) with consent form | ✅ (test ad IDs until you add yours) |
+| — | ₹29/month "Remove ads?" membership + payment gateway screen | ✅ (gateway scaffold — payment partner to be plugged in) |
 | — | Multiplayer architecture scaffold (`GameRoom`/`PlayerConnection`/`GameSynchronizer` interfaces; vs-Computer and Pass & Play modes functional; Nearby/Online shown as "coming soon") | ✅ (scaffold) |
-| 7+ | Individual game engines (Solitaire, Spider, Rummy, Teen Patti, Flush, 29, Coat Piece, Dehla Pakad, Lakadi) | not started |
+| 7+ | Individual game engines (Solitaire, Spider, Rummy, Teen Patti / Flush, 29, Coat Piece, Dehla Pakad, Lakadi) | not started |
 | — | Real Nearby (WiFi/Bluetooth) and Online (internet) multiplayer implementation | not started |
 
 ### The redesign, specifically
@@ -40,7 +44,7 @@ what exists today:
   diamond / paisley leaf / spear-leaf) alongside the small conventional ♠♥♦♣ corner glyph, and a
   maroon-and-gold mandala card back.
 - **Brass/wood player nameplates and buttons** (`PlayerAvatar.kt`, `ScorePanel.kt`,
-  `ClassicalButton.kt`): wood-and-brass plaques instead of modern bubbles/flat buttons, with a
+  `royal/RoyalButton.kt`): wood-and-brass plaques instead of modern bubbles/flat buttons, with a
   press-down scale animation on buttons.
 - **Typography** (`ui/theme/Type.kt`): real bundled Cinzel and Marcellus fonts (see
   [Typography & fonts](#typography--fonts)) for the ornate title/headers, gold-colored with a
@@ -66,8 +70,15 @@ existing game are used. The building blocks:
 - `RoyalSectionTitle`, `RoyalOptionRow`, `RoyalOrbToggle`, `RoyalSlider` — the Settings screen's
   options-panel rows.
 - `RoyalSlot` — square command slots (play mode, player count) on the setup screen.
-- `GamePortrait` / `GameTile` / `FeaturedGameCard` (`ui/components/GameTile.kt`) — framed game
-  portraits with a crimson name plaque.
+- `GamePortrait` / `GameTile` (`ui/components/GameTile.kt`) — framed game portraits with a crimson
+  name plaque. The picture inside each portrait is `GameThumbnail` (`ui/thumbnails/`): real cards
+  drawn with the app's own card style in each game's signature arrangement — a trail of aces for
+  Teen Patti / Flush, K-Q-J of hearts for Rummy, J-9-A-10 of diamonds for Twenty Nine, four aces on
+  their foundations for Solitaire, A→2 of clubs fanned like a hand for Coat Piece, the four tens for
+  Dehla Pakad, a hand-written four-player score sheet for Lakadi, and a spades K→A cascade for
+  Spider Solitaire.
+- `AppTopBar` (`ui/chrome/`) — the strip on every page: "Remove ads?" call-in tab on the left,
+  Login / Sign up (or the signed-in player) on the right.
 
 The app uses one fixed dark colour scheme (`ui/theme/Theme.kt`) regardless of the system setting,
 since the heritage look is its identity rather than a user preference. Grids reflow to 2/3/4
@@ -90,6 +101,10 @@ code issue:
 - All **pure Kotlin domain logic** (`domain/model`, `domain/game` — cards, deck, deck manager) was
   verified in isolation in a throwaway Kotlin/JVM Gradle module, including the unit tests in
   `app/src/test/java/.../domain/game/DeckTest.kt` — all passed.
+- The pure-Compose files (game thumbnails, card motifs, rules books, top bar, login / membership /
+  checkout / Khel / Entertainment screens, rules dialog, royal UI kit) were type-checked against the
+  real Compose 1.7 libraries in a throwaway Compose-Desktop module (Android-only pieces stubbed),
+  and the thumbnails were rendered to an image to check them visually.
 - Every Compose/Android file was hand-reviewed for import correctness, `*Scope` receiver usage
   (`RowScope.weight`, `BoxScope.align`, etc.), and resource references (every `R.string.*` used in
   Kotlin was cross-checked against `strings.xml`).
@@ -133,20 +148,31 @@ Or press **Run** in Android Studio with a connected device/emulator (minSdk 24 /
 ```
 app/src/main/java/com/rangepatte/app/
 ├── data/
-│   └── local/     # LanguagePreferences (SharedPreferences-backed language choice)
+│   ├── local/     # LanguagePreferences (SharedPreferences-backed language choice)
+│   ├── ads/       # AdsManager — AdMob + consent, interstitial pacing, membership gating
+│   ├── auth/      # Phone OTP auth (Firebase / demo), AccountRepository, UserDirectory (Firestore "users")
+│   ├── membership/# MembershipRepository + MembershipPlan (₹29 / 30 days)
+│   └── payment/   # PaymentGateway interface + PlaceholderPaymentGateway
 ├── domain/
-│   ├── model/     # PlayingCard, Suit, Rank, Player, GameCatalog, AppLanguage, PlayMode, RulesContent
+│   ├── model/     # PlayingCard, Suit, Rank, Player, GameCatalog, AppLanguage, PlayMode
+│   ├── rules/     # RulesContent + one rules book per language (RulesEn.kt, RulesHi.kt, …)
 │   ├── game/      # Deck, DeckManager, CardGameEngine + GameState/GameAction contracts
 │   └── multiplayer/ # GameRoom/PlayerConnection/GameSynchronizer — architecture scaffold, unimplemented
 ├── ui/
 │   ├── theme/     # Color.kt, Type.kt, Shape.kt, Dimens.kt, Theme.kt — design tokens live here
 │   ├── cards/     # PlayingCardView/CardFace/CardBack renderers, SuitMotifs, CardStack, Hand, CardStyle
 │   ├── background/# BackgroundType enum + BackgroundManager (brush per scene)
-│   ├── components/# Shared widgets: ClassicalButton, GameTile, GameEmblem, WoodenTable, GameHeader, OrnamentalDivider, ...
-│   ├── language/  # LanguageSelectionScreen, locale-wrapping utilities
+│   ├── components/# Shared widgets: royal/ UI kit, GameTile, WoodenTable, GameHeader, OrnamentalDivider, ...
+│   ├── thumbnails/# GameThumbnail, MiniCard, LakadiScoreSheet — the card art on each game tile
+│   ├── chrome/    # AppTopBar ("Remove ads?" + Login strip shown on every page)
+│   ├── ads/       # BannerAdSlot
+│   ├── language/  # LanguageSelectionScreen, ProvideAppLocale (instant language switching)
 │   ├── rules/     # RulesDialog — the scroll-styled "how to play" popup
-│   ├── home/, games/, history/, settings/, setup/, table/   # screens
+│   ├── account/   # LoginScreen + LoginViewModel (mobile number → OTP)
+│   ├── membership/# MembershipScreen ("Remove ads?") + CheckoutScreen (payment gateway)
+│   ├── games/ (Khel), entertainment/, settings/, setup/, table/   # screens
 ├── navigation/    # Routes.kt, BottomNavItem.kt, RangEPatteNavHost.kt
+├── AppServices.kt # app-wide singletons (membership, account, ads, payment gateway)
 ├── MainActivity.kt
 └── RangEPatteApplication.kt
 ```
@@ -158,20 +184,19 @@ an `*Engine.kt`, `*Rules.kt`, and `*Screen.kt` — never touching the shared she
 ## How to add a new game
 
 1. Add a `GameInfo` entry to `domain/model/GameCatalog.kt` (name/description string resources,
-   min/max players, a `GameEmblem` case — see below). It automatically appears in Home and Games
-   grids and becomes navigable — `setup/{segment}` and `table/{segment}` resolve through the
+   min/max players, a `GameThumbnail` case — see below). It automatically appears on the Khel
+   page and becomes navigable — `setup/{segment}` and `table/{segment}` resolve through the
    catalog with no new route needed.
-2. Add a `GameRules(...)` entry for it in `domain/model/RulesContent.kt` — that's what the rules
-   scroll popup renders; without one it falls back to a "rules coming soon" placeholder.
+2. Add a `GameRules(...)` entry for it to each rules book in `domain/rules/` (`RulesEn.kt` at least
+   — other languages fall back to English) — that's what the rules scroll popup renders.
 3. Implement a `CardGameEngine` (see `domain/game/CardGameEngine.kt`) with its own `GameState`/
    `GameAction` types, under a new `com.rangepatte.app.game.<yourgame>` package.
 4. Build a screen that renders your engine's state using the existing card/table components
    (`PlayingCardView`, `Hand`, `CardFan`, `WoodenTable`, `ScorePanel`, ...) instead of
    `GameTableScreen`'s demo content, and wire it into `RangEPatteNavHost.kt` in place of the shared
    `GameTableScreen` call for that route.
-5. Add a `when` branch for the new `GameId` in `ui/components/GameEmblem.kt` with a `draw*Emblem`
-   function for its tile icon (procedural vector, matching the existing games — no image asset
-   needed).
+5. Add a `when` branch for the new `GameId` in `ui/thumbnails/GameThumbnail.kt` describing its
+   signature cards (the `fan(...)` helper covers most layouts) — no image asset needed.
 
 ## How to add a new card design
 
@@ -209,21 +234,19 @@ real artwork:
 
 ## Languages
 
-The app opens on a language picker (`ui/language/LanguageSelectionScreen.kt`) before anything
-else, per the design brief — the chosen language is saved (`data/local/LanguagePreferences.kt`,
-plain `SharedPreferences`, since it must be read synchronously in `Activity.attachBaseContext()`
-before Compose exists yet) and can be changed again later from Settings. All UI chrome — nav,
+The app opens on a language picker (`ui/language/LanguageSelectionScreen.kt`) the first time —
+the chosen language is saved (`data/local/LanguagePreferences.kt`) and can be changed again later
+from Settings. A change applies **instantly**, without restarting: `ProvideAppLocale`
+(`ui/language/LocaleUtils.kt`) re-provides a localized `Context`/`Configuration` to the whole
+Compose tree, so every `stringResource` re-resolves on the spot. All UI chrome — nav,
 buttons, headers, setup, settings, and every game's name and one-clause summary — is fully
 translated into all 8 supported languages: English, Hindi, Tamil, Telugu, Kannada, Marathi,
 Bengali, Punjabi (see `domain/model/AppLanguage.kt`).
 
-**Scope note:** the rules-scroll content (`domain/model/RulesContent.kt`) is English-only for now.
-Translating that many detailed rule bullets (~150 lines) into 7 languages accurately needs native-
-speaker review this environment can't provide, so — unlike the rest of the UI — it was deliberately
-left out of the translation pass rather than shipped with unreviewed machine translations for
-content this detailed. The 8-language string translations that *are* included (all `values-*/strings.xml`
-files) were also produced without native-speaker review and should get one before shipping, same
-as any machine-assisted localization.
+The rules scroll shows each game's rules in the chosen language, with a tab to switch to English
+(`domain/rules/` — one Kotlin rules book per language). **All translations (the `values-*/strings.xml`
+files and the rules books) were produced without native-speaker review and should get one before
+publishing**, as with any machine-assisted localization.
 
 ### How to add another language
 
@@ -272,10 +295,62 @@ No other code changes are needed — every user-facing UI string already goes th
 - **To implement Online:** the same interfaces, backed by a chosen realtime backend (Firebase
   Firestore/Realtime Database is the lowest-setup option — no server to host).
 
+## Login, ads and payments
+
+### Login / Sign up (mobile number + OTP) and the users database
+
+Tapping **Login / Sign up** (top right of every page) asks for a 10-digit Indian mobile number
+(and an optional name), sends an OTP by SMS, and signs the player in once the right OTP is typed.
+Each signed-up player becomes one document in the Firestore collection **`users`** (phone number,
+name, app language, membership end date, sign-up time, last login, app version) — open it in the
+Firebase console, or export it to BigQuery / Google Sheets, for analysis.
+
+Until a Firebase project is connected the app runs in **demo mode**: no SMS is sent, the OTP is
+always `123456` (the login screen says so), and the account stays on the phone only. To go live:
+
+1. Create a project at <https://console.firebase.google.com> and add an Android app with package
+   name `com.rangepatte.app`.
+2. Add your signing keys' **SHA-1 and SHA-256** fingerprints to that app (Android Studio: Gradle
+   panel ▸ app ▸ Tasks ▸ android ▸ `signingReport`).
+3. Download **`google-services.json`** and put it in the `app/` folder. The build detects it and
+   switches Firebase on automatically (see the top of `app/build.gradle.kts`).
+4. In the console: **Authentication ▸ Sign-in method ▸ Phone** → enable; **Firestore Database** →
+   create. Use security rules that let a signed-in user write only their own record, e.g.
+   `match /users/{uid} { allow read, write: if request.auth != null && request.auth.uid == uid; }`.
+5. Publish a privacy policy — Google Play requires one when an app collects phone numbers.
+
+### Google ads
+
+`data/ads/AdsManager.kt` runs Google AdMob: an adaptive **banner** at the bottom of every page and a
+**full-screen ad** when leaving a game table (at most every 2nd exit, never within 2 minutes of the
+last one). Google's consent form appears first where the law requires it (EEA/UK). Members see no
+ads at all. The ad IDs in `res/values/ads_config.xml` are Google's public **test** IDs, which show
+"Test Ad" and never pay; create your app and ad units at <https://admob.google.com> and replace the
+three IDs there before publishing. Note that AdMob reviews apps in the card-game category — keep
+everything points-only (no real-money play), as it is today.
+
+### ₹29/month membership ("Remove ads?") and the payment gateway
+
+The **Remove ads?** tab (top left of every page) opens the invitation to join the community for
+₹29/month. Joining needs a login, then **Pay ₹29** opens the checkout page (`ui/membership/`): order
+summary, choice of UPI / card / net banking / wallet, and Pay. All payment calls go through one
+interface, `PaymentGateway` (`data/payment/PaymentGateway.kt`); today it is a placeholder that
+charges nothing and says payments aren't live yet. Debug builds also show "Simulate successful
+payment" so the ad-free flow can be tested.
+
+To connect a payment partner later: write one class implementing `PaymentGateway` (wrapping e.g.
+Razorpay, PayU or Cashfree's Android SDK) and return it from `AppServices.paymentGateway`. Confirm
+each payment on a server (the partner's webhook) before granting membership.
+
+**Important — Google Play billing policy:** removing ads is a digital benefit used inside the app,
+and Google Play generally requires such in-app purchases to go through **Google Play Billing**. In
+India, the *User Choice Billing* programme lets an approved developer offer an alternative payment
+partner **alongside** Play Billing. Check the current Play Console payments policy before choosing
+the partner; a `PaymentGateway` backed by Play Billing fits the same interface.
+
 ## Legal / product design notes
 
-- No real-money betting, deposits, withdrawals, or gambling wallets exist or are planned in the
-  offline single-player/AI experience. Only non-monetary points.
-- The app works fully offline for all single-player, AI, and Pass & Play games — no `INTERNET`
-  permission is requested yet. That permission, and any networking code, only gets added once real
-  Nearby/Online multiplayer (see above) is actually implemented, so it never breaks offline play.
+- No real-money betting, deposits, withdrawals, or gambling wallets exist or are planned. Only
+  non-monetary points; the ₹29 membership only removes ads.
+- Gameplay itself (single-player, AI, Pass & Play) still works offline. The `INTERNET` permission
+  is now requested for ads, OTP login and the online users database.

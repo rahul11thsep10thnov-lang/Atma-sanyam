@@ -1,29 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ইন্ডিয়ান তাশ</string>
-    <string name="app_tagline">চিরায়ত ভারতীয় তাস খেলা</string>
+    <string name="app_tagline">ভারতীয় খেলা, ভারতীয় রীতি</string>
 
     <string name="language_select_title">আপনার ভাষা বেছে নিন</string>
     <string name="language_select_subtitle">আপনার রাজদরবারের জন্য ভাষা নির্বাচন করুন</string>
     <string name="language_select_continue">এগিয়ে যান</string>
 
-    <string name="nav_home">হোম</string>
     <string name="nav_games">খেলা</string>
-    <string name="nav_history">ইতিহাস</string>
     <string name="nav_settings">সেটিংস</string>
 
-    <string name="games_title">সব খেলা</string>
+    <string name="games_title">খেলা</string>
 
-    <string name="section_featured_game">বিশেষ খেলা</string>
-    <string name="section_popular_games">জনপ্রিয় খেলা</string>
-    <string name="section_more_games">আরও খেলা</string>
     <string name="action_play">খেলুন</string>
     <string name="players_suffix">খেলোয়াড়</string>
 
-    <string name="game_teen_patti_name">তিন পাত্তি</string>
+    <string name="game_teen_patti_name">তিন পাত্তি / ফ্লাশ</string>
     <string name="game_teen_patti_desc">ব্লাফ দিয়ে সেরা তিন-তাসের হাত তৈরি করুন।</string>
-    <string name="game_flush_name">ফ্লাশ</string>
-    <string name="game_flush_desc">তিন তাসের একটি আঞ্চলিক ফ্লাশ খেলা।</string>
     <string name="game_coat_piece_name">কোট পিস</string>
     <string name="game_coat_piece_desc">তুরুপের তাস দিয়ে সঙ্গীর সাথে চাল জিতুন।</string>
     <string name="game_twenty_nine_name">টোয়েন্টি নাইন</string>
@@ -57,7 +50,6 @@
     <string name="setup_mode_online">অনলাইন (ইন্টারনেট)</string>
     <string name="setup_mode_coming_soon">শীঘ্রই আসছে</string>
 
-    <string name="history_empty">এখনও কোনো খেলা খেলা হয়নি। আপনার ম্যাচের ইতিহাস এখানে দেখাবে।</string>
 
     <string name="settings_sound">শব্দ</string>
     <string name="settings_music">সঙ্গীত</string>
@@ -70,10 +62,6 @@
     <string name="rules_title_format">%1$s — কীভাবে খেলবেন</string>
     <string name="rules_placeholder">এই খেলার নিয়ম লেখা হচ্ছে এবং শীঘ্রই এখানে দেখাবে।</string>
     <string name="rules_dialog_close">স্ক্রোল বন্ধ করুন</string>
-    <string name="rules_objective_heading">উদ্দেশ্য</string>
-    <string name="rules_setup_heading">প্রস্তুতি</string>
-    <string name="rules_play_heading">কীভাবে খেলবেন</string>
-    <string name="rules_scoring_heading">স্কোরিং</string>
 
     <!-- Royal UI pass -->
     <string name="settings_section_audio">অডিও</string>
@@ -89,4 +77,54 @@
     <string name="player_opponent">প্রতিপক্ষ</string>
     <string name="player_ai_format">%1$s (এআই)</string>
     <string name="turn_indicator_format">%1$s-এর পালা</string>
+
+    <!-- Top bar, membership, payment, login -->
+    <string name="nav_entertainment">বিনোদন</string>
+    <string name="entertainment_coming_soon">শীঘ্রই আসছে।</string>
+    <string name="topbar_remove_ads">বিজ্ঞাপন সরাবেন?</string>
+    <string name="topbar_ad_free">বিজ্ঞাপনমুক্ত</string>
+    <string name="topbar_login">লগইন / সাইন আপ</string>
+    <string name="account_title">আমার অ্যাকাউন্ট</string>
+    <string name="account_logout">লগ আউট</string>
+    <string name="membership_title">বিজ্ঞাপন সরান</string>
+    <string name="membership_heading">এই ধ্রুপদী খেলাগুলোর সম্প্রদায়ে যোগ দিন @ ₹29/মাস।</string>
+    <string name="membership_body">আপনার জন্য কোনো বিজ্ঞাপন দেখানো হবে না, সম্প্রদায়ের বন্ধুরা!</string>
+    <string name="membership_benefit_no_ads">কোনো পাতা বা খেলায় বিজ্ঞাপন নেই</string>
+    <string name="membership_benefit_support">ভারতীয় ধ্রুপদী খেলাকে সমর্থন করুন</string>
+    <string name="membership_price">₹29 / মাস</string>
+    <string name="membership_pay">₹29 দিন</string>
+    <string name="membership_extend">এক মাস বাড়ান — ₹29</string>
+    <string name="membership_login_required">যোগ দিতে আপনার মোবাইল নম্বর দিয়ে লগইন করুন।</string>
+    <string name="membership_active_until_format">আপনি সম্প্রদায়ের বন্ধু! %1$s পর্যন্ত বিজ্ঞাপনমুক্ত।</string>
+    <string name="checkout_title">পেমেন্ট</string>
+    <string name="checkout_order_summary">অর্ডারের সারাংশ</string>
+    <string name="checkout_item">সম্প্রদায় সদস্যপদ (1 মাস, বিজ্ঞাপন নেই)</string>
+    <string name="checkout_amount">₹29.00</string>
+    <string name="checkout_total">মোট</string>
+    <string name="checkout_method_title">পেমেন্টের উপায়</string>
+    <string name="checkout_method_upi">UPI</string>
+    <string name="checkout_method_card">ডেবিট / ক্রেডিট কার্ড</string>
+    <string name="checkout_method_netbanking">নেট ব্যাংকিং</string>
+    <string name="checkout_method_wallet">ওয়ালেট</string>
+    <string name="checkout_not_configured">পেমেন্ট এখনও চালু হয়নি — পেমেন্ট পার্টনার শীঘ্রই যুক্ত হবে। আপনার কাছ থেকে কোনো টাকা নেওয়া হয়নি।</string>
+    <string name="checkout_success">পেমেন্ট সফল! সম্প্রদায়ে স্বাগতম — এখন বিজ্ঞাপন সরানো হয়েছে।</string>
+    <string name="checkout_failed">পেমেন্ট ব্যর্থ হয়েছে। আবার চেষ্টা করুন।</string>
+    <string name="checkout_cancelled">পেমেন্ট বাতিল করা হয়েছে।</string>
+    <string name="checkout_debug_simulate">সফল পেমেন্ট অনুকরণ করুন (শুধু টেস্ট বিল্ড)</string>
+    <string name="checkout_secure_note">পেমেন্ট আমাদের পেমেন্ট পার্টনার নিরাপদে প্রক্রিয়া করে।</string>
+    <string name="login_title">লগইন / সাইন আপ</string>
+    <string name="login_phone_label">মোবাইল নম্বর</string>
+    <string name="login_name_label">আপনার নাম (ঐচ্ছিক)</string>
+    <string name="login_send_otp">OTP পাঠান</string>
+    <string name="login_sms_note">আপনার নম্বর যাচাই করতে আমরা SMS-এ একবারের পাসওয়ার্ড (OTP) পাঠাব।</string>
+    <string name="login_otp_sent_format">%1$s-এ পাঠানো OTP লিখুন</string>
+    <string name="login_otp_label">6 সংখ্যার OTP</string>
+    <string name="login_verify">যাচাই করে এগিয়ে যান</string>
+    <string name="login_resend">আবার OTP পাঠান</string>
+    <string name="login_resend_in_format">%1$d সেকেন্ডে আবার পাঠান</string>
+    <string name="login_change_number">নম্বর বদলান</string>
+    <string name="login_invalid_phone">সঠিক 10 সংখ্যার মোবাইল নম্বর লিখুন।</string>
+    <string name="login_invalid_otp">OTP ভুল। আবার চেষ্টা করুন।</string>
+    <string name="login_error_generic">OTP পাঠানো গেল না। নম্বর ও ইন্টারনেট দেখে আবার চেষ্টা করুন।</string>
+    <string name="login_demo_notice_format">ডেমো মোড: SMS এখনও যুক্ত হয়নি, তাই কোনো বার্তা পাঠানো হয় না। OTP %1$s ব্যবহার করুন।</string>
 </resources>

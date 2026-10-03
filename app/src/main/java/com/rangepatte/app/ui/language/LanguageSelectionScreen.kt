@@ -50,14 +50,15 @@ import com.rangepatte.app.ui.theme.RoyalLabelStyle
  * The very first screen a new player sees — picking a language is a precondition for everything
  * else, per the design brief. Laid out like a "select profile" grid of framed tiles; each tile is
  * always rendered in its own script ([AppLanguage.nativeName]) so it reads correctly no matter what
- * locale the app/device currently resolves to.
+ * locale the app/device currently resolves to. Continue applies the language instantly — no restart.
  */
 @Composable
 fun LanguageSelectionScreen(
     onLanguageChosen: (AppLanguage) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    initialSelection: AppLanguage? = null
 ) {
-    var selected by remember { mutableStateOf<AppLanguage?>(null) }
+    var selected by remember { mutableStateOf(initialSelection) }
 
     WatermarkBackground(backgroundType = BackgroundType.COURTYARD, modifier = modifier) {
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {

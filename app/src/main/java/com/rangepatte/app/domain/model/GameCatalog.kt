@@ -5,8 +5,8 @@ import com.rangepatte.app.R
 
 /** Stable identifier for each game — used as the navigation route segment and history key. */
 enum class GameId(val routeSegment: String) {
+    /** Teen Patti and "Flush" (Flash) are the same game under two regional names, so they share one entry. */
     TEEN_PATTI("teenPatti"),
-    FLUSH("flush"),
     COAT_PIECE("coatPiece"),
     TWENTY_NINE("twentyNine"),
     RUMMY("rummy"),
@@ -27,7 +27,7 @@ data class GameInfo(
 )
 
 /**
- * Static metadata for every game in the app. The Home/Games/Setup/Table/Rules screens all read
+ * Static metadata for every game in the app. The Khel/Setup/Table/Rules screens all read
  * from this single catalog so adding a new game later means adding one entry here plus its engine
  * and screen — never touching the shell screens.
  */
@@ -40,11 +40,8 @@ object GameCatalog {
         GameInfo(GameId.COAT_PIECE, R.string.game_coat_piece_name, R.string.game_coat_piece_desc, 4, 4),
         GameInfo(GameId.DEHLA_PAKAD, R.string.game_dehla_pakad_name, R.string.game_dehla_pakad_desc, 4, 4),
         GameInfo(GameId.LAKADI, R.string.game_lakadi_name, R.string.game_lakadi_desc, 4, 4),
-        GameInfo(GameId.FLUSH, R.string.game_flush_name, R.string.game_flush_desc, 3, 6),
         GameInfo(GameId.SPIDER_SOLITAIRE, R.string.game_spider_solitaire_name, R.string.game_spider_solitaire_desc, 1, 1)
     )
-
-    val featured: GameInfo get() = all.first { it.id == GameId.TEEN_PATTI }
 
     fun byId(id: GameId): GameInfo = all.first { it.id == id }
 

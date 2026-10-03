@@ -2,9 +2,10 @@ package com.rangepatte.app
 
 import android.app.Application
 
-/**
- * Application entry point. Kept deliberately thin — no DI framework is wired in yet;
- * screens construct their own ViewModels via factories until Room/DataStore (Phase 17-19)
- * introduce shared repositories that would justify one.
- */
-class RangEPatteApplication : Application()
+/** Application entry point: creates the app-wide services (membership, account, ads). */
+class RangEPatteApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        AppServices.init(this)
+    }
+}

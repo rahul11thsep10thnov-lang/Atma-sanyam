@@ -1,29 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">இந்தியன் தாஷ்</string>
-    <string name="app_tagline">பாரம்பரிய இந்திய சீட்டு விளையாட்டுகள்</string>
+    <string name="app_tagline">இந்திய விளையாட்டுகள், இந்திய முறைகள்</string>
 
     <string name="language_select_title">உங்கள் மொழியைத் தேர்ந்தெடுக்கவும்</string>
     <string name="language_select_subtitle">உங்கள் அரசவைக்கான மொழியைத் தேர்ந்தெடுக்கவும்</string>
     <string name="language_select_continue">தொடரவும்</string>
 
-    <string name="nav_home">முகப்பு</string>
-    <string name="nav_games">விளையாட்டுகள்</string>
-    <string name="nav_history">வரலாறு</string>
+    <string name="nav_games">ஆட்டங்கள்</string>
     <string name="nav_settings">அமைப்புகள்</string>
 
-    <string name="games_title">அனைத்து விளையாட்டுகள்</string>
+    <string name="games_title">ஆட்டங்கள்</string>
 
-    <string name="section_featured_game">சிறப்பு விளையாட்டு</string>
-    <string name="section_popular_games">பிரபலமான விளையாட்டுகள்</string>
-    <string name="section_more_games">மேலும் விளையாட்டுகள்</string>
     <string name="action_play">விளையாடு</string>
     <string name="players_suffix">வீரர்கள்</string>
 
-    <string name="game_teen_patti_name">தீன் பத்தி</string>
+    <string name="game_teen_patti_name">தீன் பத்தி / ஃப்ளஷ்</string>
     <string name="game_teen_patti_desc">ஏமாற்றி சிறந்த மூன்று சீட்டு கை அமைக்கவும்.</string>
-    <string name="game_flush_name">ஃப்ளஷ்</string>
-    <string name="game_flush_desc">மூன்று சீட்டுகளின் ஒரு பிராந்திய ஃப்ளஷ் விளையாட்டு.</string>
     <string name="game_coat_piece_name">கோட் பீஸ்</string>
     <string name="game_coat_piece_desc">சீட்டால் கூட்டாளியுடன் சுற்றுகளை வெல்லுங்கள்.</string>
     <string name="game_twenty_nine_name">ட்வென்டி நைன்</string>
@@ -57,7 +50,6 @@
     <string name="setup_mode_online">ஆன்லைன் (இணையம்)</string>
     <string name="setup_mode_coming_soon">விரைவில் வருகிறது</string>
 
-    <string name="history_empty">இதுவரை எந்த விளையாட்டும் விளையாடப்படவில்லை. உங்கள் ஆட்ட வரலாறு இங்கே தோன்றும்.</string>
 
     <string name="settings_sound">ஒலி</string>
     <string name="settings_music">இசை</string>
@@ -70,10 +62,6 @@
     <string name="rules_title_format">%1$s — எப்படி விளையாடுவது</string>
     <string name="rules_placeholder">இந்த விளையாட்டின் விதிகள் எழுதப்பட்டு வருகின்றன, விரைவில் இங்கே தோன்றும்.</string>
     <string name="rules_dialog_close">சுருளை மூடு</string>
-    <string name="rules_objective_heading">நோக்கம்</string>
-    <string name="rules_setup_heading">அமைப்பு</string>
-    <string name="rules_play_heading">எப்படி விளையாடுவது</string>
-    <string name="rules_scoring_heading">மதிப்பெண்</string>
 
     <!-- Royal UI pass -->
     <string name="settings_section_audio">ஆடியோ</string>
@@ -89,4 +77,54 @@
     <string name="player_opponent">எதிராளி</string>
     <string name="player_ai_format">%1$s (ஏஐ)</string>
     <string name="turn_indicator_format">%1$s இன் முறை</string>
+
+    <!-- Top bar, membership, payment, login -->
+    <string name="nav_entertainment">பொழுதுபோக்கு</string>
+    <string name="entertainment_coming_soon">விரைவில் வருகிறது.</string>
+    <string name="topbar_remove_ads">விளம்பரங்களை நீக்கவா?</string>
+    <string name="topbar_ad_free">விளம்பரமில்லை</string>
+    <string name="topbar_login">உள்நுழை / பதிவு</string>
+    <string name="account_title">என் கணக்கு</string>
+    <string name="account_logout">வெளியேறு</string>
+    <string name="membership_title">விளம்பரங்களை நீக்கு</string>
+    <string name="membership_heading">இந்தப் பாரம்பரிய விளையாட்டுகளின் சமூகத்தில் இணையுங்கள் @ ₹29/மாதம்.</string>
+    <string name="membership_body">உங்களுக்கு எந்த விளம்பரமும் காட்டப்படாது, சமூக நண்பர்களே!</string>
+    <string name="membership_benefit_no_ads">எந்தப் பக்கத்திலும் விளையாட்டிலும் விளம்பரம் இல்லை</string>
+    <string name="membership_benefit_support">இந்தியப் பாரம்பரிய விளையாட்டுகளுக்கு ஆதரவு தாருங்கள்</string>
+    <string name="membership_price">₹29 / மாதம்</string>
+    <string name="membership_pay">₹29 செலுத்து</string>
+    <string name="membership_extend">ஒரு மாதம் நீட்டிக்கவும் — ₹29</string>
+    <string name="membership_login_required">இணைய உங்கள் மொபைல் எண் மூலம் உள்நுழையுங்கள்.</string>
+    <string name="membership_active_until_format">நீங்கள் சமூக நண்பர்! %1$s வரை விளம்பரமில்லை.</string>
+    <string name="checkout_title">கட்டணம்</string>
+    <string name="checkout_order_summary">ஆர்டர் சுருக்கம்</string>
+    <string name="checkout_item">சமூக உறுப்பினர் சேர்க்கை (1 மாதம், விளம்பரமில்லை)</string>
+    <string name="checkout_amount">₹29.00</string>
+    <string name="checkout_total">மொத்தம்</string>
+    <string name="checkout_method_title">கட்டண முறை</string>
+    <string name="checkout_method_upi">UPI</string>
+    <string name="checkout_method_card">டெபிட் / கிரெடிட் கார்டு</string>
+    <string name="checkout_method_netbanking">நெட் பேங்கிங்</string>
+    <string name="checkout_method_wallet">வாலட்</string>
+    <string name="checkout_not_configured">கட்டணங்கள் இன்னும் தொடங்கவில்லை — கட்டணக் கூட்டாளர் விரைவில் இணைக்கப்படுவார். உங்களிடம் எந்தத் தொகையும் வசூலிக்கப்படவில்லை.</string>
+    <string name="checkout_success">கட்டணம் வெற்றி! சமூகத்துக்கு வரவேற்கிறோம் — இப்போது விளம்பரங்கள் நீக்கப்பட்டன.</string>
+    <string name="checkout_failed">கட்டணம் தோல்வியடைந்தது. மீண்டும் முயலுங்கள்.</string>
+    <string name="checkout_cancelled">கட்டணம் ரத்து செய்யப்பட்டது.</string>
+    <string name="checkout_debug_simulate">வெற்றிகரமான கட்டணத்தை உருவகப்படுத்து (சோதனை பில்டு மட்டும்)</string>
+    <string name="checkout_secure_note">கட்டணங்கள் எங்கள் கட்டணக் கூட்டாளரால் பாதுகாப்பாகச் செயலாக்கப்படுகின்றன.</string>
+    <string name="login_title">உள்நுழை / பதிவு</string>
+    <string name="login_phone_label">மொபைல் எண்</string>
+    <string name="login_name_label">உங்கள் பெயர் (விருப்பம்)</string>
+    <string name="login_send_otp">OTP அனுப்பு</string>
+    <string name="login_sms_note">உங்கள் எண்ணைச் சரிபார்க்க SMS மூலம் ஒருமுறை கடவுச்சொல் (OTP) அனுப்புவோம்.</string>
+    <string name="login_otp_sent_format">%1$s க்கு அனுப்பிய OTP ஐ உள்ளிடுங்கள்</string>
+    <string name="login_otp_label">6 இலக்க OTP</string>
+    <string name="login_verify">சரிபார்த்துத் தொடர்</string>
+    <string name="login_resend">OTP மீண்டும் அனுப்பு</string>
+    <string name="login_resend_in_format">%1$d வினாடிகளில் மீண்டும் அனுப்பு</string>
+    <string name="login_change_number">எண்ணை மாற்று</string>
+    <string name="login_invalid_phone">சரியான 10 இலக்க மொபைல் எண்ணை உள்ளிடுங்கள்.</string>
+    <string name="login_invalid_otp">OTP தவறு. மீண்டும் முயலுங்கள்.</string>
+    <string name="login_error_generic">OTP அனுப்ப முடியவில்லை. உங்கள் எண்ணையும் இணையத்தையும் சரிபார்த்து மீண்டும் முயலுங்கள்.</string>
+    <string name="login_demo_notice_format">டெமோ முறை: SMS இன்னும் இணைக்கப்படவில்லை, எனவே செய்தி அனுப்பப்படாது. OTP %1$s ஐப் பயன்படுத்துங்கள்.</string>
 </resources>

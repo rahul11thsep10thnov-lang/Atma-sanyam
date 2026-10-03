@@ -247,7 +247,7 @@ private fun ModeSlots(selected: PlayMode, onSelect: (PlayMode) -> Unit) {
                 }
                 Text(
                     text = label,
-                    style = RoyalLabelStyle.copy(fontSize = 10.sp, letterSpacing = 0.4.sp, lineHeight = 13.sp),
+                    style = RoyalLabelStyle.copy(fontSize = 12.sp, letterSpacing = 0.4.sp, lineHeight = 15.sp),
                     color = if (isSelected) GoldBevelLight else ParchmentTextDim,
                     textAlign = TextAlign.Center,
                     maxLines = 3,
@@ -256,7 +256,7 @@ private fun ModeSlots(selected: PlayMode, onSelect: (PlayMode) -> Unit) {
                 if (!option.available) {
                     Text(
                         text = comingSoon,
-                        style = RoyalLabelStyle.copy(fontSize = 9.sp, letterSpacing = 0.sp),
+                        style = RoyalLabelStyle.copy(fontSize = 11.sp, letterSpacing = 0.sp),
                         color = GoldBevelDark,
                         textAlign = TextAlign.Center
                     )

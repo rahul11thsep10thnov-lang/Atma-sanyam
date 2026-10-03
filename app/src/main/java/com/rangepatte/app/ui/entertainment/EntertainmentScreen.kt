@@ -1,4 +1,4 @@
-package com.rangepatte.app.ui.history
+package com.rangepatte.app.ui.entertainment
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,12 +18,9 @@ import com.rangepatte.app.ui.components.WatermarkBackground
 import com.rangepatte.app.ui.components.royal.RoyalPanel
 import com.rangepatte.app.ui.theme.ParchmentTextDim
 
-/**
- * Match history placeholder. Backed by Room (a `GameHistoryEntity`) starting Phase 17 — this
- * screen only needs its data source swapped then.
- */
+/** The Entertainment tab — deliberately empty for now; its content will be added later. */
 @Composable
-fun HistoryScreen(modifier: Modifier = Modifier) {
+fun EntertainmentScreen(modifier: Modifier = Modifier) {
     WatermarkBackground(backgroundType = BackgroundType.EVENING_BALCONY, modifier = modifier) {
         Box(
             modifier = Modifier
@@ -31,9 +28,9 @@ fun HistoryScreen(modifier: Modifier = Modifier) {
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
-            RoyalPanel(title = stringResource(R.string.nav_history), modifier = Modifier.fillMaxWidth()) {
+            RoyalPanel(title = stringResource(R.string.nav_entertainment), modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = stringResource(R.string.history_empty),
+                    text = stringResource(R.string.entertainment_coming_soon),
                     style = MaterialTheme.typography.bodyLarge,
                     color = ParchmentTextDim,
                     textAlign = TextAlign.Center,

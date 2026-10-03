@@ -24,13 +24,17 @@ import kotlin.math.sin
 fun SuitMotif(suit: Suit, color: Color, modifier: Modifier = Modifier) {
     Canvas(modifier = modifier.fillMaxSize()) {
         val center = Offset(size.width / 2f, size.height / 2f)
-        val radius = minOf(size.width, size.height) / 2f
-        when (suit) {
-            Suit.HEARTS -> drawLotus(center, radius, color)
-            Suit.DIAMONDS -> drawOrnamentalDiamond(center, radius, color)
-            Suit.CLUBS -> drawPaisleyLeaf(center, radius, color)
-            Suit.SPADES -> drawSpearLeaf(center, radius, color)
-        }
+        drawSuitMotif(suit, center, minOf(size.width, size.height) / 2f, color)
+    }
+}
+
+/** Draws [suit]'s motif centred at [center] — shared by [SuitMotif] and the game thumbnails. */
+internal fun DrawScope.drawSuitMotif(suit: Suit, center: Offset, radius: Float, color: Color) {
+    when (suit) {
+        Suit.HEARTS -> drawLotus(center, radius, color)
+        Suit.DIAMONDS -> drawOrnamentalDiamond(center, radius, color)
+        Suit.CLUBS -> drawPaisleyLeaf(center, radius, color)
+        Suit.SPADES -> drawSpearLeaf(center, radius, color)
     }
 }
 
@@ -162,12 +166,16 @@ private fun DrawScope.drawSpearLeaf(center: Offset, radius: Float, color: Color)
 fun FaceCardCrest(rank: Rank, color: Color, modifier: Modifier = Modifier) {
     Canvas(modifier = modifier.fillMaxSize()) {
         val center = Offset(size.width / 2f, size.height / 2f)
-        val radius = minOf(size.width, size.height) / 2f
-        when (rank) {
-            Rank.KING -> drawCrown(center, radius, color)
-            Rank.QUEEN -> drawDiadem(center, radius, color)
-            else -> drawPlume(center, radius, color)
-        }
+        drawFaceCrest(rank, center, minOf(size.width, size.height) / 2f, color)
+    }
+}
+
+/** Draws the King/Queen/Jack crest centred at [center] — shared by [FaceCardCrest] and the game thumbnails. */
+internal fun DrawScope.drawFaceCrest(rank: Rank, center: Offset, radius: Float, color: Color) {
+    when (rank) {
+        Rank.KING -> drawCrown(center, radius, color)
+        Rank.QUEEN -> drawDiadem(center, radius, color)
+        else -> drawPlume(center, radius, color)
     }
 }
 

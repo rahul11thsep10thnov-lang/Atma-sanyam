@@ -18,9 +18,8 @@ import com.rangepatte.app.R
  * bundling a third heavy font for that role wasn't worth the size against the brief's own
  * "do not unnecessarily increase application size" instruction.
  *
- * Devanagari-compatible fonts (Noto Serif Devanagari / Tiro Devanagari) are not bundled yet since
- * the app is English-only today — see README "How to add another language" for how to add one
- * alongside a values-hi/ string set without touching this file's structure.
+ * All sizes below are 2sp larger than the original design scale, per the owner's request for
+ * bigger text everywhere. Indic scripts fall back to the platform's Noto fonts automatically.
  */
 // Cinzel is a variable font (registered 'wght' axis); declaring both weights against the same
 // file lets the platform's variable-font instancing pick the right instance along that axis —
@@ -44,59 +43,78 @@ val RangEPatteTypography = Typography(
     displayLarge = TextStyle(
         fontFamily = DisplayFont,
         fontWeight = FontWeight.Bold,
-        fontSize = 38.sp,
-        lineHeight = 46.sp,
+        fontSize = 40.sp,
+        lineHeight = 48.sp,
         letterSpacing = 1.sp
     ),
     headlineLarge = TextStyle(
         fontFamily = DisplayFont,
         fontWeight = FontWeight.Bold,
-        fontSize = 28.sp,
-        lineHeight = 36.sp,
+        fontSize = 30.sp,
+        lineHeight = 38.sp,
         letterSpacing = 0.5.sp
     ),
     headlineMedium = TextStyle(
         fontFamily = DisplayFont,
         fontWeight = FontWeight.Bold,
-        fontSize = 22.sp,
-        lineHeight = 30.sp,
+        fontSize = 24.sp,
+        lineHeight = 32.sp,
         letterSpacing = 0.5.sp
     ),
     titleLarge = TextStyle(
         fontFamily = TitleFont,
         fontWeight = FontWeight.Normal,
-        fontSize = 21.sp,
-        lineHeight = 28.sp
+        fontSize = 23.sp,
+        lineHeight = 30.sp
     ),
     titleMedium = TextStyle(
         fontFamily = TitleFont,
         fontWeight = FontWeight.Normal,
-        fontSize = 17.sp,
-        lineHeight = 24.sp
+        fontSize = 19.sp,
+        lineHeight = 26.sp
     ),
     bodyLarge = TextStyle(
         fontFamily = BodyFont,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp
+        fontSize = 18.sp,
+        lineHeight = 26.sp
     ),
     bodyMedium = TextStyle(
         fontFamily = BodyFont,
         fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        lineHeight = 20.sp
+        fontSize = 16.sp,
+        lineHeight = 22.sp
     ),
     labelLarge = TextStyle(
         fontFamily = BodyFont,
         fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 20.sp
+        fontSize = 16.sp,
+        lineHeight = 22.sp
     ),
     labelMedium = TextStyle(
         fontFamily = BodyFont,
         fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
-        lineHeight = 16.sp
+        fontSize = 14.sp,
+        lineHeight = 18.sp
+    ),
+    // The remaining Material roles (used inside text fields, chips etc.), also +2sp over Material's defaults.
+    titleSmall = TextStyle(
+        fontFamily = TitleFont,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 22.sp
+    ),
+    bodySmall = TextStyle(
+        fontFamily = BodyFont,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+        lineHeight = 18.sp
+    ),
+    labelSmall = TextStyle(
+        fontFamily = BodyFont,
+        fontWeight = FontWeight.Medium,
+        fontSize = 13.sp,
+        lineHeight = 17.sp
     )
 )
 
@@ -104,8 +122,8 @@ val RangEPatteTypography = Typography(
 val RoyalTitleStyle = TextStyle(
     fontFamily = DisplayFont,
     fontWeight = FontWeight.Bold,
-    fontSize = 19.sp,
-    lineHeight = 26.sp,
+    fontSize = 21.sp,
+    lineHeight = 28.sp,
     letterSpacing = 1.8.sp
 )
 
@@ -113,7 +131,7 @@ val RoyalTitleStyle = TextStyle(
 val RoyalLabelStyle = TextStyle(
     fontFamily = DisplayFont,
     fontWeight = FontWeight.Bold,
-    fontSize = 13.sp,
-    lineHeight = 18.sp,
+    fontSize = 15.sp,
+    lineHeight = 20.sp,
     letterSpacing = 1.2.sp
 )

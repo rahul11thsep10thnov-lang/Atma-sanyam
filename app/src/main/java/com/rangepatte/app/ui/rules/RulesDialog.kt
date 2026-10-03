@@ -3,6 +3,7 @@ package com.rangepatte.app.ui.rules
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,24 +11,33 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.rangepatte.app.R
 import com.rangepatte.app.domain.model.GameInfo
-import com.rangepatte.app.domain.model.RulesContent
+import com.rangepatte.app.domain.model.AppLanguage
+import com.rangepatte.app.domain.rules.RulesContent
+import com.rangepatte.app.ui.language.LocalAppLanguage
 import com.rangepatte.app.ui.components.royal.RoyalButton
 import com.rangepatte.app.ui.components.OrnamentalDivider
 import com.rangepatte.app.ui.theme.AntiqueGold
@@ -42,16 +52,20 @@ import com.rangepatte.app.ui.theme.TextPrimaryLight
 
 /**
  * "How to play" presented as a royal scroll invitation — a parchment card with a gold rule
- * border, opened as a popup the moment a game is selected (per the design brief) rather than a
- * separate navigated page. Content comes from [RulesContent]; a game with no structured rules yet
- * falls back to [R.string.rules_placeholder].
+ * border, opened as a popup the moment a game is selected rather than a separate navigated page.
+ * The rules are shown in the player's chosen language, with a toggle to read them in English.
+ * Content comes from [RulesContent]; a game with no structured rules yet falls back to
+ * [R.string.rules_placeholder].
  */
 @Composable
 fun RulesDialog(
     game: GameInfo,
     onDismiss: () -> Unit
 ) {
-    val rules = RulesContent.forGame(game.id)
+    val appLanguage = LocalAppLanguage.current
+    var shownLanguage by remember(appLanguage) { mutableStateOf(appLanguage) }
+    val book = RulesContent.book(shownLanguage)
+    val rules = RulesContent.forGame(game.id, shownLanguage)
 
     Dialog(onDismissRequest = onDismiss) {
         Column {
@@ -71,6 +85,16 @@ fun RulesDialog(
                 )
                 OrnamentalDivider(modifier = Modifier.padding(top = 4.dp, bottom = 12.dp))
 
+                if (appLanguage != AppLanguage.ENGLISH) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(bottom = 12.dp)
+                    ) {
+                        LanguageTab(appLanguage.nativeName, shownLanguage == appLanguage) { shownLanguage = appLanguage }
+                        LanguageTab(AppLanguage.ENGLISH.nativeName, shownLanguage == AppLanguage.ENGLISH) { shownLanguage = AppLanguage.ENGLISH }
+                    }
+                }
+
                 if (rules != null) {
                     Column(
                         modifier = Modifier
@@ -78,7 +102,7 @@ fun RulesDialog(
                             .verticalScroll(rememberScrollState())
                     ) {
                         Text(
-                            text = stringResource(R.string.rules_objective_heading),
+                            text = book.objectiveHeading,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = AntiqueGold
@@ -89,9 +113,9 @@ fun RulesDialog(
                             color = TextPrimaryLight,
                             modifier = Modifier.padding(top = 4.dp)
                         )
-                        RuleSection(stringResource(R.string.rules_setup_heading), rules.setup)
-                        RuleSection(stringResource(R.string.rules_play_heading), rules.play)
-                        RuleSection(stringResource(R.string.rules_scoring_heading), rules.scoring)
+                        RuleSection(book.setupHeading, rules.setup)
+                        RuleSection(book.playHeading, rules.play)
+                        RuleSection(book.scoringHeading, rules.scoring)
                     }
                 } else {
                     Text(
@@ -134,6 +158,23 @@ private fun ScrollRod() {
         drawCircle(color = GoldBevelDark, radius = knob, center = Offset(knob, size.height / 2f), style = Stroke(width = 1.dp.toPx()))
         drawCircle(color = GoldBevelDark, radius = knob, center = Offset(size.width - knob, size.height / 2f), style = Stroke(width = 1.dp.toPx()))
     }
+}
+
+/** One of the two language tabs at the top of the scroll; the selected one is a filled gold plaque. */
+@Composable
+private fun LanguageTab(label: String, selected: Boolean, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(3.dp)
+    Text(
+        text = label,
+        style = MaterialTheme.typography.labelLarge,
+        fontWeight = FontWeight.Bold,
+        color = if (selected) TextPrimaryLight else AntiqueGold,
+        modifier = Modifier
+            .background(if (selected) RoyalGold else Color.Transparent, shape)
+            .border(1.dp, AntiqueGold, shape)
+            .selectable(selected = selected, role = Role.Tab, onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 6.dp)
+    )
 }
 
 @Composable

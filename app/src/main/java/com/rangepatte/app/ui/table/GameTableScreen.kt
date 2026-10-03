@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.table
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -69,6 +70,9 @@ fun GameTableScreen(
     val showUndo = playMode.allowsUndo || game.maxPlayers <= 1
     var undoUsesRemaining by remember(game.id) { mutableStateOf(UNDO_USES_PER_GAME) }
     val youName = stringResource(R.string.player_you)
+
+    // System Back goes through the same exit path as the header arrow (which may show an ad).
+    BackHandler(onBack = onBackClick)
     val opponentName = stringResource(R.string.player_opponent)
 
     WatermarkBackground(backgroundType = BackgroundType.VILLAGE_CHAUPAL, modifier = modifier) {

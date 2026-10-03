@@ -7,10 +7,8 @@ import com.rangepatte.app.domain.model.AppLanguage
 
 /**
  * Synchronous, lightweight persistence for the chosen UI language — deliberately plain
- * [SharedPreferences] rather than DataStore, since the stored value must be readable
- * synchronously in `Activity.attachBaseContext()`, before any Compose/coroutine machinery exists
- * yet for that process. Broader settings (Phase 18) can move to DataStore without this needing to
- * follow, since this is read from a different lifecycle point than everything else.
+ * [SharedPreferences] so `MainActivity.onCreate` can read it before the first frame and open the
+ * app straight in the right language (or on the language picker the very first time).
  */
 object LanguagePreferences {
     private const val PREFS_NAME = "language_prefs"

@@ -1,52 +1,80 @@
 package com.rangepatte.app.navigation
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.compose.runtime.getValue
-import com.rangepatte.app.data.local.LanguagePreferences
+import com.rangepatte.app.AppServices
+import com.rangepatte.app.domain.model.AppLanguage
 import com.rangepatte.app.domain.model.GameCatalog
 import com.rangepatte.app.domain.model.PlayMode
+import com.rangepatte.app.ui.account.LoginScreen
+import com.rangepatte.app.ui.ads.BannerAdSlot
+import com.rangepatte.app.ui.chrome.AppTopBar
 import com.rangepatte.app.ui.components.BottomNavigationBar
+import com.rangepatte.app.ui.entertainment.EntertainmentScreen
 import com.rangepatte.app.ui.games.GamesScreen
-import com.rangepatte.app.ui.history.HistoryScreen
-import com.rangepatte.app.ui.home.HomeScreen
 import com.rangepatte.app.ui.language.LanguageSelectionScreen
 import com.rangepatte.app.ui.language.findActivity
+import com.rangepatte.app.ui.membership.CheckoutScreen
+import com.rangepatte.app.ui.membership.MembershipScreen
 import com.rangepatte.app.ui.settings.SettingsScreen
 import com.rangepatte.app.ui.setup.GameSetupScreen
 import com.rangepatte.app.ui.table.GameTableScreen
 
-private val topLevelRoutes = setOf(Routes.HOME, Routes.GAMES, Routes.HISTORY, Routes.SETTINGS)
+private val topLevelRoutes = setOf(Routes.GAMES, Routes.ENTERTAINMENT, Routes.SETTINGS)
+
+/** Pages that have their own back header and don't show the "Remove ads? / Login" strip or banner ads. */
+private val routesWithoutAppChrome = setOf(Routes.LANGUAGE_SELECT, Routes.LOGIN, Routes.MEMBERSHIP, Routes.CHECKOUT)
 
 @Composable
-fun RangEPatteNavHost(startDestination: String = Routes.HOME) {
+fun RangEPatteNavHost(
+    startDestination: String,
+    currentLanguage: AppLanguage,
+    onLanguageSelected: (AppLanguage) -> Unit
+) {
     val navController = rememberNavController()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
+    val showChrome = currentRoute != null && currentRoute !in routesWithoutAppChrome
+
+    val adFreeUntil by AppServices.membership.adFreeUntilMillis.collectAsState()
+    val user by AppServices.account.currentUser.collectAsState()
 
     Scaffold(
-        bottomBar = {
-            if (currentRoute in topLevelRoutes) {
-                BottomNavigationBar(
-                    currentRoute = currentRoute,
-                    onItemSelected = { item ->
-                        navController.navigate(item.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
+        topBar = {
+            if (showChrome) {
+                AppTopBar(
+                    isAdFree = adFreeUntil > System.currentTimeMillis(),
+                    user = user,
+                    onRemoveAdsClick = { navController.navigate(Routes.MEMBERSHIP) { launchSingleTop = true } },
+                    onAccountClick = { navController.navigate(Routes.LOGIN) { launchSingleTop = true } }
                 )
+            }
+        },
+        bottomBar = {
+            val showTabs = currentRoute in topLevelRoutes
+            if (showChrome || showTabs) {
+                // The tab bar pads itself above the system navigation bar; without it, pad here.
+                Column(modifier = if (showTabs) Modifier else Modifier.navigationBarsPadding()) {
+                    if (showChrome) BannerAdSlot()
+                    if (showTabs) {
+                        BottomNavigationBar(
+                            currentRoute = currentRoute,
+                            onItemSelected = { item -> navController.navigateToTab(item.route) }
+                        )
+                    }
+                }
             }
         }
     ) { innerPadding ->
@@ -56,27 +84,59 @@ fun RangEPatteNavHost(startDestination: String = Routes.HOME) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Routes.LANGUAGE_SELECT) {
-                val context = LocalContext.current
-                LanguageSelectionScreen(onLanguageChosen = { language ->
-                    LanguagePreferences.setSelectedLanguage(context, language)
-                    context.findActivity()?.recreate()
-                })
-            }
-            composable(Routes.HOME) {
-                HomeScreen(onPlayGame = { game ->
-                    navController.navigate(Routes.setup(game.id.routeSegment))
-                })
+                LanguageSelectionScreen(
+                    initialSelection = currentLanguage.takeIf { navController.previousBackStackEntry != null },
+                    onLanguageChosen = { language ->
+                        onLanguageSelected(language)
+                        AppServices.account.syncUser(language.localeTag, AppServices.membership.adFreeUntilMillis.value)
+                        if (navController.previousBackStackEntry != null) {
+                            navController.popBackStack()
+                        } else {
+                            // First launch: the language picker is replaced by the Khel page.
+                            navController.navigate(Routes.GAMES) {
+                                popUpTo(Routes.LANGUAGE_SELECT) { inclusive = true }
+                            }
+                        }
+                    }
+                )
             }
             composable(Routes.GAMES) {
                 GamesScreen(onPlayGame = { game ->
                     navController.navigate(Routes.setup(game.id.routeSegment))
                 })
             }
-            composable(Routes.HISTORY) {
-                HistoryScreen()
+            composable(Routes.ENTERTAINMENT) {
+                EntertainmentScreen()
             }
             composable(Routes.SETTINGS) {
-                SettingsScreen(onChangeLanguageClick = { navController.navigate(Routes.LANGUAGE_SELECT) })
+                SettingsScreen(
+                    currentLanguage = currentLanguage,
+                    onChangeLanguageClick = { navController.navigate(Routes.LANGUAGE_SELECT) }
+                )
+            }
+            composable(Routes.LOGIN) {
+                LoginScreen(
+                    onBackClick = { navController.popBackStack() },
+                    onSignedIn = { navController.popBackStack() }
+                )
+            }
+            composable(Routes.MEMBERSHIP) {
+                MembershipScreen(
+                    onBackClick = { navController.popBackStack() },
+                    onLoginClick = { navController.navigate(Routes.LOGIN) },
+                    onPayClick = { navController.navigate(Routes.CHECKOUT) }
+                )
+            }
+            composable(Routes.CHECKOUT) {
+                CheckoutScreen(
+                    onBackClick = { navController.popBackStack() },
+                    onDone = {
+                        navController.navigate(Routes.GAMES) {
+                            popUpTo(Routes.GAMES) { inclusive = false }
+                            launchSingleTop = true
+                        }
+                    }
+                )
             }
             composable(Routes.SETUP_PATTERN) { backStackEntry ->
                 val segment = backStackEntry.arguments?.getString(Routes.ARG_GAME_ID)
@@ -92,6 +152,7 @@ fun RangEPatteNavHost(startDestination: String = Routes.HOME) {
                 }
             }
             composable(Routes.GAME_TABLE_PATTERN) { backStackEntry ->
+                val context = LocalContext.current
                 val segment = backStackEntry.arguments?.getString(Routes.ARG_GAME_ID)
                 val game = segment?.let(GameCatalog::byRouteSegment)
                 val mode = backStackEntry.arguments?.getString(Routes.ARG_MODE)
@@ -101,10 +162,27 @@ fun RangEPatteNavHost(startDestination: String = Routes.HOME) {
                     GameTableScreen(
                         game = game,
                         playMode = mode,
-                        onBackClick = { navController.popBackStack() }
+                        onBackClick = {
+                            // Leaving a table is the natural break for a full-screen ad (if one is due).
+                            val activity = context.findActivity()
+                            if (activity != null) {
+                                AppServices.ads.onGameExit(activity) { navController.popBackStack() }
+                            } else {
+                                navController.popBackStack()
+                            }
+                        }
                     )
                 }
             }
         }
+    }
+}
+
+/** Switches bottom tabs, keeping Khel as the single root so Back from any tab returns there. */
+private fun NavHostController.navigateToTab(route: String) {
+    navigate(route) {
+        popUpTo(Routes.GAMES) { saveState = true }
+        launchSingleTop = true
+        restoreState = true
     }
 }

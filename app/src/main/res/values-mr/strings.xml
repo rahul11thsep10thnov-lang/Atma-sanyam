@@ -1,29 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">इंडियन ताश</string>
-    <string name="app_tagline">अभिजात भारतीय पत्त्यांचे खेळ</string>
+    <string name="app_tagline">भारतीय खेळ, भारतीय पद्धती</string>
 
     <string name="language_select_title">तुमची भाषा निवडा</string>
     <string name="language_select_subtitle">तुमच्या राजदरबारासाठी भाषा निवडा</string>
     <string name="language_select_continue">पुढे जा</string>
 
-    <string name="nav_home">मुख्यपृष्ठ</string>
     <string name="nav_games">खेळ</string>
-    <string name="nav_history">इतिहास</string>
     <string name="nav_settings">सेटिंग्ज</string>
 
-    <string name="games_title">सर्व खेळ</string>
+    <string name="games_title">खेळ</string>
 
-    <string name="section_featured_game">वैशिष्ट्यीकृत खेळ</string>
-    <string name="section_popular_games">लोकप्रिय खेळ</string>
-    <string name="section_more_games">आणखी खेळ</string>
     <string name="action_play">खेळा</string>
     <string name="players_suffix">खेळाडू</string>
 
-    <string name="game_teen_patti_name">तीन पत्ती</string>
+    <string name="game_teen_patti_name">तीन पत्ती / फ्लश</string>
     <string name="game_teen_patti_desc">ब्लफ करून सर्वोत्तम तीन पत्त्यांचा हात बनवा.</string>
-    <string name="game_flush_name">फ्लश</string>
-    <string name="game_flush_desc">तीन पत्त्यांचा एक प्रादेशिक फ्लश खेळ.</string>
     <string name="game_coat_piece_name">कोट पीस</string>
     <string name="game_coat_piece_desc">ट्रम्प पत्त्यांनी जोडीदारासोबत डाव जिंका.</string>
     <string name="game_twenty_nine_name">ट्वेंटी नाइन</string>
@@ -57,7 +50,6 @@
     <string name="setup_mode_online">ऑनलाइन (इंटरनेट)</string>
     <string name="setup_mode_coming_soon">लवकरच येत आहे</string>
 
-    <string name="history_empty">अजून कोणताही खेळ खेळला नाही. तुमचा सामना इतिहास इथे दिसेल.</string>
 
     <string name="settings_sound">आवाज</string>
     <string name="settings_music">संगीत</string>
@@ -70,10 +62,6 @@
     <string name="rules_title_format">%1$s — कसे खेळावे</string>
     <string name="rules_placeholder">या खेळाचे नियम लिहिले जात आहेत आणि लवकरच इथे दिसतील.</string>
     <string name="rules_dialog_close">स्क्रोल बंद करा</string>
-    <string name="rules_objective_heading">उद्दिष्ट</string>
-    <string name="rules_setup_heading">तयारी</string>
-    <string name="rules_play_heading">कसे खेळावे</string>
-    <string name="rules_scoring_heading">गुणपद्धती</string>
 
     <!-- Royal UI pass -->
     <string name="settings_section_audio">ऑडिओ</string>
@@ -89,4 +77,54 @@
     <string name="player_opponent">प्रतिस्पर्धी</string>
     <string name="player_ai_format">%1$s (एआय)</string>
     <string name="turn_indicator_format">%1$s ची पाळी</string>
+
+    <!-- Top bar, membership, payment, login -->
+    <string name="nav_entertainment">मनोरंजन</string>
+    <string name="entertainment_coming_soon">लवकरच येत आहे.</string>
+    <string name="topbar_remove_ads">जाहिराती काढायच्या?</string>
+    <string name="topbar_ad_free">जाहिरातमुक्त</string>
+    <string name="topbar_login">लॉगिन / साइन अप</string>
+    <string name="account_title">माझे खाते</string>
+    <string name="account_logout">लॉग आउट</string>
+    <string name="membership_title">जाहिराती काढा</string>
+    <string name="membership_heading">या पारंपरिक खेळांच्या समुदायात सामील व्हा @ ₹29/महिना.</string>
+    <string name="membership_body">तुमच्यासाठी कोणतीही जाहिरात दाखवली जाणार नाही, समुदायातील मित्रांनो!</string>
+    <string name="membership_benefit_no_ads">कोणत्याही पानावर किंवा खेळात जाहिरात नाही</string>
+    <string name="membership_benefit_support">भारतीय पारंपरिक खेळांना पाठबळ द्या</string>
+    <string name="membership_price">₹29 / महिना</string>
+    <string name="membership_pay">₹29 भरा</string>
+    <string name="membership_extend">एक महिना वाढवा — ₹29</string>
+    <string name="membership_login_required">सामील होण्यासाठी तुमच्या मोबाइल नंबरने लॉगिन करा.</string>
+    <string name="membership_active_until_format">तुम्ही समुदायाचे मित्र आहात! %1$s पर्यंत जाहिरातमुक्त.</string>
+    <string name="checkout_title">पेमेंट</string>
+    <string name="checkout_order_summary">ऑर्डर सारांश</string>
+    <string name="checkout_item">समुदाय सदस्यत्व (1 महिना, जाहिराती नाहीत)</string>
+    <string name="checkout_amount">₹29.00</string>
+    <string name="checkout_total">एकूण</string>
+    <string name="checkout_method_title">पेमेंटची पद्धत</string>
+    <string name="checkout_method_upi">UPI</string>
+    <string name="checkout_method_card">डेबिट / क्रेडिट कार्ड</string>
+    <string name="checkout_method_netbanking">नेट बँकिंग</string>
+    <string name="checkout_method_wallet">वॉलेट</string>
+    <string name="checkout_not_configured">पेमेंट अजून सुरू झालेले नाही — पेमेंट भागीदार लवकरच जोडला जाईल. तुमच्याकडून कोणतीही रक्कम घेतलेली नाही.</string>
+    <string name="checkout_success">पेमेंट यशस्वी! समुदायात स्वागत आहे — आता जाहिराती काढल्या आहेत.</string>
+    <string name="checkout_failed">पेमेंट अयशस्वी. कृपया पुन्हा प्रयत्न करा.</string>
+    <string name="checkout_cancelled">पेमेंट रद्द केले.</string>
+    <string name="checkout_debug_simulate">यशस्वी पेमेंटचे अनुकरण करा (फक्त टेस्ट बिल्ड)</string>
+    <string name="checkout_secure_note">पेमेंट आमच्या पेमेंट भागीदाराकडून सुरक्षितपणे प्रक्रिया केले जाते.</string>
+    <string name="login_title">लॉगिन / साइन अप</string>
+    <string name="login_phone_label">मोबाइल नंबर</string>
+    <string name="login_name_label">तुमचे नाव (ऐच्छिक)</string>
+    <string name="login_send_otp">OTP पाठवा</string>
+    <string name="login_sms_note">तुमचा नंबर पडताळण्यासाठी आम्ही SMS द्वारे एकवेळ पासवर्ड (OTP) पाठवू.</string>
+    <string name="login_otp_sent_format">%1$s वर पाठवलेला OTP टाका</string>
+    <string name="login_otp_label">6 अंकी OTP</string>
+    <string name="login_verify">पडताळा आणि पुढे जा</string>
+    <string name="login_resend">OTP पुन्हा पाठवा</string>
+    <string name="login_resend_in_format">%1$d सेकंदांत पुन्हा पाठवा</string>
+    <string name="login_change_number">नंबर बदला</string>
+    <string name="login_invalid_phone">कृपया योग्य 10 अंकी मोबाइल नंबर टाका.</string>
+    <string name="login_invalid_otp">OTP चुकीचा आहे. कृपया पुन्हा प्रयत्न करा.</string>
+    <string name="login_error_generic">OTP पाठवता आला नाही. तुमचा नंबर आणि इंटरनेट तपासा, मग पुन्हा प्रयत्न करा.</string>
+    <string name="login_demo_notice_format">डेमो मोड: SMS अजून जोडलेले नाही, त्यामुळे कोणताही संदेश पाठवला जात नाही. OTP %1$s वापरा.</string>
 </resources>

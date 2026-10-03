@@ -1,29 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ಇಂಡಿಯನ್ ತಾಶ್</string>
-    <string name="app_tagline">ಸಾಂಪ್ರದಾಯಿಕ ಭಾರತೀಯ ಇಸ್ಪೀಟ್ ಆಟಗಳು</string>
+    <string name="app_tagline">ಭಾರತೀಯ ಆಟಗಳು, ಭಾರತೀಯ ರೀತಿಗಳು</string>
 
     <string name="language_select_title">ನಿಮ್ಮ ಭಾಷೆಯನ್ನು ಆರಿಸಿ</string>
     <string name="language_select_subtitle">ನಿಮ್ಮ ರಾಜಸಭೆಗಾಗಿ ಭಾಷೆಯನ್ನು ಆರಿಸಿ</string>
     <string name="language_select_continue">ಮುಂದುವರಿಸಿ</string>
 
-    <string name="nav_home">ಮುಖಪುಟ</string>
     <string name="nav_games">ಆಟಗಳು</string>
-    <string name="nav_history">ಇತಿಹಾಸ</string>
     <string name="nav_settings">ಸಂಯೋಜನೆಗಳು</string>
 
-    <string name="games_title">ಎಲ್ಲಾ ಆಟಗಳು</string>
+    <string name="games_title">ಆಟಗಳು</string>
 
-    <string name="section_featured_game">ವಿಶೇಷ ಆಟ</string>
-    <string name="section_popular_games">ಜನಪ್ರಿಯ ಆಟಗಳು</string>
-    <string name="section_more_games">ಇನ್ನಷ್ಟು ಆಟಗಳು</string>
     <string name="action_play">ಆಡಿ</string>
     <string name="players_suffix">ಆಟಗಾರರು</string>
 
-    <string name="game_teen_patti_name">ತೀನ್ ಪತ್ತಿ</string>
+    <string name="game_teen_patti_name">ತೀನ್ ಪತ್ತಿ / ಫ್ಲಶ್</string>
     <string name="game_teen_patti_desc">ಬ್ಲಫ್ ಮಾಡಿ ಅತ್ಯುತ್ತಮ ಮೂರು-ಎಲೆಗಳ ಕೈ ಕಟ್ಟಿ.</string>
-    <string name="game_flush_name">ಫ್ಲಶ್</string>
-    <string name="game_flush_desc">ಮೂರು ಎಲೆಗಳ ಒಂದು ಪ್ರಾದೇಶಿಕ ಫ್ಲಶ್ ಆಟ.</string>
     <string name="game_coat_piece_name">ಕೋಟ್ ಪೀಸ್</string>
     <string name="game_coat_piece_desc">ಟ್ರಂಪ್ ಎಲೆಗಳಿಂದ ಸಂಗಾತಿಯೊಂದಿಗೆ ಸುತ್ತುಗಳನ್ನು ಗೆಲ್ಲಿ.</string>
     <string name="game_twenty_nine_name">ಟ್ವೆಂಟಿ ನೈನ್</string>
@@ -57,7 +50,6 @@
     <string name="setup_mode_online">ಆನ್‌ಲೈನ್ (ಇಂಟರ್ನೆಟ್)</string>
     <string name="setup_mode_coming_soon">ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ</string>
 
-    <string name="history_empty">ಇನ್ನೂ ಯಾವುದೇ ಆಟ ಆಡಿಲ್ಲ. ನಿಮ್ಮ ಪಂದ್ಯದ ಇತಿಹಾಸ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ.</string>
 
     <string name="settings_sound">ಶಬ್ದ</string>
     <string name="settings_music">ಸಂಗೀತ</string>
@@ -70,10 +62,6 @@
     <string name="rules_title_format">%1$s — ಹೇಗೆ ಆಡುವುದು</string>
     <string name="rules_placeholder">ಈ ಆಟದ ನಿಯಮಗಳನ್ನು ಬರೆಯಲಾಗುತ್ತಿದೆ, ಶೀಘ್ರದಲ್ಲೇ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ.</string>
     <string name="rules_dialog_close">ಸುರುಳಿ ಮುಚ್ಚಿ</string>
-    <string name="rules_objective_heading">ಗುರಿ</string>
-    <string name="rules_setup_heading">ಸಿದ್ಧತೆ</string>
-    <string name="rules_play_heading">ಹೇಗೆ ಆಡುವುದು</string>
-    <string name="rules_scoring_heading">ಅಂಕ ಗಣನೆ</string>
 
     <!-- Royal UI pass -->
     <string name="settings_section_audio">ಆಡಿಯೋ</string>
@@ -89,4 +77,54 @@
     <string name="player_opponent">ಎದುರಾಳಿ</string>
     <string name="player_ai_format">%1$s (ಎಐ)</string>
     <string name="turn_indicator_format">%1$s ಅವರ ಸರದಿ</string>
+
+    <!-- Top bar, membership, payment, login -->
+    <string name="nav_entertainment">ಮನರಂಜನೆ</string>
+    <string name="entertainment_coming_soon">ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ.</string>
+    <string name="topbar_remove_ads">ಜಾಹೀರಾತು ತೆಗೆಯಬೇಕೆ?</string>
+    <string name="topbar_ad_free">ಜಾಹೀರಾತು ರಹಿತ</string>
+    <string name="topbar_login">ಲಾಗಿನ್ / ಸೈನ್ ಅಪ್</string>
+    <string name="account_title">ನನ್ನ ಖಾತೆ</string>
+    <string name="account_logout">ಲಾಗ್ ಔಟ್</string>
+    <string name="membership_title">ಜಾಹೀರಾತು ತೆಗೆಯಿರಿ</string>
+    <string name="membership_heading">ಈ ಶಾಸ್ತ್ರೀಯ ಆಟಗಳ ಸಮುದಾಯಕ್ಕೆ ಸೇರಿ @ ₹29/ತಿಂಗಳು.</string>
+    <string name="membership_body">ನಿಮಗೆ ಯಾವುದೇ ಜಾಹೀರಾತು ತೋರಿಸಲಾಗುವುದಿಲ್ಲ, ಸಮುದಾಯದ ಗೆಳೆಯರೇ!</string>
+    <string name="membership_benefit_no_ads">ಯಾವುದೇ ಪುಟ ಅಥವಾ ಆಟದಲ್ಲಿ ಜಾಹೀರಾತು ಇಲ್ಲ</string>
+    <string name="membership_benefit_support">ಭಾರತೀಯ ಶಾಸ್ತ್ರೀಯ ಆಟಗಳನ್ನು ಬೆಂಬಲಿಸಿ</string>
+    <string name="membership_price">₹29 / ತಿಂಗಳು</string>
+    <string name="membership_pay">₹29 ಪಾವತಿಸಿ</string>
+    <string name="membership_extend">ಒಂದು ತಿಂಗಳು ವಿಸ್ತರಿಸಿ — ₹29</string>
+    <string name="membership_login_required">ಸೇರಲು ನಿಮ್ಮ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯಿಂದ ಲಾಗಿನ್ ಮಾಡಿ.</string>
+    <string name="membership_active_until_format">ನೀವು ಸಮುದಾಯದ ಗೆಳೆಯರು! %1$s ವರೆಗೆ ಜಾಹೀರಾತು ರಹಿತ.</string>
+    <string name="checkout_title">ಪಾವತಿ</string>
+    <string name="checkout_order_summary">ಆರ್ಡರ್ ಸಾರಾಂಶ</string>
+    <string name="checkout_item">ಸಮುದಾಯ ಸದಸ್ಯತ್ವ (1 ತಿಂಗಳು, ಜಾಹೀರಾತು ಇಲ್ಲ)</string>
+    <string name="checkout_amount">₹29.00</string>
+    <string name="checkout_total">ಒಟ್ಟು</string>
+    <string name="checkout_method_title">ಪಾವತಿ ವಿಧಾನ</string>
+    <string name="checkout_method_upi">UPI</string>
+    <string name="checkout_method_card">ಡೆಬಿಟ್ / ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್</string>
+    <string name="checkout_method_netbanking">ನೆಟ್ ಬ್ಯಾಂಕಿಂಗ್</string>
+    <string name="checkout_method_wallet">ವಾಲೆಟ್</string>
+    <string name="checkout_not_configured">ಪಾವತಿಗಳು ಇನ್ನೂ ಆರಂಭವಾಗಿಲ್ಲ — ಪಾವತಿ ಪಾಲುದಾರರನ್ನು ಶೀಘ್ರದಲ್ಲೇ ಸೇರಿಸಲಾಗುವುದು. ನಿಮ್ಮಿಂದ ಯಾವುದೇ ಹಣ ಪಡೆದಿಲ್ಲ.</string>
+    <string name="checkout_success">ಪಾವತಿ ಯಶಸ್ವಿ! ಸಮುದಾಯಕ್ಕೆ ಸ್ವಾಗತ — ಈಗ ಜಾಹೀರಾತುಗಳನ್ನು ತೆಗೆಯಲಾಗಿದೆ.</string>
+    <string name="checkout_failed">ಪಾವತಿ ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="checkout_cancelled">ಪಾವತಿ ರದ್ದುಗೊಂಡಿದೆ.</string>
+    <string name="checkout_debug_simulate">ಯಶಸ್ವಿ ಪಾವತಿಯನ್ನು ಅನುಕರಿಸಿ (ಪರೀಕ್ಷಾ ಬಿಲ್ಡ್ ಮಾತ್ರ)</string>
+    <string name="checkout_secure_note">ಪಾವತಿಗಳನ್ನು ನಮ್ಮ ಪಾವತಿ ಪಾಲುದಾರರು ಸುರಕ್ಷಿತವಾಗಿ ನಿರ್ವಹಿಸುತ್ತಾರೆ.</string>
+    <string name="login_title">ಲಾಗಿನ್ / ಸೈನ್ ಅಪ್</string>
+    <string name="login_phone_label">ಮೊಬೈಲ್ ಸಂಖ್ಯೆ</string>
+    <string name="login_name_label">ನಿಮ್ಮ ಹೆಸರು (ಐಚ್ಛಿಕ)</string>
+    <string name="login_send_otp">OTP ಕಳುಹಿಸಿ</string>
+    <string name="login_sms_note">ನಿಮ್ಮ ಸಂಖ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸಲು SMS ಮೂಲಕ ಒಂದು ಬಾರಿಯ ಪಾಸ್‌ವರ್ಡ್ (OTP) ಕಳುಹಿಸುತ್ತೇವೆ.</string>
+    <string name="login_otp_sent_format">%1$s ಗೆ ಕಳುಹಿಸಿದ OTP ನಮೂದಿಸಿ</string>
+    <string name="login_otp_label">6 ಅಂಕಿಯ OTP</string>
+    <string name="login_verify">ಪರಿಶೀಲಿಸಿ ಮುಂದುವರಿಯಿರಿ</string>
+    <string name="login_resend">OTP ಮತ್ತೆ ಕಳುಹಿಸಿ</string>
+    <string name="login_resend_in_format">%1$d ಸೆಕೆಂಡುಗಳಲ್ಲಿ ಮತ್ತೆ ಕಳುಹಿಸಿ</string>
+    <string name="login_change_number">ಸಂಖ್ಯೆ ಬದಲಿಸಿ</string>
+    <string name="login_invalid_phone">ದಯವಿಟ್ಟು ಸರಿಯಾದ 10 ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ನಮೂದಿಸಿ.</string>
+    <string name="login_invalid_otp">OTP ತಪ್ಪಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="login_error_generic">OTP ಕಳುಹಿಸಲಾಗಲಿಲ್ಲ. ನಿಮ್ಮ ಸಂಖ್ಯೆ ಮತ್ತು ಇಂಟರ್ನೆಟ್ ಪರಿಶೀಲಿಸಿ, ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="login_demo_notice_format">ಡೆಮೊ ಮೋಡ್: SMS ಇನ್ನೂ ಸಂಪರ್ಕಗೊಂಡಿಲ್ಲ, ಆದ್ದರಿಂದ ಸಂದೇಶ ಕಳುಹಿಸುವುದಿಲ್ಲ. OTP %1$s ಬಳಸಿ.</string>
 </resources>

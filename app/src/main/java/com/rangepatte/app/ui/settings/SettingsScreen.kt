@@ -12,12 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rangepatte.app.R
-import com.rangepatte.app.data.local.LanguagePreferences
 import com.rangepatte.app.domain.model.AppLanguage
 import com.rangepatte.app.ui.background.BackgroundType
 import com.rangepatte.app.ui.components.WatermarkBackground
@@ -34,13 +32,12 @@ import com.rangepatte.app.ui.theme.RoyalLabelStyle
 /** Options screen in the classic strategy-game style: sectioned rows, orb toggles, gold sliders. */
 @Composable
 fun SettingsScreen(
+    currentLanguage: AppLanguage,
     onChangeLanguageClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val context = LocalContext.current
-    val currentLanguage = LanguagePreferences.getSelectedLanguage(context) ?: AppLanguage.ENGLISH
     val volumeLabel = stringResource(R.string.settings_volume)
 
     WatermarkBackground(backgroundType = BackgroundType.CLASSICAL_LIVING_ROOM, modifier = modifier) {

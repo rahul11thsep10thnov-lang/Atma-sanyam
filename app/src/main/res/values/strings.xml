@@ -2,34 +2,27 @@
 <resources>
     <!-- App identity -->
     <string name="app_name">Indian Taash</string>
-    <string name="app_tagline">Classic Indian Card Games</string>
+    <string name="app_tagline">Bharatiya Khel, Bharatiya Tarike</string>
 
     <!-- Language selection (first launch) -->
     <string name="language_select_title">Choose Your Language</string>
     <string name="language_select_subtitle">Select the language for your royal court</string>
     <string name="language_select_continue">Continue</string>
 
-    <!-- Bottom navigation -->
-    <string name="nav_home">Home</string>
-    <string name="nav_games">Games</string>
-    <string name="nav_history">History</string>
+    <!-- Bottom navigation: Khel (games, the opening page), Entertainment, Settings -->
+    <string name="nav_games">Khel</string>
     <string name="nav_settings">Settings</string>
 
     <!-- Games screen -->
-    <string name="games_title">All Games</string>
+    <string name="games_title">Khel</string>
 
-    <!-- Home screen -->
-    <string name="section_featured_game">Featured Game</string>
-    <string name="section_popular_games">Popular Games</string>
-    <string name="section_more_games">More Games</string>
+    <!-- Game tiles -->
     <string name="action_play">Play</string>
     <string name="players_suffix">Players</string>
 
     <!-- Games: name + one-clause summary -->
-    <string name="game_teen_patti_name">Teen Patti</string>
+    <string name="game_teen_patti_name">Teen Patti / Flush</string>
     <string name="game_teen_patti_desc">Bluff your way to the best three-card hand.</string>
-    <string name="game_flush_name">Flush</string>
-    <string name="game_flush_desc">A regional three-card flush game of nerve.</string>
     <string name="game_coat_piece_name">Coat Piece</string>
     <string name="game_coat_piece_desc">Win tricks with your partner using trump.</string>
     <string name="game_twenty_nine_name">Twenty Nine</string>
@@ -65,8 +58,6 @@
     <string name="setup_mode_online">Online (Internet)</string>
     <string name="setup_mode_coming_soon">Coming soon</string>
 
-    <!-- History -->
-    <string name="history_empty">No games played yet. Your match history will appear here.</string>
 
     <!-- Settings -->
     <string name="settings_sound">Sound</string>
@@ -81,10 +72,6 @@
     <string name="rules_title_format">%1$s — How to Play</string>
     <string name="rules_placeholder">Detailed rules for this game are being written and will appear here.</string>
     <string name="rules_dialog_close">Close the scroll</string>
-    <string name="rules_objective_heading">Objective</string>
-    <string name="rules_setup_heading">Setup</string>
-    <string name="rules_play_heading">How to Play</string>
-    <string name="rules_scoring_heading">Scoring</string>
 
     <!-- Royal UI pass -->
     <string name="settings_section_audio">Audio</string>
@@ -100,4 +87,54 @@
     <string name="player_opponent">Opponent</string>
     <string name="player_ai_format">%1$s (AI)</string>
     <string name="turn_indicator_format">%1$s’s turn</string>
+
+    <!-- Top bar, membership, payment, login -->
+    <string name="nav_entertainment">Entertainment</string>
+    <string name="entertainment_coming_soon">Coming soon.</string>
+    <string name="topbar_remove_ads">Remove ads?</string>
+    <string name="topbar_ad_free">Ad-free</string>
+    <string name="topbar_login">Login / Sign up</string>
+    <string name="account_title">My Account</string>
+    <string name="account_logout">Log out</string>
+    <string name="membership_title">Remove Ads</string>
+    <string name="membership_heading">Join the community of these classical games @ ₹29/month.</string>
+    <string name="membership_body">No ads will be shown for you, community pals!</string>
+    <string name="membership_benefit_no_ads">No ads on any page or game</string>
+    <string name="membership_benefit_support">Support classical Indian games</string>
+    <string name="membership_price">₹29 / month</string>
+    <string name="membership_pay">Pay ₹29</string>
+    <string name="membership_extend">Extend by a month — ₹29</string>
+    <string name="membership_login_required">Log in with your mobile number to join.</string>
+    <string name="membership_active_until_format">You are a community pal! Ad-free until %1$s.</string>
+    <string name="checkout_title">Payment</string>
+    <string name="checkout_order_summary">Order Summary</string>
+    <string name="checkout_item">Community membership (1 month, no ads)</string>
+    <string name="checkout_amount">₹29.00</string>
+    <string name="checkout_total">Total</string>
+    <string name="checkout_method_title">Pay With</string>
+    <string name="checkout_method_upi">UPI</string>
+    <string name="checkout_method_card">Debit / Credit Card</string>
+    <string name="checkout_method_netbanking">Net Banking</string>
+    <string name="checkout_method_wallet">Wallet</string>
+    <string name="checkout_not_configured">Payments are not live yet — the payment partner will be connected soon. You have not been charged.</string>
+    <string name="checkout_success">Payment successful! Welcome to the community — ads are now removed.</string>
+    <string name="checkout_failed">Payment failed. Please try again.</string>
+    <string name="checkout_cancelled">Payment cancelled.</string>
+    <string name="checkout_debug_simulate">Simulate successful payment (test build only)</string>
+    <string name="checkout_secure_note">Payments are processed securely by our payment partner.</string>
+    <string name="login_title">Login / Sign up</string>
+    <string name="login_phone_label">Mobile number</string>
+    <string name="login_name_label">Your name (optional)</string>
+    <string name="login_send_otp">Send OTP</string>
+    <string name="login_sms_note">We will send a one-time password (OTP) by SMS to verify your number.</string>
+    <string name="login_otp_sent_format">Enter the OTP sent to %1$s</string>
+    <string name="login_otp_label">6-digit OTP</string>
+    <string name="login_verify">Verify &amp; Continue</string>
+    <string name="login_resend">Resend OTP</string>
+    <string name="login_resend_in_format">Resend in %1$ds</string>
+    <string name="login_change_number">Change number</string>
+    <string name="login_invalid_phone">Please enter a valid 10-digit mobile number.</string>
+    <string name="login_invalid_otp">Incorrect OTP. Please try again.</string>
+    <string name="login_error_generic">Could not send the OTP. Check your number and internet connection, then try again.</string>
+    <string name="login_demo_notice_format">Demo mode: SMS is not connected yet, so no message is sent. Use OTP %1$s.</string>
 </resources>

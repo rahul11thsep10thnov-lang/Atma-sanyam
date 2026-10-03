@@ -4,6 +4,13 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+// Firebase (mobile-number OTP login + the "users" database) switches on only once the Firebase
+// project's google-services.json is placed in app/. Without that file the app still builds and
+// runs, and login falls back to an on-device demo mode — see README "Login, ads and payments".
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
+}
+
 android {
     namespace = "com.rangepatte.app"
     compileSdk = 34
@@ -45,6 +52,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     packaging {
@@ -68,6 +76,15 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.coroutines.android)
+
+    // Google AdMob ads + the consent (UMP) SDK Google requires alongside it.
+    implementation(libs.play.services.ads)
+    implementation(libs.google.ump)
+
+    // Firebase phone-OTP auth and Firestore user database (active only with google-services.json).
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)

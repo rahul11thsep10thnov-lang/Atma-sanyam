@@ -47,7 +47,7 @@ fun BottomNavigationBar(
                 label = {
                     Text(
                         text = stringResource(item.labelRes).uppercase(),
-                        style = RoyalLabelStyle.copy(fontSize = 10.sp, letterSpacing = 0.8.sp),
+                        style = RoyalLabelStyle.copy(fontSize = 12.sp, letterSpacing = 0.8.sp),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
