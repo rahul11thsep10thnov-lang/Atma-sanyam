@@ -58,7 +58,7 @@
      0,
      0,
      1080,
-     2340
+     987
     ]
    },
    "landscape": {
@@ -67,7 +67,7 @@
      0,
      0,
      1080,
-     2340
+     987
     ]
    },
    "base": {
@@ -78,7 +78,14 @@
      1080,
      2340
     ]
-   }
+   },
+   "cropped": true,
+   "openAir": [
+    0,
+    0,
+    1080,
+    987
+   ]
   },
   "rain": {
    "sky": {
@@ -87,7 +94,7 @@
      0,
      0,
      1080,
-     2340
+     987
     ]
    },
    "landscape": {
@@ -96,7 +103,7 @@
      0,
      0,
      1080,
-     2340
+     987
     ]
    },
    "base": {
@@ -107,7 +114,14 @@
      1080,
      2340
     ]
-   }
+   },
+   "cropped": true,
+   "openAir": [
+    0,
+    0,
+    1080,
+    987
+   ]
   }
  },
  "items": {
@@ -143,7 +157,8 @@
           998,
           346,
           227
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/marigold__bed_r__seed__night.webp",
@@ -152,7 +167,8 @@
           998,
           142,
           227
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/marigold__bed_r__seed__rain.webp",
@@ -161,7 +177,8 @@
           998,
           142,
           227
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -174,7 +191,8 @@
         "amp": 0.4,
         "speed": 0.6
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {}
@@ -192,7 +210,8 @@
           1009,
           314,
           216
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/marigold__bed_r__sprout__night.webp",
@@ -201,7 +220,8 @@
           1009,
           129,
           216
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/marigold__bed_r__sprout__rain.webp",
@@ -210,7 +230,8 @@
           1009,
           129,
           216
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -223,7 +244,8 @@
         "amp": 0.4,
         "speed": 0.6
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -234,7 +256,8 @@
           1009,
           314,
           216
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/marigold__bed_r__sprout__wilted__night.webp",
@@ -243,7 +266,8 @@
           1009,
           129,
           216
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/marigold__bed_r__sprout__wilted__rain.webp",
@@ -252,7 +276,8 @@
           1009,
           129,
           216
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -265,7 +290,8 @@
         "amp": 0.4,
         "speed": 0.6
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -280,7 +306,8 @@
           1027,
           282,
           198
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/marigold__bed_r__young__night.webp",
@@ -289,7 +316,8 @@
           1027,
           129,
           198
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/marigold__bed_r__young__rain.webp",
@@ -298,7 +326,8 @@
           1027,
           129,
           198
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -311,7 +340,8 @@
         "amp": 0.4,
         "speed": 0.6
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -322,7 +352,8 @@
           1038,
           244,
           188
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/marigold__bed_r__young__wilted__night.webp",
@@ -331,7 +362,8 @@
           1038,
           129,
           188
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/marigold__bed_r__young__wilted__rain.webp",
@@ -340,7 +372,8 @@
           1038,
           129,
           188
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -353,7 +386,8 @@
         "amp": 0.4,
         "speed": 0.6
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -368,7 +402,8 @@
           1011,
           332,
           214
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/marigold__bed_r__mature__night.webp",
@@ -377,7 +412,8 @@
           1011,
           136,
           214
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/marigold__bed_r__mature__rain.webp",
@@ -386,7 +422,8 @@
           1011,
           136,
           214
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -399,7 +436,8 @@
         "amp": 0.4,
         "speed": 0.6
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -410,7 +448,8 @@
           1026,
           288,
           199
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/marigold__bed_r__mature__wilted__night.webp",
@@ -419,7 +458,8 @@
           1026,
           136,
           199
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/marigold__bed_r__mature__wilted__rain.webp",
@@ -428,7 +468,8 @@
           1026,
           136,
           199
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -441,7 +482,8 @@
         "amp": 0.4,
         "speed": 0.6
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -456,7 +498,8 @@
           997,
           382,
           228
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/marigold__bed_r__flowering__night.webp",
@@ -465,7 +508,8 @@
           997,
           149,
           228
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/marigold__bed_r__flowering__rain.webp",
@@ -474,7 +518,8 @@
           997,
           149,
           228
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -487,7 +532,8 @@
         "amp": 0.4,
         "speed": 0.6
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -498,7 +544,8 @@
           1017,
           324,
           208
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/marigold__bed_r__flowering__wilted__night.webp",
@@ -507,7 +554,8 @@
           1017,
           148,
           208
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/marigold__bed_r__flowering__wilted__rain.webp",
@@ -516,7 +564,8 @@
           1017,
           148,
           208
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -529,7 +578,8 @@
         "amp": 0.4,
         "speed": 0.6
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      }
     ],
@@ -546,7 +596,8 @@
           1329,
           822,
           408
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/marigold__path_near__seed__night.webp",
@@ -555,7 +606,8 @@
           1329,
           276,
           404
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/marigold__path_near__seed__rain.webp",
@@ -564,7 +616,8 @@
           1329,
           276,
           404
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -577,7 +630,8 @@
         "amp": 0.4,
         "speed": 0.6
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {}
@@ -595,7 +649,8 @@
           1357,
           731,
           380
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/marigold__path_near__sprout__night.webp",
@@ -604,7 +659,8 @@
           1357,
           239,
           376
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/marigold__path_near__sprout__rain.webp",
@@ -613,7 +669,8 @@
           1357,
           239,
           376
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -626,7 +683,8 @@
         "amp": 0.4,
         "speed": 0.6
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -637,7 +695,8 @@
           1357,
           731,
           380
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/marigold__path_near__sprout__wilted__night.webp",
@@ -646,7 +705,8 @@
           1357,
           239,
           376
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/marigold__path_near__sprout__wilted__rain.webp",
@@ -655,7 +715,8 @@
           1357,
           239,
           376
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -668,7 +729,8 @@
         "amp": 0.4,
         "speed": 0.6
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -683,7 +745,8 @@
           1405,
           668,
           332
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/marigold__path_near__young__night.webp",
@@ -692,7 +755,8 @@
           1405,
           239,
           328
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/marigold__path_near__young__rain.webp",
@@ -701,7 +765,8 @@
           1405,
           239,
           328
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -714,7 +779,8 @@
         "amp": 0.4,
         "speed": 0.6
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -725,7 +791,8 @@
           1426,
           572,
           311
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/marigold__path_near__young__wilted__night.webp",
@@ -734,7 +801,8 @@
           1426,
           239,
           307
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/marigold__path_near__young__wilted__rain.webp",
@@ -743,7 +811,8 @@
           1426,
           239,
           307
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -756,7 +825,8 @@
         "amp": 0.4,
         "speed": 0.6
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -771,7 +841,8 @@
           1349,
           805,
           388
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/marigold__path_near__mature__night.webp",
@@ -780,7 +851,8 @@
           1349,
           261,
           384
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/marigold__path_near__mature__rain.webp",
@@ -789,7 +861,8 @@
           1349,
           261,
           384
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -802,7 +875,8 @@
         "amp": 0.4,
         "speed": 0.6
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -813,7 +887,8 @@
           1389,
           697,
           348
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/marigold__path_near__mature__wilted__night.webp",
@@ -822,7 +897,8 @@
           1389,
           260,
           344
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/marigold__path_near__mature__wilted__rain.webp",
@@ -831,7 +907,8 @@
           1389,
           260,
           344
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -844,7 +921,8 @@
         "amp": 0.4,
         "speed": 0.6
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -859,7 +937,8 @@
           1306,
           933,
           431
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/marigold__path_near__flowering__night.webp",
@@ -868,7 +947,8 @@
           1306,
           296,
           427
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/marigold__path_near__flowering__rain.webp",
@@ -877,7 +957,8 @@
           1306,
           296,
           427
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -890,7 +971,8 @@
         "amp": 0.4,
         "speed": 0.6
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -901,7 +983,8 @@
           1365,
           798,
           372
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/marigold__path_near__flowering__wilted__night.webp",
@@ -910,7 +993,8 @@
           1365,
           296,
           368
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/marigold__path_near__flowering__wilted__rain.webp",
@@ -919,7 +1003,8 @@
           1365,
           296,
           368
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -932,7 +1017,8 @@
         "amp": 0.4,
         "speed": 0.6
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      }
     ]
@@ -970,7 +1056,8 @@
           1111,
           316,
           227
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/hibiscus__lawn_near_l__seed__night.webp",
@@ -979,7 +1066,8 @@
           1111,
           153,
           227
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/hibiscus__lawn_near_l__seed__rain.webp",
@@ -988,7 +1076,8 @@
           1111,
           153,
           227
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1001,7 +1090,8 @@
         "amp": 0.3,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {}
@@ -1019,7 +1109,8 @@
           1126,
           266,
           210
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/hibiscus__lawn_near_l__sprout__night.webp",
@@ -1028,7 +1119,8 @@
           1126,
           135,
           210
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/hibiscus__lawn_near_l__sprout__rain.webp",
@@ -1037,7 +1129,8 @@
           1126,
           135,
           210
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1050,7 +1143,8 @@
         "amp": 0.3,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -1061,7 +1155,8 @@
           1126,
           266,
           210
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/hibiscus__lawn_near_l__sprout__wilted__night.webp",
@@ -1070,7 +1165,8 @@
           1126,
           135,
           210
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/hibiscus__lawn_near_l__sprout__wilted__rain.webp",
@@ -1079,7 +1175,8 @@
           1126,
           135,
           210
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1092,7 +1189,8 @@
         "amp": 0.3,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -1107,7 +1205,8 @@
           1075,
           485,
           264
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/hibiscus__lawn_near_l__young__night.webp",
@@ -1116,7 +1215,8 @@
           1075,
           182,
           264
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/hibiscus__lawn_near_l__young__rain.webp",
@@ -1125,7 +1225,8 @@
           1075,
           182,
           264
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1138,7 +1239,8 @@
         "amp": 0.3,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -1149,7 +1251,8 @@
           1099,
           417,
           240
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/hibiscus__lawn_near_l__young__wilted__night.webp",
@@ -1158,7 +1261,8 @@
           1099,
           181,
           240
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/hibiscus__lawn_near_l__young__wilted__rain.webp",
@@ -1167,7 +1271,8 @@
           1099,
           181,
           240
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1180,7 +1285,8 @@
         "amp": 0.3,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -1195,7 +1301,8 @@
           1015,
           687,
           335
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/hibiscus__lawn_near_l__mature__night.webp",
@@ -1204,7 +1311,8 @@
           1015,
           252,
           335
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/hibiscus__lawn_near_l__mature__rain.webp",
@@ -1213,7 +1321,8 @@
           1015,
           252,
           335
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1226,7 +1335,8 @@
         "amp": 0.3,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -1237,7 +1347,8 @@
           1042,
           632,
           309
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/hibiscus__lawn_near_l__mature__wilted__night.webp",
@@ -1246,7 +1357,8 @@
           1042,
           251,
           309
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/hibiscus__lawn_near_l__mature__wilted__rain.webp",
@@ -1255,7 +1367,8 @@
           1042,
           251,
           309
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1268,7 +1381,8 @@
         "amp": 0.3,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -1283,7 +1397,8 @@
           986,
           705,
           372
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/hibiscus__lawn_near_l__flowering__night.webp",
@@ -1292,7 +1407,8 @@
           986,
           297,
           372
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/hibiscus__lawn_near_l__flowering__rain.webp",
@@ -1301,7 +1417,8 @@
           986,
           297,
           372
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1314,7 +1431,8 @@
         "amp": 0.3,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -1325,7 +1443,8 @@
           1015,
           705,
           340
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/hibiscus__lawn_near_l__flowering__wilted__night.webp",
@@ -1334,7 +1453,8 @@
           1015,
           287,
           340
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/hibiscus__lawn_near_l__flowering__wilted__rain.webp",
@@ -1343,7 +1463,8 @@
           1015,
           287,
           340
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1356,7 +1477,8 @@
         "amp": 0.3,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      }
     ],
@@ -1373,7 +1495,8 @@
           1016,
           247,
           198
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/hibiscus__lawn_mid_r__seed__night.webp",
@@ -1382,7 +1505,8 @@
           1016,
           130,
           198
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/hibiscus__lawn_mid_r__seed__rain.webp",
@@ -1391,7 +1515,8 @@
           1016,
           130,
           198
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1404,7 +1529,8 @@
         "amp": 0.3,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {}
@@ -1422,7 +1548,8 @@
           1026,
           210,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/hibiscus__lawn_mid_r__sprout__night.webp",
@@ -1431,7 +1558,8 @@
           1026,
           117,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/hibiscus__lawn_mid_r__sprout__rain.webp",
@@ -1440,7 +1568,8 @@
           1026,
           117,
           187
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1453,7 +1582,8 @@
         "amp": 0.3,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -1464,7 +1594,8 @@
           1026,
           210,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/hibiscus__lawn_mid_r__sprout__wilted__night.webp",
@@ -1473,7 +1604,8 @@
           1026,
           117,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/hibiscus__lawn_mid_r__sprout__wilted__rain.webp",
@@ -1482,7 +1614,8 @@
           1026,
           117,
           187
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1495,7 +1628,8 @@
         "amp": 0.3,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -1510,7 +1644,8 @@
           993,
           365,
           221
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/hibiscus__lawn_mid_r__young__night.webp",
@@ -1519,7 +1654,8 @@
           993,
           150,
           221
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/hibiscus__lawn_mid_r__young__rain.webp",
@@ -1528,7 +1664,8 @@
           993,
           150,
           221
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1541,7 +1678,8 @@
         "amp": 0.3,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -1552,7 +1690,8 @@
           1010,
           314,
           204
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/hibiscus__lawn_mid_r__young__wilted__night.webp",
@@ -1561,7 +1700,8 @@
           1010,
           150,
           204
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/hibiscus__lawn_mid_r__young__wilted__rain.webp",
@@ -1570,7 +1710,8 @@
           1010,
           150,
           204
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1583,7 +1724,8 @@
         "amp": 0.3,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -1598,7 +1740,8 @@
           952,
           522,
           267
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/hibiscus__lawn_mid_r__mature__night.webp",
@@ -1607,7 +1750,8 @@
           952,
           200,
           267
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/hibiscus__lawn_mid_r__mature__rain.webp",
@@ -1616,7 +1760,8 @@
           952,
           200,
           267
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1629,7 +1774,8 @@
         "amp": 0.3,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -1640,7 +1786,8 @@
           971,
           467,
           249
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/hibiscus__lawn_mid_r__mature__wilted__night.webp",
@@ -1649,7 +1796,8 @@
           971,
           199,
           249
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/hibiscus__lawn_mid_r__mature__wilted__rain.webp",
@@ -1658,7 +1806,8 @@
           971,
           199,
           249
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1671,7 +1820,8 @@
         "amp": 0.3,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -1686,7 +1836,8 @@
           932,
           604,
           291
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/hibiscus__lawn_mid_r__flowering__night.webp",
@@ -1695,7 +1846,8 @@
           932,
           230,
           291
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/hibiscus__lawn_mid_r__flowering__rain.webp",
@@ -1704,7 +1856,8 @@
           932,
           230,
           291
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1717,7 +1870,8 @@
         "amp": 0.3,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -1728,7 +1882,8 @@
           953,
           541,
           268
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/hibiscus__lawn_mid_r__flowering__wilted__night.webp",
@@ -1737,7 +1892,8 @@
           953,
           223,
           268
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/hibiscus__lawn_mid_r__flowering__wilted__rain.webp",
@@ -1746,7 +1902,8 @@
           953,
           223,
           268
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1759,7 +1916,8 @@
         "amp": 0.3,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      }
     ]
@@ -1797,7 +1955,8 @@
           953,
           188,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/rose_bush__bed_l__seed__night.webp",
@@ -1806,7 +1965,8 @@
           952,
           111,
           188
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/rose_bush__bed_l__seed__rain.webp",
@@ -1815,7 +1975,8 @@
           952,
           111,
           188
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1828,7 +1989,8 @@
         "amp": 0.3,
         "speed": 0.55
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {}
@@ -1846,7 +2008,8 @@
           956,
           164,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/rose_bush__bed_l__sprout__night.webp",
@@ -1855,7 +2018,8 @@
           956,
           102,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/rose_bush__bed_l__sprout__rain.webp",
@@ -1864,7 +2028,8 @@
           956,
           102,
           187
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1877,7 +2042,8 @@
         "amp": 0.3,
         "speed": 0.55
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -1888,7 +2054,8 @@
           956,
           164,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/rose_bush__bed_l__sprout__wilted__night.webp",
@@ -1897,7 +2064,8 @@
           956,
           102,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/rose_bush__bed_l__sprout__wilted__rain.webp",
@@ -1906,7 +2074,8 @@
           956,
           102,
           187
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1919,7 +2088,8 @@
         "amp": 0.3,
         "speed": 0.55
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -1934,7 +2104,8 @@
           951,
           224,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/rose_bush__bed_l__young__night.webp",
@@ -1943,7 +2114,8 @@
           951,
           116,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/rose_bush__bed_l__young__rain.webp",
@@ -1952,7 +2124,8 @@
           951,
           116,
           187
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -1965,7 +2138,8 @@
         "amp": 0.3,
         "speed": 0.55
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -1976,7 +2150,8 @@
           957,
           195,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/rose_bush__bed_l__young__wilted__night.webp",
@@ -1985,7 +2160,8 @@
           957,
           117,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/rose_bush__bed_l__young__wilted__rain.webp",
@@ -1994,7 +2170,8 @@
           957,
           117,
           187
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2007,7 +2184,8 @@
         "amp": 0.3,
         "speed": 0.55
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -2022,7 +2200,8 @@
           932,
           306,
           206
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/rose_bush__bed_l__mature__night.webp",
@@ -2031,7 +2210,8 @@
           932,
           141,
           206
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/rose_bush__bed_l__mature__rain.webp",
@@ -2040,7 +2220,8 @@
           932,
           141,
           206
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2053,7 +2234,8 @@
         "amp": 0.3,
         "speed": 0.55
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -2064,7 +2246,8 @@
           944,
           271,
           194
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/rose_bush__bed_l__mature__wilted__night.webp",
@@ -2073,7 +2256,8 @@
           944,
           141,
           194
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/rose_bush__bed_l__mature__wilted__rain.webp",
@@ -2082,7 +2266,8 @@
           944,
           141,
           194
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2095,7 +2280,8 @@
         "amp": 0.3,
         "speed": 0.55
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -2110,7 +2296,8 @@
           918,
           357,
           221
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/rose_bush__bed_l__flowering__night.webp",
@@ -2119,7 +2306,8 @@
           918,
           154,
           221
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/rose_bush__bed_l__flowering__rain.webp",
@@ -2128,7 +2316,8 @@
           918,
           154,
           221
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2141,7 +2330,8 @@
         "amp": 0.3,
         "speed": 0.55
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -2152,7 +2342,8 @@
           933,
           315,
           206
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/rose_bush__bed_l__flowering__wilted__night.webp",
@@ -2161,7 +2352,8 @@
           933,
           154,
           206
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/rose_bush__bed_l__flowering__wilted__rain.webp",
@@ -2170,7 +2362,8 @@
           933,
           154,
           206
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2183,7 +2376,8 @@
         "amp": 0.3,
         "speed": 0.55
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      }
     ],
@@ -2200,7 +2394,8 @@
           1227,
           425,
           266
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/rose_bush__lawn_near_r__seed__night.webp",
@@ -2209,7 +2404,8 @@
           1227,
           198,
           266
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/rose_bush__lawn_near_r__seed__rain.webp",
@@ -2218,7 +2414,8 @@
           1227,
           198,
           266
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2231,7 +2428,8 @@
         "amp": 0.3,
         "speed": 0.55
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {}
@@ -2249,7 +2447,8 @@
           1246,
           353,
           242
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/rose_bush__lawn_near_r__sprout__night.webp",
@@ -2258,7 +2457,8 @@
           1246,
           171,
           242
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/rose_bush__lawn_near_r__sprout__rain.webp",
@@ -2267,7 +2467,8 @@
           1246,
           171,
           242
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2280,7 +2481,8 @@
         "amp": 0.3,
         "speed": 0.55
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -2291,7 +2493,8 @@
           1246,
           353,
           242
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/rose_bush__lawn_near_r__sprout__wilted__night.webp",
@@ -2300,7 +2503,8 @@
           1246,
           171,
           242
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/rose_bush__lawn_near_r__sprout__wilted__rain.webp",
@@ -2309,7 +2513,8 @@
           1246,
           171,
           242
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2322,7 +2527,8 @@
         "amp": 0.3,
         "speed": 0.55
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -2337,7 +2543,8 @@
           1212,
           515,
           279
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/rose_bush__lawn_near_r__young__night.webp",
@@ -2346,7 +2553,8 @@
           1212,
           213,
           279
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/rose_bush__lawn_near_r__young__rain.webp",
@@ -2355,7 +2563,8 @@
           1212,
           213,
           279
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2368,7 +2577,8 @@
         "amp": 0.3,
         "speed": 0.55
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -2379,7 +2589,8 @@
           1241,
           432,
           251
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/rose_bush__lawn_near_r__young__wilted__night.webp",
@@ -2388,7 +2599,8 @@
           1241,
           213,
           251
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/rose_bush__lawn_near_r__young__wilted__rain.webp",
@@ -2397,7 +2609,8 @@
           1241,
           213,
           251
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2410,7 +2623,8 @@
         "amp": 0.3,
         "speed": 0.55
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -2425,7 +2639,8 @@
           1147,
           750,
           361
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/rose_bush__lawn_near_r__mature__night.webp",
@@ -2434,7 +2649,8 @@
           1147,
           288,
           361
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/rose_bush__lawn_near_r__mature__rain.webp",
@@ -2443,7 +2659,8 @@
           1147,
           288,
           361
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2456,7 +2673,8 @@
         "amp": 0.3,
         "speed": 0.55
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -2467,7 +2685,8 @@
           1181,
           654,
           327
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/rose_bush__lawn_near_r__mature__wilted__night.webp",
@@ -2476,7 +2695,8 @@
           1181,
           288,
           327
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/rose_bush__lawn_near_r__mature__wilted__rain.webp",
@@ -2485,7 +2705,8 @@
           1181,
           288,
           327
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2498,7 +2719,8 @@
         "amp": 0.3,
         "speed": 0.55
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -2513,7 +2735,8 @@
           1108,
           892,
           408
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/rose_bush__lawn_near_r__flowering__night.webp",
@@ -2522,7 +2745,8 @@
           1108,
           328,
           408
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/rose_bush__lawn_near_r__flowering__rain.webp",
@@ -2531,7 +2755,8 @@
           1108,
           328,
           408
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2544,7 +2769,8 @@
         "amp": 0.3,
         "speed": 0.55
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -2555,7 +2781,8 @@
           1148,
           778,
           367
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/rose_bush__lawn_near_r__flowering__wilted__night.webp",
@@ -2564,7 +2791,8 @@
           1148,
           325,
           367
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/rose_bush__lawn_near_r__flowering__wilted__rain.webp",
@@ -2573,7 +2801,8 @@
           1148,
           325,
           367
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2586,7 +2815,8 @@
         "amp": 0.3,
         "speed": 0.55
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      }
     ]
@@ -2624,7 +2854,8 @@
           970,
           208,
           188
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/jasmine__lawn_far_l__seed__night.webp",
@@ -2633,7 +2864,8 @@
           969,
           116,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/jasmine__lawn_far_l__seed__rain.webp",
@@ -2642,7 +2874,8 @@
           969,
           116,
           187
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2655,7 +2888,8 @@
         "amp": 0.35,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {}
@@ -2673,7 +2907,8 @@
           974,
           180,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/jasmine__lawn_far_l__sprout__night.webp",
@@ -2682,7 +2917,8 @@
           973,
           106,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/jasmine__lawn_far_l__sprout__rain.webp",
@@ -2691,7 +2927,8 @@
           973,
           106,
           187
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2704,7 +2941,8 @@
         "amp": 0.35,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -2715,7 +2953,8 @@
           974,
           180,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/jasmine__lawn_far_l__sprout__wilted__night.webp",
@@ -2724,7 +2963,8 @@
           973,
           106,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/jasmine__lawn_far_l__sprout__wilted__rain.webp",
@@ -2733,7 +2973,8 @@
           973,
           106,
           187
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2746,7 +2987,8 @@
         "amp": 0.35,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -2761,7 +3003,8 @@
           964,
           250,
           194
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/jasmine__lawn_far_l__young__night.webp",
@@ -2770,7 +3013,8 @@
           964,
           113,
           191
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/jasmine__lawn_far_l__young__rain.webp",
@@ -2779,7 +3023,8 @@
           964,
           113,
           191
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2792,7 +3037,8 @@
         "amp": 0.35,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -2803,7 +3049,8 @@
           972,
           221,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/jasmine__lawn_far_l__young__wilted__night.webp",
@@ -2812,7 +3059,8 @@
           971,
           114,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/jasmine__lawn_far_l__young__wilted__rain.webp",
@@ -2821,7 +3069,8 @@
           971,
           114,
           187
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2834,7 +3083,8 @@
         "amp": 0.35,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -2849,7 +3099,8 @@
           938,
           356,
           222
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/jasmine__lawn_far_l__mature__night.webp",
@@ -2858,7 +3109,8 @@
           938,
           150,
           220
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/jasmine__lawn_far_l__mature__rain.webp",
@@ -2867,7 +3119,8 @@
           938,
           150,
           220
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2880,7 +3133,8 @@
         "amp": 0.35,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -2891,7 +3145,8 @@
           951,
           316,
           209
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/jasmine__lawn_far_l__mature__wilted__night.webp",
@@ -2900,7 +3155,8 @@
           951,
           150,
           207
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/jasmine__lawn_far_l__mature__wilted__rain.webp",
@@ -2909,7 +3165,8 @@
           951,
           150,
           207
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2922,7 +3179,8 @@
         "amp": 0.35,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -2937,7 +3195,8 @@
           920,
           429,
           242
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/jasmine__lawn_far_l__flowering__night.webp",
@@ -2946,7 +3205,8 @@
           920,
           180,
           239
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/jasmine__lawn_far_l__flowering__rain.webp",
@@ -2955,7 +3215,8 @@
           920,
           180,
           239
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -2968,7 +3229,8 @@
         "amp": 0.35,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -2979,7 +3241,8 @@
           939,
           363,
           223
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/jasmine__lawn_far_l__flowering__wilted__night.webp",
@@ -2988,7 +3251,8 @@
           939,
           166,
           221
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/jasmine__lawn_far_l__flowering__wilted__rain.webp",
@@ -2997,7 +3261,8 @@
           939,
           166,
           221
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3010,7 +3275,8 @@
         "amp": 0.35,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      }
     ],
@@ -3027,7 +3293,8 @@
           953,
           188,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/jasmine__bed_l__seed__night.webp",
@@ -3036,7 +3303,8 @@
           952,
           111,
           188
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/jasmine__bed_l__seed__rain.webp",
@@ -3045,7 +3313,8 @@
           952,
           111,
           188
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3058,7 +3327,8 @@
         "amp": 0.35,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {}
@@ -3076,7 +3346,8 @@
           956,
           164,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/jasmine__bed_l__sprout__night.webp",
@@ -3085,7 +3356,8 @@
           956,
           102,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/jasmine__bed_l__sprout__rain.webp",
@@ -3094,7 +3366,8 @@
           956,
           102,
           187
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3107,7 +3380,8 @@
         "amp": 0.35,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -3118,7 +3392,8 @@
           956,
           164,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/jasmine__bed_l__sprout__wilted__night.webp",
@@ -3127,7 +3402,8 @@
           956,
           102,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/jasmine__bed_l__sprout__wilted__rain.webp",
@@ -3136,7 +3412,8 @@
           956,
           102,
           187
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3149,7 +3426,8 @@
         "amp": 0.35,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -3164,7 +3442,8 @@
           950,
           226,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/jasmine__bed_l__young__night.webp",
@@ -3173,7 +3452,8 @@
           950,
           109,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/jasmine__bed_l__young__rain.webp",
@@ -3182,7 +3462,8 @@
           950,
           109,
           187
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3195,7 +3476,8 @@
         "amp": 0.35,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -3206,7 +3488,8 @@
           954,
           200,
           188
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/jasmine__bed_l__young__wilted__night.webp",
@@ -3215,7 +3498,8 @@
           954,
           109,
           188
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/jasmine__bed_l__young__wilted__rain.webp",
@@ -3224,7 +3508,8 @@
           954,
           109,
           188
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3237,7 +3522,8 @@
         "amp": 0.35,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -3252,7 +3538,8 @@
           927,
           321,
           212
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/jasmine__bed_l__mature__night.webp",
@@ -3261,7 +3548,8 @@
           927,
           141,
           212
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/jasmine__bed_l__mature__rain.webp",
@@ -3270,7 +3558,8 @@
           927,
           141,
           212
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3283,7 +3572,8 @@
         "amp": 0.35,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -3294,7 +3584,8 @@
           939,
           285,
           200
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/jasmine__bed_l__mature__wilted__night.webp",
@@ -3303,7 +3594,8 @@
           939,
           141,
           200
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/jasmine__bed_l__mature__wilted__rain.webp",
@@ -3312,7 +3604,8 @@
           939,
           141,
           200
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3325,7 +3618,8 @@
         "amp": 0.35,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -3340,7 +3634,8 @@
           911,
           387,
           229
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/jasmine__bed_l__flowering__night.webp",
@@ -3349,7 +3644,8 @@
           911,
           168,
           229
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/jasmine__bed_l__flowering__rain.webp",
@@ -3358,7 +3654,8 @@
           911,
           168,
           229
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3371,7 +3668,8 @@
         "amp": 0.35,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -3382,7 +3680,8 @@
           928,
           327,
           212
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/jasmine__bed_l__flowering__wilted__night.webp",
@@ -3391,7 +3690,8 @@
           928,
           155,
           212
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/jasmine__bed_l__flowering__wilted__rain.webp",
@@ -3400,7 +3700,8 @@
           928,
           155,
           212
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3413,7 +3714,8 @@
         "amp": 0.35,
         "speed": 0.5
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      }
     ]
@@ -3451,7 +3753,8 @@
           1016,
           247,
           198
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/bougainvillea__lawn_mid_r__seed__night.webp",
@@ -3460,7 +3763,8 @@
           1016,
           130,
           198
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/bougainvillea__lawn_mid_r__seed__rain.webp",
@@ -3469,7 +3773,8 @@
           1016,
           130,
           198
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3482,7 +3787,8 @@
         "amp": 0.3,
         "speed": 0.45
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {}
@@ -3500,7 +3806,8 @@
           1026,
           210,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/bougainvillea__lawn_mid_r__sprout__night.webp",
@@ -3509,7 +3816,8 @@
           1026,
           117,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/bougainvillea__lawn_mid_r__sprout__rain.webp",
@@ -3518,7 +3826,8 @@
           1026,
           117,
           187
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3531,7 +3840,8 @@
         "amp": 0.3,
         "speed": 0.45
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -3542,7 +3852,8 @@
           1026,
           210,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/bougainvillea__lawn_mid_r__sprout__wilted__night.webp",
@@ -3551,7 +3862,8 @@
           1026,
           117,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/bougainvillea__lawn_mid_r__sprout__wilted__rain.webp",
@@ -3560,7 +3872,8 @@
           1026,
           117,
           187
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3573,7 +3886,8 @@
         "amp": 0.3,
         "speed": 0.45
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -3588,7 +3902,8 @@
           978,
           424,
           240
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/bougainvillea__lawn_mid_r__young__night.webp",
@@ -3597,7 +3912,8 @@
           978,
           170,
           240
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/bougainvillea__lawn_mid_r__young__rain.webp",
@@ -3606,7 +3922,8 @@
           978,
           170,
           240
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3619,7 +3936,8 @@
         "amp": 0.3,
         "speed": 0.45
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -3630,7 +3948,8 @@
           995,
           371,
           223
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/bougainvillea__lawn_mid_r__young__wilted__night.webp",
@@ -3639,7 +3958,8 @@
           995,
           169,
           223
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/bougainvillea__lawn_mid_r__young__wilted__rain.webp",
@@ -3648,7 +3968,8 @@
           995,
           169,
           223
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3661,7 +3982,8 @@
         "amp": 0.3,
         "speed": 0.45
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -3676,7 +3998,8 @@
           929,
           621,
           295
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/bougainvillea__lawn_mid_r__mature__night.webp",
@@ -3685,7 +4008,8 @@
           929,
           237,
           295
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/bougainvillea__lawn_mid_r__mature__rain.webp",
@@ -3694,7 +4018,8 @@
           929,
           237,
           295
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3707,7 +4032,8 @@
         "amp": 0.3,
         "speed": 0.45
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -3718,7 +4044,8 @@
           950,
           561,
           274
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/bougainvillea__lawn_mid_r__mature__wilted__night.webp",
@@ -3727,7 +4054,8 @@
           950,
           236,
           274
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/bougainvillea__lawn_mid_r__mature__wilted__rain.webp",
@@ -3736,7 +4064,8 @@
           950,
           236,
           274
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3749,7 +4078,8 @@
         "amp": 0.3,
         "speed": 0.45
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -3764,7 +4094,8 @@
           903,
           723,
           324
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/bougainvillea__lawn_mid_r__flowering__night.webp",
@@ -3773,7 +4104,8 @@
           903,
           271,
           324
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/bougainvillea__lawn_mid_r__flowering__rain.webp",
@@ -3782,7 +4114,8 @@
           903,
           271,
           324
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3795,7 +4128,8 @@
         "amp": 0.3,
         "speed": 0.45
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -3806,7 +4140,8 @@
           928,
           653,
           299
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/bougainvillea__lawn_mid_r__flowering__wilted__night.webp",
@@ -3815,7 +4150,8 @@
           928,
           267,
           299
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/bougainvillea__lawn_mid_r__flowering__wilted__rain.webp",
@@ -3824,7 +4160,8 @@
           928,
           267,
           299
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3837,7 +4174,8 @@
         "amp": 0.3,
         "speed": 0.45
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      }
     ],
@@ -3854,7 +4192,8 @@
           935,
           187,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/bougainvillea__corner_far_r__seed__night.webp",
@@ -3863,7 +4202,8 @@
           935,
           106,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/bougainvillea__corner_far_r__seed__rain.webp",
@@ -3872,7 +4212,8 @@
           935,
           106,
           187
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3885,7 +4226,8 @@
         "amp": 0.3,
         "speed": 0.45
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {}
@@ -3903,7 +4245,8 @@
           938,
           162,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/bougainvillea__corner_far_r__sprout__night.webp",
@@ -3912,7 +4255,8 @@
           938,
           98,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/bougainvillea__corner_far_r__sprout__rain.webp",
@@ -3921,7 +4265,8 @@
           938,
           98,
           187
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3934,7 +4279,8 @@
         "amp": 0.3,
         "speed": 0.45
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -3945,7 +4291,8 @@
           938,
           162,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/bougainvillea__corner_far_r__sprout__wilted__night.webp",
@@ -3954,7 +4301,8 @@
           938,
           98,
           187
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/bougainvillea__corner_far_r__sprout__wilted__rain.webp",
@@ -3963,7 +4311,8 @@
           938,
           98,
           187
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -3976,7 +4325,8 @@
         "amp": 0.3,
         "speed": 0.45
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -3991,7 +4341,8 @@
           916,
           309,
           203
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/bougainvillea__corner_far_r__young__night.webp",
@@ -4000,7 +4351,8 @@
           916,
           131,
           203
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/bougainvillea__corner_far_r__young__rain.webp",
@@ -4009,7 +4361,8 @@
           916,
           131,
           203
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -4022,7 +4375,8 @@
         "amp": 0.3,
         "speed": 0.45
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -4033,7 +4387,8 @@
           928,
           273,
           191
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/bougainvillea__corner_far_r__young__wilted__night.webp",
@@ -4042,7 +4397,8 @@
           928,
           131,
           191
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/bougainvillea__corner_far_r__young__wilted__rain.webp",
@@ -4051,7 +4407,8 @@
           928,
           131,
           191
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -4064,7 +4421,8 @@
         "amp": 0.3,
         "speed": 0.45
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -4079,7 +4437,8 @@
           886,
           442,
           236
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/bougainvillea__corner_far_r__mature__night.webp",
@@ -4088,7 +4447,8 @@
           886,
           173,
           236
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/bougainvillea__corner_far_r__mature__rain.webp",
@@ -4097,7 +4457,8 @@
           886,
           173,
           236
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -4110,7 +4471,8 @@
         "amp": 0.3,
         "speed": 0.45
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -4121,7 +4483,8 @@
           899,
           400,
           223
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/bougainvillea__corner_far_r__mature__wilted__night.webp",
@@ -4130,7 +4493,8 @@
           899,
           173,
           223
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/bougainvillea__corner_far_r__mature__wilted__rain.webp",
@@ -4139,7 +4503,8 @@
           899,
           173,
           223
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -4152,7 +4517,8 @@
         "amp": 0.3,
         "speed": 0.45
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      },
      {
@@ -4167,7 +4533,8 @@
           869,
           509,
           254
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/bougainvillea__corner_far_r__flowering__night.webp",
@@ -4176,7 +4543,8 @@
           869,
           194,
           254
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/bougainvillea__corner_far_r__flowering__rain.webp",
@@ -4185,7 +4553,8 @@
           869,
           194,
           254
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -4198,7 +4567,8 @@
         "amp": 0.3,
         "speed": 0.45
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       },
       "wilted": {
        "files": {
@@ -4209,7 +4579,8 @@
           885,
           461,
           238
-         ]
+         ],
+         "cleaned": true
         },
         "night": {
          "file": "plants/bougainvillea__corner_far_r__flowering__wilted__night.webp",
@@ -4218,7 +4589,8 @@
           885,
           192,
           238
-         ]
+         ],
+         "cleaned": true
         },
         "rain": {
          "file": "plants/bougainvillea__corner_far_r__flowering__wilted__rain.webp",
@@ -4227,7 +4599,8 @@
           885,
           192,
           238
-         ]
+         ],
+         "cleaned": true
         }
        },
        "pivot": [
@@ -4240,7 +4613,8 @@
         "amp": 0.3,
         "speed": 0.45
        },
-       "feathered": true
+       "feathered": true,
+       "cleaned": true
       }
      }
     ]
@@ -4261,7 +4635,8 @@
          1109,
          874,
          403
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/croton__lawn_near_r__0__night.webp",
@@ -4270,7 +4645,8 @@
          1109,
          327,
          403
-        ]
+        ],
+        "cleaned": true
        },
        "rain": {
         "file": "plants/croton__lawn_near_r__0__rain.webp",
@@ -4279,7 +4655,8 @@
          1109,
          327,
          403
-        ]
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -4291,7 +4668,8 @@
        "amp": 0.25,
        "speed": 0.5
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "bed_r": [
@@ -4305,7 +4683,8 @@
          969,
          517,
          262
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/croton__bed_r__0__night.webp",
@@ -4314,7 +4693,8 @@
          969,
          215,
          262
-        ]
+        ],
+        "cleaned": true
        },
        "rain": {
         "file": "plants/croton__bed_r__0__rain.webp",
@@ -4323,7 +4703,8 @@
          969,
          215,
          262
-        ]
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -4335,7 +4716,8 @@
        "amp": 0.25,
        "speed": 0.5
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "house_r": [
@@ -4349,7 +4731,8 @@
          1159,
          1003,
          465
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/croton__house_r__0__night.webp",
@@ -4358,7 +4741,8 @@
          1159,
          327,
          465
-        ]
+        ],
+        "cleaned": true
        },
        "rain": {
         "file": "plants/croton__house_r__0__rain.webp",
@@ -4367,7 +4751,8 @@
          1159,
          327,
          465
-        ]
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -4379,7 +4764,8 @@
        "amp": 0.25,
        "speed": 0.5
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -4399,7 +4785,8 @@
          820,
          553,
          363
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/banana_plant__lawn_far_l__0__night.webp",
@@ -4408,7 +4795,8 @@
          821,
          319,
          362
-        ]
+        ],
+        "cleaned": true
        },
        "rain": {
         "file": "plants/banana_plant__lawn_far_l__0__rain.webp",
@@ -4417,7 +4805,8 @@
          821,
          319,
          362
-        ]
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -4429,7 +4818,8 @@
        "amp": 0.5,
        "speed": 0.35
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "corner_far_r": [
@@ -4443,7 +4833,8 @@
          821,
          724,
          318
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/banana_plant__corner_far_r__0__night.webp",
@@ -4452,7 +4843,8 @@
          821,
          260,
          318
-        ]
+        ],
+        "cleaned": true
        },
        "rain": {
         "file": "plants/banana_plant__corner_far_r__0__rain.webp",
@@ -4461,7 +4853,8 @@
          821,
          260,
          318
-        ]
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -4473,7 +4866,8 @@
        "amp": 0.5,
        "speed": 0.35
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "house_l": [
@@ -4487,7 +4881,8 @@
          835,
          760,
          495
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/banana_plant__house_l__0__night.webp",
@@ -4496,7 +4891,8 @@
          835,
          466,
          495
-        ]
+        ],
+        "cleaned": true
        },
        "rain": {
         "file": "plants/banana_plant__house_l__0__rain.webp",
@@ -4505,7 +4901,8 @@
          835,
          466,
          495
-        ]
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -4517,7 +4914,8 @@
        "amp": 0.5,
        "speed": 0.35
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -4537,7 +4935,8 @@
          828,
          828,
          396
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "trees/lemon_tree__lawn_mid_r__0__night.webp",
@@ -4546,7 +4945,8 @@
          828,
          279,
          396
-        ]
+        ],
+        "cleaned": true
        },
        "rain": {
         "file": "trees/lemon_tree__lawn_mid_r__0__rain.webp",
@@ -4555,7 +4955,8 @@
          828,
          279,
          396
-        ]
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -4567,7 +4968,8 @@
        "amp": 0.29647058823529415,
        "speed": 0.35
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "lawn_far_r": [
@@ -4581,7 +4983,8 @@
          820,
          685,
          320
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "trees/lemon_tree__lawn_far_r__0__night.webp",
@@ -4590,7 +4993,8 @@
          820,
          209,
          319
-        ]
+        ],
+        "cleaned": true
        },
        "rain": {
         "file": "trees/lemon_tree__lawn_far_r__0__rain.webp",
@@ -4599,7 +5003,8 @@
          820,
          209,
          319
-        ]
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -4611,7 +5016,8 @@
        "amp": 0.29647058823529415,
        "speed": 0.35
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "corner_far": [
@@ -4625,7 +5031,8 @@
          820,
          187,
          295
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "trees/lemon_tree__corner_far__0__night.webp",
@@ -4634,7 +5041,8 @@
          820,
          187,
          295
-        ]
+        ],
+        "cleaned": true
        },
        "rain": {
         "file": "trees/lemon_tree__corner_far__0__rain.webp",
@@ -4643,7 +5051,8 @@
          820,
          187,
          295
-        ]
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -4655,7 +5064,8 @@
        "amp": 0.29647058823529415,
        "speed": 0.35
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -4675,7 +5085,8 @@
          1159,
          1080,
          723
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/ornamental_grass__path_near__0__night.webp",
@@ -4684,7 +5095,8 @@
          1159,
          587,
          720
-        ]
+        ],
+        "cleaned": true
        },
        "rain": {
         "file": "plants/ornamental_grass__path_near__0__rain.webp",
@@ -4693,7 +5105,8 @@
          1159,
          587,
          720
-        ]
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -4705,7 +5118,8 @@
        "amp": 0.7,
        "speed": 0.7
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "path_far": [
@@ -4719,7 +5133,8 @@
          898,
          367,
          226
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/ornamental_grass__path_far__0__night.webp",
@@ -4728,7 +5143,8 @@
          898,
          225,
          226
-        ]
+        ],
+        "cleaned": true
        },
        "rain": {
         "file": "plants/ornamental_grass__path_far__0__rain.webp",
@@ -4737,7 +5153,8 @@
          898,
          225,
          226
-        ]
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -4749,7 +5166,8 @@
        "amp": 0.7,
        "speed": 0.7
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "lawn_near_l": [
@@ -4763,7 +5181,8 @@
          1003,
          760,
          366
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/ornamental_grass__lawn_near_l__0__night.webp",
@@ -4772,7 +5191,8 @@
          1003,
          407,
          366
-        ]
+        ],
+        "cleaned": true
        },
        "rain": {
         "file": "plants/ornamental_grass__lawn_near_l__0__rain.webp",
@@ -4781,7 +5201,8 @@
          1003,
          407,
          366
-        ]
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -4793,7 +5214,8 @@
        "amp": 0.7,
        "speed": 0.7
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -4813,7 +5235,8 @@
          725,
          729,
          412
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "trees/frangipani_small__lawn_far_r__0__night.webp",
@@ -4822,7 +5245,8 @@
          727,
          229,
          409
-        ]
+        ],
+        "cleaned": true
        },
        "rain": {
         "file": "trees/frangipani_small__lawn_far_r__0__rain.webp",
@@ -4831,7 +5255,8 @@
          727,
          229,
          409
-        ]
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -4843,7 +5268,8 @@
        "amp": 0.27,
        "speed": 0.35
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "corner_far": [
@@ -4857,7 +5283,8 @@
          738,
          195,
          375
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "trees/frangipani_small__corner_far__0__night.webp",
@@ -4866,7 +5293,8 @@
          738,
          195,
          375
-        ]
+        ],
+        "cleaned": true
        },
        "rain": {
         "file": "trees/frangipani_small__corner_far__0__rain.webp",
@@ -4875,7 +5303,8 @@
          738,
          195,
          375
-        ]
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -4887,7 +5316,8 @@
        "amp": 0.27,
        "speed": 0.35
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -4907,7 +5337,8 @@
          659,
          510,
          508
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "trees/mango_sapling__lawn_far_l__0__night.webp",
@@ -4916,7 +5347,8 @@
          660,
          290,
          505
-        ]
+        ],
+        "cleaned": true
        },
        "rain": {
         "file": "trees/mango_sapling__lawn_far_l__0__rain.webp",
@@ -4925,7 +5357,8 @@
          660,
          290,
          505
-        ]
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -4937,7 +5370,8 @@
        "amp": 0.245,
        "speed": 0.35
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "lawn_far_r": [
@@ -4951,7 +5385,8 @@
          677,
          759,
          466
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "trees/mango_sapling__lawn_far_r__0__night.webp",
@@ -4960,7 +5395,8 @@
          679,
          262,
          463
-        ]
+        ],
+        "cleaned": true
        },
        "rain": {
         "file": "trees/mango_sapling__lawn_far_r__0__rain.webp",
@@ -4969,7 +5405,8 @@
          679,
          262,
          463
-        ]
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -4981,7 +5418,8 @@
        "amp": 0.245,
        "speed": 0.35
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "corner_far_r": [
@@ -4995,7 +5433,8 @@
          693,
          1005,
          432
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "trees/mango_sapling__corner_far_r__0__night.webp",
@@ -5004,7 +5443,8 @@
          693,
          247,
          432
-        ]
+        ],
+        "cleaned": true
        },
        "rain": {
         "file": "trees/mango_sapling__corner_far_r__0__rain.webp",
@@ -5013,7 +5453,8 @@
          693,
          247,
          432
-        ]
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5025,7 +5466,8 @@
        "amp": 0.245,
        "speed": 0.35
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -5045,7 +5487,8 @@
          777,
          267,
          364
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "trees/ashoka_tree__corner_far__0__night.webp",
@@ -5054,7 +5497,18 @@
          777,
          209,
          364
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "trees/ashoka_tree__corner_far__0__rain.webp",
+        "rect": [
+         0,
+         777,
+         209,
+         364
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5066,7 +5520,8 @@
        "amp": 0.195,
        "speed": 0.35
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "corner_far_r": [
@@ -5080,7 +5535,8 @@
          776,
          820,
          373
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "trees/ashoka_tree__corner_far_r__0__night.webp",
@@ -5089,7 +5545,18 @@
          776,
          238,
          373
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "trees/ashoka_tree__corner_far_r__0__rain.webp",
+        "rect": [
+         819,
+         776,
+         238,
+         373
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5101,7 +5568,8 @@
        "amp": 0.195,
        "speed": 0.35
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "house_l": [
@@ -5115,7 +5583,8 @@
          750,
          770,
          599
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "trees/ashoka_tree__house_l__0__night.webp",
@@ -5124,7 +5593,18 @@
          751,
          394,
          598
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "trees/ashoka_tree__house_l__0__rain.webp",
+        "rect": [
+         224,
+         750,
+         394,
+         599
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5136,7 +5616,8 @@
        "amp": 0.195,
        "speed": 0.35
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -5156,7 +5637,8 @@
          1105,
          1021,
          642
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/tulsi__path_near__0__night.webp",
@@ -5165,7 +5647,18 @@
          1105,
          324,
          638
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "plants/tulsi__path_near__0__rain.webp",
+        "rect": [
+         697,
+         1105,
+         324,
+         638
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5177,7 +5670,8 @@
        "amp": 0.5,
        "speed": 0.7
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "path_far": [
@@ -5191,7 +5685,8 @@
          879,
          316,
          239
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/tulsi__path_far__0__night.webp",
@@ -5200,7 +5695,18 @@
          879,
          118,
          239
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "plants/tulsi__path_far__0__rain.webp",
+        "rect": [
+         198,
+         879,
+         118,
+         239
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5212,7 +5718,8 @@
        "amp": 0.5,
        "speed": 0.7
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "house_r": [
@@ -5226,7 +5733,8 @@
          1060,
          1080,
          539
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/tulsi__house_r__0__night.webp",
@@ -5235,7 +5743,18 @@
          1060,
          260,
          538
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "plants/tulsi__house_r__0__rain.webp",
+        "rect": [
+         820,
+         1060,
+         260,
+         538
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5247,7 +5766,8 @@
        "amp": 0.5,
        "speed": 0.7
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -5267,7 +5787,8 @@
          920,
          610,
          354
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/areca_palm__house_l__0__night.webp",
@@ -5276,7 +5797,18 @@
          920,
          376,
          354
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "plants/areca_palm__house_l__0__rain.webp",
+        "rect": [
+         234,
+         920,
+         376,
+         354
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5288,7 +5820,8 @@
        "amp": 1.0,
        "speed": 0.45
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "house_r": [
@@ -5302,7 +5835,8 @@
          1007,
          1080,
          607
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/areca_palm__house_r__0__night.webp",
@@ -5311,7 +5845,18 @@
          1007,
          464,
          600
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "plants/areca_palm__house_r__0__rain.webp",
+        "rect": [
+         616,
+         1007,
+         464,
+         600
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5323,7 +5868,8 @@
        "amp": 1.0,
        "speed": 0.45
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "corner_far": [
@@ -5337,7 +5883,8 @@
          864,
          202,
          248
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/areca_palm__corner_far__0__night.webp",
@@ -5346,7 +5893,18 @@
          864,
          202,
          247
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "plants/areca_palm__corner_far__0__rain.webp",
+        "rect": [
+         0,
+         864,
+         202,
+         247
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5358,7 +5916,8 @@
        "amp": 1.0,
        "speed": 0.45
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -5378,7 +5937,8 @@
          963,
          632,
          345
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "furniture/garden_bench__seat__0__night.webp",
@@ -5387,7 +5947,18 @@
          963,
          237,
          345
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "furniture/garden_bench__seat__0__rain.webp",
+        "rect": [
+         619,
+         963,
+         237,
+         345
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5395,7 +5966,8 @@
        1204.7
       ],
       "depth": 8.162,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "seat_far": [
@@ -5409,7 +5981,8 @@
          884,
          438,
          234
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "furniture/garden_bench__seat_far__0__night.webp",
@@ -5418,7 +5991,18 @@
          885,
          213,
          230
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "furniture/garden_bench__seat_far__0__rain.webp",
+        "rect": [
+         367,
+         885,
+         213,
+         230
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5426,7 +6010,8 @@
        1040.5
       ],
       "depth": 15.452,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -5446,7 +6031,8 @@
          755,
          601,
          361
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "furniture/wooden_swing__seat_far__0__night.webp",
@@ -5455,7 +6041,18 @@
          756,
          262,
          359
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "furniture/wooden_swing__seat_far__0__rain.webp",
+        "rect": [
+         339,
+         756,
+         262,
+         359
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5467,7 +6064,8 @@
        "amp": 0.08,
        "speed": 0.3
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "corner_far_r": [
@@ -5481,7 +6079,8 @@
          760,
          856,
          360
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "furniture/wooden_swing__corner_far_r__0__night.webp",
@@ -5490,7 +6089,18 @@
          760,
          262,
          360
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "furniture/wooden_swing__corner_far_r__0__rain.webp",
+        "rect": [
+         816,
+         760,
+         262,
+         360
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5502,7 +6112,8 @@
        "amp": 0.08,
        "speed": 0.3
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -5522,7 +6133,8 @@
          968,
          628,
          344
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "furniture/cafe_set__seat__0__night.webp",
@@ -5531,7 +6143,18 @@
          968,
          220,
          344
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "furniture/cafe_set__seat__0__rain.webp",
+        "rect": [
+         624,
+         968,
+         220,
+         344
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5539,7 +6162,8 @@
        1204.7
       ],
       "depth": 8.162,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "lawn_mid_r": [
@@ -5553,7 +6177,8 @@
          940,
          653,
          274
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "furniture/cafe_set__lawn_mid_r__0__night.webp",
@@ -5562,7 +6187,18 @@
          940,
          311,
          274
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "furniture/cafe_set__lawn_mid_r__0__rain.webp",
+        "rect": [
+         524,
+         940,
+         311,
+         274
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5570,7 +6206,8 @@
        1137.5
       ],
       "depth": 9.985,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -5590,7 +6227,8 @@
          1137,
          1066,
          785
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "furniture/wooden_cart__house_r__0__night.webp",
@@ -5599,7 +6237,18 @@
          1137,
          905,
          785
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "furniture/wooden_cart__house_r__0__rain.webp",
+        "rect": [
+         175,
+         1137,
+         905,
+         785
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5607,7 +6256,8 @@
        1494.9
       ],
       "depth": 4.521,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "lawn_far_r": [
@@ -5621,7 +6271,8 @@
          905,
          554,
          1017
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "furniture/wooden_cart__lawn_far_r__0__night.webp",
@@ -5630,7 +6281,18 @@
          905,
          525,
          1017
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "furniture/wooden_cart__lawn_far_r__0__rain.webp",
+        "rect": [
+         175,
+         905,
+         525,
+         1017
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5638,7 +6300,8 @@
        1060.6
       ],
       "depth": 13.899,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -5658,7 +6321,8 @@
          961,
          475,
          256
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "furniture/garden_table__lawn_mid_r__0__night.webp",
@@ -5667,7 +6331,18 @@
          961,
          180,
          256
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "furniture/garden_table__lawn_mid_r__0__rain.webp",
+        "rect": [
+         590,
+         961,
+         180,
+         256
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5675,7 +6350,8 @@
        1137.5
       ],
       "depth": 9.985,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "seat_far": [
@@ -5689,7 +6365,8 @@
          903,
          338,
          215
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "furniture/garden_table__seat_far__0__night.webp",
@@ -5698,7 +6375,18 @@
          903,
          142,
          212
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "furniture/garden_table__seat_far__0__rain.webp",
+        "rect": [
+         402,
+         903,
+         142,
+         212
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5706,7 +6394,8 @@
        1040.5
       ],
       "depth": 15.452,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -5727,7 +6416,8 @@
          1283,
          939,
          443
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "lighting/brass_lantern__path_near__0__night.webp",
@@ -5736,7 +6426,18 @@
          932,
          492,
          1141
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "lighting/brass_lantern__path_near__0__rain.webp",
+        "rect": [
+         750,
+         1283,
+         199,
+         439
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5744,7 +6445,8 @@
        1623.5
       ],
       "depth": 3.735,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "path_far": [
@@ -5758,7 +6460,8 @@
          917,
          250,
          200
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "lighting/brass_lantern__path_far__0__night.webp",
@@ -5767,7 +6470,18 @@
          566,
          417,
          902
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "lighting/brass_lantern__path_far__0__rain.webp",
+        "rect": [
+         210,
+         917,
+         93,
+         200
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5775,7 +6489,8 @@
        1045.2
       ],
       "depth": 15.672,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -5796,7 +6511,8 @@
          881,
          315,
          237
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "lighting/stone_lantern__path_far__0__night.webp",
@@ -5805,7 +6521,18 @@
          530,
          440,
          939
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "lighting/stone_lantern__path_far__0__rain.webp",
+        "rect": [
+         197,
+         882,
+         116,
+         236
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5813,7 +6540,8 @@
        1045.2
       ],
       "depth": 15.672,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "lawn_near_l": [
@@ -5827,7 +6555,8 @@
          975,
          641,
          363
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "lighting/stone_lantern__lawn_near_l__0__night.webp",
@@ -5836,7 +6565,18 @@
          626,
          493,
          1063
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "lighting/stone_lantern__lawn_near_l__0__rain.webp",
+        "rect": [
+         472,
+         975,
+         169,
+         363
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5844,7 +6584,8 @@
        1256.1
       ],
       "depth": 6.889,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -5865,7 +6606,8 @@
          887,
          689,
          297
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/fountain__feature__0__night.webp",
@@ -5874,7 +6616,18 @@
          887,
          310,
          297
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/fountain__feature__0__rain.webp",
+        "rect": [
+         386,
+         887,
+         310,
+         297
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5882,7 +6635,8 @@
        1094.8
       ],
       "depth": 11.889,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -5902,7 +6656,8 @@
          929,
          419,
          243
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/birdbath__feature__0__night.webp",
@@ -5911,7 +6666,18 @@
          929,
          151,
          243
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/birdbath__feature__0__rain.webp",
+        "rect": [
+         464,
+         929,
+         151,
+         243
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5919,7 +6685,8 @@
        1094.8
       ],
       "depth": 11.889,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "lawn_mid_r": [
@@ -5933,7 +6700,8 @@
          953,
          497,
          265
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/birdbath__lawn_mid_r__0__night.webp",
@@ -5942,7 +6710,18 @@
          953,
          178,
          265
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/birdbath__lawn_mid_r__0__rain.webp",
+        "rect": [
+         591,
+         953,
+         178,
+         265
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5950,7 +6729,8 @@
        1137.5
       ],
       "depth": 9.985,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -5970,7 +6750,8 @@
          770,
          411,
          385
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/birdhouse_post__lawn_far_l__0__night.webp",
@@ -5979,7 +6760,18 @@
          771,
          104,
          381
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/birdhouse_post__lawn_far_l__0__rain.webp",
+        "rect": [
+         307,
+         771,
+         104,
+         381
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -5987,7 +6779,8 @@
        1080.9
       ],
       "depth": 12.532,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "corner_far": [
@@ -6001,7 +6794,8 @@
          781,
          130,
          327
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/birdhouse_post__corner_far__0__night.webp",
@@ -6010,7 +6804,18 @@
          781,
          95,
          327
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/birdhouse_post__corner_far__0__rain.webp",
+        "rect": [
+         35,
+         781,
+         95,
+         327
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6018,7 +6823,8 @@
        1037.0
       ],
       "depth": 16.887,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -6038,7 +6844,8 @@
          752,
          1026,
          546
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/bird_feeder__branch__0__night.webp",
@@ -6047,7 +6854,18 @@
          752,
          177,
          341
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/bird_feeder__branch__0__rain.webp",
+        "rect": [
+         849,
+         752,
+         177,
+         341
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6060,7 +6878,8 @@
        "speed": 0.45,
        "pivot": "top"
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -6080,7 +6899,8 @@
          751,
          994,
          531
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/wind_chime__branch__0__night.webp",
@@ -6089,7 +6909,18 @@
          751,
          109,
          294
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/wind_chime__branch__0__rain.webp",
+        "rect": [
+         885,
+         751,
+         109,
+         294
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6102,7 +6933,8 @@
        "speed": 0.3,
        "pivot": "top"
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -6122,7 +6954,8 @@
          751,
          1047,
          548
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/hanging_basket__branch__0__night.webp",
@@ -6131,7 +6964,18 @@
          751,
          211,
          333
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "plants/hanging_basket__branch__0__rain.webp",
+        "rect": [
+         836,
+         751,
+         211,
+         333
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6144,7 +6988,8 @@
        "speed": 0.4,
        "pivot": "top"
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -6164,7 +7009,8 @@
          943,
          287,
          191
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/decorative_rocks__path_far__0__night.webp",
@@ -6173,7 +7019,18 @@
          943,
          185,
          191
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/decorative_rocks__path_far__0__rain.webp",
+        "rect": [
+         176,
+         943,
+         185,
+         191
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6181,7 +7038,8 @@
        1045.2
       ],
       "depth": 15.672,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "lawn_near_r": [
@@ -6195,7 +7053,8 @@
          1205,
          758,
          365
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/decorative_rocks__lawn_near_r__0__night.webp",
@@ -6204,7 +7063,18 @@
          1205,
          419,
          365
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/decorative_rocks__lawn_near_r__0__rain.webp",
+        "rect": [
+         529,
+         1205,
+         419,
+         365
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6212,7 +7082,8 @@
        1399.7
       ],
       "depth": 5.121,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -6232,7 +7103,8 @@
          1197,
          1059,
          575
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/stone_urn__path_near__0__night.webp",
@@ -6241,7 +7113,18 @@
          1197,
          392,
          571
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/stone_urn__path_near__0__rain.webp",
+        "rect": [
+         667,
+         1197,
+         392,
+         571
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6249,7 +7132,8 @@
        1623.5
       ],
       "depth": 3.735,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "house_l": [
@@ -6263,7 +7147,8 @@
          979,
          532,
          297
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/stone_urn__house_l__0__night.webp",
@@ -6272,7 +7157,18 @@
          979,
          176,
          297
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/stone_urn__house_l__0__rain.webp",
+        "rect": [
+         342,
+         979,
+         176,
+         297
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6280,7 +7176,8 @@
        1192.8
       ],
       "depth": 8.358,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "feature": [
@@ -6294,7 +7191,8 @@
          925,
          419,
          246
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/stone_urn__feature__0__night.webp",
@@ -6303,7 +7201,18 @@
          925,
          141,
          246
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/stone_urn__feature__0__rain.webp",
+        "rect": [
+         469,
+         925,
+         141,
+         246
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6311,7 +7220,8 @@
        1094.8
       ],
       "depth": 11.889,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -6331,7 +7241,8 @@
          685,
          278,
          444
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/pergola__corner_far__0__night.webp",
@@ -6340,7 +7251,18 @@
          685,
          276,
          444
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/pergola__corner_far__0__rain.webp",
+        "rect": [
+         0,
+         685,
+         276,
+         444
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6352,7 +7274,8 @@
        "amp": 0.08,
        "speed": 0.4
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "corner_far_r": [
@@ -6366,7 +7289,8 @@
          681,
          1080,
          455
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/pergola__corner_far_r__0__night.webp",
@@ -6375,7 +7299,18 @@
          681,
          332,
          455
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/pergola__corner_far_r__0__rain.webp",
+        "rect": [
+         748,
+         681,
+         332,
+         455
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6387,7 +7322,8 @@
        "amp": 0.08,
        "speed": 0.4
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -6407,7 +7343,8 @@
          706,
          361,
          502
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/flower_arch__arch__0__night.webp",
@@ -6416,7 +7353,18 @@
          706,
          320,
          502
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/flower_arch__arch__0__rain.webp",
+        "rect": [
+         16,
+         706,
+         320,
+         502
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6428,7 +7376,8 @@
        "amp": 0.12,
        "speed": 0.45
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -6448,7 +7397,8 @@
          807,
          580,
          458
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/trellis_climber__house_l__0__night.webp",
@@ -6457,7 +7407,18 @@
          807,
          271,
          458
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/trellis_climber__house_l__0__rain.webp",
+        "rect": [
+         294,
+         807,
+         271,
+         458
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6469,7 +7430,8 @@
        "amp": 0.1,
        "speed": 0.5
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "house_r": [
@@ -6483,7 +7445,8 @@
          796,
          1080,
          777
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/trellis_climber__house_r__0__night.webp",
@@ -6492,7 +7455,18 @@
          796,
          358,
          776
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/trellis_climber__house_r__0__rain.webp",
+        "rect": [
+         722,
+         796,
+         358,
+         776
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6504,7 +7478,8 @@
        "amp": 0.1,
        "speed": 0.5
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -6525,7 +7500,8 @@
          728,
          586,
          427
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "lighting/string_lights__lawn_far_l__0__night.webp",
@@ -6534,7 +7510,18 @@
          379,
          748,
          1125
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "lighting/string_lights__lawn_far_l__0__rain.webp",
+        "rect": [
+         128,
+         729,
+         458,
+         424
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6546,7 +7533,8 @@
        "amp": 0.05,
        "speed": 0.5
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "corner_far_r": [
@@ -6560,7 +7548,8 @@
          746,
          926,
          374
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "lighting/string_lights__corner_far_r__0__night.webp",
@@ -6569,7 +7558,18 @@
          396,
          489,
          1075
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "lighting/string_lights__corner_far_r__0__rain.webp",
+        "rect": [
+         753,
+         746,
+         327,
+         374
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6581,7 +7581,8 @@
        "amp": 0.05,
        "speed": 0.5
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -6601,7 +7602,8 @@
          1410,
          711,
          381
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/urli_bowl__path_near__0__night.webp",
@@ -6610,7 +7612,18 @@
          1410,
          444,
          377
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/urli_bowl__path_near__0__rain.webp",
+        "rect": [
+         636,
+         1410,
+         444,
+         377
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6618,7 +7631,8 @@
        1623.5
       ],
       "depth": 3.735,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "feature": [
@@ -6632,7 +7646,8 @@
          991,
          229,
          187
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/urli_bowl__feature__0__night.webp",
@@ -6641,7 +7656,18 @@
          991,
          158,
          187
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/urli_bowl__feature__0__rain.webp",
+        "rect": [
+         461,
+         991,
+         158,
+         187
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6649,7 +7675,8 @@
        1094.8
       ],
       "depth": 11.889,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -6670,7 +7697,8 @@
          1280,
          954,
          446
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "lighting/diya_stand__path_near__0__night.webp",
@@ -6679,7 +7707,18 @@
          927,
          512,
          1146
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "lighting/diya_stand__path_near__0__rain.webp",
+        "rect": [
+         730,
+         1280,
+         238,
+         442
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6687,7 +7726,8 @@
        1623.5
       ],
       "depth": 3.735,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "path_far": [
@@ -6701,7 +7741,8 @@
          914,
          251,
          203
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "lighting/diya_stand__path_far__0__night.webp",
@@ -6710,7 +7751,18 @@
          562,
          427,
          906
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "lighting/diya_stand__path_far__0__rain.webp",
+        "rect": [
+         205,
+         914,
+         103,
+         203
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6718,7 +7770,8 @@
        1045.2
       ],
       "depth": 15.672,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -6738,7 +7791,8 @@
          922,
          559,
          350
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/matka_cluster__house_l__0__night.webp",
@@ -6747,7 +7801,18 @@
          922,
          199,
          350
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/matka_cluster__house_l__0__rain.webp",
+        "rect": [
+         345,
+         922,
+         199,
+         350
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6755,7 +7820,8 @@
        1192.8
       ],
       "depth": 8.358,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "house_r": [
@@ -6769,7 +7835,8 @@
          1021,
          1080,
          581
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/matka_cluster__house_r__0__night.webp",
@@ -6778,7 +7845,18 @@
          1021,
          293,
          580
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/matka_cluster__house_r__0__rain.webp",
+        "rect": [
+         787,
+         1021,
+         293,
+         580
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6786,7 +7864,8 @@
        1494.9
       ],
       "depth": 4.521,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "path_far": [
@@ -6800,7 +7879,8 @@
          867,
          337,
          251
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "decor/matka_cluster__path_far__0__night.webp",
@@ -6809,7 +7889,18 @@
          868,
          137,
          250
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "decor/matka_cluster__path_far__0__rain.webp",
+        "rect": [
+         196,
+         867,
+         137,
+         251
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6817,7 +7908,8 @@
        1045.2
       ],
       "depth": 15.672,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -6837,7 +7929,8 @@
          1230,
          774,
          367
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/terracotta_trio__house_r__0__night.webp",
@@ -6846,7 +7939,18 @@
          1230,
          325,
          366
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "plants/terracotta_trio__house_r__0__rain.webp",
+        "rect": [
+         755,
+         1230,
+         325,
+         366
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6858,7 +7962,8 @@
        "amp": 0.3,
        "speed": 0.55
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "path_near": [
@@ -6872,7 +7977,8 @@
          1311,
          1021,
          433
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/terracotta_trio__path_near__0__night.webp",
@@ -6881,7 +7987,18 @@
          1311,
          464,
          429
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "plants/terracotta_trio__path_near__0__rain.webp",
+        "rect": [
+         616,
+         1311,
+         464,
+         429
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6893,7 +8010,8 @@
        "amp": 0.3,
        "speed": 0.55
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "lawn_near_r": [
@@ -6907,7 +8025,8 @@
          1168,
          741,
          324
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "plants/terracotta_trio__lawn_near_r__0__night.webp",
@@ -6916,7 +8035,18 @@
          1168,
          368,
          324
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "plants/terracotta_trio__lawn_near_r__0__rain.webp",
+        "rect": [
+         545,
+         1168,
+         368,
+         324
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6928,7 +8058,8 @@
        "amp": 0.3,
        "speed": 0.55
       },
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -6949,7 +8080,8 @@
          1158,
          968,
          452
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "fixtures/dustbin__house_r__0__night.webp",
@@ -6958,7 +8090,18 @@
          1158,
          273,
          451
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "fixtures/dustbin__house_r__0__rain.webp",
+        "rect": [
+         807,
+         1158,
+         273,
+         451
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -6966,7 +8109,8 @@
        1494.9
       ],
       "depth": 4.521,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -6988,7 +8132,8 @@
          956,
          558,
          316
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "fixtures/image_rack__house_l__0__n0__night.webp",
@@ -6997,7 +8142,18 @@
          956,
          225,
          316
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "fixtures/image_rack__house_l__0__n0__rain.webp",
+        "rect": [
+         319,
+         956,
+         225,
+         316
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -7005,7 +8161,8 @@
        1192.8
       ],
       "depth": 8.358,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    },
@@ -7020,7 +8177,8 @@
          956,
          558,
          316
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "fixtures/image_rack__house_l__0__n0__night.webp",
@@ -7029,7 +8187,18 @@
          956,
          225,
          316
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "fixtures/image_rack__house_l__0__n0__rain.webp",
+        "rect": [
+         319,
+         956,
+         225,
+         316
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -7037,7 +8206,8 @@
        1192.8
       ],
       "depth": 8.358,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      },
      {
       "files": {
@@ -7048,7 +8218,8 @@
          956,
          558,
          316
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "fixtures/image_rack__house_l__0__n1__night.webp",
@@ -7057,7 +8228,18 @@
          956,
          225,
          316
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "fixtures/image_rack__house_l__0__n1__rain.webp",
+        "rect": [
+         319,
+         956,
+         225,
+         316
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -7065,7 +8247,8 @@
        1192.8
       ],
       "depth": 8.358,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      },
      {
       "files": {
@@ -7076,7 +8259,8 @@
          956,
          558,
          316
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "fixtures/image_rack__house_l__0__n2__night.webp",
@@ -7085,7 +8269,18 @@
          956,
          225,
          316
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "fixtures/image_rack__house_l__0__n2__rain.webp",
+        "rect": [
+         319,
+         956,
+         225,
+         316
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -7093,7 +8288,8 @@
        1192.8
       ],
       "depth": 8.358,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      },
      {
       "files": {
@@ -7104,7 +8300,8 @@
          956,
          558,
          316
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "fixtures/image_rack__house_l__0__n3__night.webp",
@@ -7113,7 +8310,18 @@
          956,
          225,
          316
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "fixtures/image_rack__house_l__0__n3__rain.webp",
+        "rect": [
+         319,
+         956,
+         225,
+         316
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -7121,7 +8329,8 @@
        1192.8
       ],
       "depth": 8.358,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      },
      {
       "files": {
@@ -7132,7 +8341,8 @@
          956,
          558,
          316
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "fixtures/image_rack__house_l__0__n4__night.webp",
@@ -7141,7 +8351,18 @@
          956,
          225,
          316
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "fixtures/image_rack__house_l__0__n4__rain.webp",
+        "rect": [
+         319,
+         956,
+         225,
+         316
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -7149,7 +8370,8 @@
        1192.8
       ],
       "depth": 8.358,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -7170,7 +8392,8 @@
          822,
          1080,
          506
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "artwork/easel__easel__0__night.webp",
@@ -7179,7 +8402,18 @@
          822,
          221,
          504
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "artwork/easel__easel__0__rain.webp",
+        "rect": [
+         859,
+         822,
+         221,
+         504
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -7215,8 +8449,27 @@
          129,
          223
         ]
+       },
+       "night": {
+        "file": "artwork/easel__easel__shade__night.webp",
+        "rect": [
+         913,
+         948,
+         98,
+         174
+        ]
+       },
+       "rain": {
+        "file": "artwork/easel__easel__shade__rain.webp",
+        "rect": [
+         913,
+         948,
+         98,
+         174
+        ]
        }
-      }
+      },
+      "cleaned": true
      }
     ]
    }
@@ -7236,7 +8489,8 @@
          1090,
          857,
          415
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "fixtures/dead_sapling__lawn_near_r__0__night.webp",
@@ -7245,7 +8499,18 @@
          1090,
          315,
          414
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "fixtures/dead_sapling__lawn_near_r__0__rain.webp",
+        "rect": [
+         542,
+         1090,
+         315,
+         414
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -7253,7 +8518,8 @@
        1399.7
       ],
       "depth": 5.121,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "lawn_far_l": [
@@ -7267,7 +8533,8 @@
          917,
          420,
          242
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "fixtures/dead_sapling__lawn_far_l__0__night.webp",
@@ -7276,7 +8543,18 @@
          917,
          163,
          239
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "fixtures/dead_sapling__lawn_far_l__0__rain.webp",
+        "rect": [
+         273,
+         917,
+         163,
+         239
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -7284,7 +8562,8 @@
        1080.9
       ],
       "depth": 12.532,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "path_far": [
@@ -7298,7 +8577,8 @@
          900,
          328,
          219
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "fixtures/dead_sapling__path_far__0__night.webp",
@@ -7307,7 +8587,18 @@
          900,
          149,
          219
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "fixtures/dead_sapling__path_far__0__rain.webp",
+        "rect": [
+         177,
+         900,
+         149,
+         219
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -7315,7 +8606,8 @@
        1045.2
       ],
       "depth": 15.672,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -7335,7 +8627,8 @@
          998,
          493,
          274
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "fixtures/broken_frame__house_l__0__night.webp",
@@ -7344,7 +8637,18 @@
          998,
          181,
          274
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "fixtures/broken_frame__house_l__0__rain.webp",
+        "rect": [
+         340,
+         998,
+         181,
+         274
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -7352,7 +8656,8 @@
        1192.8
       ],
       "depth": 8.358,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ],
     "path_near": [
@@ -7366,7 +8671,8 @@
          1244,
          1011,
          506
-        ]
+        ],
+        "cleaned": true
        },
        "night": {
         "file": "fixtures/broken_frame__path_near__0__night.webp",
@@ -7375,7 +8681,18 @@
          1244,
          327,
          502
-        ]
+        ],
+        "cleaned": true
+       },
+       "rain": {
+        "file": "fixtures/broken_frame__path_near__0__rain.webp",
+        "rect": [
+         684,
+         1244,
+         327,
+         502
+        ],
+        "cleaned": true
        }
       },
       "pivot": [
@@ -7383,7 +8700,8 @@
        1623.5
       ],
       "depth": 3.735,
-      "feathered": true
+      "feathered": true,
+      "cleaned": true
      }
     ]
    }
@@ -7620,7 +8938,8 @@
         1006,
         311,
         225
-       ]
+       ],
+       "cleaned": true
       },
       "night": {
        "file": "plants/focus_kachnar__seed__night.webp",
@@ -7629,7 +8948,8 @@
         1006,
         153,
         225
-       ]
+       ],
+       "cleaned": true
       },
       "rain": {
        "file": "plants/focus_kachnar__seed__rain.webp",
@@ -7638,7 +8958,8 @@
         1006,
         153,
         225
-       ]
+       ],
+       "cleaned": true
       }
      },
      "pivot": [
@@ -7648,7 +8969,8 @@
      "depth": 9.574,
      "rotation": 0,
      "sway": null,
-     "feathered": true
+     "feathered": true,
+     "cleaned": true
     },
     "wilted": {
      "files": {
@@ -7659,7 +8981,8 @@
         1006,
         311,
         225
-       ]
+       ],
+       "cleaned": true
       },
       "night": {
        "file": "plants/focus_kachnar__seed__wilted__night.webp",
@@ -7668,7 +8991,8 @@
         1006,
         153,
         225
-       ]
+       ],
+       "cleaned": true
       },
       "rain": {
        "file": "plants/focus_kachnar__seed__wilted__rain.webp",
@@ -7677,7 +9001,8 @@
         1006,
         153,
         225
-       ]
+       ],
+       "cleaned": true
       }
      },
      "pivot": [
@@ -7687,7 +9012,8 @@
      "depth": 9.574,
      "rotation": 0,
      "sway": null,
-     "feathered": true
+     "feathered": true,
+     "cleaned": true
     }
    },
    {
@@ -7702,7 +9028,8 @@
         1021,
         260,
         208
-       ]
+       ],
+       "cleaned": true
       },
       "night": {
        "file": "plants/focus_kachnar__seedling__night.webp",
@@ -7711,7 +9038,8 @@
         1021,
         132,
         208
-       ]
+       ],
+       "cleaned": true
       },
       "rain": {
        "file": "plants/focus_kachnar__seedling__rain.webp",
@@ -7720,7 +9048,8 @@
         1021,
         132,
         208
-       ]
+       ],
+       "cleaned": true
       }
      },
      "pivot": [
@@ -7733,7 +9062,8 @@
       "amp": 0.6,
       "speed": 0.6
      },
-     "feathered": true
+     "feathered": true,
+     "cleaned": true
     },
     "wilted": {
      "files": {
@@ -7744,7 +9074,8 @@
         1021,
         260,
         208
-       ]
+       ],
+       "cleaned": true
       },
       "night": {
        "file": "plants/focus_kachnar__seedling__wilted__night.webp",
@@ -7753,7 +9084,8 @@
         1021,
         132,
         208
-       ]
+       ],
+       "cleaned": true
       },
       "rain": {
        "file": "plants/focus_kachnar__seedling__wilted__rain.webp",
@@ -7762,7 +9094,8 @@
         1021,
         132,
         208
-       ]
+       ],
+       "cleaned": true
       }
      },
      "pivot": [
@@ -7775,7 +9108,8 @@
       "amp": 0.6,
       "speed": 0.6
      },
-     "feathered": true
+     "feathered": true,
+     "cleaned": true
     }
    },
    {
@@ -7790,7 +9124,8 @@
         859,
         450,
         383
-       ]
+       ],
+       "cleaned": true
       },
       "night": {
        "file": "plants/focus_kachnar__young__night.webp",
@@ -7799,7 +9134,8 @@
         859,
         229,
         383
-       ]
+       ],
+       "cleaned": true
       },
       "rain": {
        "file": "plants/focus_kachnar__young__rain.webp",
@@ -7808,7 +9144,8 @@
         859,
         229,
         383
-       ]
+       ],
+       "cleaned": true
       }
      },
      "pivot": [
@@ -7821,7 +9158,8 @@
       "amp": 0.18,
       "speed": 0.35
      },
-     "feathered": true
+     "feathered": true,
+     "cleaned": true
     },
     "wilted": {
      "files": {
@@ -7832,7 +9170,8 @@
         859,
         449,
         383
-       ]
+       ],
+       "cleaned": true
       },
       "night": {
        "file": "plants/focus_kachnar__young__wilted__night.webp",
@@ -7841,7 +9180,8 @@
         859,
         218,
         383
-       ]
+       ],
+       "cleaned": true
       },
       "rain": {
        "file": "plants/focus_kachnar__young__wilted__rain.webp",
@@ -7850,7 +9190,8 @@
         859,
         218,
         383
-       ]
+       ],
+       "cleaned": true
       }
      },
      "pivot": [
@@ -7863,7 +9204,8 @@
       "amp": 0.18,
       "speed": 0.35
      },
-     "feathered": true
+     "feathered": true,
+     "cleaned": true
     }
    },
    {
@@ -7878,7 +9220,8 @@
         601,
         565,
         663
-       ]
+       ],
+       "cleaned": true
       },
       "night": {
        "file": "plants/focus_kachnar__mature__night.webp",
@@ -7887,7 +9230,8 @@
         601,
         470,
         663
-       ]
+       ],
+       "cleaned": true
       },
       "rain": {
        "file": "plants/focus_kachnar__mature__rain.webp",
@@ -7896,7 +9240,8 @@
         601,
         470,
         663
-       ]
+       ],
+       "cleaned": true
       }
      },
      "pivot": [
@@ -7909,7 +9254,8 @@
       "amp": 0.18,
       "speed": 0.35
      },
-     "feathered": true
+     "feathered": true,
+     "cleaned": true
     },
     "wilted": {
      "files": {
@@ -7920,7 +9266,8 @@
         612,
         565,
         652
-       ]
+       ],
+       "cleaned": true
       },
       "night": {
        "file": "plants/focus_kachnar__mature__wilted__night.webp",
@@ -7929,7 +9276,8 @@
         612,
         476,
         652
-       ]
+       ],
+       "cleaned": true
       },
       "rain": {
        "file": "plants/focus_kachnar__mature__wilted__rain.webp",
@@ -7938,7 +9286,8 @@
         612,
         476,
         652
-       ]
+       ],
+       "cleaned": true
       }
      },
      "pivot": [
@@ -7951,7 +9300,8 @@
       "amp": 0.18,
       "speed": 0.35
      },
-     "feathered": true
+     "feathered": true,
+     "cleaned": true
     }
    },
    {
@@ -7966,7 +9316,8 @@
         332,
         696,
         949
-       ]
+       ],
+       "cleaned": true
       },
       "night": {
        "file": "plants/focus_kachnar__large__night.webp",
@@ -7975,7 +9326,8 @@
         332,
         696,
         949
-       ]
+       ],
+       "cleaned": true
       },
       "rain": {
        "file": "plants/focus_kachnar__large__rain.webp",
@@ -7984,7 +9336,8 @@
         332,
         696,
         949
-       ]
+       ],
+       "cleaned": true
       }
      },
      "pivot": [
@@ -7997,7 +9350,8 @@
       "amp": 0.18,
       "speed": 0.35
      },
-     "feathered": true
+     "feathered": true,
+     "cleaned": true
     },
     "wilted": {
      "files": {
@@ -8008,7 +9362,8 @@
         332,
         695,
         949
-       ]
+       ],
+       "cleaned": true
       },
       "night": {
        "file": "plants/focus_kachnar__large__wilted__night.webp",
@@ -8017,7 +9372,8 @@
         332,
         695,
         949
-       ]
+       ],
+       "cleaned": true
       },
       "rain": {
        "file": "plants/focus_kachnar__large__wilted__rain.webp",
@@ -8026,7 +9382,8 @@
         332,
         695,
         949
-       ]
+       ],
+       "cleaned": true
       }
      },
      "pivot": [
@@ -8039,7 +9396,8 @@
       "amp": 0.18,
       "speed": 0.35
      },
-     "feathered": true
+     "feathered": true,
+     "cleaned": true
     }
    },
    {
@@ -8054,7 +9412,8 @@
         169,
         757,
         1125
-       ]
+       ],
+       "cleaned": true
       },
       "night": {
        "file": "plants/focus_kachnar__flowering__night.webp",
@@ -8063,7 +9422,8 @@
         169,
         647,
         1125
-       ]
+       ],
+       "cleaned": true
       },
       "rain": {
        "file": "plants/focus_kachnar__flowering__rain.webp",
@@ -8072,7 +9432,8 @@
         169,
         647,
         1125
-       ]
+       ],
+       "cleaned": true
       }
      },
      "pivot": [
@@ -8085,7 +9446,8 @@
       "amp": 0.18,
       "speed": 0.35
      },
-     "feathered": true
+     "feathered": true,
+     "cleaned": true
     },
     "wilted": {
      "files": {
@@ -8096,7 +9458,8 @@
         192,
         754,
         1102
-       ]
+       ],
+       "cleaned": true
       },
       "night": {
        "file": "plants/focus_kachnar__flowering__wilted__night.webp",
@@ -8105,7 +9468,8 @@
         193,
         627,
         1101
-       ]
+       ],
+       "cleaned": true
       },
       "rain": {
        "file": "plants/focus_kachnar__flowering__wilted__rain.webp",
@@ -8114,7 +9478,8 @@
         193,
         627,
         1101
-       ]
+       ],
+       "cleaned": true
       }
      },
      "pivot": [
@@ -8127,7 +9492,8 @@
       "amp": 0.18,
       "speed": 0.35
      },
-     "feathered": true
+     "feathered": true,
+     "cleaned": true
     }
    },
    {
@@ -8142,7 +9508,8 @@
         0,
         893,
         1317
-       ]
+       ],
+       "cleaned": true
       },
       "night": {
        "file": "plants/focus_kachnar__grand__night.webp",
@@ -8151,7 +9518,8 @@
         0,
         893,
         1317
-       ]
+       ],
+       "cleaned": true
       },
       "rain": {
        "file": "plants/focus_kachnar__grand__rain.webp",
@@ -8160,7 +9528,8 @@
         0,
         893,
         1317
-       ]
+       ],
+       "cleaned": true
       }
      },
      "pivot": [
@@ -8173,7 +9542,8 @@
       "amp": 0.18,
       "speed": 0.35
      },
-     "feathered": true
+     "feathered": true,
+     "cleaned": true
     },
     "wilted": {
      "files": {
@@ -8184,7 +9554,8 @@
         9,
         879,
         1308
-       ]
+       ],
+       "cleaned": true
       },
       "night": {
        "file": "plants/focus_kachnar__grand__wilted__night.webp",
@@ -8193,7 +9564,8 @@
         9,
         879,
         1308
-       ]
+       ],
+       "cleaned": true
       },
       "rain": {
        "file": "plants/focus_kachnar__grand__wilted__rain.webp",
@@ -8202,7 +9574,8 @@
         9,
         879,
         1308
-       ]
+       ],
+       "cleaned": true
       }
      },
      "pivot": [
@@ -8215,13 +9588,16 @@
       "amp": 0.18,
       "speed": 0.35
      },
-     "feathered": true
+     "feathered": true,
+     "cleaned": true
     }
    }
   ]
  },
  "renderedStates": [
-  "morning"
+  "morning",
+  "night",
+  "rain"
  ],
  "preview": "environment/preview.webp",
  "thumbs": {
