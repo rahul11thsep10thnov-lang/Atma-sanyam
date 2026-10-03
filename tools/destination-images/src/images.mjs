@@ -31,6 +31,18 @@ export function compactPrompt(pkg) {
   return parts.filter(Boolean).join(', ');
 }
 
+/**
+ * Size setting some providers need. fal-ai ignores width/height and wants `image_size`
+ * (a preset name such as "landscape_16_9", or {width, height}).
+ */
+export function resolveImageSize(flag, provider) {
+  if (flag) {
+    const m = /^(\d+)x(\d+)$/.exec(flag);
+    return m ? { width: Number(m[1]), height: Number(m[2]) } : flag;
+  }
+  return provider === 'fal-ai' ? 'landscape_16_9' : undefined;
+}
+
 export function createHfClient(token = process.env.HF_TOKEN) {
   if (!token) throw new Error('Set HF_TOKEN to a Hugging Face access token (https://huggingface.co/settings/tokens).');
   return new InferenceClient(token);
@@ -71,6 +83,7 @@ export async function generateImage(client, record, opts, { retries = 4, wait = 
       negative_prompt: NEGATIVE_PROMPT,
       width: opts.width,
       height: opts.height,
+      ...(opts.imageSize ? { image_size: opts.imageSize } : {}),
       ...(opts.steps ? { num_inference_steps: opts.steps } : {}),
     },
   };
@@ -99,7 +112,14 @@ export async function saveWebp(buffer, file, { upscaleTo } = {}) {
   let img = sharp(buffer);
   if (upscaleTo) img = img.resize(upscaleTo.width, upscaleTo.height, { fit: 'cover', kernel: 'lanczos3' });
   const { data, info } = await img.webp({ quality: 88 }).toBuffer({ resolveWithObject: true });
-  writeFileSync(file, data);
+  try {
+    writeFileSync(file, data);
+  } catch (err) {
+    if (['EBUSY', 'EPERM', 'EACCES', 'UNKNOWN'].includes(err.code)) {
+      throw new Error(`Cannot overwrite ${file}. Close the image if it is open in Explorer's preview pane or a photo viewer, then run again.`);
+    }
+    throw err;
+  }
   return { width: info.width, height: info.height };
 }
 

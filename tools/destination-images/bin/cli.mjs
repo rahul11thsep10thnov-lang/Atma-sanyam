@@ -23,6 +23,7 @@
 //   --upscale            resize each result to exactly 3840x2160 (Lanczos; adds pixels, not detail)
 //   --full-prompt        send the long FLUX-style prompt instead of the compact one
 //   --steps N            denoising steps
+//   --image-size S       for fal-ai: preset (landscape_16_9, landscape_4_3 …) or WxH; default landscape_16_9
 //   --timeout SECONDS    give up on one image after this long (default 180)
 //   --limit N / --only 001,014 / --concurrency N (default 2) / --redo
 
@@ -33,7 +34,7 @@ import { DEFAULT_MODEL, createClient, generateDestination } from '../src/generat
 import { manifestEntry, renderBatches, renderCsv } from '../src/render.mjs';
 import {
   DEFAULT_HF_MODEL, DEFAULT_SIZE, StopRun, createHfClient, ensureImagesDir, generateImage,
-  hasImage, imagePath, saveWebp,
+  hasImage, imagePath, resolveImageSize, saveWebp,
 } from '../src/images.mjs';
 
 const RECENT_WINDOW = 12;
@@ -169,6 +170,7 @@ async function images(dir, flags) {
     provider: flags.provider, width, height,
     compact: !flags['full-prompt'],
     steps: flags.steps ? Number(flags.steps) : undefined,
+    imageSize: resolveImageSize(flags['image-size'], flags.provider),
     timeoutMs: flags.timeout ? Number(flags.timeout) * 1000 : undefined,
   };
   const upscaleTo = flags.upscale ? { width: 3840, height: 2160 } : undefined;

@@ -201,3 +201,17 @@ test('a request that never answers fails with a clear message instead of hanging
     /No answer from the auto-selected provider after 0 s.*--provider/,
   );
 });
+
+import { resolveImageSize } from '../src/images.mjs';
+
+test('fal-ai gets a 16:9 image_size preset; other providers are left alone', async () => {
+  assert.equal(resolveImageSize(undefined, 'fal-ai'), 'landscape_16_9');
+  assert.equal(resolveImageSize(undefined, 'hf-inference'), undefined);
+  assert.deepEqual(resolveImageSize('1280x720', 'fal-ai'), { width: 1280, height: 720 });
+  assert.equal(resolveImageSize('landscape_4_3', 'fal-ai'), 'landscape_4_3');
+  const seen = [];
+  const client = { textToImage: async (req) => { seen.push(req); return pngBlob(); } };
+  const rec = { package: samples[2].package, prompt: 'x' };
+  await generateImage(client, rec, { model: 'm', width: 1, height: 1, imageSize: 'landscape_16_9' });
+  assert.equal(seen[0].parameters.image_size, 'landscape_16_9');
+});
