@@ -50,6 +50,42 @@
     1080,
     2340
    ]
+  },
+  "night": {
+   "sky": {
+    "file": "environment/sky__night.webp",
+    "rect": [
+     0,
+     0,
+     1080,
+     2340
+    ]
+   },
+   "landscape": {
+    "file": "environment/landscape__night.webp",
+    "rect": [
+     0,
+     0,
+     1080,
+     2340
+    ]
+   },
+   "base": {
+    "file": "architecture/base__night.webp",
+    "rect": [
+     0,
+     0,
+     1080,
+     2340
+    ]
+   },
+   "cropped": true,
+   "openAir": [
+    0,
+    0,
+    1080,
+    2340
+   ]
   }
  },
  "items": {
@@ -75,6 +111,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "furniture/bedside_table__bedside__0__night.webp",
+        "rect": [
+         483,
+         1241,
+         191,
+         304
+        ]
        }
       },
       "pivot": [
@@ -107,6 +152,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/table_lamp__bedside_top__0__night.webp",
+        "rect": [
+         353,
+         763,
+         456,
+         983
+        ]
        }
       },
       "pivot": [
@@ -132,6 +186,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/table_lamp__desk_top__0__night.webp",
+        "rect": [
+         633,
+         726,
+         447,
+         987
+        ]
        }
       },
       "pivot": [
@@ -157,6 +220,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/table_lamp__table_top__0__night.webp",
+        "rect": [
+         605,
+         839,
+         475,
+         1088
+        ]
        }
       },
       "pivot": [
@@ -188,6 +260,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "furniture/side_chair__chair__0__night.webp",
+        "rect": [
+         577,
+         1212,
+         260,
+         452
+        ]
        }
       },
       "pivot": [
@@ -211,6 +292,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "furniture/side_chair__chair__1__night.webp",
+        "rect": [
+         595,
+         1213,
+         213,
+         446
+        ]
        }
       },
       "pivot": [
@@ -236,6 +326,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "furniture/side_chair__corner_door__0__night.webp",
+        "rect": [
+         761,
+         1216,
+         268,
+         453
+        ]
        }
       },
       "pivot": [
@@ -270,6 +369,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "furniture/small_table__table__0__night.webp",
+        "rect": [
+         696,
+         1383,
+         350,
+         407
+        ]
        }
       },
       "pivot": [
@@ -295,6 +403,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "furniture/small_table__floor_mid__0__night.webp",
+        "rect": [
+         372,
+         1413,
+         359,
+         440
+        ]
        }
       },
       "pivot": [
@@ -330,6 +447,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "furniture/study_desk__desk__0__night.webp",
+        "rect": [
+         632,
+         1205,
+         355,
+         357
+        ]
        }
       },
       "pivot": [
@@ -361,6 +487,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "furniture/bookshelf__corner_door__0__night.webp",
+        "rect": [
+         710,
+         929,
+         370,
+         730
+        ]
        }
       },
       "pivot": [
@@ -386,6 +521,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "furniture/bookshelf__desk__0__night.webp",
+        "rect": [
+         651,
+         957,
+         314,
+         596
+        ]
        }
       },
       "pivot": [
@@ -417,6 +561,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "furniture/lounge_chair__chair__0__night.webp",
+        "rect": [
+         507,
+         1211,
+         368,
+         477
+        ]
        }
       },
       "pivot": [
@@ -442,6 +595,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "furniture/lounge_chair__corner_door__0__night.webp",
+        "rect": [
+         696,
+         1212,
+         384,
+         488
+        ]
        }
       },
       "pivot": [
@@ -473,6 +635,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/floor_cushions__floor_mid__0__night.webp",
+        "rect": [
+         364,
+         1442,
+         404,
+         468
+        ]
        }
       },
       "pivot": [
@@ -498,6 +669,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/floor_cushions__floor_near__0__night.webp",
+        "rect": [
+         325,
+         1648,
+         682,
+         692
+        ]
        }
       },
       "pivot": [
@@ -529,6 +709,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "furniture/cabinet__desk__0__night.webp",
+        "rect": [
+         654,
+         1185,
+         303,
+         370
+        ]
        }
       },
       "pivot": [
@@ -554,6 +743,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "furniture/cabinet__corner_door__0__night.webp",
+        "rect": [
+         714,
+         1220,
+         366,
+         442
+        ]
        }
       },
       "pivot": [
@@ -586,6 +784,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/floor_lamp__corner_door__0__night.webp",
+        "rect": [
+         634,
+         616,
+         446,
+         1388
+        ]
        }
       },
       "pivot": [
@@ -611,6 +818,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/floor_lamp__floor_mid__0__night.webp",
+        "rect": [
+         264,
+         577,
+         589,
+         1628
+        ]
        }
       },
       "pivot": [
@@ -642,6 +858,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/pouf__floor_mid__0__night.webp",
+        "rect": [
+         396,
+         1484,
+         314,
+         407
+        ]
        }
       },
       "pivot": [
@@ -667,6 +892,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/pouf__floor_near__0__night.webp",
+        "rect": [
+         377,
+         1720,
+         508,
+         620
+        ]
        }
       },
       "pivot": [
@@ -699,6 +933,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/dhurrie_rug__rug__0__night.webp",
+        "rect": [
+         145,
+         1466,
+         935,
+         443
+        ]
        }
       },
       "pivot": [
@@ -730,6 +973,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/monstera__corner_door__0__night.webp",
+        "rect": [
+         717,
+         1207,
+         363,
+         449
+        ]
        }
       },
       "pivot": [
@@ -759,6 +1011,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/monstera__floor_mid__0__night.webp",
+        "rect": [
+         285,
+         1262,
+         533,
+         599
+        ]
        }
       },
       "pivot": [
@@ -794,6 +1055,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/bonsai__table_top__0__night.webp",
+        "rect": [
+         748,
+         1296,
+         225,
+         293
+        ]
        }
       },
       "pivot": [
@@ -819,6 +1089,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/bonsai__desk_top__0__night.webp",
+        "rect": [
+         782,
+         1143,
+         164,
+         222
+        ]
        }
       },
       "pivot": [
@@ -844,6 +1123,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/bonsai__sill__0__night.webp",
+        "rect": [
+         25,
+         1088,
+         182,
+         217
+        ]
        }
       },
       "pivot": [
@@ -875,6 +1163,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/fiddle_fig__corner_door__0__night.webp",
+        "rect": [
+         731,
+         905,
+         349,
+         752
+        ]
        }
       },
       "pivot": [
@@ -904,6 +1201,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/fiddle_fig__floor_mid__0__night.webp",
+        "rect": [
+         315,
+         831,
+         538,
+         1032
+        ]
        }
       },
       "pivot": [
@@ -939,6 +1245,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/rubber_plant__corner_door__0__night.webp",
+        "rect": [
+         796,
+         1041,
+         244,
+         617
+        ]
        }
       },
       "pivot": [
@@ -964,6 +1279,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/rubber_plant__floor_mid__0__night.webp",
+        "rect": [
+         422,
+         1037,
+         286,
+         827
+        ]
        }
       },
       "pivot": [
@@ -995,6 +1319,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/snake_plant__corner_door__0__night.webp",
+        "rect": [
+         797,
+         1191,
+         209,
+         466
+        ]
        }
       },
       "pivot": [
@@ -1024,6 +1357,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/snake_plant__floor_near__0__night.webp",
+        "rect": [
+         463,
+         1373,
+         358,
+         967
+        ]
        }
       },
       "pivot": [
@@ -1059,6 +1401,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/pothos_table__ceiling__0__night.webp",
+        "rect": [
+         523,
+         354,
+         361,
+         493
+        ]
        }
       },
       "pivot": [
@@ -1095,6 +1446,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/succulent__sill__0__night.webp",
+        "rect": [
+         64,
+         1127,
+         107,
+         187
+        ]
        }
       },
       "pivot": [
@@ -1120,6 +1480,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/succulent__sill_b__0__night.webp",
+        "rect": [
+         18,
+         1135,
+         111,
+         187
+        ]
        }
       },
       "pivot": [
@@ -1145,6 +1514,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/succulent__bedside_top_b__0__night.webp",
+        "rect": [
+         560,
+         1222,
+         96,
+         188
+        ]
        }
       },
       "pivot": [
@@ -1176,6 +1554,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/aloe__sill__0__night.webp",
+        "rect": [
+         34,
+         1099,
+         167,
+         204
+        ]
        }
       },
       "pivot": [
@@ -1201,6 +1588,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/aloe__sill_b__0__night.webp",
+        "rect": [
+         0,
+         1103,
+         161,
+         209
+        ]
        }
       },
       "pivot": [
@@ -1226,6 +1622,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/aloe__table_top__0__night.webp",
+        "rect": [
+         763,
+         1310,
+         205,
+         267
+        ]
        }
       },
       "pivot": [
@@ -1257,6 +1662,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/dried_branches__corner_door__0__night.webp",
+        "rect": [
+         690,
+         791,
+         334,
+         859
+        ]
        }
       },
       "pivot": [
@@ -1282,6 +1696,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/dried_branches__lean_wall__0__night.webp",
+        "rect": [
+         457,
+         862,
+         262,
+         660
+        ]
        }
       },
       "pivot": [
@@ -1313,6 +1736,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/pampas__corner_door__0__night.webp",
+        "rect": [
+         787,
+         1076,
+         237,
+         585
+        ]
        }
       },
       "pivot": [
@@ -1342,6 +1774,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/pampas__floor_near__0__night.webp",
+        "rect": [
+         431,
+         1110,
+         435,
+         1230
+        ]
        }
       },
       "pivot": [
@@ -1377,6 +1818,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/orchid__table_top__0__night.webp",
+        "rect": [
+         756,
+         1198,
+         281,
+         375
+        ]
        }
       },
       "pivot": [
@@ -1402,6 +1852,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/orchid__desk_top__0__night.webp",
+        "rect": [
+         787,
+         1083,
+         197,
+         278
+        ]
        }
       },
       "pivot": [
@@ -1427,6 +1886,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/orchid__bedside_top__0__night.webp",
+        "rect": [
+         509,
+         1119,
+         178,
+         275
+        ]
        }
       },
       "pivot": [
@@ -1458,6 +1926,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/fresh_flowers__table_top__0__night.webp",
+        "rect": [
+         773,
+         1233,
+         180,
+         339
+        ]
        }
       },
       "pivot": [
@@ -1483,6 +1960,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/fresh_flowers__desk_top_b__0__night.webp",
+        "rect": [
+         665,
+         1102,
+         126,
+         255
+        ]
        }
       },
       "pivot": [
@@ -1508,6 +1994,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "plants/fresh_flowers__sill__0__night.webp",
+        "rect": [
+         42,
+         1049,
+         148,
+         253
+        ]
        }
       },
       "pivot": [
@@ -1539,6 +2034,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/ceramic_vase__table_top__0__night.webp",
+        "rect": [
+         784,
+         1293,
+         148,
+         282
+        ]
        }
       },
       "pivot": [
@@ -1564,6 +2068,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/ceramic_vase__desk_top_b__0__night.webp",
+        "rect": [
+         672,
+         1138,
+         109,
+         219
+        ]
        }
       },
       "pivot": [
@@ -1589,6 +2102,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/ceramic_vase__sill_b__0__night.webp",
+        "rect": [
+         6,
+         1088,
+         132,
+         224
+        ]
        }
       },
       "pivot": [
@@ -1620,6 +2142,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/brass_vase__bedside_top_b__0__night.webp",
+        "rect": [
+         557,
+         1171,
+         102,
+         228
+        ]
        }
       },
       "pivot": [
@@ -1645,6 +2176,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/brass_vase__desk_top__0__night.webp",
+        "rect": [
+         809,
+         1133,
+         108,
+         228
+        ]
        }
       },
       "pivot": [
@@ -1670,6 +2210,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/brass_vase__sill__0__night.webp",
+        "rect": [
+         59,
+         1078,
+         115,
+         224
+        ]
        }
       },
       "pivot": [
@@ -1701,6 +2250,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/terracotta_vase__floor_near__0__night.webp",
+        "rect": [
+         462,
+         1598,
+         341,
+         742
+        ]
        }
       },
       "pivot": [
@@ -1726,6 +2284,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/terracotta_vase__corner_door__0__night.webp",
+        "rect": [
+         797,
+         1300,
+         198,
+         357
+        ]
        }
       },
       "pivot": [
@@ -1757,6 +2324,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/glass_vase__table_top__0__night.webp",
+        "rect": [
+         757,
+         1223,
+         204,
+         351
+        ]
        }
       },
       "pivot": [
@@ -1782,6 +2358,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/glass_vase__sill__0__night.webp",
+        "rect": [
+         30,
+         1044,
+         167,
+         258
+        ]
        }
       },
       "pivot": [
@@ -1807,6 +2392,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/glass_vase__desk_top__0__night.webp",
+        "rect": [
+         788,
+         1098,
+         151,
+         263
+        ]
        }
       },
       "pivot": [
@@ -1838,6 +2432,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/ceramic_bowl__table_top__0__night.webp",
+        "rect": [
+         750,
+         1363,
+         221,
+         225
+        ]
        }
       },
       "pivot": [
@@ -1863,6 +2466,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/ceramic_bowl__bedside_top__0__night.webp",
+        "rect": [
+         505,
+         1216,
+         150,
+         187
+        ]
        }
       },
       "pivot": [
@@ -1888,6 +2500,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/ceramic_bowl__desk_top_b__0__night.webp",
+        "rect": [
+         653,
+         1179,
+         148,
+         187
+        ]
        }
       },
       "pivot": [
@@ -1919,6 +2540,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/marble_bowl__table_top__0__night.webp",
+        "rect": [
+         758,
+         1369,
+         202,
+         216
+        ]
        }
       },
       "pivot": [
@@ -1944,6 +2574,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/marble_bowl__desk_top__0__night.webp",
+        "rect": [
+         789,
+         1181,
+         150,
+         187
+        ]
        }
       },
       "pivot": [
@@ -1975,6 +2614,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/brass_tray__table_top__0__night.webp",
+        "rect": [
+         744,
+         1390,
+         234,
+         201
+        ]
        }
       },
       "pivot": [
@@ -2000,6 +2648,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/brass_tray__bed_foot__0__night.webp",
+        "rect": [
+         123,
+         1310,
+         221,
+         187
+        ]
        }
       },
       "pivot": [
@@ -2031,6 +2688,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/fruit_bowl__table_top__0__night.webp",
+        "rect": [
+         746,
+         1362,
+         231,
+         228
+        ]
        }
       },
       "pivot": [
@@ -2056,6 +2722,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/fruit_bowl__desk_top__0__night.webp",
+        "rect": [
+         781,
+         1183,
+         167,
+         187
+        ]
        }
       },
       "pivot": [
@@ -2087,6 +2762,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/rattan_basket__floor_near__0__night.webp",
+        "rect": [
+         426,
+         1714,
+         409,
+         626
+        ]
        }
       },
       "pivot": [
@@ -2112,6 +2796,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/rattan_basket__floor_mid__0__night.webp",
+        "rect": [
+         424,
+         1467,
+         266,
+         408
+        ]
        }
       },
       "pivot": [
@@ -2137,6 +2830,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/rattan_basket__corner_door__0__night.webp",
+        "rect": [
+         784,
+         1349,
+         224,
+         314
+        ]
        }
       },
       "pivot": [
@@ -2169,6 +2871,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/pillar_candles__table_top__0__night.webp",
+        "rect": [
+         618,
+         995,
+         462,
+         924
+        ]
        }
       },
       "pivot": [
@@ -2194,6 +2905,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/pillar_candles__sill_b__0__night.webp",
+        "rect": [
+         0,
+         768,
+         302,
+         893
+        ]
        }
       },
       "pivot": [
@@ -2219,6 +2939,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/pillar_candles__bedside_top_b__0__night.webp",
+        "rect": [
+         390,
+         857,
+         440,
+         891
+        ]
        }
       },
       "pivot": [
@@ -2251,6 +2980,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/scented_candle__bedside_top_b__0__night.webp",
+        "rect": [
+         403,
+         881,
+         410,
+         868
+        ]
        }
       },
       "pivot": [
@@ -2276,6 +3014,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/scented_candle__sill__0__night.webp",
+        "rect": [
+         0,
+         786,
+         326,
+         866
+        ]
        }
       },
       "pivot": [
@@ -2301,6 +3048,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/scented_candle__table_top__0__night.webp",
+        "rect": [
+         642,
+         1031,
+         427,
+         888
+        ]
        }
       },
       "pivot": [
@@ -2333,6 +3089,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/hurricane_lantern__floor_near__0__night.webp",
+        "rect": [
+         377,
+         1492,
+         507,
+         848
+        ]
        }
       },
       "pivot": [
@@ -2358,6 +3123,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/hurricane_lantern__sill__0__night.webp",
+        "rect": [
+         0,
+         741,
+         340,
+         912
+        ]
        }
       },
       "pivot": [
@@ -2383,6 +3157,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/hurricane_lantern__desk_top__0__night.webp",
+        "rect": [
+         645,
+         797,
+         435,
+         916
+        ]
        }
       },
       "pivot": [
@@ -2415,6 +3198,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/ceramic_lamp__bedside_top__0__night.webp",
+        "rect": [
+         353,
+         763,
+         456,
+         983
+        ]
        }
       },
       "pivot": [
@@ -2440,6 +3232,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/ceramic_lamp__desk_top__0__night.webp",
+        "rect": [
+         633,
+         726,
+         447,
+         987
+        ]
        }
       },
       "pivot": [
@@ -2472,6 +3273,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/brass_lamp__bedside_top__0__night.webp",
+        "rect": [
+         353,
+         763,
+         456,
+         983
+        ]
        }
       },
       "pivot": [
@@ -2497,6 +3307,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/brass_lamp__desk_top__0__night.webp",
+        "rect": [
+         633,
+         726,
+         447,
+         987
+        ]
        }
       },
       "pivot": [
@@ -2529,6 +3348,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/wall_sconce__art_side__0__night.webp",
+        "rect": [
+         268,
+         664,
+         427,
+         878
+        ]
        }
       },
       "pivot": [
@@ -2554,6 +3382,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/wall_sconce__wall_right__0__night.webp",
+        "rect": [
+         694,
+         663,
+         386,
+         879
+        ]
        }
       },
       "pivot": [
@@ -2586,6 +3423,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/pendant_light__ceiling__0__night.webp",
+        "rect": [
+         409,
+         187,
+         586,
+         1189
+        ]
        }
       },
       "pivot": [
@@ -2618,6 +3464,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/lantern__floor_near__0__night.webp",
+        "rect": [
+         437,
+         1649,
+         402,
+         641
+        ]
        }
       },
       "pivot": [
@@ -2643,6 +3498,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "lighting/lantern__corner_door__0__night.webp",
+        "rect": [
+         787,
+         1323,
+         214,
+         325
+        ]
        }
       },
       "pivot": [
@@ -2674,6 +3538,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/book_stack__bedside_top__0__night.webp",
+        "rect": [
+         516,
+         1214,
+         126,
+         187
+        ]
        }
       },
       "pivot": [
@@ -2699,6 +3572,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/book_stack__table_top__0__night.webp",
+        "rect": [
+         769,
+         1365,
+         176,
+         214
+        ]
        }
       },
       "pivot": [
@@ -2724,6 +3606,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/book_stack__desk_top_b__0__night.webp",
+        "rect": [
+         663,
+         1177,
+         125,
+         188
+        ]
        }
       },
       "pivot": [
@@ -2755,6 +3646,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/bookends__desk_top__0__night.webp",
+        "rect": [
+         784,
+         1163,
+         159,
+         198
+        ]
        }
       },
       "pivot": [
@@ -2780,6 +3680,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/bookends__sill__0__night.webp",
+        "rect": [
+         38,
+         1107,
+         159,
+         195
+        ]
        }
       },
       "pivot": [
@@ -2811,6 +3720,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/globe__desk_top__0__night.webp",
+        "rect": [
+         791,
+         1131,
+         145,
+         230
+        ]
        }
       },
       "pivot": [
@@ -2836,6 +3754,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/globe__table_top__0__night.webp",
+        "rect": [
+         760,
+         1282,
+         195,
+         289
+        ]
        }
       },
       "pivot": [
@@ -2867,6 +3794,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/mantel_clock__desk_top__0__night.webp",
+        "rect": [
+         795,
+         1175,
+         135,
+         188
+        ]
        }
       },
       "pivot": [
@@ -2892,6 +3828,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/mantel_clock__bedside_top__0__night.webp",
+        "rect": [
+         517,
+         1209,
+         128,
+         187
+        ]
        }
       },
       "pivot": [
@@ -2923,6 +3868,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/vintage_camera__desk_top_b__0__night.webp",
+        "rect": [
+         676,
+         1177,
+         99,
+         188
+        ]
        }
       },
       "pivot": [
@@ -2948,6 +3902,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/vintage_camera__bedside_top_b__0__night.webp",
+        "rect": [
+         558,
+         1219,
+         100,
+         187
+        ]
        }
       },
       "pivot": [
@@ -2979,6 +3942,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/gramophone__table_top__0__night.webp",
+        "rect": [
+         738,
+         1187,
+         342,
+         409
+        ]
        }
       },
       "pivot": [
@@ -3004,6 +3976,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/gramophone__desk_top__0__night.webp",
+        "rect": [
+         777,
+         1066,
+         251,
+         305
+        ]
        }
       },
       "pivot": [
@@ -3035,6 +4016,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/vintage_telephone__desk_top__0__night.webp",
+        "rect": [
+         796,
+         1177,
+         132,
+         187
+        ]
        }
       },
       "pivot": [
@@ -3060,6 +4050,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/vintage_telephone__bedside_top__0__night.webp",
+        "rect": [
+         518,
+         1210,
+         127,
+         187
+        ]
        }
       },
       "pivot": [
@@ -3092,6 +4091,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/brass_diya__sill_b__0__night.webp",
+        "rect": [
+         0,
+         789,
+         295,
+         873
+        ]
        }
       },
       "pivot": [
@@ -3117,6 +4125,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/brass_diya__table_top__0__night.webp",
+        "rect": [
+         628,
+         1028,
+         452,
+         896
+        ]
        }
       },
       "pivot": [
@@ -3142,6 +4159,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/brass_diya__bedside_top_b__0__night.webp",
+        "rect": [
+         395,
+         878,
+         426,
+         872
+        ]
        }
       },
       "pivot": [
@@ -3173,6 +4199,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/kalash__table_top__0__night.webp",
+        "rect": [
+         777,
+         1285,
+         162,
+         293
+        ]
        }
       },
       "pivot": [
@@ -3198,6 +4233,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/kalash__sill__0__night.webp",
+        "rect": [
+         49,
+         1079,
+         135,
+         224
+        ]
        }
       },
       "pivot": [
@@ -3229,6 +4273,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/wooden_elephant__floor_near__0__night.webp",
+        "rect": [
+         407,
+         1843,
+         356,
+         419
+        ]
        }
       },
       "pivot": [
@@ -3254,6 +4307,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/wooden_elephant__table_top__0__night.webp",
+        "rect": [
+         711,
+         1311,
+         240,
+         263
+        ]
        }
       },
       "pivot": [
@@ -3279,6 +4341,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/wooden_elephant__desk_top_b__0__night.webp",
+        "rect": [
+         627,
+         1149,
+         165,
+         208
+        ]
        }
       },
       "pivot": [
@@ -3310,6 +4381,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/jharokha__art_side__0__night.webp",
+        "rect": [
+         396,
+         921,
+         179,
+         336
+        ]
        }
       },
       "pivot": [
@@ -3335,6 +4415,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/jharokha__art_bed__0__night.webp",
+        "rect": [
+         242,
+         843,
+         179,
+         335
+        ]
        }
       },
       "pivot": [
@@ -3366,6 +4455,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/urli_bowl__floor_near__0__night.webp",
+        "rect": [
+         260,
+         1759,
+         745,
+         581
+        ]
        }
       },
       "pivot": [
@@ -3391,6 +4489,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/urli_bowl__floor_mid__0__night.webp",
+        "rect": [
+         332,
+         1521,
+         434,
+         409
+        ]
        }
       },
       "pivot": [
@@ -3422,6 +4529,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/marble_sculpture__desk_top__0__night.webp",
+        "rect": [
+         797,
+         1143,
+         133,
+         219
+        ]
        }
       },
       "pivot": [
@@ -3447,6 +4563,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/marble_sculpture__table_top__0__night.webp",
+        "rect": [
+         771,
+         1297,
+         175,
+         281
+        ]
        }
       },
       "pivot": [
@@ -3478,6 +4603,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/round_mirror__art_side__0__night.webp",
+        "rect": [
+         386,
+         968,
+         200,
+         277
+        ]
        }
       },
       "pivot": [
@@ -3503,6 +4637,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/round_mirror__art_bed__0__night.webp",
+        "rect": [
+         233,
+         889,
+         198,
+         278
+        ]
        }
       },
       "pivot": [
@@ -3534,6 +4677,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/arched_mirror__lean_wall__0__night.webp",
+        "rect": [
+         519,
+         1082,
+         203,
+         430
+        ]
        }
       },
       "pivot": [
@@ -3565,6 +4717,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "decor/knitted_blanket__bed_foot__0__night.webp",
+        "rect": [
+         61,
+         1287,
+         338,
+         213
+        ]
        }
       },
       "pivot": [
@@ -3596,6 +4757,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "artwork/old_map__art_main__0__night.webp",
+        "rect": [
+         642,
+         913,
+         290,
+         315
+        ]
        }
       },
       "pivot": [
@@ -3621,6 +4791,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "artwork/old_map__art_bed__0__night.webp",
+        "rect": [
+         197,
+         874,
+         271,
+         307
+        ]
        }
       },
       "pivot": [
@@ -3653,6 +4832,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "artwork/art_frame__art_main__0__night.webp",
+        "rect": [
+         654,
+         877,
+         267,
+         386
+        ]
        }
       },
       "pivot": [
@@ -3688,6 +4876,15 @@
          147,
          190
         ]
+       },
+       "night": {
+        "file": "artwork/art_frame__art_main__shade__night.webp",
+        "rect": [
+         713,
+         975,
+         147,
+         190
+        ]
        }
       },
       "cleaned": true
@@ -3707,6 +4904,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "artwork/art_frame__art_bed__0__night.webp",
+        "rect": [
+         207,
+         839,
+         250,
+         375
+        ]
        }
       },
       "pivot": [
@@ -3742,6 +4948,15 @@
          133,
          183
         ]
+       },
+       "night": {
+        "file": "artwork/art_frame__art_bed__shade__night.webp",
+        "rect": [
+         266,
+         936,
+         133,
+         183
+        ]
        }
       },
       "cleaned": true
@@ -3761,6 +4976,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "artwork/art_frame__art_side__0__night.webp",
+        "rect": [
+         360,
+         918,
+         252,
+         376
+        ]
        }
       },
       "pivot": [
@@ -3796,6 +5020,15 @@
          135,
          184
         ]
+       },
+       "night": {
+        "file": "artwork/art_frame__art_side__shade__night.webp",
+        "rect": [
+         419,
+         1014,
+         135,
+         184
+        ]
        }
       },
       "cleaned": true
@@ -3821,6 +5054,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "fixtures/dead_sapling__floor_near__0__night.webp",
+        "rect": [
+         234,
+         1460,
+         723,
+         880
+        ]
        }
       },
       "pivot": [
@@ -3846,6 +5088,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "fixtures/dead_sapling__corner_door__0__night.webp",
+        "rect": [
+         717,
+         1240,
+         341,
+         437
+        ]
        }
       },
       "pivot": [
@@ -3877,6 +5128,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "fixtures/broken_frame__lean_wall__0__night.webp",
+        "rect": [
+         509,
+         1211,
+         217,
+         314
+        ]
        }
       },
       "pivot": [
@@ -3902,6 +5162,15 @@
         ],
         "feathered": true,
         "cleaned": true
+       },
+       "night": {
+        "file": "fixtures/broken_frame__floor_near__0__night.webp",
+        "rect": [
+         339,
+         1534,
+         555,
+         801
+        ]
        }
       },
       "pivot": [
@@ -4185,6 +5454,15 @@
        ],
        "feathered": true,
        "cleaned": true
+      },
+      "night": {
+       "file": "plants/focus_peace_lily__seedling__night.webp",
+       "rect": [
+        395,
+        1445,
+        167,
+        238
+       ]
       }
      },
      "pivot": [
@@ -4212,6 +5490,15 @@
        ],
        "feathered": true,
        "cleaned": true
+      },
+      "night": {
+       "file": "plants/focus_peace_lily__seedling__wilted__night.webp",
+       "rect": [
+        395,
+        1453,
+        159,
+        230
+       ]
       }
      },
      "pivot": [
@@ -4243,6 +5530,15 @@
        ],
        "feathered": true,
        "cleaned": true
+      },
+      "night": {
+       "file": "plants/focus_peace_lily__small__night.webp",
+       "rect": [
+        365,
+        1381,
+        238,
+        306
+       ]
       }
      },
      "pivot": [
@@ -4270,6 +5566,15 @@
        ],
        "feathered": true,
        "cleaned": true
+      },
+      "night": {
+       "file": "plants/focus_peace_lily__small__wilted__night.webp",
+       "rect": [
+        387,
+        1439,
+        194,
+        249
+       ]
       }
      },
      "pivot": [
@@ -4301,6 +5606,15 @@
        ],
        "feathered": true,
        "cleaned": true
+      },
+      "night": {
+       "file": "plants/focus_peace_lily__growing__night.webp",
+       "rect": [
+        304,
+        1311,
+        355,
+        382
+       ]
       }
      },
      "pivot": [
@@ -4328,6 +5642,15 @@
        ],
        "feathered": true,
        "cleaned": true
+      },
+      "night": {
+       "file": "plants/focus_peace_lily__growing__wilted__night.webp",
+       "rect": [
+        353,
+        1398,
+        257,
+        328
+       ]
       }
      },
      "pivot": [
@@ -4359,6 +5682,15 @@
        ],
        "feathered": true,
        "cleaned": true
+      },
+      "night": {
+       "file": "plants/focus_peace_lily__mature__night.webp",
+       "rect": [
+        276,
+        1291,
+        406,
+        402
+       ]
       }
      },
      "pivot": [
@@ -4386,6 +5718,15 @@
        ],
        "feathered": true,
        "cleaned": true
+      },
+      "night": {
+       "file": "plants/focus_peace_lily__mature__wilted__night.webp",
+       "rect": [
+        325,
+        1391,
+        304,
+        366
+       ]
       }
      },
      "pivot": [
@@ -4417,6 +5758,15 @@
        ],
        "feathered": true,
        "cleaned": true
+      },
+      "night": {
+       "file": "plants/focus_peace_lily__flowering__night.webp",
+       "rect": [
+        263,
+        1224,
+        445,
+        469
+       ]
       }
      },
      "pivot": [
@@ -4444,6 +5794,15 @@
        ],
        "feathered": true,
        "cleaned": true
+      },
+      "night": {
+       "file": "plants/focus_peace_lily__flowering__wilted__night.webp",
+       "rect": [
+        314,
+        1227,
+        322,
+        541
+       ]
       }
      },
      "pivot": [
@@ -4463,7 +5822,8 @@
   ]
  },
  "renderedStates": [
-  "morning"
+  "morning",
+  "night"
  ],
  "preview": "environment/preview.webp",
  "thumbs": {
