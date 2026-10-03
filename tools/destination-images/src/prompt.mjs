@@ -30,6 +30,11 @@ You are called once per destination and return one JSON package. Code does the r
   photograph would show: surface textures (rock strata, stone grain, wind ripples in sand, roof
   weathering), real materials and colours of local buildings, small asymmetric details, how water
   actually looks here (clarity, colour banding, foam), and the true scale of people and vehicles.
+- Image models treat every word you write as something to draw, including words after "no" or
+  "not". Describe only what IS there, in positive terms. Never name things you do not want
+  ("no domes", "not orange", "no crowds"): they appear anyway. Say "flat-topped skyline of
+  sandstone buildings with a few small stone temple spires" instead of "no domed palace";
+  say "pale straw-yellow sandstone" instead of "not orange".
 - Keep the sky pale and natural; never ask for a deep saturated blue sky. Prefer haze to clear blue.
 - Describe architecture and terrain exactly as they are. Do not add generic "Rajasthani" domes,
   towers or ornament to a fort, or smooth dunes to a rocky mountain. When unsure of a form,
