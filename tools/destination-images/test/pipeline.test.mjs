@@ -162,7 +162,7 @@ const httpError = (status) => Object.assign(new Error(`HTTP ${status}`), { httpR
 test('compact prompt keeps the place and the shot, and stays short enough for Stable Diffusion', () => {
   const p = compactPrompt(samples[1].package);
   assert.match(p, /Jaisalmer Fort, Jaisalmer, Rajasthan, India/);
-  assert.match(p, /120 m altitude, 30° downward/);
+  assert.match(p, /shot from 120 m above, camera tilted 30° downward/);
   assert.ok(p.split(/\s+/).length <= 90, `${p.split(/\s+/).length} words`);
 });
 
@@ -214,4 +214,18 @@ test('fal-ai gets a 16:9 image_size preset; other providers are left alone', asy
   const rec = { package: samples[2].package, prompt: 'x' };
   await generateImage(client, rec, { model: 'm', width: 1, height: 1, imageSize: 'landscape_16_9' });
   assert.equal(seen[0].parameters.image_size, 'landscape_16_9');
+});
+
+import { sanitizeForImage } from '../src/spec.mjs';
+
+test('image prompts never mention a drone, and QC rejects ones that do', () => {
+  assert.equal(sanitizeForImage('Captured from a drone at 120 m'), 'Captured from a high vantage point at 120 m');
+  assert.equal(sanitizeForImage('Aerial drone photograph of X'), 'Aerial photograph of X');
+  assert.doesNotMatch(sanitizeForImage('Drone positioned south-west; a UAV; believable drone perspective'), /drone|uav/i);
+  for (const s of samples) {
+    assert.doesNotMatch(fullPrompt(s.package), /drone/i, s.package.name);
+    assert.doesNotMatch(compactPrompt(s.package), /drone/i, s.package.name);
+  }
+  const bad = { ...clone(samples[1].package), image_prompt: `${samples[1].package.image_prompt} Drone positioned south-west.` };
+  assert.ok(checkPackage(bad, {}).errors.some((e) => e.includes('drone/UAV')));
 });

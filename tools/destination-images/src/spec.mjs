@@ -48,16 +48,33 @@ export const SUN_DIRECTIONS = [
   'front-lit', 'side-lit from left', 'side-lit from right', 'back-lit', 'overhead',
 ];
 
-// Part 17 + Part 12 + Part 3, appended verbatim to every prompt.
+// Part 17 + Part 12 + Part 3, appended verbatim to every prompt. Image models draw
+// whatever they are told about, so the camera is never described as a "drone".
 export const REALISM_SUFFIX =
   'Ultra-realistic professional aerial photograph, physically accurate lighting, ' +
   'realistic atmospheric perspective, natural photographic textures, realistic scale, ' +
   'authentic geography, natural imperfections, professional travel photography, ' +
-  'high-resolution photographic detail, believable drone perspective. ' +
-  'Full-frame aerial camera, natural 24–35mm perspective without fisheye distortion. ' +
+  'high-resolution photographic detail, believable high-altitude aerial perspective. ' +
+  'Unretouched RAW-style capture on a full-frame camera with a natural 24–35mm perspective: ' +
+  'fine micro-texture on every surface (rock strata, stone grain, water ripples, roof weathering, ' +
+  'dust), asymmetric real-world detail, subtle atmospheric haze that softens distant detail, ' +
+  'a pale natural sky, gentle lens vignetting, no over-smoothing, no HDR look. ' +
   'Natural premium color science: natural greens, blues and earth tones, accurate stone colors, ' +
-  'controlled highlights, moderate saturation and contrast, high dynamic range without an HDR look. ' +
-  '16:9 landscape frame, 3840×2160. No text, no logo, no watermark, no border, no frame.';
+  'controlled highlights, moderate saturation and contrast. ' +
+  '16:9 landscape frame. No text, no logo, no watermark, no border, no frame.';
+
+/** Words that make image models draw an aircraft into the picture. */
+export const AIRCRAFT_WORDS = /\b(drones?|uavs?|quadcopters?|multicopters?)\b/i;
+
+/** Rewrites any "drone" wording into plain camera language before it reaches an image model. */
+export function sanitizeForImage(text) {
+  return text
+    .replace(/\b(aerial) drone\b/gi, '$1')
+    .replace(/\bdrone (photograph|photography|photo|shot|footage)\b/gi, 'aerial $1')
+    .replace(/\b(captured|shot|photographed|taken) from an? (?:drone|uav|quadcopter)\b/gi, '$1 from a high vantage point')
+    .replace(/\b(?:an?|the) (?:drone|uav|quadcopter)\b/gi, 'the camera')
+    .replace(/\b(drones?|uavs?|quadcopters?|multicopters?)\b/gi, 'aerial camera');
+}
 
 // Part 18, verbatim.
 export const NEGATIVE_PROMPT =

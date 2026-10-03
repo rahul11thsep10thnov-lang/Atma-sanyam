@@ -124,6 +124,12 @@ out (HTTP 402) or the token is rejected, the run stops cleanly and keeps what it
 - **Model:** `--model` (or `HF_MODEL`) picks any Hugging Face text-to-image model, and
   `--provider` picks the inference provider. Which models are free on the serverless tier
   changes, so if the default fails, try another.
+- **Better detail:** `black-forest-labs/FLUX.1-schnell` is a fast, simplified model, so its
+  images tend to look smooth. For finer texture try `--model black-forest-labs/FLUX.1-dev`
+  with `--steps 28` and a bigger frame such as `--image-size 1536x864`. These cost more
+  per image; compare one image first and check your Hugging Face usage page.
+- **No aircraft in the picture:** prompts never use the word "drone" (image models paint it into
+  the frame). The program rewrites any such wording and QC rejects it.
 - **Not verified live:** this was written against the official `@huggingface/inference`
   client and tested with a fake client. It hasn't run against Hugging Face's servers, so run
   `--limit 1` first.

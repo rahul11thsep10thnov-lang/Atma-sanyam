@@ -9,6 +9,7 @@ import { join } from 'node:path';
 import { InferenceClient } from '@huggingface/inference';
 import sharp from 'sharp';
 import { NEGATIVE_PROMPT } from './spec.mjs';
+import { fullPrompt } from './render.mjs';
 
 export const DEFAULT_HF_MODEL = 'stabilityai/stable-diffusion-xl-base-1.0';
 // 1344×768 is one of SDXL's native training sizes (≈16:9). Other models may prefer others.
@@ -20,13 +21,13 @@ const firstClause = (s, maxWords) => (s ?? '').split(/[.;]/)[0].trim().split(/\s
 export function compactPrompt(pkg) {
   const place = [pkg.name, pkg.city_district, pkg.state].filter(Boolean).join(', ');
   const parts = [
-    `aerial drone photograph of ${place}, India`,
+    `aerial photograph of ${place}, India`,
     firstClause(pkg.primary_subject, 22),
     firstClause(pkg.environmental_details, 16),
-    `${pkg.drone_altitude_m} m altitude, ${pkg.camera_angle_deg}° downward oblique view, 28mm`,
+    `shot from ${pkg.drone_altitude_m} m above, camera tilted ${pkg.camera_angle_deg}° downward, 28mm`,
     `${pkg.time_of_day} light`,
     firstClause(pkg.weather, 10),
-    'ultra-realistic professional travel photograph, natural colors, realistic shadows, high detail, 16:9',
+    'ultra-realistic unretouched travel photograph, fine surface texture, pale natural sky, subtle haze, natural colors, realistic shadows, 16:9',
   ];
   return parts.filter(Boolean).join(', ');
 }
@@ -78,7 +79,7 @@ export async function generateImage(client, record, opts, { retries = 4, wait = 
   const request = {
     model: opts.model,
     ...(opts.provider ? { provider: opts.provider } : {}),
-    inputs: opts.compact ? compactPrompt(record.package) : record.prompt,
+    inputs: opts.compact ? compactPrompt(record.package) : fullPrompt(record.package),
     parameters: {
       negative_prompt: NEGATIVE_PROMPT,
       width: opts.width,

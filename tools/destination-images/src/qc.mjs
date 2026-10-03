@@ -3,7 +3,7 @@
 // kept on the record for a human to review.
 
 import {
-  ALTITUDE_RANGES, CAMERA_ANGLES, CATEGORIES, NEAR_TOP_DOWN_MIN, STEREOTYPE_TERMS, SUN_DIRECTIONS,
+  ALTITUDE_RANGES, CAMERA_ANGLES, CATEGORIES, NEAR_TOP_DOWN_MIN, STEREOTYPE_TERMS, SUN_DIRECTIONS, AIRCRAFT_WORDS,
   TIMES_OF_DAY, canonicalState,
 } from './spec.mjs';
 import { FILENAME_RE } from './slug.mjs';
@@ -41,6 +41,9 @@ export function checkPackage(pkg, { filename, recent = [] } = {}) {
   if (!has(pkg.image_prompt, pkg.name.split(/[(,]/)[0].trim())) errors.push('image_prompt must name the destination');
   if (!/\d+\s*(m|metres|meters)\b/i.test(pkg.image_prompt)) errors.push('image_prompt must state the drone altitude in metres');
   if (!/\d+\s*°|\d+\s*degrees?|top-down/i.test(pkg.image_prompt)) errors.push('image_prompt must state the camera angle');
+  if (AIRCRAFT_WORDS.test(pkg.image_prompt)) {
+    errors.push('image_prompt mentions a drone/UAV; image models draw it into the picture. Say "shot from N m above" instead');
+  }
   for (const term of STEREOTYPE_TERMS) {
     if (new RegExp(`\\b${term}\\b`, 'i').test(pkg.image_prompt)) {
       warnings.push(`prompt mentions "${term}" — confirm it genuinely belongs at this destination (Part 7)`);

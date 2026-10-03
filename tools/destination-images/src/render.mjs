@@ -1,12 +1,12 @@
 // Turns generated records into the deliverables: Part 27 text blocks in
 // Part 28 batches, plus a JSON manifest and CSV for the website.
 
-import { REALISM_SUFFIX } from './spec.mjs';
+import { REALISM_SUFFIX, sanitizeForImage } from './spec.mjs';
 
 export const BATCH_SIZE = 50;
 
 export function fullPrompt(pkg) {
-  return `${pkg.image_prompt.trim().replace(/\s*\.?$/, '.')} ${REALISM_SUFFIX}`;
+  return sanitizeForImage(`${pkg.image_prompt.trim().replace(/\s*\.?$/, '.')} ${REALISM_SUFFIX}`);
 }
 
 const capitalise = (s) => s.charAt(0).toUpperCase() + s.slice(1);
