@@ -34,7 +34,7 @@ def _path_distance(x, y):
     return best
 
 
-BEDS = [((-2.7, 4.4), (1.9, 4.2)), ((3.1, 7.2), (2.2, 4.0))]
+BEDS = [((-1.0, 11.0), (1.8, 1.2)), ((3.1, 7.2), (2.2, 4.0))]
 
 
 def _in_bed(x, y, margin=0.15):
@@ -48,12 +48,12 @@ def build_terrain(state):
     col = collection("terrain")
     wet = lighting.wet(state)
     terr = ground.terrain(col, wet=wet)
-    ground.lawn(col, terr, density=1.0, wet=wet)
+    ground.lawn(col, terr, density=1.3, wet=wet)
     ground.mow_lawn(terr, lambda x, y: _path_distance(x, y) > 0.72 and not _in_bed(x, y) and abs(x) < SIDE_X - 0.3 and -2.5 < y < BACK_Y - 0.6)
     ground.flagstone_path(col, PATH, width=1.15, wet=wet)
     for (c, size) in BEDS:
         ground.raised_bed(col, c, size, seed=int(c[0] * 10) % 97, wet=wet)
-    ground.boulders(col, [(-2.1, 2.3, 0.32), (1.6, 7.6, 0.48), (1.1, 8.3, 0.26)], wet=wet)
+    ground.boulders(col, [(2.3, 2.0, 0.3), (1.6, 7.6, 0.48), (1.1, 8.3, 0.26)], wet=wet)
     return col
 
 
@@ -86,7 +86,7 @@ def build_trees(state):
     gul = trees.gulmohar(col, seed=8, height=5.2)
     gul.location = (4.9, 10.2, ground_height(4.9, 10.2))
     fr = trees.frangipani(col, seed=5, height=2.7)
-    fr.location = (3.4, 3.4, ground_height(3.4, 3.4))
+    fr.location = (2.9, 3.6, ground_height(2.9, 3.6))
     fr.rotation_euler = (0, 0, 110 * DEG)
     # planting in the beds
     rng = Rng(9)

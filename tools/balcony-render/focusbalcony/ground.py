@@ -107,7 +107,7 @@ def terrain(col, size=(28.0, 36.0), origin=(0.0, 12.0), seed=1, wet=False):
     return obj
 
 
-def lawn(col, terrain_obj, density=1.0, length=0.038, seed=2, wet=False):
+def lawn(col, terrain_obj, density=1.0, length=0.018, seed=2, wet=False):
     """Grass as hair particles on the terrain (interpolated children)."""
     ps = terrain_obj.modifiers.new("grass", "PARTICLE_SYSTEM")
     s = ps.particle_system.settings
@@ -119,7 +119,7 @@ def lawn(col, terrain_obj, density=1.0, length=0.038, seed=2, wet=False):
     s.use_advanced_hair = True
     s.normal_factor = length
     s.factor_random = length * 0.3
-    s.effector_weights.gravity = 0.03
+    s.effector_weights.gravity = 0.008
     s.hair_step = 4
     s.child_type = "INTERPOLATED"
     s.child_percent = 10
@@ -127,14 +127,14 @@ def lawn(col, terrain_obj, density=1.0, length=0.038, seed=2, wet=False):
     s.child_radius = 0.045
     s.child_roundness = 0.5
     s.clump_factor = 0.35
-    s.roughness_1 = 0.02
+    s.roughness_1 = 0.01
     s.roughness_1_size = 0.3
     s.roughness_endpoint = 0.04
     s.roughness_end_shape = 1.0
     s.use_clump_curve = False
     s.root_radius = 0.9
     s.tip_radius = 0.15
-    s.radius_scale = 0.0016
+    s.radius_scale = 0.0028
     s.shape = 0.0
     s.use_close_tip = True
     s.material = len(terrain_obj.data.materials) + 1
@@ -259,7 +259,7 @@ def timber_fence(col, start, end, height=1.5, seed=6, name="fence"):
 def boulders(col, points, seed=7, wet=False):
     """Weathered granite boulders half-settled into the ground."""
     rng = Rng(seed)
-    granite = sandstone(wet, "granite", (0.33, 0.32, 0.3))
+    granite = sandstone(wet, "granite", (0.19, 0.18, 0.17))
     for i, (x, y, r) in enumerate(points):
         bm = bmesh.new()
         bmesh.ops.create_icosphere(bm, subdivisions=3, radius=r)

@@ -373,6 +373,7 @@ def items():
     for c in PLATE_COLS:
         visible(c, True)
         catcher(c, True)
+    bpy.context.view_layer.update()  # camera matrix (anchors were garbage with --skip-plates)
     for sid, s in catalog.SLOTS.items():
         px = to_px(s["pos"])
         rec = {"kind": s["kind"], "group": s["group"], "label": s["label"], "anchor": [round(px[0], 1), round(px[1], 1)],
@@ -382,7 +383,8 @@ def items():
         manifest["slots"][sid] = rec
 
     # the focus plant/tree: every stage, healthy and wilted
-    if not args.only or "focus" in args.only:
+    only = [o for o in (args.only or "").split(",") if o]
+    if not only or any("focus" in o for o in only):
         if args.space == "garden":
             stages_def, builder, name = items_mod.TREE_STAGES, "kachnar", "Kachnar"
         else:
@@ -399,7 +401,7 @@ def items():
                     rec.setdefault("files", {})[STATE] = {"file": e["file"], "rect": e["rect"]}
 
     for item_id, (builder, kwargs, slots, meta) in catalog.ITEMS.items():
-        if args.only and args.only not in item_id:
+        if only and not any(o in item_id for o in only):
             continue
         rec = manifest["items"].setdefault(item_id, {})
         rec.update({k: v for k, v in meta.items()})

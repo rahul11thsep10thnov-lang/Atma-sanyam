@@ -13,26 +13,28 @@ def _floor(x, y, group, label, rot=0.0):
 
 
 SLOTS = {
-    FOCUS_SLOT: _floor(-1.5, 6.4, "tree", "Your tree"),
-    "lawn_near_l": _floor(-1.7, 1.9, "plant", "Lawn, near left"),
-    "lawn_near_r": _floor(1.7, 0.9, "plant", "Lawn, near right"),
-    "lawn_mid_r": _floor(2.0, 4.4, "plant", "Lawn, mid right"),
-    "lawn_far_l": _floor(-3.6, 9.4, "plant", "Lawn, far left"),
+    # the camera looks up the garden from the house steps; the frame is a wedge that is only
+    # ~2.5 m wide at the near end, so everything lives to the right of the path or well back
+    FOCUS_SLOT: _floor(-0.7, 6.6, "tree", "Your tree"),
+    "lawn_near_l": _floor(0.55, 3.9, "plant", "Lawn, by the path"),
+    "lawn_near_r": _floor(1.2, 1.7, "plant", "Lawn, near right"),
+    "lawn_mid_r": _floor(1.3, 6.3, "plant", "Lawn, mid right"),
+    "lawn_far_l": _floor(-0.9, 9.6, "plant", "Lawn, far side"),
     "lawn_far_r": _floor(1.3, 11.0, "plant", "Lawn, by the gate"),
-    "bed_l": _floor(-2.15, 3.9, "bed", "Left bed", rot=0),
-    "bed_r": _floor(2.7, 5.5, "bed", "Right bed", rot=0),
-    "path_near": _floor(1.15, 0.3, "small", "Beside the path"),
-    "path_far": _floor(-2.2, 6.6, "small", "Further along the path"),
-    "seat": _floor(3.3, 4.3, "seat", "The seat", rot=-115),
-    "seat_far": _floor(-4.2, 9.0, "seat", "Under the neem", rot=-40),
+    "bed_l": _floor(-1.0, 11.0, "bed", "Back bed", rot=0),
+    "bed_r": _floor(2.9, 6.6, "bed", "Right bed", rot=0),
+    "path_near": _floor(1.1, 0.45, "small", "Beside the path"),
+    "path_far": _floor(-2.3, 12.6, "small", "Further along the path"),
+    "seat": _floor(2.5, 5.0, "seat", "The seat", rot=-115),
+    "seat_far": _floor(0.0, 12.6, "seat", "By the back fence", rot=-10),
     "feature": _floor(0.6, 9.0, "feature", "The lawn's focal point"),
-    "arch": _floor(-1.55, 6.0, "arch", "Over the path", rot=-28),
-    "corner_far": _floor(-5.2, 12.8, "big", "Far corner", rot=20),
+    "arch": _floor(-2.1, 8.0, "arch", "Over the path", rot=-22),
+    "corner_far": _floor(-4.3, 13.4, "big", "Far corner", rot=20),
     "corner_far_r": _floor(5.0, 12.6, "big", "Far right corner", rot=-20),
-    "house_l": _floor(-2.5, 0.5, "fixture", "By the house, left", rot=0),
-    "house_r": _floor(3.0, 0.5, "fixture", "By the house, right", rot=0),
-    "easel": _floor(2.0, 1.7, "art", "The easel", rot=-150),
-    "branch": {"pos": (2.65, 3.2, 2.0), "kind": "hanging", "group": "hanging", "label": "The frangipani branch"},
+    "house_l": _floor(-0.1, 5.4, "fixture", "Mid lawn, by the path", rot=0),
+    "house_r": _floor(2.1, 3.3, "fixture", "Lawn edge, right", rot=0),
+    "easel": _floor(1.75, 2.6, "art", "The easel", rot=-150),
+    "branch": {"pos": (2.1, 3.2, 2.0), "kind": "hanging", "group": "hanging", "label": "The frangipani branch"},
 }
 
 PLANT_SLOTS = {"lawn_near_l": [0], "lawn_near_r": [0], "lawn_mid_r": [0], "lawn_far_l": [0], "bed_l": [0], "bed_r": [0]}
