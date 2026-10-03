@@ -18,7 +18,7 @@ GRADES = {
 
 
 def source_state(m, state):
-    if state in m.get("renderedStates", list(m["states"].keys())):
+    if state in m["states"]:
         return state, None
     if state in GRADES and GRADES[state][0] in m["states"]:
         return GRADES[state][0], GRADES[state]

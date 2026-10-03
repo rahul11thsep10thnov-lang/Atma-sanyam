@@ -69,6 +69,7 @@ manifest.setdefault("states", {})
 manifest.setdefault("items", {})
 manifest.setdefault("slots", {})
 manifest["states"].setdefault(STATE, {})
+manifest["renderedStates"] = sorted(manifest["states"].keys(), key=lambda s_: ["morning", "afternoon", "sunset", "evening", "night", "rain"].index(s_))
 
 # ---------------------------------------------------------------------------
 clear_scene()
