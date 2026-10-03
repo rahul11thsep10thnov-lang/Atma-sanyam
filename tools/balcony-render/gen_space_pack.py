@@ -164,14 +164,23 @@ def feather(layer):
     layer["feathered"] = True
 
 
-def clean_shadow(layer):
+CLEAN_VERSION = 2
+LAMP_STATES = {"evening", "night"}
+
+
+def clean_shadow(layer, state="morning", lit=False):
     """Denoise the caught-shadow alpha of an object layer.
 
     Cycles denoises colour but not the shadow catcher's alpha, so at low
     sample counts a faint speckle of 1-10/255 alpha covers the whole crop
     (very visible on plain walls). Shadow pixels are dark with partial
-    alpha; the object's own pixels (opaque or coloured) are left alone."""
-    if layer is None or layer.get("cleaned"):
+    alpha; the object's own pixels (opaque or coloured) are left alone.
+
+    A lit item in a lamp-lit state throws its own light onto the catcher,
+    which Cycles folds into the alpha as a dark veil over the whole crop;
+    those layers keep no caught shadow at all. Night shadows of unlit items
+    are faint under moonlight, so they are reduced."""
+    if layer is None or layer.get("cleaned") == CLEAN_VERSION:
         return
     path = pack / layer["file"]
     img = np.array(Image.open(path).convert("RGBA"))
@@ -179,45 +188,52 @@ def clean_shadow(layer):
     rgb_max = img[..., :3].max(axis=2)
     shadow = (a < 250) & (rgb_max < 60)
     if shadow.any():
-        al = Image.fromarray(a, "L")
-        med = np.array(al.filter(ImageFilter.MedianFilter(5)))
-        soft = np.array(Image.fromarray(med, "L").filter(ImageFilter.GaussianBlur(1.2)))
-        cleaned = np.where(shadow, soft, a).astype(np.uint8)
-        cleaned[(cleaned < 12) & shadow] = 0
+        if lit and state in LAMP_STATES:
+            cleaned = a.copy()
+            cleaned[shadow] = 0
+        else:
+            al = Image.fromarray(a, "L")
+            med = np.array(al.filter(ImageFilter.MedianFilter(5)))
+            soft = np.array(Image.fromarray(med, "L").filter(ImageFilter.GaussianBlur(1.2))).astype(np.float32)
+            if state == "night":
+                soft = soft * 0.35
+            cleaned = np.where(shadow, soft, a).astype(np.uint8)
+            cleaned[(cleaned < 12) & shadow] = 0
         img[..., 3] = cleaned
         Image.fromarray(img, "RGBA").save(path, "WEBP", quality=Q, method=6)
-    layer["cleaned"] = True
+    layer["cleaned"] = CLEAN_VERSION
 
 
 def each_variant_layer():
+    """Yield (variant record, state, layer, lit) for every object layer."""
     for rec in m["items"].values():
+        lit = bool(rec.get("lit"))
         for vs in rec.get("variants", {}).values():
             for v in vs:
-                for f in v.get("files", {}).values():
-                    yield v, f
+                for st, f in v.get("files", {}).items():
+                    yield v, st, f, lit
         for stages in rec.get("stages", {}).values():
-            for st in stages:
+            for stg in stages:
                 for k in ("healthy", "wilted"):
-                    for f in st.get(k, {}).get("files", {}).values():
-                        yield st[k], f
+                    for st, f in stg.get(k, {}).get("files", {}).items():
+                        yield stg[k], st, f, lit
         for stack in rec.get("stackFiles", {}).values():
             for n in stack:
-                for f in n.get("files", {}).values():
-                    yield n, f
-    for st in m["focusPlant"]["stages"]:
+                for st, f in n.get("files", {}).items():
+                    yield n, st, f, lit
+    for stg in m["focusPlant"]["stages"]:
         for k in ("healthy", "wilted"):
-            for f in st.get(k, {}).get("files", {}).values():
-                yield st[k], f
+            for st, f in stg.get(k, {}).get("files", {}).items():
+                yield stg[k], st, f, False
 
 
-for v, f in each_variant_layer():
+for v, st, f, lit in each_variant_layer():
     if not v.get("feathered"):
         feather(f)
-    if not v.get("cleaned"):
-        clean_shadow(f)
-for v, f in each_variant_layer():
+    clean_shadow(f, st, lit)
+for v, st, f, lit in each_variant_layer():
     v["feathered"] = True
-    v["cleaned"] = True
+    v["cleaned"] = CLEAN_VERSION
 
 # ---- art shade: the light on each frame opening, as a dark veil ---------------------
 # (the frame's own layer is rendered with a white canvas; the opening's
