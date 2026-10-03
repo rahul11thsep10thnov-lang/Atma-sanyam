@@ -11,6 +11,7 @@
     "plan": "node bin/cli.mjs plan",
     "generate": "node bin/cli.mjs generate",
     "render": "node bin/cli.mjs render",
+    "images": "node bin/cli.mjs images",
     "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
