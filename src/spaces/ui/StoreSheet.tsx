@@ -39,7 +39,7 @@ export function thumbFor(space: SpaceId, itemId: string) {
   return f && hasImg(space, f.file) ? img(space, f.file) : null;
 }
 
-const SPACE_LABEL: Record<SpaceId, string> = { balcony: 'Balcony', garden: 'Garden', room: 'Room' };
+const SPACE_LABEL: Record<SpaceId, string> = { balcony: 'Balcony', garden: 'Garden' };
 
 export function StoreSheet({ visible, space, state, rewards, onClose, onState, onRewards, onToast }: Props) {
   const { colors } = useTheme();
@@ -85,11 +85,13 @@ export function StoreSheet({ visible, space, state, rewards, onClose, onState, o
         </View>
       }
     >
-      <View style={styles.filters}>
-        {SPACES.map((s) => (
-          <Button key={s} label={t(`space.${s}`)} size="sm" variant={which === s ? 'primary' : 'secondary'} onPress={() => setWhich(s)} />
-        ))}
-      </View>
+      {SPACES.length > 1 && (
+        <View style={styles.filters}>
+          {SPACES.map((s) => (
+            <Button key={s} label={t(`space.${s}`)} size="sm" variant={which === s ? 'primary' : 'secondary'} onPress={() => setWhich(s)} />
+          ))}
+        </View>
+      )}
       <ScrollView contentContainerStyle={styles.list} showsVerticalScrollIndicator={false}>
         {ids.map((id) => {
           const entry = STORE[id];

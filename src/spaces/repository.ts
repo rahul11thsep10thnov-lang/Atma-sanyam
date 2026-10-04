@@ -1,4 +1,4 @@
-// Local persistence for the three spaces and the shared art wall, with a
+// Local persistence for the photographed spaces, with a
 // tiny subscription so every screen shows the same state.
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SpaceId } from './packTypes';
@@ -10,9 +10,7 @@ const ART_KEY = 'focus.art.v2';
 const LEGACY_BALCONY_KEY = 'focus.balcony.state.v1';
 
 const memo: Partial<Record<SpaceId, SpaceState>> = {};
-let artMemo: ArtState | null = null;
 const listeners = new Set<(space: SpaceId, s: SpaceState) => void>();
-const artListeners = new Set<(a: ArtState) => void>();
 
 async function migrateBalcony(): Promise<SpaceState | null> {
   try {
@@ -24,8 +22,9 @@ async function migrateBalcony(): Promise<SpaceState | null> {
     next.stored = old.stored ?? [];
     next.focus = old.focus ?? next.focus;
     if (old.art) {
-      artMemo = { ...INITIAL_ART, currentId: old.art.currentId, pieces: old.art.pieces, completed: old.art.completed ?? [] };
-      await AsyncStorage.setItem(ART_KEY, JSON.stringify(artMemo));
+      // the collection (src/collection) carries finished pictures over from this key
+      const art: ArtState = { ...INITIAL_ART, currentId: old.art.currentId, pieces: old.art.pieces, completed: old.art.completed ?? [] };
+      await AsyncStorage.setItem(ART_KEY, JSON.stringify(art));
     }
     await AsyncStorage.removeItem(LEGACY_BALCONY_KEY);
     return next;
@@ -79,47 +78,3 @@ export async function loadAllSpaces(): Promise<Record<SpaceId, SpaceState>> {
   return Object.fromEntries(entries) as Record<SpaceId, SpaceState>;
 }
 
-export async function loadArt(): Promise<ArtState> {
-  if (artMemo) return artMemo;
-  try {
-    const raw = await AsyncStorage.getItem(ART_KEY);
-    artMemo = raw ? { ...INITIAL_ART, ...(JSON.parse(raw) as Partial<ArtState>) } : null;
-  } catch {
-    artMemo = null;
-  }
-  if (!artMemo) {
-    // the balcony migration may have produced it
-    await loadSpace('balcony');
-    artMemo = artMemo ?? { ...INITIAL_ART };
-    await saveArt(artMemo);
-  }
-  return artMemo;
-}
-
-export async function saveArt(art: ArtState): Promise<ArtState> {
-  artMemo = art;
-  artListeners.forEach((l) => l(art));
-  try {
-    await AsyncStorage.setItem(ART_KEY, JSON.stringify(art));
-  } catch {
-    // best effort
-  }
-  return art;
-}
-
-export async function updateArt(fn: (a: ArtState) => ArtState): Promise<ArtState> {
-  return saveArt(fn(await loadArt()));
-}
-
-export function subscribeArt(listener: (a: ArtState) => void): () => void {
-  artListeners.add(listener);
-  return () => artListeners.delete(listener);
-}
-
-/** Finished artworks hanging nowhere wait in the garden's rack. */
-export async function rackCount(): Promise<number> {
-  const art = await loadArt();
-  const all = await loadAllSpaces();
-  const hung = new Set(SPACES.flatMap((s) => all[s].placed.map((p) => p.artId).filter((a): a is string => !!a)));
-  return art.completed.filter((a) => !hung.has(a)).length;
-}

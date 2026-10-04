@@ -77,7 +77,9 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Android/iOS bundle ex
 - Pick a length on the circular dial (5–180 min, 5-min steps) and an image: bundled art,
   a quote tile, your own photo, or the online library managed from the admin console.
 - The picture is covered by tiles that flip away in a spread-out order as time passes
-  (`src/hooks/useFocusTimer.ts`, `src/components/PuzzleGrid.tsx`).
+  (`src/hooks/useFocusTimer.ts`, `src/components/PuzzleGrid.tsx`). A completed session of
+  thirty minutes or more keeps the picture as a framed jigsaw in one of six sizes, to hang in
+  the museum, on the balcony wall or on the garden easel (`docs/SPACES.md`).
 - Leaving the app starts a grace period (default 5 s, configurable from the admin console);
   stay away longer and the session fails.
-- History ("Garden") and preferences stay on the device.
+- The balcony, the 3D garden, the museum and preferences stay on the device.

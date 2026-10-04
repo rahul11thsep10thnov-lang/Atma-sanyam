@@ -1,4 +1,4 @@
-// A space's tab (balcony, garden or room): the photograph fills the
+// A photographed space's tab (the balcony): the photograph fills the
 // screen and the controls float lightly over it. Tap the picture to hide
 // every control (and the tab bar); tap again to bring them back.
 // Customize turns on placement guides, which never appear otherwise.
@@ -10,20 +10,21 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LightState, SpaceId } from '../packTypes';
 import { packFor } from '../packs';
 import { STORE, PENALTY_REMOVAL_COINS } from '../catalog';
-import { binItem, focusVariant, isFixed, isPenalty, PlacedItem, slotsFor, stageIndexFor, storeItem, turnItem, STAGE_WORDS, SpaceState } from '../model';
+import { binItem, focusVariant, hangArtwork, isFixed, isPenalty, PlacedItem, slotsFor, stageIndexFor, storeItem, turnItem, STAGE_WORDS } from '../model';
 import { SpaceScene, SceneGeometry } from '../scene/SpaceScene';
 import { ATMOSPHERE_ORDER, nextAtmosphere, resolveState } from '../states';
-import { useArt, useRackCount, useRewards, useSpace } from '../useSpaces';
+import { useRackCount, useRewards, useSpace } from '../useSpaces';
+import { useCollection } from '../../collection/repository';
+import { counts } from '../../collection/model';
+import { CollectionSheet } from '../../collection/ui/CollectionSheet';
+import { gridForSession } from '../../collection/model';
 import { payToClearPenalty } from '../focusEngine';
-import { loadAllSpaces } from '../repository';
 import { StoreSheet } from './StoreSheet';
 import { InventorySheet } from './InventorySheet';
 import { EditLayer } from './EditLayer';
-import { GallerySheet } from './GallerySheet';
 import { AdSheet } from './AdSheet';
 import { GLASS, GLASS_EDGE, GlassChip, GlassPill, CREAM, INK } from './Glass';
 import { RootStackParamList } from '../../navigation/types';
-import { gridForDuration } from '../../utils/grid';
 import { AppText } from '../../ui/AppText';
 import { Icon, IconName } from '../../ui/Icon';
 import { Tactile } from '../../ui/Pressable';
@@ -43,9 +44,9 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
   useLanguage();
   const pack = packFor(space);
   const [state, save] = useSpace(space);
-  const [art, saveArt] = useArt();
+  const [art, saveArt] = useCollection();
   const [rewards, saveRewards] = useRewards(isFocused);
-  const rack = useRackCount([space]);
+  const rack = useRackCount();
 
   const [chrome, setChrome] = useState(true);
   const [editing, setEditing] = useState(false);
@@ -54,7 +55,6 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
   const [dragging, setDragging] = useState<string | null>(null);
   const [geometry, setGeometry] = useState<SceneGeometry | null>(null);
   const [toast, setToast] = useState<string | null>(null);
-  const [hungElsewhere, setHungElsewhere] = useState<Record<string, SpaceId>>({});
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fade = useRef(new Animated.Value(1)).current;
 
@@ -72,17 +72,8 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
       setEditing(false);
       setSheet(null);
       setChrome(true);
-    } else {
-      loadAllSpaces().then((all) => {
-        const map: Record<string, SpaceId> = {};
-        for (const id of Object.keys(all) as SpaceId[]) {
-          if (id === space) continue;
-          for (const p of all[id].placed) if (p.artId) map[p.artId] = id;
-        }
-        setHungElsewhere(map);
-      });
     }
-  }, [isFocused, space]);
+  }, [isFocused]);
 
   const say = useCallback((text: string) => {
     setToast(text);
@@ -95,7 +86,7 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
 
   const startFocus = (minutes: number) => {
     setSheet(null);
-    navigation.navigate('ActiveSession', { config: { durationMinutes: minutes, image: { kind: 'space', space }, grid: gridForDuration(minutes) } });
+    navigation.navigate('ActiveSession', { config: { durationMinutes: minutes, image: { kind: 'space', space }, grid: gridForSession(minutes) } });
   };
 
   if (!state || !rewards || !art) return <View style={styles.screen} />;
@@ -192,7 +183,7 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
           <DockItem icon="move" label={t('dock.customize')} onPress={() => { setEditing(true); setSelected(null); }} />
           <DockItem icon="store" label={t('dock.store')} onPress={() => setSheet('store')} />
           <DockItem icon="armchair" label={t('dock.inventory')} onPress={() => setSheet('inventory')} badge={penalties > 0} />
-          <DockItem icon="image" label={t('dock.gallery')} onPress={() => setSheet('gallery')} badge={!!art.currentId && art.pieces > (art.seen ?? 0)} />
+          <DockItem icon="image" label={t('dock.gallery')} onPress={() => setSheet('gallery')} badge={counts(art).stored > 0} />
         </View>
       </Animated.View>
 
@@ -282,7 +273,21 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
 
       <StoreSheet visible={sheet === 'store'} space={space} state={state} rewards={rewards} onClose={() => setSheet(null)} onState={save} onRewards={saveRewards} onToast={say} />
       <InventorySheet visible={sheet === 'inventory'} space={space} state={state} rewards={rewards} onClose={() => setSheet(null)} onState={save} onClearPenalty={(uid) => void clearPenalty(uid)} onToast={say} />
-      <GallerySheet visible={sheet === 'gallery'} space={space} state={state} art={art} rewards={rewards} hungElsewhere={hungElsewhere} onClose={() => setSheet(null)} onState={save} onArt={saveArt} onToast={say} />
+      <CollectionSheet
+        visible={sheet === 'gallery'}
+        here={space}
+        collection={art}
+        onClose={() => setSheet(null)}
+        onCollection={saveArt}
+        onHangHere={(a) => {
+          const next = hangArtwork(state, a.id);
+          if (next === state) return false;
+          save(next);
+          return true;
+        }}
+        onTakeDown={(a) => save({ ...state, placed: state.placed.map((p) => (p.artId === a.id ? { ...p, artId: null } : p)) })}
+        onToast={say}
+      />
       <AdSheet visible={sheet === 'ad'} rewards={rewards} onClose={() => setSheet(null)} onRewards={saveRewards} onToast={say} />
     </View>
   );

@@ -5,6 +5,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { RootStackParamList, RootTabParamList } from './types';
 import { HomeScreen } from '../screens/HomeScreen';
 import { SpaceScreen } from '../spaces/ui/SpaceScreen';
+import { GardenScreen } from '../garden/ui/GardenScreen';
+import { MuseumScreen } from '../museum/ui/MuseumScreen';
 import { LanguageScreen } from '../screens/LanguageScreen';
 import { useSettings } from '../context/SettingsContext';
 import { setLanguage, useLanguage, t } from '../i18n';
@@ -22,8 +24,7 @@ const Tab = createBottomTabNavigator<RootTabParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const BalconyTab = () => <SpaceScreen space="balcony" />;
-const GardenTab = () => <SpaceScreen space="garden" />;
-const RoomTab = () => <SpaceScreen space="room" />;
+const GardenTab = () => <GardenScreen />;
 
 function Tabs() {
   useLanguage();
@@ -31,7 +32,7 @@ function Tabs() {
     Home: { icon: 'home', label: t('tabs.home') },
     History: { icon: 'sprout', label: t('tabs.balcony') },
     Garden: { icon: 'trees', label: t('tabs.garden') },
-    Room: { icon: 'lamp', label: t('tabs.room') },
+    Museum: { icon: 'images', label: t('tabs.museum') },
     Progress: { icon: 'chart', label: t('tabs.progress') },
     Settings: { icon: 'settings', label: t('tabs.settings') },
   };
@@ -43,7 +44,7 @@ function Tabs() {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="History" component={BalconyTab} options={{ title: 'Balcony' }} />
       <Tab.Screen name="Garden" component={GardenTab} />
-      <Tab.Screen name="Room" component={RoomTab} />
+      <Tab.Screen name="Museum" component={MuseumScreen} />
       <Tab.Screen name="Progress" component={ProgressScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>

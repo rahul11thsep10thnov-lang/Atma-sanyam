@@ -87,6 +87,7 @@ export function ContentBrowserScreen() {
         imageId: image.imageId,
         title: image.title,
         attributionText: image.attributionRequired ? image.attributionText : null,
+        category: image.category,
       });
       navigation.goBack();
     } finally {

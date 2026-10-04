@@ -35,6 +35,8 @@ export interface RemoteImageRef {
   imageId: string;
   title: string;
   attributionText: string | null;
+  /** The library category it came from (for the museum's collection). */
+  category?: string;
 }
 
 // Focus on the balcony itself: the session shows the person's balcony and
@@ -47,7 +49,7 @@ export interface BalconyImageRef {
 // and its focus plant grows while they focus.
 export interface SpaceImageRef {
   kind: 'space';
-  space: 'balcony' | 'garden' | 'room';
+  space: 'balcony' | 'garden';
 }
 
 export type ImageRef = ArtImageRef | QuoteImageRef | CustomImageRef | RemoteImageRef | BalconyImageRef | SpaceImageRef;

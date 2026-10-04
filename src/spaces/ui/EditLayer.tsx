@@ -1,8 +1,8 @@
-// Customize mode. Every object was photographed in each place it can
-// stand, so moving one is choosing a place: drag it and it snaps to the
-// nearest spot it fits, shown as it really looks there. In the garden,
-// dropping something on the dustbin throws it away. Guides exist only in
-// this mode — outside it the space is just a space.
+// Customize mode. An object follows the finger like a cursor while it is
+// dragged; every object was photographed in each place it can stand, so
+// letting go settles it on the nearest spot it fits, shown as it really
+// looks there. Guides exist only in this mode — outside it the space is
+// just a space.
 import React, { useMemo, useRef, useState } from 'react';
 import { PanResponder, StyleSheet, View } from 'react-native';
 import { LightState, SpaceId } from '../packTypes';
@@ -52,6 +52,7 @@ export function EditLayer({ space, state, geometry: g, light, selected, onSelect
   const FOCUS = pack.focusPlant.slot;
   const { source } = sourceState(pack, light);
   const [target, setTarget] = useState<string | null>(null);
+  const [cursor, setCursor] = useState<[number, number] | null>(null);
   const [overBin, setOverBin] = useState(false);
   const drag = useRef<{ p: PlacedItem; dx: number; dy: number; moved: boolean } | null>(null);
   const live = useRef({ state, g, selected });
@@ -102,6 +103,7 @@ export function EditLayer({ space, state, geometry: g, light, selected, onSelect
           const sy = e.nativeEvent.pageY + d.dy;
           const binnable = !isPenalty(d.p.itemId) && nearBin(e.nativeEvent.pageX, e.nativeEvent.pageY);
           setOverBin(binnable);
+          setCursor([sx, sy]);
           setTarget(binnable ? null : nearestSlot(d.p, sx, sy));
         },
         onPanResponderRelease: (e) => {
@@ -110,6 +112,7 @@ export function EditLayer({ space, state, geometry: g, light, selected, onSelect
           const { state: st, g: geo } = live.current;
           if (d?.moved) {
             setTarget(null);
+            setCursor(null);
             onDragging(null);
             setOverBin(false);
             if (!isPenalty(d.p.itemId) && nearBin(e.nativeEvent.pageX, e.nativeEvent.pageY) && onBin) {
@@ -130,6 +133,7 @@ export function EditLayer({ space, state, geometry: g, light, selected, onSelect
         onPanResponderTerminate: () => {
           drag.current = null;
           setTarget(null);
+          setCursor(null);
           setOverBin(false);
           onDragging(null);
         },
@@ -141,6 +145,9 @@ export function EditLayer({ space, state, geometry: g, light, selected, onSelect
   const sel = selected ? state.placed.find((x) => x.uid === selected.uid) ?? null : null;
   const ghostVariant = sel && target ? variantOf({ ...state, placed: state.placed.map((p) => (p.uid === sel.uid ? { ...p, slot: target, variant: 0 } : p)) }, { ...sel, slot: target, variant: 0 }) : null;
   const ghostLayer = ghostVariant ? layerFor(ghostVariant, source) : null;
+  // the ghost rides under the finger; it is drawn as it looks at the spot it will settle on
+  const anchorAt = target ? toScreen(pack.slots[target].anchor) : null;
+  const ghostShift: [number, number] = cursor && anchorAt ? [cursor[0] - anchorAt[0], cursor[1] - anchorAt[1]] : [0, 0];
   const guides = sel && !isFixed(space, sel.itemId) ? slotsFor(space, sel.itemId).filter((s) => s !== FOCUS && pack.slots[s].kind !== 'wall' && slotAvailable(state, s)) : [];
 
   return (
@@ -185,7 +192,7 @@ export function EditLayer({ space, state, geometry: g, light, selected, onSelect
       )}
 
       {ghostVariant && ghostLayer && (
-        <View pointerEvents="none" style={{ position: 'absolute', left: g.ox, top: g.oy, opacity: 0.92 }}>
+        <View pointerEvents="none" style={{ position: 'absolute', left: g.ox + ghostShift[0], top: g.oy + ghostShift[1], opacity: 0.92 }}>
           <SceneObject space={space} v={ghostVariant} layer={ghostLayer} s={g.scale} live={false} seed="ghost" />
         </View>
       )}

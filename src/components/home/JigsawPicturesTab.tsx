@@ -1,13 +1,15 @@
-// "Jigsaw pictures": the library's India collections — Heritage, Nature,
-// Wildlife, Spirituality — each a row of photographs. Pick one and it
-// reveals itself tile by tile during the session.
+// "Reveal jigsaws": the person's own photo, then the library's India
+// collections — Heritage, Nature, Wildlife, Spirituality — each a row of
+// photographs. Pick one and it reveals itself tile by tile during the
+// session; a session of 30 minutes or more keeps it as a framed jigsaw.
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import { pickPhoto } from '../../collection/photos';
 import { useContentCategories } from '../../content/useContentLibrary';
 import { listImages, resolveImageUri } from '../../content/repository';
 import { RemoteThumb } from '../../content/RemoteThumb';
 import { CategoryNode, ContentImage } from '../../content/types';
-import { RemoteImageRef } from '../../types';
+import { CustomImageRef, RemoteImageRef } from '../../types';
 import { AppText } from '../../ui/AppText';
 import { Icon } from '../../ui/Icon';
 import { Tactile } from '../../ui/Pressable';
@@ -23,7 +25,9 @@ const SECTIONS: { key: 'heritage' | 'nature' | 'wildlife' | 'spirituality'; matc
   { key: 'spirituality', match: /spiritual/i },
 ];
 
-export function JigsawPicturesTab({ selected, onPick, onSeeAll }: { selected: RemoteImageRef | null; onPick: (image: RemoteImageRef) => void; onSeeAll: (category: CategoryNode | null) => void }) {
+export type JigsawPick = RemoteImageRef | CustomImageRef;
+
+export function JigsawPicturesTab({ selected, onPick, onSeeAll }: { selected: JigsawPick | null; onPick: (image: JigsawPick) => void; onSeeAll: (category: CategoryNode | null) => void }) {
   const { colors, shadow } = useTheme();
   const { categories } = useContentCategories();
   const [rows, setRows] = useState<Record<string, ContentImage[]>>({});
@@ -50,18 +54,48 @@ export function JigsawPicturesTab({ selected, onPick, onSeeAll }: { selected: Re
     setBusy(image.imageId);
     try {
       const uri = await resolveImageUri(image, 'full');
-      onPick({ kind: 'remote', uri, imageId: image.imageId, title: image.title, attributionText: image.attributionText ?? null });
+      onPick({ kind: 'remote', uri, imageId: image.imageId, title: image.title, attributionText: image.attributionText ?? null, category: image.category });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const choosePhoto = async () => {
+    if (busy) return;
+    setBusy('photo');
+    try {
+      const photo = await pickPhoto();
+      if (photo) onPick(photo);
     } finally {
       setBusy(null);
     }
   };
 
   const any = sections.some((s) => s.category);
+  const ownOn = selected?.kind === 'custom';
   return (
     <View>
       <AppText variant="bodySmall" tone="secondary" style={styles.hint}>
-        {t('home.jigsawHint')}
+        {t('home.jigsawHint')} {t('home.jigsawSizes')}
       </AppText>
+      <Tactile onPress={() => void choosePhoto()} accessibilityRole="button" accessibilityLabel={t('home.yourPhoto')} accessibilityState={{ selected: ownOn }} style={[styles.photo, { borderColor: ownOn ? colors.primary : colors.border, backgroundColor: colors.surfaceRaised }, ownOn && shadow.level2]}>
+        <View style={[styles.photoThumb, { backgroundColor: colors.accentSoft }]}>
+          {ownOn && selected?.kind === 'custom' ? <Image source={{ uri: selected.uri }} style={styles.photoImg} resizeMode="cover" /> : <Icon name="camera" size="md" color="primary" />}
+        </View>
+        <View style={{ flex: 1 }}>
+          <AppText variant="bodyStrong">{ownOn ? t('home.photoPicked') : t('home.yourPhoto')}</AppText>
+          <AppText variant="caption" tone="secondary" numberOfLines={2}>
+            {t('home.yourPhotoHint')}
+          </AppText>
+        </View>
+        {ownOn ? (
+          <View style={[styles.check, { position: 'relative', top: 0, right: 0, backgroundColor: colors.primary }]}>
+            <Icon name="check" size={12} color="onAccent" strokeWidth={3} />
+          </View>
+        ) : (
+          <Icon name="chevronRight" size="xs" color="secondary" />
+        )}
+      </Tactile>
       {!any && (
         <Tactile onPress={() => onSeeAll(null)} accessibilityRole="button" style={[styles.empty, { borderColor: colors.border }]}>
           <Icon name="images" size="md" color="secondary" />
@@ -87,7 +121,7 @@ export function JigsawPicturesTab({ selected, onPick, onSeeAll }: { selected: Re
             </View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.stripWrap} contentContainerStyle={styles.strip}>
               {images.map((im) => {
-                const on = selected?.imageId === im.imageId;
+                const on = selected?.kind === 'remote' && selected.imageId === im.imageId;
                 return (
                   <View key={im.imageId} style={[styles.tile, { borderColor: on ? colors.primary : colors.border, backgroundColor: colors.surfaceRaised }, on && shadow.level2]}>
                     <RemoteThumb image={im} size={160} onPress={() => void pick(im)} selected={on} />
@@ -112,6 +146,9 @@ export function JigsawPicturesTab({ selected, onPick, onSeeAll }: { selected: Re
 
 const styles = StyleSheet.create({
   hint: { marginBottom: space.sm },
+  photo: { flexDirection: 'row', alignItems: 'center', gap: space.md, borderWidth: 2, borderRadius: radii.md, padding: 8, paddingRight: space.md, marginBottom: space.sm },
+  photoThumb: { width: 64, height: 64, borderRadius: radii.sm, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  photoImg: { width: '100%', height: '100%' },
   empty: { flexDirection: 'row', alignItems: 'center', gap: space.md, borderWidth: 1, borderStyle: 'dashed', borderRadius: radii.md, padding: space.lg },
   section: { marginTop: space.md },
   sectionHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: space.sm },
