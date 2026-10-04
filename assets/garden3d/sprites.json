@@ -2113,6 +2113,231 @@
      0.712
     ]
    }
+  },
+  "sunflower": {
+   "name": "Sunflower",
+   "category": "PLANTS",
+   "growable": true,
+   "stages": [
+    {
+     "id": "seed",
+     "minutes": 0,
+     "healthy": {
+      "file": "sprites/sunflower__seed.webp",
+      "px": [
+       967,
+       982
+      ],
+      "widthM": 0.2743,
+      "heightM": 0.2785,
+      "pivot": [
+       0.5,
+       0.8668
+      ],
+      "boxM": [
+       0.4,
+       0.4,
+       0.35
+      ],
+      "sway": {
+       "amp": 0.35,
+       "speed": 0.4
+      }
+     }
+    },
+    {
+     "id": "sprout",
+     "minutes": 25,
+     "healthy": {
+      "file": "sprites/sunflower__sprout.webp",
+      "px": [
+       969,
+       987
+      ],
+      "widthM": 0.1786,
+      "heightM": 0.182,
+      "pivot": [
+       0.5,
+       0.8675
+      ],
+      "boxM": [
+       0.32,
+       0.32,
+       0.28
+      ],
+      "sway": {
+       "amp": 0.35,
+       "speed": 0.4
+      }
+     },
+     "wilted": {
+      "file": "sprites/sunflower__sprout__wilted.webp",
+      "px": [
+       969,
+       987
+      ],
+      "widthM": 0.1786,
+      "heightM": 0.182,
+      "pivot": [
+       0.5,
+       0.8675
+      ],
+      "boxM": [
+       0.32,
+       0.32,
+       0.28
+      ],
+      "sway": {
+       "amp": 0.35,
+       "speed": 0.4
+      }
+     }
+    },
+    {
+     "id": "young",
+     "minutes": 60,
+     "healthy": {
+      "file": "sprites/sunflower__young.webp",
+      "px": [
+       612,
+       880
+      ],
+      "widthM": 0.3571,
+      "heightM": 0.5135,
+      "pivot": [
+       0.506,
+       0.9625
+      ],
+      "boxM": [
+       0.356,
+       0.305,
+       0.571
+      ],
+      "sway": {
+       "amp": 0.35,
+       "speed": 0.4
+      }
+     },
+     "wilted": {
+      "file": "sprites/sunflower__young__wilted.webp",
+      "px": [
+       792,
+       960
+      ],
+      "widthM": 0.3361,
+      "heightM": 0.4074,
+      "pivot": [
+       0.5106,
+       0.858
+      ],
+      "boxM": [
+       0.359,
+       0.328,
+       0.456
+      ],
+      "sway": {
+       "amp": 0.35,
+       "speed": 0.4
+      }
+     }
+    },
+    {
+     "id": "mature",
+     "minutes": 120,
+     "healthy": {
+      "file": "sprites/sunflower__mature.webp",
+      "px": [
+       549,
+       886
+      ],
+      "widthM": 0.5673,
+      "heightM": 0.9155,
+      "pivot": [
+       0.5183,
+       0.9538
+      ],
+      "boxM": [
+       0.516,
+       0.491,
+       0.906
+      ],
+      "sway": {
+       "amp": 0.35,
+       "speed": 0.4
+      }
+     },
+     "wilted": {
+      "file": "sprites/sunflower__mature__wilted.webp",
+      "px": [
+       648,
+       927
+      ],
+      "widthM": 0.5545,
+      "heightM": 0.7932,
+      "pivot": [
+       0.5185,
+       0.9129
+      ],
+      "boxM": [
+       0.519,
+       0.504,
+       0.778
+      ],
+      "sway": {
+       "amp": 0.35,
+       "speed": 0.4
+      }
+     }
+    },
+    {
+     "id": "flowering",
+     "minutes": 240,
+     "healthy": {
+      "file": "sprites/sunflower__flowering.webp",
+      "px": [
+       485,
+       889
+      ],
+      "widthM": 0.6631,
+      "heightM": 1.2154,
+      "pivot": [
+       0.4555,
+       0.9601
+      ],
+      "boxM": [
+       0.6,
+       0.582,
+       1.137
+      ],
+      "sway": {
+       "amp": 0.35,
+       "speed": 0.4
+      }
+     },
+     "wilted": {
+      "file": "sprites/sunflower__flowering__wilted.webp",
+      "px": [
+       610,
+       934
+      ],
+      "widthM": 0.6627,
+      "heightM": 1.0147,
+      "pivot": [
+       0.5128,
+       0.9299
+      ],
+      "boxM": [
+       0.625,
+       0.571,
+       0.945
+      ],
+      "sway": {
+       "amp": 0.35,
+       "speed": 0.4
+      }
+     }
+    }
+   ]
   }
  },
  "scenery": {},
