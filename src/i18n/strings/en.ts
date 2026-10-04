@@ -9,11 +9,9 @@ export const en = {
   'h': 'h',
   'space.balcony': 'Balcony',
   'space.garden': 'Garden',
-  'space.room': 'Room',
   'tabs.home': 'Home',
   'tabs.balcony': 'Balcony',
   'tabs.garden': 'Garden',
-  'tabs.room': 'Room',
   'tabs.progress': 'Progress',
   'tabs.settings': 'Settings',
 
@@ -52,7 +50,6 @@ export const en = {
   'edit.clearFor': 'Clear for {coins}',
   'focusCard.title.balcony': 'Sit with your balcony',
   'focusCard.title.garden': 'Sit in your garden',
-  'focusCard.title.room': 'Settle into your room',
   'focusCard.body': 'Your {plant} grows while you focus. Leaving early leaves a wilted sapling and a broken picture behind.',
   'focusCard.forMinutes': 'Focus for {minutes} minutes',
 
@@ -151,7 +148,6 @@ export const en = {
   'home.greetingAfternoon': 'Good afternoon',
   'home.greetingEvening': 'Good evening',
   'home.tagline': 'Your world grows when you focus.',
-  'home.mySpaces': 'MY SPACES',
   'home.explore': 'Explore',
   'home.growPlants': 'Grow plants',
   'home.jigsawPictures': 'Jigsaw pictures',

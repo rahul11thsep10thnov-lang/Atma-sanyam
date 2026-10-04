@@ -6,7 +6,8 @@ import { ImageSourcePropType } from 'react-native';
 import { SpaceId } from './packTypes';
 import { EXTRA_STORE } from '../garden/sprites.generated';
 
-export const SPACES: SpaceId[] = ['balcony', 'garden'];
+/** The photographed spaces (the garden lives in src/garden). */
+export const SPACES: SpaceId[] = ['balcony'];
 
 export interface StoreEntry {
   /** Which spaces this item can be placed in. */

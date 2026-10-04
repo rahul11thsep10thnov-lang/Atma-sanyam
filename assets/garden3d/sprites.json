@@ -1931,6 +1931,188 @@
      0.748
     ]
    }
+  },
+  "image_rack": {
+   "name": "Picture rack",
+   "category": "FIXTURE",
+   "fixed": true,
+   "stack": [
+    {
+     "file": "sprites/image_rack__n0.webp",
+     "px": [
+      872,
+      957
+     ],
+     "widthM": 0.9893,
+     "heightM": 1.0857,
+     "pivot": [
+      0.5006,
+      0.8926
+     ],
+     "boxM": [
+      0.9,
+      0.4,
+      0.95
+     ]
+    },
+    {
+     "file": "sprites/image_rack__n1.webp",
+     "px": [
+      872,
+      957
+     ],
+     "widthM": 0.9893,
+     "heightM": 1.0857,
+     "pivot": [
+      0.5006,
+      0.8926
+     ],
+     "boxM": [
+      0.9,
+      0.4,
+      0.95
+     ]
+    },
+    {
+     "file": "sprites/image_rack__n2.webp",
+     "px": [
+      872,
+      957
+     ],
+     "widthM": 0.9893,
+     "heightM": 1.0857,
+     "pivot": [
+      0.5006,
+      0.8926
+     ],
+     "boxM": [
+      0.9,
+      0.4,
+      0.95
+     ]
+    },
+    {
+     "file": "sprites/image_rack__n3.webp",
+     "px": [
+      872,
+      957
+     ],
+     "widthM": 0.9893,
+     "heightM": 1.0857,
+     "pivot": [
+      0.5006,
+      0.8926
+     ],
+     "boxM": [
+      0.9,
+      0.4,
+      0.95
+     ]
+    },
+    {
+     "file": "sprites/image_rack__n4.webp",
+     "px": [
+      870,
+      955
+     ],
+     "widthM": 0.9887,
+     "heightM": 1.0853,
+     "pivot": [
+      0.4994,
+      0.8932
+     ],
+     "boxM": [
+      0.9,
+      0.409,
+      0.95
+     ]
+    }
+   ]
+  },
+  "easel": {
+   "name": "Easel",
+   "category": "WALL_ART",
+   "art": true,
+   "sprite": {
+    "file": "sprites/easel.webp",
+    "px": [
+     558,
+     928
+    ],
+    "widthM": 1.1002,
+    "heightM": 1.8297,
+    "pivot": [
+     0.5,
+     1.0467
+    ],
+    "boxM": [
+     0.83,
+     1.049,
+     1.692
+    ],
+    "artQuad": [
+     [
+      0.1476,
+      0.2534
+     ],
+     [
+      0.8524,
+      0.2534
+     ],
+     [
+      0.8137,
+      0.7203
+     ],
+     [
+      0.1863,
+      0.7203
+     ]
+    ]
+   }
+  },
+  "dead_sapling": {
+   "name": "Wilted sapling",
+   "category": "PENALTY",
+   "sprite": {
+    "file": "sprites/dead_sapling.webp",
+    "px": [
+     881,
+     983
+    ],
+    "widthM": 0.8003,
+    "heightM": 0.8929,
+    "pivot": [
+     0.5761,
+     0.8718
+    ],
+    "boxM": [
+     0.785,
+     0.622,
+     0.793
+    ]
+   }
+  },
+  "broken_frame": {
+   "name": "Broken picture",
+   "category": "PENALTY",
+   "sprite": {
+    "file": "sprites/broken_frame.webp",
+    "px": [
+     835,
+     1007
+    ],
+    "widthM": 0.6555,
+    "heightM": 0.7905,
+    "pivot": [
+     0.5141,
+     0.8582
+    ],
+    "boxM": [
+     0.652,
+     0.377,
+     0.712
+    ]
+   }
   }
  },
  "scenery": {},

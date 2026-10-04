@@ -1,24 +1,29 @@
-// The rendered packs and their images, by space id.
+// The rendered packs and their images, by space id. Only the balcony is
+// a photographed pack now; the garden is the real-time scene in
+// src/garden/ and has no pack, so any lookup for it gets the balcony's
+// (the generic space rules are never run for the garden).
 import { ImageSourcePropType } from 'react-native';
 import { SpaceId, SpacePack } from '../packTypes';
 import * as balcony from './balcony.generated';
-import * as garden from './garden.generated';
 
-const PACKS: Record<SpaceId, { pack: SpacePack; images: Record<string, number> }> = {
+const PACKS: Partial<Record<SpaceId, { pack: SpacePack; images: Record<string, number> }>> = {
   balcony: { pack: balcony.PACK, images: balcony.IMAGES },
-  garden: { pack: garden.PACK, images: garden.IMAGES },
 };
 
+function entry(space: SpaceId) {
+  return PACKS[space] ?? PACKS.balcony!;
+}
+
 export function packFor(space: SpaceId): SpacePack {
-  return PACKS[space].pack;
+  return entry(space).pack;
 }
 
 export function img(space: SpaceId, file: string): ImageSourcePropType {
-  const src = PACKS[space].images[file];
+  const src = entry(space).images[file];
   if (src === undefined) throw new Error(`${space} pack has no image ${file}`);
   return src;
 }
 
 export function hasImg(space: SpaceId, file: string): boolean {
-  return PACKS[space].images[file] !== undefined;
+  return entry(space).images[file] !== undefined;
 }
