@@ -1,14 +1,19 @@
 // "Grow plants": every plant that grows with focus, pictured in its
 // space. Pick one to focus beside it — the session happens in that
-// space, and its plant grows while you focus.
+// space, and its plant grows while you focus. The balcony's plants come
+// from its photographed pack; the garden's from the 3D garden's sprites.
 import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, ImageSourcePropType, ScrollView, StyleSheet, View } from 'react-native';
 import { SpaceId } from '../../spaces/packTypes';
 import { packFor, hasImg, img } from '../../spaces/packs';
-import { SPACES, STORE } from '../../spaces/catalog';
+import { STORE } from '../../spaces/catalog';
 import { SpaceState } from '../../spaces/model';
-import { loadAllSpaces, subscribeSpace } from '../../spaces/repository';
+import { loadSpace, subscribeSpace } from '../../spaces/repository';
 import { thumbFor } from '../../spaces/ui/StoreSheet';
+import { GardenState } from '../../garden/model';
+import { useGarden } from '../../garden/repository';
+import { SPRITES, SPRITE_IMAGES } from '../../garden/sprites.generated';
+import { gardenThumb } from '../../garden/ui/GardenStoreSheet';
 import { AppText } from '../../ui/AppText';
 import { Icon } from '../../ui/Icon';
 import { Tactile } from '../../ui/Pressable';
@@ -23,37 +28,66 @@ export interface PlantPick {
   name: string;
 }
 
-function focusThumb(spaceId: SpaceId) {
-  const pack = packFor(spaceId);
+type Pick = PlantPick & { thumb: ImageSourcePropType | null; owned: boolean };
+
+function balconyFocusThumb() {
+  const pack = packFor('balcony');
   const st = pack.focusPlant.stages[pack.focusPlant.stages.length - 1]?.healthy;
   const f = st?.files?.morning ?? (st ? Object.values(st.files ?? {})[0] : null);
-  return f && hasImg(spaceId, f.file) ? img(spaceId, f.file) : null;
+  return f && hasImg('balcony', f.file) ? img('balcony', f.file) : null;
+}
+
+function gardenFocusThumb(): ImageSourcePropType | null {
+  const ft = SPRITES.focusTree;
+  const s = ft?.stages[ft.stages.length - 1]?.healthy;
+  const id = s ? SPRITE_IMAGES[s.file] : undefined;
+  return id !== undefined ? id : null;
+}
+
+function balconyPicks(st: SpaceState | null): Pick[] {
+  const pack = packFor('balcony');
+  const picks: Pick[] = [{ space: 'balcony', itemId: null, name: pack.focusPlant.name, thumb: balconyFocusThumb(), owned: true }];
+  for (const id of Object.keys(pack.items)) {
+    if (!pack.items[id].growable || !STORE[id]) continue;
+    const owned = !!st && (st.placed.some((p) => p.itemId === id) || st.stored.some((x) => x.itemId === id));
+    picks.push({ space: 'balcony', itemId: id, name: pack.items[id].name, thumb: thumbFor('balcony', id), owned });
+  }
+  return picks;
+}
+
+function gardenPicks(g: GardenState | null): Pick[] {
+  const picks: Pick[] = [];
+  const ft = SPRITES.focusTree;
+  if (ft) picks.push({ space: 'garden', itemId: null, name: ft.name, thumb: gardenFocusThumb(), owned: true });
+  const ids = Object.keys(SPRITES.items).filter((id) => SPRITES.items[id].growable && STORE[id] && !STORE[id].hidden);
+  ids.sort((a, b) => {
+    const oa = g ? g.items.some((i) => i.itemId === a) || g.stored.some((s) => s.itemId === a) : false;
+    const ob = g ? g.items.some((i) => i.itemId === b) || g.stored.some((s) => s.itemId === b) : false;
+    if (oa !== ob) return oa ? -1 : 1;
+    return STORE[a].unlockMinutes - STORE[b].unlockMinutes;
+  });
+  for (const id of ids) {
+    const owned = !!g && (g.items.some((i) => i.itemId === id) || g.stored.some((s) => s.itemId === id));
+    picks.push({ space: 'garden', itemId: id, name: SPRITES.items[id].name, thumb: gardenThumb(id), owned });
+  }
+  return picks;
 }
 
 export function GrowPlantsTab({ selected, onPick }: { selected: PlantPick | null; onPick: (p: PlantPick) => void }) {
   const { colors, shadow } = useTheme();
-  const [states, setStates] = useState<Partial<Record<SpaceId, SpaceState>>>({});
+  const [balcony, setBalcony] = useState<SpaceState | null>(null);
+  const [garden] = useGarden();
   useEffect(() => {
     let alive = true;
-    loadAllSpaces().then((all) => alive && setStates(all));
-    const unsub = subscribeSpace((id, s) => alive && setStates((prev) => ({ ...prev, [id]: s })));
+    loadSpace('balcony').then((s) => alive && setBalcony(s));
+    const unsub = subscribeSpace((id, s) => alive && id === 'balcony' && setBalcony(s));
     return () => {
       alive = false;
       unsub();
     };
   }, []);
 
-  const picks: (PlantPick & { thumb: ReturnType<typeof thumbFor>; owned: boolean })[] = [];
-  for (const s of SPACES) {
-    const pack = packFor(s);
-    picks.push({ space: s, itemId: null, name: pack.focusPlant.name, thumb: focusThumb(s), owned: true });
-    for (const id of Object.keys(pack.items)) {
-      if (!pack.items[id].growable || !STORE[id]) continue;
-      const st = states[s];
-      const owned = !!st && (st.placed.some((p) => p.itemId === id) || st.stored.some((x) => x.itemId === id));
-      picks.push({ space: s, itemId: id, name: pack.items[id].name, thumb: thumbFor(s, id), owned });
-    }
-  }
+  const picks = [...balconyPicks(balcony), ...gardenPicks(garden)];
 
   return (
     <View>
@@ -73,7 +107,7 @@ export function GrowPlantsTab({ selected, onPick }: { selected: PlantPick | null
               accessibilityState={{ selected: on }}
               style={[styles.tile, { backgroundColor: colors.surfaceRaised, borderColor: on ? colors.primary : colors.border }, on && shadow.level2]}
             >
-              <View style={styles.thumb}>{p.thumb && <Image source={p.thumb} style={styles.img} resizeMode="cover" />}</View>
+              <View style={styles.thumb}>{p.thumb && <Image source={p.thumb} style={styles.img} resizeMode={p.space === 'garden' ? 'contain' : 'cover'} />}</View>
               <AppText variant="caption" numberOfLines={1} style={styles.name}>
                 {p.name}
               </AppText>

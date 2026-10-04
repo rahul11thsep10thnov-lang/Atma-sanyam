@@ -42,15 +42,20 @@ Design choices:
 ├── metro.config.js       Keeps Metro out of backend/ and admin/
 ├── assets/               Icons, splash, notification icon, art pack, wallpaper
 └── src/
-    ├── components/       PuzzleGrid, DialTimerPicker, AppGate, ErrorBoundary, …
+    ├── collection/       Framed jigsaws: six sizes, artwork records, the phone photo picker
+    ├── components/       PuzzleGrid, DialTimerPicker, AppGate, ErrorBoundary, session sheets, …
     ├── config/env.ts     Public build-time config (EXPO_PUBLIC_*)
     ├── content/          Library: api (real API or offline mock), disk cache, hooks, UI
     ├── context/          Settings, RemoteConfig, Auth
+    ├── garden/           The 3D garden: model, sprite pack, three.js scene, tab
+    ├── gl/               three.js on expo-gl: renderer hook, texture loading
     ├── hooks/            useFocusTimer
-    ├── navigation/       Tabs + stack (ActiveSession, ContentBrowser, Auth)
+    ├── museum/           The ring gallery: model, curated store, three.js scene, tab
+    ├── navigation/       Tabs (Home, Balcony, Garden, Museum, Progress, Settings) + stack (ActiveSession, ContentBrowser, Auth)
     ├── notifications/    Safe expo-notifications wrapper (Expo Go-proof)
     ├── screens/          Home, ActiveSession, History, Settings, ContentBrowser, Auth
     ├── services/         apiClient, analytics, device/push, secure storage, install id
+    ├── spaces/           The photographed balcony, the shared store catalogue, coins, the focus engine
     ├── storage/          Local history + settings (AsyncStorage)
     └── theme/, types/, utils/, data/
 

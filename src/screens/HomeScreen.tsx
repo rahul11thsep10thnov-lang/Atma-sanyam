@@ -1,6 +1,7 @@
-// Home (PHASE 7): entering a personal world, not a dashboard. Greeting →
-// the person's spaces, alive → what to focus on (a plant to grow, or a
-// jigsaw picture) → the dial and one tactile Start.
+// Home: entering a personal world, not a dashboard. A handwritten
+// greeting → what to focus on (a plant to grow, or a jigsaw to reveal;
+// the spaces themselves live in their own tabs) → the dial and one
+// tactile Start.
 import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Animated, ScrollView, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -9,27 +10,24 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRemoteConfig } from '../context/RemoteConfigContext';
 import { useAuth } from '../context/AuthContext';
 import { track } from '../services/analytics';
-import { gridForDuration } from '../utils/grid';
+import { gridForSession } from '../collection/model';
 import { DialTimerPicker } from '../components/DialTimerPicker';
 import { AnimatedWallpaper } from '../components/AnimatedWallpaper';
 import { Greeting } from '../components/home/Greeting';
-import { SpacesHero } from '../components/home/SpacesHero';
 import { GrowPlantsTab, PlantPick } from '../components/home/GrowPlantsTab';
-import { JigsawPicturesTab } from '../components/home/JigsawPicturesTab';
+import { JigsawPicturesTab, JigsawPick } from '../components/home/JigsawPicturesTab';
 import { Button } from '../ui/Button';
 import { AppText } from '../ui/AppText';
 import { Card } from '../ui/Card';
-import { SegmentedControl } from '../ui/SegmentedControl';
+import { ModeChips } from '../ui/ModeChips';
 import { useTabBarInset } from '../ui/TabBar';
 import { space } from '../theme/spacing';
 import { useReducedMotion } from '../hooks/useReducedMotion';
-import { ImageRef, RemoteImageRef, SessionConfig } from '../types';
-import { RootStackParamList, RootTabParamList } from '../navigation/types';
-import { SpaceId } from '../spaces/packTypes';
+import { ImageRef, SessionConfig } from '../types';
+import { RootStackParamList } from '../navigation/types';
 import { t, useLanguage } from '../i18n';
 
 type Mode = 'plants' | 'jigsaw';
-const TAB: Record<SpaceId, keyof RootTabParamList> = { balcony: 'History', garden: 'Garden', room: 'Room' };
 
 export function HomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -42,7 +40,7 @@ export function HomeScreen() {
   const [duration, setDuration] = useState(30);
   const [mode, setMode] = useState<Mode>('plants');
   const [plant, setPlant] = useState<PlantPick | null>({ space: 'balcony', itemId: null, name: '' });
-  const [picture, setPicture] = useState<RemoteImageRef | null>(null);
+  const [picture, setPicture] = useState<JigsawPick | null>(null);
 
   // The Start button breathes, very slowly, so it reads as alive — not as a
   // notification. Still under reduced motion.
@@ -81,7 +79,7 @@ export function HomeScreen() {
       Alert.alert(t('home.pickPicture'), t('home.pickPictureBody'));
       return;
     }
-    const session: SessionConfig = { durationMinutes: duration, image, grid: gridForDuration(duration) };
+    const session: SessionConfig = { durationMinutes: duration, image, grid: gridForSession(duration) };
     if (image.kind === 'remote') track('content_view', { contentId: image.imageId });
     navigation.navigate('ActiveSession', { config: session });
   };
@@ -99,16 +97,14 @@ export function HomeScreen() {
 
         <Greeting name={user?.displayName} />
 
-        <SpacesHero onOpen={(s) => navigation.navigate('Tabs', { screen: TAB[s] })} />
-
         <View style={styles.modeSection}>
-          <SegmentedControl<Mode>
+          <ModeChips<Mode>
             value={mode}
             onChange={setMode}
             accessibilityLabel="What to focus on"
-            segments={[
+            chips={[
               { value: 'plants', label: t('home.growPlants') },
-              { value: 'jigsaw', label: t('home.jigsawPictures') },
+              { value: 'jigsaw', label: t('home.revealJigsaws') },
             ]}
           />
           <View style={styles.modeBody}>
@@ -137,7 +133,7 @@ export function HomeScreen() {
 const styles = StyleSheet.create({
   screen: { flex: 1 },
   announcement: { marginBottom: space.lg },
-  modeSection: { marginTop: space.xxl },
+  modeSection: { marginTop: space.xl },
   modeBody: { marginTop: space.lg },
   timerSection: { alignItems: 'center', marginTop: space.xxl },
   startWrap: { alignSelf: 'stretch', marginTop: space.xxl },

@@ -5,14 +5,15 @@ import { StyleSheet, View } from 'react-native';
 import { SpaceId } from '../packTypes';
 import { SpaceScene } from '../scene/SpaceScene';
 import { resolveState } from '../states';
-import { useArt, useRackCount, useSpace } from '../useSpaces';
+import { useRackCount, useSpace } from '../useSpaces';
+import { useCollection } from '../../collection/repository';
 
-const FOCUS: Record<SpaceId, [number, number]> = { balcony: [0.58, 0.64], garden: [0.5, 0.6], room: [0.5, 0.56] };
+const FOCUS: Record<SpaceId, [number, number]> = { balcony: [0.58, 0.64], garden: [0.5, 0.6] };
 
 export function SpaceSession({ space, elapsedMinutes }: { space: SpaceId; elapsedMinutes: number }) {
   const [state] = useSpace(space);
-  const [art] = useArt();
-  const rack = useRackCount([space]);
+  const [art] = useCollection();
+  const rack = useRackCount();
   // growth already earned before this session began; the session adds to it
   const base = useRef<number | null>(null);
   if (state && base.current === null) base.current = state.focus.minutes;

@@ -1,10 +1,12 @@
-// Screens read a space, the art wall and the coin balance through these
+// Screens read a space, the collection and the coin balance through these
 // hooks, so a change in one place shows up everywhere without a reload.
 import { useCallback, useEffect, useState } from 'react';
 import { SpaceId } from './packTypes';
-import { ArtState, SpaceState } from './model';
-import { loadArt, loadSpace, rackCount, saveArt, saveSpace, subscribeArt, subscribeSpace } from './repository';
+import { SpaceState } from './model';
+import { loadSpace, saveSpace, subscribeSpace } from './repository';
 import { loadRewards, RewardState, saveRewards } from './rewards';
+import { counts } from '../collection/model';
+import { loadCollection, subscribeCollection } from '../collection/repository';
 
 export function useSpace(space: SpaceId): [SpaceState | null, (next: SpaceState) => void] {
   const [state, setState] = useState<SpaceState | null>(null);
@@ -25,24 +27,6 @@ export function useSpace(space: SpaceId): [SpaceState | null, (next: SpaceState)
   return [state, save];
 }
 
-export function useArt(): [ArtState | null, (next: ArtState) => void] {
-  const [art, setArt] = useState<ArtState | null>(null);
-  useEffect(() => {
-    let alive = true;
-    loadArt().then((a) => alive && setArt(a));
-    const unsub = subscribeArt((a) => alive && setArt(a));
-    return () => {
-      alive = false;
-      unsub();
-    };
-  }, []);
-  const save = useCallback((next: ArtState) => {
-    setArt(next);
-    void saveArt(next);
-  }, []);
-  return [art, save];
-}
-
 export function useRewards(refreshKey?: unknown): [RewardState | null, (next: RewardState) => Promise<void>] {
   const [rewards, setRewards] = useState<RewardState | null>(null);
   useEffect(() => {
@@ -60,19 +44,16 @@ export function useRewards(refreshKey?: unknown): [RewardState | null, (next: Re
 }
 
 /** Finished artworks hanging nowhere: what leans on the garden's rack. */
-export function useRackCount(deps: unknown[]): number {
+export function useRackCount(): number {
   const [n, setN] = useState(0);
   useEffect(() => {
     let alive = true;
-    rackCount().then((c) => alive && setN(c));
-    const unsubA = subscribeArt(() => rackCount().then((c) => alive && setN(c)));
-    const unsubS = subscribeSpace(() => rackCount().then((c) => alive && setN(c)));
+    loadCollection().then((c) => alive && setN(counts(c).stored));
+    const unsub = subscribeCollection((c) => alive && setN(counts(c).stored));
     return () => {
       alive = false;
-      unsubA();
-      unsubS();
+      unsub();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
+  }, []);
   return n;
 }

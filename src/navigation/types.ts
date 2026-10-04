@@ -5,7 +5,7 @@ export type RootTabParamList = {
   Home: undefined;
   History: undefined; // the Balcony tab (route name kept for saved navigation state)
   Garden: undefined;
-  Room: undefined;
+  Museum: undefined;
   Progress: undefined;
   Settings: undefined;
 };

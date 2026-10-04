@@ -1,14 +1,12 @@
-// The three rendered packs and their images, by space id.
+// The rendered packs and their images, by space id.
 import { ImageSourcePropType } from 'react-native';
 import { SpaceId, SpacePack } from '../packTypes';
 import * as balcony from './balcony.generated';
 import * as garden from './garden.generated';
-import * as room from './room.generated';
 
 const PACKS: Record<SpaceId, { pack: SpacePack; images: Record<string, number> }> = {
   balcony: { pack: balcony.PACK, images: balcony.IMAGES },
   garden: { pack: garden.PACK, images: garden.IMAGES },
-  room: { pack: room.PACK, images: room.IMAGES },
 };
 
 export function packFor(space: SpaceId): SpacePack {

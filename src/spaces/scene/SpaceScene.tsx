@@ -9,11 +9,9 @@ import { Animated, Easing, Image, LayoutChangeEvent, StyleProp, StyleSheet, View
 import { LightState, Rect, SpaceId, Variant } from '../packTypes';
 import { img, hasImg, packFor } from '../packs';
 import { SpaceState, drawOrder, focusVariant, PlacedItem } from '../model';
-import { ARTWORKS, PUZZLE_COLS, PUZZLE_ROWS } from '../catalog';
-import { ArtState } from '../model';
+import { CollectionState, artworkImage, findArtwork } from '../../collection/model';
 import { sourceState, isDark } from '../states';
 import { useParallax } from './useParallax';
-import { JigsawArt } from './JigsawArt';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 export interface SceneGeometry {
@@ -26,7 +24,7 @@ export interface SceneGeometry {
 interface Props {
   space: SpaceId;
   state: SpaceState;
-  art?: ArtState | null;
+  art?: CollectionState | null;
   light: LightState;
   /** Finished artworks hanging nowhere (the garden's rack). */
   rackCount?: number;
@@ -286,37 +284,24 @@ function Rain({ space, rain, width, height }: { space: SpaceId; rain: { file: st
   );
 }
 
-/** What hangs in a frame: the artwork hung there, or the jigsaw in progress
- * on an empty frame; then the scene's light as a veil over it. */
-function ArtContent({ space, p, v, art, source, s }: { space: SpaceId; p: PlacedItem; v: Variant; art: ArtState | null; source: LightState; s: number }) {
+/** What hangs in a frame: the artwork hung there, then the scene's light
+ * as a veil over it. An empty frame shows nothing. */
+function ArtContent({ space, p, v, art, source, s }: { space: SpaceId; p: PlacedItem; v: Variant; art: CollectionState | null; source: LightState; s: number }) {
   const q = v.artQuad!;
   const xs = q.map((c) => c[0]);
   const ys = q.map((c) => c[1]);
   const rect: Rect = [Math.min(...xs), Math.min(...ys), Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)];
-  const hung = ARTWORKS.find((a) => a.id === p.artId);
-  const current = art?.currentId ? ARTWORKS.find((a) => a.id === art.currentId) : null;
+  const hung = findArtwork(art ?? null, p.artId);
+  if (!hung) return null;
   const style = place(rect, s);
   const shadeLayer = v.artShade?.[source] ?? v.artShade?.morning;
   const shade = shadeLayer && hasImg(space, shadeLayer.file) ? <Image source={img(space, shadeLayer.file)} style={place(shadeLayer.rect, s)} /> : null;
-  if (hung) {
-    return (
-      <>
-        <Image source={hung.image} style={style} resizeMode="cover" />
-        {shade}
-      </>
-    );
-  }
-  if (!p.artId && current && art && art.pieces > 0) {
-    return (
-      <>
-        <View style={style}>
-          <JigsawArt artId={current.id} image={current.image} width={rect[2] * s} height={rect[3] * s} rows={PUZZLE_ROWS} cols={PUZZLE_COLS} revealed={art.pieces} seams={false} />
-        </View>
-        {shade}
-      </>
-    );
-  }
-  return null;
+  return (
+    <>
+      <Image source={artworkImage(hung)} style={style} resizeMode="cover" />
+      {shade}
+    </>
+  );
 }
 
 const styles = StyleSheet.create({

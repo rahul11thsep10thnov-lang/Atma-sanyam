@@ -17,7 +17,7 @@ accent, 10% highlight.
 |---|---|
 | `palette.ts` | Raw pigments (cream, peach, terracotta, saffron, moss, night…). Not imported by screens. |
 | `colors.ts` | Semantic roles for **Golden Morning** (`lightColors`) and **Night Balcony** (`darkColors`): surfaces, ink, brand, status, lines, icons, puzzle covers. Status colours are reserved for status. The legacy `colors` / `typography` / `spacing` exports keep older code compiling and already use the new palette. |
-| `typography.ts` | Manrope 400/500/600/700 (one UI family). Scale: display 36, headingLarge 28, heading 22, subheading 17, body 15, bodySmall 13, caption 12, overline 11, button 16, timer 72 tabular. Set `fontFamily`, never `fontWeight`. |
+| `typography.ts` | Manrope 400/500/600/700 (the UI family). Scale: display 36, headingLarge 28, heading 22, subheading 17, body 15, bodySmall 13, caption 12, overline 11, button 16, timer 72 tabular. Set `fontFamily`, never `fontWeight`. Two display faces live outside the scale: **Caveat 700** for the home greeting only (`Greeting.tsx`) and **Bebas Neue** for the two mode chips only (`ModeChips.tsx`). |
 | `spacing.ts` | 4-pt scale (`space.xs`…`space.massive`), `space.screen` = 20, `space.card` = 16, touch target 48. |
 | `radii.ts` | sm 12 · md 16 · lg 22 · xl 28 · hero 32 · pill. |
 | `shadows.ts` | Four warm, low-opacity, large-blur levels; `shadowColor` is the bark tone. |
@@ -37,14 +37,15 @@ accent, 10% highlight.
 | `Screen` | Themed background + safe-area padding (+ `bottomInset` for the floating bar). |
 | `FloatingTabBar` / `useTabBarInset` | The rounded, elevated bottom navigation and the inset content needs to stay clear of it. |
 | `SegmentedControl` | Sliding pill selector (sort orders, appearance). |
+| `ModeChips` | Two separate peach chips (`#FBD0AE` on, `#FBE8D9` off), 77 pt tall, Bebas Neue labels in dark ink; the home's Grow plants / Reveal jigsaws choice. |
 | `SettingToggle` / `SettingLink` / `SettingBlock` | Rows inside a settings card. |
 | `TextField` | Label, icon, hint/error, focus ring. |
 
 ## Screens
 
-- **Home** — greeting · my spaces (balcony, garden, room composited live) · Grow plants / Jigsaw pictures · dial · one breathing Start.
-- **Session** — picture reveals tile by tile; FOCUS chip, hairline progress, one close; Manrope timer with glow; result sheet (bloom + sprout / calm pause).
-- **Balcony · Garden · Room** — the photographic spaces (`src/spaces/`, see `docs/SPACES.md`): the picture fills the screen; one smoked-glass dock (Focus · Customize · Store · Inventory · Gallery) floats above the tab bar; tapping the picture hides every control, the tab bar included. Placement guides exist only in Customize. The garden and room carry a time-of-day chip. A space focus session shows no controls but the timer and close.
+- **Home** — handwritten greeting · Grow plants / Reveal jigsaws chips · dial · one breathing Start. The spaces live in their tabs, not on Home.
+- **Session** — picture reveals tile by tile (the grid is the jigsaw's size); FOCUS chip, hairline progress, one close; Manrope timer with glow; result sheet (bloom + sprout / calm pause), then the placement sheet when something was earned.
+- **Balcony · Garden · Museum** — the places (`docs/SPACES.md`): the scene fills the screen; one smoked-glass dock floats above the tab bar (Focus · Customize · Store · Inventory · Gallery; the museum's is Collection · Edit · Store · Settings · Exit); tapping the scene hides every control, the tab bar included. Guides exist only in Customize. The garden carries a time-of-day chip, the museum a section chip with arrows. A focus session shows no controls but the timer and close.
 - **Progress** — stat tiles, seven-day bars (single series, direct labels, no grid), session pictures, planted empty state.
 - **Settings** — grouped iconed cards, appearance control, calm destructive actions.
 - **Library** — search, breadcrumbs, collection chips, sort control, cached grid.

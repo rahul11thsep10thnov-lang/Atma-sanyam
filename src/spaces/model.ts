@@ -2,7 +2,7 @@
 // functions over plain records; the screens and the focus engine call these.
 import { LightState, PackItem, SpaceId, SpacePack, Stage, Variant } from './packTypes';
 import { packFor } from './packs';
-import { ARTWORKS, MINUTES_PER_PIECE, PUZZLE_PIECES, STORE } from './catalog';
+import { STORE } from './catalog';
 
 export interface PlacedItem {
   uid: string;
@@ -58,7 +58,6 @@ const uid = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice
 const STARTERS: Record<SpaceId, [string, string][]> = {
   balcony: [['cane_lounge_chair', 'seating'], ['teak_coffee_table', 'table'], ['snake_plant', 'rail_mid']],
   garden: [['garden_bench', 'seat'], ['marigold', 'bed_r'], ['brass_lantern', 'path_near'], ['dustbin', 'house_r'], ['image_rack', 'house_l']],
-  room: [['bedside_table', 'bedside'], ['table_lamp', 'bedside_top'], ['side_chair', 'chair'], ['small_table', 'table']],
 };
 
 export function initialState(space: SpaceId): SpaceState {
@@ -306,33 +305,6 @@ export function drawOrder(state: SpaceState, rackCount = 0): { p: PlacedItem; v:
 }
 
 // ---- the art wall (shared) --------------------------------------------------------
-
-export function nextArtwork(art: ArtState): string | null {
-  const taken = new Set([...art.completed, ...art.binned, ...(art.currentId ? [art.currentId] : [])]);
-  return ARTWORKS.find((a) => !taken.has(a.id))?.id ?? null;
-}
-
-export function addArtMinutes(art: ArtState, minutes: number): { art: ArtState; newPieces: number; finished: boolean } {
-  if (!art.currentId) return { art, newPieces: 0, finished: false };
-  const before = art.pieces;
-  const pieces = Math.min(PUZZLE_PIECES, before + Math.floor(minutes / MINUTES_PER_PIECE));
-  const finished = pieces >= PUZZLE_PIECES && before < PUZZLE_PIECES;
-  return { art: { ...art, pieces }, newPieces: pieces - before, finished };
-}
-
-/** The finished jigsaw becomes a framed artwork; it waits in the rack
- * until hung. The next artwork begins. */
-export function completeCurrent(art: ArtState): ArtState {
-  if (!art.currentId || art.pieces < PUZZLE_PIECES) return art;
-  const next: ArtState = { ...art, completed: [...art.completed, art.currentId], currentId: null, pieces: 0, seen: 0 };
-  next.currentId = nextArtwork(next);
-  return next;
-}
-
-export function binArtwork(art: ArtState, artId: string): ArtState {
-  if (!art.completed.includes(artId)) return art;
-  return { ...art, completed: art.completed.filter((a) => a !== artId), binned: [...art.binned, artId] };
-}
 
 /** Hang a finished artwork in a frame slot of this space (adds the frame). */
 export function hangArtwork(state: SpaceState, artId: string, slot?: string): SpaceState {

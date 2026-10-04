@@ -1,7 +1,7 @@
 // Shape of a rendered space pack (tools/balcony-render/gen_space_pack.py →
 // packs/<space>.generated.ts). All coordinates are pixels in the plate.
 
-export type SpaceId = 'balcony' | 'garden' | 'room';
+export type SpaceId = 'balcony' | 'garden';
 export type LightState = 'morning' | 'afternoon' | 'sunset' | 'evening' | 'night' | 'rain';
 export const LIGHT_STATES: LightState[] = ['morning', 'afternoon', 'sunset', 'evening', 'night', 'rain'];
 

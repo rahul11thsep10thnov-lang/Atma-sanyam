@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts, Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold } from '@expo-google-fonts/manrope';
+import { Caveat_700Bold } from '@expo-google-fonts/caveat';
+import { BebasNeue_400Regular } from '@expo-google-fonts/bebas-neue';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootNavigator } from './src/navigation/RootNavigator';
@@ -47,7 +49,7 @@ function ThemedStatusBar() {
 }
 
 export default function App() {
-  const [fontsLoaded, fontError] = useFonts({ Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold });
+  const [fontsLoaded, fontError] = useFonts({ Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold, Caveat_700Bold, BebasNeue_400Regular });
   const ready = fontsLoaded || !!fontError;
   useEffect(() => {
     if (ready) SplashScreen.hideAsync().catch(() => undefined);

@@ -39,7 +39,7 @@ export function thumbFor(space: SpaceId, itemId: string) {
   return f && hasImg(space, f.file) ? img(space, f.file) : null;
 }
 
-const SPACE_LABEL: Record<SpaceId, string> = { balcony: 'Balcony', garden: 'Garden', room: 'Room' };
+const SPACE_LABEL: Record<SpaceId, string> = { balcony: 'Balcony', garden: 'Garden' };
 
 export function StoreSheet({ visible, space, state, rewards, onClose, onState, onRewards, onToast }: Props) {
   const { colors } = useTheme();
