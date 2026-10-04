@@ -2338,8 +2338,2322 @@
      }
     }
    ]
+  },
+  "dahlia": {
+   "name": "Dahlia",
+   "category": "PLANTS",
+   "growable": true,
+   "stages": [
+    {
+     "id": "seed",
+     "minutes": 0,
+     "healthy": {
+      "file": "sprites/dahlia__seed.webp",
+      "px": [
+       727,
+       980
+      ],
+      "widthM": 0.3443,
+      "heightM": 0.4641,
+      "pivot": [
+       0.5007,
+       0.887
+      ],
+      "boxM": [
+       0.4,
+       0.4,
+       0.496
+      ]
+     }
+    },
+    {
+     "id": "sprout",
+     "minutes": 25,
+     "healthy": {
+      "file": "sprites/dahlia__sprout.webp",
+      "px": [
+       754,
+       992
+      ],
+      "widthM": 0.284,
+      "heightM": 0.3737,
+      "pivot": [
+       0.5,
+       0.8783
+      ],
+      "boxM": [
+       0.348,
+       0.348,
+       0.426
+      ]
+     },
+     "wilted": {
+      "file": "sprites/dahlia__sprout__wilted.webp",
+      "px": [
+       754,
+       992
+      ],
+      "widthM": 0.284,
+      "heightM": 0.3737,
+      "pivot": [
+       0.5,
+       0.8783
+      ],
+      "boxM": [
+       0.348,
+       0.348,
+       0.426
+      ]
+     }
+    },
+    {
+     "id": "young",
+     "minutes": 60,
+     "healthy": {
+      "file": "sprites/dahlia__young.webp",
+      "px": [
+       814,
+       961
+      ],
+      "widthM": 0.2746,
+      "heightM": 0.3242,
+      "pivot": [
+       0.5,
+       0.8743
+      ],
+      "boxM": [
+       0.348,
+       0.348,
+       0.398
+      ]
+     },
+     "wilted": {
+      "file": "sprites/dahlia__young__wilted.webp",
+      "px": [
+       1106,
+       963
+      ],
+      "widthM": 0.229,
+      "heightM": 0.1994,
+      "pivot": [
+       0.5005,
+       0.8642
+      ],
+      "boxM": [
+       0.348,
+       0.348,
+       0.296
+      ]
+     }
+    },
+    {
+     "id": "mature",
+     "minutes": 120,
+     "healthy": {
+      "file": "sprites/dahlia__mature.webp",
+      "px": [
+       735,
+       945
+      ],
+      "widthM": 0.3846,
+      "heightM": 0.4945,
+      "pivot": [
+       0.4987,
+       0.8911
+      ],
+      "boxM": [
+       0.393,
+       0.427,
+       0.535
+      ]
+     },
+     "wilted": {
+      "file": "sprites/dahlia__mature__wilted.webp",
+      "px": [
+       900,
+       940
+      ],
+      "widthM": 0.3451,
+      "heightM": 0.3604,
+      "pivot": [
+       0.4968,
+       0.8706
+      ],
+      "boxM": [
+       0.392,
+       0.426,
+       0.423
+      ]
+     }
+    },
+    {
+     "id": "flowering",
+     "minutes": 240,
+     "healthy": {
+      "file": "sprites/dahlia__flowering.webp",
+      "px": [
+       726,
+       929
+      ],
+      "widthM": 0.506,
+      "heightM": 0.6475,
+      "pivot": [
+       0.5017,
+       0.9116
+      ],
+      "boxM": [
+       0.488,
+       0.495,
+       0.66
+      ]
+     },
+     "wilted": {
+      "file": "sprites/dahlia__flowering__wilted.webp",
+      "px": [
+       920,
+       975
+      ],
+      "widthM": 0.4351,
+      "heightM": 0.4611,
+      "pivot": [
+       0.4967,
+       0.8869
+      ],
+      "boxM": [
+       0.461,
+       0.501,
+       0.487
+      ]
+     }
+    }
+   ]
+  },
+  "chrysanthemum": {
+   "name": "Chrysanthemum",
+   "category": "PLANTS",
+   "growable": true,
+   "stages": [
+    {
+     "id": "seed",
+     "minutes": 0,
+     "healthy": {
+      "file": "sprites/chrysanthemum__seed.webp",
+      "px": [
+       766,
+       979
+      ],
+      "widthM": 0.3329,
+      "heightM": 0.4254,
+      "pivot": [
+       0.5,
+       0.8889
+      ],
+      "boxM": [
+       0.4,
+       0.4,
+       0.468
+      ]
+     }
+    },
+    {
+     "id": "sprout",
+     "minutes": 25,
+     "healthy": {
+      "file": "sprites/chrysanthemum__sprout.webp",
+      "px": [
+       756,
+       993
+      ],
+      "widthM": 0.2553,
+      "heightM": 0.3353,
+      "pivot": [
+       0.5,
+       0.8784
+      ],
+      "boxM": [
+       0.328,
+       0.328,
+       0.398
+      ]
+     },
+     "wilted": {
+      "file": "sprites/chrysanthemum__sprout__wilted.webp",
+      "px": [
+       756,
+       993
+      ],
+      "widthM": 0.2553,
+      "heightM": 0.3353,
+      "pivot": [
+       0.5,
+       0.8784
+      ],
+      "boxM": [
+       0.328,
+       0.328,
+       0.398
+      ]
+     }
+    },
+    {
+     "id": "young",
+     "minutes": 60,
+     "healthy": {
+      "file": "sprites/chrysanthemum__young.webp",
+      "px": [
+       1178,
+       966
+      ],
+      "widthM": 0.1869,
+      "heightM": 0.1532,
+      "pivot": [
+       0.5,
+       0.8646
+      ],
+      "boxM": [
+       0.328,
+       0.328,
+       0.262
+      ]
+     },
+     "wilted": {
+      "file": "sprites/chrysanthemum__young__wilted.webp",
+      "px": [
+       1663,
+       1000
+      ],
+      "widthM": 0.1118,
+      "heightM": 0.0672,
+      "pivot": [
+       0.4997,
+       0.8195
+      ],
+      "boxM": [
+       0.328,
+       0.328,
+       0.172
+      ]
+     }
+    },
+    {
+     "id": "mature",
+     "minutes": 120,
+     "healthy": {
+      "file": "sprites/chrysanthemum__mature.webp",
+      "px": [
+       1202,
+       959
+      ],
+      "widthM": 0.3248,
+      "heightM": 0.2592,
+      "pivot": [
+       0.4866,
+       0.8618
+      ],
+      "boxM": [
+       0.421,
+       0.366,
+       0.34
+      ]
+     },
+     "wilted": {
+      "file": "sprites/chrysanthemum__mature__wilted.webp",
+      "px": [
+       1691,
+       993
+      ],
+      "widthM": 0.2213,
+      "heightM": 0.13,
+      "pivot": [
+       0.4705,
+       0.8661
+      ],
+      "boxM": [
+       0.422,
+       0.364,
+       0.242
+      ]
+     }
+    },
+    {
+     "id": "flowering",
+     "minutes": 240,
+     "healthy": {
+      "file": "sprites/chrysanthemum__flowering.webp",
+      "px": [
+       959,
+       967
+      ],
+      "widthM": 0.374,
+      "heightM": 0.3771,
+      "pivot": [
+       0.5226,
+       0.882
+      ],
+      "boxM": [
+       0.494,
+       0.496,
+       0.42
+      ]
+     },
+     "wilted": {
+      "file": "sprites/chrysanthemum__flowering__wilted.webp",
+      "px": [
+       1484,
+       936
+      ],
+      "widthM": 0.3531,
+      "heightM": 0.2227,
+      "pivot": [
+       0.4733,
+       0.8333
+      ],
+      "boxM": [
+       0.491,
+       0.465,
+       0.311
+      ]
+     }
+    }
+   ]
+  },
+  "petunia": {
+   "name": "Petunia",
+   "category": "PLANTS",
+   "growable": true,
+   "stages": [
+    {
+     "id": "seed",
+     "minutes": 0,
+     "healthy": {
+      "file": "sprites/petunia__seed.webp",
+      "px": [
+       794,
+       992
+      ],
+      "widthM": 0.3255,
+      "heightM": 0.4066,
+      "pivot": [
+       0.5,
+       0.8783
+      ],
+      "boxM": [
+       0.4,
+       0.4,
+       0.45
+      ]
+     }
+    },
+    {
+     "id": "sprout",
+     "minutes": 25,
+     "healthy": {
+      "file": "sprites/petunia__sprout.webp",
+      "px": [
+       815,
+       994
+      ],
+      "widthM": 0.2551,
+      "heightM": 0.3111,
+      "pivot": [
+       0.5006,
+       0.8785
+      ],
+      "boxM": [
+       0.34,
+       0.34,
+       0.38
+      ]
+     },
+     "wilted": {
+      "file": "sprites/petunia__sprout__wilted.webp",
+      "px": [
+       815,
+       994
+      ],
+      "widthM": 0.2551,
+      "heightM": 0.3111,
+      "pivot": [
+       0.5006,
+       0.8785
+      ],
+      "boxM": [
+       0.34,
+       0.34,
+       0.38
+      ]
+     }
+    },
+    {
+     "id": "young",
+     "minutes": 60,
+     "healthy": {
+      "file": "sprites/petunia__young.webp",
+      "px": [
+       1656,
+       1005
+      ],
+      "widthM": 0.1198,
+      "heightM": 0.0727,
+      "pivot": [
+       0.5,
+       0.8698
+      ],
+      "boxM": [
+       0.34,
+       0.34,
+       0.201
+      ]
+     },
+     "wilted": {
+      "file": "sprites/petunia__young__wilted.webp",
+      "px": [
+       1707,
+       972
+      ],
+      "widthM": 0.1099,
+      "heightM": 0.0626,
+      "pivot": [
+       0.5,
+       0.773
+      ],
+      "boxM": [
+       0.34,
+       0.34,
+       0.15
+      ]
+     }
+    },
+    {
+     "id": "mature",
+     "minutes": 120,
+     "healthy": {
+      "file": "sprites/petunia__mature.webp",
+      "px": [
+       1300,
+       982
+      ],
+      "widthM": 0.2336,
+      "heightM": 0.1764,
+      "pivot": [
+       0.5393,
+       0.8266
+      ],
+      "boxM": [
+       0.367,
+       0.389,
+       0.269
+      ]
+     },
+     "wilted": {
+      "file": "sprites/petunia__mature__wilted.webp",
+      "px": [
+       1757,
+       950
+      ],
+      "widthM": 0.1455,
+      "heightM": 0.0787,
+      "pivot": [
+       0.5287,
+       0.7545
+      ],
+      "boxM": [
+       0.373,
+       0.401,
+       0.178
+      ]
+     }
+    },
+    {
+     "id": "flowering",
+     "minutes": 240,
+     "healthy": {
+      "file": "sprites/petunia__flowering.webp",
+      "px": [
+       1524,
+       995
+      ],
+      "widthM": 0.3395,
+      "heightM": 0.2216,
+      "pivot": [
+       0.4616,
+       0.8696
+      ],
+      "boxM": [
+       0.475,
+       0.524,
+       0.307
+      ]
+     },
+     "wilted": {
+      "file": "sprites/petunia__flowering__wilted.webp",
+      "px": [
+       2173,
+       1005
+      ],
+      "widthM": 0.1903,
+      "heightM": 0.088,
+      "pivot": [
+       0.5237,
+       0.7974
+      ],
+      "boxM": [
+       0.489,
+       0.465,
+       0.2
+      ]
+     }
+    }
+   ]
+  },
+  "zinnia": {
+   "name": "Zinnia",
+   "category": "PLANTS",
+   "growable": true,
+   "stages": [
+    {
+     "id": "seed",
+     "minutes": 0,
+     "healthy": {
+      "file": "sprites/zinnia__seed.webp",
+      "px": [
+       967,
+       982
+      ],
+      "widthM": 0.2743,
+      "heightM": 0.2785,
+      "pivot": [
+       0.5,
+       0.8668
+      ],
+      "boxM": [
+       0.4,
+       0.4,
+       0.35
+      ]
+     }
+    },
+    {
+     "id": "sprout",
+     "minutes": 25,
+     "healthy": {
+      "file": "sprites/zinnia__sprout.webp",
+      "px": [
+       969,
+       987
+      ],
+      "widthM": 0.1786,
+      "heightM": 0.182,
+      "pivot": [
+       0.5,
+       0.8675
+      ],
+      "boxM": [
+       0.32,
+       0.32,
+       0.28
+      ]
+     },
+     "wilted": {
+      "file": "sprites/zinnia__sprout__wilted.webp",
+      "px": [
+       969,
+       987
+      ],
+      "widthM": 0.1786,
+      "heightM": 0.182,
+      "pivot": [
+       0.5,
+       0.8675
+      ],
+      "boxM": [
+       0.32,
+       0.32,
+       0.28
+      ]
+     }
+    },
+    {
+     "id": "young",
+     "minutes": 60,
+     "healthy": {
+      "file": "sprites/zinnia__young.webp",
+      "px": [
+       843,
+       925
+      ],
+      "widthM": 0.1378,
+      "heightM": 0.1512,
+      "pivot": [
+       0.5819,
+       0.8903
+      ],
+      "boxM": [
+       0.242,
+       0.304,
+       0.266
+      ]
+     },
+     "wilted": {
+      "file": "sprites/zinnia__young__wilted.webp",
+      "px": [
+       1252,
+       882
+      ],
+      "widthM": 0.0796,
+      "heightM": 0.0561,
+      "pivot": [
+       0.5062,
+       0.7646
+      ],
+      "boxM": [
+       0.29,
+       0.309,
+       0.165
+      ]
+     }
+    },
+    {
+     "id": "mature",
+     "minutes": 120,
+     "healthy": {
+      "file": "sprites/zinnia__mature.webp",
+      "px": [
+       966,
+       925
+      ],
+      "widthM": 0.3518,
+      "heightM": 0.3369,
+      "pivot": [
+       0.515,
+       0.8971
+      ],
+      "boxM": [
+       0.464,
+       0.477,
+       0.409
+      ]
+     },
+     "wilted": {
+      "file": "sprites/zinnia__mature__wilted.webp",
+      "px": [
+       1269,
+       966
+      ],
+      "widthM": 0.2608,
+      "heightM": 0.1985,
+      "pivot": [
+       0.5227,
+       0.8567
+      ],
+      "boxM": [
+       0.463,
+       0.477,
+       0.297
+      ]
+     }
+    },
+    {
+     "id": "flowering",
+     "minutes": 240,
+     "healthy": {
+      "file": "sprites/zinnia__flowering.webp",
+      "px": [
+       928,
+       901
+      ],
+      "widthM": 0.5094,
+      "heightM": 0.4946,
+      "pivot": [
+       0.5514,
+       0.9086
+      ],
+      "boxM": [
+       0.533,
+       0.563,
+       0.534
+      ]
+     },
+     "wilted": {
+      "file": "sprites/zinnia__flowering__wilted.webp",
+      "px": [
+       1213,
+       966
+      ],
+      "widthM": 0.3632,
+      "heightM": 0.2892,
+      "pivot": [
+       0.5276,
+       0.8579
+      ],
+      "boxM": [
+       0.538,
+       0.559,
+       0.363
+      ]
+     }
+    }
+   ]
+  },
+  "cosmos": {
+   "name": "Cosmos",
+   "category": "PLANTS",
+   "growable": true,
+   "stages": [
+    {
+     "id": "seed",
+     "minutes": 0,
+     "healthy": {
+      "file": "sprites/cosmos__seed.webp",
+      "px": [
+       967,
+       982
+      ],
+      "widthM": 0.2743,
+      "heightM": 0.2785,
+      "pivot": [
+       0.5,
+       0.8668
+      ],
+      "boxM": [
+       0.4,
+       0.4,
+       0.35
+      ],
+      "sway": {
+       "amp": 0.5,
+       "speed": 0.6
+      }
+     }
+    },
+    {
+     "id": "sprout",
+     "minutes": 25,
+     "healthy": {
+      "file": "sprites/cosmos__sprout.webp",
+      "px": [
+       960,
+       987
+      ],
+      "widthM": 0.1801,
+      "heightM": 0.1852,
+      "pivot": [
+       0.5,
+       0.86
+      ],
+      "boxM": [
+       0.32,
+       0.32,
+       0.283
+      ],
+      "sway": {
+       "amp": 0.5,
+       "speed": 0.6
+      }
+     },
+     "wilted": {
+      "file": "sprites/cosmos__sprout__wilted.webp",
+      "px": [
+       910,
+       985
+      ],
+      "widthM": 0.1879,
+      "heightM": 0.2034,
+      "pivot": [
+       0.5,
+       0.8187
+      ],
+      "boxM": [
+       0.32,
+       0.32,
+       0.3
+      ],
+      "sway": {
+       "amp": 0.5,
+       "speed": 0.6
+      }
+     }
+    },
+    {
+     "id": "young",
+     "minutes": 60,
+     "healthy": {
+      "file": "sprites/cosmos__young.webp",
+      "px": [
+       816,
+       915
+      ],
+      "widthM": 0.3031,
+      "heightM": 0.3399,
+      "pivot": [
+       0.5139,
+       0.9444
+      ],
+      "boxM": [
+       0.349,
+       0.27,
+       0.427
+      ],
+      "sway": {
+       "amp": 0.5,
+       "speed": 0.6
+      }
+     },
+     "wilted": {
+      "file": "sprites/cosmos__young__wilted.webp",
+      "px": [
+       1082,
+       966
+      ],
+      "widthM": 0.2485,
+      "heightM": 0.2219,
+      "pivot": [
+       0.5142,
+       0.8609
+      ],
+      "boxM": [
+       0.351,
+       0.289,
+       0.314
+      ],
+      "sway": {
+       "amp": 0.5,
+       "speed": 0.6
+      }
+     }
+    },
+    {
+     "id": "mature",
+     "minutes": 120,
+     "healthy": {
+      "file": "sprites/cosmos__mature.webp",
+      "px": [
+       737,
+       917
+      ],
+      "widthM": 0.5611,
+      "heightM": 0.6982,
+      "pivot": [
+       0.5157,
+       0.9427
+      ],
+      "boxM": [
+       0.558,
+       0.444,
+       0.705
+      ],
+      "sway": {
+       "amp": 0.5,
+       "speed": 0.6
+      }
+     },
+     "wilted": {
+      "file": "sprites/cosmos__mature__wilted.webp",
+      "px": [
+       882,
+       947
+      ],
+      "widthM": 0.5259,
+      "heightM": 0.5646,
+      "pivot": [
+       0.5126,
+       0.8888
+      ],
+      "boxM": [
+       0.558,
+       0.444,
+       0.572
+      ],
+      "sway": {
+       "amp": 0.5,
+       "speed": 0.6
+      }
+     }
+    },
+    {
+     "id": "flowering",
+     "minutes": 240,
+     "healthy": {
+      "file": "sprites/cosmos__flowering.webp",
+      "px": [
+       845,
+       915
+      ],
+      "widthM": 0.7145,
+      "heightM": 0.7737,
+      "pivot": [
+       0.5047,
+       0.9219
+      ],
+      "boxM": [
+       0.694,
+       0.704,
+       0.757
+      ],
+      "sway": {
+       "amp": 0.5,
+       "speed": 0.6
+      }
+     },
+     "wilted": {
+      "file": "sprites/cosmos__flowering__wilted.webp",
+      "px": [
+       888,
+       955
+      ],
+      "widthM": 0.6573,
+      "heightM": 0.7069,
+      "pivot": [
+       0.5123,
+       0.903
+      ],
+      "boxM": [
+       0.663,
+       0.61,
+       0.687
+      ],
+      "sway": {
+       "amp": 0.5,
+       "speed": 0.6
+      }
+     }
+    }
+   ]
+  },
+  "periwinkle": {
+   "name": "Sadabahar",
+   "category": "PLANTS",
+   "growable": true,
+   "stages": [
+    {
+     "id": "seed",
+     "minutes": 0,
+     "healthy": {
+      "file": "sprites/periwinkle__seed.webp",
+      "px": [
+       754,
+       977
+      ],
+      "widthM": 0.3375,
+      "heightM": 0.4373,
+      "pivot": [
+       0.5,
+       0.8907
+      ],
+      "boxM": [
+       0.4,
+       0.4,
+       0.477
+      ]
+     }
+    },
+    {
+     "id": "sprout",
+     "minutes": 25,
+     "healthy": {
+      "file": "sprites/periwinkle__sprout.webp",
+      "px": [
+       740,
+       993
+      ],
+      "widthM": 0.2595,
+      "heightM": 0.3482,
+      "pivot": [
+       0.5,
+       0.8784
+      ],
+      "boxM": [
+       0.328,
+       0.328,
+       0.407
+      ]
+     },
+     "wilted": {
+      "file": "sprites/periwinkle__sprout__wilted.webp",
+      "px": [
+       740,
+       993
+      ],
+      "widthM": 0.2595,
+      "heightM": 0.3482,
+      "pivot": [
+       0.5,
+       0.8784
+      ],
+      "boxM": [
+       0.328,
+       0.328,
+       0.407
+      ]
+     }
+    },
+    {
+     "id": "young",
+     "minutes": 60,
+     "healthy": {
+      "file": "sprites/periwinkle__young.webp",
+      "px": [
+       1234,
+       959
+      ],
+      "widthM": 0.1806,
+      "heightM": 0.1403,
+      "pivot": [
+       0.5004,
+       0.8636
+      ],
+      "boxM": [
+       0.328,
+       0.328,
+       0.253
+      ]
+     },
+     "wilted": {
+      "file": "sprites/periwinkle__young__wilted.webp",
+      "px": [
+       1673,
+       1022
+      ],
+      "widthM": 0.1142,
+      "heightM": 0.0698,
+      "pivot": [
+       0.4997,
+       0.8372
+      ],
+      "boxM": [
+       0.328,
+       0.328,
+       0.18
+      ]
+     }
+    },
+    {
+     "id": "mature",
+     "minutes": 120,
+     "healthy": {
+      "file": "sprites/periwinkle__mature.webp",
+      "px": [
+       899,
+       986
+      ],
+      "widthM": 0.2665,
+      "heightM": 0.2923,
+      "pivot": [
+       0.5378,
+       0.8743
+      ],
+      "boxM": [
+       0.343,
+       0.339,
+       0.361
+      ]
+     },
+     "wilted": {
+      "file": "sprites/periwinkle__mature__wilted.webp",
+      "px": [
+       1265,
+       1003
+      ],
+      "widthM": 0.2029,
+      "heightM": 0.1609,
+      "pivot": [
+       0.5296,
+       0.8781
+      ],
+      "boxM": [
+       0.344,
+       0.338,
+       0.265
+      ]
+     }
+    },
+    {
+     "id": "flowering",
+     "minutes": 240,
+     "healthy": {
+      "file": "sprites/periwinkle__flowering.webp",
+      "px": [
+       919,
+       919
+      ],
+      "widthM": 0.3539,
+      "heightM": 0.3539,
+      "pivot": [
+       0.5501,
+       0.8729
+      ],
+      "boxM": [
+       0.424,
+       0.482,
+       0.42
+      ]
+     },
+     "wilted": {
+      "file": "sprites/periwinkle__flowering__wilted.webp",
+      "px": [
+       1254,
+       1009
+      ],
+      "widthM": 0.274,
+      "heightM": 0.2205,
+      "pivot": [
+       0.5769,
+       0.8603
+      ],
+      "boxM": [
+       0.44,
+       0.423,
+       0.302
+      ]
+     }
+    }
+   ]
+  },
+  "ixora": {
+   "name": "Ixora",
+   "category": "PLANTS",
+   "growable": true,
+   "stages": [
+    {
+     "id": "seed",
+     "minutes": 0,
+     "healthy": {
+      "file": "sprites/ixora__seed.webp",
+      "px": [
+       967,
+       982
+      ],
+      "widthM": 0.2743,
+      "heightM": 0.2785,
+      "pivot": [
+       0.5,
+       0.8668
+      ],
+      "boxM": [
+       0.4,
+       0.4,
+       0.35
+      ]
+     }
+    },
+    {
+     "id": "sprout",
+     "minutes": 25,
+     "healthy": {
+      "file": "sprites/ixora__sprout.webp",
+      "px": [
+       956,
+       986
+      ],
+      "widthM": 0.1809,
+      "heightM": 0.1865,
+      "pivot": [
+       0.5,
+       0.8563
+      ],
+      "boxM": [
+       0.32,
+       0.32,
+       0.284
+      ]
+     },
+     "wilted": {
+      "file": "sprites/ixora__sprout__wilted.webp",
+      "px": [
+       843,
+       970
+      ],
+      "widthM": 0.1993,
+      "heightM": 0.2293,
+      "pivot": [
+       0.5,
+       0.7717
+      ],
+      "boxM": [
+       0.32,
+       0.32,
+       0.328
+      ]
+     }
+    },
+    {
+     "id": "young",
+     "minutes": 60,
+     "healthy": {
+      "file": "sprites/ixora__young.webp",
+      "px": [
+       1064,
+       925
+      ],
+      "widthM": 0.3314,
+      "heightM": 0.2881,
+      "pivot": [
+       0.4977,
+       0.8878
+      ],
+      "boxM": [
+       0.453,
+       0.435,
+       0.36
+      ]
+     },
+     "wilted": {
+      "file": "sprites/ixora__young__wilted.webp",
+      "px": [
+       1487,
+       1017
+      ],
+      "widthM": 0.2404,
+      "heightM": 0.1644,
+      "pivot": [
+       0.4823,
+       0.7922
+      ],
+      "boxM": [
+       0.451,
+       0.447,
+       0.252
+      ]
+     }
+    },
+    {
+     "id": "mature",
+     "minutes": 120,
+     "healthy": {
+      "file": "sprites/ixora__mature.webp",
+      "px": [
+       1188,
+       946
+      ],
+      "widthM": 0.6881,
+      "heightM": 0.5479,
+      "pivot": [
+       0.4963,
+       0.89
+      ],
+      "boxM": [
+       0.725,
+       0.712,
+       0.554
+      ]
+     },
+     "wilted": {
+      "file": "sprites/ixora__mature__wilted.webp",
+      "px": [
+       1495,
+       1001
+      ],
+      "widthM": 0.6093,
+      "heightM": 0.4079,
+      "pivot": [
+       0.495,
+       0.8384
+      ],
+      "boxM": [
+       0.724,
+       0.723,
+       0.432
+      ]
+     }
+    },
+    {
+     "id": "flowering",
+     "minutes": 240,
+     "healthy": {
+      "file": "sprites/ixora__flowering.webp",
+      "px": [
+       1230,
+       947
+      ],
+      "widthM": 0.8918,
+      "heightM": 0.6866,
+      "pivot": [
+       0.5118,
+       0.894
+      ],
+      "boxM": [
+       0.897,
+       0.866,
+       0.66
+      ]
+     },
+     "wilted": {
+      "file": "sprites/ixora__flowering__wilted.webp",
+      "px": [
+       1486,
+       994
+      ],
+      "widthM": 0.782,
+      "heightM": 0.5231,
+      "pivot": [
+       0.4945,
+       0.8594
+      ],
+      "boxM": [
+       0.863,
+       0.885,
+       0.522
+      ]
+     }
+    }
+   ]
+  },
+  "lantana": {
+   "name": "Lantana",
+   "category": "PLANTS",
+   "growable": true,
+   "stages": [
+    {
+     "id": "seed",
+     "minutes": 0,
+     "healthy": {
+      "file": "sprites/lantana__seed.webp",
+      "px": [
+       967,
+       982
+      ],
+      "widthM": 0.2743,
+      "heightM": 0.2785,
+      "pivot": [
+       0.5,
+       0.8668
+      ],
+      "boxM": [
+       0.4,
+       0.4,
+       0.35
+      ]
+     }
+    },
+    {
+     "id": "sprout",
+     "minutes": 25,
+     "healthy": {
+      "file": "sprites/lantana__sprout.webp",
+      "px": [
+       957,
+       986
+      ],
+      "widthM": 0.1808,
+      "heightM": 0.1863,
+      "pivot": [
+       0.5,
+       0.8568
+      ],
+      "boxM": [
+       0.32,
+       0.32,
+       0.284
+      ]
+     },
+     "wilted": {
+      "file": "sprites/lantana__sprout__wilted.webp",
+      "px": [
+       858,
+       984
+      ],
+      "widthM": 0.1965,
+      "heightM": 0.2254,
+      "pivot": [
+       0.5,
+       0.7742
+      ],
+      "boxM": [
+       0.32,
+       0.32,
+       0.321
+      ]
+     }
+    },
+    {
+     "id": "young",
+     "minutes": 60,
+     "healthy": {
+      "file": "sprites/lantana__young.webp",
+      "px": [
+       1504,
+       970
+      ],
+      "widthM": 0.3154,
+      "heightM": 0.2034,
+      "pivot": [
+       0.5131,
+       0.8884
+      ],
+      "boxM": [
+       0.499,
+       0.385,
+       0.3
+      ]
+     },
+     "wilted": {
+      "file": "sprites/lantana__young__wilted.webp",
+      "px": [
+       2251,
+       998
+      ],
+      "widthM": 0.1576,
+      "heightM": 0.0699,
+      "pivot": [
+       0.5311,
+       0.8471
+      ],
+      "boxM": [
+       0.499,
+       0.385,
+       0.196
+      ]
+     }
+    },
+    {
+     "id": "mature",
+     "minutes": 120,
+     "healthy": {
+      "file": "sprites/lantana__mature.webp",
+      "px": [
+       1598,
+       999
+      ],
+      "widthM": 0.7108,
+      "heightM": 0.4443,
+      "pivot": [
+       0.4898,
+       0.8546
+      ],
+      "boxM": [
+       0.783,
+       0.815,
+       0.461
+      ]
+     },
+     "wilted": {
+      "file": "sprites/lantana__mature__wilted.webp",
+      "px": [
+       2124,
+       1015
+      ],
+      "widthM": 0.5934,
+      "heightM": 0.2836,
+      "pivot": [
+       0.4878,
+       0.8457
+      ],
+      "boxM": [
+       0.781,
+       0.813,
+       0.345
+      ]
+     }
+    },
+    {
+     "id": "flowering",
+     "minutes": 240,
+     "healthy": {
+      "file": "sprites/lantana__flowering.webp",
+      "px": [
+       1481,
+       954
+      ],
+      "widthM": 0.9241,
+      "heightM": 0.5953,
+      "pivot": [
+       0.4769,
+       0.8644
+      ],
+      "boxM": [
+       0.92,
+       0.98,
+       0.594
+      ]
+     },
+     "wilted": {
+      "file": "sprites/lantana__flowering__wilted.webp",
+      "px": [
+       1908,
+       983
+      ],
+      "widthM": 0.8143,
+      "heightM": 0.4195,
+      "pivot": [
+       0.4874,
+       0.8525
+      ],
+      "boxM": [
+       0.935,
+       0.972,
+       0.451
+      ]
+     }
+    }
+   ]
+  },
+  "geranium": {
+   "name": "Geranium",
+   "category": "PLANTS",
+   "growable": true,
+   "stages": [
+    {
+     "id": "seed",
+     "minutes": 0,
+     "healthy": {
+      "file": "sprites/geranium__seed.webp",
+      "px": [
+       740,
+       982
+      ],
+      "widthM": 0.3408,
+      "heightM": 0.4523,
+      "pivot": [
+       0.5,
+       0.8852
+      ],
+      "boxM": [
+       0.4,
+       0.4,
+       0.487
+      ]
+     }
+    },
+    {
+     "id": "sprout",
+     "minutes": 25,
+     "healthy": {
+      "file": "sprites/geranium__sprout.webp",
+      "px": [
+       770,
+       993
+      ],
+      "widthM": 0.28,
+      "heightM": 0.3611,
+      "pivot": [
+       0.5,
+       0.8784
+      ],
+      "boxM": [
+       0.348,
+       0.348,
+       0.417
+      ]
+     },
+     "wilted": {
+      "file": "sprites/geranium__sprout__wilted.webp",
+      "px": [
+       770,
+       993
+      ],
+      "widthM": 0.28,
+      "heightM": 0.3611,
+      "pivot": [
+       0.5,
+       0.8784
+      ],
+      "boxM": [
+       0.348,
+       0.348,
+       0.417
+      ]
+     }
+    },
+    {
+     "id": "young",
+     "minutes": 60,
+     "healthy": {
+      "file": "sprites/geranium__young.webp",
+      "px": [
+       1006,
+       988
+      ],
+      "widthM": 0.2422,
+      "heightM": 0.2379,
+      "pivot": [
+       0.5,
+       0.8676
+      ],
+      "boxM": [
+       0.348,
+       0.348,
+       0.32
+      ]
+     },
+     "wilted": {
+      "file": "sprites/geranium__young__wilted.webp",
+      "px": [
+       1390,
+       989
+      ],
+      "widthM": 0.1845,
+      "heightM": 0.1313,
+      "pivot": [
+       0.4996,
+       0.8677
+      ],
+      "boxM": [
+       0.348,
+       0.348,
+       0.244
+      ]
+     }
+    },
+    {
+     "id": "mature",
+     "minutes": 120,
+     "healthy": {
+      "file": "sprites/geranium__mature.webp",
+      "px": [
+       954,
+       969
+      ],
+      "widthM": 0.3571,
+      "heightM": 0.3627,
+      "pivot": [
+       0.5269,
+       0.8884
+      ],
+      "boxM": [
+       0.428,
+       0.39,
+       0.42
+      ]
+     },
+     "wilted": {
+      "file": "sprites/geranium__mature__wilted.webp",
+      "px": [
+       1189,
+       949
+      ],
+      "widthM": 0.3006,
+      "heightM": 0.2399,
+      "pivot": [
+       0.5297,
+       0.8914
+      ],
+      "boxM": [
+       0.431,
+       0.388,
+       0.335
+      ]
+     }
+    },
+    {
+     "id": "flowering",
+     "minutes": 240,
+     "healthy": {
+      "file": "sprites/geranium__flowering.webp",
+      "px": [
+       929,
+       903
+      ],
+      "widthM": 0.5098,
+      "heightM": 0.4955,
+      "pivot": [
+       0.5101,
+       0.8956
+      ],
+      "boxM": [
+       0.526,
+       0.446,
+       0.525
+      ]
+     },
+     "wilted": {
+      "file": "sprites/geranium__flowering__wilted.webp",
+      "px": [
+       1287,
+       945
+      ],
+      "widthM": 0.4086,
+      "heightM": 0.3,
+      "pivot": [
+       0.5081,
+       0.8835
+      ],
+      "boxM": [
+       0.508,
+       0.47,
+       0.379
+      ]
+     }
+    }
+   ]
+  },
+  "oleander": {
+   "name": "Kaner",
+   "category": "PLANTS",
+   "sprite": {
+    "file": "sprites/oleander.webp",
+    "px": [
+     682,
+     899
+    ],
+    "widthM": 1.387,
+    "heightM": 1.8284,
+    "pivot": [
+     0.4612,
+     0.9384
+    ],
+    "boxM": [
+     1.2,
+     1.225,
+     1.622
+    ]
+   }
+  },
+  "hydrangea": {
+   "name": "Hydrangea",
+   "category": "PLANTS",
+   "sprite": {
+    "file": "sprites/hydrangea.webp",
+    "px": [
+     892,
+     981
+    ],
+    "widthM": 0.6772,
+    "heightM": 0.7448,
+    "pivot": [
+     0.4601,
+     0.8765
+    ],
+    "boxM": [
+     0.656,
+     0.764,
+     0.69
+    ]
+   }
+  },
+  "canna": {
+   "name": "Canna lily",
+   "category": "PLANTS",
+   "sprite": {
+    "file": "sprites/canna.webp",
+    "px": [
+     1167,
+     875
+    ],
+    "widthM": 1.5394,
+    "heightM": 1.1542,
+    "pivot": [
+     0.4575,
+     0.9961
+    ],
+    "boxM": [
+     1.242,
+     1.084,
+     1.069
+    ]
+   }
+  },
+  "bird_of_paradise": {
+   "name": "Bird of paradise",
+   "category": "PLANTS",
+   "sprite": {
+    "file": "sprites/bird_of_paradise.webp",
+    "px": [
+     1103,
+     888
+    ],
+    "widthM": 1.7745,
+    "heightM": 1.4286,
+    "pivot": [
+     0.5554,
+     1.0083
+    ],
+    "boxM": [
+     1.485,
+     1.07,
+     1.289
+    ]
+   }
+  },
+  "bamboo_clump": {
+   "name": "Bamboo",
+   "category": "PLANTS",
+   "sprite": {
+    "file": "sprites/bamboo_clump.webp",
+    "px": [
+     164,
+     879
+    ],
+    "widthM": 0.7341,
+    "heightM": 3.9347,
+    "pivot": [
+     0.4862,
+     0.9812
+    ],
+    "boxM": [
+     0.591,
+     0.597,
+     3.387
+    ],
+    "sway": {
+     "amp": 0.6,
+     "speed": 0.5
+    }
+   }
+  },
+  "papaya_tree": {
+   "name": "Papaya",
+   "category": "TREES",
+   "sprite": {
+    "file": "sprites/papaya_tree.webp",
+    "px": [
+     614,
+     904
+    ],
+    "widthM": 2.0152,
+    "heightM": 2.967,
+    "pivot": [
+     0.4868,
+     0.9861
+    ],
+    "boxM": [
+     1.594,
+     1.392,
+     2.542
+    ]
+   }
+  },
+  "guava_tree": {
+   "name": "Guava",
+   "category": "TREES",
+   "sprite": {
+    "file": "sprites/guava_tree.webp",
+    "px": [
+     599,
+     907
+    ],
+    "widthM": 1.899,
+    "heightM": 2.8755,
+    "pivot": [
+     0.4565,
+     0.9819
+    ],
+    "boxM": [
+     1.455,
+     1.663,
+     2.485
+    ],
+    "sway": {
+     "amp": 0.23538461538461536,
+     "speed": 0.35
+    }
+   }
+  },
+  "pomegranate_tree": {
+   "name": "Pomegranate",
+   "category": "TREES",
+   "sprite": {
+    "file": "sprites/pomegranate_tree.webp",
+    "px": [
+     894,
+     884
+    ],
+    "widthM": 2.2723,
+    "heightM": 2.2469,
+    "pivot": [
+     0.5681,
+     0.9815
+    ],
+    "boxM": [
+     1.98,
+     2.082,
+     1.94
+    ],
+    "sway": {
+     "amp": 0.25636363636363635,
+     "speed": 0.35
+    }
+   }
+  },
+  "curry_leaf": {
+   "name": "Curry leaf",
+   "category": "PLANTS",
+   "sprite": {
+    "file": "sprites/curry_leaf.webp",
+    "px": [
+     493,
+     869
+    ],
+    "widthM": 0.8698,
+    "heightM": 1.5331,
+    "pivot": [
+     0.7898,
+     0.982
+    ],
+    "boxM": [
+     0.696,
+     0.657,
+     1.416
+    ]
+   }
+  },
+  "mint_pot": {
+   "name": "Mint",
+   "category": "PLANTS",
+   "sprite": {
+    "file": "sprites/mint_pot.webp",
+    "px": [
+     923,
+     967
+    ],
+    "widthM": 0.2007,
+    "heightM": 0.2103,
+    "pivot": [
+     0.5034,
+     0.8647
+    ],
+    "boxM": [
+     0.311,
+     0.308,
+     0.303
+    ]
+   }
+  },
+  "aloe_garden": {
+   "name": "Aloe vera",
+   "category": "PLANTS",
+   "sprite": {
+    "file": "sprites/aloe_garden.webp",
+    "px": [
+     1238,
+     1000
+    ],
+    "widthM": 0.4505,
+    "heightM": 0.3639,
+    "pivot": [
+     0.4713,
+     0.8769
+    ],
+    "boxM": [
+     0.496,
+     0.502,
+     0.407
+    ]
+   }
+  },
+  "cactus_garden": {
+   "name": "Cactus bed",
+   "category": "PLANTS",
+   "sprite": {
+    "file": "sprites/cactus_garden.webp",
+    "px": [
+     562,
+     984
+    ],
+    "widthM": 0.8918,
+    "heightM": 1.5614,
+    "pivot": [
+     0.4911,
+     0.8773
+    ],
+    "boxM": [
+     0.84,
+     0.84,
+     1.3
+    ]
+   }
+  },
+  "fern": {
+   "name": "Fern",
+   "category": "PLANTS",
+   "sprite": {
+    "file": "sprites/fern.webp",
+    "px": [
+     2077,
+     1024
+    ],
+    "widthM": 0.8083,
+    "heightM": 0.3985,
+    "pivot": [
+     0.527,
+     0.8435
+    ],
+    "boxM": [
+     0.967,
+     0.898,
+     0.416
+    ],
+    "sway": {
+     "amp": 0.4,
+     "speed": 0.6
+    }
+   }
+  },
+  "elephant_ear": {
+   "name": "Elephant ear",
+   "category": "PLANTS",
+   "sprite": {
+    "file": "sprites/elephant_ear.webp",
+    "px": [
+     1445,
+     857
+    ],
+    "widthM": 1.408,
+    "heightM": 0.8351,
+    "pivot": [
+     0.5074,
+     0.9662
+    ],
+    "boxM": [
+     1.226,
+     1.105,
+     0.813
+    ]
+   }
+  },
+  "peepal_sapling": {
+   "name": "Peepal",
+   "category": "TREES",
+   "sprite": {
+    "file": "sprites/peepal_sapling.webp",
+    "px": [
+     661,
+     892
+    ],
+    "widthM": 2.84,
+    "heightM": 3.8325,
+    "pivot": [
+     0.4113,
+     0.9851
+    ],
+    "boxM": [
+     2.331,
+     1.91,
+     3.282
+    ],
+    "sway": {
+     "amp": 0.21999999999999997,
+     "speed": 0.35
+    }
+   }
+  },
+  "jamun_tree": {
+   "name": "Jamun",
+   "category": "TREES",
+   "sprite": {
+    "file": "sprites/jamun_tree.webp",
+    "px": [
+     772,
+     867
+    ],
+    "widthM": 4.3121,
+    "heightM": 4.8427,
+    "pivot": [
+     0.5495,
+     0.9806
+    ],
+    "boxM": [
+     3.186,
+     2.79,
+     4.263
+    ],
+    "sway": {
+     "amp": 0.19142857142857142,
+     "speed": 0.35
+    }
+   }
   }
  },
  "scenery": {},
- "elevationDeg": 22
+ "elevationDeg": 22,
+ "focusTree": {
+  "name": "Kachnar",
+  "stages": [
+   {
+    "id": "seed",
+    "minutes": 0,
+    "healthy": {
+     "file": "sprites/focus_kachnar__seed.webp",
+     "px": [
+      876,
+      976
+     ],
+     "widthM": 0.4348,
+     "heightM": 0.4844,
+     "pivot": [
+      0.5,
+      0.866
+     ],
+     "boxM": [
+      0.52,
+      0.52,
+      0.5
+     ]
+    },
+    "wilted": {
+     "file": "sprites/focus_kachnar__seed__wilted.webp",
+     "px": [
+      876,
+      976
+     ],
+     "widthM": 0.4348,
+     "heightM": 0.4844,
+     "pivot": [
+      0.5,
+      0.866
+     ],
+     "boxM": [
+      0.52,
+      0.52,
+      0.5
+     ]
+    }
+   },
+   {
+    "id": "seedling",
+    "minutes": 300,
+    "healthy": {
+     "file": "sprites/focus_kachnar__seedling.webp",
+     "px": [
+      842,
+      980
+     ],
+     "widthM": 0.2988,
+     "heightM": 0.3477,
+     "pivot": [
+      0.4994,
+      0.866
+     ],
+     "boxM": [
+      0.4,
+      0.4,
+      0.4
+     ],
+     "sway": {
+      "amp": 0.6,
+      "speed": 0.6
+     }
+    },
+    "wilted": {
+     "file": "sprites/focus_kachnar__seedling__wilted.webp",
+     "px": [
+      842,
+      980
+     ],
+     "widthM": 0.2988,
+     "heightM": 0.3478,
+     "pivot": [
+      0.4994,
+      0.866
+     ],
+     "boxM": [
+      0.4,
+      0.4,
+      0.4
+     ],
+     "sway": {
+      "amp": 0.6,
+      "speed": 0.6
+     }
+    }
+   },
+   {
+    "id": "young",
+    "minutes": 1200,
+    "healthy": {
+     "file": "sprites/focus_kachnar__young.webp",
+     "px": [
+      606,
+      853
+     ],
+     "widthM": 1.1121,
+     "heightM": 1.5654,
+     "pivot": [
+      0.5238,
+      0.9826
+     ],
+     "boxM": [
+      0.914,
+      1.085,
+      1.449
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    "wilted": {
+     "file": "sprites/focus_kachnar__young__wilted.webp",
+     "px": [
+      577,
+      858
+     ],
+     "widthM": 1.0539,
+     "heightM": 1.5672,
+     "pivot": [
+      0.5122,
+      0.9826
+     ],
+     "boxM": [
+      0.867,
+      1.002,
+      1.45
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    }
+   },
+   {
+    "id": "mature",
+    "minutes": 3000,
+    "healthy": {
+     "file": "sprites/focus_kachnar__mature.webp",
+     "px": [
+      723,
+      838
+     ],
+     "widthM": 2.7834,
+     "heightM": 3.2261,
+     "pivot": [
+      0.4577,
+      0.9842
+     ],
+     "boxM": [
+      2.197,
+      2.312,
+      2.904
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    "wilted": {
+     "file": "sprites/focus_kachnar__mature__wilted.webp",
+     "px": [
+      748,
+      851
+     ],
+     "widthM": 2.8279,
+     "heightM": 3.2173,
+     "pivot": [
+      0.458,
+      0.9842
+     ],
+     "boxM": [
+      2.233,
+      2.332,
+      2.854
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    }
+   },
+   {
+    "id": "large",
+    "minutes": 6000
+   },
+   {
+    "id": "flowering",
+    "minutes": 15000
+   },
+   {
+    "id": "grand",
+    "minutes": 30000
+   }
+  ]
+ }
 }
