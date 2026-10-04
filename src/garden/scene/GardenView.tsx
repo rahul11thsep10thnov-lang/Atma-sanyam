@@ -107,7 +107,7 @@ function geometryFor(key: string, s: Sprite): THREE.PlaneGeometry {
 }
 
 export function GardenView({ state, light, mode, focusMinutes, focusHealth, rackCount = 0, artworkById, selectedUid, onSelect, onMove, onDropOnBin, onDropOnStand, onDragging, style }: GardenViewProps) {
-  const orbit = useRef<Orbit>({ tx: 1, tz: 3, dist: 13, yaw: 0, pitch: (26 * Math.PI) / 180 });
+  const orbit = useRef<Orbit>({ tx: 0, tz: 2, dist: 20, yaw: 0, pitch: (30 * Math.PI) / 180 });
   const target = useRef<Orbit>({ ...orbit.current });
   const live = useRef({ state, light, mode, focusMinutes, focusHealth, rackCount, selectedUid, artworkById });
   live.current = { state, light, mode, focusMinutes, focusHealth, rackCount, selectedUid, artworkById };

@@ -1495,6 +1495,24 @@
      0.24,
      0.62
     ]
+   },
+   "night": {
+    "file": "sprites/brass_lantern__night.webp",
+    "px": [
+     369,
+     935
+    ],
+    "widthM": 0.2381,
+    "heightM": 0.6034,
+    "pivot": [
+     0.4986,
+     0.9136
+    ],
+    "boxM": [
+     0.24,
+     0.24,
+     0.62
+    ]
    }
   },
   "stone_lantern": {
@@ -1503,6 +1521,24 @@
    "lit": true,
    "sprite": {
     "file": "sprites/stone_lantern.webp",
+    "px": [
+     499,
+     949
+    ],
+    "widthM": 0.5846,
+    "heightM": 1.1117,
+    "pivot": [
+     0.501,
+     0.9001
+    ],
+    "boxM": [
+     0.48,
+     0.48,
+     1.0
+    ]
+   },
+   "night": {
+    "file": "sprites/stone_lantern__night.webp",
     "px": [
      499,
      949
@@ -1814,6 +1850,28 @@
      "amp": 0.05,
      "speed": 0.5
     }
+   },
+   "night": {
+    "file": "sprites/string_lights__night.webp",
+    "px": [
+     1332,
+     841
+    ],
+    "widthM": 4.25,
+    "heightM": 2.6834,
+    "pivot": [
+     0.5,
+     0.9907
+    ],
+    "boxM": [
+     3.28,
+     0.08,
+     2.4
+    ],
+    "sway": {
+     "amp": 0.05,
+     "speed": 0.5
+    }
    }
   },
   "urli_bowl": {
@@ -1858,6 +1916,24 @@
      0.38,
      0.38,
      0.65
+    ]
+   },
+   "night": {
+    "file": "sprites/diya_stand__night.webp",
+    "px": [
+     536,
+     945
+    ],
+    "widthM": 0.383,
+    "heightM": 0.6752,
+    "pivot": [
+     0.5,
+     0.9039
+    ],
+    "boxM": [
+     0.38,
+     0.38,
+     0.67
     ]
    }
   },
@@ -4451,9 +4527,226 @@
      "speed": 0.35
     }
    }
+  },
+  "planter_stand": {
+   "name": "Planter stand",
+   "category": "FURNITURE",
+   "sprite": {
+    "file": "sprites/planter_stand.webp",
+    "px": [
+     273,
+     891
+    ],
+    "widthM": 0.9857,
+    "heightM": 3.2171,
+    "pivot": [
+     0.5201,
+     0.8942
+    ],
+    "boxM": [
+     0.86,
+     0.792,
+     2.83
+    ]
+   }
   }
  },
- "scenery": {},
+ "scenery": {
+  "neem": {
+   "file": "sprites/scenery__neem.webp",
+   "px": [
+    635,
+    963
+   ],
+   "widthM": 6.4882,
+   "heightM": 9.8396,
+   "pivot": [
+    0.3132,
+    0.9888
+   ],
+   "boxM": [
+    5.568,
+    4.128,
+    8.036
+   ],
+   "sway": {
+    "amp": 0.16,
+    "speed": 0.35
+   }
+  },
+  "neem_small": {
+   "file": "sprites/scenery__neem_small.webp",
+   "px": [
+    716,
+    820
+   ],
+   "widthM": 5.3932,
+   "heightM": 6.1765,
+   "pivot": [
+    0.4818,
+    0.9789
+   ],
+   "boxM": [
+    4.104,
+    3.541,
+    5.44
+   ],
+   "sway": {
+    "amp": 0.18,
+    "speed": 0.35
+   }
+  },
+  "gulmohar": {
+   "file": "sprites/scenery__gulmohar.webp",
+   "px": [
+    700,
+    904
+   ],
+   "widthM": 5.6728,
+   "heightM": 7.326,
+   "pivot": [
+    0.4687,
+    0.9812
+   ],
+   "boxM": [
+    4.508,
+    4.548,
+    5.978
+   ],
+   "sway": {
+    "amp": 0.16999999999999998,
+    "speed": 0.35
+   }
+  },
+  "frangipani": {
+   "file": "sprites/scenery__frangipani.webp",
+   "px": [
+    356,
+    917
+   ],
+   "widthM": 1.7851,
+   "heightM": 4.5982,
+   "pivot": [
+    0.6422,
+    0.9807
+   ],
+   "boxM": [
+    1.379,
+    2.083,
+    3.921
+   ],
+   "sway": {
+    "amp": 0.21375,
+    "speed": 0.35
+   }
+  },
+  "ashoka": {
+   "file": "sprites/scenery__ashoka.webp",
+   "px": [
+    597,
+    948
+   ],
+   "widthM": 2.4211,
+   "heightM": 3.8445,
+   "pivot": [
+    0.5384,
+    0.8304
+   ],
+   "boxM": [
+    2.136,
+    2.402,
+    3.125
+   ],
+   "sway": {
+    "amp": 0.17454545454545453,
+    "speed": 0.35
+   }
+  },
+  "jamun_big": {
+   "file": "sprites/scenery__jamun_big.webp",
+   "px": [
+    768,
+    827
+   ],
+   "widthM": 4.2643,
+   "heightM": 4.5919,
+   "pivot": [
+    0.4447,
+    0.9798
+   ],
+   "boxM": [
+    3.34,
+    3.26,
+    3.994
+   ],
+   "sway": {
+    "amp": 0.19142857142857142,
+    "speed": 0.35
+   }
+  },
+  "hedge_4m": {
+   "file": "sprites/scenery__hedge_4m.webp",
+   "px": [
+    2556,
+    660
+   ],
+   "widthM": 5.0071,
+   "heightM": 1.2929,
+   "pivot": [
+    0.4988,
+    0.8813
+   ],
+   "boxM": [
+    4.121,
+    0.717,
+    1.04
+   ],
+   "sway": {
+    "amp": 0.1,
+    "speed": 0.5
+   }
+  },
+  "hedge_tall": {
+   "file": "sprites/scenery__hedge_tall.webp",
+   "px": [
+    2294,
+    954
+   ],
+   "widthM": 5.5142,
+   "heightM": 2.2932,
+   "pivot": [
+    0.5014,
+    0.9074
+   ],
+   "boxM": [
+    4.118,
+    0.821,
+    1.839
+   ],
+   "sway": {
+    "amp": 0.1,
+    "speed": 0.5
+   }
+  },
+  "boulders": {
+   "file": "sprites/scenery__boulders.webp",
+   "px": [
+    1973,
+    927
+   ],
+   "widthM": 0.8511,
+   "heightM": 0.3999,
+   "pivot": [
+    0.4163,
+    0.5949
+   ],
+   "boxM": [
+    1.246,
+    1.006,
+    0.427
+   ]
+  }
+ },
  "elevationDeg": 22,
  "focusTree": {
   "name": "Kachnar",
@@ -4644,15 +4937,147 @@
    },
    {
     "id": "large",
-    "minutes": 6000
+    "minutes": 6000,
+    "healthy": {
+     "file": "sprites/focus_kachnar__large.webp",
+     "px": [
+      789,
+      892
+     ],
+     "widthM": 4.4176,
+     "heightM": 4.9943,
+     "pivot": [
+      0.4543,
+      0.9791
+     ],
+     "boxM": [
+      3.433,
+      3.175,
+      4.178
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    "wilted": {
+     "file": "sprites/focus_kachnar__large__wilted.webp",
+     "px": [
+      770,
+      894
+     ],
+     "widthM": 4.3271,
+     "heightM": 5.0239,
+     "pivot": [
+      0.4422,
+      0.9791
+     ],
+     "boxM": [
+      3.348,
+      3.081,
+      4.198
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    }
    },
    {
     "id": "flowering",
-    "minutes": 15000
+    "minutes": 15000,
+    "healthy": {
+     "file": "sprites/focus_kachnar__flowering.webp",
+     "px": [
+      559,
+      835
+     ],
+     "widthM": 3.7429,
+     "heightM": 5.591,
+     "pivot": [
+      0.321,
+      0.9783
+     ],
+     "boxM": [
+      2.802,
+      2.826,
+      4.835
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    "wilted": {
+     "file": "sprites/focus_kachnar__flowering__wilted.webp",
+     "px": [
+      574,
+      836
+     ],
+     "widthM": 3.7733,
+     "heightM": 5.4956,
+     "pivot": [
+      0.3216,
+      0.9789
+     ],
+     "boxM": [
+      2.735,
+      2.756,
+      4.754
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    }
    },
    {
     "id": "grand",
-    "minutes": 30000
+    "minutes": 30000,
+    "healthy": {
+     "file": "sprites/focus_kachnar__grand.webp",
+     "px": [
+      1039,
+      832
+     ],
+     "widthM": 7.777,
+     "heightM": 6.2276,
+     "pivot": [
+      0.5841,
+      0.9793
+     ],
+     "boxM": [
+      5.972,
+      4.707,
+      5.429
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    "wilted": {
+     "file": "sprites/focus_kachnar__grand__wilted.webp",
+     "px": [
+      1023,
+      835
+     ],
+     "widthM": 7.6103,
+     "heightM": 6.2117,
+     "pivot": [
+      0.5849,
+      0.9789
+     ],
+     "boxM": [
+      5.879,
+      4.625,
+      5.409
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    }
    }
   ]
  }
