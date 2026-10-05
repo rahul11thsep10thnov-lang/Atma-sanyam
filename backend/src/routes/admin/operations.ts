@@ -16,6 +16,8 @@ import {
   listMockTests,
   saveBlueprint,
   setMockTestStatus,
+  swapCandidates,
+  swapQuestion,
   updateMockTest,
 } from '../../services/mockTestService.js';
 import { getSettings, pipelineSettingsSchema, updateSettings } from '../../services/settingsService.js';
@@ -92,10 +94,28 @@ export function adminOperationsRouter(deps: AppDeps, auth: Auth) {
         description: z.string().max(2000).nullable().optional(),
         durationMinutes: z.number().int().min(1).max(600).optional(),
         kind: z.enum(['full', 'subject']).optional(),
+        marksPerQuestion: z.number().min(0).max(100).optional(),
+        negativeMarks: z.number().min(0).max(100).optional(),
       }),
       req.body
     );
-    res.json(await updateMockTest(db, idParam(req), body, req.admin!.id));
+    await updateMockTest(db, idParam(req), body, req.admin!.id);
+    res.json(await getMockTest(db, idParam(req), { includeAnswers: true, publicOnly: false }));
+  });
+
+  // Questions that could replace one question of a test (same subject,
+  // language and exam; published; not already in the test).
+  r.get('/mock-tests/:id/questions/:questionId/candidates', A, auth.can('mocktests:write'), async (req, res) => {
+    const q = parse(z.object({ search: z.string().max(200).optional(), limit: z.coerce.number().int().min(1).max(50).optional() }), req.query);
+    res.json(await swapCandidates(db, idParam(req), idParam(req, 'questionId'), q));
+  });
+
+  // Replace one question. Body { replacementId } picks a specific question;
+  // without it the least-used question of the same difficulty is chosen.
+  r.post('/mock-tests/:id/questions/:questionId/swap', A, auth.can('mocktests:write'), async (req, res) => {
+    const body = parse(z.object({ replacementId: z.uuid().optional() }), req.body ?? {});
+    const result = await swapQuestion(db, idParam(req), idParam(req, 'questionId'), body.replacementId ?? null, req.admin!.id, env.ATTEMPT_GRACE_SECONDS);
+    res.json({ ...result, test: await getMockTest(db, idParam(req), { includeAnswers: true, publicOnly: false }) });
   });
 
   r.post('/mock-tests/:id/publish', A, auth.can('mocktests:publish'), async (req, res) => {

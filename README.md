@@ -233,6 +233,10 @@ filters and bulk approve / reject / publish.
 4. Blueprints → **Generate tests** creates "Mock Test 1…N" in one go,
    picking the least-used questions so the series repeats as little as
    possible.
+5. On a test's page: **Edit details** (title, duration, kind, marks until the
+   first attempt), **Swap** a single question (manual or auto-pick), and
+   **Print / PDF** for a question paper (candidates) and answer key with
+   solutions (staff). See [docs/OPERATOR_GUIDE.md](docs/OPERATOR_GUIDE.md).
 
 ## 14. Enrolment: free tests and the ₹49 Mock Test Pass
 

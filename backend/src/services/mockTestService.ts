@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, inArray, ne } from 'drizzle-orm';
+import { and, asc, count, desc, eq, gt, inArray, ne } from 'drizzle-orm';
 import type { Db } from '../database/client.js';
 import {
   chapters,
@@ -9,6 +9,7 @@ import {
   questionOptions,
   questions,
   subjects,
+  testAttempts,
   type BlueprintSection,
   type DifficultyDistribution,
 } from '../database/schema.js';
@@ -379,16 +380,261 @@ export async function setMockTestStatus(db: Db, id: string, action: 'publish' | 
   return { id, status };
 }
 
-export async function updateMockTest(
+export interface MockTestPatch {
+  title?: string;
+  description?: string | null;
+  durationMinutes?: number;
+  kind?: 'full' | 'subject';
+  marksPerQuestion?: number;
+  negativeMarks?: number;
+}
+
+async function attemptCounts(db: Db, mockTestId: string) {
+  const rows = await db
+    .select({ status: testAttempts.status, n: count() })
+    .from(testAttempts)
+    .where(eq(testAttempts.mockTestId, mockTestId))
+    .groupBy(testAttempts.status);
+  const submitted = Number(rows.find((r) => r.status === 'submitted')?.n ?? 0);
+  const inProgress = Number(rows.find((r) => r.status === 'in_progress')?.n ?? 0);
+  return { total: submitted + inProgress, submitted, inProgress };
+}
+
+/** Edits a test's details. Marking can only change while nobody has
+ * attempted it: attempts are scored (and analysed) with the marking they ran under. */
+export async function updateMockTest(db: Db, id: string, patch: MockTestPatch, adminId: string) {
+  const [current] = await db.select().from(mockTests).where(eq(mockTests.id, id)).limit(1);
+  if (!current) throw notFound('Mock test not found');
+  if (current.status === 'archived') throw conflict('An archived test cannot be edited.');
+  const markingChanges =
+    (patch.marksPerQuestion !== undefined && patch.marksPerQuestion !== Number(current.marksPerQuestion)) ||
+    (patch.negativeMarks !== undefined && patch.negativeMarks !== Number(current.negativeMarks));
+  if (markingChanges) {
+    const attempts = await attemptCounts(db, id);
+    if (attempts.total > 0) {
+      throw conflict(
+        `Marking cannot change because ${attempts.total} attempt(s) already exist for this test. Archive it and generate a new one instead.`
+      );
+    }
+  }
+  const { marksPerQuestion, negativeMarks, ...rest } = patch;
+  const [row] = await db
+    .update(mockTests)
+    .set({
+      ...rest,
+      ...(marksPerQuestion !== undefined ? { marksPerQuestion: String(marksPerQuestion) } : {}),
+      ...(negativeMarks !== undefined ? { negativeMarks: String(negativeMarks) } : {}),
+      updatedAt: new Date(),
+    })
+    .where(eq(mockTests.id, id))
+    .returning();
+  await audit(db, adminId, 'mocktest.updated', 'mock_test', id, { ...patch });
+  return row!;
+}
+
+// ---------------------------------------------------------------------------
+// Swapping one question
+// ---------------------------------------------------------------------------
+
+interface SwapContext {
+  test: typeof mockTests.$inferSelect;
+  slot: { questionId: string; position: number; subjectId: string; difficulty: Difficulty };
+  /** Published questions that may replace the slot, least-used first. */
+  eligible: {
+    id: string;
+    subjectId: string;
+    chapterId: string;
+    difficulty: Difficulty;
+    questionText: string;
+    correctOption: string;
+    usage: number;
+  }[];
+}
+
+async function loadSwapContext(db: Db, testId: string, oldQuestionId: string): Promise<SwapContext> {
+  const [test] = await db.select().from(mockTests).where(eq(mockTests.id, testId)).limit(1);
+  if (!test) throw notFound('Mock test not found');
+  if (test.status === 'archived') throw conflict('An archived test cannot be edited.');
+  const members = await db
+    .select({
+      questionId: mockTestQuestions.questionId,
+      position: mockTestQuestions.position,
+      sectionSubjectId: mockTestQuestions.sectionSubjectId,
+      subjectId: questions.subjectId,
+      difficulty: questions.difficulty,
+      duplicateOfId: questions.duplicateOfId,
+      fingerprint: questions.fingerprint,
+    })
+    .from(mockTestQuestions)
+    .innerJoin(questions, eq(questions.id, mockTestQuestions.questionId))
+    .where(eq(mockTestQuestions.mockTestId, testId));
+  const old = members.find((m) => m.questionId === oldQuestionId);
+  if (!old) throw notFound('That question is not part of this test.');
+  const subjectId = old.sectionSubjectId ?? old.subjectId;
+
+  // Everything the replacement must not collide with: the other questions in
+  // the test and their duplicate clusters.
+  const others = members.filter((m) => m.questionId !== oldQuestionId);
+  const taken = new Set(others.map((m) => m.questionId));
+  const clusters = new Set<string>();
+  for (const m of others) [m.questionId, m.duplicateOfId, `fp:${m.fingerprint}`].forEach((k) => k && clusters.add(k));
+
+  const pool = await db
+    .select({
+      id: questions.id,
+      subjectId: questions.subjectId,
+      chapterId: questions.chapterId,
+      difficulty: questions.difficulty,
+      questionText: questions.questionText,
+      correctOption: questions.correctOption,
+      duplicateOfId: questions.duplicateOfId,
+      fingerprint: questions.fingerprint,
+    })
+    .from(questions)
+    .where(
+      and(eq(questions.examId, test.examId), eq(questions.language, test.language), eq(questions.status, 'published'), eq(questions.subjectId, subjectId))
+    );
+  const usageRows = await db
+    .select({ questionId: mockTestQuestions.questionId, n: count() })
+    .from(mockTestQuestions)
+    .innerJoin(mockTests, eq(mockTests.id, mockTestQuestions.mockTestId))
+    .where(and(eq(mockTests.examId, test.examId), ne(mockTests.status, 'archived')))
+    .groupBy(mockTestQuestions.questionId);
+  const usage = new Map(usageRows.map((u) => [u.questionId, Number(u.n)]));
+
+  const eligible = pool
+    .filter(
+      (c) =>
+        c.id !== oldQuestionId &&
+        !taken.has(c.id) &&
+        ![c.id, c.duplicateOfId, `fp:${c.fingerprint}`].some((k) => k && clusters.has(k))
+    )
+    .map((c) => ({
+      id: c.id,
+      subjectId: c.subjectId,
+      chapterId: c.chapterId,
+      difficulty: c.difficulty as Difficulty,
+      questionText: c.questionText,
+      correctOption: c.correctOption,
+      usage: usage.get(c.id) ?? 0,
+    }));
+  return { test, slot: { questionId: oldQuestionId, position: old.position, subjectId, difficulty: old.difficulty as Difficulty }, eligible };
+}
+
+/** Why a specific question cannot replace the slot (for a clear error). */
+async function whyNotEligible(db: Db, ctx: SwapContext, replacementId: string): Promise<string> {
+  const [q] = await db.select().from(questions).where(eq(questions.id, replacementId)).limit(1);
+  if (!q) return 'That replacement question does not exist.';
+  if (q.id === ctx.slot.questionId) return 'That question is already in this slot.';
+  if (q.status !== 'published') return 'Only PUBLISHED questions can go into a test.';
+  if (q.examId !== ctx.test.examId) return 'That question belongs to a different exam.';
+  if (q.language !== ctx.test.language) return 'That question is in a different language from this test.';
+  if (q.subjectId !== ctx.slot.subjectId) return 'The replacement must be from the same subject so the sections keep their size.';
+  const [inTest] = await db
+    .select({ id: mockTestQuestions.questionId })
+    .from(mockTestQuestions)
+    .where(and(eq(mockTestQuestions.mockTestId, ctx.test.id), eq(mockTestQuestions.questionId, replacementId)))
+    .limit(1);
+  if (inTest) return 'That question is already in this test.';
+  return 'That question is a duplicate of another question in this test.';
+}
+
+export async function swapCandidates(db: Db, testId: string, oldQuestionId: string, opts: { search?: string; limit?: number }) {
+  const ctx = await loadSwapContext(db, testId, oldQuestionId);
+  const needle = opts.search?.trim().toLowerCase();
+  const limit = Math.min(50, Math.max(1, opts.limit ?? 20));
+  const matches = ctx.eligible
+    .filter((c) => !needle || c.questionText.toLowerCase().includes(needle))
+    .sort(
+      (a, b) =>
+        Number(b.difficulty === ctx.slot.difficulty) - Number(a.difficulty === ctx.slot.difficulty) ||
+        a.usage - b.usage ||
+        a.questionText.localeCompare(b.questionText)
+    );
+  const page = matches.slice(0, limit);
+  const chapterRows = page.length
+    ? await db.select({ id: chapters.id, name: chapters.name }).from(chapters).where(inArray(chapters.id, [...new Set(page.map((c) => c.chapterId))]))
+    : [];
+  const optionRows = page.length
+    ? await db
+        .select({ questionId: questionOptions.questionId, label: questionOptions.label, text: questionOptions.text })
+        .from(questionOptions)
+        .where(inArray(questionOptions.questionId, page.map((c) => c.id)))
+        .orderBy(asc(questionOptions.sortOrder))
+    : [];
+  return {
+    slot: { questionId: oldQuestionId, position: ctx.slot.position, difficulty: ctx.slot.difficulty },
+    total: matches.length,
+    items: page.map((c) => ({
+      id: c.id,
+      questionText: c.questionText,
+      difficulty: c.difficulty,
+      chapterName: chapterRows.find((r) => r.id === c.chapterId)?.name ?? '',
+      timesUsed: c.usage,
+      sameDifficulty: c.difficulty === ctx.slot.difficulty,
+      correctOption: c.correctOption,
+      options: optionRows.filter((o) => o.questionId === c.id).map((o) => ({ label: o.label, text: o.text })),
+    })),
+  };
+}
+
+/**
+ * Replaces one question in a test. The replacement keeps the question's
+ * number and section. Refused while a candidate is taking the test (their
+ * attempt already recorded the old question); finished attempts keep the
+ * question they saw.
+ */
+export async function swapQuestion(
   db: Db,
-  id: string,
-  patch: { title?: string; description?: string | null; durationMinutes?: number; kind?: 'full' | 'subject' },
-  adminId: string
+  testId: string,
+  oldQuestionId: string,
+  replacementId: string | null,
+  adminId: string,
+  graceSeconds: number
 ) {
-  const [row] = await db.update(mockTests).set({ ...patch, updatedAt: new Date() }).where(eq(mockTests.id, id)).returning();
-  if (!row) throw notFound('Mock test not found');
-  await audit(db, adminId, 'mocktest.updated', 'mock_test', id, patch);
-  return row;
+  const cutoff = new Date(Date.now() - graceSeconds * 1000);
+  const live = await db
+    .select({ deadlineAt: testAttempts.deadlineAt })
+    .from(testAttempts)
+    .where(and(eq(testAttempts.mockTestId, testId), eq(testAttempts.status, 'in_progress'), gt(testAttempts.deadlineAt, cutoff)))
+    .orderBy(desc(testAttempts.deadlineAt));
+  if (live.length) {
+    const until = live[0]!.deadlineAt.toISOString().slice(11, 16);
+    throw conflict(
+      `${live.length} candidate(s) are taking this test right now (the last one's time runs out by ${until} UTC). Swap questions after they finish.`
+    );
+  }
+  const ctx = await loadSwapContext(db, testId, oldQuestionId);
+
+  let chosen: SwapContext['eligible'][number] | undefined;
+  if (replacementId) {
+    chosen = ctx.eligible.find((c) => c.id === replacementId);
+    if (!chosen) throw unprocessable(await whyNotEligible(db, ctx, replacementId));
+  } else {
+    // Same difficulty first, then the nearest ones; least used first, random tie-break.
+    const order: Difficulty[] = [ctx.slot.difficulty, ...FALLBACK[ctx.slot.difficulty]];
+    for (const d of order) {
+      const bucket = ctx.eligible.filter((c) => c.difficulty === d);
+      if (!bucket.length) continue;
+      const least = Math.min(...bucket.map((c) => c.usage));
+      const tied = bucket.filter((c) => c.usage === least);
+      chosen = tied[Math.floor(Math.random() * tied.length)];
+      break;
+    }
+    if (!chosen) throw unprocessable('No other published question is available in this subject and language. Publish more questions first.');
+  }
+
+  await db
+    .update(mockTestQuestions)
+    .set({ questionId: chosen.id })
+    .where(and(eq(mockTestQuestions.mockTestId, testId), eq(mockTestQuestions.questionId, oldQuestionId)));
+  await audit(db, adminId, 'mocktest.question_swapped', 'mock_test', testId, {
+    position: ctx.slot.position,
+    removed: oldQuestionId,
+    added: chosen.id,
+    auto: !replacementId,
+  });
+  return { removedId: oldQuestionId, addedId: chosen.id, position: ctx.slot.position };
 }
 
 export async function listMockTests(
@@ -480,6 +726,7 @@ export async function getMockTest(db: Db, id: string, opts: { includeAnswers: bo
         .orderBy(asc(questionOptions.sortOrder))
     : [];
   const optionsFor = (qid: string) => optionRows.filter((o) => o.questionId === qid).map((o) => ({ label: o.label, text: o.text }));
+  const attempts = opts.includeAnswers ? await attemptCounts(db, id) : null;
   return {
     id: row.t.id,
     examId: row.t.examId,
@@ -496,6 +743,7 @@ export async function getMockTest(db: Db, id: string, opts: { includeAnswers: bo
     marksPerQuestion: Number(row.t.marksPerQuestion),
     negativeMarks: Number(row.t.negativeMarks),
     publishedAt: row.t.publishedAt,
+    ...(attempts ? { attempts } : {}),
     questions: qs.map((q) => ({
       id: q.id,
       position: q.position,

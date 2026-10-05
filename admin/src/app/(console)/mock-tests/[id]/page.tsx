@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCan } from '@/components/ConsoleShell';
 import { ConfirmButton, DifficultyBadge, ErrorAlert, Kpi, Loading, OkAlert, PageHead, StatusBadge } from '@/components/ui';
 import { api, errorMessage, useApi } from '@/lib/api';
@@ -12,14 +12,17 @@ import { languageName } from '@/lib/useTaxonomy';
 interface TestDetail {
   id: string;
   title: string;
+  description: string | null;
   examName: string;
   language: string;
+  kind: 'full' | 'subject';
   status: 'draft' | 'published' | 'archived';
   durationMinutes: number;
   totalQuestions: number;
   marksPerQuestion: number;
   negativeMarks: number;
   publishedAt: string | null;
+  attempts: { total: number; submitted: number; inProgress: number };
   questions: {
     id: string;
     position: number;
@@ -39,6 +42,8 @@ export default function MockTestPage() {
   const { data: t, error, reload } = useApi<TestDetail>(`mock-tests/${id}`);
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [swapping, setSwapping] = useState<TestDetail['questions'][number] | null>(null);
 
   async function act(a: 'publish' | 'unpublish') {
     setErr(null);
@@ -66,6 +71,14 @@ export default function MockTestPage() {
             <Link className="btn" href="/mock-tests">
               ← Mock Tests
             </Link>
+            <Link className="btn" href={`/mock-tests/${id}/print`} target="_blank">
+              Print / PDF
+            </Link>
+            {can('mocktests:write') && t.status !== 'archived' && (
+              <button className="btn" onClick={() => setEditing((e) => !e)} aria-expanded={editing}>
+                Edit details
+              </button>
+            )}
             {can('mocktests:publish') && t.status === 'draft' && (
               <button className="btn btn-primary" onClick={() => act('publish')}>
                 Publish
@@ -91,9 +104,20 @@ export default function MockTestPage() {
       />
       <OkAlert message={msg} />
       <ErrorAlert error={err} />
+      {editing && (
+        <EditDetails
+          t={t}
+          onClose={() => setEditing(false)}
+          onSaved={async () => {
+            setEditing(false);
+            setMsg('Details saved.');
+            await reload();
+          }}
+        />
+      )}
       {notLive > 0 && (
         <div className="alert alert-warn">
-          {notLive} question(s) here are no longer published and are hidden from candidates. Generate a fresh test to replace them.
+          {notLive} question(s) here are no longer published and are hidden from candidates. Use <strong>Swap</strong> on each one to replace it, or generate a fresh test.
         </div>
       )}
       <div className="kpis">
@@ -115,6 +139,7 @@ export default function MockTestPage() {
                 <th>Subject</th>
                 <th>Difficulty</th>
                 <th>Status</th>
+                {can('mocktests:write') && t.status !== 'archived' && <th />}
               </tr>
             </thead>
             <tbody>
@@ -139,12 +164,279 @@ export default function MockTestPage() {
                   <td>
                     <StatusBadge status={q.status} />
                   </td>
+                  {can('mocktests:write') && t.status !== 'archived' && (
+                    <td>
+                      <button className="btn btn-sm" onClick={() => setSwapping(q)} aria-label={`Swap question ${q.position}`}>
+                        Swap
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
+      {swapping && (
+        <SwapDialog
+          testId={id}
+          question={swapping}
+          onClose={() => setSwapping(null)}
+          onSwapped={async (m) => {
+            setSwapping(null);
+            setMsg(m);
+            await reload();
+          }}
+        />
+      )}
     </>
+  );
+}
+
+function EditDetails({ t, onClose, onSaved }: { t: TestDetail; onClose: () => void; onSaved: () => Promise<void> }) {
+  const [form, setForm] = useState({
+    title: t.title,
+    description: t.description ?? '',
+    durationMinutes: t.durationMinutes,
+    kind: t.kind,
+    marksPerQuestion: t.marksPerQuestion,
+    negativeMarks: t.negativeMarks,
+  });
+  const [err, setErr] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const locked = t.attempts.total > 0;
+
+  async function save(e: React.FormEvent) {
+    e.preventDefault();
+    setErr(null);
+    setBusy(true);
+    try {
+      await api(`mock-tests/${t.id}`, {
+        method: 'PUT',
+        body: {
+          title: form.title,
+          description: form.description.trim() || null,
+          durationMinutes: form.durationMinutes,
+          kind: form.kind,
+          ...(locked ? {} : { marksPerQuestion: form.marksPerQuestion, negativeMarks: form.negativeMarks }),
+        },
+      });
+      await onSaved();
+    } catch (e2) {
+      setErr(errorMessage(e2));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <form className="card" style={{ marginBottom: 16 }} onSubmit={save}>
+      <div className="card-head">
+        <h2>Edit details</h2>
+        <button type="button" className="btn btn-sm btn-ghost" onClick={onClose}>
+          Close
+        </button>
+      </div>
+      <ErrorAlert error={err} />
+      <div className="form-grid">
+        <label className="field">
+          <span>Title</span>
+          <input className="input" required maxLength={200} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+        </label>
+        <label className="field">
+          <span>Test kind</span>
+          <select className="input" value={form.kind} onChange={(e) => setForm({ ...form, kind: e.target.value as 'full' | 'subject' })}>
+            <option value="full">Full paper</option>
+            <option value="subject">Subject-wise</option>
+          </select>
+          <small>Decides which free quota it counts against on the website.</small>
+        </label>
+        <label className="field">
+          <span>Duration (minutes)</span>
+          <input
+            className="input"
+            type="number"
+            min={1}
+            max={600}
+            value={form.durationMinutes}
+            onChange={(e) => setForm({ ...form, durationMinutes: Number(e.target.value) })}
+          />
+          <small>Candidates already taking the test keep the time they started with.</small>
+        </label>
+        <label className="field">
+          <span>Description (optional)</span>
+          <input className="input" maxLength={2000} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+        </label>
+        <label className="field">
+          <span>Marks per correct answer</span>
+          <input
+            className="input"
+            type="number"
+            min={0}
+            step="0.25"
+            disabled={locked}
+            value={form.marksPerQuestion}
+            onChange={(e) => setForm({ ...form, marksPerQuestion: Number(e.target.value) })}
+          />
+        </label>
+        <label className="field">
+          <span>Negative marks per wrong answer</span>
+          <input
+            className="input"
+            type="number"
+            min={0}
+            step="0.25"
+            disabled={locked}
+            value={form.negativeMarks}
+            onChange={(e) => setForm({ ...form, negativeMarks: Number(e.target.value) })}
+          />
+          {locked && (
+            <small>
+              Marking is locked: {t.attempts.total} attempt(s) already exist. To change it, archive this test and generate a new one.
+            </small>
+          )}
+        </label>
+      </div>
+      <button className="btn btn-primary" disabled={busy || !form.title.trim()}>
+        {busy ? 'Saving…' : 'Save details'}
+      </button>
+    </form>
+  );
+}
+
+interface Candidate {
+  id: string;
+  questionText: string;
+  difficulty: string;
+  chapterName: string;
+  timesUsed: number;
+  sameDifficulty: boolean;
+  correctOption: string;
+  options: { label: string; text: string }[];
+}
+
+function SwapDialog({
+  testId,
+  question,
+  onClose,
+  onSwapped,
+}: {
+  testId: string;
+  question: TestDetail['questions'][number];
+  onClose: () => void;
+  onSwapped: (message: string) => Promise<void>;
+}) {
+  const [search, setSearch] = useState('');
+  const [applied, setApplied] = useState('');
+  const [err, setErr] = useState<string | null>(null);
+  const [busy, setBusy] = useState<string | null>(null);
+  const { data, error } = useApi<{ total: number; items: Candidate[] }>(`mock-tests/${testId}/questions/${question.id}/candidates`, {
+    search: applied,
+    limit: 20,
+  });
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose();
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  async function swap(replacementId?: string) {
+    setErr(null);
+    setBusy(replacementId ?? 'auto');
+    try {
+      await api(`mock-tests/${testId}/questions/${question.id}/swap`, { method: 'POST', body: replacementId ? { replacementId } : {} });
+      await onSwapped(`Question ${question.position} replaced.`);
+    } catch (e) {
+      setErr(errorMessage(e));
+      setBusy(null);
+    }
+  }
+
+  return (
+    <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label={`Swap question ${question.position}`}>
+      <div className="modal">
+        <div className="card-head">
+          <h2>Swap question {question.position}</h2>
+          <button className="btn btn-sm btn-ghost" onClick={onClose}>
+            Close
+          </button>
+        </div>
+        <div className="card" style={{ background: 'var(--surface-2)', marginBottom: 12 }}>
+          <div className="small muted">
+            Replacing · {question.subjectName} · {question.chapterName} · <DifficultyBadge difficulty={question.difficulty} />
+          </div>
+          <div style={{ marginTop: 4 }}>{question.questionText}</div>
+          <div className="small" style={{ marginTop: 4 }}>
+            Key: <strong>{question.correctOption}</strong> {question.options.find((o) => o.label === question.correctOption)?.text}
+          </div>
+        </div>
+        <p className="small muted" style={{ marginTop: 0 }}>
+          The new question keeps the same number and subject. Only published, unused-in-this-test questions of the same language are listed;
+          same-difficulty ones first, then least used.
+        </p>
+        <ErrorAlert error={err ?? error} />
+        <div className="row" style={{ marginBottom: 12 }}>
+          <button className="btn btn-primary" disabled={busy !== null} onClick={() => swap()}>
+            {busy === 'auto' ? 'Swapping…' : 'Auto-pick a replacement'}
+          </button>
+          <form
+            className="row"
+            style={{ flex: 1 }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              setApplied(search.trim());
+            }}
+          >
+            <input className="input" style={{ flex: 1, minWidth: 160 }} placeholder="Search the question text…" value={search} onChange={(e) => setSearch(e.target.value)} />
+            <button className="btn">Search</button>
+          </form>
+        </div>
+        {!data ? (
+          <Loading />
+        ) : data.items.length === 0 ? (
+          <div className="empty">No other published question fits. Publish more questions in this subject, or clear the search.</div>
+        ) : (
+          <>
+            <div className="small muted" style={{ marginBottom: 6 }}>
+              Showing {data.items.length} of {data.total}
+            </div>
+            <div className="table-wrap" style={{ maxHeight: '48vh', overflow: 'auto' }}>
+              <table>
+                <tbody>
+                  {data.items.map((c) => (
+                    <tr key={c.id}>
+                      <td style={{ maxWidth: 520 }}>
+                        <div>{c.questionText}</div>
+                        <ol type="A" className="small muted" style={{ margin: '4px 0 0', paddingLeft: 20 }}>
+                          {c.options.map((o) => (
+                            <li key={o.label} style={o.label === c.correctOption ? { fontWeight: 700, color: 'var(--good)' } : undefined}>
+                              {o.text}
+                            </li>
+                          ))}
+                        </ol>
+                      </td>
+                      <td className="small">
+                        <DifficultyBadge difficulty={c.difficulty} />
+                        {c.sameDifficulty && <div className="muted">same level</div>}
+                        <div className="muted">{c.chapterName}</div>
+                        <div className="muted">used in {c.timesUsed} test(s)</div>
+                      </td>
+                      <td>
+                        <button className="btn btn-sm btn-primary" disabled={busy !== null} onClick={() => swap(c.id)}>
+                          {busy === c.id ? 'Swapping…' : 'Use this'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
   );
 }

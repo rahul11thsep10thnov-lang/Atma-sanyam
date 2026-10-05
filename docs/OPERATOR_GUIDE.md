@@ -180,12 +180,51 @@ difficulty counts, then **Publish**. It appears on the website's Mock Tests
 page within a minute, is served without answers, and every attempt is scored
 on the server. **Unpublish** or **Archive** removes it from the site.
 
-What the console does **not** do yet: edit a test's title, duration or kind
-after creation (the API supports it, the screen does not), swap a single
-question inside a test, or export/print a paper as PDF. To change a test,
-archive it and generate a new one — so choose the title carefully. The
-question list with key on the test page is the answer key for your own
-checking.
+### Editing a test
+
+On the test page, **Edit details** changes the title, description, duration,
+kind (full / subject-wise) and, until the first attempt exists, the marking.
+Once anyone has started the test the marking fields lock (attempts are scored
+with the marking they ran under); to change it, archive the test and generate
+a new one. Candidates already taking the test keep the time they started with.
+Archived tests cannot be edited.
+
+### Swapping one question
+
+Every row has a **Swap** button (needs the mock-test write permission). The
+dialog shows the question being replaced and the questions that may take its
+place — published, same exam, same language, **same subject** (so the section
+keeps its size), not already in the test and not a duplicate of one that is.
+Same-difficulty questions come first, then the least used. Click **Use this**
+on one, or **Auto-pick a replacement** (same difficulty, least used). The new
+question takes the old one's number.
+
+Good to know:
+- A swap is refused while a candidate is taking that test (the dialog says how
+  many and until when). Try again after they finish, or unpublish the test
+  first and swap once the last attempt has ended.
+- Finished attempts keep the question they saw, in the same position — their
+  results and your analytics are unchanged. Anyone who starts the test later
+  gets the new question.
+- Swapped a wrong key out of a live test? Also fix or unpublish the question
+  itself (Question Bank) so it is not picked again.
+
+### Printable question paper and answer key
+
+On the test page click **Print / PDF**. Choose what to print:
+
+| Option | Contains | Give to |
+|---|---|---|
+| Question paper only | Title, time, marks, marking scheme, candidate name/roll/date lines, instructions, sections and numbered questions with options | Candidates |
+| Answer key only | Marked **Staff copy**: answers at a glance, then each question with its answer, explanation and (optionally) chapter and difficulty | Staff |
+| Paper + answer key | Paper first, key starting on a new page | Staff |
+
+Then **Print / Save as PDF**; in the browser's print window choose *Save as
+PDF*, paper size **A4**, and switch off *Headers and footers*. Hindi papers
+use an embedded Devanagari font, so they look the same on every computer.
+Instructions are printed in the test's language (Hindi, Hinglish or English).
+The PDF is made by the browser, not stored on the server, so it always
+reflects the test as it is right now — print again after a swap or edit.
 
 ---
 

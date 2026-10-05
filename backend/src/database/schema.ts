@@ -553,6 +553,9 @@ export const testAnswers = pgTable(
     questionId: uuid('question_id')
       .notNull()
       .references(() => questions.id, { onDelete: 'cascade' }),
+    // Question number at the time the attempt started. Keeps old results in
+    // order even if the question is later swapped out of the test.
+    position: integer('position'),
     selectedOption: text('selected_option'),
     isCorrect: boolean('is_correct'),
     markedForReview: boolean('marked_for_review').notNull().default(false),

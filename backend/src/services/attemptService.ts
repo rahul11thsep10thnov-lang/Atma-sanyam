@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, lt } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, lt, sql } from 'drizzle-orm';
 import type { Db } from '../database/client.js';
 import { exams, mockTestQuestions, mockTests, questionOptions, questions, subjects, testAnswers, testAttempts } from '../database/schema.js';
 import { badRequest, conflict, notFound } from '../lib/httpError.js';
@@ -32,7 +32,7 @@ export async function startAttempt(db: Db, userId: string, mockTestId: string, g
   await closeExpiredAttempts(db, userId, mockTestId, graceSeconds);
 
   const served = await db
-    .select({ id: questions.id })
+    .select({ id: questions.id, position: mockTestQuestions.position })
     .from(mockTestQuestions)
     .innerJoin(questions, eq(questions.id, mockTestQuestions.questionId))
     .where(and(eq(mockTestQuestions.mockTestId, mockTestId), eq(questions.status, 'published')))
@@ -45,7 +45,7 @@ export async function startAttempt(db: Db, userId: string, mockTestId: string, g
       .insert(testAttempts)
       .values({ userId, mockTestId, startedAt: now, deadlineAt, totalQuestions: served.length })
       .returning();
-    await tx.insert(testAnswers).values(served.map((q) => ({ attemptId: row!.id, questionId: q.id })));
+    await tx.insert(testAnswers).values(served.map((q) => ({ attemptId: row!.id, questionId: q.id, position: q.position })));
     return row!;
   });
   log.info('attempt.started', { attemptId: attempt.id, mockTestId, questions: served.length });
@@ -191,19 +191,22 @@ export async function getResult(db: Db, userId: string, attemptId: string) {
       questionText: questions.questionText,
       correctOption: questions.correctOption,
       explanation: questions.explanation,
-      position: mockTestQuestions.position,
-      subjectId: mockTestQuestions.sectionSubjectId,
+      // The question number the candidate saw. A question swapped out of the
+      // test afterwards is no longer in mock_test_questions, so the answer row
+      // carries its own position.
+      position: sql<number>`coalesce(${testAnswers.position}, ${mockTestQuestions.position}, 0)`,
+      subjectId: questions.subjectId,
       subjectName: subjects.name,
     })
     .from(testAnswers)
     .innerJoin(questions, eq(questions.id, testAnswers.questionId))
-    .innerJoin(
+    .leftJoin(
       mockTestQuestions,
       and(eq(mockTestQuestions.questionId, testAnswers.questionId), eq(mockTestQuestions.mockTestId, row.a.mockTestId))
     )
-    .leftJoin(subjects, eq(subjects.id, mockTestQuestions.sectionSubjectId))
+    .leftJoin(subjects, eq(subjects.id, questions.subjectId))
     .where(eq(testAnswers.attemptId, attemptId))
-    .orderBy(asc(mockTestQuestions.position));
+    .orderBy(sql`coalesce(${testAnswers.position}, ${mockTestQuestions.position}, 0)`);
   const opts = items.length
     ? await db
         .select({ questionId: questionOptions.questionId, label: questionOptions.label, text: questionOptions.text })
