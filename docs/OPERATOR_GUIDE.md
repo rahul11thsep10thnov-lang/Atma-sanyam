@@ -175,15 +175,17 @@ Console → **Mock Tests** → **New mock test / blueprint**:
   publish immediately → "Blueprint name — Mock Test 1…N" are created in one
   go with minimal overlap.
 
-Open a test to see its questions with answers, edit the title, duration or
-kind, and **Publish**. It appears on the website's Mock Tests page within a
-minute, is served without answers, and every attempt is scored on the
-server. **Unpublish** or **Archive** removes it from the site.
+Open a test to see its questions with the answer key, subject and
+difficulty counts, then **Publish**. It appears on the website's Mock Tests
+page within a minute, is served without answers, and every attempt is scored
+on the server. **Unpublish** or **Archive** removes it from the site.
 
-Subject-wise tests: same form with questions in one subject only (e.g.
-Hindi 25, 20 min). Printed question papers: open the test in the console;
-the question list with key and explanations is the paper and its answer
-key (print the page, or export from the Question Bank filtered by test).
+What the console does **not** do yet: edit a test's title, duration or kind
+after creation (the API supports it, the screen does not), swap a single
+question inside a test, or export/print a paper as PDF. To change a test,
+archive it and generate a new one — so choose the title carefully. The
+question list with key on the test page is the answer key for your own
+checking.
 
 ---
 
