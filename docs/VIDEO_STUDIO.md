@@ -467,3 +467,39 @@ The brief's generic names map onto these: `LLM_API_KEY` → `ANTHROPIC_API_KEY`,
 * With the template (no-LLM) master-script writer, narration reuses the
   article's own sentences, which QC notes. For third-party copyrighted
   articles, enable the LLM writer or rewrite the lines before publishing.
+
+## 14. Cinematic 2.5D mode
+
+Stories can be created with `productionMode: "CINEMATIC_25D"` (admin:
+**New story → Cinematic 2.5D**). They keep everything above:
+
+* facts, safety, master script, approval
+* languages, voices, subtitles, QC
+
+The single still per scene is replaced by directed shots rendered with the
+2.5D engine. One master visual is shared by every language. Classic
+stories are unchanged.
+
+| Topic | Document |
+|---|---|
+| Overview and flow | `docs/architecture/2.5d-target-architecture.md` |
+| Episodes, shots, overrides, state machine | `docs/architecture/shot-system.md` |
+| Assets, reuse, placeholders, storage | `docs/architecture/asset-system.md` |
+| Characters and locations across shots | `docs/architecture/character-continuity.md` |
+| The engine | `docs/architecture/2.5d-engine.md` |
+| Local AI providers and security | `docs/architecture/local-ai.md` |
+| Queues, workers, GPU hosts, capacity | `docs/architecture/gpu-workers.md` |
+| Shots → master visual → languages → publish gate | `docs/architecture/render-pipeline.md` |
+| Model registry and licences | `docs/operations/model-registry.md` |
+| Deployment and environment variables | `docs/operations/gpu-deployment.md` |
+| Troubleshooting | `docs/operations/troubleshooting.md` |
+
+Commands (in `backend/`):
+
+```bash
+npm run demo:railway -- --out ./demo-output [--preview] [--stills-only]   # engine demo, no DB needed
+npm run worker:render                                                      # 2.5D + FFmpeg + QC worker
+npm run worker:gpu                                                         # GPU worker (next to ComfyUI / inference-server)
+ADMIN_PASSWORD='…' npm run create-admin -- --email you@example.com --role SUPER_ADMIN
+npm run lint && npm run typecheck && npm test
+```

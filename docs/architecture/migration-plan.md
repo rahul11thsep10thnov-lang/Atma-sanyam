@@ -108,6 +108,6 @@ and is not rebuilt.
 ## 4. Backwards compatibility
 
 * `CLASSIC` stories keep the old job graph and renderer bit-for-bit.
-* Old queue `studio-render` still has a worker draining it. New FFmpeg
-  jobs use `ffmpeg-render`.
+* FFmpeg jobs (classic and cinematic) share the existing `studio-render`
+  queue; the new queues are added alongside it.
 * The API only adds routes. The admin UI keeps all existing pages.
