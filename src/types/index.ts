@@ -52,7 +52,15 @@ export interface SpaceImageRef {
   space: 'balcony' | 'garden';
 }
 
-export type ImageRef = ArtImageRef | QuoteImageRef | CustomImageRef | RemoteImageRef | BalconyImageRef | SpaceImageRef;
+// Focus to grow one plant of a species in the paradise garden (src/paradise):
+// the seed goes into the soil when the session starts, and the plant is
+// placed in the garden when it completes.
+export interface PlantImageRef {
+  kind: 'plant';
+  speciesId: string;
+}
+
+export type ImageRef = ArtImageRef | QuoteImageRef | CustomImageRef | RemoteImageRef | BalconyImageRef | SpaceImageRef | PlantImageRef;
 
 export interface GridDims {
   rows: number;
@@ -93,4 +101,6 @@ export interface AppSettings {
   appearance?: 'system' | 'light' | 'dark';
   // Chosen on first launch; undefined until then (the language screen shows).
   language?: 'en' | 'fr' | 'de' | 'it' | 'es' | 'ar' | 'zh' | 'ru';
+  // How alive the garden is: everything, a calm few things, or still.
+  gardenMotion?: 'full' | 'calm' | 'off';
 }

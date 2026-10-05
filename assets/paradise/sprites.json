@@ -1,0 +1,4850 @@
+{
+ "version": 1,
+ "species": {
+  "lily": {
+   "segment": "flowers",
+   "stages": [
+    {
+     "file": "sprites/lily__seed.webp",
+     "thumb": "thumbs/lily__seed.webp",
+     "px": [
+      660,
+      741
+     ],
+     "widthM": 0.2496,
+     "heightM": 0.2802,
+     "pivot": [
+      0.5,
+      0.8676
+     ],
+     "boxM": [
+      0.36,
+      0.36,
+      0.35
+     ]
+    },
+    {
+     "file": "sprites/lily__size1.webp",
+     "thumb": "thumbs/lily__size1.webp",
+     "px": [
+      776,
+      711
+     ],
+     "widthM": 0.0729,
+     "heightM": 0.0668,
+     "pivot": [
+      0.5,
+      0.855
+     ],
+     "boxM": [
+      0.24,
+      0.24,
+      0.196
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/lily__size2.webp",
+     "thumb": "thumbs/lily__size2.webp",
+     "px": [
+      649,
+      670
+     ],
+     "widthM": 0.0852,
+     "heightM": 0.088,
+     "pivot": [
+      0.4779,
+      0.9719
+     ],
+     "boxM": [
+      0.195,
+      0.172,
+      0.223
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/lily__size3.webp",
+     "thumb": "thumbs/lily__size3.webp",
+     "px": [
+      328,
+      659
+     ],
+     "widthM": 0.2737,
+     "heightM": 0.55,
+     "pivot": [
+      0.384,
+      0.9817
+     ],
+     "boxM": [
+      0.276,
+      0.188,
+      0.605
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/lily__size4.webp",
+     "thumb": "thumbs/lily__size4.webp",
+     "px": [
+      455,
+      658
+     ],
+     "widthM": 0.4399,
+     "heightM": 0.6362,
+     "pivot": [
+      0.3283,
+      0.9825
+     ],
+     "boxM": [
+      0.428,
+      0.277,
+      0.679
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/lily__size5.webp",
+     "thumb": "thumbs/lily__size5.webp",
+     "px": [
+      443,
+      641
+     ],
+     "widthM": 0.386,
+     "heightM": 0.5585,
+     "pivot": [
+      0.3552,
+      0.9653
+     ],
+     "boxM": [
+      0.373,
+      0.378,
+      0.61
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/lily__size6.webp",
+     "thumb": "thumbs/lily__size6.webp",
+     "px": [
+      523,
+      658
+     ],
+     "widthM": 0.5344,
+     "heightM": 0.6723,
+     "pivot": [
+      0.5293,
+      0.9616
+     ],
+     "boxM": [
+      0.504,
+      0.43,
+      0.686
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/lily__size7.webp",
+     "thumb": "thumbs/lily__size7.webp",
+     "px": [
+      446,
+      687
+     ],
+     "widthM": 0.4926,
+     "heightM": 0.7588,
+     "pivot": [
+      0.4705,
+      0.9607
+     ],
+     "boxM": [
+      0.433,
+      0.538,
+      0.746
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    }
+   ]
+  },
+  "rose": {
+   "segment": "flowers",
+   "stages": [
+    {
+     "file": "sprites/rose__seed.webp",
+     "thumb": "thumbs/rose__seed.webp",
+     "px": [
+      735,
+      741
+     ],
+     "widthM": 0.278,
+     "heightM": 0.2802,
+     "pivot": [
+      0.5,
+      0.8676
+     ],
+     "boxM": [
+      0.4,
+      0.4,
+      0.35
+     ]
+    },
+    {
+     "file": "sprites/rose__size1.webp",
+     "thumb": "thumbs/rose__size1.webp",
+     "px": [
+      662,
+      602
+     ],
+     "widthM": 0.0563,
+     "heightM": 0.0512,
+     "pivot": [
+      0.5,
+      0.7295
+     ],
+     "boxM": [
+      0.202,
+      0.202,
+      0.147
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/rose__size2.webp",
+     "thumb": "thumbs/rose__size2.webp",
+     "px": [
+      794,
+      718
+     ],
+     "widthM": 0.1077,
+     "heightM": 0.0974,
+     "pivot": [
+      0.4911,
+      0.8689
+     ],
+     "boxM": [
+      0.266,
+      0.251,
+      0.224
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/rose__size3.webp",
+     "thumb": "thumbs/rose__size3.webp",
+     "px": [
+      684,
+      755
+     ],
+     "widthM": 0.2561,
+     "heightM": 0.2827,
+     "pivot": [
+      0.4888,
+      0.8541
+     ],
+     "boxM": [
+      0.346,
+      0.356,
+      0.349
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/rose__size4.webp",
+     "thumb": "thumbs/rose__size4.webp",
+     "px": [
+      766,
+      741
+     ],
+     "widthM": 0.4637,
+     "heightM": 0.4486,
+     "pivot": [
+      0.5119,
+      0.8287
+     ],
+     "boxM": [
+      0.535,
+      0.507,
+      0.462
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/rose__size5.webp",
+     "thumb": "thumbs/rose__size5.webp",
+     "px": [
+      733,
+      706
+     ],
+     "widthM": 0.5742,
+     "heightM": 0.5531,
+     "pivot": [
+      0.5137,
+      0.8507
+     ],
+     "boxM": [
+      0.598,
+      0.664,
+      0.564
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/rose__size6.webp",
+     "thumb": "thumbs/rose__size6.webp",
+     "px": [
+      750,
+      742
+     ],
+     "widthM": 0.7394,
+     "heightM": 0.7315,
+     "pivot": [
+      0.5107,
+      0.8589
+     ],
+     "boxM": [
+      0.732,
+      0.733,
+      0.673
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/rose__size7.webp",
+     "thumb": "thumbs/rose__size7.webp",
+     "px": [
+      784,
+      746
+     ],
+     "widthM": 0.8984,
+     "heightM": 0.8548,
+     "pivot": [
+      0.4917,
+      0.8584
+     ],
+     "boxM": [
+      0.864,
+      0.849,
+      0.757
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    }
+   ]
+  },
+  "lotus": {
+   "segment": "flowers",
+   "stages": [
+    {
+     "file": "sprites/lotus__seed.webp",
+     "thumb": "thumbs/lotus__seed.webp",
+     "px": [
+      1034,
+      737
+     ],
+     "widthM": 0.6162,
+     "heightM": 0.4392,
+     "pivot": [
+      0.5,
+      0.8669
+     ],
+     "boxM": [
+      0.7,
+      0.7,
+      0.465
+     ]
+    },
+    {
+     "file": "sprites/lotus__size1.webp",
+     "thumb": "thumbs/lotus__size1.webp",
+     "px": [
+      1997,
+      711
+     ],
+     "widthM": 0.4753,
+     "heightM": 0.1692,
+     "pivot": [
+      0.5,
+      0.8233
+     ],
+     "boxM": [
+      0.7,
+      0.7,
+      0.25
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/lotus__size2.webp",
+     "thumb": "thumbs/lotus__size2.webp",
+     "px": [
+      1965,
+      729
+     ],
+     "widthM": 0.4804,
+     "heightM": 0.1782,
+     "pivot": [
+      0.5,
+      0.842
+     ],
+     "boxM": [
+      0.7,
+      0.7,
+      0.263
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/lotus__size3.webp",
+     "thumb": "thumbs/lotus__size3.webp",
+     "px": [
+      934,
+      730
+     ],
+     "widthM": 0.7131,
+     "heightM": 0.5573,
+     "pivot": [
+      0.5,
+      0.8656
+     ],
+     "boxM": [
+      0.7,
+      0.7,
+      0.509
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/lotus__size4.webp",
+     "thumb": "thumbs/lotus__size4.webp",
+     "px": [
+      912,
+      735
+     ],
+     "widthM": 0.7104,
+     "heightM": 0.5726,
+     "pivot": [
+      0.5,
+      0.8665
+     ],
+     "boxM": [
+      0.7,
+      0.7,
+      0.519
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/lotus__size5.webp",
+     "thumb": "thumbs/lotus__size5.webp",
+     "px": [
+      849,
+      703
+     ],
+     "widthM": 0.7056,
+     "heightM": 0.5843,
+     "pivot": [
+      0.5,
+      0.8604
+     ],
+     "boxM": [
+      0.7,
+      0.7,
+      0.554
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/lotus__size6.webp",
+     "thumb": "thumbs/lotus__size6.webp",
+     "px": [
+      771,
+      748
+     ],
+     "widthM": 0.7011,
+     "heightM": 0.6802,
+     "pivot": [
+      0.5,
+      0.8688
+     ],
+     "boxM": [
+      0.7,
+      0.7,
+      0.606
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/lotus__size7.webp",
+     "thumb": "thumbs/lotus__size7.webp",
+     "px": [
+      815,
+      745
+     ],
+     "widthM": 0.7024,
+     "heightM": 0.6421,
+     "pivot": [
+      0.5,
+      0.8683
+     ],
+     "boxM": [
+      0.7,
+      0.7,
+      0.575
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    }
+   ]
+  },
+  "marigold": {
+   "segment": "flowers",
+   "stages": [
+    {
+     "file": "sprites/marigold__seed.webp",
+     "thumb": "thumbs/marigold__seed.webp",
+     "px": [
+      734,
+      741
+     ],
+     "widthM": 0.3854,
+     "heightM": 0.389,
+     "pivot": [
+      0.4993,
+      0.8676
+     ],
+     "boxM": [
+      0.4,
+      0.4,
+      0.35
+     ]
+    },
+    {
+     "file": "sprites/marigold__size1.webp",
+     "thumb": "thumbs/marigold__size1.webp",
+     "px": [
+      675,
+      414
+     ],
+     "widthM": 0.2025,
+     "heightM": 0.1242,
+     "pivot": [
+      0.5,
+      0.6573
+     ],
+     "boxM": [
+      0.2,
+      0.2,
+      0.081
+     ],
+     "sway": {
+      "amp": 0.4,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/marigold__size2.webp",
+     "thumb": "thumbs/marigold__size2.webp",
+     "px": [
+      425,
+      453
+     ],
+     "widthM": 0.1275,
+     "heightM": 0.1359,
+     "pivot": [
+      0.4213,
+      0.919
+     ],
+     "boxM": [
+      0.141,
+      0.14,
+      0.131
+     ],
+     "sway": {
+      "amp": 0.4,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/marigold__size3.webp",
+     "thumb": "thumbs/marigold__size3.webp",
+     "px": [
+      796,
+      705
+     ],
+     "widthM": 0.2388,
+     "heightM": 0.2115,
+     "pivot": [
+      0.5015,
+      0.7919
+     ],
+     "boxM": [
+      0.234,
+      0.259,
+      0.185
+     ],
+     "sway": {
+      "amp": 0.4,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/marigold__size4.webp",
+     "thumb": "thumbs/marigold__size4.webp",
+     "px": [
+      890,
+      720
+     ],
+     "widthM": 0.3606,
+     "heightM": 0.2917,
+     "pivot": [
+      0.4801,
+      0.8041
+     ],
+     "boxM": [
+      0.33,
+      0.316,
+      0.27
+     ],
+     "sway": {
+      "amp": 0.4,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/marigold__size5.webp",
+     "thumb": "thumbs/marigold__size5.webp",
+     "px": [
+      860,
+      729
+     ],
+     "widthM": 0.4186,
+     "heightM": 0.3548,
+     "pivot": [
+      0.498,
+      0.8416
+     ],
+     "boxM": [
+      0.402,
+      0.438,
+      0.324
+     ],
+     "sway": {
+      "amp": 0.4,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/marigold__size6.webp",
+     "thumb": "thumbs/marigold__size6.webp",
+     "px": [
+      1074,
+      744
+     ],
+     "widthM": 0.5547,
+     "heightM": 0.3842,
+     "pivot": [
+      0.5025,
+      0.865
+     ],
+     "boxM": [
+      0.487,
+      0.504,
+      0.344
+     ],
+     "sway": {
+      "amp": 0.4,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/marigold__size7.webp",
+     "thumb": "thumbs/marigold__size7.webp",
+     "px": [
+      935,
+      725
+     ],
+     "widthM": 0.5989,
+     "heightM": 0.4644,
+     "pivot": [
+      0.5053,
+      0.8528
+     ],
+     "boxM": [
+      0.569,
+      0.585,
+      0.427
+     ],
+     "sway": {
+      "amp": 0.4,
+      "speed": 0.6
+     }
+    }
+   ]
+  },
+  "hibiscus": {
+   "segment": "flowers",
+   "stages": [
+    {
+     "file": "sprites/hibiscus__seed.webp",
+     "thumb": "thumbs/hibiscus__seed.webp",
+     "px": [
+      734,
+      741
+     ],
+     "widthM": 0.3854,
+     "heightM": 0.389,
+     "pivot": [
+      0.4993,
+      0.8676
+     ],
+     "boxM": [
+      0.4,
+      0.4,
+      0.35
+     ]
+    },
+    {
+     "file": "sprites/hibiscus__size1.webp",
+     "thumb": "thumbs/hibiscus__size1.webp",
+     "px": [
+      857,
+      731
+     ],
+     "widthM": 0.2571,
+     "heightM": 0.2193,
+     "pivot": [
+      0.5,
+      0.8587
+     ],
+     "boxM": [
+      0.264,
+      0.264,
+      0.199
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/hibiscus__size2.webp",
+     "thumb": "thumbs/hibiscus__size2.webp",
+     "px": [
+      752,
+      716
+     ],
+     "widthM": 0.343,
+     "heightM": 0.3266,
+     "pivot": [
+      0.5089,
+      0.8491
+     ],
+     "boxM": [
+      0.34,
+      0.338,
+      0.304
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/hibiscus__size3.webp",
+     "thumb": "thumbs/hibiscus__size3.webp",
+     "px": [
+      734,
+      747
+     ],
+     "widthM": 0.4764,
+     "heightM": 0.4848,
+     "pivot": [
+      0.4637,
+      0.8324
+     ],
+     "boxM": [
+      0.473,
+      0.458,
+      0.433
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/hibiscus__size4.webp",
+     "thumb": "thumbs/hibiscus__size4.webp",
+     "px": [
+      652,
+      723
+     ],
+     "widthM": 0.6185,
+     "heightM": 0.6859,
+     "pivot": [
+      0.4669,
+      0.834
+     ],
+     "boxM": [
+      0.605,
+      0.655,
+      0.632
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/hibiscus__size5.webp",
+     "thumb": "thumbs/hibiscus__size5.webp",
+     "px": [
+      729,
+      708
+     ],
+     "widthM": 0.8807,
+     "heightM": 0.8553,
+     "pivot": [
+      0.4813,
+      0.8429
+     ],
+     "boxM": [
+      0.842,
+      0.817,
+      0.805
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/hibiscus__size6.webp",
+     "thumb": "thumbs/hibiscus__size6.webp",
+     "px": [
+      749,
+      737
+     ],
+     "widthM": 1.0199,
+     "heightM": 1.0035,
+     "pivot": [
+      0.4811,
+      0.8512
+     ],
+     "boxM": [
+      0.985,
+      1.02,
+      0.908
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/hibiscus__size7.webp",
+     "thumb": "thumbs/hibiscus__size7.webp",
+     "px": [
+      745,
+      723
+     ],
+     "widthM": 1.1601,
+     "heightM": 1.1259,
+     "pivot": [
+      0.5061,
+      0.8544
+     ],
+     "boxM": [
+      1.146,
+      1.134,
+      1.038
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    }
+   ]
+  },
+  "jasmine": {
+   "segment": "flowers",
+   "stages": [
+    {
+     "file": "sprites/jasmine__seed.webp",
+     "thumb": "thumbs/jasmine__seed.webp",
+     "px": [
+      734,
+      741
+     ],
+     "widthM": 0.3854,
+     "heightM": 0.389,
+     "pivot": [
+      0.4993,
+      0.8676
+     ],
+     "boxM": [
+      0.4,
+      0.4,
+      0.35
+     ]
+    },
+    {
+     "file": "sprites/jasmine__size1.webp",
+     "thumb": "thumbs/jasmine__size1.webp",
+     "px": [
+      766,
+      596
+     ],
+     "widthM": 0.2298,
+     "heightM": 0.1788,
+     "pivot": [
+      0.5007,
+      0.6804
+     ],
+     "boxM": [
+      0.23,
+      0.23,
+      0.126
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/jasmine__size2.webp",
+     "thumb": "thumbs/jasmine__size2.webp",
+     "px": [
+      1025,
+      718
+     ],
+     "widthM": 0.3131,
+     "heightM": 0.2193,
+     "pivot": [
+      0.485,
+      0.864
+     ],
+     "boxM": [
+      0.284,
+      0.3,
+      0.204
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/jasmine__size3.webp",
+     "thumb": "thumbs/jasmine__size3.webp",
+     "px": [
+      776,
+      735
+     ],
+     "widthM": 0.3835,
+     "heightM": 0.3633,
+     "pivot": [
+      0.518,
+      0.8422
+     ],
+     "boxM": [
+      0.39,
+      0.388,
+      0.33
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/jasmine__size4.webp",
+     "thumb": "thumbs/jasmine__size4.webp",
+     "px": [
+      901,
+      736
+     ],
+     "widthM": 0.5584,
+     "heightM": 0.4562,
+     "pivot": [
+      0.4811,
+      0.8797
+     ],
+     "boxM": [
+      0.514,
+      0.522,
+      0.413
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/jasmine__size5.webp",
+     "thumb": "thumbs/jasmine__size5.webp",
+     "px": [
+      817,
+      734
+     ],
+     "widthM": 0.6574,
+     "heightM": 0.5906,
+     "pivot": [
+      0.5136,
+      0.8388
+     ],
+     "boxM": [
+      0.647,
+      0.647,
+      0.536
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/jasmine__size6.webp",
+     "thumb": "thumbs/jasmine__size6.webp",
+     "px": [
+      355,
+      310
+     ],
+     "widthM": 0.787,
+     "heightM": 0.6873,
+     "pivot": [
+      0.5071,
+      0.8571
+     ],
+     "boxM": [
+      0.759,
+      0.798,
+      0.64
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/jasmine__size7.webp",
+     "thumb": "thumbs/jasmine__size7.webp",
+     "px": [
+      346,
+      308
+     ],
+     "widthM": 0.9257,
+     "heightM": 0.824,
+     "pivot": [
+      0.5034,
+      0.8564
+     ],
+     "boxM": [
+      0.888,
+      0.89,
+      0.743
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    }
+   ]
+  },
+  "neem": {
+   "segment": "trees",
+   "stages": [
+    {
+     "file": "sprites/neem__seed.webp",
+     "thumb": "thumbs/neem__seed.webp",
+     "px": [
+      666,
+      737
+     ],
+     "widthM": 0.4407,
+     "heightM": 0.4877,
+     "pivot": [
+      0.5,
+      0.8669
+     ],
+     "boxM": [
+      0.52,
+      0.52,
+      0.5
+     ]
+    },
+    {
+     "file": "sprites/neem__size1.webp",
+     "thumb": "thumbs/neem__size1.webp",
+     "px": [
+      639,
+      739
+     ],
+     "widthM": 0.3023,
+     "heightM": 0.3496,
+     "pivot": [
+      0.5,
+      0.8667
+     ],
+     "boxM": [
+      0.4,
+      0.4,
+      0.4
+     ],
+     "sway": {
+      "amp": 0.6,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/neem__size2.webp",
+     "thumb": "thumbs/neem__size2.webp",
+     "px": [
+      511,
+      633
+     ],
+     "widthM": 1.0119,
+     "heightM": 1.2535,
+     "pivot": [
+      0.5954,
+      0.9668
+     ],
+     "boxM": [
+      0.835,
+      0.799,
+      1.219
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/neem__size3.webp",
+     "thumb": "thumbs/neem__size3.webp",
+     "px": [
+      377,
+      685
+     ],
+     "widthM": 1.5024,
+     "heightM": 2.7297,
+     "pivot": [
+      0.5962,
+      0.9652
+     ],
+     "boxM": [
+      1.273,
+      1.738,
+      2.314
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/neem__size4.webp",
+     "thumb": "thumbs/neem__size4.webp",
+     "px": [
+      611,
+      663
+     ],
+     "widthM": 3.5506,
+     "heightM": 3.8528,
+     "pivot": [
+      0.5376,
+      0.9543
+     ],
+     "boxM": [
+      2.683,
+      2.915,
+      3.309
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/neem__size5.webp",
+     "thumb": "thumbs/neem__size5.webp",
+     "px": [
+      611,
+      676
+     ],
+     "widthM": 5.5527,
+     "heightM": 6.1434,
+     "pivot": [
+      0.4487,
+      0.9558
+     ],
+     "boxM": [
+      4.27,
+      4.359,
+      5.053
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/neem__size6.webp",
+     "thumb": "thumbs/neem__size6.webp",
+     "px": [
+      574,
+      722
+     ],
+     "widthM": 5.4574,
+     "heightM": 6.8646,
+     "pivot": [
+      0.4979,
+      0.9401
+     ],
+     "boxM": [
+      4.253,
+      3.231,
+      5.408
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/neem__size7.webp",
+     "thumb": "thumbs/neem__size7.webp",
+     "px": [
+      561,
+      679
+     ],
+     "widthM": 6.8098,
+     "heightM": 8.2422,
+     "pivot": [
+      0.5436,
+      0.9431
+     ],
+     "boxM": [
+      5.165,
+      6.958,
+      6.518
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    }
+   ]
+  },
+  "mango": {
+   "segment": "fruits",
+   "stages": [
+    {
+     "file": "sprites/mango__seed.webp",
+     "thumb": "thumbs/mango__seed.webp",
+     "px": [
+      666,
+      737
+     ],
+     "widthM": 0.4407,
+     "heightM": 0.4877,
+     "pivot": [
+      0.5,
+      0.8669
+     ],
+     "boxM": [
+      0.52,
+      0.52,
+      0.5
+     ]
+    },
+    {
+     "file": "sprites/mango__size1.webp",
+     "thumb": "thumbs/mango__size1.webp",
+     "px": [
+      639,
+      739
+     ],
+     "widthM": 0.3023,
+     "heightM": 0.3496,
+     "pivot": [
+      0.5,
+      0.8667
+     ],
+     "boxM": [
+      0.4,
+      0.4,
+      0.4
+     ],
+     "sway": {
+      "amp": 0.6,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/mango__size2.webp",
+     "thumb": "thumbs/mango__size2.webp",
+     "px": [
+      527,
+      686
+     ],
+     "widthM": 0.9772,
+     "heightM": 1.272,
+     "pivot": [
+      0.462,
+      0.9666
+     ],
+     "boxM": [
+      0.836,
+      1.083,
+      1.158
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/mango__size3.webp",
+     "thumb": "thumbs/mango__size3.webp",
+     "px": [
+      399,
+      723
+     ],
+     "widthM": 1.2299,
+     "heightM": 2.2286,
+     "pivot": [
+      0.5199,
+      0.9582
+     ],
+     "boxM": [
+      1.08,
+      1.621,
+      1.893
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/mango__size4.webp",
+     "thumb": "thumbs/mango__size4.webp",
+     "px": [
+      628,
+      703
+     ],
+     "widthM": 3.2421,
+     "heightM": 3.6293,
+     "pivot": [
+      0.5913,
+      0.9588
+     ],
+     "boxM": [
+      2.68,
+      3.01,
+      2.913
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/mango__size5.webp",
+     "thumb": "thumbs/mango__size5.webp",
+     "px": [
+      585,
+      661
+     ],
+     "widthM": 4.6902,
+     "heightM": 5.2995,
+     "pivot": [
+      0.4617,
+      0.9521
+     ],
+     "boxM": [
+      3.634,
+      3.099,
+      4.467
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/mango__size6.webp",
+     "thumb": "thumbs/mango__size6.webp",
+     "px": [
+      588,
+      732
+     ],
+     "widthM": 4.5844,
+     "heightM": 5.7071,
+     "pivot": [
+      0.5256,
+      0.9643
+     ],
+     "boxM": [
+      3.511,
+      3.183,
+      4.608
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/mango__size7.webp",
+     "thumb": "thumbs/mango__size7.webp",
+     "px": [
+      575,
+      721
+     ],
+     "widthM": 5.8938,
+     "heightM": 7.3903,
+     "pivot": [
+      0.5438,
+      0.936
+     ],
+     "boxM": [
+      4.487,
+      4.629,
+      5.76
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    }
+   ]
+  },
+  "cherry_blossom": {
+   "segment": "trees",
+   "stages": [
+    {
+     "file": "sprites/cherry_blossom__seed.webp",
+     "thumb": "thumbs/cherry_blossom__seed.webp",
+     "px": [
+      666,
+      737
+     ],
+     "widthM": 0.4407,
+     "heightM": 0.4877,
+     "pivot": [
+      0.5,
+      0.8669
+     ],
+     "boxM": [
+      0.52,
+      0.52,
+      0.5
+     ]
+    },
+    {
+     "file": "sprites/cherry_blossom__size1.webp",
+     "thumb": "thumbs/cherry_blossom__size1.webp",
+     "px": [
+      713,
+      740
+     ],
+     "widthM": 0.2834,
+     "heightM": 0.2942,
+     "pivot": [
+      0.5,
+      0.8668
+     ],
+     "boxM": [
+      0.4,
+      0.4,
+      0.36
+     ],
+     "sway": {
+      "amp": 0.6,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/cherry_blossom__size2.webp",
+     "thumb": "thumbs/cherry_blossom__size2.webp",
+     "px": [
+      582,
+      676
+     ],
+     "widthM": 0.879,
+     "heightM": 1.0209,
+     "pivot": [
+      0.4106,
+      0.9638
+     ],
+     "boxM": [
+      0.738,
+      0.79,
+      1.008
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/cherry_blossom__size3.webp",
+     "thumb": "thumbs/cherry_blossom__size3.webp",
+     "px": [
+      615,
+      642
+     ],
+     "widthM": 1.8896,
+     "heightM": 1.9726,
+     "pivot": [
+      0.5886,
+      0.926
+     ],
+     "boxM": [
+      1.63,
+      1.506,
+      1.698
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/cherry_blossom__size4.webp",
+     "thumb": "thumbs/cherry_blossom__size4.webp",
+     "px": [
+      630,
+      625
+     ],
+     "widthM": 3.1296,
+     "heightM": 3.1048,
+     "pivot": [
+      0.448,
+      0.9523
+     ],
+     "boxM": [
+      2.728,
+      3.132,
+      2.797
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/cherry_blossom__size5.webp",
+     "thumb": "thumbs/cherry_blossom__size5.webp",
+     "px": [
+      613,
+      661
+     ],
+     "widthM": 3.827,
+     "heightM": 4.1267,
+     "pivot": [
+      0.4382,
+      0.9465
+     ],
+     "boxM": [
+      3.199,
+      3.888,
+      3.379
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/cherry_blossom__size6.webp",
+     "thumb": "thumbs/cherry_blossom__size6.webp",
+     "px": [
+      614,
+      668
+     ],
+     "widthM": 5.3777,
+     "heightM": 5.8506,
+     "pivot": [
+      0.5097,
+      0.9493
+     ],
+     "boxM": [
+      4.08,
+      4.197,
+      4.903
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/cherry_blossom__size7.webp",
+     "thumb": "thumbs/cherry_blossom__size7.webp",
+     "px": [
+      465,
+      712
+     ],
+     "widthM": 4.3794,
+     "heightM": 6.7057,
+     "pivot": [
+      0.4442,
+      0.9403
+     ],
+     "boxM": [
+      3.415,
+      5.122,
+      5.258
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    }
+   ]
+  },
+  "peepal": {
+   "segment": "trees",
+   "stages": [
+    {
+     "file": "sprites/peepal__seed.webp",
+     "thumb": "thumbs/peepal__seed.webp",
+     "px": [
+      666,
+      737
+     ],
+     "widthM": 0.4407,
+     "heightM": 0.4877,
+     "pivot": [
+      0.5,
+      0.8669
+     ],
+     "boxM": [
+      0.52,
+      0.52,
+      0.5
+     ]
+    },
+    {
+     "file": "sprites/peepal__size1.webp",
+     "thumb": "thumbs/peepal__size1.webp",
+     "px": [
+      639,
+      739
+     ],
+     "widthM": 0.3023,
+     "heightM": 0.3496,
+     "pivot": [
+      0.5,
+      0.8667
+     ],
+     "boxM": [
+      0.4,
+      0.4,
+      0.4
+     ],
+     "sway": {
+      "amp": 0.6,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/peepal__size2.webp",
+     "thumb": "thumbs/peepal__size2.webp",
+     "px": [
+      532,
+      673
+     ],
+     "widthM": 1.036,
+     "heightM": 1.3105,
+     "pivot": [
+      0.4781,
+      0.9692
+     ],
+     "boxM": [
+      0.824,
+      0.998,
+      1.211
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/peepal__size3.webp",
+     "thumb": "thumbs/peepal__size3.webp",
+     "px": [
+      582,
+      673
+     ],
+     "widthM": 2.0214,
+     "heightM": 2.3375,
+     "pivot": [
+      0.461,
+      0.9575
+     ],
+     "boxM": [
+      1.602,
+      1.39,
+      2.05
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/peepal__size4.webp",
+     "thumb": "thumbs/peepal__size4.webp",
+     "px": [
+      600,
+      644
+     ],
+     "widthM": 3.5997,
+     "heightM": 3.8636,
+     "pivot": [
+      0.4378,
+      0.9558
+     ],
+     "boxM": [
+      2.878,
+      3.279,
+      3.307
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/peepal__size5.webp",
+     "thumb": "thumbs/peepal__size5.webp",
+     "px": [
+      663,
+      687
+     ],
+     "widthM": 4.8274,
+     "heightM": 5.0021,
+     "pivot": [
+      0.4662,
+      0.9475
+     ],
+     "boxM": [
+      3.767,
+      3.9,
+      3.974
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/peepal__size6.webp",
+     "thumb": "thumbs/peepal__size6.webp",
+     "px": [
+      968,
+      686
+     ],
+     "widthM": 8.8076,
+     "heightM": 6.2417,
+     "pivot": [
+      0.5179,
+      0.9428
+     ],
+     "boxM": [
+      6.281,
+      5.242,
+      5.052
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/peepal__size7.webp",
+     "thumb": "thumbs/peepal__size7.webp",
+     "px": [
+      665,
+      701
+     ],
+     "widthM": 8.2271,
+     "heightM": 8.6724,
+     "pivot": [
+      0.4892,
+      0.9412
+     ],
+     "boxM": [
+      6.114,
+      5.011,
+      6.963
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    }
+   ]
+  },
+  "palm": {
+   "segment": "trees",
+   "stages": [
+    {
+     "file": "sprites/palm__seed.webp",
+     "thumb": "thumbs/palm__seed.webp",
+     "px": [
+      735,
+      741
+     ],
+     "widthM": 0.278,
+     "heightM": 0.2802,
+     "pivot": [
+      0.5,
+      0.8676
+     ],
+     "boxM": [
+      0.4,
+      0.4,
+      0.35
+     ]
+    },
+    {
+     "file": "sprites/palm__size1.webp",
+     "thumb": "thumbs/palm__size1.webp",
+     "px": [
+      692,
+      747
+     ],
+     "widthM": 0.546,
+     "heightM": 0.5894,
+     "pivot": [
+      0.4713,
+      0.8734
+     ],
+     "boxM": [
+      0.521,
+      0.537,
+      0.569
+     ],
+     "sway": {
+      "amp": 1.0,
+      "speed": 0.45
+     }
+    },
+    {
+     "file": "sprites/palm__size2.webp",
+     "thumb": "thumbs/palm__size2.webp",
+     "px": [
+      769,
+      735
+     ],
+     "widthM": 0.7634,
+     "heightM": 0.7296,
+     "pivot": [
+      0.4631,
+      0.8722
+     ],
+     "boxM": [
+      0.706,
+      0.643,
+      0.677
+     ],
+     "sway": {
+      "amp": 1.0,
+      "speed": 0.45
+     }
+    },
+    {
+     "file": "sprites/palm__size3.webp",
+     "thumb": "thumbs/palm__size3.webp",
+     "px": [
+      799,
+      714
+     ],
+     "widthM": 1.0171,
+     "heightM": 0.9089,
+     "pivot": [
+      0.4688,
+      0.8882
+     ],
+     "boxM": [
+      0.907,
+      1.071,
+      0.836
+     ],
+     "sway": {
+      "amp": 1.0,
+      "speed": 0.45
+     }
+    },
+    {
+     "file": "sprites/palm__size4.webp",
+     "thumb": "thumbs/palm__size4.webp",
+     "px": [
+      1076,
+      724
+     ],
+     "widthM": 1.5967,
+     "heightM": 1.0743,
+     "pivot": [
+      0.4773,
+      0.9054
+     ],
+     "boxM": [
+      1.435,
+      1.379,
+      0.935
+     ],
+     "sway": {
+      "amp": 1.0,
+      "speed": 0.45
+     }
+    },
+    {
+     "file": "sprites/palm__size5.webp",
+     "thumb": "thumbs/palm__size5.webp",
+     "px": [
+      973,
+      713
+     ],
+     "widthM": 1.8445,
+     "heightM": 1.3516,
+     "pivot": [
+      0.5367,
+      0.9227
+     ],
+     "boxM": [
+      1.644,
+      1.766,
+      1.146
+     ],
+     "sway": {
+      "amp": 1.0,
+      "speed": 0.45
+     }
+    },
+    {
+     "file": "sprites/palm__size6.webp",
+     "thumb": "thumbs/palm__size6.webp",
+     "px": [
+      1014,
+      631
+     ],
+     "widthM": 2.2477,
+     "heightM": 1.3987,
+     "pivot": [
+      0.5058,
+      0.9256
+     ],
+     "boxM": [
+      1.82,
+      1.884,
+      1.291
+     ],
+     "sway": {
+      "amp": 1.0,
+      "speed": 0.45
+     }
+    },
+    {
+     "file": "sprites/palm__size7.webp",
+     "thumb": "thumbs/palm__size7.webp",
+     "px": [
+      1083,
+      697
+     ],
+     "widthM": 2.734,
+     "heightM": 1.7596,
+     "pivot": [
+      0.4931,
+      0.9381
+     ],
+     "boxM": [
+      2.321,
+      2.036,
+      1.474
+     ],
+     "sway": {
+      "amp": 1.0,
+      "speed": 0.45
+     }
+    }
+   ]
+  },
+  "gulmohar": {
+   "segment": "trees",
+   "stages": [
+    {
+     "file": "sprites/gulmohar__seed.webp",
+     "thumb": "thumbs/gulmohar__seed.webp",
+     "px": [
+      666,
+      737
+     ],
+     "widthM": 0.4407,
+     "heightM": 0.4877,
+     "pivot": [
+      0.5,
+      0.8669
+     ],
+     "boxM": [
+      0.52,
+      0.52,
+      0.5
+     ]
+    },
+    {
+     "file": "sprites/gulmohar__size1.webp",
+     "thumb": "thumbs/gulmohar__size1.webp",
+     "px": [
+      639,
+      739
+     ],
+     "widthM": 0.3023,
+     "heightM": 0.3496,
+     "pivot": [
+      0.5,
+      0.8667
+     ],
+     "boxM": [
+      0.4,
+      0.4,
+      0.4
+     ],
+     "sway": {
+      "amp": 0.6,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/gulmohar__size2.webp",
+     "thumb": "thumbs/gulmohar__size2.webp",
+     "px": [
+      532,
+      678
+     ],
+     "widthM": 0.9253,
+     "heightM": 1.1793,
+     "pivot": [
+      0.5031,
+      0.9683
+     ],
+     "boxM": [
+      0.865,
+      0.927,
+      1.1
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/gulmohar__size3.webp",
+     "thumb": "thumbs/gulmohar__size3.webp",
+     "px": [
+      480,
+      693
+     ],
+     "widthM": 1.5485,
+     "heightM": 2.2357,
+     "pivot": [
+      0.5911,
+      0.9604
+     ],
+     "boxM": [
+      1.261,
+      2.031,
+      1.877
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/gulmohar__size4.webp",
+     "thumb": "thumbs/gulmohar__size4.webp",
+     "px": [
+      707,
+      702
+     ],
+     "widthM": 3.2301,
+     "heightM": 3.2073,
+     "pivot": [
+      0.5447,
+      0.9522
+     ],
+     "boxM": [
+      2.658,
+      2.751,
+      2.599
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/gulmohar__size5.webp",
+     "thumb": "thumbs/gulmohar__size5.webp",
+     "px": [
+      715,
+      673
+     ],
+     "widthM": 5.4191,
+     "heightM": 5.1008,
+     "pivot": [
+      0.5438,
+      0.911
+     ],
+     "boxM": [
+      4.353,
+      3.811,
+      4.065
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/gulmohar__size6.webp",
+     "thumb": "thumbs/gulmohar__size6.webp",
+     "px": [
+      528,
+      673
+     ],
+     "widthM": 4.4031,
+     "heightM": 5.6122,
+     "pivot": [
+      0.5343,
+      0.938
+     ],
+     "boxM": [
+      3.082,
+      4.333,
+      4.595
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    },
+    {
+     "file": "sprites/gulmohar__size7.webp",
+     "thumb": "thumbs/gulmohar__size7.webp",
+     "px": [
+      728,
+      708
+     ],
+     "widthM": 6.4374,
+     "heightM": 6.2605,
+     "pivot": [
+      0.3242,
+      0.9243
+     ],
+     "boxM": [
+      5.043,
+      3.851,
+      4.935
+     ],
+     "sway": {
+      "amp": 0.18,
+      "speed": 0.35
+     }
+    }
+   ]
+  },
+  "lavender": {
+   "segment": "flowers",
+   "stages": [
+    {
+     "file": "sprites/lavender__seed.webp",
+     "thumb": "thumbs/lavender__seed.webp",
+     "px": [
+      311,
+      311
+     ],
+     "widthM": 0.2823,
+     "heightM": 0.2823,
+     "pivot": [
+      0.5,
+      0.8685
+     ],
+     "boxM": [
+      0.4,
+      0.4,
+      0.35
+     ]
+    },
+    {
+     "file": "sprites/lavender__size1.webp",
+     "thumb": "thumbs/lavender__size1.webp",
+     "px": [
+      287,
+      178
+     ],
+     "widthM": 0.051,
+     "heightM": 0.0316,
+     "pivot": [
+      0.5,
+      0.6448
+     ],
+     "boxM": [
+      0.2,
+      0.2,
+      0.081
+     ],
+     "sway": {
+      "amp": 0.45,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/lavender__size2.webp",
+     "thumb": "thumbs/lavender__size2.webp",
+     "px": [
+      196,
+      233
+     ],
+     "widthM": 0.041,
+     "heightM": 0.0488,
+     "pivot": [
+      0.583,
+      0.9159
+     ],
+     "boxM": [
+      0.122,
+      0.173,
+      0.145
+     ],
+     "sway": {
+      "amp": 0.45,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/lavender__size3.webp",
+     "thumb": "thumbs/lavender__size3.webp",
+     "px": [
+      255,
+      318
+     ],
+     "widthM": 0.1365,
+     "heightM": 0.1702,
+     "pivot": [
+      0.5522,
+      0.8641
+     ],
+     "boxM": [
+      0.239,
+      0.244,
+      0.273
+     ],
+     "sway": {
+      "amp": 0.45,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/lavender__size4.webp",
+     "thumb": "thumbs/lavender__size4.webp",
+     "px": [
+      263,
+      317
+     ],
+     "widthM": 0.2316,
+     "heightM": 0.2792,
+     "pivot": [
+      0.5051,
+      0.8631
+     ],
+     "boxM": [
+      0.3,
+      0.305,
+      0.35
+     ],
+     "sway": {
+      "amp": 0.45,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/lavender__size5.webp",
+     "thumb": "thumbs/lavender__size5.webp",
+     "px": [
+      304,
+      320
+     ],
+     "widthM": 0.3774,
+     "heightM": 0.3973,
+     "pivot": [
+      0.4669,
+      0.8536
+     ],
+     "boxM": [
+      0.421,
+      0.447,
+      0.422
+     ],
+     "sway": {
+      "amp": 0.45,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/lavender__size6.webp",
+     "thumb": "thumbs/lavender__size6.webp",
+     "px": [
+      320,
+      308
+     ],
+     "widthM": 0.4911,
+     "heightM": 0.4727,
+     "pivot": [
+      0.4594,
+      0.853
+     ],
+     "boxM": [
+      0.514,
+      0.462,
+      0.487
+     ],
+     "sway": {
+      "amp": 0.45,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/lavender__size7.webp",
+     "thumb": "thumbs/lavender__size7.webp",
+     "px": [
+      330,
+      319
+     ],
+     "widthM": 0.598,
+     "heightM": 0.5781,
+     "pivot": [
+      0.5026,
+      0.8618
+     ],
+     "boxM": [
+      0.58,
+      0.543,
+      0.547
+     ],
+     "sway": {
+      "amp": 0.45,
+      "speed": 0.6
+     }
+    }
+   ]
+  },
+  "sunflower": {
+   "segment": "flowers",
+   "stages": [
+    {
+     "file": "sprites/sunflower__seed.webp",
+     "thumb": "thumbs/sunflower__seed.webp",
+     "px": [
+      371,
+      373
+     ],
+     "widthM": 0.2806,
+     "heightM": 0.2821,
+     "pivot": [
+      0.5,
+      0.8685
+     ],
+     "boxM": [
+      0.4,
+      0.4,
+      0.35
+     ]
+    },
+    {
+     "file": "sprites/sunflower__size1.webp",
+     "thumb": "thumbs/sunflower__size1.webp",
+     "px": [
+      376,
+      301
+     ],
+     "widthM": 0.0633,
+     "heightM": 0.0506,
+     "pivot": [
+      0.4466,
+      0.7289
+     ],
+     "boxM": [
+      0.229,
+      0.2,
+      0.14
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.4
+     }
+    },
+    {
+     "file": "sprites/sunflower__size2.webp",
+     "thumb": "thumbs/sunflower__size2.webp",
+     "px": [
+      293,
+      326
+     ],
+     "widthM": 0.1709,
+     "heightM": 0.1901,
+     "pivot": [
+      0.4162,
+      0.9462
+     ],
+     "boxM": [
+      0.282,
+      0.247,
+      0.301
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.4
+     }
+    },
+    {
+     "file": "sprites/sunflower__size3.webp",
+     "thumb": "thumbs/sunflower__size3.webp",
+     "px": [
+      223,
+      330
+     ],
+     "widthM": 0.3323,
+     "heightM": 0.4918,
+     "pivot": [
+      0.4555,
+      0.9589
+     ],
+     "boxM": [
+      0.359,
+      0.329,
+      0.551
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.4
+     }
+    },
+    {
+     "file": "sprites/sunflower__size4.webp",
+     "thumb": "thumbs/sunflower__size4.webp",
+     "px": [
+      170,
+      326
+     ],
+     "widthM": 0.4742,
+     "heightM": 0.9094,
+     "pivot": [
+      0.4644,
+      0.9654
+     ],
+     "boxM": [
+      0.44,
+      0.404,
+      0.9
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.4
+     }
+    },
+    {
+     "file": "sprites/sunflower__size5.webp",
+     "thumb": "thumbs/sunflower__size5.webp",
+     "px": [
+      148,
+      329
+     ],
+     "widthM": 0.5947,
+     "heightM": 1.322,
+     "pivot": [
+      0.4674,
+      0.9658
+     ],
+     "boxM": [
+      0.529,
+      0.474,
+      1.232
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.4
+     }
+    },
+    {
+     "file": "sprites/sunflower__size6.webp",
+     "thumb": "thumbs/sunflower__size6.webp",
+     "px": [
+      158,
+      329
+     ],
+     "widthM": 0.7825,
+     "heightM": 1.6293,
+     "pivot": [
+      0.5271,
+      0.969
+     ],
+     "boxM": [
+      0.688,
+      0.564,
+      1.486
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.4
+     }
+    },
+    {
+     "file": "sprites/sunflower__size7.webp",
+     "thumb": "thumbs/sunflower__size7.webp",
+     "px": [
+      160,
+      335
+     ],
+     "widthM": 0.954,
+     "heightM": 1.9973,
+     "pivot": [
+      0.4885,
+      0.9396
+     ],
+     "boxM": [
+      0.819,
+      0.749,
+      1.741
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.4
+     }
+    }
+   ]
+  },
+  "peace_lily": {
+   "segment": "indoor",
+   "stages": [
+    {
+     "file": "sprites/peace_lily__seed.webp",
+     "thumb": "thumbs/peace_lily__seed.webp",
+     "px": [
+      172,
+      313
+     ],
+     "widthM": 0.3399,
+     "heightM": 0.6186,
+     "pivot": [
+      0.5,
+      0.8794
+     ],
+     "boxM": [
+      0.34,
+      0.34,
+      0.6
+     ]
+    },
+    {
+     "file": "sprites/peace_lily__size1.webp",
+     "thumb": "thumbs/peace_lily__size1.webp",
+     "px": [
+      288,
+      313
+     ],
+     "widthM": 0.2785,
+     "heightM": 0.3027,
+     "pivot": [
+      0.5,
+      0.8786
+     ],
+     "boxM": [
+      0.34,
+      0.34,
+      0.371
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/peace_lily__size2.webp",
+     "thumb": "thumbs/peace_lily__size2.webp",
+     "px": [
+      249,
+      317
+     ],
+     "widthM": 0.2978,
+     "heightM": 0.3791,
+     "pivot": [
+      0.502,
+      0.8809
+     ],
+     "boxM": [
+      0.34,
+      0.34,
+      0.424
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/peace_lily__size3.webp",
+     "thumb": "thumbs/peace_lily__size3.webp",
+     "px": [
+      161,
+      311
+     ],
+     "widthM": 0.3479,
+     "heightM": 0.672,
+     "pivot": [
+      0.5031,
+      0.8786
+     ],
+     "boxM": [
+      0.34,
+      0.34,
+      0.642
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/peace_lily__size4.webp",
+     "thumb": "thumbs/peace_lily__size4.webp",
+     "px": [
+      154,
+      312
+     ],
+     "widthM": 0.3513,
+     "heightM": 0.7116,
+     "pivot": [
+      0.5,
+      0.879
+     ],
+     "boxM": [
+      0.34,
+      0.34,
+      0.669
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/peace_lily__size5.webp",
+     "thumb": "thumbs/peace_lily__size5.webp",
+     "px": [
+      144,
+      306
+     ],
+     "widthM": 0.357,
+     "heightM": 0.7586,
+     "pivot": [
+      0.5,
+      0.8767
+     ],
+     "boxM": [
+      0.34,
+      0.34,
+      0.714
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/peace_lily__size6.webp",
+     "thumb": "thumbs/peace_lily__size6.webp",
+     "px": [
+      152,
+      315
+     ],
+     "widthM": 0.3524,
+     "heightM": 0.7302,
+     "pivot": [
+      0.5,
+      0.8802
+     ],
+     "boxM": [
+      0.34,
+      0.34,
+      0.677
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/peace_lily__size7.webp",
+     "thumb": "thumbs/peace_lily__size7.webp",
+     "px": [
+      146,
+      315
+     ],
+     "widthM": 0.3643,
+     "heightM": 0.7859,
+     "pivot": [
+      0.4932,
+      0.8802
+     ],
+     "boxM": [
+      0.34,
+      0.34,
+      0.717
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    }
+   ]
+  },
+  "tomato": {
+   "segment": "fruits",
+   "stages": [
+    {
+     "file": "sprites/tomato__seed.webp",
+     "thumb": "thumbs/tomato__seed.webp",
+     "px": [
+      311,
+      311
+     ],
+     "widthM": 0.2823,
+     "heightM": 0.2823,
+     "pivot": [
+      0.5,
+      0.8685
+     ],
+     "boxM": [
+      0.4,
+      0.4,
+      0.35
+     ]
+    },
+    {
+     "file": "sprites/tomato__size1.webp",
+     "thumb": "thumbs/tomato__size1.webp",
+     "px": [
+      277,
+      282
+     ],
+     "widthM": 0.0585,
+     "heightM": 0.0595,
+     "pivot": [
+      0.5,
+      0.7802
+     ],
+     "boxM": [
+      0.2,
+      0.2,
+      0.164
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/tomato__size2.webp",
+     "thumb": "thumbs/tomato__size2.webp",
+     "px": [
+      235,
+      295
+     ],
+     "widthM": 0.0724,
+     "heightM": 0.0909,
+     "pivot": [
+      0.4999,
+      0.9306
+     ],
+     "boxM": [
+      0.167,
+      0.203,
+      0.228
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/tomato__size3.webp",
+     "thumb": "thumbs/tomato__size3.webp",
+     "px": [
+      140,
+      308
+     ],
+     "widthM": 0.2421,
+     "heightM": 0.5326,
+     "pivot": [
+      0.4972,
+      0.8899
+     ],
+     "boxM": [
+      0.274,
+      0.287,
+      0.544
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/tomato__size4.webp",
+     "thumb": "thumbs/tomato__size4.webp",
+     "px": [
+      146,
+      313
+     ],
+     "widthM": 0.3295,
+     "heightM": 0.7064,
+     "pivot": [
+      0.4949,
+      0.8735
+     ],
+     "boxM": [
+      0.344,
+      0.348,
+      0.663
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/tomato__size5.webp",
+     "thumb": "thumbs/tomato__size5.webp",
+     "px": [
+      149,
+      310
+     ],
+     "widthM": 0.4182,
+     "heightM": 0.8701,
+     "pivot": [
+      0.4792,
+      0.874
+     ],
+     "boxM": [
+      0.407,
+      0.398,
+      0.791
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/tomato__size6.webp",
+     "thumb": "thumbs/tomato__size6.webp",
+     "px": [
+      159,
+      312
+     ],
+     "widthM": 0.5286,
+     "heightM": 1.0372,
+     "pivot": [
+      0.5014,
+      0.8714
+     ],
+     "boxM": [
+      0.481,
+      0.478,
+      0.905
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/tomato__size7.webp",
+     "thumb": "thumbs/tomato__size7.webp",
+     "px": [
+      160,
+      312
+     ],
+     "widthM": 0.6034,
+     "heightM": 1.1766,
+     "pivot": [
+      0.4819,
+      0.8728
+     ],
+     "boxM": [
+      0.56,
+      0.528,
+      1.004
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    }
+   ]
+  },
+  "chamomile": {
+   "segment": "herbs",
+   "stages": [
+    {
+     "file": "sprites/chamomile__seed.webp",
+     "thumb": "thumbs/chamomile__seed.webp",
+     "px": [
+      311,
+      311
+     ],
+     "widthM": 0.2823,
+     "heightM": 0.2823,
+     "pivot": [
+      0.5,
+      0.8685
+     ],
+     "boxM": [
+      0.4,
+      0.4,
+      0.35
+     ]
+    },
+    {
+     "file": "sprites/chamomile__size1.webp",
+     "thumb": "thumbs/chamomile__size1.webp",
+     "px": [
+      289,
+      147
+     ],
+     "widthM": 0.049,
+     "heightM": 0.0249,
+     "pivot": [
+      0.5,
+      0.5924
+     ],
+     "boxM": [
+      0.2,
+      0.2,
+      0.062
+     ],
+     "sway": {
+      "amp": 0.45,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/chamomile__size2.webp",
+     "thumb": "thumbs/chamomile__size2.webp",
+     "px": [
+      137,
+      137
+     ],
+     "widthM": 0.0246,
+     "heightM": 0.0246,
+     "pivot": [
+      0.431,
+      0.8771
+     ],
+     "boxM": [
+      0.086,
+      0.138,
+      0.088
+     ],
+     "sway": {
+      "amp": 0.45,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/chamomile__size3.webp",
+     "thumb": "thumbs/chamomile__size3.webp",
+     "px": [
+      320,
+      235
+     ],
+     "widthM": 0.061,
+     "heightM": 0.0448,
+     "pivot": [
+      0.541,
+      0.6893
+     ],
+     "boxM": [
+      0.216,
+      0.199,
+      0.111
+     ],
+     "sway": {
+      "amp": 0.45,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/chamomile__size4.webp",
+     "thumb": "thumbs/chamomile__size4.webp",
+     "px": [
+      427,
+      296
+     ],
+     "widthM": 0.0964,
+     "heightM": 0.0668,
+     "pivot": [
+      0.539,
+      0.7955
+     ],
+     "boxM": [
+      0.32,
+      0.291,
+      0.176
+     ],
+     "sway": {
+      "amp": 0.45,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/chamomile__size5.webp",
+     "thumb": "thumbs/chamomile__size5.webp",
+     "px": [
+      444,
+      309
+     ],
+     "widthM": 0.171,
+     "heightM": 0.119,
+     "pivot": [
+      0.5449,
+      0.8244
+     ],
+     "boxM": [
+      0.348,
+      0.352,
+      0.229
+     ],
+     "sway": {
+      "amp": 0.45,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/chamomile__size6.webp",
+     "thumb": "thumbs/chamomile__size6.webp",
+     "px": [
+      474,
+      317
+     ],
+     "widthM": 0.2739,
+     "heightM": 0.1832,
+     "pivot": [
+      0.4913,
+      0.8424
+     ],
+     "boxM": [
+      0.458,
+      0.457,
+      0.273
+     ],
+     "sway": {
+      "amp": 0.45,
+      "speed": 0.6
+     }
+    },
+    {
+     "file": "sprites/chamomile__size7.webp",
+     "thumb": "thumbs/chamomile__size7.webp",
+     "px": [
+      495,
+      306
+     ],
+     "widthM": 0.3588,
+     "heightM": 0.2218,
+     "pivot": [
+      0.4905,
+      0.8601
+     ],
+     "boxM": [
+      0.48,
+      0.532,
+      0.31
+     ],
+     "sway": {
+      "amp": 0.45,
+      "speed": 0.6
+     }
+    }
+   ]
+  },
+  "orchid": {
+   "segment": "flowers",
+   "stages": [
+    {
+     "file": "sprites/orchid__seed.webp",
+     "thumb": "thumbs/orchid__seed.webp",
+     "px": [
+      123,
+      306
+     ],
+     "widthM": 0.1559,
+     "heightM": 0.3878,
+     "pivot": [
+      0.5041,
+      0.9028
+     ],
+     "boxM": [
+      0.18,
+      0.18,
+      0.44
+     ]
+    },
+    {
+     "file": "sprites/orchid__size1.webp",
+     "thumb": "thumbs/orchid__size1.webp",
+     "px": [
+      273,
+      280
+     ],
+     "widthM": 0.0586,
+     "heightM": 0.0601,
+     "pivot": [
+      0.5,
+      0.7953
+     ],
+     "boxM": [
+      0.18,
+      0.18,
+      0.17
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/orchid__size2.webp",
+     "thumb": "thumbs/orchid__size2.webp",
+     "px": [
+      290,
+      312
+     ],
+     "widthM": 0.0648,
+     "heightM": 0.0697,
+     "pivot": [
+      0.4701,
+      0.8458
+     ],
+     "boxM": [
+      0.19,
+      0.182,
+      0.188
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/orchid__size3.webp",
+     "thumb": "thumbs/orchid__size3.webp",
+     "px": [
+      115,
+      301
+     ],
+     "widthM": 0.1885,
+     "heightM": 0.4933,
+     "pivot": [
+      0.4557,
+      0.9145
+     ],
+     "boxM": [
+      0.202,
+      0.18,
+      0.524
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/orchid__size4.webp",
+     "thumb": "thumbs/orchid__size4.webp",
+     "px": [
+      175,
+      300
+     ],
+     "widthM": 0.2868,
+     "heightM": 0.4916,
+     "pivot": [
+      0.3872,
+      0.9167
+     ],
+     "boxM": [
+      0.301,
+      0.228,
+      0.522
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/orchid__size5.webp",
+     "thumb": "thumbs/orchid__size5.webp",
+     "px": [
+      172,
+      283
+     ],
+     "widthM": 0.3026,
+     "heightM": 0.4979,
+     "pivot": [
+      0.4846,
+      0.9167
+     ],
+     "boxM": [
+      0.321,
+      0.3,
+      0.543
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/orchid__size6.webp",
+     "thumb": "thumbs/orchid__size6.webp",
+     "px": [
+      188,
+      292
+     ],
+     "widthM": 0.361,
+     "heightM": 0.5607,
+     "pivot": [
+      0.5016,
+      0.9229
+     ],
+     "boxM": [
+      0.348,
+      0.248,
+      0.584
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/orchid__size7.webp",
+     "thumb": "thumbs/orchid__size7.webp",
+     "px": [
+      176,
+      297
+     ],
+     "widthM": 0.3671,
+     "heightM": 0.6195,
+     "pivot": [
+      0.4319,
+      0.9253
+     ],
+     "boxM": [
+      0.345,
+      0.333,
+      0.624
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    }
+   ]
+  },
+  "tulip": {
+   "segment": "flowers",
+   "stages": [
+    {
+     "file": "sprites/tulip__seed.webp",
+     "thumb": "thumbs/tulip__seed.webp",
+     "px": [
+      280,
+      311
+     ],
+     "widthM": 0.2541,
+     "heightM": 0.2823,
+     "pivot": [
+      0.5018,
+      0.8685
+     ],
+     "boxM": [
+      0.36,
+      0.36,
+      0.35
+     ]
+    },
+    {
+     "file": "sprites/tulip__size1.webp",
+     "thumb": "thumbs/tulip__size1.webp",
+     "px": [
+      337,
+      258
+     ],
+     "widthM": 0.0676,
+     "heightM": 0.0518,
+     "pivot": [
+      0.5,
+      0.7041
+     ],
+     "boxM": [
+      0.24,
+      0.24,
+      0.137
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/tulip__size2.webp",
+     "thumb": "thumbs/tulip__size2.webp",
+     "px": [
+      117,
+      213
+     ],
+     "widthM": 0.0255,
+     "heightM": 0.0464,
+     "pivot": [
+      0.4542,
+      0.9321
+     ],
+     "boxM": [
+      0.078,
+      0.091,
+      0.144
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/tulip__size3.webp",
+     "thumb": "thumbs/tulip__size3.webp",
+     "px": [
+      114,
+      299
+     ],
+     "widthM": 0.1066,
+     "heightM": 0.2796,
+     "pivot": [
+      0.5392,
+      0.9573
+     ],
+     "boxM": [
+      0.135,
+      0.153,
+      0.373
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/tulip__size4.webp",
+     "thumb": "thumbs/tulip__size4.webp",
+     "px": [
+      148,
+      282
+     ],
+     "widthM": 0.148,
+     "heightM": 0.282,
+     "pivot": [
+      0.4603,
+      0.9085
+     ],
+     "boxM": [
+      0.162,
+      0.186,
+      0.365
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/tulip__size5.webp",
+     "thumb": "thumbs/tulip__size5.webp",
+     "px": [
+      133,
+      280
+     ],
+     "widthM": 0.1584,
+     "heightM": 0.3335,
+     "pivot": [
+      0.4013,
+      0.9562
+     ],
+     "boxM": [
+      0.177,
+      0.21,
+      0.421
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/tulip__size6.webp",
+     "thumb": "thumbs/tulip__size6.webp",
+     "px": [
+      222,
+      301
+     ],
+     "widthM": 0.2497,
+     "heightM": 0.3385,
+     "pivot": [
+      0.4782,
+      0.9031
+     ],
+     "boxM": [
+      0.278,
+      0.262,
+      0.399
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/tulip__size7.webp",
+     "thumb": "thumbs/tulip__size7.webp",
+     "px": [
+      131,
+      268
+     ],
+     "widthM": 0.1708,
+     "heightM": 0.3495,
+     "pivot": [
+      0.4976,
+      0.9332
+     ],
+     "boxM": [
+      0.178,
+      0.238,
+      0.44
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    }
+   ]
+  },
+  "dahlia": {
+   "segment": "flowers",
+   "stages": [
+    {
+     "file": "sprites/dahlia__seed.webp",
+     "thumb": "thumbs/dahlia__seed.webp",
+     "px": [
+      311,
+      311
+     ],
+     "widthM": 0.2823,
+     "heightM": 0.2823,
+     "pivot": [
+      0.5,
+      0.8685
+     ],
+     "boxM": [
+      0.4,
+      0.4,
+      0.35
+     ]
+    },
+    {
+     "file": "sprites/dahlia__size1.webp",
+     "thumb": "thumbs/dahlia__size1.webp",
+     "px": [
+      281,
+      248
+     ],
+     "widthM": 0.0559,
+     "heightM": 0.0494,
+     "pivot": [
+      0.5,
+      0.7231
+     ],
+     "boxM": [
+      0.2,
+      0.2,
+      0.134
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/dahlia__size2.webp",
+     "thumb": "thumbs/dahlia__size2.webp",
+     "px": [
+      294,
+      286
+     ],
+     "widthM": 0.0666,
+     "heightM": 0.0648,
+     "pivot": [
+      0.5682,
+      0.9236
+     ],
+     "boxM": [
+      0.2,
+      0.226,
+      0.187
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/dahlia__size3.webp",
+     "thumb": "thumbs/dahlia__size3.webp",
+     "px": [
+      302,
+      294
+     ],
+     "widthM": 0.1506,
+     "heightM": 0.1466,
+     "pivot": [
+      0.5118,
+      0.8549
+     ],
+     "boxM": [
+      0.296,
+      0.283,
+      0.261
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/dahlia__size4.webp",
+     "thumb": "thumbs/dahlia__size4.webp",
+     "px": [
+      286,
+      301
+     ],
+     "widthM": 0.2944,
+     "heightM": 0.3098,
+     "pivot": [
+      0.5429,
+      0.8756
+     ],
+     "boxM": [
+      0.372,
+      0.383,
+      0.381
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/dahlia__size5.webp",
+     "thumb": "thumbs/dahlia__size5.webp",
+     "px": [
+      284,
+      312
+     ],
+     "widthM": 0.4188,
+     "heightM": 0.4601,
+     "pivot": [
+      0.4683,
+      0.8585
+     ],
+     "boxM": [
+      0.467,
+      0.465,
+      0.481
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/dahlia__size6.webp",
+     "thumb": "thumbs/dahlia__size6.webp",
+     "px": [
+      346,
+      314
+     ],
+     "widthM": 0.6385,
+     "heightM": 0.5795,
+     "pivot": [
+      0.4933,
+      0.8432
+     ],
+     "boxM": [
+      0.626,
+      0.561,
+      0.553
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/dahlia__size7.webp",
+     "thumb": "thumbs/dahlia__size7.webp",
+     "px": [
+      350,
+      319
+     ],
+     "widthM": 0.7348,
+     "heightM": 0.6697,
+     "pivot": [
+      0.502,
+      0.8717
+     ],
+     "boxM": [
+      0.721,
+      0.665,
+      0.622
+     ],
+     "sway": {
+      "amp": 0.35,
+      "speed": 0.5
+     }
+    }
+   ]
+  },
+  "bougainvillea": {
+   "segment": "flowers",
+   "stages": [
+    {
+     "file": "sprites/bougainvillea__seed.webp",
+     "thumb": "thumbs/bougainvillea__seed.webp",
+     "px": [
+      311,
+      311
+     ],
+     "widthM": 0.2823,
+     "heightM": 0.2823,
+     "pivot": [
+      0.5,
+      0.8685
+     ],
+     "boxM": [
+      0.4,
+      0.4,
+      0.35
+     ]
+    },
+    {
+     "file": "sprites/bougainvillea__size1.webp",
+     "thumb": "thumbs/bougainvillea__size1.webp",
+     "px": [
+      458,
+      291
+     ],
+     "widthM": 0.1127,
+     "heightM": 0.0716,
+     "pivot": [
+      0.5,
+      0.848
+     ],
+     "boxM": [
+      0.336,
+      0.336,
+      0.205
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.45
+     }
+    },
+    {
+     "file": "sprites/bougainvillea__size2.webp",
+     "thumb": "thumbs/bougainvillea__size2.webp",
+     "px": [
+      308,
+      299
+     ],
+     "widthM": 0.2655,
+     "heightM": 0.2577,
+     "pivot": [
+      0.5006,
+      0.8547
+     ],
+     "boxM": [
+      0.388,
+      0.394,
+      0.342
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.45
+     }
+    },
+    {
+     "file": "sprites/bougainvillea__size3.webp",
+     "thumb": "thumbs/bougainvillea__size3.webp",
+     "px": [
+      337,
+      307
+     ],
+     "widthM": 0.5011,
+     "heightM": 0.4565,
+     "pivot": [
+      0.4984,
+      0.8621
+     ],
+     "boxM": [
+      0.571,
+      0.555,
+      0.479
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.45
+     }
+    },
+    {
+     "file": "sprites/bougainvillea__size4.webp",
+     "thumb": "thumbs/bougainvillea__size4.webp",
+     "px": [
+      337,
+      308
+     ],
+     "widthM": 0.837,
+     "heightM": 0.765,
+     "pivot": [
+      0.4958,
+      0.8549
+     ],
+     "boxM": [
+      0.747,
+      0.85,
+      0.701
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.45
+     }
+    },
+    {
+     "file": "sprites/bougainvillea__size5.webp",
+     "thumb": "thumbs/bougainvillea__size5.webp",
+     "px": [
+      350,
+      303
+     ],
+     "widthM": 1.1165,
+     "heightM": 0.9666,
+     "pivot": [
+      0.4824,
+      0.859
+     ],
+     "boxM": [
+      1.038,
+      0.998,
+      0.855
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.45
+     }
+    },
+    {
+     "file": "sprites/bougainvillea__size6.webp",
+     "thumb": "thumbs/bougainvillea__size6.webp",
+     "px": [
+      352,
+      308
+     ],
+     "widthM": 1.3656,
+     "heightM": 1.1949,
+     "pivot": [
+      0.5113,
+      0.8545
+     ],
+     "boxM": [
+      1.233,
+      1.221,
+      1.005
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.45
+     }
+    },
+    {
+     "file": "sprites/bougainvillea__size7.webp",
+     "thumb": "thumbs/bougainvillea__size7.webp",
+     "px": [
+      340,
+      308
+     ],
+     "widthM": 1.5283,
+     "heightM": 1.3844,
+     "pivot": [
+      0.5008,
+      0.8545
+     ],
+     "boxM": [
+      1.399,
+      1.377,
+      1.146
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.45
+     }
+    }
+   ]
+  },
+  "gerbera": {
+   "segment": "flowers",
+   "stages": [
+    {
+     "file": "sprites/gerbera__seed.webp",
+     "thumb": "thumbs/gerbera__seed.webp",
+     "px": [
+      280,
+      311
+     ],
+     "widthM": 0.2541,
+     "heightM": 0.2823,
+     "pivot": [
+      0.5018,
+      0.8685
+     ],
+     "boxM": [
+      0.36,
+      0.36,
+      0.35
+     ]
+    },
+    {
+     "file": "sprites/gerbera__size1.webp",
+     "thumb": "thumbs/gerbera__size1.webp",
+     "px": [
+      347,
+      175
+     ],
+     "widthM": 0.0581,
+     "heightM": 0.0293,
+     "pivot": [
+      0.5,
+      0.5601
+     ],
+     "boxM": [
+      0.24,
+      0.24,
+      0.054
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/gerbera__size2.webp",
+     "thumb": "thumbs/gerbera__size2.webp",
+     "px": [
+      247,
+      128
+     ],
+     "widthM": 0.0462,
+     "heightM": 0.0239,
+     "pivot": [
+      0.4802,
+      0.9113
+     ],
+     "boxM": [
+      0.161,
+      0.181,
+      0.066
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/gerbera__size3.webp",
+     "thumb": "thumbs/gerbera__size3.webp",
+     "px": [
+      223,
+      286
+     ],
+     "widthM": 0.1417,
+     "heightM": 0.1817,
+     "pivot": [
+      0.4678,
+      0.9433
+     ],
+     "boxM": [
+      0.216,
+      0.2,
+      0.295
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/gerbera__size4.webp",
+     "thumb": "thumbs/gerbera__size4.webp",
+     "px": [
+      235,
+      293
+     ],
+     "widthM": 0.1433,
+     "heightM": 0.1787,
+     "pivot": [
+      0.4553,
+      0.9481
+     ],
+     "boxM": [
+      0.233,
+      0.212,
+      0.292
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/gerbera__size5.webp",
+     "thumb": "thumbs/gerbera__size5.webp",
+     "px": [
+      260,
+      292
+     ],
+     "widthM": 0.2094,
+     "heightM": 0.2352,
+     "pivot": [
+      0.4333,
+      0.9273
+     ],
+     "boxM": [
+      0.278,
+      0.277,
+      0.335
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/gerbera__size6.webp",
+     "thumb": "thumbs/gerbera__size6.webp",
+     "px": [
+      247,
+      281
+     ],
+     "widthM": 0.2324,
+     "heightM": 0.2644,
+     "pivot": [
+      0.4533,
+      0.9209
+     ],
+     "boxM": [
+      0.286,
+      0.332,
+      0.368
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/gerbera__size7.webp",
+     "thumb": "thumbs/gerbera__size7.webp",
+     "px": [
+      243,
+      301
+     ],
+     "widthM": 0.2471,
+     "heightM": 0.3061,
+     "pivot": [
+      0.4423,
+      0.9038
+     ],
+     "boxM": [
+      0.311,
+      0.372,
+      0.372
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    }
+   ]
+  },
+  "daffodil": {
+   "segment": "flowers",
+   "stages": [
+    {
+     "file": "sprites/daffodil__seed.webp",
+     "thumb": "thumbs/daffodil__seed.webp",
+     "px": [
+      280,
+      311
+     ],
+     "widthM": 0.2541,
+     "heightM": 0.2823,
+     "pivot": [
+      0.5018,
+      0.8685
+     ],
+     "boxM": [
+      0.36,
+      0.36,
+      0.35
+     ]
+    },
+    {
+     "file": "sprites/daffodil__size1.webp",
+     "thumb": "thumbs/daffodil__size1.webp",
+     "px": [
+      335,
+      256
+     ],
+     "widthM": 0.068,
+     "heightM": 0.052,
+     "pivot": [
+      0.5,
+      0.7143
+     ],
+     "boxM": [
+      0.24,
+      0.24,
+      0.143
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/daffodil__size2.webp",
+     "thumb": "thumbs/daffodil__size2.webp",
+     "px": [
+      124,
+      248
+     ],
+     "widthM": 0.0263,
+     "heightM": 0.0526,
+     "pivot": [
+      0.4853,
+      0.957
+     ],
+     "boxM": [
+      0.078,
+      0.06,
+      0.173
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/daffodil__size3.webp",
+     "thumb": "thumbs/daffodil__size3.webp",
+     "px": [
+      140,
+      271
+     ],
+     "widthM": 0.1233,
+     "heightM": 0.2386,
+     "pivot": [
+      0.7344,
+      0.9542
+     ],
+     "boxM": [
+      0.151,
+      0.133,
+      0.346
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/daffodil__size4.webp",
+     "thumb": "thumbs/daffodil__size4.webp",
+     "px": [
+      121,
+      270
+     ],
+     "widthM": 0.1287,
+     "heightM": 0.2873,
+     "pivot": [
+      0.5902,
+      0.9078
+     ],
+     "boxM": [
+      0.154,
+      0.249,
+      0.38
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/daffodil__size5.webp",
+     "thumb": "thumbs/daffodil__size5.webp",
+     "px": [
+      232,
+      284
+     ],
+     "widthM": 0.2261,
+     "heightM": 0.2768,
+     "pivot": [
+      0.4578,
+      0.9295
+     ],
+     "boxM": [
+      0.277,
+      0.193,
+      0.365
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/daffodil__size6.webp",
+     "thumb": "thumbs/daffodil__size6.webp",
+     "px": [
+      203,
+      275
+     ],
+     "widthM": 0.2417,
+     "heightM": 0.3275,
+     "pivot": [
+      0.5202,
+      0.9293
+     ],
+     "boxM": [
+      0.248,
+      0.208,
+      0.414
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/daffodil__size7.webp",
+     "thumb": "thumbs/daffodil__size7.webp",
+     "px": [
+      162,
+      277
+     ],
+     "widthM": 0.2,
+     "heightM": 0.3421,
+     "pivot": [
+      0.6402,
+      0.9184
+     ],
+     "boxM": [
+      0.219,
+      0.29,
+      0.429
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    }
+   ]
+  },
+  "iris": {
+   "segment": "flowers",
+   "stages": [
+    {
+     "file": "sprites/iris__seed.webp",
+     "thumb": "thumbs/iris__seed.webp",
+     "px": [
+      280,
+      311
+     ],
+     "widthM": 0.2541,
+     "heightM": 0.2823,
+     "pivot": [
+      0.5018,
+      0.8685
+     ],
+     "boxM": [
+      0.36,
+      0.36,
+      0.35
+     ]
+    },
+    {
+     "file": "sprites/iris__size1.webp",
+     "thumb": "thumbs/iris__size1.webp",
+     "px": [
+      298,
+      295
+     ],
+     "widthM": 0.0949,
+     "heightM": 0.094,
+     "pivot": [
+      0.4983,
+      0.8614
+     ],
+     "boxM": [
+      0.24,
+      0.24,
+      0.22
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/iris__size2.webp",
+     "thumb": "thumbs/iris__size2.webp",
+     "px": [
+      78,
+      270
+     ],
+     "widthM": 0.0452,
+     "heightM": 0.1565,
+     "pivot": [
+      0.4545,
+      0.9688
+     ],
+     "boxM": [
+      0.067,
+      0.069,
+      0.283
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/iris__size3.webp",
+     "thumb": "thumbs/iris__size3.webp",
+     "px": [
+      123,
+      285
+     ],
+     "widthM": 0.2077,
+     "heightM": 0.4813,
+     "pivot": [
+      0.2222,
+      0.9648
+     ],
+     "boxM": [
+      0.208,
+      0.107,
+      0.536
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/iris__size4.webp",
+     "thumb": "thumbs/iris__size4.webp",
+     "px": [
+      133,
+      284
+     ],
+     "widthM": 0.2339,
+     "heightM": 0.4995,
+     "pivot": [
+      0.2458,
+      0.9684
+     ],
+     "boxM": [
+      0.228,
+      0.112,
+      0.556
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/iris__size5.webp",
+     "thumb": "thumbs/iris__size5.webp",
+     "px": [
+      147,
+      309
+     ],
+     "widthM": 0.2769,
+     "heightM": 0.582,
+     "pivot": [
+      0.3045,
+      0.962
+     ],
+     "boxM": [
+      0.266,
+      0.263,
+      0.603
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/iris__size6.webp",
+     "thumb": "thumbs/iris__size6.webp",
+     "px": [
+      217,
+      283
+     ],
+     "widthM": 0.4857,
+     "heightM": 0.6334,
+     "pivot": [
+      0.5188,
+      0.9577
+     ],
+     "boxM": [
+      0.435,
+      0.188,
+      0.661
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/iris__size7.webp",
+     "thumb": "thumbs/iris__size7.webp",
+     "px": [
+      148,
+      269
+     ],
+     "widthM": 0.3464,
+     "heightM": 0.6295,
+     "pivot": [
+      0.3147,
+      0.9509
+     ],
+     "boxM": [
+      0.323,
+      0.3,
+      0.665
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    }
+   ]
+  },
+  "anthurium": {
+   "segment": "indoor",
+   "stages": [
+    {
+     "file": "sprites/anthurium__seed.webp",
+     "thumb": "thumbs/anthurium__seed.webp",
+     "px": [
+      162,
+      314
+     ],
+     "widthM": 0.234,
+     "heightM": 0.4536,
+     "pivot": [
+      0.5,
+      0.8798
+     ],
+     "boxM": [
+      0.26,
+      0.26,
+      0.48
+     ]
+    },
+    {
+     "file": "sprites/anthurium__size1.webp",
+     "thumb": "thumbs/anthurium__size1.webp",
+     "px": [
+      319,
+      301
+     ],
+     "widthM": 0.1397,
+     "heightM": 0.1318,
+     "pivot": [
+      0.5,
+      0.8642
+     ],
+     "boxM": [
+      0.26,
+      0.26,
+      0.246
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/anthurium__size2.webp",
+     "thumb": "thumbs/anthurium__size2.webp",
+     "px": [
+      311,
+      297
+     ],
+     "widthM": 0.1439,
+     "heightM": 0.1374,
+     "pivot": [
+      0.4984,
+      0.8623
+     ],
+     "boxM": [
+      0.26,
+      0.26,
+      0.252
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/anthurium__size3.webp",
+     "thumb": "thumbs/anthurium__size3.webp",
+     "px": [
+      234,
+      310
+     ],
+     "widthM": 0.189,
+     "heightM": 0.2503,
+     "pivot": [
+      0.5,
+      0.8783
+     ],
+     "boxM": [
+      0.26,
+      0.26,
+      0.336
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/anthurium__size4.webp",
+     "thumb": "thumbs/anthurium__size4.webp",
+     "px": [
+      214,
+      312
+     ],
+     "widthM": 0.2007,
+     "heightM": 0.2926,
+     "pivot": [
+      0.5,
+      0.879
+     ],
+     "boxM": [
+      0.26,
+      0.26,
+      0.366
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/anthurium__size5.webp",
+     "thumb": "thumbs/anthurium__size5.webp",
+     "px": [
+      199,
+      314
+     ],
+     "widthM": 0.2087,
+     "heightM": 0.3292,
+     "pivot": [
+      0.5025,
+      0.8798
+     ],
+     "boxM": [
+      0.26,
+      0.26,
+      0.391
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/anthurium__size6.webp",
+     "thumb": "thumbs/anthurium__size6.webp",
+     "px": [
+      181,
+      295
+     ],
+     "widthM": 0.2209,
+     "heightM": 0.3601,
+     "pivot": [
+      0.5028,
+      0.878
+     ],
+     "boxM": [
+      0.26,
+      0.282,
+      0.431
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    },
+    {
+     "file": "sprites/anthurium__size7.webp",
+     "thumb": "thumbs/anthurium__size7.webp",
+     "px": [
+      218,
+      320
+     ],
+     "widthM": 0.2987,
+     "heightM": 0.4384,
+     "pivot": [
+      0.5038,
+      0.8811
+     ],
+     "boxM": [
+      0.329,
+      0.273,
+      0.463
+     ],
+     "sway": {
+      "amp": 0.3,
+      "speed": 0.5
+     }
+    }
+   ]
+  },
+  "pumpkin": {
+   "segment": "fruits",
+   "stages": [
+    {
+     "file": "sprites/pumpkin__seed.webp",
+     "thumb": "thumbs/pumpkin__seed.webp",
+     "px": [
+      342,
+      311
+     ],
+     "widthM": 0.3104,
+     "heightM": 0.2823,
+     "pivot": [
+      0.5,
+      0.8685
+     ],
+     "boxM": [
+      0.44,
+      0.44,
+      0.35
+     ]
+    },
+    {
+     "file": "sprites/pumpkin__size1.webp",
+     "thumb": "thumbs/pumpkin__size1.webp",
+     "px": [
+      597,
+      248
+     ],
+     "widthM": 0.1037,
+     "heightM": 0.0431,
+     "pivot": [
+      0.4958,
+      0.5219
+     ],
+     "boxM": [
+      0.405,
+      0.397,
+      0.074
+     ],
+     "sway": {
+      "amp": 0.25,
+      "speed": 0.45
+     }
+    },
+    {
+     "file": "sprites/pumpkin__size2.webp",
+     "thumb": "thumbs/pumpkin__size2.webp",
+     "px": [
+      828,
+      265
+     ],
+     "widthM": 0.2595,
+     "heightM": 0.083,
+     "pivot": [
+      0.4803,
+      0.5532
+     ],
+     "boxM": [
+      0.602,
+      0.594,
+      0.102
+     ],
+     "sway": {
+      "amp": 0.25,
+      "speed": 0.45
+     }
+    },
+    {
+     "file": "sprites/pumpkin__size3.webp",
+     "thumb": "thumbs/pumpkin__size3.webp",
+     "px": [
+      809,
+      261
+     ],
+     "widthM": 0.5805,
+     "heightM": 0.1873,
+     "pivot": [
+      0.4842,
+      0.517
+     ],
+     "boxM": [
+      0.812,
+      0.839,
+      0.136
+     ],
+     "sway": {
+      "amp": 0.25,
+      "speed": 0.45
+     }
+    },
+    {
+     "file": "sprites/pumpkin__size4.webp",
+     "thumb": "thumbs/pumpkin__size4.webp",
+     "px": [
+      820,
+      255
+     ],
+     "widthM": 0.8979,
+     "heightM": 0.2792,
+     "pivot": [
+      0.4995,
+      0.5514
+     ],
+     "boxM": [
+      1.082,
+      1.082,
+      0.169
+     ],
+     "sway": {
+      "amp": 0.25,
+      "speed": 0.45
+     }
+    },
+    {
+     "file": "sprites/pumpkin__size5.webp",
+     "thumb": "thumbs/pumpkin__size5.webp",
+     "px": [
+      806,
+      256
+     ],
+     "widthM": 1.2555,
+     "heightM": 0.3988,
+     "pivot": [
+      0.4992,
+      0.5315
+     ],
+     "boxM": [
+      1.355,
+      1.308,
+      0.211
+     ],
+     "sway": {
+      "amp": 0.25,
+      "speed": 0.45
+     }
+    },
+    {
+     "file": "sprites/pumpkin__size6.webp",
+     "thumb": "thumbs/pumpkin__size6.webp",
+     "px": [
+      802,
+      253
+     ],
+     "widthM": 1.5764,
+     "heightM": 0.4973,
+     "pivot": [
+      0.4964,
+      0.5427
+     ],
+     "boxM": [
+      1.628,
+      1.642,
+      0.252
+     ],
+     "sway": {
+      "amp": 0.25,
+      "speed": 0.45
+     }
+    },
+    {
+     "file": "sprites/pumpkin__size7.webp",
+     "thumb": "thumbs/pumpkin__size7.webp",
+     "px": [
+      805,
+      257
+     ],
+     "widthM": 1.8753,
+     "heightM": 0.5987,
+     "pivot": [
+      0.4969,
+      0.5492
+     ],
+     "boxM": [
+      1.867,
+      1.793,
+      0.277
+     ],
+     "sway": {
+      "amp": 0.25,
+      "speed": 0.45
+     }
+    }
+   ]
+  }
+ },
+ "elevationDeg": 22,
+ "stages": [
+  {
+   "id": "seed",
+   "minutes": 0
+  },
+  {
+   "id": "size1",
+   "minutes": 15
+  },
+  {
+   "id": "size2",
+   "minutes": 30
+  },
+  {
+   "id": "size3",
+   "minutes": 60
+  },
+  {
+   "id": "size4",
+   "minutes": 90
+  },
+  {
+   "id": "size5",
+   "minutes": 120
+  },
+  {
+   "id": "size6",
+   "minutes": 150
+  },
+  {
+   "id": "size7",
+   "minutes": 180
+  }
+ ]
+}

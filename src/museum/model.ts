@@ -63,7 +63,7 @@ export const WALL_MAX_H = WALL_HEIGHT - 0.6;
 export const EYE_HEIGHT = 1.6;
 
 /** Artwork width by jigsaw size; height follows the picture's aspect. */
-export const TIER_WIDTH: Record<JigsawTier, number> = { 1: 0.62, 2: 0.8, 3: 1.0, 4: 1.28, 5: 1.6, 6: 2.0 };
+export const TIER_WIDTH: Record<JigsawTier, number> = { 1: 0.5, 2: 0.62, 3: 0.8, 4: 1.0, 5: 1.28, 6: 1.6, 7: 2.0 };
 /** Frame border, as a fraction of the shorter side. */
 export const FRAME_BORDER = 0.07;
 

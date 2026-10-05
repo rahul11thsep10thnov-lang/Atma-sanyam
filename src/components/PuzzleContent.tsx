@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { ImageRef } from '../types';
+import { speciesThumb } from '../paradise/ui/PlantCatalogSheet';
 import { colors } from '../theme/colors';
 
 // Still photographs of the spaces for history thumbnails come from each
@@ -33,6 +34,14 @@ export function PuzzleContent({ image, width, height }: PuzzleContentProps) {
     );
   }
 
+  if (image.kind === 'plant') {
+    const src = speciesThumb(image.speciesId, 7);
+    return (
+      <View style={{ width, height: h, backgroundColor: '#E9DFD2', alignItems: 'center', justifyContent: 'center' }}>
+        {src ? <Image source={src} style={{ width: width * 0.8, height: h * 0.8 }} resizeMode="contain" /> : null}
+      </View>
+    );
+  }
   if (image.kind === 'balcony' || image.kind === 'space') {
     const src = spacePreview(image.kind === 'space' ? image.space : 'balcony');
     return src ? <Image source={src} style={{ width, height: h }} resizeMode="cover" /> : <View style={{ width, height: h, backgroundColor: '#3a2e26' }} />;

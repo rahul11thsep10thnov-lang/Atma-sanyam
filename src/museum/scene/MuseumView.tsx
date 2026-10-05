@@ -15,7 +15,9 @@ import * as THREE from 'three';
 import { ArtworkRecord } from '../../collection/model';
 import { loadModuleTexture, loadTile, loadUriTexture, radialTexture } from '../../gl/textures';
 import { ThreeHandle, useThree } from '../../gl/useThree';
-import { SPRITES, SPRITE_IMAGES, TEXTURES } from '../../garden/sprites.generated';
+import { spriteFor as paradiseSprite } from '../../paradise/model';
+import { PARADISE_IMAGES } from '../../paradise/sprites.generated';
+import { MUSEUM_TEXTURES } from '../textures';
 import { EYE_HEIGHT, FLOOR_DEPTH, MuseumObject, MuseumState, MuseumTheme, RING_RADIUS, SECTION_ARC, WALL_HEIGHT, WALL_LENGTH, WALL_RADIUS, artworkSize, snapToFloor, snapToWall } from '../model';
 import { MUSEUM_STORE_BY_ID, MuseumItem, isLightItem, museumWidthOf } from '../store';
 
@@ -110,8 +112,8 @@ export function MuseumView({ state, section, mode, artworkById, selectedId, onSe
     const root = new THREE.Group();
     scene.add(root);
     sceneRef.current = { h, root, sections: new Map(), nodes: new Map(), amb, hemi, poolTex: radialTexture(96, 0.0, 2.2), marble: null, theme: null };
-    if (TEXTURES.marble && SPRITE_IMAGES[TEXTURES.marble.file]) {
-      loadTile(SPRITE_IMAGES[TEXTURES.marble.file], 1).then((t) => {
+    {
+      loadTile(MUSEUM_TEXTURES.marble.image, 1).then((t) => {
         const s = sceneRef.current;
         if (!s) return;
         s.marble = t;
@@ -796,9 +798,8 @@ function buildObject(o: MuseumObject, artworkById: (id: string) => ArtworkRecord
     case 'shelf': add(new THREE.Mesh(new THREE.BoxGeometry(w, 0.04, 0.25), M())).position.z = 0.125; break;
     case 'plant': {
       const spriteId = String(it.params?.sprite ?? '');
-      const def = SPRITES.items[spriteId];
-      const sp = def?.sprite ?? def?.stages?.[def.stages.length - 1]?.healthy;
-      const id = sp ? SPRITE_IMAGES[sp.file] : undefined;
+      const sp = paradiseSprite(spriteId, 7)?.sprite;
+      const id = sp ? PARADISE_IMAGES[sp.file] : undefined;
       if (sp && id !== undefined) {
         const mat = new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.1, side: THREE.DoubleSide, color: 0xffffff });
         const geo = new THREE.PlaneGeometry(sp.widthM, sp.heightM);

@@ -6,7 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCallback, useEffect, useState } from 'react';
 import { ARTWORKS } from '../spaces/catalog';
 import { loadSpace } from '../spaces/repository';
-import { loadGarden } from '../garden/repository';
 import { ArtworkRecord, CollectionState, INITIAL_COLLECTION, DEFAULT_FRAME } from './model';
 
 const KEY = 'focus.collection.v1';
@@ -22,7 +21,6 @@ async function migrateOldArt(): Promise<CollectionState> {
     if (!raw) return next;
     const old = JSON.parse(raw) as { completed?: string[]; binned?: string[] };
     const onBalcony = new Set((await loadSpace('balcony')).placed.map((p) => p.artId).filter((a): a is string => !!a));
-    const inGarden = new Set((await loadGarden()).items.map((i) => i.artId).filter((a): a is string => !!a));
     for (const id of old.completed ?? []) {
       const a = ARTWORKS.find((x) => x.id === id);
       if (!a) continue;
@@ -36,7 +34,7 @@ async function migrateOldArt(): Promise<CollectionState> {
         minutes: 30,
         unlockedAt: Date.now(),
         frameId: DEFAULT_FRAME,
-        home: onBalcony.has(id) ? 'balcony' : inGarden.has(id) ? 'garden' : 'collection',
+        home: onBalcony.has(id) ? 'balcony' : 'collection',
       };
       next.artworks.push(rec);
     }
@@ -56,6 +54,11 @@ export async function loadCollection(): Promise<CollectionState> {
   }
   if (!memo) {
     memo = await migrateOldArt();
+    await saveCollection(memo);
+  }
+  // the 3D garden that once hung artworks is gone: anything placed there returns to the collection
+  if (memo.artworks.some((a) => a.home === 'garden')) {
+    memo = { ...memo, artworks: memo.artworks.map((a) => (a.home === 'garden' ? { ...a, home: 'collection' as const } : a)) };
     await saveCollection(memo);
   }
   return memo;

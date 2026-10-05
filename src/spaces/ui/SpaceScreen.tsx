@@ -275,7 +275,7 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
       <InventorySheet visible={sheet === 'inventory'} space={space} state={state} rewards={rewards} onClose={() => setSheet(null)} onState={save} onClearPenalty={(uid) => void clearPenalty(uid)} onToast={say} />
       <CollectionSheet
         visible={sheet === 'gallery'}
-        here={space}
+        here="balcony"
         collection={art}
         onClose={() => setSheet(null)}
         onCollection={saveArt}

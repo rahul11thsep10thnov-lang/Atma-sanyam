@@ -5,7 +5,7 @@ FOCUS has three places that grow with focused time, each its own tab:
 | Tab | What it is | How it is drawn |
 | --- | --- | --- |
 | **Balcony** | a photographed balcony where the peace lily grows | offline Cycles renders, stacked on the phone (`src/spaces/`) |
-| **Garden** | a 70 × 70 m lawn in front of a mansion, with room for 500 planters and more on stands | a real-time three.js scene on expo-gl; every plant is a photographed sprite (`src/garden/`) |
+| **Garden** | the Paradise Garden: a painted panorama in five segments, where every plant grown in a focus session takes a permanent place | a layered 2D scene: the plate plus Blender-rendered plant sprites (`src/paradise/`, see `docs/PARADISE_GARDEN.md`) |
 | **Museum** | a ring gallery where every finished jigsaw hangs as a framed artwork | a real-time three.js scene (`src/museum/`) |
 
 They share one store catalogue, one coin balance and one **collection**
@@ -17,57 +17,38 @@ like a real, beautiful place?**
 ## Jigsaws and the collection
 
 A picture session (a library photograph or the person's own photo) reveals
-the picture tile by tile. Completed sessions of thirty minutes or more keep
-it as a framed jigsaw; there are exactly six sizes (`src/collection/model.ts`):
+the picture tile by tile. Completed sessions of fifteen minutes or more keep
+it as a framed jigsaw. Its size is the session's **growth size**, the same
+seven sizes a plant reaches (`src/growth/size.ts`, the single table):
 
 | Completed minutes | Size | Pieces |
 | --- | --- | --- |
-| under 30 | none | the picture still reveals, nothing is kept |
-| 30–59 | 1 | 3 × 4 |
-| 60–89 | 2 | 4 × 5 |
-| 90–119 | 3 | 5 × 6 |
-| 120–149 | 4 | 6 × 8 |
-| 150–179 | 5 | 8 × 10 |
-| 180 and more | 6 | 9 × 12 |
+| under 15 | none | the picture still reveals, nothing is kept |
+| 15–29 | 1 | 3 × 3 |
+| 30–59 | 2 | 3 × 4 |
+| 60–89 | 3 | 4 × 5 |
+| 90–119 | 4 | 5 × 6 |
+| 120–149 | 5 | 6 × 8 |
+| 150–179 | 6 | 8 × 10 |
+| 180 and more | 7 | 9 × 12 |
 
 Every artwork is a permanent record (`ArtworkRecord`: title, category,
 source, size, the session's minutes, date, frame, home). When a session
 ends the person is asked **where it should hang**: the museum, the balcony
-wall, the garden easel, the collection, or the bin. The collection sheet in
-each place lists every artwork with where it hangs; an artwork is never
-deleted for lack of wall space.
+wall, the collection, or the bin. The collection sheet in each place lists
+every artwork with where it hangs; an artwork is never deleted for lack of
+wall space. Artworks that hung in the old 3D garden return to the
+collection.
 
-A growable plant that just reached full growth earns a **new one**: the
-person chooses the garden floor, a planter stand (if one with a free level
-is owned), the inventory, or the bin.
+## The garden (`src/paradise/`)
 
-## The garden (`src/garden/`)
-
-- **Scene** (`scene/GardenView.tsx`): a 70 m lawn with the mansion's facade
-  along the north edge, hedges on the other three sides, trees beyond, a
-  sandstone terrace; sky gradient, fog, sun and hemisphere light per
-  lighting state; rain as particles; lamps glow at night; blob shadows.
-- **Gestures**: one finger slides over the lawn, two fingers turn and tilt
-  (like a map), pinch zooms, plus +/−/recentre buttons. In Customize a
-  finger carries any object like a cursor; dropping it on the dustbin
-  throws it away, on a planter stand puts it on the next free level.
-- **Model** (`model.ts`): items stand at free metre positions. Ground
-  capacity is 500 planters; each **planter stand** adds six levels. Growth,
-  wilting, penalties, inventory, dustbin and easel follow the same rules as
-  before. The old photographed garden's state migrates on first launch.
-- **Sprites** (`sprites.generated.ts`, from `assets/garden3d/sprites.json`):
-  every plant, tree, lamp and object rendered once (and once lit, for
-  lamps) at a 22° elevation on a transparent background, with its size in
-  metres and its ground pivot; growable plants have five stages, healthy
-  and wilted. The scene draws each as a cylindrical billboard that turns to
-  face the camera. Textures (`textures.json`) are seamless tiles (grass,
-  paving, marble, plaster, wood) and front sprites (hedge runs, mansion).
-- **Plants**: the original marigold, hibiscus, rose, jasmine and
-  bougainvillea plus 26 more (`focusbalcony/garden_plants_extra.py`): ten
-  growables (sunflower, dahlia, chrysanthemum, petunia, zinnia, cosmos,
-  periwinkle, ixora, lantana, geranium) and sixteen singles (oleander,
-  hydrangea, canna, bird of paradise, bamboo, papaya, guava, pomegranate,
-  curry leaf, mint, aloe, cactus bed, fern, elephant ear, peepal, jamun).
+The Paradise Garden has its own document: `docs/PARADISE_GARDEN.md`. In
+short: two views (the whole garden, a segment up close), five segments
+(Flowers, Trees, Indoor / Ornamental, Fruits & Vegetables, Herbs &
+Medicinal), 84 species, 150+ places per segment chosen by a natural
+scatter, a shuffle that only moves plants, plants that are inspected but
+never regrown, and a focus session that plants a seed and grows it in
+front of the person, ending in one of seven sizes.
 
 ## The museum (`src/museum/`)
 
@@ -117,20 +98,17 @@ collection.
 
 ## What grows
 
-| Space | Focus plant | Stages |
+| Where | What grows | Stages |
 | --- | --- | --- |
 | Balcony | peace lily | seedling 0 → small 25 → growing 45 → mature 60 → flowering 90 min |
-| Garden | Kachnar (orchid tree) | seed 0 → seedling 5 h → young 20 h → mature 50 h → large 100 h → flowering 250 h → grand 500 h |
+| Garden | the plant chosen for the session | seed → sizes 1–7 by the session's completed minutes (15, 30, 60, 90, 120, 150, 180) |
 
-The focus plant grows only from completed sessions in that space.
-Abandoning a session (after the ten-second grace) makes it droop and
-leaves two **penalty objects**: a wilted sapling and a broken picture.
-They cannot be put away or thrown in the bin; each clears only for
+The balcony's focus plant grows only from completed balcony sessions.
+Abandoning one (after the ten-second grace) makes it droop and leaves two
+**penalty objects**: a wilted sapling and a broken picture. Abandoning a
+garden session leaves a wilted sapling in that segment. Penalties cannot
+be put away or thrown in the bin; each clears only for
 `PENALTY_REMOVAL_COINS` (40) coins.
-
-Growable garden plants go seed → sprout → young → mature → flowering at
-0 / 25 / 60 / 120 / 240 focused minutes while placed, with a wilted sprite
-below 60 % health.
 
 ## Coins, ads, membership
 
@@ -148,8 +126,9 @@ below 60 % health.
 - A handwritten greeting (Caveat), then two separate peach chips in Bebas
   Neue: **Grow plants** and **Reveal jigsaws**. The spaces themselves live
   in their tabs.
-- **Grow plants**: the balcony's and the garden's plants, pictured; picking
-  one starts the session in that space.
+- **Grow plants**: the balcony's peace lily and the Paradise Garden's
+  species, pictured; picking a garden species opens its preview, where the
+  focus length decides the size it will reach.
 - **Reveal jigsaws**: *Your photo* (the phone's library, kept as the app's
   own copy) and the library's Heritage / Nature / Wildlife / Spirituality
   collections.
@@ -159,7 +138,8 @@ below 60 % health.
 | | |
 | --- | --- |
 | `src/collection/` | `model.ts` sizes and records · `repository.ts` persistence (migrates the old art wall) · `photos.ts` the phone photo picker · `ui/CollectionSheet.tsx` |
-| `src/garden/` | `model.ts` · `repository.ts` · `scene/GardenView.tsx` · `ui/GardenScreen.tsx`, `GardenSession.tsx`, `GardenStoreSheet.tsx`, `GardenInventorySheet.tsx` · `sprites.generated.ts` |
+| `src/growth/` | `size.ts`: the seven growth sizes, the single source of truth |
+| `src/paradise/` | `catalog.ts` species · `layout.ts` beds and slots · `model.ts` plants, placement, shuffle · `repository.ts` · `scene/ParadiseScene.tsx`, `GrowthScene.tsx`, `Ambience.tsx` · `ui/ParadiseScreen.tsx`, `PlantCatalogSheet.tsx`, `PlantPreviewSheet.tsx` · `sprites.generated.ts` |
 | `src/museum/` | `model.ts` · `store.ts` · `repository.ts` · `scene/MuseumView.tsx` · `ui/MuseumScreen.tsx`, `MuseumStoreSheet.tsx` |
 | `src/gl/` | `useThree.ts` the renderer on expo-gl · `textures.ts` texture loading (bundled, on disk, generated) |
 | `src/spaces/` | the balcony's pack, model, store catalogue (`catalog.ts`, shared), rewards, `focusEngine.ts` (what a session does to every place), `scene/SpaceScene.tsx`, `ui/SpaceScreen.tsx` |
@@ -171,19 +151,19 @@ below 60 % health.
 cd tools/balcony-render
 python render_space.py --space balcony --state morning   # the balcony's plates and objects
 python gen_space_pack.py balcony
-python render_sprites.py --group all                     # every garden sprite (day, night, scenery)
-python render_textures.py                                # tiles, hedge runs, the mansion
-python gen_sprites_pack.py                               # → src/garden/sprites.generated.ts
+python render_paradise.py --samples 16 --px 768         # every Paradise Garden species, seed and seven sizes
+python gen_paradise_pack.py                              # → src/paradise/sprites.generated.ts
 ```
 
-`render_sprites.py --only marigold,rose_bush` renders a few; finished
-sprites are skipped on a rerun unless `--fresh` is given. A full sprite set
-is about 230 renders of roughly a minute each on 4 CPU cores.
+`render_paradise.py --only lily,rose` renders a few; finished sprites are
+skipped on a rerun unless `--fresh` is given. The museum's textures
+(marble, plaster, wood) stay in `assets/garden3d/textures/`.
 
 ## What would gain most from artist or photographic assets
 
-Everything is generated. The garden would gain most from a photographic
-grass plate and tree sprites; the museum from real marble and plaster
+The garden's plate is the reference painting; its plants are generated.
+The garden would gain most from hand-painted or photographed plant sprites
+in the plate's style; the museum from real marble and plaster
 tiles and a modelled column capital; the balcony as before. Swap any file
 in `assets/` for a better image of the same size and alignment; the
 manifests position it.
