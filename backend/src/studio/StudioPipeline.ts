@@ -22,8 +22,24 @@ import { isFfmpegAvailable, renderWithFfmpeg, RenderScene } from "./rendering/ff
 import { runQualityCheck } from "./qc/qualityCheck";
 import { snapshotVersion } from "./versioning";
 import { Transition } from "./rendering/ffmpegCommands";
+import {
+  advanceCinematic,
+  cinematicPublishGate,
+  currentEpisode,
+  PLANNER_VERSION,
+  stageAssembleMasterVisual,
+  stageBuildScenePackage,
+  stageGenerateDepth,
+  stageGenerateLayerAsset,
+  stageGenerateMask,
+  stageInpaintAsset,
+  stagePlanShots,
+  stageRenderShot,
+  stageShotQc,
+} from "./production/cinematicPipeline";
 
 const RENDERER_VERSION = "studio-ffmpeg-v1";
+const CINEMATIC_RENDERER_VERSION = "studio-ffmpeg-v1+engine25d";
 const ILLUSTRATION_LABEL = "Illustration";
 
 type Db = PrismaClient;
@@ -497,9 +513,14 @@ export async function enqueueMediaGeneration(db: Db, storyId: string, requestedB
   const story = await db.studioStory.findUniqueOrThrow({ where: { id: storyId } });
   const master = await currentMasterScript(db, storyId);
   if (!master) throw new Error("No master script");
-  for (const scene of master.scenes) {
-    const ready = await db.sceneAsset.findFirst({ where: { sceneId: scene.id, status: "READY", promptHash: scene.visualHash } });
-    if (!ready) await enqueueStudioJob(db, { storyId, type: "GENERATE_SCENE_VISUAL", sceneId: scene.id, requestedBy, dedupeKey: `visual:${scene.id}:${scene.visualHash}` });
+  if (story.productionMode === "CINEMATIC_25D") {
+    // Cinematic: episode → shots → layered assets → 2.5D shot renders → master visual.
+    await enqueueStudioJob(db, { storyId, type: "PLAN_SHOTS", requestedBy, dedupeKey: `plan:${master.id}:${PLANNER_VERSION}` });
+  } else {
+    for (const scene of master.scenes) {
+      const ready = await db.sceneAsset.findFirst({ where: { sceneId: scene.id, status: "READY", promptHash: scene.visualHash } });
+      if (!ready) await enqueueStudioJob(db, { storyId, type: "GENERATE_SCENE_VISUAL", sceneId: scene.id, requestedBy, dedupeKey: `visual:${scene.id}:${scene.visualHash}` });
+    }
   }
   for (const lang of story.languages) {
     const script = await currentLanguageScript(db, storyId, lang, master.id);
@@ -649,13 +670,27 @@ async function gatherRenderInputs(db: Db, storyId: string) {
   const project = await db.videoProject.findUnique({ where: { storyId } });
   if (!master || !project) return null;
   const assets = new Map<string, { image?: { storageKey: string; isPlaceholder: boolean; id: string }; clip?: { storageKey: string; id: string } }>();
-  for (const scene of master.scenes) {
-    const rows = await db.sceneAsset.findMany({ where: { sceneId: scene.id, status: "READY", promptHash: scene.visualHash }, orderBy: { createdAt: "desc" } });
-    const image = rows.find((r) => r.kind === "IMAGE" && r.storageKey);
-    const clip = rows.find((r) => r.kind === "ANIMATION" && r.storageKey);
-    assets.set(scene.id, { image: image ? { storageKey: image.storageKey!, isPlaceholder: image.isPlaceholder, id: image.id } : undefined, clip: clip ? { storageKey: clip.storageKey!, id: clip.id } : undefined });
+  const cinematic = story.productionMode === "CINEMATIC_25D";
+  let visualsReady: boolean;
+  if (cinematic) {
+    // One master visual (per-scene clips cut from the shot renders) shared by every language.
+    const episode = await currentEpisode(db, storyId, master.id);
+    const mv = episode?.masterVisualAssetId ? await db.asset.findUnique({ where: { id: episode.masterVisualAssetId } }) : null;
+    const clips = ((mv?.metadata ?? {}) as { scenes?: { sceneNumber: number; storageKey: string }[] }).scenes ?? [];
+    for (const scene of master.scenes) {
+      const c = clips.find((x) => x.sceneNumber === scene.sceneNumber);
+      assets.set(scene.id, { clip: c && mv ? { storageKey: c.storageKey, id: mv.id } : undefined });
+    }
+    visualsReady = !!mv && mv.status === "READY" && master.scenes.every((s) => assets.get(s.id)?.clip);
+  } else {
+    for (const scene of master.scenes) {
+      const rows = await db.sceneAsset.findMany({ where: { sceneId: scene.id, status: "READY", promptHash: scene.visualHash }, orderBy: { createdAt: "desc" } });
+      const image = rows.find((r) => r.kind === "IMAGE" && r.storageKey);
+      const clip = rows.find((r) => r.kind === "ANIMATION" && r.storageKey);
+      assets.set(scene.id, { image: image ? { storageKey: image.storageKey!, isPlaceholder: image.isPlaceholder, id: image.id } : undefined, clip: clip ? { storageKey: clip.storageKey!, id: clip.id } : undefined });
+    }
+    visualsReady = master.scenes.every((s) => assets.get(s.id)?.image);
   }
-  const visualsReady = master.scenes.every((s) => assets.get(s.id)?.image);
   const languages: LanguageInputs[] = [];
   for (const lang of story.languages) {
     const script = await currentLanguageScript(db, storyId, lang, master.id);
@@ -665,12 +700,12 @@ async function gatherRenderInputs(db: Db, storyId: string) {
     const expected = content.scenes.reduce((n, s) => n + (s.narratorText.trim() ? 1 : 0) + s.dialogue.filter((d) => d.text.trim()).length, 0);
     if (segments.length >= expected && expected > 0) languages.push({ languageCode: lang, script, content, segments });
   }
-  return { story, master, project, assets, visualsReady, languages };
+  return { story, master, project, assets, visualsReady, languages, cinematic };
 }
 
 function languageInputsHash(inputs: NonNullable<Awaited<ReturnType<typeof gatherRenderInputs>>>, langs: LanguageInputs[], musicKey: string | null) {
   return contentHash(
-    RENDERER_VERSION,
+    inputs.cinematic ? CINEMATIC_RENDERER_VERSION : RENDERER_VERSION,
     inputs.master.id,
     inputs.master.scenes.map((s) => [s.sceneNumber, s.visualHash, s.cameraDirection, s.transition, inputs.assets.get(s.id)?.image?.storageKey, inputs.assets.get(s.id)?.clip?.storageKey]),
     langs.map((l) => [l.languageCode, l.content.scenes.map((s) => s.onScreenText ?? ""), l.segments.map((g) => [g.sceneNumber, g.lineIndex, g.cacheHash])]),
@@ -692,6 +727,8 @@ function storyMood(topics: string[]): string {
 
 /** Fan-in: queue renders for languages whose inputs are complete, then QC when every render is done. */
 export async function maybeEnqueueRenders(db: Db, storyId: string) {
+  const mode = await db.studioStory.findUnique({ where: { id: storyId }, select: { productionMode: true } });
+  if (mode?.productionMode === "CINEMATIC_25D") await advanceCinematic(db, storyId);
   const inputs = await gatherRenderInputs(db, storyId);
   if (!inputs || !["APPROVED", "RENDERED"].includes(inputs.story.status) || !inputs.visualsReady) return;
   const music = await pickMusic(db, storyId, storyMood(inputs.story.sensitiveTopics), 0);
@@ -747,8 +784,10 @@ async function stageRender(db: Db, ctx: JobContext, packageMode: boolean) {
   const toSegInputs = (l: LanguageInputs): TimelineSegmentInput[] =>
     l.segments.map((g) => ({ sceneNumber: g.sceneNumber, lineIndex: g.lineIndex, speakerKey: g.speakerKey, durationSeconds: g.durationSeconds, text: g.text }));
   let timelines: LanguageTimeline[] = langs.map((l) => buildLanguageTimeline(l.languageCode, sceneNumbers, toSegInputs(l)));
-  if (packageMode) {
-    const floors = commonSceneFloors(timelines);
+  if (packageMode || inputs.cinematic) {
+    // Cinematic: the picture is one master visual cut to the shared scene floors of every language.
+    const all = inputs.cinematic ? inputs.languages : langs;
+    const floors = commonSceneFloors(all.map((l) => buildLanguageTimeline(l.languageCode, sceneNumbers, toSegInputs(l))));
     timelines = langs.map((l) => buildLanguageTimeline(l.languageCode, sceneNumbers, toSegInputs(l), floors));
   }
   const over = timelines.find((t) => t.overLimit);
@@ -851,14 +890,15 @@ async function stageRender(db: Db, ctx: JobContext, packageMode: boolean) {
         totalSeconds: timeline.totalSeconds,
         languages: langFiles,
         captionFontFamily: captionLang ? getLanguageProfile(captionLang.languageCode).notoFont : "Noto Sans",
-        labelText: ILLUSTRATION_LABEL,
+        labelText: inputs.cinematic ? undefined : ILLUSTRATION_LABEL,
+        disclosure: inputs.cinematic ? { languageCode: packageMode ? inputs.story.masterLanguage : langs[0].languageCode } : undefined,
         musicPath: music ? await providers.storage.materialize(music.storageKey) : undefined,
         burnSubtitles: inputs.project.burnSubtitles && !packageMode,
         outputPath,
         thumbnailPath,
         onProgress: (m) => ctx.log(m),
       });
-      renderer = RENDERER_VERSION;
+      renderer = inputs.cinematic ? CINEMATIC_RENDERER_VERSION : RENDERER_VERSION;
       if (!packageMode) {
         // Keep the separate tracks as independently editable audio files.
         const tracks = result.tracks[langs[0].languageCode];
@@ -913,8 +953,23 @@ export async function buildQcReport(db: Db, storyId: string, opts: { includeMedi
   const characters = await db.studioCharacter.findMany({ where: { storyId } });
   const assignments = await db.voiceAssignment.findMany({ where: { storyId }, include: { voice: true } });
 
+  const cinematic = story.productionMode === "CINEMATIC_25D";
   const masterScenes = [];
   for (const scene of master.scenes) {
+    if (cinematic) {
+      // Restricted scenes are directed with substitute visuals (no characters); shot QC enforces it.
+      const shots = await db.studioShot.findMany({ where: { sceneId: scene.id } });
+      masterScenes.push({
+        sceneNumber: scene.sceneNumber,
+        narratorText: scene.narratorText,
+        dialogue: (scene.dialogue as unknown as DialogueLine[]) ?? [],
+        safetyLevel: scene.safetyLevel,
+        hasSubstituteVisual: scene.safetyLevel !== "RESTRICTED" || shots.every((s) => s.characterIds.length === 0),
+        hasVisualAsset: opts.includeMedia ? shots.length > 0 && shots.every((s) => !!s.currentRenderId) : true,
+        visualIsPlaceholder: false,
+      });
+      continue;
+    }
     const prompt = await db.visualPrompt.findFirst({ where: { sceneId: scene.id }, orderBy: { createdAt: "desc" } });
     const asset = await db.sceneAsset.findFirst({ where: { sceneId: scene.id, status: "READY", kind: "IMAGE", promptHash: scene.visualHash } });
     masterScenes.push({
@@ -952,7 +1007,7 @@ export async function buildQcReport(db: Db, storyId: string, opts: { includeMedi
     if (opts.includeMedia && !render) languages[languages.length - 1].lintFlags = [...languages[languages.length - 1].lintFlags, { rule: "RENDER_MISSING", severity: "BLOCKING" }];
   }
 
-  return runQualityCheck({
+  const report = runQualityCheck({
     articleText: article.cleanedText ?? article.rawText,
     extraAllowedNames: story.sourceName ? [story.sourceName] : [],
     masterLanguage: story.masterLanguage,
@@ -962,6 +1017,16 @@ export async function buildQcReport(db: Db, storyId: string, opts: { includeMedi
     voiceAssignments: Object.fromEntries(assignments.map((a) => [a.speakerKey, a.voice.code])),
     languages,
   });
+  if (cinematic && opts.includeMedia) {
+    // CAN_PUBLISH for cinematic stories: shot QC, placeholders, licences, master visual.
+    const gate = await cinematicPublishGate(db, storyId);
+    report.issues.push(...gate.issues);
+    if (!gate.canPublish) {
+      report.status = "NEEDS_REVIEW";
+      report.checks.push({ name: "cinematic_can_publish", passed: false });
+    } else report.checks.push({ name: "cinematic_can_publish", passed: true });
+  }
+  return report;
 }
 
 async function stageFinalQc(db: Db, ctx: JobContext) {
@@ -992,6 +1057,10 @@ export async function publishStory(db: Db, storyId: string, opts: { adminUserId?
   const renders = await db.videoRender.findMany({ where: { storyId, kind: "SINGLE_LANGUAGE", isCurrent: true, status: "READY" } });
   if (renders.some((r) => r.renderer === "mock-manifest")) throw new Error("Cannot publish mock renders (ffmpeg was not available)");
   if (renders.length === 0) throw new Error("No renders to publish");
+  if (story.productionMode === "CINEMATIC_25D") {
+    const gate = await cinematicPublishGate(db, storyId);
+    if (!gate.canPublish) throw new Error(`CAN_PUBLISH is false: ${gate.issues.filter((i) => i.severity === "BLOCKING").map((i) => i.message).slice(0, 5).join("; ")}`);
+  }
 
   let masterStoryId = story.masterStoryId;
   if (!masterStoryId) {
@@ -1030,6 +1099,7 @@ export async function publishStory(db: Db, storyId: string, opts: { adminUserId?
     });
   }
   await db.studioStory.update({ where: { id: storyId }, data: { status: "PUBLISHED", publishedAt: now, masterStoryId } });
+  if (story.productionMode === "CINEMATIC_25D") await db.studioShot.updateMany({ where: { storyId, currentRenderId: { not: null } }, data: { status: "PUBLISHED" } });
   return { masterStoryId, languages: renders.map((r) => r.languageCode) };
 }
 
@@ -1065,6 +1135,26 @@ export async function runStudioJob(db: Db, ctx: JobContext): Promise<unknown> {
       return stageFinalQc(db, ctx);
     case "PUBLISH":
       return stagePublish(db, ctx);
+    case "PLAN_SHOTS":
+      return stagePlanShots(db, ctx);
+    case "GENERATE_LAYER_ASSET":
+      return stageGenerateLayerAsset(db, ctx);
+    case "GENERATE_MASK":
+      return stageGenerateMask(db, ctx);
+    case "GENERATE_DEPTH":
+      return stageGenerateDepth(db, ctx);
+    case "INPAINT_ASSET":
+      return stageInpaintAsset(db, ctx);
+    case "BUILD_SCENE_PACKAGE":
+      return stageBuildScenePackage(db, ctx);
+    case "RENDER_SHOT":
+      return stageRenderShot(db, ctx, false);
+    case "RENDER_SHOT_I2V":
+      return stageRenderShot(db, ctx, true);
+    case "SHOT_QC":
+      return stageShotQc(db, ctx);
+    case "ASSEMBLE_MASTER_VISUAL":
+      return stageAssembleMasterVisual(db, ctx);
     default:
       throw new Error(`Unknown studio job type ${ctx.job.type}`);
   }

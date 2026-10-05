@@ -21,6 +21,7 @@ import {
 } from "./ffmpegCommands";
 import { TimelineScene, PlacedSegment } from "./audioTimeline";
 import { captionToAss } from "./subtitles";
+import { disclosureAss } from "../production/disclosure";
 
 const execFileAsync = promisify(execFile);
 
@@ -111,6 +112,8 @@ export interface RenderJob {
   languages: RenderLanguage[]; // 1 = per-language MP4, >1 = multi-audio package
   captionFontFamily: string;
   labelText?: string;
+  /** Localised disclosure rendered with libass (cinematic reconstructions); replaces labelText. */
+  disclosure?: { languageCode: string | null };
   musicPath?: string;
   burnSubtitles: boolean;
   outputPath: string;
@@ -148,7 +151,12 @@ export async function renderWithFfmpeg(job: RenderJob): Promise<{ tracks: Record
       caption = { assPath, fontsDir: env.studio.fontDir || undefined };
     }
     let label: { textFile: string; fontFile: string } | undefined;
-    if (job.labelText && labelFont) {
+    let labelAss: { assPath: string; fontsDir?: string } | undefined;
+    if (job.disclosure) {
+      const assPath = path.join(job.workDir, `disclosure_${scene.sceneNumber}.ass`);
+      await writeFile(assPath, disclosureAss(job.disclosure.languageCode, t.durationSeconds, { width: job.width, height: job.height }));
+      labelAss = { assPath, fontsDir: env.studio.fontDir || undefined };
+    } else if (job.labelText && labelFont) {
       const textFile = path.join(job.workDir, "label.txt");
       await writeFile(textFile, job.labelText);
       label = { textFile, fontFile: labelFont };
@@ -166,6 +174,7 @@ export async function renderWithFfmpeg(job: RenderJob): Promise<{ tracks: Record
         transitionOut: i === job.scenes.length - 1 ? "fade" : job.scenes[i + 1].transition,
         caption,
         label,
+        labelAss,
         outputPath: clipPath,
       })
     );

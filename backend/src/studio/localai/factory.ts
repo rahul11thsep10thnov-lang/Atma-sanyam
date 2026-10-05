@@ -93,6 +93,30 @@ export class LocalAiFactory {
     throw new LocalAiError(`Unsupported provider ${model.provider} for ${t}`, false, "CONFIG");
   }
 
+  private assertTask(model: AiModel, task: AiTask) {
+    if (model.task !== task) throw new LocalAiError(`Model ${model.modelId} is a ${model.task} model, not ${task}`, false, "CONFIG");
+  }
+  image(model: AiModel): LocalImageProvider {
+    this.assertTask(model, "IMAGE_GENERATION");
+    return this.provider(model as AiModel & { task: "IMAGE_GENERATION" });
+  }
+  segmentation(model: AiModel): LocalSegmentationProvider {
+    this.assertTask(model, "SEGMENTATION");
+    return this.provider(model as AiModel & { task: "SEGMENTATION" });
+  }
+  depth(model: AiModel): LocalDepthProvider {
+    this.assertTask(model, "DEPTH");
+    return this.provider(model as AiModel & { task: "DEPTH" });
+  }
+  inpainting(model: AiModel): LocalInpaintingProvider {
+    this.assertTask(model, "INPAINTING");
+    return this.provider(model as AiModel & { task: "INPAINTING" });
+  }
+  video(model: AiModel): LocalVideoProvider {
+    this.assertTask(model, "VIDEO_GENERATION");
+    return this.provider(model as AiModel & { task: "VIDEO_GENERATION" });
+  }
+
   /** True when the model's backend is configured and answers its health check. */
   async isAvailable(model: AiModel): Promise<boolean> {
     if (model.provider === "procedural") return true;

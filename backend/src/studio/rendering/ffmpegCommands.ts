@@ -22,6 +22,8 @@ export interface SceneClipSpec {
   /** ASS file with the scene's on-screen caption (libass: complex shaping + font fallback for mixed scripts). */
   caption?: { assPath: string; fontsDir?: string };
   label?: { textFile: string; fontFile: string };
+  /** Disclosure/label as ASS (complex shaping, any script); used instead of `label` when present. */
+  labelAss?: { assPath: string; fontsDir?: string };
   outputPath: string;
 }
 
@@ -64,7 +66,10 @@ function textOverlays(spec: SceneClipSpec): string[] {
     const fontsDir = spec.caption.fontsDir ? `:fontsdir='${escapeFilterPath(spec.caption.fontsDir)}'` : "";
     out.push(`ass='${escapeFilterPath(spec.caption.assPath)}'${fontsDir}:shaping=complex`);
   }
-  if (spec.label) {
+  if (spec.labelAss) {
+    const fontsDir = spec.labelAss.fontsDir ? `:fontsdir='${escapeFilterPath(spec.labelAss.fontsDir)}'` : "";
+    out.push(`ass='${escapeFilterPath(spec.labelAss.assPath)}'${fontsDir}:shaping=complex`);
+  } else if (spec.label) {
     const size = Math.round(spec.height / 48);
     out.push(
       `drawtext=fontfile='${escapeFilterPath(spec.label.fontFile)}':textfile='${escapeFilterPath(spec.label.textFile)}':fontsize=${size}:fontcolor=white@0.75:x=w-tw-${Math.round(spec.width * 0.03)}:y=${Math.round(spec.height * 0.04)}`

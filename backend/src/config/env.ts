@@ -75,8 +75,8 @@ export const env = {
     videoProviderBaseUrl: optional("VIDEO_PROVIDER_BASE_URL"),
     musicProvider: optional("MUSIC_PROVIDER", "library"),
     defaultResolution: optional("STUDIO_DEFAULT_RESOLUTION", "1080p"),
-    defaultFps: Number(optional("STUDIO_DEFAULT_FPS", "25")),
-    orientation: optional("STUDIO_ORIENTATION", "landscape"),
+    defaultFps: Number(optional("STUDIO_DEFAULT_FPS", "30")),
+    orientation: optional("STUDIO_ORIENTATION", "portrait"),
     workerConcurrency: Number(optional("STUDIO_WORKER_CONCURRENCY", "4")),
     renderConcurrency: Number(optional("STUDIO_RENDER_CONCURRENCY", "1")),
     workerRoles: optional("STUDIO_WORKER_ROLES", "all"),
@@ -96,6 +96,23 @@ export const env = {
     timeoutMs: Number(optional("LOCAL_AI_TIMEOUT_MS", "600000")),
     i2vTimeoutMs: Number(optional("LOCAL_I2V_TIMEOUT_MS", "1800000")),
     i2vEnabled: optional("LOCAL_I2V_ENABLED", "false") === "true",
+  },
+
+  // --- GPU workers (docs/operations/gpu-deployment.md) ---
+  gpu: {
+    workerId: optional("GPU_WORKER_ID"),
+    slotsPerWorker: Number(optional("GPU_SLOTS_PER_WORKER", "1")),
+    heartbeatSeconds: Number(optional("GPU_HEARTBEAT_SECONDS", "15")),
+    staleAfterSeconds: Number(optional("GPU_STALE_AFTER_SECONDS", "90")),
+    vramGb: Number(optional("GPU_VRAM_GB", "0")),
+    name: optional("GPU_NAME"),
+  },
+
+  // --- Cinematic 2.5D render ---
+  engine: {
+    renderThreads: Number(optional("ENGINE_RENDER_THREADS", "0")), // 0 = cores - 1
+    previewProfile: optional("ENGINE_PREVIEW_PROFILE", "preview-540x960-30"),
+    burnInDisclosure: optional("ENGINE_BURN_IN_DISCLOSURE", "true") === "true",
   },
 
   thresholds: {

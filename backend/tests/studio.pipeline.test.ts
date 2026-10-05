@@ -35,7 +35,7 @@ describe("studio pipeline (inline, end-to-end)", () => {
   it("goes DRAFT → ADMIN_REVIEW → APPROVED → RENDERED and regenerates only what changed", async (ctx) => {
     if (!dbAvailable) ctx.skip();
     const svc = new StudioService(prisma);
-    const story = await svc.createStory({ title: "Dowry harassment complaint in Jaipur", articleText: SAMPLE_ARTICLE, sourceName: "Example Times", languages: ["hi", "en"], resolution: "720p" }, adminId);
+    const story = await svc.createStory({ title: "Dowry harassment complaint in Jaipur", articleText: SAMPLE_ARTICLE, sourceName: "Example Times", languages: ["hi", "en"], resolution: "720p", productionMode: "CLASSIC" }, adminId);
     await waitForInlineJobs();
 
     let s = await prisma.studioStory.findUniqueOrThrow({ where: { id: story.id } });

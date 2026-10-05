@@ -3,6 +3,7 @@ import { HttpError } from "../middleware/errorHandler";
 import { logAdminAction } from "../lib/auditLog";
 import { enqueueStudioJob, retryJob } from "./jobs/jobRunner";
 import { clampTargetDuration, resolveOutputSettings } from "./config";
+import { DEFAULT_RENDER_PROFILE_KEY, findRenderProfile } from "./engine25d/profiles";
 import { contentHash } from "./hashing";
 import { isStudioLanguage } from "./language/languageProfiles";
 import { estimateSceneSeconds } from "./content/durationPlanner";
@@ -36,6 +37,10 @@ export interface CreateStoryInput {
   multiAudioPackage?: boolean;
   resolution?: "720p" | "1080p";
   fps?: number;
+  /** CINEMATIC_25D (default): directed shots rendered by the 2.5D engine. CLASSIC: one still per scene. */
+  productionMode?: "CLASSIC" | "CINEMATIC_25D";
+  /** Cinematic render profile (default portrait 1080×1920 @ 30). */
+  renderProfileKey?: string;
 }
 
 const REVIEWABLE_AFTER_EDIT = new Set(["APPROVED", "RENDERED", "PUBLISHED"]);
@@ -83,6 +88,7 @@ export class StudioService {
         district: input.district,
         contentWarnings: input.contentWarnings ?? [],
         allowDramatizedReconstruction: !!input.allowDramatizedReconstruction,
+        productionMode: input.productionMode ?? "CINEMATIC_25D",
         createdByAdminId: adminUserId,
         articles: {
           create: {
@@ -102,7 +108,9 @@ export class StudioService {
       },
     });
     // Output settings live on the project from the start; the master script fills in its timeline.
-    const output = resolveOutputSettings(input.resolution, input.fps);
+    // Cinematic stories render at their render profile (portrait 1080×1920 @ 30 by default).
+    const profile = findRenderProfile(input.renderProfileKey ?? DEFAULT_RENDER_PROFILE_KEY);
+    const output = story.productionMode === "CINEMATIC_25D" ? { width: profile.width, height: profile.height, fps: profile.fps } : resolveOutputSettings(input.resolution, input.fps);
     await this.db.videoProject.create({
       data: { storyId: story.id, masterScriptId: "", timeline: [], width: output.width, height: output.height, fps: output.fps, burnSubtitles: !!input.burnSubtitles, multiAudioPackage: !!input.multiAudioPackage },
     });
