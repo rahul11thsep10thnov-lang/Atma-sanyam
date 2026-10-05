@@ -189,6 +189,8 @@ export default function LiveAttemptPage({ params }: { params: Promise<{ id: stri
           id: q.questionId,
           text: q.questionText,
           options: q.options.map((o) => o.text),
+          figure: q.figureSvg ?? null,
+          optionFigures: q.options.map((o) => o.svg ?? null),
           correctIndex: q.options.findIndex((o) => o.label === q.correctOption),
           selected: q.selectedOption ? q.options.findIndex((o) => o.label === q.selectedOption) : null,
           explanation: q.explanation,
@@ -219,6 +221,8 @@ export default function LiveAttemptPage({ params }: { params: Promise<{ id: stri
         subjectLabel: q.subjectName,
         text: q.questionText,
         options: q.options.map((o) => o.text),
+        figure: q.figureSvg ?? null,
+        optionFigures: q.options.map((o) => o.svg ?? null),
       }))}
       initialSeconds={attempt.remainingSeconds}
       initialAnswers={initialAnswers}

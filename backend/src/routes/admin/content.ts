@@ -21,6 +21,7 @@ import {
   type ReviewAction,
 } from '../../services/questionService.js';
 import { createNode, deleteNode, listTree, updateNode } from '../../services/taxonomyService.js';
+import { generateFigureQuestions, listFigureGenerators, MAX_FIGURES_PER_REQUEST, MAX_PREVIEW, previewFigures } from '../../services/figureService.js';
 import type { AppDeps } from '../../types.js';
 import { idParam, optionalUuid, pageQuery } from '../util.js';
 
@@ -113,7 +114,7 @@ export function adminContentRouter(deps: AppDeps, auth: Auth, limits: RateLimits
           .optional()
           .transform((v) => (v ? v.split(',').filter(Boolean) : undefined))
           .pipe(z.array(z.enum(STATUSES)).optional()),
-        source: z.enum(['ai', 'import', 'manual', 'pyq']).optional(),
+        source: z.enum(['ai', 'import', 'manual', 'pyq', 'figure']).optional(),
         duplicates: z.enum(['true', 'false']).optional(),
         q: z.string().max(200).optional(),
         order: z.enum(['newest', 'oldest']).optional(),
@@ -197,6 +198,42 @@ export function adminContentRouter(deps: AppDeps, auth: Auth, limits: RateLimits
   r.post('/generation-jobs/estimate', A, auth.can('generation:run'), async (req, res) => {
     const body = parse(z.object({ questionCount: z.number().int().min(1).max(10_000) }), req.body);
     res.json(await estimate(db, env, ai, body.questionCount));
+  });
+
+  // --- Non-verbal (figure) questions -----------------------------------------
+  // Drawn by the figure engine with computed answers; no AI, no cost.
+  r.get('/figure-generators', A, auth.can('questions:read'), (_req, res) => {
+    res.json({ items: listFigureGenerators(), maxPerRequest: MAX_FIGURES_PER_REQUEST });
+  });
+
+  r.post('/figure-questions/preview', A, auth.can('questions:read'), async (req, res) => {
+    const body = parse(
+      z.object({
+        generator: z.string().max(60),
+        difficulty: difficultyEnum,
+        language: z.string().max(10),
+        count: z.number().int().min(1).max(MAX_PREVIEW).default(4),
+        seed: z.number().int().min(0).max(2 ** 31).optional(),
+      }),
+      req.body
+    );
+    res.json({ items: previewFigures(body) });
+  });
+
+  r.post('/figure-questions', A, auth.can('questions:write'), limits.generation, async (req, res) => {
+    const body = parse(
+      z.object({
+        examId: z.uuid(),
+        subjectId: z.uuid(),
+        chapterId: z.uuid().nullable().optional(),
+        generators: z.array(z.string().max(60)).min(1).max(30),
+        language: z.string().max(10),
+        count: z.number().int().min(1).max(MAX_FIGURES_PER_REQUEST),
+        difficulty: z.object({ easy: percent, medium: percent, hard: percent }),
+      }),
+      req.body
+    );
+    res.status(201).json(await generateFigureQuestions(db, body, req.admin!.id));
   });
 
   r.post('/generation-jobs', A, auth.can('generation:run'), limits.generation, async (req, res) => {

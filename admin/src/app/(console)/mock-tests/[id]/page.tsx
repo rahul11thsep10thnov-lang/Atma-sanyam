@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useCan } from '@/components/ConsoleShell';
-import { ConfirmButton, DifficultyBadge, ErrorAlert, Kpi, Loading, OkAlert, PageHead, StatusBadge } from '@/components/ui';
+import { ConfirmButton, DifficultyBadge, ErrorAlert, FigureImg, Kpi, Loading, OkAlert, PageHead, StatusBadge } from '@/components/ui';
 import { api, errorMessage, useApi } from '@/lib/api';
 import { fmtDate } from '@/lib/format';
 import { languageName } from '@/lib/useTaxonomy';
@@ -307,12 +307,13 @@ function EditDetails({ t, onClose, onSaved }: { t: TestDetail; onClose: () => vo
 interface Candidate {
   id: string;
   questionText: string;
+  figureSvg: string | null;
   difficulty: string;
   chapterName: string;
   timesUsed: number;
   sameDifficulty: boolean;
   correctOption: string;
-  options: { label: string; text: string }[];
+  options: { label: string; text: string; svg?: string | null }[];
 }
 
 function SwapDialog({
@@ -410,13 +411,29 @@ function SwapDialog({
                     <tr key={c.id}>
                       <td style={{ maxWidth: 520 }}>
                         <div>{c.questionText}</div>
-                        <ol type="A" className="small muted" style={{ margin: '4px 0 0', paddingLeft: 20 }}>
-                          {c.options.map((o) => (
-                            <li key={o.label} style={o.label === c.correctOption ? { fontWeight: 700, color: 'var(--good)' } : undefined}>
-                              {o.text}
-                            </li>
-                          ))}
-                        </ol>
+                        {c.figureSvg && (
+                          <div style={{ margin: '6px 0' }}>
+                            <FigureImg svg={c.figureSvg} alt="Figure" maxWidth={360} />
+                          </div>
+                        )}
+                        {c.options.some((o) => o.svg) ? (
+                          <div className="row" style={{ marginTop: 4 }}>
+                            {c.options.map((o) => (
+                              <div key={o.label} style={{ textAlign: 'center', outline: o.label === c.correctOption ? '2px solid var(--good)' : undefined }}>
+                                <FigureImg svg={o.svg!} alt={`Option ${o.label}`} maxWidth={64} />
+                                <div className="small">{o.label}</div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <ol type="A" className="small muted" style={{ margin: '4px 0 0', paddingLeft: 20 }}>
+                            {c.options.map((o) => (
+                              <li key={o.label} style={o.label === c.correctOption ? { fontWeight: 700, color: 'var(--good)' } : undefined}>
+                                {o.text}
+                              </li>
+                            ))}
+                          </ol>
+                        )}
                       </td>
                       <td className="small">
                         <DifficultyBadge difficulty={c.difficulty} />

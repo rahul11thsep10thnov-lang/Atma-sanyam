@@ -50,11 +50,13 @@ Key columns on `questions`: `question_text`, `question_type` (MCQ now;
 multiple-select, true/false, numerical, assertion-reason, matching,
 passage-based reserved), `language` (BCP-47 code), `difficulty`,
 `explanation`, `correct_option`, `status`, `source` (ai / import / manual /
-pyq), `source_name`, `source_reference`, `source_excerpt`, `valid_as_of`
+pyq / figure), `source_name`, `source_reference`, `source_excerpt`, `valid_as_of`
 (for changing facts), `computation` (arithmetic re-checked by the
 validator), `normalized_text` + `fingerprint` (duplicates),
 `duplicate_of_id`, `validation_issues`, `created_by`, `reviewed_by`,
-timestamps.
+timestamps. Figure questions (`source = figure`) also carry `figure_svg`,
+`figure_kind` and `figure_params`, and their options carry `svg`; see
+docs/QUESTION_PIPELINE.md, "Figure (non-verbal) questions".
 
 **Question status:** `DRAFT → (GENERATED) → VALIDATING → NEEDS_REVIEW |
 APPROVED | REJECTED → PUBLISHED → ARCHIVED`. Only an admin action moves a

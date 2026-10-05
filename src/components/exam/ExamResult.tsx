@@ -1,4 +1,5 @@
 import Link from "next/link";
+import FigureImage from "@/components/exam/FigureImage";
 import { cn } from "@/lib/utils";
 import { CheckCircle2, XCircle, ArrowLeft } from "lucide-react";
 
@@ -6,6 +7,8 @@ export interface ResultSolution {
   id: string;
   text: string;
   options: string[];
+  figure?: string | null;
+  optionFigures?: (string | null)[];
   correctIndex: number;
   selected: number | null;
   explanation: string | null;
@@ -90,7 +93,8 @@ export default function ExamResult({
                     <p className="text-sm font-semibold text-gray-900">
                       {i + 1}. {q.text}
                     </p>
-                    <div className="mt-2 space-y-1.5">
+                    {q.figure && <FigureImage svg={q.figure} alt={`Question ${i + 1} figure`} className="mt-2 w-full max-w-[min(100%,560px)] rounded-md border border-gray-100" />}
+                    <div className={cn("mt-2", q.optionFigures?.some(Boolean) ? "grid grid-cols-2 gap-1.5 sm:grid-cols-4" : "space-y-1.5")}>
                       {q.options.map((opt, oi) => (
                         <div
                           key={oi}
@@ -105,7 +109,11 @@ export default function ExamResult({
                         >
                           {oi === q.correctIndex && <CheckCircle2 size={14} className="text-green-600 shrink-0" />}
                           {oi === q.selected && oi !== q.correctIndex && <XCircle size={14} className="text-red-600 shrink-0" />}
-                          <span>{opt}</span>
+                          {q.optionFigures?.[oi] ? (
+                            <FigureImage svg={q.optionFigures[oi]!} alt={`Option ${String.fromCharCode(65 + oi)}`} className="w-full max-w-[110px]" />
+                          ) : (
+                            <span>{opt}</span>
+                          )}
                           {!isCorrect && q.selected == null && oi === q.correctIndex && (
                             <span className="text-[11px] text-gray-400 ml-auto">Skipped</span>
                           )}

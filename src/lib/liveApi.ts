@@ -145,7 +145,9 @@ export interface LiveTest extends Omit<LiveTestSummary, "sections"> {
     subjectId: string | null;
     subjectName: string;
     questionText: string;
-    options: { label: string; text: string }[];
+    /** Non-verbal questions: problem figure (SVG) — shown with <img>, never inlined. */
+    figureSvg?: string | null;
+    options: { label: string; text: string; svg?: string | null }[];
   }[];
 }
 
@@ -178,7 +180,8 @@ export interface LiveResult {
   questions: {
     questionId: string;
     questionText: string;
-    options: { label: string; text: string }[];
+    figureSvg?: string | null;
+    options: { label: string; text: string; svg?: string | null }[];
     selectedOption: string | null;
     correctOption: string;
     explanation: string | null;

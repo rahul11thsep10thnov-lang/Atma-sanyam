@@ -129,6 +129,7 @@ function QuestionBank() {
             <option value="import">Imported</option>
             <option value="manual">Manual</option>
             <option value="pyq">PYQ</option>
+            <option value="figure">Figure (non-verbal)</option>
           </select>
           <label className="check" style={{ margin: 0 }}>
             <input type="checkbox" checked={f.duplicates === 'true'} onChange={(e) => setFilters({ duplicates: e.target.checked ? 'true' : '' })} />

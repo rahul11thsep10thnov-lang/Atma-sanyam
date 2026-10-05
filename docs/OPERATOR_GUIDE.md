@@ -106,7 +106,61 @@ source material and its questions arrive as *Source: PYQ* in NEEDS_REVIEW,
 so they can be reviewed, approved and used in PYQ practice sets — but they
 are never fed to the generator as text to copy.
 
-### 1e. Type a question by hand
+### 1e. Figure (non-verbal) questions
+
+About a third of the reasoning paper is figure-based. These are made by the
+**figure engine** on the API, not by AI: it draws each figure as an SVG from
+an exact model and computes the answer from that model, so there is no cost
+and no key to set. Twelve types (the console shows the same descriptions):
+
+| Type | Easy | Medium | Hard |
+|---|---|---|---|
+| Figure series — rotation | a pointer (arrow, pin, flag, kite) turning by a fixed step | plus a dot moving round the corners | growing angle, a dot and a side triangle |
+| Figure series — shaded sectors | a shaded block moving round a circle | a growing block, or a black pair and a grey sector moving opposite ways | a black and a grey sector, each with its own step |
+| Mirror image / water image | 3-part figure | 4 parts | 5 parts including a letter |
+| Odd one out | three turned copies of one figure and one mirrored copy; 2 parts | 3 parts | 4 parts |
+| Figure analogy (A : B :: C : ?) | a turn | a turn or a mirror | turn or mirror plus black–white swap |
+| Embedded figure | 3-stroke shape, light noise | 4 strokes | 5 strokes, near-miss distractors |
+| Paper folding and punching | one fold | two folds or a diagonal fold | two folds, round and square holes |
+| Counting triangles | ≤ 10 | 11–24 | 25+ |
+| Counting squares | ≤ 10 | 11–22 | 23+ |
+| Counting rectangles | ≤ 18 | 19–60 | 61+ |
+| Venn diagram (P, Q, R) | one region | two-group conditions | "exactly two", "A or B but not C" |
+
+**Try first (nothing saved).** Console → **Figure Questions** → *Preview a
+type*: pick a type, difficulty and language and press **Show 4 more**. Each
+sample shows the figure, the options with the key ringed, and the worked
+explanation.
+
+**Generate.** Same page → *Generate*: exam, subject (Reasoning is picked
+automatically), language, how many (up to 500 per click), difficulty mix and
+the types to include. The questions are spread evenly over the chosen types.
+Each type is filed under its chapter (`figure-based`, `mirror-image`,
+`counting-figures`, `venn-diagram`); if the exam is missing one of these
+chapters the form says which, and you can add it under *Exams, Subjects &
+Chapters* or choose a chapter override. The report shows created /
+duplicates skipped / failed per type, then **Review them** opens the batch.
+
+Every figure question goes to **NEEDS_REVIEW** with *Source: Figure*. Nothing
+is published automatically: look at the drawing and the key in Review as you
+would any question, then approve and publish. Repeats are blocked by a
+fingerprint of the figure itself, so the same puzzle is never stored twice.
+
+**Whole plan.** `backend/seed/plans/up-police-constable-nonverbal.json` makes
+1,200 questions (600 Hinglish + 600 Hindi, 30/50/20) weighted like the 2024
+paper. It runs in seconds and needs no AI key:
+
+```bash
+cd backend
+npm run plan:queue -- --file seed/plans/up-police-constable-nonverbal.json --dry-run
+npm run plan:queue -- --file seed/plans/up-police-constable-nonverbal.json
+```
+
+Figure questions can be used in mock tests, swapped and printed like any
+other question; the website, the results page and the printed paper all show
+the figures.
+
+### 1f. Type a question by hand
 
 Console → **Question Bank** → **New question**. Same validator; errors are
 shown before saving.
@@ -261,6 +315,7 @@ type automatically.
 | Mock test cannot be generated: "needs 38, 20 usable" | Publish more questions in that subject, or lower that section's count |
 | Many duplicates flagged | Expected when a chapter is dense; approve one of each pair, reject the other |
 | Admin password lost | `cd backend && npm run seed:admin` (stop the API first) — see README "Password recovery" |
+| Figure form says a chapter is missing | Add the named chapter (slug shown) under the exam's Reasoning subject, or choose a chapter override |
 | Website shows old quote/price | Settings are cached for 60 seconds; wait a minute |
 
 Costs are always visible before a job starts, capped per job and per month,

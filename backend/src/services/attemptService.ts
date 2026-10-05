@@ -189,6 +189,7 @@ export async function getResult(db: Db, userId: string, attemptId: string) {
       isCorrect: testAnswers.isCorrect,
       markedForReview: testAnswers.markedForReview,
       questionText: questions.questionText,
+      figureSvg: questions.figureSvg,
       correctOption: questions.correctOption,
       explanation: questions.explanation,
       // The question number the candidate saw. A question swapped out of the
@@ -209,7 +210,7 @@ export async function getResult(db: Db, userId: string, attemptId: string) {
     .orderBy(sql`coalesce(${testAnswers.position}, ${mockTestQuestions.position}, 0)`);
   const opts = items.length
     ? await db
-        .select({ questionId: questionOptions.questionId, label: questionOptions.label, text: questionOptions.text })
+        .select({ questionId: questionOptions.questionId, label: questionOptions.label, text: questionOptions.text, svg: questionOptions.svg })
         .from(questionOptions)
         .where(inArray(questionOptions.questionId, items.map((i) => i.questionId)))
         .orderBy(asc(questionOptions.sortOrder))
@@ -254,7 +255,8 @@ export async function getResult(db: Db, userId: string, attemptId: string) {
       position: i.position,
       subjectName: i.subjectName ?? 'General',
       questionText: i.questionText,
-      options: opts.filter((o) => o.questionId === i.questionId).map((o) => ({ label: o.label, text: o.text })),
+      figureSvg: i.figureSvg,
+      options: opts.filter((o) => o.questionId === i.questionId).map((o) => ({ label: o.label, text: o.text, svg: o.svg })),
       selectedOption: i.selectedOption,
       correctOption: i.correctOption,
       isCorrect: i.isCorrect,

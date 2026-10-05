@@ -255,10 +255,47 @@ built yet: paste the text.
 (`backend/seed/pyq/*.json`): the paper becomes Source Material (kind *pyq*,
 unapproved, reference only), each text question is imported through the
 validator as `source = pyq` into NEEDS_REVIEW, and a blueprint for the
-official pattern is saved. Figure-based questions are listed and skipped.
+official pattern is saved. Figure-based PYQs are listed and skipped (their
+images are not copied); figure practice comes from the figure engine below.
 `npm run plan:queue` queues a chapter-by-chapter generation plan
 (`backend/seed/plans/*.json`) through the same path as the console form.
 See docs/UP_CONSTABLE_2024_PAPER_ANALYSIS.md.
+
+## Figure (non-verbal) questions
+
+`backend/src/figures/` is a deterministic figure engine; no AI is involved.
+Each generator (12 types: rotation and sector series, mirror and water
+image, odd one out, figure analogy, embedded figure, paper folding, counting
+triangles / squares / rectangles, Venn diagram) builds an exact model from a
+seeded random generator, draws it as SVG and computes the key from the model:
+canonical keys under the 8 rotations/reflections for images and analogies,
+an exhaustive placement search for embedded figures, backward unfolding for
+paper folding, exact segment geometry for counting, region sets for Venn.
+Distractors are the classic mistakes (wrong axis, forgot to unfold, count
+only the small ones, one step too far) and must all differ from the key and
+from each other; a generator that cannot guarantee a single answer retries
+with the next draw.
+
+`backend/tests/figures.test.ts` re-checks the engine independently — the
+series rule is inferred from the shown frames, folds are simulated forwards,
+triangles are counted by line triples, squares/rectangles by sampled edge
+coverage and known formulas, and the validator is run over every type,
+difficulty and language.
+
+SVGs contain only shapes and Latin labels and are rendered as
+`<img src="data:image/svg+xml…">`, so they cannot run scripts. They are
+stored on the question (`figure_svg`, `figure_kind`, `figure_params` with
+engine version and seed) and on each option (`question_options.svg`).
+
+`POST /api/admin/figure-questions` (questions:write) runs each question
+through the same rule validator (`evaluate`) and stores it as
+`source = figure`, **NEEDS_REVIEW**; it is never auto-approved. The
+duplicate fingerprint is `fig:` + a hash of the language and the canonical
+figure key, and figure questions are kept out of the text near-duplicate pool
+(their stems repeat by design). `POST /api/admin/figure-questions/preview`
+returns samples without saving; `GET /api/admin/figure-generators` lists
+types. Plan files with `"engine": "figures"` run through `plan:queue` the
+same way.
 
 ## Imports
 

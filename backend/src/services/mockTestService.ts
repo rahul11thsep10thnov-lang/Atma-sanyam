@@ -446,6 +446,7 @@ interface SwapContext {
     chapterId: string;
     difficulty: Difficulty;
     questionText: string;
+    figureSvg: string | null;
     correctOption: string;
     usage: number;
   }[];
@@ -486,6 +487,7 @@ async function loadSwapContext(db: Db, testId: string, oldQuestionId: string): P
       chapterId: questions.chapterId,
       difficulty: questions.difficulty,
       questionText: questions.questionText,
+      figureSvg: questions.figureSvg,
       correctOption: questions.correctOption,
       duplicateOfId: questions.duplicateOfId,
       fingerprint: questions.fingerprint,
@@ -515,6 +517,7 @@ async function loadSwapContext(db: Db, testId: string, oldQuestionId: string): P
       chapterId: c.chapterId,
       difficulty: c.difficulty as Difficulty,
       questionText: c.questionText,
+      figureSvg: c.figureSvg,
       correctOption: c.correctOption,
       usage: usage.get(c.id) ?? 0,
     }));
@@ -557,7 +560,7 @@ export async function swapCandidates(db: Db, testId: string, oldQuestionId: stri
     : [];
   const optionRows = page.length
     ? await db
-        .select({ questionId: questionOptions.questionId, label: questionOptions.label, text: questionOptions.text })
+        .select({ questionId: questionOptions.questionId, label: questionOptions.label, text: questionOptions.text, svg: questionOptions.svg })
         .from(questionOptions)
         .where(inArray(questionOptions.questionId, page.map((c) => c.id)))
         .orderBy(asc(questionOptions.sortOrder))
@@ -568,12 +571,13 @@ export async function swapCandidates(db: Db, testId: string, oldQuestionId: stri
     items: page.map((c) => ({
       id: c.id,
       questionText: c.questionText,
+      figureSvg: c.figureSvg,
       difficulty: c.difficulty,
       chapterName: chapterRows.find((r) => r.id === c.chapterId)?.name ?? '',
       timesUsed: c.usage,
       sameDifficulty: c.difficulty === ctx.slot.difficulty,
       correctOption: c.correctOption,
-      options: optionRows.filter((o) => o.questionId === c.id).map((o) => ({ label: o.label, text: o.text })),
+      options: optionRows.filter((o) => o.questionId === c.id).map((o) => ({ label: o.label, text: o.text, svg: o.svg })),
     })),
   };
 }
@@ -707,6 +711,7 @@ export async function getMockTest(db: Db, id: string, opts: { includeAnswers: bo
       subjectName: subjects.name,
       chapterName: chapters.name,
       questionText: questions.questionText,
+      figureSvg: questions.figureSvg,
       difficulty: questions.difficulty,
       status: questions.status,
       correctOption: questions.correctOption,
@@ -720,12 +725,12 @@ export async function getMockTest(db: Db, id: string, opts: { includeAnswers: bo
     .orderBy(asc(mockTestQuestions.position));
   const optionRows = qs.length
     ? await db
-        .select({ questionId: questionOptions.questionId, label: questionOptions.label, text: questionOptions.text })
+        .select({ questionId: questionOptions.questionId, label: questionOptions.label, text: questionOptions.text, svg: questionOptions.svg })
         .from(questionOptions)
         .where(inArray(questionOptions.questionId, qs.map((q) => q.id)))
         .orderBy(asc(questionOptions.sortOrder))
     : [];
-  const optionsFor = (qid: string) => optionRows.filter((o) => o.questionId === qid).map((o) => ({ label: o.label, text: o.text }));
+  const optionsFor = (qid: string) => optionRows.filter((o) => o.questionId === qid).map((o) => ({ label: o.label, text: o.text, svg: o.svg }));
   const attempts = opts.includeAnswers ? await attemptCounts(db, id) : null;
   return {
     id: row.t.id,
@@ -751,6 +756,7 @@ export async function getMockTest(db: Db, id: string, opts: { includeAnswers: bo
       subjectName: q.subjectName ?? 'General',
       chapterName: q.chapterName,
       questionText: q.questionText,
+      figureSvg: q.figureSvg,
       difficulty: q.difficulty,
       options: optionsFor(q.id),
       ...(opts.includeAnswers ? { status: q.status, correctOption: q.correctOption, explanation: q.explanation } : {}),

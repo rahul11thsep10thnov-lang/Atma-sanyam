@@ -51,8 +51,9 @@ Observations that shape the generation plan:
   averages, LCM/HCF, speed–time, work, interest, one partnership and one
   data table. Every one is solvable in under a minute with one formula.
 - **Reasoning is one-third non-verbal** (figure series, embedded figure,
-  mirror image, counting triangles). Text-only generation cannot cover
-  these; they need an image pipeline later. The remaining two-thirds are
+  mirror image, counting triangles). Text generation cannot cover these;
+  the figure engine does (`seed/plans/up-police-constable-nonverbal.json`,
+  1,200 questions, see OPERATOR_GUIDE §1e). The remaining two-thirds are
   series, analogies, coding, blood relations and directions.
 - **GK is contemporary and economy-leaning**: GDP/NSO/GST/MPC, CRISPR, AI,
   cyber terms (TBT, malware, cyberbullying), Indo-Japan nuclear deal,

@@ -1,0 +1,67 @@
+{
+  "name": "UP Police Constable — non-verbal reasoning (figure engine)",
+  "engine": "figures",
+  "exam": "up-police-constable",
+  "subject": "reasoning",
+  "languages": [
+    "hi-Latn",
+    "hi"
+  ],
+  "difficulty": {
+    "easy": 30,
+    "medium": 50,
+    "hard": 20
+  },
+  "note": "Weighted by the non-verbal questions of the 25 Aug 2024 paper (5 figure series, mirror image, embedded figure, triangle count, chessboard rectangles, Venn diagram) plus paper folding, odd one out and analogies, which UP papers also use. Free and instant: the figure engine draws every question and computes its answer.",
+  "jobs": [
+    {
+      "generator": "series-rotation",
+      "count": 110
+    },
+    {
+      "generator": "series-sectors",
+      "count": 80
+    },
+    {
+      "generator": "mirror-image",
+      "count": 50
+    },
+    {
+      "generator": "water-image",
+      "count": 30
+    },
+    {
+      "generator": "embedded-figure",
+      "count": 60
+    },
+    {
+      "generator": "count-triangles",
+      "count": 70
+    },
+    {
+      "generator": "count-squares",
+      "count": 30
+    },
+    {
+      "generator": "count-rectangles",
+      "count": 30
+    },
+    {
+      "generator": "venn-diagram",
+      "count": 40
+    },
+    {
+      "generator": "paper-folding",
+      "count": 40
+    },
+    {
+      "generator": "odd-one-out",
+      "count": 30
+    },
+    {
+      "generator": "figure-analogy",
+      "count": 30
+    }
+  ],
+  "perLanguage": 600
+}

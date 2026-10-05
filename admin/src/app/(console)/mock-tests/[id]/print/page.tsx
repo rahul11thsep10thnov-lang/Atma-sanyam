@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { Hind } from 'next/font/google';
 import { useState } from 'react';
-import { ErrorAlert, Loading } from '@/components/ui';
+import { ErrorAlert, FigureImg, Loading } from '@/components/ui';
 import { useApi } from '@/lib/api';
 import { languageName } from '@/lib/useTaxonomy';
 
@@ -29,10 +29,11 @@ interface PrintTest {
     subjectName: string;
     chapterName: string;
     questionText: string;
+    figureSvg: string | null;
     difficulty: string;
     correctOption: string;
     explanation: string | null;
-    options: { label: string; text: string }[];
+    options: { label: string; text: string; svg: string | null }[];
   }[];
 }
 
@@ -249,17 +250,24 @@ export default function PrintPage() {
                   </h2>
                 )}
                 {s.items.map((q) => {
-                  const short = q.options.every((o) => o.text.length <= 26);
+                  const figures = q.options.some((o) => o.svg);
+                  const short = figures || q.options.every((o) => o.text.length <= 26);
                   return (
                     <div key={q.id} className="paper-q">
                       <div className="paper-qtext">
                         <span className="paper-qno">{q.position}.</span>
                         <span>{q.questionText}</span>
                       </div>
-                      <ol className={`paper-opts${short ? ' short' : ''}`} type="A">
+                      {q.figureSvg && (
+                        <div className="paper-fig">
+                          <FigureImg svg={q.figureSvg} alt={`Question ${q.position} figure`} maxWidth={520} />
+                        </div>
+                      )}
+                      <ol className={`paper-opts${short ? ' short' : ''}${figures ? ' figs' : ''}`} type="A">
                         {q.options.map((o) => (
                           <li key={o.label}>
-                            <span className="paper-olabel">({o.label})</span> {o.text}
+                            <span className="paper-olabel">({o.label})</span>{' '}
+                            {o.svg ? <FigureImg svg={o.svg} alt={`Option ${o.label}`} maxWidth={96} /> : o.text}
                           </li>
                         ))}
                       </ol>
@@ -306,7 +314,7 @@ export default function PrintPage() {
                     <b>
                       {tx.ans}: ({q.correctOption})
                     </b>{' '}
-                    {right?.text}
+                    {right?.svg ? <FigureImg svg={right.svg} alt={`Answer ${q.correctOption}`} maxWidth={72} /> : right?.text}
                   </div>
                   {q.explanation && <div className="paper-expl">{q.explanation}</div>}
                   {detail && (

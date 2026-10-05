@@ -303,6 +303,10 @@ tr:last-child td { border-bottom: 0; }
 .paper-qno { min-width: 28px; font-weight: 700; }
 .paper-opts { list-style: none; margin: 4px 0 0 34px; padding: 0; display: grid; grid-template-columns: 1fr; gap: 2px 18px; }
 .paper-opts.short { grid-template-columns: 1fr 1fr; }
+.paper-opts.figs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.paper-opts.figs li { display: flex; align-items: center; gap: 4px; }
+.paper-fig { margin: 6px 0 4px 34px; }
+.paper-ans img { display: inline-block !important; vertical-align: middle; }
 .paper-olabel { font-weight: 600; margin-right: 2px; }
 .paper-end { text-align: center; margin-top: 16px; font-size: 12px; color: #555 !important; }
 .paper-grid { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 0; border: 1px solid #111; margin: 10px 0 14px; }

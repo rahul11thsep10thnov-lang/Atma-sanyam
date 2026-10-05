@@ -211,6 +211,13 @@ estimate → **Start generation**. The job page shows live progress, e.g.
 needs-review / rejected counts, per-batch status and cost. If some batches
 fail, the others' questions are kept; use **Retry failed batches**.
 
+Figure-based (non-verbal) reasoning questions — figure series, mirror/water
+images, embedded figures, paper folding, counting figures, odd one out,
+analogies, Venn diagrams — come from **Figure Questions** instead. They are
+drawn by the API's figure engine with the answer computed by program (no AI,
+no cost) and wait in Review like every other question. See
+docs/OPERATOR_GUIDE.md §1e.
+
 ## 12. How to review questions
 
 Console → **Review Questions** (the sidebar shows how many are waiting). Each
@@ -270,6 +277,8 @@ struck through). "हमसे जुड़िये" goes to login first if nee
 cd backend && npm run seed:pyq                  # UP Constable 25 Aug 2024 (shift 1) → PYQ, NEEDS_REVIEW
 cd backend && npm run plan:queue -- --dry-run   # cost estimate for the 5,000-question plan
 cd backend && npm run plan:queue                # queue the 82 jobs (one per chapter)
+cd backend && npm run plan:queue -- --file seed/plans/up-police-constable-nonverbal.json
+                                                # 1,200 figure questions (no AI), NEEDS_REVIEW
 ```
 
 See [docs/UP_CONSTABLE_2024_PAPER_ANALYSIS.md](docs/UP_CONSTABLE_2024_PAPER_ANALYSIS.md)

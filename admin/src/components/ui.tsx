@@ -171,3 +171,15 @@ export function Forbidden() {
     </div>
   );
 }
+
+/** SVG figure from the figure engine, shown as an <img> (scripts can never run). */
+export function FigureImg({ svg, alt, maxWidth = 560 }: { svg: string; alt: string; maxWidth?: number }) {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`}
+      alt={alt}
+      style={{ maxWidth, width: '100%', height: 'auto', display: 'block', background: '#fff' }}
+    />
+  );
+}

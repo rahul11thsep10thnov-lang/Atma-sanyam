@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, ilike, inArray, isNotNull, ne, notInArray, sql, type SQL } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, inArray, isNotNull, isNull, ne, notInArray, sql, type SQL } from 'drizzle-orm';
 import type { Db } from '../database/client.js';
 import {
   chapters,
@@ -40,6 +40,9 @@ export async function loadDuplicatePool(
         eq(questions.subjectId, scope.subjectId),
         eq(questions.language, scope.language),
         notInArray(questions.status, ['rejected', 'archived']),
+        // Figure questions share stems ("choose the next figure"); their
+        // duplicates are caught by figure fingerprint instead.
+        isNull(questions.figureKind),
         excludeId ? ne(questions.id, excludeId) : undefined
       )
     )
@@ -88,6 +91,8 @@ export interface InsertMeta {
   createdBy?: string | null;
   generationJobId?: string | null;
   generationBatchId?: string | null;
+  /** Non-verbal question from the figure engine. */
+  figure?: { svg: string | null; kind: string; params: Record<string, unknown>; optionSvgs: (string | null)[] };
 }
 
 export async function insertQuestion(db: Db, ev: Evaluation, meta: InsertMeta) {
@@ -122,10 +127,19 @@ export async function insertQuestion(db: Db, ev: Evaluation, meta: InsertMeta) {
         createdBy: meta.createdBy ?? null,
         generationJobId: meta.generationJobId ?? null,
         generationBatchId: meta.generationBatchId ?? null,
+        figureSvg: meta.figure?.svg ?? null,
+        figureKind: meta.figure?.kind ?? null,
+        figureParams: meta.figure?.params ?? null,
       })
       .returning();
     await tx.insert(questionOptions).values(
-      c.options.map((o, i) => ({ questionId: row!.id, label: o.id || OPTION_LABELS[i]!, text: o.text, sortOrder: i }))
+      c.options.map((o, i) => ({
+        questionId: row!.id,
+        label: o.id || OPTION_LABELS[i]!,
+        text: o.text,
+        svg: meta.figure?.optionSvgs[i] ?? null,
+        sortOrder: i,
+      }))
     );
     await tx.insert(questionReviews).values({
       questionId: row!.id,
@@ -212,7 +226,8 @@ export async function updateQuestion(db: Db, id: string, input: QuestionInput, a
   if (!existing) throw notFound('Question not found');
   if (existing.status === 'archived') throw conflict('Restore the question before editing it.');
   const scope = await resolveScope(db, input);
-  const pool = await loadDuplicatePool(db, { examId: input.examId, subjectId: input.subjectId, language: input.language }, id);
+  const isFigure = !!existing.figureKind;
+  const pool = isFigure ? [] : await loadDuplicatePool(db, { examId: input.examId, subjectId: input.subjectId, language: input.language }, id);
   const ev = evaluate(toCandidate(input), {
     explanationRequired: true,
     metadataOk: scope.ok,
@@ -220,6 +235,14 @@ export async function updateQuestion(db: Db, id: string, input: QuestionInput, a
     pool,
   });
   refuseOnErrors(ev.validation);
+  if (isFigure) {
+    // The figures are fixed; text edits must not change the puzzle's identity.
+    ev.normalizedText = existing.normalizedText;
+    ev.fingerprint = existing.fingerprint;
+  }
+  // Option figures stay attached to their letters through an edit.
+  const oldSvgs = await db.select({ label: questionOptions.label, svg: questionOptions.svg }).from(questionOptions).where(eq(questionOptions.questionId, id));
+  const svgFor = (label: string) => oldSvgs.find((o) => o.label === label)?.svg ?? null;
   // A human edit keeps approved/published status (the edit is audited); a
   // rejected question goes back to the review queue.
   const status: QuestionStatus = existing.status === 'rejected' ? 'needs_review' : existing.status;
@@ -255,7 +278,7 @@ export async function updateQuestion(db: Db, id: string, input: QuestionInput, a
     await tx.delete(questionOptions).where(eq(questionOptions.questionId, id));
     await tx
       .insert(questionOptions)
-      .values(c.options.map((o, i) => ({ questionId: id, label: o.id, text: o.text, sortOrder: i })));
+      .values(c.options.map((o, i) => ({ questionId: id, label: o.id, text: o.text, svg: svgFor(o.id), sortOrder: i })));
   });
   await audit(db, adminId, 'question.edited', 'question', id, {
     before: { questionText: before.questionText, options: before.options.map((o) => o.text), correctOption: before.correctOption },
@@ -447,7 +470,7 @@ export async function getQuestion(db: Db, id: string) {
     .limit(1);
   if (!row) throw notFound('Question not found');
   const options = await db
-    .select({ label: questionOptions.label, text: questionOptions.text })
+    .select({ label: questionOptions.label, text: questionOptions.text, svg: questionOptions.svg })
     .from(questionOptions)
     .where(eq(questionOptions.questionId, id))
     .orderBy(asc(questionOptions.sortOrder));

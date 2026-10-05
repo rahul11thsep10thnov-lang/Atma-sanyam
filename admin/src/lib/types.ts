@@ -74,7 +74,10 @@ export interface QuestionDetail extends Omit<QuestionRow, 'examName' | 'subjectN
   sourceMaterialId: string | null;
   validAsOf: string | null;
   generationJobId: string | null;
-  options: { label: string; text: string }[];
+  figureSvg: string | null;
+  figureKind: string | null;
+  figureParams: Record<string, unknown> | null;
+  options: { label: string; text: string; svg: string | null }[];
   reviews: Review[];
   duplicateOf: { id: string; questionText: string; status: QuestionStatus; options: string[] } | null;
   usedInMockTests: number;

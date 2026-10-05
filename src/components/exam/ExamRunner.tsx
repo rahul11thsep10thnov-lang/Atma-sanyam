@@ -5,6 +5,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import QuestionPalette, { PaletteEntry, QuestionStatus } from "@/components/exam/QuestionPalette";
 import ExamBottomSheet from "@/components/exam/ExamBottomSheet";
+import FigureImage from "@/components/exam/FigureImage";
 import { CheckCircle2, Flag, Clock, ArrowLeft, LayoutGrid, X } from "lucide-react";
 
 export interface RunnerQuestion {
@@ -14,6 +15,9 @@ export interface RunnerQuestion {
   subjectLabel: string;
   text: string;
   options: string[];
+  /** Non-verbal questions: the problem figure and one figure per option (SVG). */
+  figure?: string | null;
+  optionFigures?: (string | null)[];
 }
 
 export interface RunnerAnswer {
@@ -286,11 +290,21 @@ export default function ExamRunner({
             >
               {ask}
             </p>
+            {current.figure && (
+              <div className="mt-4 overflow-x-auto">
+                <FigureImage svg={current.figure} alt="Question figure" className="w-full max-w-[min(100%,680px)] rounded-xl border border-[var(--card-border)] bg-white p-2" />
+              </div>
+            )}
           </div>
 
-          <div role="radiogroup" aria-labelledby="question-text" className="mt-4 space-y-3">
+          <div
+            role="radiogroup"
+            aria-labelledby="question-text"
+            className={cn("mt-4", current.optionFigures?.some(Boolean) ? "grid grid-cols-2 gap-3" : "space-y-3")}
+          >
             {current.options.map((opt, i) => {
               const selected = currentAnswer?.selected === i;
+              const optionFigure = current.optionFigures?.[i] ?? null;
               return (
                 <button
                   key={i}
@@ -298,7 +312,8 @@ export default function ExamRunner({
                   aria-checked={selected}
                   onClick={() => updateAnswer(current.id, { selected: i, visited: true })}
                   className={cn(
-                    "flex w-full items-center gap-4 rounded-2xl border-[1.5px] bg-white px-4 py-4 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-orange",
+                    optionFigure ? "flex w-full items-center gap-2 rounded-2xl border-[1.5px] bg-white p-2.5 text-left transition-colors sm:gap-3" : "flex w-full items-center gap-4 rounded-2xl border-[1.5px] bg-white px-4 py-4 text-left transition-colors",
+                    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-orange",
                     selected ? "border-brand-orange bg-[#fff6ee]" : "border-[var(--card-border)] hover:border-brand-orange/40"
                   )}
                 >
@@ -310,7 +325,11 @@ export default function ExamRunner({
                   >
                     {String.fromCharCode(65 + i)}
                   </span>
-                  <span className="flex-1 font-display text-[18px] text-brand-dark">{opt}</span>
+                  {optionFigure ? (
+                    <FigureImage svg={optionFigure} alt={`Option ${String.fromCharCode(65 + i)}`} className="mx-auto w-full min-w-0 max-w-[150px] flex-1" />
+                  ) : (
+                    <span className="flex-1 font-display text-[18px] text-brand-dark">{opt}</span>
+                  )}
                   {selected && <CheckCircle2 size={20} className="shrink-0 text-brand-orange" />}
                 </button>
               );

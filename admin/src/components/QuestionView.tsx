@@ -5,20 +5,25 @@ import { AlertTriangle, Bot, CheckCircle2, CircleX, Copy, ShieldCheck, UserCheck
 import type { QuestionDetail, Review } from '@/lib/types';
 import { fmtDate } from '@/lib/format';
 import { languageName } from '@/lib/useTaxonomy';
-import { DifficultyBadge, StatusBadge } from './ui';
+import { DifficultyBadge, FigureImg, StatusBadge } from './ui';
 
 /** The question as a candidate would see it, with the key marked. */
 export function QuestionBody({ q }: { q: QuestionDetail }) {
   return (
     <>
       <div className="qbox qtext">{q.questionText}</div>
+      {q.figureSvg && (
+        <div style={{ margin: '10px 0', overflowX: 'auto' }}>
+          <FigureImg svg={q.figureSvg} alt="Question figure" maxWidth={720} />
+        </div>
+      )}
       <div className="option-list">
         {q.options.map((o) => {
           const correct = o.label === q.correctOption;
           return (
             <div key={o.label} className={`option ${correct ? 'correct' : ''}`}>
               <span className="letter">{o.label}</span>
-              <span style={{ flex: 1 }}>{o.text}</span>
+              <span style={{ flex: 1 }}>{o.svg ? <FigureImg svg={o.svg} alt={`Option ${o.label}`} maxWidth={150} /> : o.text}</span>
               {correct && (
                 <span className="badge badge-good" style={{ flexShrink: 0 }}>
                   Correct answer

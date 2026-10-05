@@ -46,7 +46,9 @@ export const questionType = pgEnum('question_type', [
 
 export const difficulty = pgEnum('difficulty', ['easy', 'medium', 'hard']);
 
-export const questionSource = pgEnum('question_source', ['ai', 'import', 'manual', 'pyq']);
+// 'figure' = non-verbal questions drawn by the figure engine (src/figures),
+// whose answers are computed, not written by an AI.
+export const questionSource = pgEnum('question_source', ['ai', 'import', 'manual', 'pyq', 'figure']);
 
 export const recordStatus = pgEnum('record_status', ['active', 'archived']);
 
@@ -375,6 +377,12 @@ export const questions = pgTable(
     // Arithmetic expression whose value is the correct answer (numerical
     // questions); re-checked programmatically by the validator.
     computation: text('computation'),
+    // Non-verbal questions: the problem figure as SVG produced by the figure
+    // engine (never user-supplied), the generator id and the seed/params
+    // that re-create it exactly.
+    figureSvg: text('figure_svg'),
+    figureKind: text('figure_kind'),
+    figureParams: jsonb('figure_params').$type<Record<string, unknown>>(),
     normalizedText: text('normalized_text').notNull(),
     fingerprint: text('fingerprint').notNull(),
     duplicateOfId: uuid('duplicate_of_id'),
@@ -406,6 +414,8 @@ export const questionOptions = pgTable(
       .references(() => questions.id, { onDelete: 'cascade' }),
     label: text('label').notNull(), // A, B, C, D
     text: text('text').notNull(),
+    // Option figure (SVG from the figure engine) for non-verbal questions.
+    svg: text('svg'),
     sortOrder: integer('sort_order').notNull(),
   },
   (t) => [uniqueIndex('question_options_q_label_uq').on(t.questionId, t.label)]
