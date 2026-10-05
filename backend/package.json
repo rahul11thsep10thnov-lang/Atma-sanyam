@@ -10,7 +10,9 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsx watch src/server.ts",
-    "start": "node dist/server.js",
+    "start": "node dist/src/server.js",
+    "start:worker": "node dist/src/queue/runWorkers.js",
+    "start:gpu-worker": "node dist/src/studio/gpu/gpuWorker.js",
     "worker": "tsx src/queue/runWorkers.ts",
     "worker:dev": "tsx watch src/queue/runWorkers.ts",
     "worker:gpu": "tsx src/studio/gpu/gpuWorker.ts",
@@ -18,7 +20,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "tsx prisma/seed.ts",
-    "lint": "eslint src tests --ext .ts",
+    "lint": "eslint src tests scripts prisma",
     "test": "vitest run",
     "test:watch": "vitest",
     "demo:railway": "tsx scripts/demo-railway.ts",
@@ -42,15 +44,18 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20.16.5",
+    "eslint": "^9.39.5",
     "pino-pretty": "^11.2.2",
     "prisma": "^5.20.0",
     "tsx": "^4.19.1",
     "typescript": "^5.6.2",
+    "typescript-eslint": "^8.71.1",
     "vitest": "^2.1.1"
   }
 }

@@ -14,7 +14,7 @@ const BOILERPLATE_PATTERNS = [
   /^(tags?|topics?):\s/i,
 ];
 
-const DATELINE_PATTERN = /^[A-Z][A-Za-z]+(?:\s[A-Z][A-Za-z]+)?\s?(?:\((?:PTI|IANS|ANI|Reuters)\))?\s?[:\-]\s+/;
+const DATELINE_PATTERN = /^[A-Z][A-Za-z]+(?:\s[A-Z][A-Za-z]+)?\s?(?:\((?:PTI|IANS|ANI|Reuters)\))?\s?[:-]\s+/;
 const URL_PATTERN = /\bhttps?:\/\/\S+|\bwww\.\S+/gi;
 const EMAIL_PATTERN = /\b[\w.+-]+@[\w-]+\.[\w.]+\b/g;
 const PHONE_PATTERN = /(?:\+91[-\s]?)?\b[6-9]\d{9}\b/g;

@@ -129,7 +129,6 @@ export function planComposition(input: PlannerInput): CompositionPlan {
   const { shot, scene, ctx, canvas, seed } = input;
   const W = canvas.width;
   const H = canvas.height;
-  const aspect = W / H;
   const env = getEnvironment(shot.locationCategory);
   const bucket = timeBucket(scene.timeOfDay);
   const style = ctx.styleKey;

@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import pinoHttp from "pino-http";
-import path from "node:path";
 import { env } from "./config/env";
 import { logger } from "./lib/logger";
 import { localStorageRoot } from "./lib/storage";

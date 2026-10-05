@@ -9,7 +9,7 @@ export interface ModerationFlag {
 
 const PHONE_PATTERN = /\b(?:\+91[-\s]?)?[6-9]\d{9}\b/;
 const AADHAAR_PATTERN = /\b\d{4}\s?\d{4}\s?\d{4}\b/;
-const BANK_ACCOUNT_PATTERN = /\b(?:account\s*(?:no\.?|number)\s*[:\-]?\s*)\d{8,18}\b/i;
+const BANK_ACCOUNT_PATTERN = /\b(?:account\s*(?:no\.?|number)\s*[:-]?\s*)\d{8,18}\b/i;
 const MINOR_AGE_PATTERN = /\b(\d{1,2})\s*[- ]?year[- ]?old\b/i;
 const GRAPHIC_VIOLENCE_KEYWORDS = ["dismembered", "beheaded", "mutilated", "chopped into pieces", "burnt alive"];
 const SEXUAL_CONTENT_KEYWORDS = ["raped", "sexually assaulted", "molested"];

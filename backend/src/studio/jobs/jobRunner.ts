@@ -102,7 +102,6 @@ function getQueue(name: QueueName): Queue {
   let q = queueCache.get(name);
   if (!q) {
     // Lazy so an API process in inline mode never needs Redis for studio work.
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { connection } = require("../../queue/queues") as typeof import("../../queue/queues");
     q = new Queue(name, { connection });
     queueCache.set(name, q);

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 // GPU worker process: `npm run worker:gpu` on each GPU host.
 //
 // Runs next to the host's local inference services (ComfyUI and/or the

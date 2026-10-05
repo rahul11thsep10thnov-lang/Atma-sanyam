@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 // Usage: npm run demo:railway -- [--out ./demo-output] [--preview] [--stills-only] [--workers N]
 import { resolve } from "node:path";
 import { buildRailwayDemo } from "../src/studio/demo/railwayDemo";

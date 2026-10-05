@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 // Creates (or resets the password of) an admin user.
 // Usage: ADMIN_PASSWORD='…' npm run create-admin -- --email you@example.com [--role SUPER_ADMIN|EDITOR]
 // The password is read from the environment so it never appears in shell history or process lists.

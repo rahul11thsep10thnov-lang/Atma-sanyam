@@ -1,8 +1,10 @@
+import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { LocalAiError } from "../types";
 
-export const DEFAULT_WORKFLOW_DIR = resolve(__dirname, "../../../../comfyui-workflows");
+// backend/comfyui-workflows, from src/… (tsx) or dist/src/… (compiled)
+export const DEFAULT_WORKFLOW_DIR = [resolve(__dirname, "../../../../comfyui-workflows"), resolve(__dirname, "../../../../../comfyui-workflows")].find((d) => existsSync(d)) ?? resolve(__dirname, "../../../../comfyui-workflows");
 
 /**
  * ComfyUI workflows are stored in API format with "{{name}}" placeholders.

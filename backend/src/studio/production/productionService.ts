@@ -24,6 +24,10 @@ import { ShotQcReport } from "./shotQc";
 
 const json = (v: unknown) => JSON.parse(JSON.stringify(v ?? null)) as Prisma.InputJsonValue;
 
+// Preview stills render in the API process; cap them so editors can't starve request handling.
+const MAX_CONCURRENT_PREVIEWS = 2;
+let activePreviews = 0;
+
 /**
  * Admin operations on the cinematic production: navigation (story → episode
  * → scene → shot), the Shot Inspector (preview, overrides, re-render),
@@ -137,6 +141,16 @@ export class ProductionService {
 
   /** Renders one frame of the shot at preview size with (optionally unsaved) overrides — instant feedback for editors. */
   async previewFrame(shotId: string, opts: { t?: number; overrides?: unknown }) {
+    if (activePreviews >= MAX_CONCURRENT_PREVIEWS) throw new HttpError(429, "Too many previews rendering — try again in a moment");
+    activePreviews++;
+    try {
+      return await this.renderPreview(shotId, opts);
+    } finally {
+      activePreviews--;
+    }
+  }
+
+  private async renderPreview(shotId: string, opts: { t?: number; overrides?: unknown }) {
     const shot = await this.db.studioShot.findUnique({ where: { id: shotId }, include: { episode: true } });
     if (!shot) throw new HttpError(404, "Shot not found");
     const profile = findRenderProfile(PREVIEW_RENDER_PROFILE_KEY);

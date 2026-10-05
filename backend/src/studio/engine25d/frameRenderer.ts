@@ -611,7 +611,6 @@ export class FrameRenderer {
       const blur = ap * Math.abs(p.depth - focusD);
       // light at the particle
       lightAt(absMap, x, y, tmp);
-      const lum = tmp[0] * 0.3 + tmp[1] * 0.59 + tmp[2] * 0.11;
       let alpha = p.alpha;
       if (p.catchesLight) {
         // motes are only visible inside the pools of practical lights (lamps, windows, passing train)
