@@ -74,7 +74,11 @@ describe.skipIf(!HAS_DB)("Felicitation Board end to end (DB)", () => {
     board = await svc.getBoardState(new Date(now.getTime() + 1000));
     const pub = board.entries.find((e) => e.id === a.entry.id)!;
     expect(pub).toEqual({ id: a.entry.id, candidateName: `${TAG} Candidate 0`, locality: "Civil Lines", city: "Prayagraj", examName: "UP Police SI" });
-    expect(JSON.stringify(board)).not.toMatch(/9000|mobile|identity|1234|payment/i);
+    // No private data: exact field whitelist, and none of the real values anywhere.
+    for (const e of board.entries) expect(Object.keys(e).sort()).toEqual(["candidateName", "city", "examName", "id", "locality"]);
+    const json = JSON.stringify(board);
+    for (const m of mobiles) expect(json).not.toContain(m.replace("+91", ""));
+    expect(json).not.toMatch(/"(mobile|identity\w*|payment\w*|state|refCode)"\s*:/);
 
     // Pause hides it; resume restores the remaining time (pause is not charged).
     await svc.pauseEntry(a.entry.id, adminId, new Date(now.getTime() + 3_600_000));
