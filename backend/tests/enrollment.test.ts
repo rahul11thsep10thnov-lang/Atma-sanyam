@@ -2,6 +2,7 @@ import request from 'supertest';
 import { and, eq, inArray } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { questions } from '../src/database/schema.js';
+import { createApp } from '../src/app.js';
 import { auth, adminToken, scopeIds, setupTestApp, userToken } from './helpers.js';
 
 type Ctx = Awaited<ReturnType<typeof setupTestApp>>;
@@ -140,15 +141,13 @@ describe('enrolment: free quota, plan and site settings', () => {
   });
 
   it('refuses dev activation when it is switched off', async () => {
-    const strict = await setupTestApp();
-    try {
-      const user = await userToken(strict.app, 'Strict');
-      const res = await request(strict.app).post('/api/enroll/order').set(auth(user));
-      expect(res.status).toBe(503);
-      expect(res.body.error.code).toBe('payment_not_configured');
-    } finally {
-      await strict.close();
-    }
+    // Same database, different setting. (A second setupTestApp() would wipe
+    // the shared database when the suite runs on a real PostgreSQL server.)
+    const strict = createApp({ ...ctx.deps, env: { ...ctx.deps.env, ENROLL_DEV_ACTIVATE: false } }, { disableRateLimits: true, logRequests: false });
+    const user = await userToken(strict, 'Strict');
+    const res = await request(strict).post('/api/enroll/order').set(auth(user));
+    expect(res.status).toBe(503);
+    expect(res.body.error.code).toBe('payment_not_configured');
   });
 
   it('lets an admin grant the plan and shows it on the users list', async () => {
