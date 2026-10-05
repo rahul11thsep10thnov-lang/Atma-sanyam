@@ -25,12 +25,13 @@ ap.add_argument("--only", default="")
 ap.add_argument("--samples", type=int, default=24)
 ap.add_argument("--px", type=int, default=768)
 ap.add_argument("--fresh", action="store_true")
+ap.add_argument("--out", default="", help="write sprites here instead of assets/paradise (for trials)")
 ap.add_argument("--extras", action="store_true", help="render the garden extras (plinth) into extras.json instead")
 ap.add_argument("--remeasure", action="store_true", help="recompute widthM/heightM of every rendered sprite from its geometry")
 args = ap.parse_args()
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-OUT = ROOT / "assets" / "paradise"
+OUT = pathlib.Path(args.out) if args.out else ROOT / "assets" / "paradise"
 (OUT / "sprites").mkdir(parents=True, exist_ok=True)
 (OUT / "thumbs").mkdir(parents=True, exist_ok=True)
 TMP = OUT / "_tmp"
@@ -263,7 +264,8 @@ def remeasure_all():
     if n:
         save()
     ex = OUT / "extras.json"
-    if ex.exists():
+    # extras are rendered at their own --px (the plinth at 512): remeasure them only when asked by name
+    if ex.exists() and ONLY and any(k in ONLY for k in P.EXTRAS):
         data = json.loads(ex.read_text())
         for key, builder in P.EXTRAS.items():
             if key in data:

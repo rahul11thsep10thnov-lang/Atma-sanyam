@@ -11,7 +11,7 @@ from . import materials as M
 from . import plant_materials as PM
 from . import plants, trees
 from .common import Rng, box, cylinder, link, mesh_object
-from .geo import Builder, curve_points, frame_at, leaf, shape_heart, shape_lanceolate, shape_ovate, shape_sword, tube
+from .geo import Builder, curve_points, disc, frame_at, leaf, shape_heart, shape_lanceolate, shape_ovate, shape_sword, tube
 from .garden_items import _mound, _p, _root, _stake, ashoka_tree, banana_plant, croton, lemon_tree, ornamental_grass
 from . import garden_plants_extra as extra
 from .trees import TreeSpec, build_tree, shrub, _flower_mat
@@ -262,7 +262,7 @@ SCAPES = {3: (1, 0, 2), 4: (1, 1, 2), 5: (2, 2, 1), 6: (3, 2, 2), 7: (4, 3, 1)}
 
 
 def rosette_species(name, leaf_mat_fn, n_leaves, length, width, shape=shape_sword, arch=0.6, pot=None, flower=None, flower_h=0.0, up=0.9,
-                    face_out=0.8, scape_table=SCAPES):
+                    face_out=0.8, scape_table=SCAPES, petiole=0.0, pads=False):
     """Rosettes and clumps (lily, lotus, tulip, iris, daffodil, gerbera, snake
     plant, spider plant, turmeric...): leaves from one crown that multiply
     and lengthen, then flower stalks, buds first, then open blooms."""
@@ -281,14 +281,39 @@ def rosette_species(name, leaf_mat_fn, n_leaves, length, width, shape=shape_swor
         rng = Rng(seed)
         b = Builder()
         lm = leaf_mat_fn()
-        n = max(3, int(n_leaves * (0.3 + 0.7 * s)))
-        L = length * (0.4 + 0.6 * s)
-        for i in range(n):
-            a = i * 2.39996 + rng.uniform(-0.2, 0.2)
-            r = rng.uniform(0, 0.05 * s)
-            d = Vector((math.cos(a) * (1 - up), math.sin(a) * (1 - up), up)).normalized()
-            fr = frame_at(Vector((math.cos(a) * r, math.sin(a) * r, 0)), d)
-            leaf(b, lm, fr, L * rng.uniform(0.7, 1.0), width * (0.6 + 0.4 * s), shape, nu=2, nv=8, fold=0.25, arch=arch * rng.uniform(0.8, 1.2), var=rng.random())
+        n = max(3, int(n_leaves * (0.25 + 0.75 * s)))
+        L = length * (0.25 + 0.75 * s)
+        W = width * (0.45 + 0.55 * s)
+        if pads:
+            # lily pads floating flat on the water, scattered over the bowl
+            water = M.matte((0.04, 0.1, 0.12), 0.06, "bowl_water")
+            wb = Builder()
+            disc(wb, water, pot[2] * 0.86 if pot else 0.3, 0.018, rings=4, segments=40)
+            _p(wb.finish(f"{name}_water", col), top)
+            spread = (pot[2] * 0.62 if pot else 0.25)
+            for i in range(n):
+                a = i * 2.39996 + rng.uniform(-0.3, 0.3)
+                rr = spread * math.sqrt(rng.random())
+                o = Vector((math.cos(a) * rr, math.sin(a) * rr, 0.022 + 0.002 * (i % 3)))
+                d = Vector((math.cos(a + 1.3), math.sin(a + 1.3), 0.02)).normalized()
+                leaf(b, lm, frame_at(o - d * L * 0.5, d), L * rng.uniform(0.75, 1.0), L * rng.uniform(0.75, 1.0), shape_heart, nu=4, nv=6, fold=-0.05, arch=0.05, var=rng.random())
+        else:
+            stem = PM.stem(f"{name}_petiole", (0.1, 0.18, 0.05), 0.5) if petiole else None
+            for i in range(n):
+                a = i * 2.39996 + rng.uniform(-0.2, 0.2)
+                r = rng.uniform(0, 0.05 * s)
+                d = Vector((math.cos(a) * (1 - up), math.sin(a) * (1 - up), up)).normalized()
+                base = Vector((math.cos(a) * r, math.sin(a) * r, 0))
+                if petiole:
+                    # a stalk rising and arching outward, the blade held open at its tip
+                    P = petiole * L * rng.uniform(0.8, 1.15)
+                    pts = curve_points(base, d, P, Vector((math.cos(a), math.sin(a), -0.2)) * 0.35, 4)
+                    tube(b, stem, pts, [0.006 + 0.004 * s] * 2 + [0.005 + 0.003 * s] * 3, segments=6)
+                    # the blade stands up off the stalk, its face turned outward, its tip nodding over
+                    blade = Vector((math.cos(a) * 0.55, math.sin(a) * 0.55, 0.85)).normalized()
+                    leaf(b, lm, frame_at(pts[-1], blade), L * rng.uniform(0.8, 1.0), W, shape, nu=4, nv=8, fold=0.15, arch=arch * rng.uniform(0.8, 1.2), wave=0.05, var=rng.random())
+                else:
+                    leaf(b, lm, frame_at(base, d), L * rng.uniform(0.7, 1.0), W, shape, nu=2, nv=8, fold=0.25, arch=arch * rng.uniform(0.8, 1.2), var=rng.random())
         _p(b.finish(f"{name}_mesh", col), top)
         if spec and stage in scape_table:
             k, per, nbud = scape_table[stage]
@@ -351,7 +376,7 @@ FLOWERS = {
     "hibiscus": shrub_species("hibiscus", Bloom("open5", 0.075, (0.78, 0.0, 0.04), centre=(0.35, 0.0, 0.03), extra={"column": True, "centre_color": (0.95, 0.75, 0.3), "w": 1.0, "wave": 0.3}),
                               (0.55, 0.95), 0.06, leaf=lambda: _leaf("hibiscus_leaf", (0.035, 0.085, 0.02), (0.1, 0.2, 0.05), 0.35, 0.3, 0.15), bloom_scale=1.1),
     "lotus": rosette_species("lotus", lambda: _leaf("lotus_leaf", (0.06, 0.13, 0.05), (0.2, 0.33, 0.12), 0.3, 0.35), 9, 0.3, 0.26, shape_heart, arch=0.2,
-                             pot=("bowl", 0.16, 0.34), flower=Bloom("lotus", 0.085, (0.97, 0.55, 0.72), centre=(0.99, 0.92, 0.94), disc=(0.85, 0.75, 0.25)), flower_h=0.42, up=0.7, face_out=0.25),
+                             pot=("bowl", 0.16, 0.34), flower=Bloom("lotus", 0.085, (0.97, 0.55, 0.72), centre=(0.99, 0.92, 0.94), disc=(0.85, 0.75, 0.25)), flower_h=0.42, up=0.7, face_out=0.25, pads=True),
     "lily": rosette_species("lily", lambda: _leaf("lily_leaf", (0.05, 0.12, 0.04), (0.15, 0.28, 0.09), 0.3, 0.35, 0.2), 18, 0.42, 0.06, shape_lanceolate, arch=0.7,
                             flower=Bloom("trumpet", 0.1, (0.9, 0.16, 0.42), centre=(0.99, 0.86, 0.84)), flower_h=0.62, up=0.85,
                             scape_table={3: (1, 0, 2), 4: (1, 1, 2), 5: (2, 2, 1), 6: (3, 2, 2), 7: (5, 3, 1)}),
@@ -412,26 +437,26 @@ TREES = {
 
 # ---- segment 3: indoor and ornamental ---------------------------------------------------
 
-def _big_leaf_plant(name, dark, light, n, length, width, shape, pot, gloss=0.35, arch=0.5, flower=None):
-    return rosette_species(name, lambda: _leaf(f"{name}_leaf", dark, light, 0.25, 0.3, gloss), n, length, width, shape, arch=arch, pot=pot, flower=flower, up=0.75, face_out=0.5)
+def _big_leaf_plant(name, dark, light, n, length, width, shape, pot, gloss=0.35, arch=0.5, flower=None, petiole=0.0, up=0.75):
+    return rosette_species(name, lambda: _leaf(f"{name}_leaf", dark, light, 0.25, 0.3, gloss), n, length, width, shape, arch=arch, pot=pot, flower=flower, up=up, face_out=0.5, petiole=petiole)
 
 
 INDOOR = {
-    "monstera": _big_leaf_plant("monstera", (0.03, 0.08, 0.02), (0.1, 0.2, 0.05), 9, 0.42, 0.34, shape_heart, ("cylinder_glazed", 0.3, 0.18), gloss=0.45, arch=0.6),
+    "monstera": _big_leaf_plant("monstera", (0.03, 0.08, 0.02), (0.1, 0.2, 0.05), 13, 0.4, 0.36, shape_heart, ("cylinder_glazed", 0.3, 0.18), gloss=0.45, arch=0.9, petiole=0.75, up=0.72),
     "areca_palm": sized_species("areca_palm", plants.areca_palm, [0, 0.4, 0.65, 0.9, 1.15, 1.4, 1.6, 1.85]),
     "snake_plant": sized_species("snake_plant", lambda col, seed, height: plants.snake_plant(col, seed=seed, height=height), [0, 0.25, 0.38, 0.5, 0.62, 0.72, 0.8, 0.9]),
-    "peace_lily": rosette_species("peace_lily", lambda: _leaf("peace_lily_leaf", (0.03, 0.08, 0.02), (0.09, 0.2, 0.05), 0.25, 0.3, 0.5), 18, 0.33, 0.1, shape_lanceolate, arch=0.55, pot=("cylinder_glazed", 0.3, 0.17), flower=Bloom("spathe", 0.06, (0.99, 0.99, 0.96), centre=(0.92, 0.95, 0.85), extra={"centre_color": (0.95, 0.92, 0.7)}), flower_h=0.42, up=0.8, face_out=0.5),
+    "peace_lily": rosette_species("peace_lily", lambda: _leaf("peace_lily_leaf", (0.03, 0.08, 0.02), (0.09, 0.2, 0.05), 0.25, 0.3, 0.5), 18, 0.24, 0.1, shape_lanceolate, arch=0.55, petiole=0.8, pot=("cylinder_glazed", 0.3, 0.17), flower=Bloom("spathe", 0.06, (0.99, 0.99, 0.96), centre=(0.92, 0.95, 0.85), extra={"centre_color": (0.95, 0.92, 0.7)}), flower_h=0.42, up=0.8, face_out=0.5),
     "fiddle_leaf_fig": tree_species("fiddle_leaf_fig", lambda: _leaf("fiddle_leaf", (0.03, 0.08, 0.02), (0.1, 0.2, 0.05), 0.25, 0.3, 0.45), heights=[0, 0.35, 0.6, 0.9, 1.2, 1.5, 1.8, 2.1], leaf_size=0.22, leaves_per_m=60, children=(2, 3), spread=40, up=0.6, crown_start=0.3),
     "rubber_plant": tree_species("rubber_plant", lambda: _leaf("rubber_leaf", (0.02, 0.05, 0.02), (0.06, 0.13, 0.04), 0.2, 0.25, 0.6), heights=[0, 0.35, 0.6, 0.9, 1.2, 1.5, 1.8, 2.1], leaf_size=0.2, leaves_per_m=70, children=(2, 3), spread=40, up=0.6, crown_start=0.3),
-    "philodendron": _big_leaf_plant("philodendron", (0.03, 0.08, 0.02), (0.11, 0.22, 0.06), 12, 0.3, 0.22, shape_heart, ("terracotta", 0.24, 0.16), gloss=0.4, arch=0.7),
-    "calathea": _big_leaf_plant("calathea", (0.03, 0.09, 0.04), (0.14, 0.26, 0.1), 14, 0.26, 0.14, shape_ovate, ("cylinder_glazed", 0.2, 0.15), gloss=0.3, arch=0.5),
+    "philodendron": _big_leaf_plant("philodendron", (0.03, 0.08, 0.02), (0.11, 0.22, 0.06), 14, 0.28, 0.22, shape_heart, ("terracotta", 0.24, 0.16), gloss=0.4, arch=1.0, petiole=0.7, up=0.62),
+    "calathea": _big_leaf_plant("calathea", (0.03, 0.09, 0.04), (0.14, 0.26, 0.1), 16, 0.26, 0.14, shape_ovate, ("cylinder_glazed", 0.2, 0.15), gloss=0.3, arch=0.7, petiole=0.7, up=0.8),
     "croton": scaled_species("croton", croton),
     "zz_plant": _big_leaf_plant("zz_plant", (0.02, 0.06, 0.02), (0.07, 0.15, 0.04), 16, 0.4, 0.05, shape_sword, ("cylinder_glazed", 0.22, 0.14), gloss=0.55, arch=0.35),
     "fern": scaled_species("fern", extra.fern),
     "bonsai": tree_species("bonsai", lambda: _leaf("bonsai_leaf", (0.03, 0.07, 0.02), (0.09, 0.17, 0.05), 0.5, 0.3), heights=[0, 0.15, 0.25, 0.33, 0.4, 0.46, 0.52, 0.58], leaf_size=0.03, leaves_per_m=700, children=(3, 4), spread=70, up=0.0, crown_start=0.4, droop=0.2),
     "bamboo": scaled_species("bamboo", extra.bamboo_clump),
     "spider_plant": _big_leaf_plant("spider_plant", (0.1, 0.17, 0.08), (0.32, 0.42, 0.2), 30, 0.32, 0.018, shape_sword, ("terracotta", 0.18, 0.14), gloss=0.1, arch=1.1),
-    "anthurium": _big_leaf_plant("anthurium", (0.03, 0.08, 0.02), (0.1, 0.2, 0.05), 10, 0.26, 0.18, shape_heart, ("cylinder_glazed", 0.18, 0.13), gloss=0.5, arch=0.5, flower=Bloom("spathe", 0.055, (0.88, 0.05, 0.08), centre=(0.7, 0.02, 0.05), extra={"centre_color": (0.98, 0.85, 0.3), "elev": 25, "shape": shape_heart})),
+    "anthurium": _big_leaf_plant("anthurium", (0.03, 0.08, 0.02), (0.1, 0.2, 0.05), 12, 0.24, 0.18, shape_heart, ("cylinder_glazed", 0.18, 0.13), gloss=0.5, arch=0.8, petiole=0.75, up=0.75, flower=Bloom("spathe", 0.055, (0.88, 0.05, 0.08), centre=(0.7, 0.02, 0.05), extra={"centre_color": (0.98, 0.85, 0.3), "elev": 25, "shape": shape_heart})),
 }
 
 # ---- segment 4: fruits and vegetables ---------------------------------------------------
