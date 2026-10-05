@@ -30,3 +30,9 @@ admin-dashboard/*.tsbuildinfo
 
 # Local Redis snapshots
 dump.rdb
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/

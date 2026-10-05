@@ -1,0 +1,14 @@
+# Model handlers. Install torch for your CUDA version first, e.g.:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu124
+-r requirements.txt
+transformers>=4.45,<5
+diffusers>=0.35,<1          # QwenImage + Wan I2V pipelines
+accelerate>=1.0,<2
+safetensors>=0.4
+sentencepiece>=0.2          # FLUX / Wan text encoders
+imageio>=2.34
+imageio-ffmpeg>=0.5         # diffusers.utils.export_to_video
+# BiRefNet remote code
+timm>=1.0
+kornia>=0.7
+einops>=0.8
