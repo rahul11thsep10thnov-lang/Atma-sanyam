@@ -27,7 +27,7 @@ export const POSE_LIBRARY: Record<Pose, PoseAngles> = {
   walking: { torsoLean: 3, headTilt: 0, upperArmL: 18, lowerArmL: 10, upperArmR: -18, lowerArmR: -6, thighL: 18, shinL: -6, thighR: -14, shinR: -18, prompt: "walking" },
   running: { torsoLean: 12, headTilt: 4, upperArmL: 45, lowerArmL: 70, upperArmR: -40, lowerArmR: 60, thighL: 40, shinL: -30, thighR: -30, shinR: -60, prompt: "running" },
   sitting: { torsoLean: 2, headTilt: 0, upperArmL: 20, lowerArmL: 50, upperArmR: 20, lowerArmR: 50, thighL: 85, shinL: -85, thighR: 85, shinR: -85, sitting: true, prompt: "sitting" },
-  talking: { torsoLean: 1, headTilt: 2, upperArmL: 8, lowerArmL: 6, upperArmR: 25, lowerArmR: 60, thighL: 2, shinL: 0, thighR: -2, shinR: 0, prompt: "talking with a small hand gesture" },
+  talking: { torsoLean: 1, headTilt: 2, upperArmL: 8, lowerArmL: 6, upperArmR: 14, lowerArmR: 52, thighL: 2, shinL: 0, thighR: -2, shinR: 0, prompt: "talking with a small hand gesture" },
   pointing: { torsoLean: 2, headTilt: 0, upperArmL: 6, lowerArmL: 4, upperArmR: 80, lowerArmR: 5, thighL: 2, shinL: 0, thighR: -2, shinR: 0, prompt: "pointing" },
   looking_back: { torsoLean: 0, headTilt: -6, upperArmL: 6, lowerArmL: 4, upperArmR: -6, lowerArmR: -4, thighL: 2, shinL: 0, thighR: -2, shinR: 0, prompt: "looking back over the shoulder" },
   holding_phone: { torsoLean: 2, headTilt: 8, upperArmL: 6, lowerArmL: 4, upperArmR: 30, lowerArmR: 110, thighL: 2, shinL: 0, thighR: -2, shinR: 0, holds: "phone", prompt: "holding a phone" },
@@ -39,7 +39,7 @@ export const POSE_LIBRARY: Record<Pose, PoseAngles> = {
   looking_down: { torsoLean: 4, headTilt: 16, upperArmL: 6, lowerArmL: 4, upperArmR: -6, lowerArmR: -4, thighL: 2, shinL: 0, thighR: -2, shinR: 0, prompt: "looking down" },
   turning: { torsoLean: 0, headTilt: 0, upperArmL: 10, lowerArmL: 6, upperArmR: -10, lowerArmR: -6, thighL: 6, shinL: 0, thighR: -6, shinR: 0, prompt: "turning" },
   waving: { torsoLean: 0, headTilt: 0, upperArmL: 6, lowerArmL: 4, upperArmR: 150, lowerArmR: 20, thighL: 2, shinL: 0, thighR: -2, shinR: 0, prompt: "waving" },
-  crossing_arms: { torsoLean: 0, headTilt: 0, upperArmL: 30, lowerArmL: 100, upperArmR: 30, lowerArmR: 100, thighL: 2, shinL: 0, thighR: -2, shinR: 0, prompt: "arms crossed" },
+  crossing_arms: { torsoLean: 0, headTilt: 0, upperArmL: 4, lowerArmL: 24, upperArmR: 8, lowerArmR: 84, thighL: 2, shinL: 0, thighR: -2, shinR: 0, prompt: "arms crossed" },
 };
 
 const TEXT_TO_POSE: [RegExp, Pose][] = [

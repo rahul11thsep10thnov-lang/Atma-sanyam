@@ -1,0 +1,53 @@
+{
+  "_meta_template": {
+    "description": "Wan 2.1 image-to-video 14B 480p (ComfyUI native nodes). Saves every decoded frame as PNG; ComfyVideoProvider assembles the MP4.",
+    "requires": [
+      "models/diffusion_models/{{unet}} (e.g. wan2.1_i2v_480p_14B_fp8_e4m3fn.safetensors)",
+      "models/text_encoders/{{text_encoder}} (e.g. umt5_xxl_fp8_e4m3fn_scaled.safetensors)",
+      "models/vae/{{vae}} (wan_2.1_vae.safetensors)",
+      "models/clip_vision/{{clip_vision}} (clip_vision_h.safetensors)"
+    ],
+    "custom_nodes": [],
+    "notes": "length must be 4n+1 frames (the provider computes it). Optional path: used only when the MotionRequirementAnalyzer selects LOCAL_I2V_REQUIRED."
+  },
+  "1": { "class_type": "UNETLoader", "inputs": { "unet_name": "{{unet}}", "weight_dtype": "default" } },
+  "2": { "class_type": "CLIPLoader", "inputs": { "clip_name": "{{text_encoder}}", "type": "wan" } },
+  "3": { "class_type": "VAELoader", "inputs": { "vae_name": "{{vae}}" } },
+  "4": { "class_type": "CLIPVisionLoader", "inputs": { "clip_name": "{{clip_vision}}" } },
+  "5": { "class_type": "LoadImage", "inputs": { "image": "{{input_image}}" } },
+  "6": { "class_type": "CLIPVisionEncode", "inputs": { "clip_vision": ["4", 0], "image": ["5", 0], "crop": "none" } },
+  "7": { "class_type": "CLIPTextEncode", "inputs": { "text": "{{prompt}}", "clip": ["2", 0] } },
+  "8": { "class_type": "CLIPTextEncode", "inputs": { "text": "{{negative_prompt}}", "clip": ["2", 0] } },
+  "9": {
+    "class_type": "WanImageToVideo",
+    "inputs": {
+      "positive": ["7", 0],
+      "negative": ["8", 0],
+      "vae": ["3", 0],
+      "clip_vision_output": ["6", 0],
+      "start_image": ["5", 0],
+      "width": "{{width}}",
+      "height": "{{height}}",
+      "length": "{{length}}",
+      "batch_size": 1
+    }
+  },
+  "10": { "class_type": "ModelSamplingSD3", "inputs": { "model": ["1", 0], "shift": 8 } },
+  "11": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": ["10", 0],
+      "positive": ["9", 0],
+      "negative": ["9", 1],
+      "latent_image": ["9", 2],
+      "seed": "{{seed}}",
+      "steps": "{{steps}}",
+      "cfg": "{{cfg}}",
+      "sampler_name": "uni_pc",
+      "scheduler": "simple",
+      "denoise": 1
+    }
+  },
+  "12": { "class_type": "VAEDecode", "inputs": { "samples": ["11", 0], "vae": ["3", 0] } },
+  "13": { "class_type": "SaveImage", "inputs": { "images": ["12", 0], "filename_prefix": "{{filename_prefix}}" } }
+}

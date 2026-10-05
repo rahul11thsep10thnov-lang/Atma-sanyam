@@ -83,9 +83,29 @@ async function main() {
   }
   console.log(`Seeded ${DEFAULT_RENDER_PROFILES.length} render profiles.`);
   for (const { licenseVerifiedAt, config, ...model } of DEFAULT_MODELS) {
+    // Re-seeding refreshes technical and licence facts but keeps administrator
+    // decisions (enabled, default, production approval, overrides) — except
+    // that a licence now known to forbid commercial use always revokes approval.
+    const facts = {
+      name: model.name,
+      provider: model.provider,
+      version: model.version,
+      workflow: model.workflow ?? null,
+      license: model.license,
+      licenseUrl: model.licenseUrl ?? null,
+      licenseNotes: model.licenseNotes,
+      licenseVerifiedAt: licenseVerifiedAt ? new Date(licenseVerifiedAt) : null,
+      attributionRequired: model.attributionRequired,
+      attributionText: model.attributionText ?? null,
+      redistributionNotes: model.redistributionNotes ?? null,
+      gpuRequirement: model.gpuRequirement ?? null,
+      recommendedVramGb: model.recommendedVramGb,
+      config: (config ?? undefined) as Prisma.InputJsonValue | undefined,
+      ...(model.commercialUseAllowed ? {} : { commercialUseAllowed: false, productionApproved: false }),
+    };
     await prisma.aiModel.upsert({
       where: { modelId: model.modelId },
-      update: {},
+      update: facts,
       create: { ...model, licenseVerifiedAt: licenseVerifiedAt ? new Date(licenseVerifiedAt) : null, config: (config ?? undefined) as Prisma.InputJsonValue | undefined },
     });
   }

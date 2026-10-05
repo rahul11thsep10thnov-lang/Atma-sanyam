@@ -53,8 +53,8 @@ export const ENVIRONMENTS: EnvironmentDescriptor[] = [
     groundY: 0.84,
     horizonY: 0.55,
     practicalLights: [
-      { type: "streetlight", x: 0.22, y: 0.2, times: ["dusk", "night"], flicker: 0.25 },
-      { type: "streetlight", x: 0.72, y: 0.2, times: ["dusk", "night"] },
+      { type: "streetlight", x: 0.2, y: 0.47, times: ["dusk", "night"], flicker: 0.35 },
+      { type: "streetlight", x: 0.66, y: 0.47, times: ["dusk", "night"] },
       { type: "train", x: -0.2, y: 0.5, times: ["dusk", "night"] },
     ],
     painter: "railway_platform",

@@ -85,6 +85,19 @@ export const env = {
     fontDir: optional("STUDIO_FONT_DIR"),
   },
 
+  // --- Local AI (self-hosted GPU inference). Endpoints must be internal; see docs/operations/gpu-deployment.md ---
+  localAi: {
+    comfyBaseUrl: optional("COMFYUI_BASE_URL"),
+    comfyApiKey: optional("COMFYUI_API_KEY"),
+    workflowDir: optional("COMFYUI_WORKFLOW_DIR"),
+    inferenceBaseUrl: optional("INFERENCE_BASE_URL"),
+    inferenceApiKey: optional("INFERENCE_API_KEY"),
+    inferenceSigningSecret: optional("INFERENCE_SIGNING_SECRET"),
+    timeoutMs: Number(optional("LOCAL_AI_TIMEOUT_MS", "600000")),
+    i2vTimeoutMs: Number(optional("LOCAL_I2V_TIMEOUT_MS", "1800000")),
+    i2vEnabled: optional("LOCAL_I2V_ENABLED", "false") === "true",
+  },
+
   thresholds: {
     minFamilyRelevanceScore: Number(optional("MIN_FAMILY_RELEVANCE_SCORE", "60")),
     minVideoSuitabilityScore: Number(optional("MIN_VIDEO_SUITABILITY_SCORE", "70")),

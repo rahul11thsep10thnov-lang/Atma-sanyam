@@ -1,0 +1,11 @@
+{
+  "_meta_template": {
+    "description": "Depth Anything V2 (Small, Apache-2.0) depth estimation. Output: white = near.",
+    "requires": ["depth_anything_v2_vits.pth (downloaded by the custom node on first use)"],
+    "custom_nodes": ["comfyui_controlnet_aux (Fannovel16) — provides DepthAnythingV2Preprocessor"],
+    "notes": "Use only the Small (vits) checkpoint for production: the Base/Large checkpoints are CC-BY-NC-4.0."
+  },
+  "1": { "class_type": "LoadImage", "inputs": { "image": "{{input_image}}" } },
+  "2": { "class_type": "DepthAnythingV2Preprocessor", "inputs": { "image": ["1", 0], "ckpt_name": "depth_anything_v2_vits.pth", "resolution": "{{resolution}}" } },
+  "3": { "class_type": "SaveImage", "inputs": { "images": ["2", 0], "filename_prefix": "{{filename_prefix}}" } }
+}
