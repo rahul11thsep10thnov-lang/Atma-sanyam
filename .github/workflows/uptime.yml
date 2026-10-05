@@ -1,0 +1,57 @@
+# Uptime check every 10 minutes: the website, the API (its deep health check
+# also proves the database answers) and the admin console. Alerts when a URL
+# goes down, reminds every hour while it stays down, and says when it is back.
+# GitHub may delay scheduled runs by several minutes; for minute-level checks
+# also point a free external monitor at /api/health/deep (docs/OPERATIONS.md).
+#
+# Variable: UPTIME_URLS — comma-separated, e.g.
+#   https://policeexams.in,https://api.policeexams.in/api/health/deep,https://admin.policeexams.in/login
+# Secrets: ALERT_WEBHOOK_URL and/or TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID
+name: Uptime check
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: uptime
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      UPTIME_URLS: ${{ vars.UPTIME_URLS }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/scripts
+
+      # The previous run's result, so an outage alerts once (plus hourly
+      # reminders) instead of every 10 minutes.
+      - name: Load previous state
+        uses: actions/cache/restore@v4
+        with:
+          path: .uptime
+          key: uptime-state-${{ github.run_id }}
+          restore-keys: uptime-state-
+
+      - name: Check URLs
+        env:
+          ALERT_WEBHOOK_URL: ${{ secrets.ALERT_WEBHOOK_URL }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: .github/scripts/uptime.sh
+
+      - name: Save state
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .uptime
+          key: uptime-state-${{ github.run_id }}

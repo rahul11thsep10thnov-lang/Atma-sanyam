@@ -3,6 +3,7 @@ import { loadEnv, type Env } from './config/env.js';
 import { createDatabase } from './database/client.js';
 import { syncBootstrapAdmin } from './database/seedAdmin.js';
 import { seedTaxonomy } from './database/seedTaxonomy.js';
+import { configureAlerts } from './lib/alerts.js';
 import { setLogLevel, log } from './lib/logger.js';
 import { createSupabaseVerifier } from './lib/supabase.js';
 import { createAiProvider } from './pipeline/ai/index.js';
@@ -13,6 +14,14 @@ export async function bootstrap(): Promise<{ env: Env; deps: AppDeps; close: () 
   loadDotEnv();
   const env = loadEnv();
   setLogLevel(env.LOG_LEVEL);
+  configureAlerts({
+    webhookUrl: env.ALERT_WEBHOOK_URL,
+    telegramBotToken: env.TELEGRAM_BOT_TOKEN,
+    telegramChatId: env.TELEGRAM_CHAT_ID,
+    source: `${env.ALERT_SOURCE_NAME} (${env.NODE_ENV})`,
+    minIntervalSeconds: env.ALERT_MIN_INTERVAL_SECONDS,
+    maxPerHour: env.ALERT_MAX_PER_HOUR,
+  });
   const database = createDatabase(env.DATABASE_URL, env.DATABASE_POOL_MAX);
   if (database.driver === 'pglite') {
     // Zero-setup development: migrate and seed the embedded database on start.

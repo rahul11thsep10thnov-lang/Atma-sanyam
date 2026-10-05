@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { and, asc, eq } from 'drizzle-orm';
+import { and, asc, eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { chapters, exams, subjects } from '../../database/schema.js';
 import { badRequest, notFound, unauthorized } from '../../lib/httpError.js';
+import { errorMessage, log } from '../../lib/logger.js';
 import { parse } from '../../middleware/validate.js';
 import type { Auth } from '../../middleware/auth.js';
 import type { RateLimits } from '../../middleware/rateLimits.js';
@@ -23,6 +24,29 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: RateLimits) {
 
   r.get('/health', (_req, res) => {
     res.json({ status: 'ok', ai: deps.ai.name, mockAi: env.MOCK_AI });
+  });
+
+  // For uptime monitors: also proves the database answers. 503 when it does
+  // not (and the team gets an alert). Reveals no configuration.
+  r.get('/health/deep', async (_req, res) => {
+    const started = Date.now();
+    let ok = false;
+    try {
+      await Promise.race([
+        db.execute(sql`select 1`),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Database ping timed out after 3 s')), 3000).unref()),
+      ]);
+      ok = true;
+    } catch (e) {
+      log.error('health.db_down', { latencyMs: Date.now() - started, message: errorMessage(e) });
+    }
+    const latencyMs = Date.now() - started;
+    res.set('Cache-Control', 'no-store');
+    res.status(ok ? 200 : 503).json({
+      status: ok ? 'ok' : 'down',
+      checks: { database: { ok, latencyMs } },
+      uptimeSeconds: Math.round(process.uptime()),
+    });
   });
 
   // --- Website users -------------------------------------------------------

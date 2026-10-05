@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { and, count, desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { admins, auditLogs, mockBlueprints } from '../../database/schema.js';
+import { alertsEnabled, sendTestAlert } from '../../lib/alerts.js';
 import { audit } from '../../lib/audit.js';
 import { notFound } from '../../lib/httpError.js';
 import { ENABLED_LANGUAGE_CODES } from '../../lib/languages.js';
@@ -151,6 +152,16 @@ export function adminOperationsRouter(deps: AppDeps, auth: Auth, limits: RateLim
   });
   r.delete('/mock-tests/:id', A, auth.can('mocktests:write'), async (req, res) => {
     res.json(await setMockTestStatus(db, idParam(req), 'archive', req.admin!.id));
+  });
+
+  // --- Alerts -----------------------------------------------------------------
+  r.get('/alerts', A, auth.can('settings:write'), (_req, res) => {
+    res.json({ channels: alertsEnabled() });
+  });
+  r.post('/alerts/test', A, auth.can('settings:write'), async (req, res) => {
+    const result = await sendTestAlert(req.admin!.name);
+    await audit(db, req.admin!.id, 'alerts.test_sent', 'settings', null, { delivered: result.delivered });
+    res.json(result);
   });
 
   // --- Blueprints -----------------------------------------------------------

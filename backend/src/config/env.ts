@@ -86,6 +86,16 @@ const envSchema = z.object({
   // Answers submitted this long after the deadline are still scored but the
   // attempt is flagged `late` (network hiccups, slow phones).
   ATTEMPT_GRACE_SECONDS: z.coerce.number().int().min(0).default(120),
+  // --- Alerts (see docs/OPERATIONS.md) -----------------------------------------
+  // Slack or Discord incoming-webhook URL, and/or a Telegram bot + chat. Errors,
+  // crashes, failed generation jobs and failed payment checks are sent there.
+  ALERT_WEBHOOK_URL: optionalString,
+  TELEGRAM_BOT_TOKEN: optionalString,
+  TELEGRAM_CHAT_ID: optionalString,
+  ALERT_SOURCE_NAME: z.string().default('PoliceExams API'),
+  ALERT_MIN_INTERVAL_SECONDS: z.coerce.number().int().min(10).default(600),
+  ALERT_MAX_PER_HOUR: z.coerce.number().int().min(1).default(30),
+
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error', 'silent']).default('info'),
 });
 
@@ -103,6 +113,12 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
   }
   if (env.RAZORPAY_KEY_ID && !env.RAZORPAY_KEY_SECRET) {
     throw new Error('RAZORPAY_KEY_SECRET is required when RAZORPAY_KEY_ID is set.');
+  }
+  if (env.ALERT_WEBHOOK_URL && !/^https:\/\//.test(env.ALERT_WEBHOOK_URL) && env.NODE_ENV === 'production') {
+    throw new Error('ALERT_WEBHOOK_URL must be an https:// URL.');
+  }
+  if (!!env.TELEGRAM_BOT_TOKEN !== !!env.TELEGRAM_CHAT_ID) {
+    throw new Error('Set both TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID for Telegram alerts (or neither).');
   }
   if (!env.MOCK_AI && !env.AI_API_KEY) {
     throw new Error('AI_API_KEY is required when MOCK_AI=false. Set MOCK_AI=true to test the pipeline without an AI provider.');

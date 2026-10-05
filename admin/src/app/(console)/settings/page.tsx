@@ -37,9 +37,60 @@ export default function SettingsPage() {
       <PageHead title="Settings" subtitle="Website text and plan, AI pipeline and spending controls, console accounts and your password." />
       <WebsiteSettings />
       <PipelineSettings />
+      {can('settings:write') && <AlertSettings />}
       {can('admins:write') && <Admins />}
       <Password />
     </>
+  );
+}
+
+/** Where operator alerts go. Channels are set in the API's environment
+ * (ALERT_WEBHOOK_URL, TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID), never here. */
+function AlertSettings() {
+  const { data, error } = useApi<{ channels: { webhook: boolean; telegram: boolean } }>('alerts');
+  const [msg, setMsg] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function test() {
+    setBusy(true);
+    setMsg(null);
+    setErr(null);
+    try {
+      const r = await api<{ delivered: { webhook?: boolean; telegram?: boolean } }>('alerts/test', { method: 'POST' });
+      const parts = Object.entries(r.delivered).map(([k, ok]) => `${k === 'webhook' ? 'Slack/Discord' : 'Telegram'}: ${ok ? 'sent' : 'FAILED'}`);
+      if (Object.values(r.delivered).some((ok) => !ok)) setErr(`${parts.join(' · ')}. Check the URL / bot token and chat id.`);
+      else setMsg(`${parts.join(' · ')}. Check the channel for the message.`);
+    } catch (e) {
+      setErr(errorMessage(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (!data) return error ? <ErrorAlert error={error} /> : <Loading />;
+  const { webhook, telegram } = data.channels;
+  return (
+    <div className="card">
+      <h2 style={{ marginBottom: 10 }}>Alerts</h2>
+      <p className="small muted" style={{ marginTop: 0 }}>
+        Server errors, crashes, a database that stops answering, failed generation jobs and payments whose signature does not verify are sent
+        to the team at once (repeats are grouped, at most one message per kind every 10 minutes). Channels are set in the API’s environment —
+        see docs/OPERATIONS.md.
+      </p>
+      <div className="row" style={{ marginBottom: 10 }}>
+        <span className={`badge ${webhook ? 'badge-good' : ''}`}>Slack / Discord webhook: {webhook ? 'on' : 'not set'}</span>
+        <span className={`badge ${telegram ? 'badge-good' : ''}`}>Telegram: {telegram ? 'on' : 'not set'}</span>
+        <button className="btn" onClick={test} disabled={busy || (!webhook && !telegram)}>
+          {busy ? 'Sending…' : 'Send test alert'}
+        </button>
+      </div>
+      {!webhook && !telegram && (
+        <div className="alert alert-warn">No alert channel is set, so nobody is told when something breaks. Set ALERT_WEBHOOK_URL or TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID on the API and restart it.</div>
+      )}
+      <OkAlert message={msg} />
+      <ErrorAlert error={err} />
+    </div>
   );
 }
 

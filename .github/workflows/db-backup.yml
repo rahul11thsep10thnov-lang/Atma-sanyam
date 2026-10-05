@@ -1,0 +1,152 @@
+# Nightly database backup, proven restorable every time.
+#
+# 1. pg_dump (PostgreSQL 17 client) of the app's schemas: public + drizzle.
+# 2. Encrypted with AES-256 (gpg, passphrase from a secret) before it is stored.
+# 3. Decrypted again and restored into a throwaway PostgreSQL to prove the
+#    file and the passphrase work; row counts go to the run summary.
+# 4. Kept as a workflow artifact (default 30 days) and, if configured, copied
+#    to S3-compatible storage (AWS S3, Cloudflare R2, Backblaze B2…).
+# Any failure sends an alert. Setup and restore steps: docs/OPERATIONS.md.
+#
+# Secrets: BACKUP_DATABASE_URL, BACKUP_PASSPHRASE
+#          optional: BACKUP_S3_BUCKET, BACKUP_S3_ENDPOINT, BACKUP_S3_ACCESS_KEY_ID,
+#          BACKUP_S3_SECRET_ACCESS_KEY, ALERT_WEBHOOK_URL, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
+# Variables (optional): BACKUP_RETENTION_DAYS
+name: Database backup
+
+on:
+  schedule:
+    - cron: '30 21 * * *' # 03:00 IST every night
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: db-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    services:
+      restorecheck:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: restore-check
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
+      BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+      PG_IMAGE: postgres:17
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/scripts
+
+      - name: Check configuration
+        run: |
+          if [ -z "$DATABASE_URL" ] || [ -z "$BACKUP_PASSPHRASE" ]; then
+            echo "::error::Add the repository secrets BACKUP_DATABASE_URL and BACKUP_PASSPHRASE (see docs/OPERATIONS.md)."
+            exit 1
+          fi
+          if [ "${#BACKUP_PASSPHRASE}" -lt 20 ]; then
+            echo "::error::BACKUP_PASSPHRASE must be at least 20 characters."
+            exit 1
+          fi
+
+      - name: Dump the database
+        run: |
+          set -euo pipefail
+          umask 077
+          STAMP=$(date -u +%Y-%m-%dT%H%MZ)
+          echo "STAMP=$STAMP" >> "$GITHUB_ENV"
+          docker run --rm --network host -e DATABASE_URL "$PG_IMAGE" \
+            sh -c 'pg_dump "$DATABASE_URL" --format=custom --compress=9 --no-owner --no-privileges --schema=public --schema=drizzle' \
+            > dump.pgc
+          test -s dump.pgc
+          # The archive must be readable by pg_restore.
+          docker run --rm -v "$PWD:/work" "$PG_IMAGE" pg_restore --list /work/dump.pgc > /dev/null
+          echo "DUMP_BYTES=$(stat -c %s dump.pgc)" >> "$GITHUB_ENV"
+
+      - name: Encrypt
+        run: |
+          set -euo pipefail
+          umask 077
+          OUT="policeexams-db-$STAMP.pgc.gpg"
+          printf '%s' "$BACKUP_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 \
+            --symmetric --cipher-algo AES256 --s2k-digest-algo SHA512 --s2k-count 65011712 -o "$OUT" dump.pgc
+          shred -u dump.pgc
+          echo "BACKUP_FILE=$OUT" >> "$GITHUB_ENV"
+          echo "BACKUP_SHA256=$(sha256sum "$OUT" | cut -d' ' -f1)" >> "$GITHUB_ENV"
+
+      - name: Restore check (decrypt and restore into a scratch database)
+        run: |
+          set -uo pipefail
+          umask 077
+          printf '%s' "$BACKUP_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 \
+            -o restore.pgc --decrypt "$BACKUP_FILE" || { echo "::error::The backup could not be decrypted."; exit 1; }
+          q() { docker run --rm --network host -e PGPASSWORD=restore-check "$PG_IMAGE" psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -tAc "$1"; }
+          # The dump re-creates the public schema itself.
+          q "drop schema public cascade" > /dev/null
+          docker run --rm --network host -v "$PWD:/work" -e PGPASSWORD=restore-check "$PG_IMAGE" \
+            pg_restore -h localhost -U postgres -d postgres --no-owner --no-privileges /work/restore.pgc 2> restore.log
+          status=$?
+          shred -u restore.pgc
+          if [ $status -ne 0 ]; then
+            echo "::warning::pg_restore reported $(grep -c 'error' restore.log || true) error(s); checking the core tables."
+            grep -i 'error' restore.log | head -20 || true
+          fi
+          {
+            echo "### Database backup $STAMP"
+            echo ""
+            echo "| | |"
+            echo "|---|---|"
+            echo "| File | \`$BACKUP_FILE\` |"
+            echo "| Dump size | $DUMP_BYTES bytes |"
+            echo "| SHA-256 (encrypted file) | \`$BACKUP_SHA256\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
+          for t in exams questions question_options mock_tests users test_attempts subscriptions admins audit_logs; do
+            n=$(q "select count(*) from public.$t") || { echo "::error::Table $t is missing from the restored backup."; exit 1; }
+            echo "| rows in $t | $n |" >> "$GITHUB_STEP_SUMMARY"
+          done
+          migrations=$(q "select count(*) from drizzle.__drizzle_migrations") || { echo "::error::Migration history is missing from the restored backup."; exit 1; }
+          echo "| migrations applied | $migrations |" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Keep as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-backup-${{ env.STAMP }}
+          path: ${{ env.BACKUP_FILE }}
+          retention-days: ${{ vars.BACKUP_RETENTION_DAYS || 30 }}
+          if-no-files-found: error
+          compression-level: 0
+
+      - name: Copy to S3-compatible storage
+        env:
+          BUCKET: ${{ secrets.BACKUP_S3_BUCKET }}
+          ENDPOINT: ${{ secrets.BACKUP_S3_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.BACKUP_S3_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.BACKUP_S3_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          if [ -z "$BUCKET" ]; then
+            echo "Offsite copy not configured (BACKUP_S3_BUCKET); the workflow artifact is the only copy."
+            exit 0
+          fi
+          args=()
+          if [ -n "$ENDPOINT" ]; then args+=(--endpoint-url "$ENDPOINT"); fi
+          aws s3 cp "$BACKUP_FILE" "s3://$BUCKET/policeexams/$BACKUP_FILE" "${args[@]}" --only-show-errors
+          echo "| offsite copy | s3://$BUCKET/policeexams/$BACKUP_FILE |" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Alert on failure
+        if: failure()
+        env:
+          ALERT_WEBHOOK_URL: ${{ secrets.ALERT_WEBHOOK_URL }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          .github/scripts/notify.sh "🚨 PoliceExams: the nightly database backup FAILED. Details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

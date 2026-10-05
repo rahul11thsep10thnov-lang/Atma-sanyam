@@ -188,6 +188,15 @@ On the API set `NODE_ENV=production`, `CORS_ORIGINS=<website URL>`,
 production, so serve it over HTTPS. CI (`.github/workflows/ci.yml`) runs the
 API tests on PostgreSQL 16 and builds all three apps.
 
+**Safety net** — before launch, set up the three parts in
+[docs/OPERATIONS.md](docs/OPERATIONS.md): nightly encrypted database backups
+that are test-restored every night (`.github/workflows/db-backup.yml`),
+alerts to Slack/Discord/Telegram for errors, crashes, DB outages, failed
+generation jobs and failed payment checks (`ALERT_WEBHOOK_URL` /
+`TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID` on the API), and an uptime check of
+the website, API (`/api/health/deep`) and console every 10 minutes
+(`.github/workflows/uptime.yml`).
+
 ## 10. Database migrations
 
 Schema lives in `backend/src/database/schema.ts`. After changing it:

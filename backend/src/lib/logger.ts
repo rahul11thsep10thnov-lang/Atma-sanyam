@@ -2,11 +2,18 @@
 // `event`, `jobId`, etc. Values under secret-looking keys are redacted and
 // user-identifying fields are never passed in by callers.
 
-type Level = 'debug' | 'info' | 'warn' | 'error';
+export type Level = 'debug' | 'info' | 'warn' | 'error';
 const ORDER: Record<Level | 'silent', number> = { debug: 10, info: 20, warn: 30, error: 40, silent: 100 };
 const SECRET_KEY = /(key|token|secret|password|authorization|cookie)/i;
 
 let threshold: number = ORDER.info;
+type Sink = (level: Level, event: string, fields?: Record<string, unknown>) => void;
+let sink: Sink | null = null;
+
+/** Receives every event regardless of LOG_LEVEL (used by lib/alerts). */
+export function setLogSink(s: Sink | null) {
+  sink = s;
+}
 
 export function setLogLevel(level: Level | 'silent') {
   threshold = ORDER[level];
@@ -23,6 +30,13 @@ function redact(value: unknown, depth = 0): unknown {
 }
 
 function write(level: Level, event: string, fields?: Record<string, unknown>) {
+  if (sink) {
+    try {
+      sink(level, event, fields);
+    } catch {
+      // Alerting must never break the caller.
+    }
+  }
   if (ORDER[level] < threshold) return;
   const line = JSON.stringify({ ts: new Date().toISOString(), level, event, ...(redact(fields ?? {}) as object) });
   if (level === 'error' || level === 'warn') console.error(line);
