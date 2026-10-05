@@ -54,6 +54,18 @@ def _top_of_pot(name, col, kind, h, r):
     return root, top
 
 
+def in_pot(name, build, pot):
+    """Any builder, planted in a pot that stays the same size while the plant grows."""
+    def potted(col, stage=7, seed=1):
+        root, top = _top_of_pot(f"{name}_potted", col, *pot)
+        o = build(col, stage=stage, seed=seed)
+        o.parent = top
+        if "sway" in o.keys():
+            root["sway"] = o["sway"]
+        return root
+    return potted
+
+
 def _spheres(col, root, rng, color, n, r, zrange, spread, stretch=1.0, name="fruit"):
     mat = M.matte(color, 0.35, f"{name}_skin")
     for i in range(n):
@@ -124,7 +136,7 @@ def shrub_species(name, flower, size, leaf_size, leaf=None, layers=2, pot=None, 
 
 def tree_species(name, leaf_src, flower=None, fruit=None, heights=TREE_H, spread=52, up=0.25, leaf_size=0.09, leaves_per_m=170,
                  crown_start=0.35, droop=0.15, leaf_shape=shape_ovate, flower_from=6, children=(4, 6), length_ratio=0.64,
-                 bloom_density=(0.6, 0.95), sway=(0.18, 0.35)):
+                 bloom_density=(0.6, 0.95), sway=(0.18, 0.35), pot=None):
     """A tree that goes from seedling to a grand specimen: taller, thicker
     trunk, more levels of branches, denser crown, then flowers or fruit."""
     def build(col, stage=7, seed=1):
@@ -151,7 +163,7 @@ def tree_species(name, leaf_src, flower=None, fruit=None, heights=TREE_H, spread
         bloom = flower is not None and stage >= flower_from
         fruiting = fruit is not None and stage >= 5
         levels = 3 if stage <= 3 else 4
-        spec = TreeSpec(height=h, trunk_radius=(0.025 + 0.02 * stage) * h / 2.0, levels=levels, children=(3, 4) if stage <= 3 else children,
+        spec = TreeSpec(height=h, trunk_radius=(0.012 + 0.018 * h ** 0.85) * (0.8 + 0.05 * stage), levels=levels, children=(3, 4) if stage <= 3 else children,
                         spread=spread, up=up, length_ratio=length_ratio, leaf_size=leaf_size * (0.8 if stage < 4 else 1.0),
                         leaves_per_m=int(leaves_per_m * (0.8 if stage < 5 else 1.0 if stage < 7 else 1.3)), crown_start=crown_start,
                         leaf_mat=leaf_mat(), droop=droop, leaf_shape=leaf_shape,
@@ -162,14 +174,14 @@ def tree_species(name, leaf_src, flower=None, fruit=None, heights=TREE_H, spread
             rng = Rng(seed + 7)
             n = {5: 6, 6: 12, 7: 20}[stage]
             _spheres(col, root, rng, fruit[0], n, fruit[1] * (0.85 if stage == 5 else 1.0), (h * 0.5, h * 0.92), h * 0.22, fruit[2] if len(fruit) > 2 else 1.0, f"{name}_fruit")
-        if stage == 2:
-            _stake(col, root, 0.9)
+        if stage == 2 and heights[2] >= 0.8:
+            _stake(col, root, min(0.9, heights[2] * 0.8))
         root["sway"] = {"amp": sway[0], "speed": sway[1]}
         return root
 
     def leaf_mat():
         return leaf_src() if callable(leaf_src) else leaf_src
-    return build
+    return in_pot(name, build, pot) if pot else build
 
 
 def sized_species(name, make, heights, pot=None, seed_mound=0.2):
@@ -419,16 +431,16 @@ TREES = {
     "banyan": tree_species("banyan", lambda: _leaf("banyan_leaf", (0.03, 0.07, 0.02), (0.09, 0.18, 0.05), 0.3, 0.3, 0.3), heights=[0, 0.5, 1.3, 2.3, 3.4, 4.6, 5.6, 6.6], spread=70, up=0.1, leaf_size=0.11, leaves_per_m=200, children=(5, 7), crown_start=0.3),
     "peepal": tree_species("peepal", lambda: _leaf("peepal_leaf", (0.04, 0.09, 0.025), (0.14, 0.26, 0.07), 0.3, 0.4, 0.35), leaf_shape=shape_heart, leaf_size=0.12, leaves_per_m=170, heights=[0, 0.5, 1.2, 2.2, 3.2, 4.3, 5.2, 6.0]),
     "neem": tree_species("neem", lambda: _leaf("neem_leaf", (0.03, 0.08, 0.02), (0.1, 0.2, 0.05), 0.45, 0.35), leaf_shape=shape_lanceolate, leaf_size=0.08, leaves_per_m=220, heights=[0, 0.5, 1.2, 2.2, 3.3, 4.4, 5.3, 6.2], children=(4, 6)),
-    "ashoka": tree_species("ashoka", lambda: _leaf("ashoka_leaf", (0.03, 0.075, 0.02), (0.09, 0.17, 0.045), 0.3, 0.3, 0.3), heights=[0, 0.5, 1.2, 2.0, 3.0, 4.0, 4.8, 5.6], spread=78, up=-0.35, length_ratio=0.32, leaf_size=0.13, leaves_per_m=260, crown_start=0.08, droop=0.9, leaf_shape=shape_lanceolate, children=(6, 8)),
+    "ashoka": sized_species("ashoka", lambda col, seed, height: _column_conifer(col, seed, height, "ashoka", 0.15, ((0.03, 0.08, 0.02), (0.1, 0.2, 0.05)), 1.8, 0.6), [0, 0.45, 1.1, 1.9, 2.8, 3.7, 4.6, 5.5]),
     "gulmohar": tree_species("gulmohar", lambda: _leaf("gulmohar_leaf", (0.05, 0.1, 0.03), (0.15, 0.26, 0.07), 0.45, 0.4), flower=(0.95, 0.2, 0.05), leaf_size=0.07, leaves_per_m=190, spread=68, up=0.15, flower_from=5, heights=[0, 0.5, 1.2, 2.1, 3.1, 4.2, 5.0, 5.8]),
     "cherry_blossom": tree_species("cherry_blossom", lambda: _leaf("cherry_leaf", (0.06, 0.1, 0.03), (0.17, 0.26, 0.08), 0.45, 0.35), flower=(0.98, 0.72, 0.8), flower_from=4, bloom_density=(0.7, 1.0), leaf_size=0.07, leaves_per_m=120, spread=58, heights=[0, 0.45, 1.1, 1.9, 2.8, 3.6, 4.3, 5.0]),
     "jacaranda": tree_species("jacaranda", lambda: _leaf("jacaranda_leaf", (0.05, 0.1, 0.035), (0.15, 0.25, 0.08), 0.45, 0.4), flower=(0.5, 0.4, 0.85), flower_from=5, bloom_density=(0.7, 1.0), leaf_size=0.06, leaves_per_m=180, spread=62, heights=[0, 0.5, 1.2, 2.1, 3.1, 4.2, 5.0, 5.8]),
-    "palm": sized_species("palm", plants.areca_palm, [0, 0.35, 0.6, 0.9, 1.2, 1.5, 1.8, 2.1]),
-    "coconut": sized_species("coconut", lambda col, seed, height: plants.areca_palm(col, seed=seed, height=height), [0, 0.5, 1.0, 1.6, 2.4, 3.2, 4.0, 4.8]),
+    "palm": sized_species("palm", lambda col, seed, height: _frond_palm(col, seed, height, "palm", trunk=0.55), [0, 0.4, 0.8, 1.3, 2.0, 2.7, 3.4, 4.0]),
+    "coconut": sized_species("coconut", lambda col, seed, height: _frond_palm(col, seed, height, "coconut", trunk=0.7, nuts=True), [0, 0.5, 1.0, 1.7, 2.6, 3.5, 4.4, 5.2]),
     "maple": tree_species("maple", lambda: _leaf("maple_leaf", (0.35, 0.07, 0.03), (0.75, 0.22, 0.08), 0.45, 0.4), leaf_size=0.1, leaves_per_m=180, spread=56, heights=[0, 0.45, 1.1, 2.0, 2.9, 3.8, 4.6, 5.4]),
     "cedar": tree_species("cedar", lambda: _leaf("cedar_leaf", (0.03, 0.07, 0.03), (0.08, 0.15, 0.07), 0.6, 0.2), leaf_shape=shape_lanceolate, leaf_size=0.05, leaves_per_m=360, spread=85, up=0.05, length_ratio=0.5, crown_start=0.15, children=(6, 9), heights=[0, 0.5, 1.2, 2.2, 3.3, 4.4, 5.4, 6.4]),
     "pine": tree_species("pine", lambda: _leaf("pine_leaf", (0.04, 0.08, 0.035), (0.1, 0.18, 0.08), 0.6, 0.2), leaf_shape=shape_sword, leaf_size=0.06, leaves_per_m=320, spread=80, up=0.1, length_ratio=0.45, crown_start=0.3, children=(6, 8), heights=[0, 0.5, 1.3, 2.4, 3.6, 4.8, 5.8, 6.8]),
-    "cypress": tree_species("cypress", lambda: _leaf("cypress_leaf", (0.03, 0.07, 0.03), (0.09, 0.16, 0.07), 0.6, 0.2), leaf_shape=shape_lanceolate, leaf_size=0.04, leaves_per_m=420, spread=30, up=0.8, length_ratio=0.4, crown_start=0.05, children=(5, 7), heights=[0, 0.5, 1.3, 2.4, 3.6, 4.8, 5.8, 6.8], droop=0.0),
+    "cypress": sized_species("cypress", lambda col, seed, height: _column_conifer(col, seed, height), [0, 0.45, 1.1, 1.9, 2.8, 3.7, 4.6, 5.5]),
     "magnolia": tree_species("magnolia", lambda: _leaf("magnolia_leaf", (0.03, 0.07, 0.02), (0.09, 0.18, 0.05), 0.3, 0.3, 0.4), flower=(0.99, 0.96, 0.9), flower_from=5, leaf_size=0.14, leaves_per_m=120, spread=55, heights=[0, 0.45, 1.0, 1.8, 2.6, 3.4, 4.1, 4.8]),
     "amaltas": tree_species("amaltas", lambda: _leaf("amaltas_leaf", (0.05, 0.1, 0.03), (0.15, 0.26, 0.07), 0.45, 0.4), flower=(0.98, 0.85, 0.15), flower_from=5, bloom_density=(0.7, 1.0), leaf_size=0.09, leaves_per_m=150, spread=60, droop=0.35, heights=[0, 0.5, 1.2, 2.0, 3.0, 4.0, 4.8, 5.6]),
     "arjuna": tree_species("arjuna", lambda: _leaf("arjuna_leaf", (0.04, 0.09, 0.03), (0.12, 0.22, 0.07), 0.45, 0.35), leaf_size=0.1, leaves_per_m=170, spread=62, heights=[0, 0.5, 1.3, 2.3, 3.4, 4.6, 5.6, 6.6], children=(4, 6)),
@@ -446,15 +458,15 @@ INDOOR = {
     "areca_palm": sized_species("areca_palm", plants.areca_palm, [0, 0.4, 0.65, 0.9, 1.15, 1.4, 1.6, 1.85]),
     "snake_plant": sized_species("snake_plant", lambda col, seed, height: plants.snake_plant(col, seed=seed, height=height), [0, 0.25, 0.38, 0.5, 0.62, 0.72, 0.8, 0.9]),
     "peace_lily": rosette_species("peace_lily", lambda: _leaf("peace_lily_leaf", (0.03, 0.08, 0.02), (0.09, 0.2, 0.05), 0.25, 0.3, 0.5), 18, 0.24, 0.1, shape_lanceolate, arch=0.55, petiole=0.8, pot=("cylinder_glazed", 0.3, 0.17), flower=Bloom("spathe", 0.06, (0.99, 0.99, 0.96), centre=(0.92, 0.95, 0.85), extra={"centre_color": (0.95, 0.92, 0.7)}), flower_h=0.42, up=0.8, face_out=0.5),
-    "fiddle_leaf_fig": tree_species("fiddle_leaf_fig", lambda: _leaf("fiddle_leaf", (0.03, 0.08, 0.02), (0.1, 0.2, 0.05), 0.25, 0.3, 0.45), heights=[0, 0.35, 0.6, 0.9, 1.2, 1.5, 1.8, 2.1], leaf_size=0.22, leaves_per_m=60, children=(2, 3), spread=40, up=0.6, crown_start=0.3),
-    "rubber_plant": tree_species("rubber_plant", lambda: _leaf("rubber_leaf", (0.02, 0.05, 0.02), (0.06, 0.13, 0.04), 0.2, 0.25, 0.6), heights=[0, 0.35, 0.6, 0.9, 1.2, 1.5, 1.8, 2.1], leaf_size=0.2, leaves_per_m=70, children=(2, 3), spread=40, up=0.6, crown_start=0.3),
+    "fiddle_leaf_fig": tree_species("fiddle_leaf_fig", lambda: _leaf("fiddle_leaf", (0.03, 0.08, 0.02), (0.1, 0.2, 0.05), 0.25, 0.3, 0.45), heights=[0, 0.35, 0.6, 0.9, 1.2, 1.5, 1.8, 2.1], leaf_size=0.22, leaves_per_m=60, children=(2, 3), spread=40, up=0.6, crown_start=0.3, pot=("cylinder_glazed", 0.4, 0.22)),
+    "rubber_plant": tree_species("rubber_plant", lambda: _leaf("rubber_leaf", (0.02, 0.05, 0.02), (0.06, 0.13, 0.04), 0.2, 0.25, 0.6), heights=[0, 0.35, 0.6, 0.9, 1.2, 1.5, 1.8, 2.1], leaf_size=0.2, leaves_per_m=70, children=(2, 3), spread=40, up=0.6, crown_start=0.3, pot=("terracotta", 0.38, 0.22)),
     "philodendron": _big_leaf_plant("philodendron", (0.03, 0.08, 0.02), (0.11, 0.22, 0.06), 14, 0.28, 0.22, shape_heart, ("terracotta", 0.24, 0.16), gloss=0.4, arch=1.0, petiole=0.7, up=0.62),
     "calathea": _big_leaf_plant("calathea", (0.03, 0.09, 0.04), (0.14, 0.26, 0.1), 16, 0.26, 0.14, shape_ovate, ("cylinder_glazed", 0.2, 0.15), gloss=0.3, arch=0.7, petiole=0.7, up=0.8),
-    "croton": scaled_species("croton", croton),
+    "croton": in_pot("croton", scaled_species("croton", croton), ("terracotta", 0.26, 0.17)),
     "zz_plant": _big_leaf_plant("zz_plant", (0.02, 0.06, 0.02), (0.07, 0.15, 0.04), 16, 0.4, 0.05, shape_sword, ("cylinder_glazed", 0.22, 0.14), gloss=0.55, arch=0.35),
     "fern": scaled_species("fern", extra.fern),
-    "bonsai": tree_species("bonsai", lambda: _leaf("bonsai_leaf", (0.03, 0.07, 0.02), (0.09, 0.17, 0.05), 0.5, 0.3), heights=[0, 0.15, 0.25, 0.33, 0.4, 0.46, 0.52, 0.58], leaf_size=0.03, leaves_per_m=700, children=(3, 4), spread=70, up=0.0, crown_start=0.4, droop=0.2),
-    "bamboo": scaled_species("bamboo", extra.bamboo_clump),
+    "bonsai": tree_species("bonsai", lambda: _leaf("bonsai_leaf", (0.03, 0.07, 0.02), (0.09, 0.17, 0.05), 0.5, 0.3), heights=[0, 0.15, 0.25, 0.33, 0.4, 0.46, 0.52, 0.58], leaf_size=0.03, leaves_per_m=700, children=(3, 4), spread=70, up=0.0, crown_start=0.4, droop=0.2, pot=("bowl", 0.1, 0.26)),
+    "bamboo": in_pot("bamboo", scaled_species("bamboo", extra.bamboo_clump), ("cylinder_glazed", 0.34, 0.2)),
     "spider_plant": _big_leaf_plant("spider_plant", (0.1, 0.17, 0.08), (0.32, 0.42, 0.2), 30, 0.32, 0.018, shape_sword, ("terracotta", 0.18, 0.14), gloss=0.1, arch=1.1),
     "anthurium": _big_leaf_plant("anthurium", (0.03, 0.08, 0.02), (0.1, 0.2, 0.05), 12, 0.24, 0.18, shape_heart, ("cylinder_glazed", 0.18, 0.13), gloss=0.5, arch=0.8, petiole=0.75, up=0.75, flower=Bloom("spathe", 0.055, (0.88, 0.05, 0.08), centre=(0.7, 0.02, 0.05), extra={"centre_color": (0.98, 0.85, 0.3), "elev": 25, "shape": shape_heart})),
 }
@@ -463,16 +475,16 @@ INDOOR = {
 
 FRUITS = {
     "mango": tree_species("mango", lambda: _leaf("mango_leaf", (0.03, 0.07, 0.02), (0.1, 0.18, 0.05), 0.3, 0.3, 0.3), fruit=((0.95, 0.6, 0.1), 0.055, 1.35), leaf_shape=shape_lanceolate, leaf_size=0.14, leaves_per_m=130, droop=0.4, up=0.35, heights=[0, 0.5, 1.2, 2.0, 2.9, 3.8, 4.6, 5.4]),
-    "apple": tree_species("apple", lambda: _leaf("apple_leaf", (0.05, 0.1, 0.03), (0.14, 0.25, 0.07), 0.45, 0.35), fruit=((0.85, 0.12, 0.1), 0.045), flower=(0.98, 0.9, 0.92), flower_from=4, leaf_size=0.07, leaves_per_m=200, spread=58, heights=[0, 0.45, 1.0, 1.7, 2.4, 3.0, 3.5, 4.0]),
+    "apple": tree_species("apple", lambda: _leaf("apple_leaf", (0.05, 0.1, 0.03), (0.14, 0.25, 0.07), 0.45, 0.35), fruit=((0.58, 0.04, 0.03), 0.045), flower=(0.98, 0.9, 0.92), flower_from=4, leaf_size=0.07, leaves_per_m=200, spread=58, heights=[0, 0.45, 1.0, 1.7, 2.4, 3.0, 3.5, 4.0]),
     "orange": tree_species("orange", lambda: _leaf("orange_leaf", (0.03, 0.08, 0.02), (0.1, 0.2, 0.05), 0.3, 0.3, 0.3), fruit=((0.98, 0.55, 0.08), 0.045), leaf_size=0.07, leaves_per_m=260, spread=52, heights=[0, 0.4, 0.9, 1.5, 2.1, 2.7, 3.2, 3.7]),
     "lemon": sized_species("lemon", lambda col, seed, height: lemon_tree(col, seed=seed, height=height), [0, 0.35, 0.6, 0.9, 1.2, 1.5, 1.8, 2.1]),
-    "pomegranate": tree_species("pomegranate", lambda: _leaf("pomegranate_leaf", (0.04, 0.09, 0.02), (0.12, 0.22, 0.05), 0.35, 0.3, 0.3), fruit=((0.78, 0.1, 0.12), 0.05), flower=(0.95, 0.25, 0.1), flower_from=4, leaf_shape=shape_lanceolate, leaf_size=0.05, leaves_per_m=280, spread=60, heights=[0, 0.4, 0.9, 1.5, 2.1, 2.7, 3.2, 3.7]),
+    "pomegranate": tree_species("pomegranate", lambda: _leaf("pomegranate_leaf", (0.04, 0.09, 0.02), (0.12, 0.22, 0.05), 0.35, 0.3, 0.3), fruit=((0.55, 0.04, 0.05), 0.05), flower=(0.95, 0.25, 0.1), flower_from=4, leaf_shape=shape_lanceolate, leaf_size=0.05, leaves_per_m=280, spread=60, heights=[0, 0.4, 0.9, 1.5, 2.1, 2.7, 3.2, 3.7]),
     "guava": tree_species("guava", lambda: _leaf("guava_leaf", (0.04, 0.09, 0.025), (0.13, 0.24, 0.07), 0.45, 0.35), fruit=((0.6, 0.78, 0.25), 0.04), leaf_size=0.1, leaves_per_m=160, spread=62, heights=[0, 0.4, 0.9, 1.5, 2.1, 2.7, 3.2, 3.7]),
     "papaya": sized_species("papaya", lambda col, seed, height: _papaya(col, seed, height), [0, 0.5, 0.9, 1.4, 1.9, 2.4, 2.9, 3.4]),
     "banana": sized_species("banana", lambda col, seed, height: banana_plant(col, seed=seed, height=height), [0, 0.4, 0.7, 1.1, 1.5, 1.9, 2.3, 2.7]),
-    "strawberry": fruit_bush("strawberry", (0.85, 0.08, 0.1), (0.3, 0.14), 0.045, leaf=lambda: _leaf("strawberry_leaf", *LEAF_LIGHT), fruit_r=0.018, stretch=1.3, flower=(0.99, 0.99, 0.95)),
+    "strawberry": fruit_bush("strawberry", (0.6, 0.02, 0.04), (0.3, 0.14), 0.045, leaf=lambda: _leaf("strawberry_leaf", *LEAF_LIGHT), fruit_r=0.018, stretch=1.3, flower=(0.99, 0.99, 0.95)),
     "watermelon": vine_species("watermelon", (0.12, 0.3, 0.1), (0.9, 0.25), 0.06, fruit_r=0.11, stretch=0.85, flower=(0.98, 0.9, 0.3)),
-    "tomato": fruit_bush("tomato", (0.72, 0.04, 0.02), (0.3, 0.85), 0.045, fruit_r=0.032, flower=(0.98, 0.9, 0.2), staked=True),
+    "tomato": fruit_bush("tomato", (0.5, 0.02, 0.01), (0.3, 0.85), 0.045, fruit_r=0.032, flower=(0.98, 0.9, 0.2), staked=True),
     "chilli": fruit_bush("chilli", (0.85, 0.1, 0.05), (0.28, 0.6), 0.04, leaf=lambda: _leaf("chilli_leaf", *LEAF_DARK), fruit_r=0.012, stretch=3.2, flower=(0.99, 0.99, 0.96)),
     "brinjal": fruit_bush("brinjal", (0.3, 0.08, 0.4), (0.35, 0.7), 0.07, fruit_r=0.03, stretch=1.9, flower=(0.7, 0.5, 0.85)),
     "carrot": rosette_species("carrot", lambda: _leaf("carrot_leaf", (0.05, 0.11, 0.03), (0.16, 0.28, 0.08), 0.5, 0.35), 20, 0.28, 0.03, shape_lanceolate, arch=0.5, up=0.85),
@@ -484,23 +496,115 @@ FRUITS = {
 
 
 def _papaya(col, seed, height):
-    """A single pale trunk with a crown of big palmate leaves; fruit under the crown from 2 m."""
+    """A slender pale trunk with a crown of big palmate leaves on long stalks;
+    fruit clusters under the crown from 2 m."""
     rng = Rng(seed)
     root = _root("papaya", col)
     b = Builder()
-    stem = PM.stem("papaya_stem", (0.3, 0.3, 0.22), 0.6)
-    pts = curve_points(Vector((0, 0, 0)), Vector((0, 0, 1)), height, Vector((0.01, 0.01, 0)), 6)
-    tube(b, stem, pts, [0.06, 0.055, 0.05, 0.045, 0.04, 0.035, 0.03], segments=12)
-    lm = _leaf("papaya_leaf", (0.05, 0.11, 0.03), (0.15, 0.27, 0.07), 0.4, 0.4)
+    stem = trees.bark("papaya_bark", (0.1, 0.11, 0.07), (0.26, 0.28, 0.19), 0.7)
+    trunk_h = height * 0.78
+    tr = 0.02 + 0.016 * height
+    pts = curve_points(Vector((0, 0, 0)), Vector((0, 0, 1)), trunk_h, Vector((0.01, 0.01, 0)), 6)
+    tube(b, stem, pts, [tr * 1.25, tr * 1.1, tr, tr * 0.92, tr * 0.85, tr * 0.8, tr * 0.75], segments=12)
+    lm = _leaf("papaya_leaf", (0.04, 0.1, 0.025), (0.13, 0.25, 0.06), 0.4, 0.4)
+    pet = PM.stem("papaya_petiole", (0.12, 0.17, 0.06), 0.5)
     top = pts[-1]
-    for i in range(10):
-        a = i * 2.4
-        d = Vector((math.cos(a), math.sin(a), 0.35 - 0.05 * (i % 3))).normalized()
-        leaf(b, lm, frame_at(top - Vector((0, 0, 0.04 * (i % 4))), d), height * 0.28, height * 0.22, shape_heart, nu=4, nv=6, fold=0.2, arch=0.5, var=rng.random())
+    n = 10 + int(height * 3.5)
+    for i in range(n):
+        a = i * 2.39996
+        el = 0.75 - 0.9 * (i % 4) / 3  # some reach up, some droop
+        d = Vector((math.cos(a), math.sin(a), el)).normalized()
+        P = height * rng.uniform(0.2, 0.28)
+        pp = curve_points(top - Vector((0, 0, 0.03 * (i % 4))), d, P, Vector((0, 0, -0.25)), 3)
+        tube(b, pet, pp, [0.006 + 0.002 * height] * 4, segments=5)
+        blade = Vector((math.cos(a) * 0.8, math.sin(a) * 0.8, 0.5)).normalized()
+        L = max(0.12, height * rng.uniform(0.17, 0.22))
+        leaf(b, lm, frame_at(pp[-1], blade), L, L * 1.1, shape_heart, nu=5, nv=6, fold=0.25, arch=0.7, wave=0.25, var=rng.random())
     _p(b.finish("papaya_mesh", col), root)
     if height > 1.9:
-        _spheres(col, root, rng, (0.55, 0.7, 0.2), 6 if height < 2.8 else 10, 0.05, (height * 0.72, height * 0.9), 0.07, 1.6, "papaya_fruit")
+        _spheres(col, root, rng, (0.5, 0.65, 0.16), 7 if height < 2.8 else 12, 0.055, (trunk_h * 0.86, trunk_h * 0.98), tr * 2.2, 1.6, "papaya_fruit")
     root["sway"] = {"amp": 0.3, "speed": 0.35}
+    return root
+
+
+def _column_conifer(col, seed, height, name="cypress", width=0.12, leaf=((0.02, 0.05, 0.02), (0.06, 0.12, 0.05)), leaf_scale=1.0, droop=0.0):
+    """A columnar tree: the Italian cypress (a dense, narrow flame of dark
+    foliage) or the weeping ashoka (a tall column of drooping glossy leaves)."""
+    rng = Rng(seed)
+    root = _root(name, col)
+    b = Builder()
+    leaves = Builder()
+    bark_m = trees.bark(f"{name}_bark", (0.07, 0.05, 0.035), (0.2, 0.15, 0.1), 0.85)
+    trunk = height * 0.08
+    tube(b, bark_m, [Vector((0, 0, 0)), Vector((0, 0, trunk + 0.05))], [0.02 + 0.015 * height, 0.015 + 0.01 * height], segments=10)
+    lm = _leaf(f"{name}_leaf", leaf[0], leaf[1], 0.45 if droop else 0.6, 0.25, 0.3 if droop else 0.0)
+    R = height * width
+    core = M.matte((0.008, 0.018, 0.008), 1.0, "conifer_core")
+    rings, seg = 12, 14
+    pts, uvs = [], []
+    for j in range(rings + 1):
+        t = j / rings
+        z = trunk + t * (height - trunk)
+        r = R * math.sin(math.pi * min(1, (t * 0.92 + 0.08))) ** 0.7 * (1 - 0.15 * t)
+        pts.append([Vector((math.cos(2 * math.pi * i / seg) * r * 0.8, math.sin(2 * math.pi * i / seg) * r * 0.8, z)) for i in range(seg)])
+        uvs.append([(i / seg, t) for i in range(seg)])
+    b.grid(pts, uvs, core, closed_u=True)
+    n = int(1400 * height * R / 0.4) + 120
+    for i in range(n):
+        t = rng.random() ** 0.9
+        z = trunk + t * (height - trunk)
+        r = R * math.sin(math.pi * min(1, (t * 0.92 + 0.08))) ** 0.7 * (1 - 0.15 * t)
+        a = rng.uniform(0, 2 * math.pi)
+        p = Vector((math.cos(a) * r, math.sin(a) * r, z))
+        out = Vector((math.cos(a), math.sin(a), 0.6 - 1.2 * droop)).normalized()
+        trees._leaf_cluster(leaves, lm, p, out, max(0.035, height * 0.025) * leaf_scale, rng, n=2, shape=shape_lanceolate, droop=droop)
+    _p(b.finish(f"{name}_trunk", col), root)
+    _p(leaves.finish(f"{name}_leaves", col), root)
+    root["sway"] = {"amp": 0.12, "speed": 0.3}
+    return root
+
+
+def _frond_palm(col, seed, height, name, trunk=0.6, nuts=False):
+    """A palm in the ground: a ringed, gently leaning trunk and a crown of
+    arching pinnate fronds; young palms are fronds from the ground. Coconuts
+    hang under the crown on the coconut palm from 2.5 m."""
+    rng = Rng(seed)
+    root = _root(name, col)
+    b = Builder()
+    th = height * trunk if height > 1.0 else 0.0
+    top = Vector((0, 0, 0))
+    if th:
+        bark_m = trees.bark(f"{name}_bark", (0.07, 0.055, 0.04), (0.19, 0.15, 0.11), 0.85)
+        lean = Vector((rng.uniform(-0.08, 0.08), -0.05, 0))
+        pts = curve_points(Vector((0, 0, 0)), Vector((0, 0, 1)), th, lean, 8)
+        r0 = 0.035 + 0.022 * height ** 0.7
+        tube(b, bark_m, pts, [r0 * 1.15] + [r0 * (1 - 0.3 * k / 8) for k in range(1, 9)], segments=12)
+        top = pts[-1]
+    lm = _leaf(f"{name}_leaflet", (0.04, 0.1, 0.025), (0.13, 0.25, 0.06), 0.4, 0.35)
+    rach = PM.stem(f"{name}_rachis", (0.1, 0.14, 0.05), 0.5)
+    F = max(0.3, min(3.0, height * (0.45 if th else 0.85)))
+    n = 6 + int(min(10, height * 2.2))
+    for i in range(n):
+        a = i * 2.39996 + rng.uniform(-0.2, 0.2)
+        el = rng.uniform(0.35, 0.95)
+        d = Vector((math.cos(a), math.sin(a), el)).normalized()
+        pts = curve_points(top, d, F * rng.uniform(0.8, 1.05), Vector((0, 0, -0.55)), 10)
+        tube(b, rach, pts, [0.012, 0.011, 0.01, 0.009, 0.008, 0.007, 0.006, 0.005, 0.004, 0.003, 0.002], segments=5)
+        for k in range(2, 10):
+            p = pts[k]
+            t = (pts[min(10, k + 1)] - pts[k - 1]).normalized()
+            side = t.cross(Vector((0, 0, 1)))
+            if side.length < 1e-3:
+                side = Vector((1, 0, 0))
+            side.normalize()
+            ll = F * 0.34 * math.sin(math.pi * (k / 10) ** 0.8)
+            for sgn in (1, -1):
+                dd = (side * sgn + t * 0.45 + Vector((0, 0, -0.25))).normalized()
+                leaf(b, lm, frame_at(p, dd), ll, max(0.012, F * 0.03), shape_lanceolate, nu=1, nv=5, fold=0.3, arch=0.6, var=rng.random())
+    _p(b.finish(f"{name}_mesh", col), root)
+    if nuts and height >= 2.5:
+        _spheres(col, root, rng, (0.32, 0.4, 0.12), 6 if height < 4 else 11, 0.09, (th * 0.94, th * 1.0), 0.16, 1.15, f"{name}_nut")
+    root["sway"] = {"amp": 0.25, "speed": 0.3}
     return root
 
 
@@ -512,7 +616,7 @@ HERBS = {
     "coriander": shrub_species("coriander", Bloom("star", 0.007, (0.99, 0.99, 0.95), extra={"per_tip": 1.5}), (0.22, 0.3), 0.02, leaf=lambda: _leaf("coriander_leaf", (0.06, 0.12, 0.03), (0.2, 0.32, 0.09), 0.5, 0.4), flower_from=6),
     "rosemary": shrub_species("rosemary", Bloom("star", 0.008, (0.62, 0.62, 0.92), extra={"per_tip": 1.2}), (0.3, 0.55), 0.012, leaf=lambda: _leaf("rosemary_leaf", *LEAF_GREY), flower_from=6, layers=1),
     "thyme": shrub_species("thyme", Bloom("star", 0.006, (0.85, 0.62, 0.88), extra={"per_tip": 1.5}), (0.24, 0.16), 0.01, leaf=lambda: _leaf("thyme_leaf", *LEAF_GREY), flower_from=6, layers=1, low=True),
-    "lemongrass": scaled_species("lemongrass", ornamental_grass),
+    "lemongrass": rosette_species("lemongrass", lambda: _leaf("lemongrass_leaf", (0.07, 0.14, 0.04), (0.22, 0.36, 0.1), 0.45, 0.35), 44, 0.8, 0.02, shape_sword, arch=1.2, up=0.93),
     "aloe_vera": sized_species("aloe_vera", lambda col, seed, height: _aloe(col, seed, height), [0, 0.12, 0.18, 0.24, 0.3, 0.36, 0.42, 0.5]),
     "ashwagandha": fruit_bush("ashwagandha", (0.9, 0.35, 0.08), (0.3, 0.55), 0.04, fruit_r=0.01, flower=(0.8, 0.85, 0.5)),
     "brahmi": shrub_species("brahmi", Bloom("open5", 0.009, (0.97, 0.95, 0.99), extra={"per_tip": 0.8}), (0.4, 0.08), 0.015, leaf=lambda: _leaf("brahmi_leaf", *LEAF_LIGHT), flower_from=5, layers=1, low=True),
