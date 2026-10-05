@@ -235,9 +235,14 @@ def vine_species(name, fruit, size, leaf_size, leaf=None, fruit_r=0.05, stretch=
         holder = _root(f"{name}_vine", col)
         holder.parent = root
         lm = (leaf_fn() if callable(leaf_fn) else leaf_fn) or _leaf(f"{name}_leaf", *LEAF_LIGHT)
-        lush_shrub(col, holder, seed=seed, radius=r, height=h if climber else h * 2.2, leaf_size=leaf_size * (0.7 + 0.3 * s), leaf_mat=lm,
-                   density=DENSITY[stage], bloom_spec=spec, bloom_amount=amount * 0.5, buds=buds * 0.5, name=name, upright=climber,
-                   leaflets=2, core=not climber, stems_per_m2=180)
+        if climber:
+            # a leafy column twining up its cane
+            c = _column_conifer(col, seed, max(0.12, h), f"{name}_twine", 0.11, (LEAF_LIGHT[0], LEAF_LIGHT[1]), 1.6, 0.35)
+            c.parent = holder
+        else:
+            lush_shrub(col, holder, seed=seed, radius=r, height=h * 2.2, leaf_size=leaf_size * (0.7 + 0.3 * s), leaf_mat=lm,
+                       density=DENSITY[stage], bloom_spec=spec, bloom_amount=amount * 0.5, buds=buds * 0.5, name=name,
+                       leaflets=2, core=True, stems_per_m2=180)
         if not climber:
             holder.scale = (1.0, 1.0, 0.4)
         else:
@@ -477,7 +482,7 @@ FRUITS = {
     "mango": tree_species("mango", lambda: _leaf("mango_leaf", (0.03, 0.07, 0.02), (0.1, 0.18, 0.05), 0.3, 0.3, 0.3), fruit=((0.95, 0.6, 0.1), 0.055, 1.35), leaf_shape=shape_lanceolate, leaf_size=0.14, leaves_per_m=130, droop=0.4, up=0.35, heights=[0, 0.5, 1.2, 2.0, 2.9, 3.8, 4.6, 5.4]),
     "apple": tree_species("apple", lambda: _leaf("apple_leaf", (0.05, 0.1, 0.03), (0.14, 0.25, 0.07), 0.45, 0.35), fruit=((0.58, 0.04, 0.03), 0.045), flower=(0.98, 0.9, 0.92), flower_from=4, leaf_size=0.07, leaves_per_m=200, spread=58, heights=[0, 0.45, 1.0, 1.7, 2.4, 3.0, 3.5, 4.0]),
     "orange": tree_species("orange", lambda: _leaf("orange_leaf", (0.03, 0.08, 0.02), (0.1, 0.2, 0.05), 0.3, 0.3, 0.3), fruit=((0.98, 0.55, 0.08), 0.045), leaf_size=0.07, leaves_per_m=260, spread=52, heights=[0, 0.4, 0.9, 1.5, 2.1, 2.7, 3.2, 3.7]),
-    "lemon": sized_species("lemon", lambda col, seed, height: lemon_tree(col, seed=seed, height=height), [0, 0.35, 0.6, 0.9, 1.2, 1.5, 1.8, 2.1]),
+    "lemon": tree_species("lemon", lambda: _leaf("lemon_leaf", (0.03, 0.08, 0.02), (0.1, 0.2, 0.05), 0.3, 0.3, 0.35), fruit=((0.85, 0.75, 0.08), 0.035, 1.25), flower=(0.99, 0.98, 0.94), flower_from=4, leaf_size=0.07, leaves_per_m=240, spread=55, heights=[0, 0.35, 0.7, 1.1, 1.5, 1.9, 2.3, 2.7]),
     "pomegranate": tree_species("pomegranate", lambda: _leaf("pomegranate_leaf", (0.04, 0.09, 0.02), (0.12, 0.22, 0.05), 0.35, 0.3, 0.3), fruit=((0.55, 0.04, 0.05), 0.05), flower=(0.95, 0.25, 0.1), flower_from=4, leaf_shape=shape_lanceolate, leaf_size=0.05, leaves_per_m=280, spread=60, heights=[0, 0.4, 0.9, 1.5, 2.1, 2.7, 3.2, 3.7]),
     "guava": tree_species("guava", lambda: _leaf("guava_leaf", (0.04, 0.09, 0.025), (0.13, 0.24, 0.07), 0.45, 0.35), fruit=((0.6, 0.78, 0.25), 0.04), leaf_size=0.1, leaves_per_m=160, spread=62, heights=[0, 0.4, 0.9, 1.5, 2.1, 2.7, 3.2, 3.7]),
     "papaya": sized_species("papaya", lambda col, seed, height: _papaya(col, seed, height), [0, 0.5, 0.9, 1.4, 1.9, 2.4, 2.9, 3.4]),
