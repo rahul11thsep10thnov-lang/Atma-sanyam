@@ -30,8 +30,8 @@ export async function generateMetadata({ params, searchParams }: { params: Promi
   return {
     title: `${title} — ${r.organization.shortName ?? r.organization.name}`,
     description,
-    alternates: { canonical, languages: { en: canonical, hi: `${canonical}?lang=hi`, "x-default": canonical } },
-    openGraph: { title, description, url: `${SITE_URL}${canonical}`, siteName: SITE_NAME, type: "article", locale: lang === "hi" ? "hi_IN" : "en_IN", modifiedTime: r.updatedAt.toISOString() },
+    alternates: { canonical },
+    openGraph: { title, description, url: `${SITE_URL}${canonical}`, siteName: SITE_NAME, type: "article", locale: "en_IN", modifiedTime: r.updatedAt.toISOString() },
     twitter: { card: "summary", title, description },
   };
 }
@@ -100,7 +100,6 @@ export default async function RecruitmentPage({ params, searchParams }: { params
           <Link href={`/organization/${r.organization.slug}`} className="text-brand-700 hover:underline">{r.organization.name}</Link>
           {r.categories.map((c) => <Link key={c.category.slug} href={`/recruitments?category=${c.category.slug}`} className="rounded-full border border-slate-200 bg-white px-2 py-0.5 hover:bg-slate-50">{c.category.name}</Link>)}
           {r.year ? <span>{r.year}</span> : null}
-          <Link href={`/recruitments/${r.slug}${lang === "hi" ? "" : "?lang=hi"}`} className="ml-auto rounded-md border border-slate-300 bg-white px-2 py-0.5 text-slate-700 hover:bg-slate-50" lang={lang === "hi" ? "en" : "hi"}>{lang === "hi" ? "English" : "हिन्दी"}</Link>
         </div>
         <h1 className="text-2xl font-semibold text-slate-900" lang={lang === "hi" && r.titleHi ? "hi" : undefined}>
           {title}

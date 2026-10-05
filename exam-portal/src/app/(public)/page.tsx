@@ -13,7 +13,7 @@ export default async function HomePage() {
   const member = isMember(await getCurrentUser());
   return (
     <main className="flex w-full flex-col gap-6 px-4 pb-10 sm:px-8 lg:px-12">
-      <h1 className="sr-only">SarkariChayan — government jobs, results, admit cards and answer keys</h1>
+      <h1 className="sr-only">Naukri Chayan — government jobs, results, admit cards and answer keys</h1>
       <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME} hidden={member} />
       <AppPromo />
     </main>

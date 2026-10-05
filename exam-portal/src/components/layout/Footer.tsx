@@ -14,7 +14,7 @@ export function Footer() {
   return (
     <footer className="mt-auto w-full border-t border-orange-200/70 bg-white/80">
       <div className="flex w-full flex-col gap-3 px-4 py-8 text-sm text-slate-600 sm:px-8 lg:px-12">
-        <p className="rahul-tab-text text-lg">Sarkari Chayan</p>
+        <p className="rahul-tab-text text-lg">Naukri Chayan</p>
         <nav aria-label="Footer" className="flex flex-wrap gap-x-4 gap-y-1">
           {[...CTA_ITEMS, ...SECONDARY_LINKS].map((link) => (
             <Link key={link.href} href={link.href} className="hover:text-slate-900 hover:underline">

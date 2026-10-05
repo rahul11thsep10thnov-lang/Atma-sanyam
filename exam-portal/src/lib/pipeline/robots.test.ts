@@ -7,7 +7,7 @@ Disallow: /admin/
 Disallow: /private
 Allow: /private/public-notices/
 
-User-agent: SarkariChayanBot
+User-agent: NaukriChayanBot
 Disallow: /internal/
 `;
 

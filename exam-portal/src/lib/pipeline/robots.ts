@@ -1,7 +1,7 @@
 import { USER_AGENT } from "./http";
 import type { FetchImpl } from "./types";
 
-export const BOT_TOKEN = "SarkariChayanBot";
+export const BOT_TOKEN = "NaukriChayanBot";
 
 interface RobotsRules {
   allow: string[];

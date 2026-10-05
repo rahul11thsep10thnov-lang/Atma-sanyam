@@ -49,7 +49,7 @@ export function FelicitationSubmitModal({ open, onClose, priceRupees, referenceP
       setBusy(false);
       return setErr(r.error);
     }
-    const out = await runCheckout(r.checkout, { name: "SarkariChayan", description: "24-Hour Felicitation Listing", prefill: { name: r.prefillName, contact: r.prefillMobile } });
+    const out = await runCheckout(r.checkout, { name: "Naukri Chayan", description: "24-Hour Felicitation Listing", prefill: { name: r.prefillName, contact: r.prefillMobile } });
     setBusy(false);
     if (out.status === "paid") setDone(r.refCode);
     else if (out.status === "failed") setErr(`${out.reason} Your details are saved — you can try paying again.`);
@@ -108,7 +108,7 @@ export function FelicitationSubmitModal({ open, onClose, priceRupees, referenceP
           <label className="flex items-start gap-2 rounded-lg bg-slate-50 p-3 text-xs text-slate-600">
             <input type="checkbox" checked={f.consent} onChange={(e) => set("consent", e.target.checked)} className="mt-0.5" name="consent" />
             <span>
-              I confirm these details are true and consent to SarkariChayan using them to verify my achievement. Only the last 4 digits of my Aadhaar are taken; they are stored encrypted, seen only by the site administrator for verification, never shown publicly, and deleted 30 days after my listing ends. Publicly the board shows only my name, mohalla/locality, city and exam. My mobile number is used for verification and is never displayed.
+              I confirm these details are true and consent to Naukri Chayan using them to verify my achievement. Only the last 4 digits of my Aadhaar are taken; they are stored encrypted, seen only by the site administrator for verification, never shown publicly, and deleted 30 days after my listing ends. Publicly the board shows only my name, mohalla/locality, city and exam. My mobile number is used for verification and is never displayed.
             </span>
           </label>
           <div className="flex items-center justify-between rounded-xl border border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50 px-4 py-3">

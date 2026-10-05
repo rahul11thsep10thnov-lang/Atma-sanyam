@@ -58,6 +58,7 @@
   --font-kalam: var(--font-kalam), cursive;
   --font-rahul: var(--font-rahul), Georgia, serif;
   --font-festive: var(--font-festive), cursive;
+  --font-rozha: var(--font-rozha), serif;
 }
 
 body {
@@ -196,16 +197,10 @@ h6 {
   text-transform: uppercase;
   letter-spacing: 0.04em;
   line-height: 1.02;
-  background-image:
-    radial-gradient(circle at 50% 50%, #fbe7cf 0 14%, #d9a173 19%, transparent 23%),
-    linear-gradient(180deg, #8a4519 0%, var(--rahul-brown) 55%, var(--rahul-brown-dark) 100%);
-  background-size: 0.36em 0.36em, 100% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 1.2px var(--rahul-cream);
-  filter: drop-shadow(1px 1px 0 #5a2a0c) drop-shadow(1px 1px 0 #4a220a) drop-shadow(1px 1px 0 #3c1b07) drop-shadow(0 3px 4px rgba(60, 27, 7, 0.35));
+  /* Solid dark brown — the same #6b3412 as the Search button. */
+  color: #6b3412;
+  -webkit-text-fill-color: #6b3412;
+  text-shadow: 1px 1px 0 #4a220a, 2px 2px 0 #3c1b07, 0 4px 6px rgba(60, 27, 7, 0.3);
 }
 /* Tabs: same letterforms, no bulbs, no ornaments — solid and legible. */
 .rahul-tab-text {
@@ -220,13 +215,13 @@ h6 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 11rem;
-  padding: 1rem 1.75rem;
+  min-width: 22rem;
+  padding: 2rem 3.5rem;
   border-radius: 16px;
   background: var(--tab-fill);
   border: 2px solid var(--tab-border);
   box-shadow: 0 4px 0 #d9783a, 0 8px 18px rgba(176, 90, 30, 0.18);
-  font-size: 1.3rem;
+  font-size: 1.95rem; /* 1.5 × the previous 1.3rem */
   transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
 }
 .rahul-tab:hover,
@@ -242,7 +237,7 @@ h6 {
   transform: translateY(2px);
 }
 @media (max-width: 640px) {
-  .rahul-tab { min-width: 0; flex: 1 1 42%; padding: 0.8rem 0.75rem; font-size: 1rem; }
+  .rahul-tab { min-width: 0; flex: 1 1 100%; padding: 1.4rem 1rem; font-size: 1.5rem; }
 }
 
 /* --- Felicitation Board ------------------------------------------------ */
@@ -293,4 +288,12 @@ h6 {
   .fb-enter, .fb-exit, .fb-bunting { animation: none !important; }
   .fb-petal { display: none !important; }
   .rahul-tab { transition: none; }
+}
+
+/* Hero line under the wordmark: Rozha One at the old tab size (1.3rem). */
+.hero-tagline {
+  font-family: var(--font-rozha), serif;
+  font-size: 1.3rem;
+  line-height: 1.4;
+  color: #6b3412;
 }

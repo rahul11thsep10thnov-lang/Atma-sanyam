@@ -10,7 +10,7 @@ import { resolveLang } from "@/lib/i18n/lang";
 export const metadata: Metadata = {
   title: "Government Recruitments — every notice in one place",
   description: "Every government recruitment with its job notification, admit card, answer key, result and corrigenda on one timeline, straight from official sources.",
-  alternates: { canonical: "/recruitments", languages: { en: "/recruitments", hi: "/recruitments?lang=hi", "x-default": "/recruitments" } },
+  alternates: { canonical: "/recruitments" },
   openGraph: { title: "Government Recruitments", description: "Every recruitment with its notification, admit card, answer key and result on one timeline.", url: "/recruitments", type: "website" },
 };
 
@@ -41,9 +41,6 @@ export default async function RecruitmentsIndexPage({ searchParams }: { searchPa
           <h1 className="text-xl font-semibold text-slate-900 sm:text-2xl" lang={lang}>{t.h1}</h1>
           <p className="mt-1 max-w-2xl text-sm text-slate-600" lang={lang}>{t.sub}</p>
         </div>
-        <Link href={qs({ lang: lang === "hi" ? "en" : "hi", page: undefined })} className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50" lang={lang === "hi" ? "en" : "hi"}>
-          {lang === "hi" ? "English" : "हिन्दी"}
-        </Link>
       </div>
 
       <div className="flex flex-wrap items-center gap-2 text-sm">
@@ -58,7 +55,6 @@ export default async function RecruitmentsIndexPage({ searchParams }: { searchPa
         <form method="get" className="ml-auto flex items-center gap-2">
           {sp.category ? <input type="hidden" name="category" value={sp.category} /> : null}
           {window !== "open" ? <input type="hidden" name="window" value={window} /> : null}
-          {lang === "hi" ? <input type="hidden" name="lang" value="hi" /> : null}
           <input name="q" defaultValue={sp.q ?? ""} placeholder={lang === "hi" ? "भर्ती या संगठन" : "recruitment or organization (e.g. UPPRPB)"} className="w-64 rounded-md border border-slate-300 px-2 py-1.5 text-sm" />
           <button className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50">{t.search}</button>
         </form>

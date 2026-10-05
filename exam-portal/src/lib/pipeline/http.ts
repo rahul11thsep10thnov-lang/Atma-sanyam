@@ -1,7 +1,7 @@
 import type { FetchImpl } from "./types";
 
 export const USER_AGENT =
-  "SarkariChayanBot/1.0 (+government notice monitor; respects robots.txt)";
+  "NaukriChayanBot/1.0 (+government notice monitor; respects robots.txt)";
 
 export interface FetchOptions {
   etag?: string | null;

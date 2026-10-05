@@ -9,7 +9,7 @@ export async function notifyMembersOfNewJob(jobId: string, now = new Date()) {
   if (!job) return { sent: 0, failed: 0 };
   const members = await prisma.user.findMany({ where: { membershipUntil: { gt: now }, smsAlerts: true }, select: { id: true, mobile: true }, take: 5000 });
   const last = job.applicationEndDate ? ` Last date ${job.applicationEndDate.toISOString().slice(0, 10)}.` : "";
-  const text = `New job: ${job.title.slice(0, 90)}.${last} ${SITE_URL}/jobs/${job.slug} -SarkariChayan`;
+  const text = `New job: ${job.title.slice(0, 90)}.${last} ${SITE_URL}/jobs/${job.slug} -Naukri Chayan`;
   let sent = 0;
   let failed = 0;
   for (const m of members) {

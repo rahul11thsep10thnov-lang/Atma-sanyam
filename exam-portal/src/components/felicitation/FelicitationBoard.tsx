@@ -120,13 +120,13 @@ export function FelicitationBoard({ initial }: { initial: BoardState }) {
   const leaving = !single && entry && slot.msLeft < 450 && animate;
 
   const callIn = (
-    <button type="button" onClick={() => setOpen(true)} className="mx-auto -mt-px inline-flex items-center gap-1.5 rounded-b-xl border border-t-0 border-[#f1d3b0] bg-gradient-to-b from-[#fff4e6] to-[#ffe8cc] px-3 py-1 text-xs font-semibold text-[#9c3d0a] shadow-sm hover:from-[#ffe8cc] hover:to-[#ffd8a8]">
+    <button type="button" onClick={() => setOpen(true)} className="mx-auto -mt-px inline-flex items-center gap-1.5 rounded-b-xl border border-t-0 border-[#f1d3b0] bg-gradient-to-b from-[#fff4e6] to-[#ffe8cc] px-5 py-2 text-2xl font-semibold text-[#9c3d0a] shadow-sm hover:from-[#ffe8cc] hover:to-[#ffd8a8]">
       🎉 Add Your Achievement
     </button>
   );
 
   return (
-    <div className="flex w-full flex-col items-stretch sm:w-72" data-testid="felicitation-board">
+    <div className="flex w-full flex-col items-stretch sm:w-[26rem]" data-testid="felicitation-board">
       {minimized ? (
         <button type="button" onClick={() => setMinimized(false)} className="fb-board rounded-xl px-3 py-1.5 text-left text-sm">
           <span className="fb-title text-lg">Felicitation Board</span> <span className="text-xs text-slate-500">— show</span>

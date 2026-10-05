@@ -99,7 +99,7 @@ export function AccountMenu({ initialUser, membershipPrice }: { initialUser: Pub
       setBusy(false);
       return setErr(r.error);
     }
-    const out = await runCheckout(r.checkout, { name: "SarkariChayan", description: `Membership — ₹${membershipPrice}/month`, prefill: { contact: r.prefillMobile, name: user?.fullName ?? undefined } });
+    const out = await runCheckout(r.checkout, { name: "Naukri Chayan", description: `Membership — ₹${membershipPrice}/month`, prefill: { contact: r.prefillMobile, name: user?.fullName ?? undefined } });
     setBusy(false);
     if (out.status === "paid") {
       setUser((u) => (u ? { ...u, member: true } : u));

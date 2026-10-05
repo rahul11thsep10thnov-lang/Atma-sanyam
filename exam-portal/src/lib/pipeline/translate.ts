@@ -20,7 +20,8 @@ export type TranslateFn = (input: { title: string; summary: string | null; conte
 const SYSTEM = `You translate Indian government recruitment notice titles and summaries from English into natural, formal Hindi (Devanagari) as used by Indian government portals. Keep organization names, exam names, abbreviations (SSC, UPSC, CGL), numbers, dates and post names exactly as they are (transliterate only common words). Do not add information. Return title_hi and summary_hi (null if there is no summary).`;
 
 export function isTranslationEnabled(): boolean {
-  return isClaudeConfigured() && process.env.AI_TRANSLATION_ENABLED !== "false";
+  // Off by default now that the public site is English-only.
+  return isClaudeConfigured() && process.env.AI_TRANSLATION_ENABLED === "true";
 }
 
 export async function createSdkTranslateFn(): Promise<TranslateFn> {
