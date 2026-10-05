@@ -1,12 +1,14 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CreateStudioStory, studioApi, StudioOptions } from "../../api/studio";
+import { productionApi, RenderProfile } from "../../api/production";
 
 const WARNING_OPTIONS = ["violence", "death", "suicide", "sexual_violence", "minors", "domestic_abuse", "dowry"];
 
 export function NewStudioStoryPage() {
   const navigate = useNavigate();
   const [options, setOptions] = useState<StudioOptions | null>(null);
+  const [profiles, setProfiles] = useState<RenderProfile[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState<CreateStudioStory>({
@@ -23,11 +25,17 @@ export function NewStudioStoryPage() {
     burnSubtitles: false,
     multiAudioPackage: false,
     allowDramatizedReconstruction: false,
+    productionMode: "CINEMATIC_25D",
+    renderProfileKey: "portrait-1080x1920-30",
   });
   const [pronunciation, setPronunciation] = useState("");
 
   useEffect(() => {
     studioApi.options().then(setOptions).catch((e) => setError(e.message));
+    productionApi
+      .renderProfiles()
+      .then((r) => setProfiles(r.profiles.filter((p) => !p.isPreview || p.key.startsWith("draft"))))
+      .catch(() => setProfiles([]));
   }, []);
 
   const set = <K extends keyof CreateStudioStory>(key: K, value: CreateStudioStory[K]) => setForm((f) => ({ ...f, [key]: value }));
@@ -148,20 +156,42 @@ export function NewStudioStoryPage() {
             </select>
           </label>
           <label>
-            Resolution
-            <select value={form.resolution} onChange={(e) => set("resolution", e.target.value as "720p" | "1080p")}>
-              <option value="1080p">1080p</option>
-              <option value="720p">720p</option>
+            Production mode
+            <select value={form.productionMode} onChange={(e) => set("productionMode", e.target.value as "CLASSIC" | "CINEMATIC_25D")}>
+              <option value="CINEMATIC_25D">Cinematic 2.5D (shots)</option>
+              <option value="CLASSIC">Classic (stills)</option>
             </select>
           </label>
-          <label>
-            Frame rate
-            <select value={form.fps} onChange={(e) => set("fps", Number(e.target.value) as 24 | 25 | 30)}>
-              <option value={24}>24 fps</option>
-              <option value={25}>25 fps</option>
-              <option value={30}>30 fps</option>
-            </select>
-          </label>
+          {form.productionMode === "CINEMATIC_25D" ? (
+            <label>
+              Render profile
+              <select value={form.renderProfileKey} onChange={(e) => set("renderProfileKey", e.target.value)}>
+                {(profiles.length ? profiles : [{ key: "portrait-1080x1920-30", name: "Portrait 1080×1920 @ 30 fps" } as RenderProfile]).map((p) => (
+                  <option key={p.key} value={p.key}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            <>
+              <label>
+                Resolution
+                <select value={form.resolution} onChange={(e) => set("resolution", e.target.value as "720p" | "1080p")}>
+                  <option value="1080p">1080p</option>
+                  <option value="720p">720p</option>
+                </select>
+              </label>
+              <label>
+                Frame rate
+                <select value={form.fps} onChange={(e) => set("fps", Number(e.target.value) as 24 | 25 | 30)}>
+                  <option value={24}>24 fps</option>
+                  <option value={25}>25 fps</option>
+                  <option value={30}>30 fps</option>
+                </select>
+              </label>
+            </>
+          )}
         </div>
         <label className="checkbox-label">
           <input type="checkbox" checked={!!form.burnSubtitles} onChange={(e) => set("burnSubtitles", e.target.checked)} /> Burn subtitles into the picture (SRT/VTT files are always produced)

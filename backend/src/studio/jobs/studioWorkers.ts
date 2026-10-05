@@ -12,12 +12,14 @@ import { ALL_QUEUES, executeJob, GPU_QUEUES, JobCancelledError, QueueName, QUEUE
  *   studio  → LLM / TTS / planning (I/O-bound)
  *   render  → FFmpeg assembly + 2.5D shot renders + QC (CPU-bound)
  *   gpu     → image-generation, segmentation, depth, inpainting, i2v
+ *   pipeline → no studio queue; selects the news-ingestion workers in runWorkers
  *   or an explicit comma list of queue names, e.g. "image-generation,depth-generation".
  */
 export function queuesForRoles(roles: string): QueueName[] {
   const parts = roles.split(",").map((r) => r.trim()).filter(Boolean);
   const out = new Set<QueueName>();
   for (const p of parts) {
+    if (p === "pipeline") continue;
     if (p === "all") ALL_QUEUES.forEach((q) => out.add(q));
     else if (p === "studio") out.add(QUEUES.studio);
     else if (p === "render") [QUEUES.ffmpegRender, QUEUES.render25d, QUEUES.qc].forEach((q) => out.add(q));

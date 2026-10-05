@@ -1,3 +1,4 @@
+import { env } from "../config/env";
 import { logger } from "../lib/logger";
 import { startIngestionWorker, scheduleIngestion } from "./workers/ingestionWorker";
 import { startClassifyArticleWorker } from "./workers/classifyArticleWorker";
@@ -7,17 +8,16 @@ import { startPublishLanguageWorker } from "./workers/publishLanguageWorker";
 import { startStudioWorkers } from "../studio/jobs/studioWorkers";
 
 async function main() {
+  // News pipeline workers run on "all" (single box) or "pipeline" hosts, not on dedicated render/GPU hosts.
+  const roles = env.studio.workerRoles.split(",").map((r) => r.trim());
+  const runPipeline = roles.includes("all") || roles.includes("pipeline");
   const workers = [
-    startIngestionWorker(),
-    startClassifyArticleWorker(),
-    startExtractDedupScoreWorker(),
-    startGenerateScriptWorker(),
-    startPublishLanguageWorker(),
+    ...(runPipeline ? [startIngestionWorker(), startClassifyArticleWorker(), startExtractDedupScoreWorker(), startGenerateScriptWorker(), startPublishLanguageWorker()] : []),
     ...startStudioWorkers(),
   ];
-  await scheduleIngestion();
+  if (runPipeline) await scheduleIngestion();
 
-  logger.info("All pipeline workers started");
+  logger.info(runPipeline ? "News pipeline and studio workers started" : `Studio workers started (roles: ${env.studio.workerRoles})`);
 
   const shutdown = async () => {
     logger.info("Shutting down workers...");

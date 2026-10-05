@@ -236,6 +236,16 @@ export interface Metrics {
   };
 }
 
+export interface RenderProfile {
+  key: string;
+  name: string;
+  width: number;
+  height: number;
+  fps: number;
+  isDefault: boolean;
+  isPreview: boolean;
+}
+
 const P = "/admin/production";
 const post = <T,>(path: string, body?: unknown) => request<T>(path, { method: "POST", body: body === undefined ? undefined : JSON.stringify(body) });
 const put = <T,>(path: string, body?: unknown) => request<T>(path, { method: "PUT", body: JSON.stringify(body ?? {}) });
@@ -283,4 +293,5 @@ export const productionApi = {
   cancelJob: (id: string) => post(`${P}/jobs/${id}/cancel`),
   retryJob: (id: string) => post(`${P}/jobs/${id}/retry`),
   metrics: (hours = 24) => request<Metrics>(`${P}/metrics?hours=${hours}`),
+  renderProfiles: () => request<{ profiles: RenderProfile[] }>(`${P}/render-profiles`),
 };

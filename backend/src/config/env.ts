@@ -111,8 +111,8 @@ export const env = {
   // --- Cinematic 2.5D render ---
   engine: {
     renderThreads: Number(optional("ENGINE_RENDER_THREADS", "0")), // 0 = cores - 1
-    previewProfile: optional("ENGINE_PREVIEW_PROFILE", "preview-540x960-30"),
-    burnInDisclosure: optional("ENGINE_BURN_IN_DISCLOSURE", "true") === "true",
+    previewProfile: optional("ENGINE_PREVIEW_PROFILE", "preview-540x960-30"), // must be a preview profile
+    // The "Visual reconstruction" disclosure is always burned in; there is deliberately no switch for it.
   },
 
   thresholds: {

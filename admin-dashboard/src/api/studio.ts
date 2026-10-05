@@ -250,6 +250,9 @@ export interface CreateStudioStory {
   multiAudioPackage?: boolean;
   resolution?: "720p" | "1080p";
   fps?: 24 | 25 | 30;
+  /** CINEMATIC_25D (default): directed shots rendered by the 2.5D engine. CLASSIC: one still per scene. */
+  productionMode?: "CLASSIC" | "CINEMATIC_25D";
+  renderProfileKey?: string;
 }
 
 const post = <T>(path: string, body?: unknown) => request<T>(path, { method: "POST", body: JSON.stringify(body ?? {}) });

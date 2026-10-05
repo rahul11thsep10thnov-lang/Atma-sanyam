@@ -80,6 +80,8 @@ const createSchema = z.object({
   multiAudioPackage: z.boolean().optional(),
   resolution: z.enum(["720p", "1080p"]).optional(),
   fps: z.union([z.literal(24), z.literal(25), z.literal(30)]).optional(),
+  productionMode: z.enum(["CLASSIC", "CINEMATIC_25D"]).optional(),
+  renderProfileKey: z.string().max(60).optional(),
 });
 
 adminStudioRouter.post(

@@ -3,7 +3,7 @@ import { HttpError } from "../middleware/errorHandler";
 import { logAdminAction } from "../lib/auditLog";
 import { enqueueStudioJob, retryJob } from "./jobs/jobRunner";
 import { clampTargetDuration, resolveOutputSettings } from "./config";
-import { DEFAULT_RENDER_PROFILE_KEY, findRenderProfile } from "./engine25d/profiles";
+import { DEFAULT_RENDER_PROFILE_KEY, DEFAULT_RENDER_PROFILES, findRenderProfile } from "./engine25d/profiles";
 import { contentHash } from "./hashing";
 import { isStudioLanguage } from "./language/languageProfiles";
 import { estimateSceneSeconds } from "./content/durationPlanner";
@@ -71,6 +71,7 @@ export class StudioService {
     const format = input.format ?? "SHORT";
     const animationStyle = input.animationStyle && ANIMATION_STYLES[input.animationStyle] ? input.animationStyle : "flat-2d-editorial";
     if (input.narratorVoiceCode && !(await this.db.voice.findUnique({ where: { code: input.narratorVoiceCode } }))) throw new HttpError(400, "Unknown narrator voice");
+    if (input.renderProfileKey && !DEFAULT_RENDER_PROFILES.some((p) => p.key === input.renderProfileKey)) throw new HttpError(400, "Unknown render profile");
 
     const story = await this.db.studioStory.create({
       data: {

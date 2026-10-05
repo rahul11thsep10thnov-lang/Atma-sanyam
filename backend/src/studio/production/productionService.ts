@@ -153,7 +153,8 @@ export class ProductionService {
   private async renderPreview(shotId: string, opts: { t?: number; overrides?: unknown }) {
     const shot = await this.db.studioShot.findUnique({ where: { id: shotId }, include: { episode: true } });
     if (!shot) throw new HttpError(404, "Shot not found");
-    const profile = findRenderProfile(PREVIEW_RENDER_PROFILE_KEY);
+    const configured = findRenderProfile(env.engine.previewProfile);
+    const profile = configured.isPreview && configured.key === env.engine.previewProfile ? configured : findRenderProfile(PREVIEW_RENDER_PROFILE_KEY);
     const base = findRenderProfile(shot.episode.renderProfileKey);
     const pkg = await computePackage(this.db, { ...shot, renderDurationSeconds: shot.renderDurationSeconds ?? shot.durationSeconds }, base);
     if (!pkg) throw new HttpError(409, "Shot assets are not ready yet");

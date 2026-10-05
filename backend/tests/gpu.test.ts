@@ -35,6 +35,8 @@ describe("queues and worker roles", () => {
     expect(queuesForRoles("render").sort()).toEqual(["2.5d-render", "qc", "studio-render"]);
     expect(queuesForRoles("studio,depth-generation").sort()).toEqual(["depth-generation", "studio"]);
     expect(queuesForRoles("all")).toHaveLength(9);
+    expect(queuesForRoles("pipeline")).toEqual([]);
+    expect(queuesForRoles("pipeline,studio")).toEqual(["studio"]);
   });
 });
 
