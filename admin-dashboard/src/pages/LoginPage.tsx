@@ -17,7 +17,7 @@ export function LoginPage() {
     setLoading(true);
     try {
       const result = await api.login(email, password);
-      login(result.token);
+      login(result.token, result.role);
       navigate("/");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Login failed");

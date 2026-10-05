@@ -12,6 +12,10 @@ import { NewStudioStoryPage } from "./pages/studio/NewStudioStoryPage";
 import { StudioStoryPage } from "./pages/studio/StudioStoryPage";
 import { VoicesPage } from "./pages/studio/VoicesPage";
 import { ProvidersPage } from "./pages/studio/ProvidersPage";
+import { ShotInspectorPage } from "./pages/production/ShotInspectorPage";
+import { AssetLibraryPage } from "./pages/production/AssetLibraryPage";
+import { ModelRegistryPage } from "./pages/production/ModelRegistryPage";
+import { ProductionOpsPage } from "./pages/production/ProductionOpsPage";
 
 function ProtectedRoutes() {
   const { isAuthenticated } = useAuth();
@@ -35,6 +39,10 @@ export function App() {
           <Route path="/studio/:id" element={<StudioStoryPage />} />
           <Route path="/voices" element={<VoicesPage />} />
           <Route path="/providers" element={<ProvidersPage />} />
+          <Route path="/production/shots/:shotId" element={<ShotInspectorPage />} />
+          <Route path="/production/assets" element={<AssetLibraryPage />} />
+          <Route path="/production/models" element={<ModelRegistryPage />} />
+          <Route path="/production/ops" element={<ProductionOpsPage />} />
         </Route>
       </Routes>
     </AuthProvider>

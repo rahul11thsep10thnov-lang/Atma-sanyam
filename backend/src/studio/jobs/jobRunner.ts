@@ -242,7 +242,7 @@ export async function executeJob(prisma: PrismaClient, jobId: string, attemptsMa
   const startedAt = new Date();
   const job = await prisma.generationJob.update({
     where: { id: jobId },
-    data: { status: "PROCESSING", attempts: attemptsMade + 1, startedAt, error: null },
+    data: { status: "PROCESSING", attempts: attemptsMade + 1, startedAt, error: null, ...(env.gpu.workerId ? { gpuWorkerId: env.gpu.workerId } : {}) },
   });
   const ctrl = new AbortController();
   let abortReason = "";

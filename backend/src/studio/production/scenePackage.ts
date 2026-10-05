@@ -118,7 +118,10 @@ function canonical(v: unknown): unknown {
  */
 export function packageHash(manifest: ScenePackageManifest, assets: Record<string, LayerAssetRef>, engineVersion: string, output: { width: number; height: number; fps: number }): string {
   const h = createHash("sha256");
-  h.update(JSON.stringify(canonical(manifest)));
+  // Approval state (placeholder flag) does not change a single pixel: keep it out of the cache key,
+  // so approving placeholder art never re-renders shots. QC and CAN_PUBLISH read live asset status.
+  const pixels = { ...manifest, layers: manifest.layers.map((l) => ({ ...l, source: { ...l.source, placeholder: undefined } })) };
+  h.update(JSON.stringify(canonical(pixels)));
   for (const k of Object.keys(assets).sort()) h.update(`${k}:${assets[k].contentHash ?? assets[k].path}`);
   h.update(`engine:${engineVersion}:${output.width}x${output.height}@${output.fps}`);
   return h.digest("hex");

@@ -5,6 +5,7 @@ import { StudioService } from "../src/studio/StudioService";
 import { BASE_VOICES } from "../src/studio/media/voiceCatalog";
 import { DEFAULT_MODELS } from "../src/studio/models/defaultModels";
 import { advanceCinematic, cinematicPublishGate } from "../src/studio/production/cinematicPipeline";
+import { ProductionService } from "../src/studio/production/productionService";
 import { SAMPLE_ARTICLE } from "./fixtures";
 
 // Integration test: the cinematic 2.5D path end to end, in-process, against
@@ -114,5 +115,37 @@ describe("cinematic 2.5D pipeline (inline, end-to-end)", () => {
     expect(gate.canPublish).toBe(true);
 
     expect(await prisma.generationJob.count({ where: { storyId: story.id, status: "FAILED" } })).toBe(0);
+
+    // ---- Admin production service: navigation, inspector, preview, overrides, registry, metrics ----
+    const prod = new ProductionService(prisma);
+    const nav = await prod.production(story.id);
+    expect(nav.scenes.flatMap((sc) => sc.shots).length).toBe(shots.length);
+    const first = shots[0];
+    const detail = await prod.shot(first.id);
+    expect(detail.layers.length).toBeGreaterThan(0);
+    expect(detail.layers.every((l) => l.version?.modelId)).toBe(true);
+    expect(detail.timeline!.length).toBeGreaterThan(5);
+    const png = await prod.previewFrame(first.id, { overrides: { camera: { type: "pan_left", intensity: 1.5 } } });
+    expect(png.subarray(1, 4).toString()).toBe("PNG");
+    await expect(prod.updateShotOverrides(first.id, { layers: { nope: { depth: 0.5 } } }, adminId)).rejects.toThrow(/Unknown layer/);
+    await expect(prod.updateShotOverrides(first.id, { camera: { type: "spin" } }, adminId)).rejects.toThrow();
+    const before = await prisma.studioShot.findUniqueOrThrow({ where: { id: first.id } });
+    const otherBefore = await prisma.studioShot.findUniqueOrThrow({ where: { id: shots[1].id } });
+    await prod.updateShotOverrides(first.id, { camera: { type: "pan_left", intensity: 1.2 }, effects: { grain: 0 } }, adminId);
+    await waitForInlineJobs();
+    const after = await prisma.studioShot.findUniqueOrThrow({ where: { id: first.id } });
+    expect(after.currentPackageId).not.toBe(before.currentPackageId);
+    expect(after.currentRenderId).not.toBe(before.currentRenderId);
+    const pkgAfter = await prisma.scenePackage.findUniqueOrThrow({ where: { id: after.currentPackageId! } });
+    expect((pkgAfter.manifest as { camera: { type: string } }).camera.type).toBe("pan_left");
+    // only the edited shot re-rendered
+    expect((await prisma.studioShot.findUniqueOrThrow({ where: { id: shots[1].id } })).currentRenderId).toBe(otherBefore.currentRenderId);
+
+    const models = await prod.models();
+    expect(models.find((m) => m.modelId === "atma-procedural-v1")!.verdict.productionAllowed).toBe(true);
+    const metrics = await prod.metrics(24);
+    expect(metrics.queues.length).toBe(9);
+    expect(metrics.rendering.shotsRendered).toBeGreaterThan(0);
+    expect(metrics.rendering.renderSecondsPerVideoSecond).toBeGreaterThan(0);
   }, 900_000);
 });

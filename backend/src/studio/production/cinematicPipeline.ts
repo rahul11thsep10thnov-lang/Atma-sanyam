@@ -26,6 +26,7 @@ import { DirectorCharacter, DirectorContext, SceneInput, ShotPlan } from "./type
 import { depthFor, effectiveReuseKey, isUnresolvedPlaceholder, LayerGenRequest, resolveLayerAsset, seedFor } from "./assetLibrary";
 import { buildManifest, LayerAssetRef, packageHash, shotFileName, storageKeys } from "./scenePackage";
 import { runShotQc, ShotQcReport } from "./shotQc";
+import { manifestOverridesFor, rendererOverride } from "./shotOverrides";
 import { getEnvironment } from "./library/environments";
 import { getProp } from "./library/props";
 import { resolveCharacterLook } from "./procedural/characterRig";
@@ -367,7 +368,7 @@ export async function computePackage(db: Db, shot: StudioShot, profile: RenderPr
     canvas: { width: profile.width, height: profile.height, fps: profile.fps, durationSeconds: shot.renderDurationSeconds, aspectRatio: profile.aspectRatio },
     seed: shot.seed,
     assets: refs,
-    overrides: (shot.overrides as never) ?? undefined,
+    overrides: manifestOverridesFor(shot.overrides, comp),
   });
   return { manifest, refs, hash: packageHash(manifest, refs, ENGINE_VERSION, profile), provenance };
 }
@@ -575,7 +576,8 @@ export async function stageRenderShot(db: Db, ctx: JobContext, wantI2V: boolean)
   const providers = await getStudioProviders(db);
 
   // Render cache: identical package (any shot) → reuse the file.
-  const cached = await db.shotRender.findFirst({ where: { inputsHash: pkg.contentHash, status: "READY", preview: false, storageKey: { not: null } }, orderBy: { createdAt: "desc" } });
+  const force = !!(ctx.job.payload as { force?: boolean } | null)?.force;
+  const cached = force ? null : await db.shotRender.findFirst({ where: { inputsHash: pkg.contentHash, status: "READY", preview: false, storageKey: { not: null } }, orderBy: { createdAt: "desc" } });
   if (cached && (await providers.storage.exists(cached.storageKey!))) {
     const version = (await db.shotRender.count({ where: { shotId: shot.id } })) + 1;
     await db.shotRender.updateMany({ where: { shotId: shot.id, isCurrent: true }, data: { isCurrent: false } });
@@ -863,7 +865,8 @@ export async function advanceCinematic(db: Db, storyId: string): Promise<void> {
     }
     const render = fresh.currentRenderId ? await db.shotRender.findUnique({ where: { id: fresh.currentRenderId } }) : null;
     if (!render || render.inputsHash !== current.contentHash || render.status !== "READY") {
-      const i2v = fresh.motionDecision === "LOCAL_I2V_REQUIRED" && env.localAi.i2vEnabled;
+      const forced = rendererOverride(fresh.overrides);
+      const i2v = env.localAi.i2vEnabled && (forced === "i2v" || (forced === "auto" && fresh.motionDecision === "LOCAL_I2V_REQUIRED"));
       await enqueueStudioJob(db, { storyId, type: i2v ? "RENDER_SHOT_I2V" : "RENDER_SHOT", shotId: shot.id, episodeId: episode.id, dedupeKey: `render:${shot.id}:${current.contentHash}`, priority: fresh.globalNumber <= 2 ? 3 : 5 });
       continue;
     }

@@ -7,6 +7,7 @@ import { adminConfigRouter } from "./config";
 import { adminStudioRouter } from "./studio";
 import { adminVoicesRouter } from "./voices";
 import { adminProvidersRouter } from "./providers";
+import { adminProductionRouter } from "./production";
 import { requireAdminAuth } from "../../../middleware/auth";
 
 export const adminRouter = Router();
@@ -22,3 +23,4 @@ adminRouter.use("/config", adminConfigRouter);
 adminRouter.use("/studio", adminStudioRouter);
 adminRouter.use("/voices", adminVoicesRouter);
 adminRouter.use("/providers", adminProvidersRouter);
+adminRouter.use("/production", adminProductionRouter);

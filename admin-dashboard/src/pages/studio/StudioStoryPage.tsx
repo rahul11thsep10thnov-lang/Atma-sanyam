@@ -2,8 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { studioApi, Workspace } from "../../api/studio";
 import { CharactersTab, FactsTab, JobsTab, LanguagesTab, RendersTab, ScenesTab, VersionsTab } from "./StudioSections";
+import { ProductionTab } from "../production/ProductionTab";
 
-const TABS = ["Overview", "Facts", "Characters & voices", "Master script", "Languages", "Renders", "Jobs", "Versions"] as const;
+const TABS = ["Overview", "Facts", "Characters & voices", "Master script", "Production", "Languages", "Renders", "Jobs", "Versions"] as const;
 type Tab = (typeof TABS)[number];
 
 export type RunAction = (fn: () => Promise<unknown>, success: string) => Promise<void>;
@@ -79,6 +80,7 @@ export function StudioStoryPage() {
       {tab === "Facts" && <FactsTab ws={ws} busy={busy} run={run} />}
       {tab === "Characters & voices" && <CharactersTab ws={ws} busy={busy} run={run} />}
       {tab === "Master script" && <ScenesTab ws={ws} busy={busy} run={run} />}
+      {tab === "Production" && <ProductionTab storyId={story.id} />}
       {tab === "Languages" && <LanguagesTab ws={ws} busy={busy} run={run} />}
       {tab === "Renders" && <RendersTab ws={ws} busy={busy} run={run} />}
       {tab === "Jobs" && <JobsTab ws={ws} busy={busy} run={run} />}

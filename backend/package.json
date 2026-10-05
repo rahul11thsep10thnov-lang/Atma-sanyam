@@ -13,13 +13,16 @@
     "start": "node dist/server.js",
     "worker": "tsx src/queue/runWorkers.ts",
     "worker:dev": "tsx watch src/queue/runWorkers.ts",
+    "worker:gpu": "tsx src/studio/gpu/gpuWorker.ts",
+    "worker:render": "STUDIO_WORKER_ROLES=render tsx src/queue/runWorkers.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "tsx prisma/seed.ts",
     "lint": "eslint src tests --ext .ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "demo:railway": "tsx scripts/demo-railway.ts"
+    "demo:railway": "tsx scripts/demo-railway.ts",
+    "create-admin": "tsx scripts/create-admin.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
