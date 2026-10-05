@@ -30,6 +30,13 @@ services:
         sync: false
       - key: AI_MONTHLY_BUDGET_USD
         sync: false
+      # Mock Test Pass payments (Razorpay). Without these, enrolment is off.
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: ENROLL_DEV_ACTIVATE
+        value: "false" # dev orders move no money; never enable in production
 
   - type: web
     name: policeexams-admin

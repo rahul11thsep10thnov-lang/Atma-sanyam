@@ -183,7 +183,8 @@ database → mock test → website → result → analytics — for free.
 
 On the API set `NODE_ENV=production`, `CORS_ORIGINS=<website URL>`,
 `TRUST_PROXY=1` (behind one proxy) and, for website logins,
-`SUPABASE_URL` + `SUPABASE_ANON_KEY`. The console's cookie is `Secure` in
+`SUPABASE_URL` + `SUPABASE_ANON_KEY`; for the ₹49 pass, `RAZORPAY_KEY_ID` +
+`RAZORPAY_KEY_SECRET` (and keep `ENROLL_DEV_ACTIVATE=false`). The console's cookie is `Secure` in
 production, so serve it over HTTPS. CI (`.github/workflows/ci.yml`) runs the
 API tests on PostgreSQL 16 and builds all three apps.
 
