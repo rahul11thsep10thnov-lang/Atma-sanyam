@@ -242,8 +242,9 @@ filters and bulk approve / reject / publish.
    possible.
 5. On a test's page: **Edit details** (title, duration, kind, marks until the
    first attempt), **Swap** a single question (manual or auto-pick), and
-   **Print / PDF** for a question paper (candidates) and answer key with
-   solutions (staff). See [docs/OPERATOR_GUIDE.md](docs/OPERATOR_GUIDE.md).
+   **Saved PDFs**: the API makes and stores the question paper (candidates)
+   and answer key with solutions (staff) as downloadable PDF files, flagged
+   *Outdated* after any change. **Print view** prints from the browser instead. See [docs/OPERATOR_GUIDE.md](docs/OPERATOR_GUIDE.md).
 
 ## 14. Enrolment: free tests and the ₹49 Mock Test Pass
 

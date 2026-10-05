@@ -28,6 +28,8 @@ export function createRateLimits(disabled = false) {
     attempts: rateLimit({ windowMs: 60_000, limit: 30, skip, ...json('Too many test submissions. Wait a minute.') }),
     // AI spend is money: cap how often jobs can be created.
     generation: rateLimit({ windowMs: 60 * 60_000, limit: 30, skip, ...json('Too many generation jobs this hour.') }),
+    // PDF rendering is CPU work on the API process.
+    pdfs: rateLimit({ windowMs: 60 * 60_000, limit: 60, skip, ...json('Too many PDFs this hour. Try again later.') }),
     imports: rateLimit({ windowMs: 60 * 60_000, limit: 20, skip, ...json('Too many imports this hour.') }),
   };
 }

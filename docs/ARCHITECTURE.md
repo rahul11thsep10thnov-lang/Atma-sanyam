@@ -10,7 +10,7 @@ Each can be deployed, scaled and secured on its own.
 |---|---|---|---|
 | Website (`/`) | Next.js 16, React 19, Tailwind 4 | Practice, mock tests, results. Built-in demo content; live tests from the API | API public routes (`/api/*`), Supabase Auth |
 | Admin console (`admin/`) | Next.js 16 | Exam-team UI: taxonomy, question bank, generation, review, mock tests, analytics | API admin routes through its own server-side proxy |
-| API (`backend/`) | Node 22, Express 5, Drizzle ORM, zod | Auth, roles, validation, question bank, pipeline, mock-test engine, scoring, analytics, audit | PostgreSQL, AI provider, Supabase Auth (token check) |
+| API (`backend/`) | Node 22, Express 5, Drizzle ORM, zod, pdfkit | Auth, roles, validation, question bank, pipeline, figure engine, mock-test engine, stored paper/key PDFs, scoring, analytics, audit | PostgreSQL, AI provider, Supabase Auth (token check) |
 | Worker | same codebase (`src/pipeline/worker.ts`) | Runs generation batches; in-process by default, or `npm run worker` | PostgreSQL, AI provider |
 | Database | PostgreSQL (PGlite embedded in dev) | All durable state | — |
 | AI provider | Claude via the Anthropic SDK | Question generation and independent review | called only by the worker |
@@ -40,6 +40,7 @@ generation_jobs ─< generation_batches        (questions keep job + batch ids)
 source_materials  (approved text the generator may use)
 
 mock_blueprints ─< mock_tests (kind: full | subject) ─< mock_test_questions >─ questions
+                       └──< mock_test_pdfs   (stored paper / key PDFs + content hash)
 users ─< test_attempts ─< test_answers >─ questions
 users ─< subscriptions          (pending → active; provider order/payment ids only)
 admins ─< admin_sessions        users ─< user_sessions

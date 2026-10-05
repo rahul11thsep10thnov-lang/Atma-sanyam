@@ -7,6 +7,7 @@ import { notFound } from '../../lib/httpError.js';
 import { ENABLED_LANGUAGE_CODES } from '../../lib/languages.js';
 import { parse } from '../../middleware/validate.js';
 import type { Auth } from '../../middleware/auth.js';
+import type { RateLimits } from '../../middleware/rateLimits.js';
 import { analytics, dashboard, listUsers } from '../../services/analyticsService.js';
 import {
   generateFromBlueprint,
@@ -20,6 +21,7 @@ import {
   swapQuestion,
   updateMockTest,
 } from '../../services/mockTestService.js';
+import { createTestPdf, deleteTestPdfs, getTestPdfFile, listTestPdfs } from '../../services/pdfService.js';
 import { getSettings, pipelineSettingsSchema, updateSettings } from '../../services/settingsService.js';
 import { getSiteSettings, siteSettingsPatchSchema, updateSiteSettings } from '../../services/siteSettingsService.js';
 import { grantSubscription, listSubscriptionsFor } from '../../services/enrollmentService.js';
@@ -48,7 +50,7 @@ const common = {
   difficulty,
 };
 
-export function adminOperationsRouter(deps: AppDeps, auth: Auth) {
+export function adminOperationsRouter(deps: AppDeps, auth: Auth, limits: RateLimits) {
   const { db, env } = deps;
   const r = Router();
   const A = auth.requireAdmin;
@@ -116,6 +118,29 @@ export function adminOperationsRouter(deps: AppDeps, auth: Auth) {
     const body = parse(z.object({ replacementId: z.uuid().optional() }), req.body ?? {});
     const result = await swapQuestion(db, idParam(req), idParam(req, 'questionId'), body.replacementId ?? null, req.admin!.id, env.ATTEMPT_GRACE_SECONDS);
     res.json({ ...result, test: await getMockTest(db, idParam(req), { includeAnswers: true, publicOnly: false }) });
+  });
+
+  // --- Server-made PDFs (stored; download again any time) -------------------
+  r.get('/mock-tests/:id/pdfs', A, auth.can('questions:read'), async (req, res) => {
+    res.json(await listTestPdfs(db, idParam(req)));
+  });
+  r.post('/mock-tests/:id/pdfs', A, auth.can('mocktests:write'), limits.pdfs, async (req, res) => {
+    const body = parse(z.object({ variant: z.enum(['paper', 'key', 'both']), showDetails: z.boolean().optional() }), req.body ?? {});
+    res.status(201).json(await createTestPdf(db, idParam(req), { variant: body.variant, showDetails: body.showDetails ?? true }, req.admin!.id));
+  });
+  r.get('/mock-tests/:id/pdfs/:pdfId/download', A, auth.can('questions:read'), async (req, res) => {
+    const file = await getTestPdfFile(db, idParam(req), idParam(req, 'pdfId'));
+    const ascii = file.fileName.replace(/[^A-Za-z0-9._-]/g, '_');
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Length': String(file.data.length),
+      'Content-Disposition': `attachment; filename="${ascii}"; filename*=UTF-8''${encodeURIComponent(file.fileName)}`,
+      ETag: `"${file.sha256}"`,
+    });
+    res.end(file.data);
+  });
+  r.delete('/mock-tests/:id/pdfs/:pdfId', A, auth.can('mocktests:write'), async (req, res) => {
+    res.json(await deleteTestPdfs(db, idParam(req), [idParam(req, 'pdfId')], req.admin!.id));
   });
 
   r.post('/mock-tests/:id/publish', A, auth.can('mocktests:publish'), async (req, res) => {

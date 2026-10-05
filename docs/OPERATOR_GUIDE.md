@@ -263,9 +263,24 @@ Good to know:
 - Swapped a wrong key out of a live test? Also fix or unpublish the question
   itself (Question Bank) so it is not picked again.
 
-### Printable question paper and answer key
+### Question paper and answer key as PDF files
 
-On the test page click **Print / PDF**. Choose what to print:
+There are two ways; both give the same layout.
+
+**Saved PDFs (recommended).** On the test page, in the **Saved PDFs** card,
+choose *Question paper*, *Answer key* or *Paper + key*, tick whether the key
+shows chapter and difficulty, and press **Make PDF**. The API draws the PDF
+itself (A4, page numbers, the test's language, figures included) and stores
+it, so **Download** gives the identical file every time and anyone with
+console access can fetch it later. Each file is listed with its pages, size,
+who made it and when. When the test or any of its questions changes (edit,
+swap, a corrected question) the file is marked **Outdated** — make a new one
+before printing again. The newest 10 files of each kind are kept; older ones
+are removed automatically, and **Delete** removes one by hand. Reviewers can
+download; making and deleting files needs mock-test edit rights.
+
+**Print view.** **Print view** opens the paper in the browser; choose what to
+print:
 
 | Option | Contains | Give to |
 |---|---|---|
@@ -277,8 +292,8 @@ Then **Print / Save as PDF**; in the browser's print window choose *Save as
 PDF*, paper size **A4**, and switch off *Headers and footers*. Hindi papers
 use an embedded Devanagari font, so they look the same on every computer.
 Instructions are printed in the test's language (Hindi, Hinglish or English).
-The PDF is made by the browser, not stored on the server, so it always
-reflects the test as it is right now — print again after a swap or edit.
+This PDF is made by the browser and not stored, so it always reflects the
+test as it is right now.
 
 ---
 

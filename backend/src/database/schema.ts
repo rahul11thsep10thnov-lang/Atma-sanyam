@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm';
 import {
   boolean,
+  customType,
   date,
   index,
   integer,
@@ -65,6 +66,8 @@ export const mockTestStatus = pgEnum('mock_test_status', ['draft', 'published', 
 // Full-paper tests and subject-wise tests have separate free quotas
 // (see services/enrollmentService.ts).
 export const mockTestKind = pgEnum('mock_test_kind', ['full', 'subject']);
+
+export const pdfVariant = pgEnum('pdf_variant', ['paper', 'key', 'both']);
 
 export const subscriptionStatus = pgEnum('subscription_status', ['pending', 'active', 'expired', 'cancelled']);
 
@@ -515,6 +518,36 @@ export const mockTestQuestions = pgTable(
     uniqueIndex('mock_test_questions_position_uq').on(t.mockTestId, t.position),
     index('mock_test_questions_question_idx').on(t.questionId),
   ]
+);
+
+/** Raw bytes (PDF files). node-postgres returns a Buffer, PGlite a Uint8Array. */
+const bytea = customType<{ data: Uint8Array; driverData: Uint8Array }>({
+  dataType: () => 'bytea',
+});
+
+/** Server-made PDFs of a mock test (question paper, answer key or both),
+ * stored so staff can download the same file again. `content_hash` is a hash
+ * of what was printed; when the test or its questions change, the hash no
+ * longer matches and the console marks the file as outdated. */
+export const mockTestPdfs = pgTable(
+  'mock_test_pdfs',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    mockTestId: uuid('mock_test_id')
+      .notNull()
+      .references(() => mockTests.id, { onDelete: 'cascade' }),
+    variant: pdfVariant('variant').notNull(),
+    showDetails: boolean('show_details').notNull().default(true),
+    fileName: text('file_name').notNull(),
+    sizeBytes: integer('size_bytes').notNull(),
+    pages: integer('pages').notNull(),
+    sha256: text('sha256').notNull(),
+    contentHash: text('content_hash').notNull(),
+    data: bytea('data').notNull(),
+    createdBy: uuid('created_by').references(() => admins.id, { onDelete: 'set null' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index('mock_test_pdfs_test_idx').on(t.mockTestId, t.createdAt)]
 );
 
 // ---------------------------------------------------------------------------

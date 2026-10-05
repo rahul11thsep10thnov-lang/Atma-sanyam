@@ -10,6 +10,6 @@ export function adminRouter(deps: AppDeps, auth: Auth, limits: RateLimits) {
   const r = Router();
   r.use(adminAuthRouter(deps, auth, limits));
   r.use(adminContentRouter(deps, auth, limits));
-  r.use(adminOperationsRouter(deps, auth));
+  r.use(adminOperationsRouter(deps, auth, limits));
   return r;
 }

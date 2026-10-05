@@ -29,14 +29,15 @@ async function forward(req: NextRequest, ctx: { params: Promise<{ path: string[]
   } catch {
     return NextResponse.json({ error: { message: 'The API is unreachable. Try again shortly.' } }, { status: 502 });
   }
-  const body = upstream.status === 204 ? null : await upstream.text();
-  const out = new NextResponse(body, {
-    status: upstream.status,
-    headers: {
-      'Content-Type': upstream.headers.get('content-type') ?? 'application/json',
-      'Cache-Control': 'no-store',
-    },
-  });
+  // Bytes, not text: the API also serves files (stored PDFs).
+  const body = upstream.status === 204 ? null : await upstream.arrayBuffer();
+  const headers: Record<string, string> = {
+    'Content-Type': upstream.headers.get('content-type') ?? 'application/json',
+    'Cache-Control': 'no-store',
+  };
+  const disposition = upstream.headers.get('content-disposition');
+  if (disposition) headers['Content-Disposition'] = disposition;
+  const out = new NextResponse(body, { status: upstream.status, headers });
   if (upstream.status === 401) out.cookies.delete(SESSION_COOKIE);
   return out;
 }

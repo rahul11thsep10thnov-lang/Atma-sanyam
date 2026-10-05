@@ -15,6 +15,8 @@ COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY drizzle ./drizzle
 COPY seed ./seed
+# Fonts for server-made PDFs (Hind + Noto subsets, SIL Open Font License).
+COPY assets ./assets
 COPY package.json ./
 USER node
 EXPOSE 4000

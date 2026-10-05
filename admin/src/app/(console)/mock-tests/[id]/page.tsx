@@ -36,10 +36,175 @@ interface TestDetail {
   }[];
 }
 
+type PdfVariant = 'paper' | 'key' | 'both';
+
+interface PdfList {
+  keepPerVariant: number;
+  items: {
+    id: string;
+    variant: PdfVariant;
+    showDetails: boolean;
+    fileName: string;
+    sizeBytes: number;
+    pages: number;
+    createdAt: string;
+    createdByName: string | null;
+    outdated: boolean;
+  }[];
+}
+
+const PDF_KINDS: [PdfVariant, string][] = [
+  ['paper', 'Question paper'],
+  ['key', 'Answer key'],
+  ['both', 'Paper + key'],
+];
+
+function fmtSize(bytes: number) {
+  return bytes < 1024 * 1024 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+}
+
+/** PDFs made by the API and stored, so staff download the same file each time. */
+function SavedPdfs({
+  testId,
+  list,
+  error,
+  canWrite,
+  reload,
+}: {
+  testId: string;
+  list: PdfList | null;
+  error: string | null;
+  canWrite: boolean;
+  reload: () => Promise<void>;
+}) {
+  const [variant, setVariant] = useState<PdfVariant>('paper');
+  const [details, setDetails] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function make() {
+    setBusy(true);
+    setErr(null);
+    try {
+      await api(`mock-tests/${testId}/pdfs`, { method: 'POST', body: { variant, showDetails: details } });
+      await reload();
+    } catch (e) {
+      setErr(errorMessage(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="card">
+      <div className="card-head">
+        <h2>Saved PDFs</h2>
+        {list && <span className="small muted">Newest {list.keepPerVariant} of each kind are kept</span>}
+      </div>
+      <p className="small muted" style={{ marginTop: 0 }}>
+        Made on the server in the test’s language, with figures — no print dialog needed. Each file is stored, so every download is the same
+        file. A file is marked <strong>Outdated</strong> once the test or one of its questions changes; make a new one then. Give candidates the
+        question paper only; the answer key is a staff copy.
+      </p>
+      {canWrite && (
+        <div className="row" style={{ marginBottom: 12 }}>
+          <div className="segmented" role="group" aria-label="What the PDF contains">
+            {PDF_KINDS.map(([v, label]) => (
+              <button key={v} type="button" aria-pressed={variant === v} onClick={() => setVariant(v)}>
+                {label}
+              </button>
+            ))}
+          </div>
+          <label className="check" style={{ margin: 0, opacity: variant === 'paper' ? 0.5 : 1 }}>
+            <input type="checkbox" checked={details} disabled={variant === 'paper'} onChange={(e) => setDetails(e.target.checked)} />
+            Chapter and difficulty on the key
+          </label>
+          <button className="btn btn-primary" onClick={make} disabled={busy}>
+            {busy ? 'Making PDF…' : 'Make PDF'}
+          </button>
+        </div>
+      )}
+      <ErrorAlert error={err ?? error} />
+      {!list ? (
+        !error && <Loading what="Loading PDFs…" />
+      ) : list.items.length === 0 ? (
+        <p className="muted small" style={{ margin: 0 }}>
+          No PDFs yet.{canWrite ? ' Choose what it should contain and press Make PDF.' : ''}
+        </p>
+      ) : (
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Contains</th>
+                <th className="num">Pages</th>
+                <th className="num">Size</th>
+                <th>Made</th>
+                <th>State</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {list.items.map((p) => (
+                <tr key={p.id}>
+                  <td className="small" style={{ wordBreak: 'break-all' }}>
+                    {p.fileName}
+                  </td>
+                  <td className="small">
+                    {PDF_KINDS.find(([v]) => v === p.variant)?.[1]}
+                    {p.variant !== 'paper' && !p.showDetails && <div className="muted">without chapter tags</div>}
+                  </td>
+                  <td className="num">{p.pages}</td>
+                  <td className="num" style={{ whiteSpace: 'nowrap' }}>
+                    {fmtSize(p.sizeBytes)}
+                  </td>
+                  <td className="small">
+                    {fmtDate(p.createdAt)}
+                    {p.createdByName && <div className="muted">{p.createdByName}</div>}
+                  </td>
+                  <td>{p.outdated ? <span className="badge badge-warn">Outdated</span> : <span className="badge badge-good">Current</span>}</td>
+                  <td>
+                    <div className="row" style={{ flexWrap: 'nowrap' }}>
+                      <a className="btn btn-sm" href={`/api/backend/mock-tests/${testId}/pdfs/${p.id}/download`} download={p.fileName}>
+                        Download
+                      </a>
+                      {canWrite && (
+                        <ConfirmButton
+                          label="Delete"
+                          confirm={`Delete ${p.fileName}? Copies already downloaded are not affected.`}
+                          onConfirm={async () => {
+                            setErr(null);
+                            try {
+                              await api(`mock-tests/${testId}/pdfs/${p.id}`, { method: 'DELETE' });
+                              await reload();
+                            } catch (e) {
+                              setErr(errorMessage(e));
+                            }
+                          }}
+                        />
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function MockTestPage() {
   const { id } = useParams<{ id: string }>();
   const can = useCan();
-  const { data: t, error, reload } = useApi<TestDetail>(`mock-tests/${id}`);
+  const { data: t, error, reload: reloadTest } = useApi<TestDetail>(`mock-tests/${id}`);
+  const pdfs = useApi<PdfList>(`mock-tests/${id}/pdfs`);
+  // PDFs show as outdated once the test changes, so refresh both together.
+  const reload = async () => {
+    await Promise.all([reloadTest(), pdfs.reload()]);
+  };
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
@@ -72,7 +237,7 @@ export default function MockTestPage() {
               ← Mock Tests
             </Link>
             <Link className="btn" href={`/mock-tests/${id}/print`} target="_blank">
-              Print / PDF
+              Print view
             </Link>
             {can('mocktests:write') && t.status !== 'archived' && (
               <button className="btn" onClick={() => setEditing((e) => !e)} aria-expanded={editing}>
@@ -177,6 +342,7 @@ export default function MockTestPage() {
           </table>
         </div>
       </div>
+      <SavedPdfs testId={id} list={pdfs.data} error={pdfs.error} canWrite={can('mocktests:write')} reload={pdfs.reload} />
       {swapping && (
         <SwapDialog
           testId={id}

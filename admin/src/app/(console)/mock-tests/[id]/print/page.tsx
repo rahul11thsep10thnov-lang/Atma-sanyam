@@ -177,7 +177,7 @@ export default function PrintPage() {
           </button>
         </div>
         <p className="small muted" style={{ margin: 0 }}>
-          In the print window choose <strong>Save as PDF</strong> (or your printer), paper size <strong>A4</strong>, and switch off{' '}
+          For a stored file instead, use <strong>Saved PDFs</strong> on the test page. In the print window choose <strong>Save as PDF</strong> (or your printer), paper size <strong>A4</strong>, and switch off{' '}
           <strong>Headers and footers</strong>. For a candidate copy, print “Question paper only” — it contains no answers. The answer key
           is for staff only; keep it separate.
         </p>
