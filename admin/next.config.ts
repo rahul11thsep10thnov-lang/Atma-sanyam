@@ -1,4 +1,3 @@
-import path from 'node:path';
 import type { NextConfig } from 'next';
 
 const securityHeaders = [
@@ -16,8 +15,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // The repository has more than one lockfile; resolve modules from admin/
   // only, so the build never picks up the website's node_modules (or fails
-  // when they are not installed, as in CI).
-  turbopack: { root: path.resolve(__dirname) },
+  // when they are not installed, as in CI). Next always runs from admin/.
+  turbopack: { root: process.cwd() },
   reactStrictMode: true,
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }];

@@ -38,13 +38,32 @@ export const MINI_TAXONOMY = {
   ],
 };
 
+const TEST_ENV = { NODE_ENV: 'test', MOCK_AI: 'true', MOCK_AI_LATENCY_MS: '0', MOCK_AI_FAULT_RATE: '0' };
+const APP_OPTIONS = { disableRateLimits: true, logRequests: false };
+/** Test contexts currently open on TEST_DATABASE_URL (a single shared database). */
+let openOnServer = 0;
+
 export async function setupTestApp(opts: { ai?: AiProvider; env?: Record<string, string> } = {}) {
   setLogLevel('silent');
-  const env = loadEnv({ NODE_ENV: 'test', MOCK_AI: 'true', MOCK_AI_LATENCY_MS: '0', MOCK_AI_FAULT_RATE: '0', ...opts.env });
+  const env = loadEnv({ ...TEST_ENV, ...opts.env });
   // Embedded in-memory Postgres by default; set TEST_DATABASE_URL to run the
   // same suite against a real PostgreSQL server (it wipes that database).
   const url = process.env.TEST_DATABASE_URL;
+  if (url && openOnServer > 0) {
+    throw new Error(
+      'setupTestApp() would wipe the PostgreSQL database another test context is still using. ' +
+        'Close that context first, or use appWithEnv(ctx, {...}) for an app with different settings.'
+    );
+  }
   const database = createDatabase(url ?? 'pglite:memory', 3);
+  if (url) openOnServer++;
+  let closed = false;
+  const close = async () => {
+    if (closed) return;
+    closed = true;
+    if (url) openOnServer--;
+    await database.close();
+  };
   if (url) {
     await database.db.execute(sql`drop schema if exists public cascade`);
     await database.db.execute(sql`drop schema if exists drizzle cascade`);
@@ -56,9 +75,15 @@ export async function setupTestApp(opts: { ai?: AiProvider; env?: Record<string,
   // Seeded per call: batches differ from each other but every run is identical.
   const ai = opts.ai ?? new MockProvider({ faultRate: 0, latencyMs: 0, seed: () => `test-${call++}` });
   const deps: AppDeps = { db: database.db, env, ai, verifySupabaseToken: null };
-  const app = createApp(deps, { disableRateLimits: true, logRequests: false });
+  const app = createApp(deps, APP_OPTIONS);
   const worker = new GenerationWorker(deps, { concurrency: 1, pollMs: 50 });
-  return { app, db: database.db, deps, worker, close: database.close };
+  return { app, db: database.db, deps, worker, close };
+}
+
+/** A second app on the same database, with settings loaded through the real
+ * env loader (so unset values get their production defaults). */
+export function appWithEnv(ctx: { deps: AppDeps }, env: Record<string, string> = {}) {
+  return createApp({ ...ctx.deps, env: loadEnv({ ...TEST_ENV, ...env }) }, APP_OPTIONS);
 }
 
 export async function adminToken(app: Parameters<typeof request>[0], db: Db, role = 'super_admin', email = `${role}@example.com`) {

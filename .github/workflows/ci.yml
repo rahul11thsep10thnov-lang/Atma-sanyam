@@ -73,8 +73,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      # Route types (LayoutProps, PageProps) are generated, not committed.
-      - run: npx next typegen
-      - run: npx tsc --noEmit
+      # Generates route types (LayoutProps, PageProps), then runs tsc.
+      - run: npm run typecheck
       - run: npm run lint
       - run: npm run build
