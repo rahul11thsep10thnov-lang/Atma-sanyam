@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { PublicFelicitation } from "@/lib/felicitation/service";
 import { currentSlot } from "@/lib/felicitation/state";
 import { FelicitationSubmitModal } from "./FelicitationSubmitModal";
+import { CelebrationOverlay } from "@/components/celebration/CelebrationOverlay";
 
 export interface BoardState {
   serverNow: number;
@@ -18,7 +19,6 @@ export interface BoardState {
 }
 
 const REFRESH_MS = 60_000;
-const PETAL_COLORS = ["#f59f00", "#fd7e14", "#e8590c", "#f783ac", "#ffd43b", "#d9480f"];
 
 function Bunting() {
   const flags = Array.from({ length: 11 });
@@ -35,32 +35,6 @@ function Bunting() {
   );
 }
 
-function Petals({ burstKey, count }: { burstKey: string; count: number }) {
-  const petals = useMemo(() => {
-    // Deterministic per entry so server/client and all visitors match.
-    const st = { seed: 0 };
-    for (const ch of burstKey) st.seed = (st.seed * 31 + ch.charCodeAt(0)) >>> 0;
-    const rnd = () => {
-      st.seed = (st.seed * 1103515245 + 12345) >>> 0;
-      return st.seed / 4294967296;
-    };
-    return Array.from({ length: count * 2 }, (_, i) => ({
-      side: i % 2 === 0 ? "left" : "right",
-      dx: `${70 + rnd() * 90}px`,
-      dy: `${-40 + rnd() * 70}px`,
-      rot: `${180 + rnd() * 360}deg`,
-      delay: `${Math.round(rnd() * 500)}ms`,
-      color: PETAL_COLORS[i % PETAL_COLORS.length],
-    }));
-  }, [burstKey, count]);
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl" aria-hidden="true">
-      {petals.map((p, i) => (
-        <span key={`${burstKey}-${i}`} className={`fb-petal ${p.side}`} style={{ background: p.color, animationDelay: p.delay, ["--dx" as string]: p.dx, ["--dy" as string]: p.dy, ["--rot" as string]: p.rot }} />
-      ))}
-    </div>
-  );
-}
 
 export function FelicitationBoard({ initial }: { initial: BoardState }) {
   const [state, setState] = useState(initial);
@@ -108,13 +82,15 @@ export function FelicitationBoard({ initial }: { initial: BoardState }) {
     };
   }, [refresh, initial.serverNow]);
 
+  const durationMs = state.durationMs;
+  const phaseMs = useCallback(() => (((Date.now() + (offsetRef.current ?? 0)) % durationMs) + durationMs) % durationMs, [durationMs]);
+
   if (!state.enabled) return null;
   const entries = state.entries;
   const slot = currentSlot(entries.length, now, state.durationMs);
   const entry = slot.index >= 0 ? entries[slot.index] : null;
   const single = entries.length === 1;
   const animate = state.animations && !reduced;
-  const petalCount = state.intensity === "subtle" ? 4 : state.intensity === "festive" ? 10 : 7;
   // Key changes once per slot (or never, for a single entry) → re-animate.
   const animKey = entry ? (single ? entry.id : `${entry.id}:${Math.floor(now / state.durationMs)}`) : "empty";
   const leaving = !single && entry && slot.msLeft < 450 && animate;
@@ -126,12 +102,13 @@ export function FelicitationBoard({ initial }: { initial: BoardState }) {
   );
 
   return (
-    <div className="flex w-full flex-col items-stretch sm:w-[26rem]" data-testid="felicitation-board">
+    <div className="flex w-full flex-col items-stretch sm:w-[26rem] lg:mt-8" data-testid="felicitation-board">
       {minimized ? (
         <button type="button" onClick={() => setMinimized(false)} className="fb-board rounded-xl px-3 py-1.5 text-left text-sm">
           <span className="fb-title text-lg">Felicitation Board</span> <span className="text-xs text-slate-500">— show</span>
         </button>
       ) : (
+        <div className="relative">
         <section aria-label="Felicitation Board" aria-live="polite" className="fb-board relative overflow-hidden rounded-2xl px-4 pb-3 pt-5">
           {animate ? <Bunting /> : null}
           <button type="button" onClick={() => setMinimized(true)} className="absolute right-1.5 top-1 text-xs text-slate-400 hover:text-slate-700 sm:hidden" aria-label="Minimize Felicitation Board">–</button>
@@ -148,7 +125,6 @@ export function FelicitationBoard({ initial }: { initial: BoardState }) {
             ) : (
               <p className="pt-4 text-center text-xs text-slate-500">{state.paused ? "Broadcasts are paused." : "Cleared an exam? Celebrate it here."}</p>
             )}
-            {entry && animate ? <Petals burstKey={animKey} count={petalCount} /> : null}
           </div>
           {entries.length > 1 ? (
             <div className="mt-1 flex justify-center gap-1" aria-hidden="true">
@@ -156,6 +132,8 @@ export function FelicitationBoard({ initial }: { initial: BoardState }) {
             </div>
           ) : null}
         </section>
+        <CelebrationOverlay duration={state.durationMs} intensity={state.intensity === "subtle" ? "subtle" : state.intensity === "festive" ? "festive" : "premium"} enabled={state.animations} spill={60} phaseMs={phaseMs} />
+        </div>
       )}
       {callIn}
       <FelicitationSubmitModal open={open} onClose={() => setOpen(false)} priceRupees={state.priceRupees} referencePriceRupees={state.referencePriceRupees} />

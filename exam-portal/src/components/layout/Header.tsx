@@ -15,7 +15,7 @@ export async function Header() {
   const [user, board] = await Promise.all([getCurrentUser(), getBoardState()]);
   const publicUser = user ? { id: user.id, mobileMasked: maskMobile(user.mobile), fullName: user.fullName, profileComplete: !!user.profileCompletedAt, member: isMember(user), membershipUntil: user.membershipUntil?.toISOString() ?? null } : null;
   return (
-    <header className="relative w-full border-b border-orange-200/70 bg-white/55 backdrop-blur-[2px]">
+    <header className="relative w-full overflow-x-clip border-b border-orange-200/70 bg-white/55 backdrop-blur-[2px]">
       <div className="grid w-full grid-cols-1 items-start gap-4 px-4 py-4 sm:px-8 lg:grid-cols-[26rem_1fr_16rem] lg:px-12">
         <div className="order-3 lg:order-1">{board.enabled ? <FelicitationBoard initial={board} /> : null}</div>
         <div className="order-1 flex flex-col items-center gap-2 lg:order-2 lg:pt-2">

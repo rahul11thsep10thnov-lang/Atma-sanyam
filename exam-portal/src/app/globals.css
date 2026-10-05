@@ -258,35 +258,17 @@ h6 {
 .fb-exit { animation: fbExit 400ms ease-in both; }
 @keyframes fbEnter { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
 @keyframes fbExit { to { opacity: 0; transform: translateY(-6px); } }
-.fb-petal {
+/* Celebration canvas: transparent, click-through overlay around the board. */
+.celebration-overlay {
   position: absolute;
-  top: 50%;
-  width: 10px;
-  height: 14px;
-  border-radius: 80% 0 80% 0;
-  opacity: 0;
   pointer-events: none;
-  animation-duration: 1800ms;
-  animation-timing-function: cubic-bezier(.15,.7,.3,1);
-  animation-fill-mode: both;
-}
-.fb-petal.left { left: -6px; animation-name: fbPetalLeft; }
-.fb-petal.right { right: -6px; animation-name: fbPetalRight; }
-@keyframes fbPetalLeft {
-  0% { opacity: 0; transform: translate(0, var(--dy)) rotate(0deg); }
-  15% { opacity: 1; }
-  100% { opacity: 0; transform: translate(var(--dx), calc(var(--dy) + 30px)) rotate(var(--rot)); }
-}
-@keyframes fbPetalRight {
-  0% { opacity: 0; transform: translate(0, var(--dy)) rotate(0deg); }
-  15% { opacity: 1; }
-  100% { opacity: 0; transform: translate(calc(var(--dx) * -1), calc(var(--dy) + 30px)) rotate(calc(var(--rot) * -1)); }
+  background: transparent;
+  z-index: 10;
 }
 .fb-bunting { animation: fbSway 3.5s ease-in-out infinite; transform-origin: top center; }
 @keyframes fbSway { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(0.8deg); } }
 @media (prefers-reduced-motion: reduce) {
   .fb-enter, .fb-exit, .fb-bunting { animation: none !important; }
-  .fb-petal { display: none !important; }
   .rahul-tab { transition: none; }
 }
 
