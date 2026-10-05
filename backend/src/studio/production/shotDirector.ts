@@ -142,7 +142,10 @@ export function directScene(scene: SceneInput, ctx: DirectorContext, position: {
     if (motion.walk && characterKeys.length > 0 && tpl.type === "WIDE") camera = "tracking";
     if (scene.emotionalTone === "somber" && camera === "dolly_in") camera = "slow_zoom";
 
-    const shotProps = tpl.insertProp ? (insertProp ? [insertProp] : []) : withChars && (tpl.type === "WIDE" || tpl.type === "ESTABLISHING") ? propKeys.filter((k) => getProp(k)?.placement === "ground").slice(0, 1) : [];
+    const shotPropsFor = tpl.insertProp ? (insertProp ? [insertProp] : []) : withChars && (tpl.type === "WIDE" || tpl.type === "ESTABLISHING") ? propKeys.filter((k) => getProp(k)?.placement === "ground").slice(0, 1) : [];
+    const shotProps = shotPropsFor;
+    // A bag placed on the ground beside the character is not also held.
+    if (shotProps.some((k) => k === "luggage" || k === "bag")) for (const k of Object.keys(poses)) if (poses[k] === "holding_bag") poses[k] = "standing";
     const c: Ctx = { scene, place: env.label.toLowerCase(), focusName: focus?.displayName, propName: shotProps[0] ? getProp(shotProps[0])?.name : undefined, substitute: substitute?.description };
 
     return {

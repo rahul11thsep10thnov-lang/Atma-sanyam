@@ -32,6 +32,8 @@ export interface EnvironmentDescriptor {
   horizonY: number;
   /** Practical lights the location usually has, by time of day bucket. */
   practicalLights: { type: "streetlight" | "interior" | "window" | "neon" | "train" | "police" | "fire"; x: number; y: number; times: TimeBucket[]; flicker?: number }[];
+  /** A visible steam source in the painted plate (e.g. a tea stall's kettle). */
+  steamSource?: { x: number; y: number; depth: number };
   painter: string;
 }
 
@@ -49,9 +51,10 @@ export const ENVIRONMENTS: EnvironmentDescriptor[] = [
     foreground: [{ key: "railing", name: "platform railing", prompt: "painted iron railing, close foreground, isolated" }],
     props: ["luggage", "bench"],
     ambience: "station-murmur",
-    particles: ["steam", "dust"],
+    particles: ["steam", "dust", "crowds"],
     groundY: 0.84,
     horizonY: 0.55,
+    steamSource: { x: 0.875, y: 0.552, depth: 0.15 },
     practicalLights: [
       { type: "streetlight", x: 0.2, y: 0.47, times: ["dusk", "night"], flicker: 0.35 },
       { type: "streetlight", x: 0.66, y: 0.47, times: ["dusk", "night"] },

@@ -32,12 +32,21 @@ const MARGIN_BOTTOM = 0.03;
 
 export interface RiggedFrame {
   image: PImage;
-  /** Feet centre (the layer anchor) inside `image`, px. */
+  /** Feet centre (the layer anchor) inside `image`, px (may lie outside a clipped image). */
   anchor: [number, number];
-  /** Scale from rig reference px to `image` px. */
+  /** Scale from rig reference px to output px. */
   scale: number;
   /** Head centre in image px (for focus/lighting heuristics). */
   head: [number, number];
+}
+
+/** Size of the full (unclipped) output canvas for a scale, and the feet anchor inside it. */
+export function rigCanvas(def: RigDef, outScale: number): { width: number; height: number; anchor: [number, number] } {
+  return {
+    width: Math.ceil(def.width * (1 + 2 * MARGIN_X) * outScale),
+    height: Math.ceil(def.height * (1 + MARGIN_TOP + MARGIN_BOTTOM) * outScale),
+    anchor: [def.width * (1 + 2 * MARGIN_X) * 0.5 * outScale, def.height * (1 + MARGIN_TOP) * outScale],
+  };
 }
 
 function quant(v: number, step: number) {
@@ -58,17 +67,20 @@ function headFor(rig: LoadedRig, f: CharacterFrame): PImage {
 }
 
 /**
- * Poses the cut-out rig for one frame and composites it into an image at
- * `outScale` × the rig's reference size. Feet are kept on the ground: the
- * root is shifted so the lowest foot touches the standing ground line, which
- * also produces a natural bob in walk cycles and lowers sitting poses.
- * `clip` (output px) limits work to the visible region for close-ups.
+ * Poses the cut-out rig for one frame and composites it at `outScale` × the
+ * rig's reference size. Feet are kept on the ground: the root is shifted so
+ * the lowest foot touches the standing ground line, which also produces a
+ * natural bob in walk cycles and lowers sitting poses. With `clip` (in full
+ * canvas px) only that region is allocated and drawn — close-ups of a very
+ * large figure stay cheap.
  */
 export function renderRigFrame(rig: LoadedRig, f: CharacterFrame, outScale: number, clip?: Rect): RiggedFrame {
   const d = rig.def;
-  const W = Math.ceil(d.width * (1 + 2 * MARGIN_X) * outScale);
-  const H = Math.ceil(d.height * (1 + MARGIN_TOP + MARGIN_BOTTOM) * outScale);
-  const out = createImage(W, H);
+  const full = rigCanvas(d, outScale);
+  const region = clip
+    ? { x0: Math.max(0, Math.floor(clip.x0)), y0: Math.max(0, Math.floor(clip.y0)), x1: Math.min(full.width, Math.ceil(clip.x1)), y1: Math.min(full.height, Math.ceil(clip.y1)) }
+    : { x0: 0, y0: 0, x1: full.width, y1: full.height };
+  const out = createImage(Math.max(1, region.x1 - region.x0), Math.max(1, region.y1 - region.y0));
   const groundY = d.height * (1 + MARGIN_TOP); // reference px from canvas top (feet when standing)
   const rootX = d.width * (1 + 2 * MARGIN_X) * 0.5;
 
@@ -81,7 +93,7 @@ export function renderRigFrame(rig: LoadedRig, f: CharacterFrame, outScale: numb
     const part = byName.get(name as never)!;
     const angle = f.angles[name] ?? 0;
     let m: Mat2D;
-    if (!part.parent) m = multiply(translate(0, 0), rotate(angle));
+    if (!part.parent) m = rotate(angle);
     else m = multiply(resolve(part.parent), multiply(translate(part.attach[0], part.attach[1]), rotate(angle)));
     if (name === "torso") m = multiply(m, scale(1 + (f.breath - 1) * 0.6, f.breath));
     local.set(name, m);
@@ -97,23 +109,21 @@ export function renderRigFrame(rig: LoadedRig, f: CharacterFrame, outScale: numb
     for (const [x, y] of [[0, 24.2 * d.unit], [7.6 * d.unit, 24.2 * d.unit]]) lowest = Math.max(lowest, apply(m, x, y)[1]);
   }
   if (!Number.isFinite(lowest)) lowest = d.height - d.root[1];
-  // root → output: feet on the ground line, sway around the feet
-  const footX = rootX;
-  const rootToRef: Mat2D = multiply(translate(footX, groundY), multiply(rotate(f.sway), translate(0, -lowest)));
-  const toOut: Mat2D = multiply(scale(outScale), rootToRef);
+  const rootToRef: Mat2D = multiply(translate(rootX, groundY), multiply(rotate(f.sway), translate(0, -lowest)));
+  const toOut: Mat2D = multiply(translate(-region.x0, -region.y0), multiply(scale(outScale), rootToRef));
 
   const shown = (name: string, optional?: boolean) => {
     if (!optional) return true;
     return (name === "propPhone" && f.holds === "phone") || (name === "propBag" && f.holds === "bag");
   };
-  let head: [number, number] = [W / 2, H * 0.1];
+  let head: [number, number] = [out.width / 2, out.height * 0.1];
   for (const p of d.parts) {
     if (!shown(p.name, p.optional)) continue;
     const img = p.name === "head" ? headFor(rig, f) : rig.images[p.image];
     if (!img) continue;
     const m = multiply(toOut, multiply(local.get(p.name)!, translate(-p.pivot[0], -p.pivot[1])));
-    drawImageAffine(out, img, m, { clip });
+    drawImageAffine(out, img, m);
     if (p.name === "head") head = apply(m, img.width / 2, img.height * 0.55) as [number, number];
   }
-  return { image: out, anchor: [footX * outScale, groundY * outScale], scale: outScale, head };
+  return { image: out, anchor: [full.anchor[0] - region.x0, full.anchor[1] - region.y0], scale: outScale, head };
 }

@@ -81,7 +81,10 @@ class DepthCanvas {
 
 function sky(p: Painter, pal: Palette, horizonY: number, t: TimeOfDay, seed: number) {
   p.rect(0, 0, p.w, horizonY + 2, { kind: "linear", x0: 0, y0: 0, x1: 0, y1: horizonY, stops: [[0, pal.skyTop], [0.6, pal.skyMid], [1, pal.horizon]] });
-  if (t === "evening") p.ellipse(p.w * 0.84, horizonY - p.h * 0.02, p.w * 0.5, p.h * 0.12, { kind: "radial", cx: p.w * 0.84, cy: horizonY - p.h * 0.02, r: p.w * 0.5, stops: [[0, rgb("#ffe0a8", 0.9)], [0.25, rgb("#ffb36a", 0.45)], [1, rgb("#ff9a50", 0)]] });
+  if (t === "evening") {
+    const R = p.w * 0.55;
+    p.ellipse(p.w * 0.84, horizonY - p.h * 0.01, R, R, { kind: "radial", cx: p.w * 0.84, cy: horizonY - p.h * 0.01, r: R, stops: [[0, rgb("#ffe6b4", 0.85)], [0.18, rgb("#ffbe78", 0.5)], [0.55, rgb("#ff9a50", 0.12)], [1, rgb("#ff9a50", 0)]] });
+  }
   if (t === "night") {
     for (let i = 0; i < 90; i++) {
       const x = hash01(seed, i) * p.w;
@@ -90,13 +93,20 @@ function sky(p: Painter, pal: Palette, horizonY: number, t: TimeOfDay, seed: num
     }
     p.ellipse(p.w * 0.16, p.h * 0.07, p.w * 0.035, p.w * 0.035, hex("#f4f1df"));
   }
-  // Soft clouds
+  // Soft, layered clouds: clusters of translucent puffs, lit from below at dusk
   if (t !== "night") {
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 5; i++) {
       const cx = hash01(seed, i, 11) * p.w;
-      const cy = (0.08 + hash01(seed, i, 12) * 0.25) * horizonY;
-      const cw = p.w * (0.15 + hash01(seed, i, 13) * 0.2);
-      p.ellipse(cx, cy, cw, cw * 0.18, solid(1, 1, 1, t === "evening" ? 0.12 : 0.22));
+      const cy = (0.1 + hash01(seed, i, 12) * 0.3) * horizonY;
+      const cw = p.w * (0.18 + hash01(seed, i, 13) * 0.22);
+      for (let k = 0; k < 9; k++) {
+        const ox = (hash01(seed, i * 31 + k, 14) - 0.5) * cw * 1.4;
+        const oy = (hash01(seed, i * 31 + k, 15) - 0.5) * cw * 0.12;
+        const r = cw * (0.22 + hash01(seed, i * 31 + k, 16) * 0.3);
+        const top: RGBA = t === "evening" ? [1, 0.86, 0.8, 0.07] : [1, 1, 1, 0.11];
+        const under: RGBA = t === "evening" ? [1, 0.7, 0.55, 0.06] : [0.9, 0.93, 0.97, 0.08];
+        p.ellipse(cx + ox, cy + oy, r, r * 0.42, { kind: "radial", cx: cx + ox, cy: cy + oy, r, stops: [[0, top], [0.7, under], [1, [under[0], under[1], under[2], 0]]] });
+      }
     }
   }
 }
@@ -221,6 +231,21 @@ function railwayBackground(r: ScenePartRequest): ScenePartResult {
   // Lamps on the far platform (match environment light positions 0.2 / 0.66 at y 0.47)
   const lampOn = pal.litOn;
   for (const fx of [0.2, 0.66]) lampPost(p, W * (0.5 + (fx - 0.5) / 1.2), Y(0.47), farFloor, pal, lampOn);
+
+  // Tea stall on the far platform; its kettle is the steam source (environments.ts steamSource 0.875, 0.552)
+  const X = (f: number) => W * (0.5 + (f - 0.5) / 1.2);
+  const st0 = X(0.835);
+  const st1 = X(0.915);
+  p.rect(st0, Y(0.563), st1 - st0, farFloor - Y(0.563), mat(pal, "#7a4a2a"));
+  p.rect(st0, Y(0.563), st1 - st0, H * 0.004, mat(pal, "#a8743f"));
+  p.rect(st0 + W * 0.004, Y(0.537), W * 0.004, Y(0.563) - Y(0.537), mat(pal, "#3a2a1d"));
+  p.rect(st1 - W * 0.008, Y(0.537), W * 0.004, Y(0.563) - Y(0.537), mat(pal, "#3a2a1d"));
+  p.poly([st0 - W * 0.012, Y(0.522), st1 + W * 0.012, Y(0.522), st1 + W * 0.004, Y(0.539), st0 - W * 0.004, Y(0.539)], mat(pal, "#c8452f"));
+  for (let k = 0; k < 6; k++) p.rect(st0 - W * 0.01 + k * ((st1 - st0 + W * 0.02) / 6), Y(0.522), (st1 - st0 + W * 0.02) / 12, Y(0.539) - Y(0.522), mat(pal, "#e9dcc0"), 0.85);
+  p.ellipse(X(0.875), Y(0.558), W * 0.011, H * 0.0055, mat(pal, "#aab0b6", 1.2));
+  p.rect(X(0.875) - W * 0.0025, Y(0.551), W * 0.005, H * 0.004, mat(pal, "#6c7177"));
+  for (let k = 0; k < 4; k++) p.rect(X(0.848) + k * W * 0.012, Y(0.556), W * 0.006, H * 0.007, mat(pal, "#e8e2d4")); // glasses
+  if (pal.litOn) p.ellipse(X(0.875), Y(0.543), W * 0.05, W * 0.05, { kind: "radial", cx: X(0.875), cy: Y(0.543), r: W * 0.05, stops: [[0, rgb("#fff0c0", 0.85)], [0.3, rgb("#ffcf7a", 0.35)], [1, rgb("#ffb050", 0)]] });
 
   // Track bed with sleepers and rails (behind our platform)
   const trackTop = Y(0.62);

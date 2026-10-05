@@ -38,6 +38,8 @@ export interface LayerPlan {
   lightResponse: number;
   castsShadow: boolean;
   silhouette: boolean;
+  /** Extra defocus in px at 1080 width (foreground elements right in front of the lens). */
+  extraBlur?: number;
   motion?: LayerMotion;
   character?: CharacterMotion;
   assetRole: "background" | "midground" | "foreground" | "character" | "prop";
@@ -167,19 +169,18 @@ export function planComposition(input: PlannerInput): CompositionPlan {
 
   // ---- Midground elements (not for close-ups, inserts or substitutes) ----
   let trainPassing = false;
-  let trainSource: { x: number; y: number } | undefined;
+  let passingDir = 0;
   if (!closeShot && !shot.substitute) {
     env.midground.forEach((m, i) => {
       const widthFactor = m.widthFactor ?? 1.1;
       const hFrac = m.key === "train" || m.key === "metro" ? 0.3 : 0.26;
       const travel = m.motion === "pass_left" || m.motion === "pass_right";
-      if (m.key === "train" || m.key === "metro") {
-        trainPassing = travel;
-        trainSource = { x: 0.32, y: env.groundY - 0.15 };
-      }
-      const speed = 0.07; // canvas widths per second: a departing train, not a rushing one
+      if (m.key === "train" || m.key === "metro") trainPassing = travel;
+      const speed = 0.09; // canvas widths per second (eased in): a departing train, not a rushing one
       const dir = m.motion === "pass_right" ? 1 : -1;
-      const startX = 0.5 - dir * 0.15;
+      if (travel) passingDir = dir;
+      // A passing element starts with its trailing end in frame and pulls out, revealing what is behind it.
+      const startX = travel ? (dir < 0 ? 0.8 - widthFactor / 2 : 0.2 + widthFactor / 2) : 0.5;
       const motion: LayerMotion | undefined = travel
         ? { translate: { from: [0, 0], to: [dir * speed * shot.durationSeconds, 0], startTime: 0, endTime: 1, easing: "ease_in" } }
         : { oscillate: [{ axis: "y", amplitude: 0.0006, frequency: 3.1, phase: 0 }] };
@@ -231,16 +232,24 @@ export function planComposition(input: PlannerInput): CompositionPlan {
     const refKey = characterRefKey(ctx.storyId, c);
     const r = hash01(seed, i + 7);
     const walking = shot.motion.walk && isFocus;
+    // Acting beat: a still, silent character watches something passing through the frame.
+    const watches = passingDir !== 0 && !walking && pose !== "talking" && (shot.shotType === "WIDE" || shot.shotType === "MEDIUM" || shot.shotType === "ESTABLISHING");
     const micro = characterMotionSchema.parse({
       expression,
       pose: walking ? (shot.motion.walk === "run" ? "running" : "walking") : pose,
       breathing: 0.8,
       blinkInterval: 2.8 + r * 1.6,
       headMotion: "subtle",
-      eyeDirection: pose === "talking" ? (x > 0.5 ? "camera-left" : "camera-right") : pose === "looking_down" ? "down" : "camera",
+      eyeDirection: watches ? (passingDir < 0 ? "left" : "right") : pose === "talking" ? (x > 0.5 ? "camera-left" : "camera-right") : pose === "looking_down" ? "down" : "camera",
       bodySway: 0.15,
       walk: walking ? { cycleHz: shot.motion.walk === "run" ? 1.6 : 0.9, travel: shot.motion.walk === "run" ? 0.35 : 0.18, direction: x > 0.5 ? -1 : 1, run: shot.motion.walk === "run" } : undefined,
-      headTurn: pose === "looking_back" ? { from: 0, to: -18, startTime: 0.2, endTime: 0.6, easing: "ease_in_out" } : r > 0.55 && !walking ? { from: 0, to: (r - 0.5) * 16, startTime: 0.25, endTime: 0.75, easing: "ease_in_out" } : undefined,
+      headTurn: watches
+        ? { from: 0, to: passingDir * 22, startTime: 0.12, endTime: 0.5, easing: "ease_in_out" }
+        : pose === "looking_back"
+          ? { from: 0, to: -18, startTime: 0.2, endTime: 0.6, easing: "ease_in_out" }
+          : r > 0.55 && !walking
+            ? { from: 0, to: (r - 0.5) * 16, startTime: 0.25, endTime: 0.75, easing: "ease_in_out" }
+            : undefined,
       gesture: pose === "talking" ? { type: "talk", startTime: 0.1, endTime: 0.9, easing: "ease_in_out" } : undefined,
     });
     const key = `char_${c.key}`;
@@ -315,7 +324,7 @@ export function planComposition(input: PlannerInput): CompositionPlan {
   let foregroundDepth: number | null = null;
   if (!insertShot && env.foreground.length > 0 && shot.shotType !== "EXTREME_CLOSE_UP") {
     const f = env.foreground[0];
-    const hFrac = closeShot ? 0.22 : 0.26;
+    const hFrac = closeShot ? 0.2 : 0.22;
     foregroundDepth = depth.foreground;
     layers.push({
       key: `fg_${f.key}`,
@@ -328,6 +337,7 @@ export function planComposition(input: PlannerInput): CompositionPlan {
       lightResponse: 0.55,
       castsShadow: false,
       silhouette: false,
+      extraBlur: closeShot ? 3 : 5,
       assetRole: "foreground",
       prompt: `${f.prompt}, ${style} style, transparent background`,
       negativePrompt: NEGATIVE_PROMPT,
@@ -347,7 +357,7 @@ export function planComposition(input: PlannerInput): CompositionPlan {
   const camera = cameraPreset(shot.cameraMovement, shot.cameraIntensity, shot.cameraMovement === "tracking" && focusKey ? { trackLayerKey: `char_${focusKey}` } : {});
   const text = `${scene.narratorText} ${scene.background} ${scene.location}`;
   const lighting = buildLighting({ timeOfDay: scene.timeOfDay, env, text, trainPassing, shotType: shot.shotType });
-  const { environment, fogDensity } = buildEnvironment({ env, timeOfDay: scene.timeOfDay, text, shotType: shot.shotType, seed, trainSource: trainPassing ? trainSource : undefined });
+  const { environment, fogDensity } = buildEnvironment({ env, timeOfDay: scene.timeOfDay, text, shotType: shot.shotType, seed });
   const rack = shot.cameraMovement === "rack_focus" || shot.shotType === "OVER_SHOULDER" || insertShot;
   const focus = buildFocus(shot.shotType, focusDepth, foregroundDepth, rack, focusKey ? `char_${focusKey}` : undefined);
   const effects = buildEffects(scene.emotionalTone, scene.timeOfDay);

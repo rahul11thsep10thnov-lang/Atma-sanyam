@@ -115,7 +115,6 @@ export interface EnvironmentContext {
   text: string;
   shotType: ShotType;
   seed: number;
-  trainSource?: { x: number; y: number };
 }
 
 /** EnvironmentParticleEngine presets by location, time of day, weather and shot type. */
@@ -140,9 +139,13 @@ export function buildEnvironment(c: EnvironmentContext): { environment: Environm
     add({ type: "fog", density: 1, speed: 0.04, direction: 0, lifetime: 20, opacity: 0.35, depthRange: [0.1, 0.6] });
   }
   for (const type of c.env.particles) {
-    if (type === "steam" && c.trainSource) add({ type: "steam", density: 1, speed: 0.5, direction: -90, lifetime: 3.5, opacity: 0.38, depthRange: [0.26, 0.3], color: [0.93, 0.93, 0.96], size: 0.075, source: { x: c.trainSource.x, y: c.trainSource.y, spread: 0.1 } });
-    if (type === "dust" && weather !== "rain") add({ type: "dust", density: close ? 0.5 : 0.8, speed: 0.04, direction: -20, lifetime: 7, opacity: bucket === "night" ? 0.5 : 0.3, depthRange: [0.35, 0.95], size: 0.0035, color: [1, 0.92, 0.75] });
-    if (type === "crowds" && wide) add({ type: "crowds", density: 0.7, speed: 0.025, direction: 0, lifetime: 30, opacity: 0.75, depthRange: [0.14, 0.2] });
+    if (type === "steam" && c.env.steamSource && !close) {
+      const src = c.env.steamSource;
+      add({ type: "steam", density: 0.8, speed: 0.22, direction: -90, lifetime: 3.2, opacity: 0.42, depthRange: [src.depth, src.depth + 0.01], color: [0.95, 0.95, 0.97], size: 0.03, source: { x: src.x, y: src.y, spread: 0.008 }, wind: 0.01 });
+    }
+    // dust motes hang in the air near the ground, where light pools fall
+    if (type === "dust" && weather !== "rain") add({ type: "dust", density: close ? 0.5 : 0.8, speed: 0.04, direction: -20, lifetime: 7, opacity: bucket === "night" ? 0.5 : 0.3, depthRange: [0.35, 0.95], size: 0.0035, color: [1, 0.92, 0.75], area: [-0.05, c.env.horizonY - 0.08, 1.05, 1.0] });
+    if (type === "crowds" && (wide || c.shotType === "MEDIUM")) add({ type: "crowds", density: 0.8, speed: 0.025, direction: 0, lifetime: 30, opacity: 0.85, depthRange: [0.12, 0.14], area: [-0.1, c.env.horizonY + 0.035, 1.1, c.env.horizonY + 0.055] });
     if (type === "traffic" && wide) add({ type: "traffic", density: 0.8, speed: 0.12, direction: 0, lifetime: 12, opacity: 0.8, depthRange: [0.1, 0.18] });
     if (type === "birds" && bucket !== "night" && wide) add({ type: "birds", density: 0.6, speed: 0.06, direction: -10, lifetime: 20, opacity: 0.7, depthRange: [0.04, 0.12] });
     if (type === "insects" && bucket === "night") add({ type: "insects", density: 0.6, speed: 0.08, direction: 0, lifetime: 4, opacity: 0.6, depthRange: [0.4, 0.7] });

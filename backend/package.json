@@ -18,7 +18,8 @@
     "prisma:seed": "tsx prisma/seed.ts",
     "lint": "eslint src tests --ext .ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "demo:railway": "tsx scripts/demo-railway.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
