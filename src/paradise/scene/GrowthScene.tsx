@@ -74,8 +74,9 @@ export function GrowthScene({ speciesId, elapsedMinutes, targetMinutes, width, h
   }, [sway, motion]);
 
   // the two stages in play and their sizes on screen
-  const a = spriteFor(speciesId, stage);
-  const b = spriteFor(speciesId, Math.min(7, stage + 1));
+  // before size 1 the shoot is the size-1 plant emerging from the soil (the seed sprite is never shown here)
+  const a = spriteFor(speciesId, Math.max(1, stage));
+  const b = stage === 0 ? null : spriteFor(speciesId, Math.min(7, stage + 1));
   const sizeOf = (s: typeof a) => {
     if (!s) return { w: 0, h: 0, px: 0, py: 0 };
     const g = gardenMetres(s.sprite.heightM) / s.sprite.heightM;
@@ -91,7 +92,8 @@ export function GrowthScene({ speciesId, elapsedMinutes, targetMinutes, width, h
   const sa = sizeOf(a);
   const sb = sizeOf(b);
   // continuous: the current stage grows toward the next stage's size, then the next fades in
-  const grow = 1 + frac * (sb.h && sa.h ? Math.min(1.6, sb.h / sa.h) - 1 : 0.15);
+  const emerge = Math.max(0, Math.min(1, (frac - 0.6) / 0.4));
+  const grow = stage === 0 ? 0.12 + 0.88 * emerge : 1 + frac * (sb.h && sa.h ? Math.min(1.6, sb.h / sa.h) - 1 : 0.15);
   const groundX = width / 2;
   const groundY = soilTop + 2;
   const showSeed = stage === 0 && frac < 0.6;
@@ -129,13 +131,13 @@ export function GrowthScene({ speciesId, elapsedMinutes, targetMinutes, width, h
           <Image source={PARADISE_IMAGES[a.sprite.file]} style={{ width: sa.w, height: sa.h }} resizeMode="stretch" fadeDuration={0} />
         </Animated.View>
       )}
-      {b && !showSeed && b.stage !== a?.stage && frac > 0.55 && (
+      {b && stage > 0 && b.stage !== a?.stage && frac > 0.55 && (
         <Animated.View pointerEvents="none" style={{ position: 'absolute', left: groundX - sb.px * sb.w, top: groundY - sb.py * sb.h, width: sb.w, height: sb.h, opacity: (frac - 0.55) / 0.45, transform: [{ rotate: sway.interpolate({ inputRange: [0, 1], outputRange: ['-1.2deg', '1.2deg'] }) }] }}>
           <Image source={PARADISE_IMAGES[b.sprite.file]} style={{ width: sb.w, height: sb.h }} resizeMode="stretch" fadeDuration={0} />
         </Animated.View>
       )}
       {/* a soft shadow at the foot */}
-      {!showSeed && <View pointerEvents="none" style={{ position: 'absolute', left: groundX - Math.max(20, sa.w * 0.35), top: groundY - 5, width: Math.max(40, sa.w * 0.7), height: 10, borderRadius: 999, backgroundColor: 'rgba(30,18,6,0.18)' }} />}
+      {!showSeed && <View pointerEvents="none" style={{ position: 'absolute', left: groundX - Math.max(12, sa.w * 0.35 * (stage === 0 ? grow : 1)), top: groundY - 5, width: Math.max(24, sa.w * 0.7 * (stage === 0 ? grow : 1)), height: 10, borderRadius: 999, backgroundColor: 'rgba(30,18,6,0.18)' }} />}
       <View pointerEvents="none" style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 4, backgroundColor: '#3a2412' }} />
     </View>
   );

@@ -362,4 +362,8 @@ export const ru: Partial<Record<StringKey, string>> = {
   'paradise.segment.indoor': "Комнатные / декоративные",
   'paradise.segment.fruits': "Фрукты и овощи",
   'paradise.segment.herbs': "Травы и лекарственные",
+  'session.plantDoneTitle': "Ваше растение «{name}» выросло",
+  'session.plantDoneBody': "Размер {size}: теперь у него своё место в вашем раю.",
+  'session.plantShortTitle': "Фокус завершён",
+  'session.plantShortBody': "Растение вырастает за сессии от 15 минут. Монеты ваши.",
 };

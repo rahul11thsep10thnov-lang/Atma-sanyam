@@ -82,6 +82,14 @@ export function ParadiseScene(props: ParadiseSceneProps) {
   const worldH = PLATE_H * k;
   const zoomSeg = height / worldH;
 
+  // an arriving plant: the camera centres on it rather than on the segment
+  const focusFraction = useMemo(() => {
+    if (!arrivalId || view.mode !== 'segment') return null;
+    const p = state.plants.find((x) => x.id === arrivalId);
+    if (!p || p.segment !== view.segment || p.slot < 0) return null;
+    return slotsFor(p.segment, state.layoutSeed[p.segment])[p.slot]?.x ?? null;
+  }, [arrivalId, view, state.plants, state.layoutSeed]);
+
   const cameraFor = useCallback(
     (v: SceneView, panX = 0): Camera => {
       if (v.mode === 'full') {
@@ -89,13 +97,13 @@ export function ParadiseScene(props: ParadiseSceneProps) {
         return { zoom: 1, tx: panX, ty: plateTop };
       }
       const [a, b] = SEGMENT_RANGE[v.segment];
-      const fx = ((a + b) / 2) * worldW;
+      const fx = (focusFraction ?? (a + b) / 2) * worldW;
       const fy = worldH / 2;
       const cx = width / 2;
       const cy = height / 2;
       return { zoom: zoomSeg, tx: cx - worldW / 2 - zoomSeg * (fx - worldW / 2) + panX, ty: cy - worldH / 2 - zoomSeg * (fy - worldH / 2) };
     },
-    [plateTop, worldW, worldH, width, height, zoomSeg],
+    [plateTop, worldW, worldH, width, height, zoomSeg, focusFraction],
   );
 
   const zoom = useRef(new Animated.Value(1)).current;
@@ -222,7 +230,8 @@ export function ParadiseScene(props: ParadiseSceneProps) {
         },
         onPanResponderRelease: (e, g) => {
           if (!moved.current) {
-            pick(e.nativeEvent.pageX, e.nativeEvent.pageY - 0);
+            // through the ref: the responder is created once, the plants move on every render
+            pickRef.current(e.nativeEvent.pageX, e.nativeEvent.pageY);
             return;
           }
           const [lo, hi] = bounds(viewRef.current, cam.current.zoom);
@@ -350,6 +359,9 @@ export function ParadiseScene(props: ParadiseSceneProps) {
     else if (hit?.penalty) onTapPenalty(hit.penalty);
     else onTapEmpty();
   };
+
+  const pickRef = useRef(pick);
+  pickRef.current = pick;
 
   // ---- shared sway phases (four, so the beds do not move in unison) ----
   const phases = useRef([0, 1, 2, 3].map(() => new Animated.Value(0))).current;

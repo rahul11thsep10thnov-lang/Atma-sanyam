@@ -362,4 +362,8 @@ export const ar: Partial<Record<StringKey, string>> = {
   'paradise.segment.indoor': "داخلية / زينة",
   'paradise.segment.fruits': "فواكه وخضروات",
   'paradise.segment.herbs': "أعشاب ونباتات طبية",
+  'session.plantDoneTitle': "لقد نمت {name}",
+  'session.plantDoneBody': "الحجم {size}: أصبح لها مكانها في جنتك.",
+  'session.plantShortTitle': "اكتمل التركيز",
+  'session.plantShortBody': "الجلسات التي تستمر 15 دقيقة أو أكثر تُنبت نبتة. العملات لك.",
 };

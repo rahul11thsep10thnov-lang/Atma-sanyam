@@ -116,8 +116,6 @@ def shrub_species(name, flower, size, leaf_size, leaf=None, layers=2, pot=None, 
                    bloom_scale=bloom_scale * (0.8 + 0.2 * s), stems_per_m2=stems, stem_color=stem_color)
         if low:
             holder.scale = (1.0, 1.0, 0.55)
-        if stage == 1 and not pot:
-            _mound(col, top, max(0.1, r * 1.2), seed)
         if sway:
             root["sway"] = {"amp": sway[0], "speed": sway[1]}
         return root
@@ -135,8 +133,6 @@ def tree_species(name, leaf_src, flower=None, fruit=None, heights=TREE_H, spread
             _mound(col, root, 0.26, seed)
             _stake(col, root, 0.5)
             return root
-        if stage == 1:
-            _mound(col, root, 0.2, seed)
             b = Builder()
             rng = Rng(seed)
             stem = PM.stem(f"{name}_stem")
@@ -188,8 +184,6 @@ def sized_species(name, make, heights, pot=None, seed_mound=0.2):
             _stake(col, top)
             return root
         o = make(col, seed=seed, height=heights[stage])
-        if stage == 1:
-            _mound(col, o, 0.14, seed)
         return o
     return build
 
@@ -206,8 +200,6 @@ def scaled_species(name, make, scales=(0, 0.3, 0.42, 0.55, 0.68, 0.8, 0.9, 1.0),
         o = make(col, seed=seed)
         s = scales[stage]
         o.scale = (s, s, s)
-        if stage == 1 and stake:
-            _mound(col, o, 0.14, seed)
         return o
     return build
 
@@ -242,8 +234,6 @@ def vine_species(name, fruit, size, leaf_size, leaf=None, fruit_r=0.05, stretch=
             rng = Rng(seed + 3)
             n = {5: 2, 6: 4, 7: 7}[stage]
             _spheres(col, root, rng, fruit, n, fruit_r * (0.8 if stage == 5 else 1.0), (fruit_r * 0.6, h * (0.9 if climber else 0.25)), r * 0.8, stretch, f"{name}_fruit")
-        if stage == 1:
-            _mound(col, root, 0.16, seed)
         root["sway"] = {"amp": 0.25, "speed": 0.45}
         return root
     return build
@@ -305,8 +295,6 @@ def rosette_species(name, leaf_mat_fn, n_leaves, length, width, shape=shape_swor
             if k:
                 scapes(col, top, spec=spec, name=name, count=k, blooms_per=per, buds_per=nbud, height=(flower_h or L * 1.1) * (0.75 + 0.25 * s),
                        rng=rng, face_out=face_out)
-        if stage == 1 and not pot:
-            _mound(col, top, 0.12, seed)
         root["sway"] = {"amp": 0.3, "speed": 0.5}
         return root
     return build
@@ -348,8 +336,6 @@ def _sunflower(col, stage=7, seed=1):
         elif stage >= 5:
             bloom(b, spec, mats, pts[-1] + ax * 0.01, ax, rng, (0.75 + 0.25 * SCALE[stage]) * (1 - 0.15 * k))
     _p(b.finish("sunflower_mesh", col), root)
-    if stage == 1:
-        _mound(col, root, 0.1, seed)
     root["sway"] = {"amp": 0.35, "speed": 0.4}
     return root
 

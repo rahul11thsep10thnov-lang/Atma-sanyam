@@ -382,6 +382,10 @@ export const en = {
   'paradise.segment.indoor': 'Indoor / Ornamental',
   'paradise.segment.fruits': 'Fruits & Vegetables',
   'paradise.segment.herbs': 'Herbs & Medicinal',
+  'session.plantDoneTitle': "Your {name} has grown",
+  'session.plantDoneBody': "Size {size}: it now has its own place in your paradise.",
+  'session.plantShortTitle': "Focus complete",
+  'session.plantShortBody': "Sessions of 15 minutes or more grow a plant. Your coins are yours.",
 } as const;
 
 export type StringKey = keyof typeof en;

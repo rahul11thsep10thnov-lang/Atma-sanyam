@@ -351,8 +351,8 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
       {result?.outcome === 'completed' && !placing && (
         <SessionResultSheet
           outcome="completed"
-          title={texts.sessionCompleteTitle}
-          message={texts.sessionCompleteMessage}
+          title={isPlant ? (newPlant ? t('session.plantDoneTitle', { name: newPlant.name }) : t('session.plantShortTitle')) : texts.sessionCompleteTitle}
+          message={isPlant ? (newPlant ? t('session.plantDoneBody', { size: newPlant.size }) : t('session.plantShortBody')) : texts.sessionCompleteMessage}
           lines={rewardLines}
           primaryLabel={pendingArt ? t('session.placeIt') : newPlant ? t('session.seeInGarden') : inSpace ? t('session.backTo', { space: t('space.balcony').toLowerCase() }) : isPlant ? t('session.backTo', { space: t('tabs.garden').toLowerCase() }) : t('session.backHome')}
           onPrimary={pendingArt ? startPlacing : leave}

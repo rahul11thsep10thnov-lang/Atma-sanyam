@@ -362,4 +362,8 @@ export const zh: Partial<Record<StringKey, string>> = {
   'paradise.segment.indoor': "室内 / 观赏植物",
   'paradise.segment.fruits': "水果与蔬菜",
   'paradise.segment.herbs': "草本与药用植物",
+  'session.plantDoneTitle': "你的{name}长大了",
+  'session.plantDoneBody': "尺寸 {size}：它在你的天堂里有了自己的位置。",
+  'session.plantShortTitle': "专注完成",
+  'session.plantShortBody': "专注 15 分钟或以上才会长出植物。金币归你。",
 };

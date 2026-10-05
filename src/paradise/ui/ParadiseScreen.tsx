@@ -60,6 +60,7 @@ export function ParadiseScreen() {
   const [centreRequest, setCentreRequest] = useState<{ fraction: number; nonce: number } | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const arrivalTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fade = useRef(new Animated.Value(1)).current;
 
   const motion: MotionLevel = reduced ? 'off' : (settings.gardenMotion ?? 'full');
@@ -85,11 +86,12 @@ export function ParadiseScreen() {
     setView({ mode: 'segment', segment: plant.segment });
     setArrival(id);
     setSelected(null);
-    const timer = setTimeout(() => {
+    // the welcome label waits for the camera; clearing the route param must not cancel it
+    if (arrivalTimer.current) clearTimeout(arrivalTimer.current);
+    arrivalTimer.current = setTimeout(() => {
       say(t('paradise.arrived', { name: SPECIES_BY_ID[plant.speciesId]?.name ?? plant.speciesId, size: plant.size }));
     }, 1100);
     navigation.setParams({ arrival: undefined } as never);
-    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [route.params?.arrival, state?.plants.length]);
 
@@ -108,6 +110,7 @@ export function ParadiseScreen() {
   }, []);
   useEffect(() => () => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
+    if (arrivalTimer.current) clearTimeout(arrivalTimer.current);
   }, []);
 
   const startFocus = (species: Species, minutes: number) => {

@@ -362,4 +362,8 @@ export const it: Partial<Record<StringKey, string>> = {
   'paradise.segment.indoor': "Interni / Ornamentali",
   'paradise.segment.fruits': "Frutta e verdura",
   'paradise.segment.herbs': "Erbe e piante medicinali",
+  'session.plantDoneTitle': "La tua {name} è cresciuta",
+  'session.plantDoneBody': "Taglia {size}: ora ha il suo posto nel tuo paradiso.",
+  'session.plantShortTitle': "Concentrazione completata",
+  'session.plantShortBody': "Le sessioni di 15 minuti o più fanno crescere una pianta. Le monete sono tue.",
 };
