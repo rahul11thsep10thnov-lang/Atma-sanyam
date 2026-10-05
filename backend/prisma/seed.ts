@@ -1,8 +1,10 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { SUPPORTED_LANGUAGES } from "../src/data/languages";
 import { INDIA_STATES } from "../src/data/indiaLocations";
 import { BASE_VOICES } from "../src/studio/media/voiceCatalog";
 import { DEFAULT_PROVIDER_CONFIGS } from "../src/studio/providers/defaults";
+import { DEFAULT_MODELS } from "../src/studio/models/defaultModels";
+import { DEFAULT_RENDER_PROFILES } from "../src/studio/engine25d/profiles";
 
 const prisma = new PrismaClient();
 
@@ -73,6 +75,21 @@ async function main() {
     });
   }
   console.log(`Seeded ${DEFAULT_PROVIDER_CONFIGS.length} studio provider configs.`);
+
+  // Cinematic 2.5D: render profiles and the model registry. Existing rows are
+  // never overwritten — admins own them after the first seed.
+  for (const profile of DEFAULT_RENDER_PROFILES) {
+    await prisma.renderProfile.upsert({ where: { key: profile.key }, update: {}, create: profile });
+  }
+  console.log(`Seeded ${DEFAULT_RENDER_PROFILES.length} render profiles.`);
+  for (const { licenseVerifiedAt, config, ...model } of DEFAULT_MODELS) {
+    await prisma.aiModel.upsert({
+      where: { modelId: model.modelId },
+      update: {},
+      create: { ...model, licenseVerifiedAt: licenseVerifiedAt ? new Date(licenseVerifiedAt) : null, config: (config ?? undefined) as Prisma.InputJsonValue | undefined },
+    });
+  }
+  console.log(`Seeded ${DEFAULT_MODELS.length} AI models in the model registry.`);
 }
 
 main()

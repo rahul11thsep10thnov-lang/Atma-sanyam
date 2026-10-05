@@ -536,6 +536,7 @@ model StudioStory {
   languages                     String[] // e.g. ["hi","en"]
   masterLanguage                String            @default("en")
   narratorVoiceCode             String            @default("VOICE_08")
+  productionMode                ProductionMode    @default(CINEMATIC_25D)
   sourceName                    String?
   sourceUrl                     String?
   locationText                  String?
@@ -575,6 +576,8 @@ model StudioStory {
   safetyReviews    ContentSafetyReview[]
   versions         ContentVersion[]
   jobs             GenerationJob[]
+  episodes         StudioEpisode[]
+  shots            StudioShot[]
 
   @@index([status])
   @@map("stories")
@@ -688,11 +691,13 @@ model StudioCharacter {
   appearance     Json? // fixed per story: { clothing, build, hair, accessories, palette }
   pronunciations Json? // { "hi": "…", "en": "…" }
   adminEdited    Boolean  @default(false)
+  characterRefId String? // reusable visual identity (face, wardrobe, expressions, poses)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  story       StudioStory       @relation(fields: [storyId], references: [id], onDelete: Cascade)
-  assignments VoiceAssignment[]
+  story        StudioStory         @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  assignments  VoiceAssignment[]
+  characterRef CharacterReference? @relation(fields: [characterRefId], references: [id], onDelete: SetNull)
 
   @@unique([storyId, key])
   @@map("characters")
@@ -809,13 +814,16 @@ model StudioScene {
   safetyLevel           SafetyLevel @default(SAFE)
   safetyReasons         String[]
   visualHash            String // hash of everything that affects the visual
+  episodeId             String? // cinematic mode: the episode this scene belongs to
   createdAt             DateTime    @default(now())
   updatedAt             DateTime    @updatedAt
 
   story         StudioStory    @relation(fields: [storyId], references: [id], onDelete: Cascade)
   script        StudioScript   @relation(fields: [scriptId], references: [id], onDelete: Cascade)
+  episode       StudioEpisode? @relation(fields: [episodeId], references: [id], onDelete: SetNull)
   visualPrompts VisualPrompt[]
   assets        SceneAsset[]
+  shots         StudioShot[]
 
   @@unique([scriptId, sceneNumber])
   @@map("scenes")
@@ -1076,6 +1084,17 @@ enum GenerationJobType {
   RENDER_PACKAGE
   FINAL_QC
   PUBLISH
+  // Cinematic 2.5D production
+  PLAN_SHOTS
+  GENERATE_LAYER_ASSET
+  GENERATE_MASK
+  GENERATE_DEPTH
+  INPAINT_ASSET
+  BUILD_SCENE_PACKAGE
+  RENDER_SHOT
+  RENDER_SHOT_I2V
+  ASSEMBLE_MASTER_VISUAL
+  SHOT_QC
 }
 
 enum GenerationJobStatus {
@@ -1084,32 +1103,48 @@ enum GenerationJobStatus {
   COMPLETED
   FAILED
   RETRYING
+  CANCELLED
 }
 
 model GenerationJob {
-  id           String              @id @default(cuid())
-  storyId      String
-  type         GenerationJobType
-  status       GenerationJobStatus @default(PENDING)
-  languageCode String?
-  sceneId      String?
-  payload      Json?
-  result       Json?
-  error        String?
-  attempts     Int                 @default(0)
-  maxAttempts  Int                 @default(3)
-  dedupeKey    String?             @unique
-  requestedBy  String? // admin user id, or "pipeline"
-  startedAt    DateTime?
-  finishedAt   DateTime?
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
+  id              String              @id @default(cuid())
+  storyId         String
+  type            GenerationJobType
+  status          GenerationJobStatus @default(PENDING)
+  languageCode    String?
+  sceneId         String?
+  payload         Json?
+  result          Json?
+  error           String?
+  attempts        Int                 @default(0)
+  maxAttempts     Int                 @default(3)
+  dedupeKey       String?             @unique
+  requestedBy     String? // admin user id, or "pipeline"
+  // Observability (cinematic production)
+  episodeId       String?
+  shotId          String?
+  assetId         String?
+  queue           String?
+  provider        String?
+  model           String?
+  gpuWorkerId     String?
+  progress        Int                 @default(0) // 0-100
+  cancelRequested Boolean             @default(false)
+  timeoutMs       Int?
+  durationMs      Int?
+  priority        Int                 @default(5) // 1 = highest
+  startedAt       DateTime?
+  finishedAt      DateTime?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
 
   story StudioStory     @relation(fields: [storyId], references: [id], onDelete: Cascade)
   logs  GenerationLog[]
 
   @@index([storyId, createdAt])
   @@index([status])
+  @@index([shotId])
+  @@index([queue, status])
   @@map("generation_jobs")
 }
 
@@ -1159,4 +1194,521 @@ model AiCache {
   createdAt DateTime @default(now())
 
   @@map("ai_cache")
+}
+
+// ===========================================================================
+// CINEMATIC 2.5D PRODUCTION
+// Story → Episode → Scene → Shot → ShotLayer → Asset → (animation) → Render
+// See docs/architecture/2.5d-target-architecture.md
+// ===========================================================================
+
+enum ProductionMode {
+  CLASSIC // one still per scene, Ken Burns (pre-2.5D stories)
+  CINEMATIC_25D // shots, layered scene packages, 2.5D engine
+}
+
+// Shared production state machine for episodes and shots.
+enum ProductionState {
+  DRAFT
+  PLANNED
+  ASSETS_REQUIRED
+  GENERATING_ASSETS
+  ASSETS_READY
+  DEPTH_READY
+  SHOT_READY
+  RENDERING
+  RENDERED
+  QC_PENDING
+  QC_FAILED
+  APPROVED
+  PUBLISHED
+  FAILED
+}
+
+enum ShotType {
+  ESTABLISHING
+  WIDE
+  MEDIUM
+  CLOSE_UP
+  EXTREME_CLOSE_UP
+  OVER_SHOULDER
+  POV
+  TRACKING
+  LOW_ANGLE
+  HIGH_ANGLE
+  TOP_DOWN
+  INSERT
+  CUTAWAY
+}
+
+// The brief's labels: STATIC_2_5D, 2_5D_WITH_ENVIRONMENT, 2_5D_WITH_CHARACTER, LOCAL_I2V_REQUIRED
+enum MotionDecision {
+  STATIC_2_5D
+  ENVIRONMENT_2_5D
+  CHARACTER_2_5D
+  LOCAL_I2V_REQUIRED
+}
+
+enum LayerKind {
+  BACKGROUND
+  MIDGROUND
+  CHARACTER
+  PROP
+  FOREGROUND
+}
+
+enum LocationCategory {
+  RAILWAY_STATION
+  RAILWAY_PLATFORM
+  BUS_STAND
+  POLICE_STATION
+  POLICE_BARRICADE
+  DISTRICT_HOSPITAL
+  GOVERNMENT_HOSPITAL
+  COURT
+  SCHOOL
+  COLLEGE
+  MARKET
+  TEMPLE
+  MOSQUE
+  GURUDWARA
+  CHURCH
+  AIRPORT
+  HIGHWAY
+  FARM
+  FACTORY
+  OFFICE
+  GOVERNMENT_BUILDING
+  METRO_STATION
+  RIVERBANK
+  MOUNTAIN_VILLAGE
+  URBAN_STREET
+  VILLAGE_ROAD
+  RESIDENTIAL_COLONY
+  POLICE_HEADQUARTERS
+  FIRE_STATION
+  TRAIN
+  BUS
+  AMBULANCE
+  HOME_INTERIOR
+  SUBSTITUTE
+}
+
+enum ProductionAssetKind {
+  IMAGE // RGBA layer image
+  RIG // character rig: JSON skeleton + part images
+  MASK
+  DEPTH
+  LIGHTING_MAP
+  SHADOW_MAP
+  VIDEO
+  AUDIO
+}
+
+enum AssetLifecycle {
+  REQUIRED // planned, not generated yet
+  GENERATING
+  READY // generated, awaiting editor approval
+  APPROVED // approved by an editor (resolves placeholders)
+  REJECTED
+  FAILED
+}
+
+enum AiTask {
+  IMAGE_GENERATION
+  SEGMENTATION
+  DEPTH
+  INPAINTING
+  UPSCALE
+  VIDEO_GENERATION
+}
+
+enum GpuWorkerStatus {
+  ONLINE
+  BUSY
+  DRAINING
+  OFFLINE
+}
+
+model StudioEpisode {
+  id                  String          @id @default(cuid())
+  storyId             String
+  episodeNumber       Int
+  title               String
+  synopsis            String?
+  masterScriptId      String // master script version this episode was directed from
+  status              ProductionState @default(DRAFT)
+  renderProfileKey    String          @default("portrait-1080x1920-30")
+  emotionalArc        Json? // director notes per scene
+  masterVisualAssetId String?
+  masterVisualHash    String?
+  durationSeconds     Float?
+  directorProvider    String          @default("rule-based")
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+
+  story  StudioStory   @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  scenes StudioScene[]
+  shots  StudioShot[]
+
+  @@unique([storyId, masterScriptId, episodeNumber])
+  @@map("episodes")
+}
+
+model StudioShot {
+  id                    String          @id @default(cuid())
+  storyId               String
+  episodeId             String
+  sceneId               String
+  shotNumber            Int // within the scene, from 1
+  globalNumber          Int // within the episode, from 1 (shot_001.mp4)
+  shotType              ShotType
+  durationSeconds       Float // planned
+  renderDurationSeconds Float? // actual, from the common audio timeline
+  aspectRatio           String          @default("9:16")
+  visualStyle           String
+  viewerSees            String // director: what should the viewer see
+  emotionalPurpose      String
+  cameraMovement        String // static | dolly_in | pan_left | … (engine25d CameraMoveType)
+  camera                Json // CameraSpec (start, end, easing, intensity, shake, focal length)
+  composition           Json // VisualCompositionPlanner output
+  locationRefId         String?
+  characterIds          String[] // StudioCharacter ids
+  characterRefIds       String[]
+  propRefIds            String[]
+  lightingProfile       Json
+  environmentProfile    Json // particles, fog, weather
+  animationProfile      Json // timeline
+  focusProfile          Json
+  effectsProfile        Json
+  dialogue              Json // lines spoken during this shot (master language)
+  narration             String
+  sfx                   Json
+  music                 String?
+  depthMapAssetId       String?
+  safetyLevel           SafetyLevel     @default(SAFE)
+  disclosure            String          @default("VISUAL_RECONSTRUCTION")
+  seed                  Int
+  overrides             Json? // admin overrides, re-applied on every rebuild
+  motionDecision        MotionDecision  @default(STATIC_2_5D)
+  motionReason          String          @default("")
+  motionConfidence      Float           @default(0)
+  selectedRenderer      String          @default("engine25d")
+  status                ProductionState @default(PLANNED)
+  renderStatus          RenderStatus    @default(PENDING)
+  planHash              String // hash of the director/planner inputs (reuse across script versions)
+  currentPackageId      String?
+  currentRenderId       String?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+
+  story       StudioStory        @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  episode     StudioEpisode      @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  scene       StudioScene        @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+  locationRef LocationReference? @relation(fields: [locationRefId], references: [id], onDelete: SetNull)
+  layers      ShotLayer[]
+  packages    ScenePackage[]
+  renders     ShotRender[]
+
+  @@unique([sceneId, shotNumber])
+  @@index([episodeId, globalNumber])
+  @@index([status])
+  @@map("shots")
+}
+
+model ShotLayer {
+  id             String    @id @default(cuid())
+  shotId         String
+  layerKey       String // stable within the shot: bg, mid_train, char_CHAR_01, prop_luggage, fg_railing
+  kind           LayerKind
+  name           String
+  zIndex         Int // draw order, back to front
+  depth          Float // 0 = far, 1 = nearest
+  assetId        String?
+  maskAssetId    String?
+  placement      Json // { x, y, anchor:[ax,ay], height, rotation, opacity, flipX, cover }
+  blend          String    @default("normal")
+  lightResponse  Float     @default(1)
+  castsShadow    Boolean   @default(false)
+  silhouette     Boolean   @default(false)
+  motion         Json? // layer motion (e.g. train movement) and character micro-motion
+  characterId    String? // StudioCharacter id
+  characterRefId String?
+  propRefId      String?
+  expression     String?
+  pose           String?
+  prompt         String? // visual prompt for this layer's asset
+  reuseDecision  String? // REUSE | MODIFY | GENERATE (asset reuse strategy)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  shot  StudioShot @relation(fields: [shotId], references: [id], onDelete: Cascade)
+  asset Asset?     @relation("LayerAsset", fields: [assetId], references: [id], onDelete: SetNull)
+  mask  Asset?     @relation("LayerMask", fields: [maskAssetId], references: [id], onDelete: SetNull)
+
+  @@unique([shotId, layerKey])
+  @@map("shot_layers")
+}
+
+// Any generated/uploaded visual building block. Library assets (characters,
+// locations, props) have storyId = null and are shared across stories.
+model Asset {
+  id               String              @id @default(cuid())
+  kind             ProductionAssetKind
+  role             String // background | midground | character | prop | foreground | depth | mask | rig | shot_render | master_visual
+  name             String
+  reuseKey         String // equivalent assets share a key → reused instead of regenerated
+  storyId          String?
+  status           AssetLifecycle      @default(REQUIRED)
+  isPlaceholder    Boolean             @default(false) // procedural/offline art: needs editor approval before publishing
+  currentVersionId String?
+  storageKey       String?
+  url              String?
+  width            Int?
+  height           Int?
+  hasAlpha         Boolean             @default(false)
+  metadata         Json? // e.g. ground line, light sources, rig info, eye positions
+  characterRefId   String?
+  locationRefId    String?
+  propRefId        String?
+  sourceAssetId    String? // mask/depth/variant derived from this asset
+  approvedBy       String?
+  approvedAt       DateTime?
+  failureReason    String?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  versions   AssetVersion[]
+  layers     ShotLayer[]    @relation("LayerAsset")
+  maskLayers ShotLayer[]    @relation("LayerMask")
+
+  @@index([reuseKey, status])
+  @@index([kind, role])
+  @@index([storyId])
+  @@map("assets")
+}
+
+// Every generation is recorded so an admin can reproduce it exactly.
+model AssetVersion {
+  id             String   @id @default(cuid())
+  assetId        String
+  version        Int
+  storageKey     String
+  url            String
+  generator      String // provider key: comfyui | http-inference | procedural
+  modelId        String // AiModel.modelId
+  modelVersion   String
+  license        String
+  commercialUse  Boolean
+  seed           Int
+  prompt         String
+  negativePrompt String
+  parameters     Json
+  references     Json // reference assets used (character/location/wardrobe)
+  gpuWorkerId    String?
+  durationMs     Int?
+  contentHash    String
+  createdAt      DateTime @default(now())
+
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@unique([assetId, version])
+  @@map("asset_versions")
+}
+
+model ScenePackage {
+  id            String   @id @default(cuid())
+  shotId        String
+  version       Int
+  manifest      Json // engine25d ScenePackageManifest
+  storagePrefix String // studio/<story>/packages/SHOT_001/v1/
+  contentHash   String
+  status        String   @default("READY") // BUILDING | READY | FAILED
+  issues        Json? // package-level QC findings
+  createdAt     DateTime @default(now())
+
+  shot StudioShot @relation(fields: [shotId], references: [id], onDelete: Cascade)
+
+  @@unique([shotId, version])
+  @@index([contentHash])
+  @@map("scene_packages")
+}
+
+model ShotRender {
+  id              String       @id @default(cuid())
+  shotId          String
+  version         Int
+  renderer        String // engine25d | i2v | i2v+engine25d
+  status          RenderStatus @default(PENDING)
+  preview         Boolean      @default(false)
+  storageKey      String?
+  url             String?
+  thumbnailUrl    String?
+  width           Int
+  height          Int
+  fps             Int
+  frames          Int?
+  durationSeconds Float?
+  inputsHash      String
+  packageId       String?
+  renderMs        Int?
+  qcReport        Json?
+  failureReason   String?
+  isCurrent       Boolean      @default(false)
+  createdAt       DateTime     @default(now())
+
+  shot StudioShot @relation(fields: [shotId], references: [id], onDelete: Cascade)
+
+  @@index([shotId, isCurrent])
+  @@index([inputsHash])
+  @@map("shot_renders")
+}
+
+model CharacterReference {
+  id               String   @id @default(cuid())
+  key              String   @unique // CHARACTER_<hash> or generic:<role>:<gender>:<age>
+  name             String
+  description      String
+  gender           Gender   @default(UNKNOWN)
+  ageGroup         AgeGroup @default(UNKNOWN)
+  build            String   @default("average")
+  skinTone         String   @default("medium-brown")
+  hair             String
+  clothing         Json // wardrobe: { id, top, bottom, colors, uniform? }
+  accessories      String[]
+  occupation       String?
+  voiceCode        String?
+  styleKey         String // visual style this reference was created in
+  seed             Int
+  isGeneric        Boolean  @default(false) // reusable across stories (unnamed officials, crowds)
+  masterAssetId    String? // master reference image / rig
+  rigAssetId       String?
+  expressionAssets Json? // { expression: assetId } (AI path variants)
+  poseAssets       Json? // { "pose:expression": assetId }
+  referenceImages  Json? // [{ assetId, purpose }]
+  status           String   @default("ACTIVE")
+  usageCount       Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  characters StudioCharacter[]
+
+  @@map("character_references")
+}
+
+model LocationReference {
+  id          String           @id @default(cuid())
+  key         String           @unique // <CATEGORY>:<region>:<timeOfDay bucket>:<variant>
+  category    LocationCategory
+  name        String
+  description String
+  region      String?
+  timeOfDay   String // day | dusk | night
+  styleKey    String
+  seed        Int
+  layerAssets Json? // { background: assetId, midground: [assetId], foreground: [assetId], depth: assetId }
+  metadata    Json? // groundY, horizonY, lights, steam/smoke sources, character slots
+  status      String           @default("ACTIVE")
+  usageCount  Int              @default(0)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  shots StudioShot[]
+
+  @@index([category])
+  @@map("location_references")
+}
+
+model PropReference {
+  id          String   @id @default(cuid())
+  key         String   @unique // prop:<name>:<style>
+  name        String
+  category    String
+  description String
+  styleKey    String
+  seed        Int
+  assetId     String?
+  metadata    Json?
+  status      String   @default("ACTIVE")
+  usageCount  Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("prop_references")
+}
+
+model RenderProfile {
+  id          String   @id @default(cuid())
+  key         String   @unique // portrait-1080x1920-30
+  name        String
+  width       Int
+  height      Int
+  fps         Int
+  aspectRatio String
+  crf         Int      @default(20)
+  preset      String   @default("medium")
+  isDefault   Boolean  @default(false)
+  isPreview   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@map("render_profiles")
+}
+
+// Administrator-controlled model registry. Licence facts are recorded, never assumed.
+model AiModel {
+  id                   String    @id @default(cuid())
+  modelId              String    @unique
+  name                 String
+  provider             String // comfyui | http-inference | procedural
+  task                 AiTask
+  version              String
+  endpoint             String? // overrides the provider's default base URL
+  workflow             String? // ComfyUI workflow template file name
+  license              String
+  licenseUrl           String?
+  licenseVerifiedAt    DateTime?
+  licenseNotes         String?
+  commercialUseAllowed Boolean   @default(false)
+  productionApproved   Boolean   @default(false)
+  attributionRequired  Boolean   @default(false)
+  attributionText      String?
+  redistributionNotes  String?
+  localOnly            Boolean   @default(true)
+  gpuRequirement       String? // e.g. "NVIDIA, CUDA 12"
+  recommendedVramGb    Float     @default(0)
+  qualityScore         Int       @default(50)
+  speedScore           Int       @default(50)
+  enabled              Boolean   @default(true)
+  isDefault            Boolean   @default(false)
+  overrideApproved     Boolean   @default(false) // admin explicitly allows production use despite licence status
+  overrideReason       String?
+  overrideBy           String?
+  config               Json? // provider-specific settings (steps, sampler, …)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  @@index([task, enabled])
+  @@map("ai_models")
+}
+
+model GpuWorker {
+  id                String          @id @default(cuid())
+  workerId          String          @unique
+  hostname          String
+  gpuName           String
+  gpuIndex          Int             @default(0)
+  vramTotalGb       Float
+  vramFreeGb        Float
+  loadedModels      String[]
+  queues            String[]
+  endpoint          String? // internal inference endpoint this worker drives (never public)
+  status            GpuWorkerStatus @default(ONLINE)
+  runningJobs       Int             @default(0)
+  maxConcurrentJobs Int             @default(1)
+  completedJobs     Int             @default(0)
+  failedJobs        Int             @default(0)
+  lastHeartbeatAt   DateTime        @default(now())
+  startedAt         DateTime        @default(now())
+
+  @@map("gpu_workers")
 }
