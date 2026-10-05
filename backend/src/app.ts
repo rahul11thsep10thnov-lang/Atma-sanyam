@@ -14,8 +14,10 @@ export interface AppOptions {
   logRequests?: boolean;
 }
 
-// Routes that accept large bodies parse JSON themselves with a higher limit.
+// Routes that accept large bodies parse JSON themselves with a higher limit;
+// the payment webhook needs the raw bytes to check Razorpay's signature.
 const LARGE_BODY_ROUTES = /^\/api\/admin\/(imports|source-materials)(\/|$)/;
+const RAW_BODY_ROUTES = /^\/api\/enroll\/razorpay\/webhook$/;
 
 export function createApp(deps: AppDeps, options: AppOptions = {}) {
   const app = express();
@@ -33,7 +35,7 @@ export function createApp(deps: AppDeps, options: AppOptions = {}) {
     })
   );
   const smallJson = express.json({ limit: '100kb' });
-  app.use((req, res, next) => (LARGE_BODY_ROUTES.test(req.path) ? next() : smallJson(req, res, next)));
+  app.use((req, res, next) => (LARGE_BODY_ROUTES.test(req.path) || RAW_BODY_ROUTES.test(req.path) ? next() : smallJson(req, res, next)));
   app.use(requestLogger(options.logRequests ?? deps.env.NODE_ENV !== 'test'));
 
   const auth = createAuth(deps);

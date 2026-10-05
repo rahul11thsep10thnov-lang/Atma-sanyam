@@ -32,7 +32,7 @@ export interface Alert {
 }
 
 /** Warnings that still need a person. Every error-level event alerts. */
-const ALERT_WARNINGS = new Set(['generation.failed', 'enroll.signature_invalid']);
+const ALERT_WARNINGS = new Set(['generation.failed', 'enroll.signature_invalid', 'enroll.webhook_signature_invalid', 'enroll.webhook_unknown_order']);
 
 const TITLES: Record<string, string> = {
   'request.failed': 'Server error (500) on an API request',
@@ -47,6 +47,9 @@ const TITLES: Record<string, string> = {
   'generation.failed': 'A question-generation job failed',
   'enroll.signature_invalid': 'A payment signature did not verify',
   'enroll.order_failed': 'Razorpay refused to create an order',
+  'enroll.webhook_signature_invalid': 'A Razorpay webhook had an invalid signature (check RAZORPAY_WEBHOOK_SECRET)',
+  'enroll.webhook_unknown_order': 'Razorpay reported a payment for an order this server does not know',
+  'enroll.webhook_amount_mismatch': 'Razorpay reported a paid amount that does not match the order — plan NOT activated',
   'alert.test': 'Test alert from the admin console',
 };
 

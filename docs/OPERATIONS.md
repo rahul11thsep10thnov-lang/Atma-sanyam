@@ -56,6 +56,8 @@ delivered.
 | Generation worker cannot read its queue / a batch crashed | The worker is unhealthy | Restart the API/worker; check database |
 | A payment signature did not verify | Someone sent a Razorpay confirmation that did not match. One-offs can be a tampered request; several in a row mean the key secret is wrong | Compare `RAZORPAY_KEY_SECRET` with the Razorpay dashboard; check the order in Razorpay |
 | Razorpay refused to create an order | The Razorpay API answered with an error | Razorpay dashboard / key status |
+| A Razorpay webhook had an invalid signature | `RAZORPAY_WEBHOOK_SECRET` differs from the secret in Razorpay → Webhooks, or someone is posting fake webhooks | Re-copy the secret on both sides |
+| Razorpay reported a payment for an unknown order / an amount that does not match — plan NOT activated | The webhook named an order this server never created, or the paid amount differs from the order | Look the order up in Razorpay; grant the plan by hand (Users) only after checking the payment |
 | Nightly backup FAILED (from GitHub) | The dump, encryption or restore check failed | Open the linked run; see §2 |
 | URL is DOWN / STILL DOWN / back up (from GitHub) | Uptime check | §3 |
 

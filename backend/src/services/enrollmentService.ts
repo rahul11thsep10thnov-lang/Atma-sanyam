@@ -171,7 +171,9 @@ export async function confirmOrder(
     if (!input.paymentId || !input.signature) throw badRequest('Payment id and signature are required.');
     if (!sub.providerOrderId || !verifyRazorpaySignature(env, sub.providerOrderId, input.paymentId, input.signature)) {
       log.warn('enroll.signature_invalid', { userId, orderId: sub.id });
-      throw unprocessable('Payment could not be verified. If money was deducted, it will be refunded automatically.');
+      throw unprocessable(
+        `Payment verify nahi ho paya. Agar paise kat gaye hain to plan thodi der mein apne-aap active ho jayega; na ho to support ko order no. ${sub.id.slice(0, 8)} batayein.`
+      );
     }
   } else if (sub.provider === 'dev') {
     if (!env.ENROLL_DEV_ACTIVATE) throw conflict('Dev activation is disabled on this server.');
@@ -179,16 +181,69 @@ export async function confirmOrder(
     throw conflict('This order can no longer be completed.');
   }
 
+  return publicSubscription(await activatePending(db, sub, input.paymentId ?? null, 'confirm'));
+}
+
+/** pending → active, exactly once: the browser's confirmation and Razorpay's
+ * webhook can arrive together, and only the first one starts the plan. */
+async function activatePending(db: Db, sub: typeof subscriptions.$inferSelect, paymentId: string | null, via: 'confirm' | 'webhook') {
   const settings = await getSiteSettings(db);
   const now = new Date();
   const expiresAt = new Date(now.getTime() + settings.plan.durationDays * 86_400_000);
   const [active] = await db
     .update(subscriptions)
-    .set({ status: 'active', providerPaymentId: input.paymentId ?? null, startsAt: now, expiresAt, updatedAt: now })
-    .where(eq(subscriptions.id, sub.id))
+    .set({ status: 'active', providerPaymentId: paymentId, startsAt: now, expiresAt, updatedAt: now })
+    .where(and(eq(subscriptions.id, sub.id), eq(subscriptions.status, 'pending')))
     .returning();
-  log.info('enroll.activated', { userId, provider: sub.provider, expiresAt: expiresAt.toISOString() });
-  return publicSubscription(active!);
+  if (active) {
+    log.info('enroll.activated', { userId: sub.userId, provider: sub.provider, via, expiresAt: expiresAt.toISOString() });
+    return active;
+  }
+  const [current] = await db.select().from(subscriptions).where(eq(subscriptions.id, sub.id)).limit(1);
+  if (current?.status === 'active') return current;
+  throw conflict('This order can no longer be completed.');
+}
+
+/** True when `signature` is Razorpay's HMAC-SHA256 of the raw webhook body. */
+export function verifyRazorpayWebhook(secret: string, rawBody: Buffer, signature: string): boolean {
+  const expected = Buffer.from(createHmac('sha256', secret).update(rawBody).digest('hex'));
+  const given = Buffer.from(signature);
+  return expected.length === given.length && timingSafeEqual(expected, given);
+}
+
+interface RazorpayWebhook {
+  event?: string;
+  payload?: {
+    payment?: { entity?: { id?: string; order_id?: string; amount?: number; currency?: string; status?: string } };
+    order?: { entity?: { id?: string; amount_paid?: number; currency?: string; status?: string } };
+  };
+}
+
+/** Razorpay webhook (`order.paid`, `payment.captured`): activates the plan
+ * even when the buyer's browser closed before it could confirm. The caller
+ * has already verified the signature. Unknown orders are acknowledged and
+ * ignored so Razorpay stops retrying. */
+export async function handleRazorpayWebhook(db: Db, body: RazorpayWebhook): Promise<{ handled: boolean; reason?: string }> {
+  if (body.event !== 'order.paid' && body.event !== 'payment.captured') return { handled: false, reason: 'event ignored' };
+  const payment = body.payload?.payment?.entity;
+  const orderId = body.payload?.order?.entity?.id ?? payment?.order_id;
+  if (!orderId || !payment?.id) return { handled: false, reason: 'no order' };
+  const [sub] = await db.select().from(subscriptions).where(eq(subscriptions.providerOrderId, orderId)).limit(1);
+  if (!sub || sub.provider !== 'razorpay') {
+    log.warn('enroll.webhook_unknown_order', { orderId });
+    return { handled: false, reason: 'unknown order' };
+  }
+  if (sub.status === 'active') return { handled: true };
+  if (sub.status !== 'pending') return { handled: false, reason: `order is ${sub.status}` };
+  // The paid amount must be what this order asked for.
+  const paise = body.event === 'order.paid' ? body.payload?.order?.entity?.amount_paid : payment.amount;
+  const currency = body.event === 'order.paid' ? body.payload?.order?.entity?.currency : payment.currency;
+  if (paise !== sub.amountInr * 100 || currency !== 'INR') {
+    log.error('enroll.webhook_amount_mismatch', { orderId: sub.id, message: `paid ${paise ?? '?'} ${currency ?? '?'}, expected ${sub.amountInr * 100} INR (paise)` });
+    return { handled: false, reason: 'amount mismatch' };
+  }
+  await activatePending(db, sub, payment.id, 'webhook');
+  return { handled: true };
 }
 
 /** Admin: activate the plan for a user without a payment (support cases). */

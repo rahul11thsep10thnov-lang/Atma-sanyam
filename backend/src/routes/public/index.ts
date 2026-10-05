@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import express, { Router } from 'express';
 import { and, asc, eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { chapters, exams, subjects } from '../../database/schema.js';
@@ -10,7 +10,7 @@ import type { RateLimits } from '../../middleware/rateLimits.js';
 import { getResult, listAttempts, startAttempt, submitAttempt } from '../../services/attemptService.js';
 import { getMockTest, listMockTests } from '../../services/mockTestService.js';
 import { guestSignIn, linkSupabase, logoutUser, profile } from '../../services/userService.js';
-import { assertCanStart, confirmOrder, createOrder, getEntitlement } from '../../services/enrollmentService.js';
+import { assertCanStart, confirmOrder, createOrder, getEntitlement, handleRazorpayWebhook, verifyRazorpayWebhook } from '../../services/enrollmentService.js';
 import { getSiteSettings } from '../../services/siteSettingsService.js';
 import { mockTests } from '../../database/schema.js';
 import type { AppDeps } from '../../types.js';
@@ -99,6 +99,25 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: RateLimits) {
     );
     const subscription = await confirmOrder(db, env, req.user!.id, body);
     res.json({ subscription, entitlement: await getEntitlement(db, req.user!.id) });
+  });
+
+  // Server-to-server from Razorpay. Authenticated by the HMAC of the raw body
+  // (X-Razorpay-Signature, RAZORPAY_WEBHOOK_SECRET), not by a session.
+  r.post('/enroll/razorpay/webhook', express.raw({ type: '*/*', limit: '100kb' }), async (req, res) => {
+    if (!env.RAZORPAY_WEBHOOK_SECRET) throw notFound();
+    const signature = req.get('x-razorpay-signature') ?? '';
+    const raw = Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0);
+    if (!/^[0-9a-f]{64}$/.test(signature) || !verifyRazorpayWebhook(env.RAZORPAY_WEBHOOK_SECRET, raw, signature)) {
+      log.warn('enroll.webhook_signature_invalid', {});
+      throw badRequest('Invalid signature');
+    }
+    let body: unknown;
+    try {
+      body = JSON.parse(raw.toString('utf8'));
+    } catch {
+      throw badRequest('Malformed JSON body');
+    }
+    res.json(await handleRazorpayWebhook(db, body as Parameters<typeof handleRazorpayWebhook>[1]));
   });
 
   // --- Catalogue ------------------------------------------------------------

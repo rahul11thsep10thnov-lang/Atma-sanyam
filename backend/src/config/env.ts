@@ -79,6 +79,10 @@ const envSchema = z.object({
   // website only ever receives the public key id inside an order response.
   RAZORPAY_KEY_ID: optionalString,
   RAZORPAY_KEY_SECRET: optionalString,
+  // Razorpay → Settings → Webhooks: URL https://<api>/api/enroll/razorpay/webhook,
+  // events order.paid + payment.captured, and this secret. Activates plans
+  // whose buyer closed the browser before the confirmation reached us.
+  RAZORPAY_WEBHOOK_SECRET: optionalString,
   // Without Razorpay keys, enrolment can be completed with a "dev" order so
   // the flow can be tested locally. Never on in production unless set.
   ENROLL_DEV_ACTIVATE: bool(false),

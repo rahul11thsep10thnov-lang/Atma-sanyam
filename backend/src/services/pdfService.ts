@@ -10,7 +10,8 @@ import { audit } from '../lib/audit.js';
 import { notFound, unprocessable } from '../lib/httpError.js';
 import { LANGUAGE_MAP } from '../lib/languages.js';
 import { getMockTest } from './mockTestService.js';
-import { renderPaperPdf, type PaperTest, type PdfVariant } from './pdf/paperPdf.js';
+import type { PaperTest, PdfVariant } from './pdf/paperPdf.js';
+import { renderPaperPdfInWorker } from './pdf/renderPdf.js';
 
 /** Bump when the PDF layout changes so older files show as outdated. */
 const LAYOUT_VERSION = 1;
@@ -99,7 +100,7 @@ export async function createTestPdf(db: Db, testId: string, input: { variant: Pd
   const t = await loadPaperTest(db, testId);
   if (!t.questions.length) throw unprocessable('This test has no questions to print.');
   const showDetails = input.variant !== 'paper' && input.showDetails;
-  const { data, pages } = await renderPaperPdf(t, { variant: input.variant, showDetails });
+  const { data, pages } = await renderPaperPdfInWorker(t, { variant: input.variant, showDetails });
   const now = new Date();
   const [row] = await db
     .insert(mockTestPdfs)

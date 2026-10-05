@@ -273,6 +273,15 @@ struck through). "हमसे जुड़िये" goes to login first if nee
   checkout result is verified on the server (HMAC signature) by
   `POST /api/enroll/confirm` before the plan is activated. Set
   `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET` in `backend/.env`.
+- **Webhook (set it up before launch).** If the buyer's browser closes or
+  loses network after paying, the confirmation never arrives; Razorpay's
+  webhook activates the plan instead. Razorpay Dashboard → Settings →
+  Webhooks → *Add*: URL `https://<your API>/api/enroll/razorpay/webhook`,
+  events **order.paid** and **payment.captured**, a secret of your choice →
+  set the same value as `RAZORPAY_WEBHOOK_SECRET` on the API. The API checks
+  the signature over the raw body and that the paid amount matches the
+  order, and activates each order once (webhook and browser can both
+  arrive). Without the secret the route answers 404.
 - Without Razorpay keys, `ENROLL_DEV_ACTIVATE=true` (written by `npm run
   setup`) lets you complete enrolment with a dev order for testing. Keep
   it `false` in production.
