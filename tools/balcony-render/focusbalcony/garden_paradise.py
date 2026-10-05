@@ -443,8 +443,8 @@ TREES = {
     "palm": sized_species("palm", lambda col, seed, height: _frond_palm(col, seed, height, "palm", trunk=0.55), [0, 0.4, 0.8, 1.3, 2.0, 2.7, 3.4, 4.0]),
     "coconut": sized_species("coconut", lambda col, seed, height: _frond_palm(col, seed, height, "coconut", trunk=0.7, nuts=True), [0, 0.5, 1.0, 1.7, 2.6, 3.5, 4.4, 5.2]),
     "maple": tree_species("maple", lambda: _leaf("maple_leaf", (0.35, 0.07, 0.03), (0.75, 0.22, 0.08), 0.45, 0.4), leaf_size=0.1, leaves_per_m=180, spread=56, heights=[0, 0.45, 1.1, 2.0, 2.9, 3.8, 4.6, 5.4]),
-    "cedar": tree_species("cedar", lambda: _leaf("cedar_leaf", (0.03, 0.07, 0.03), (0.08, 0.15, 0.07), 0.6, 0.2), leaf_shape=shape_lanceolate, leaf_size=0.05, leaves_per_m=360, spread=85, up=0.05, length_ratio=0.5, crown_start=0.15, children=(6, 9), heights=[0, 0.5, 1.2, 2.2, 3.3, 4.4, 5.4, 6.4]),
-    "pine": tree_species("pine", lambda: _leaf("pine_leaf", (0.04, 0.08, 0.035), (0.1, 0.18, 0.08), 0.6, 0.2), leaf_shape=shape_sword, leaf_size=0.06, leaves_per_m=320, spread=80, up=0.1, length_ratio=0.45, crown_start=0.3, children=(6, 8), heights=[0, 0.5, 1.3, 2.4, 3.6, 4.8, 5.8, 6.8]),
+    "cedar": sized_species("cedar", lambda col, seed, height: _column_conifer(col, seed, height, "cedar", 0.3, ((0.025, 0.06, 0.03), (0.07, 0.14, 0.07)), 1.2, 0.2, cone=True), [0, 0.5, 1.2, 2.2, 3.3, 4.4, 5.4, 6.4]),
+    "pine": sized_species("pine", lambda col, seed, height: _column_conifer(col, seed, height, "pine", 0.22, ((0.03, 0.07, 0.03), (0.09, 0.17, 0.07)), 1.0, 0.1, cone=True), [0, 0.5, 1.3, 2.4, 3.6, 4.8, 5.8, 6.8]),
     "cypress": sized_species("cypress", lambda col, seed, height: _column_conifer(col, seed, height), [0, 0.45, 1.1, 1.9, 2.8, 3.7, 4.6, 5.5]),
     "magnolia": tree_species("magnolia", lambda: _leaf("magnolia_leaf", (0.03, 0.07, 0.02), (0.09, 0.18, 0.05), 0.3, 0.3, 0.4), flower=(0.99, 0.96, 0.9), flower_from=5, leaf_size=0.14, leaves_per_m=120, spread=55, heights=[0, 0.45, 1.0, 1.8, 2.6, 3.4, 4.1, 4.8]),
     "amaltas": tree_species("amaltas", lambda: _leaf("amaltas_leaf", (0.05, 0.1, 0.03), (0.15, 0.26, 0.07), 0.45, 0.4), flower=(0.98, 0.85, 0.15), flower_from=5, bloom_density=(0.7, 1.0), leaf_size=0.09, leaves_per_m=150, spread=60, droop=0.35, heights=[0, 0.5, 1.2, 2.0, 3.0, 4.0, 4.8, 5.6]),
@@ -532,7 +532,7 @@ def _papaya(col, seed, height):
     return root
 
 
-def _column_conifer(col, seed, height, name="cypress", width=0.12, leaf=((0.02, 0.05, 0.02), (0.06, 0.12, 0.05)), leaf_scale=1.0, droop=0.0):
+def _column_conifer(col, seed, height, name="cypress", width=0.12, leaf=((0.02, 0.05, 0.02), (0.06, 0.12, 0.05)), leaf_scale=1.0, droop=0.0, cone=False):
     """A columnar tree: the Italian cypress (a dense, narrow flame of dark
     foliage) or the weeping ashoka (a tall column of drooping glossy leaves)."""
     rng = Rng(seed)
@@ -545,12 +545,17 @@ def _column_conifer(col, seed, height, name="cypress", width=0.12, leaf=((0.02, 
     lm = _leaf(f"{name}_leaf", leaf[0], leaf[1], 0.45 if droop else 0.6, 0.25, 0.3 if droop else 0.0)
     R = height * width
     core = M.matte((0.008, 0.018, 0.008), 1.0, "conifer_core")
+    def prof(t):
+        if cone:  # a broad skirt tapering to a leader, with soft tiers
+            return R * (1 - t) ** 0.85 * (0.9 + 0.1 * math.cos(t * 14)) + 0.01
+        return R * math.sin(math.pi * min(1, (t * 0.92 + 0.08))) ** 0.7 * (1 - 0.15 * t)
+
     rings, seg = 12, 14
     pts, uvs = [], []
     for j in range(rings + 1):
         t = j / rings
         z = trunk + t * (height - trunk)
-        r = R * math.sin(math.pi * min(1, (t * 0.92 + 0.08))) ** 0.7 * (1 - 0.15 * t)
+        r = prof(t)
         pts.append([Vector((math.cos(2 * math.pi * i / seg) * r * 0.8, math.sin(2 * math.pi * i / seg) * r * 0.8, z)) for i in range(seg)])
         uvs.append([(i / seg, t) for i in range(seg)])
     b.grid(pts, uvs, core, closed_u=True)
@@ -558,7 +563,7 @@ def _column_conifer(col, seed, height, name="cypress", width=0.12, leaf=((0.02, 
     for i in range(n):
         t = rng.random() ** 0.9
         z = trunk + t * (height - trunk)
-        r = R * math.sin(math.pi * min(1, (t * 0.92 + 0.08))) ** 0.7 * (1 - 0.15 * t)
+        r = prof(t)
         a = rng.uniform(0, 2 * math.pi)
         p = Vector((math.cos(a) * r, math.sin(a) * r, z))
         out = Vector((math.cos(a), math.sin(a), 0.6 - 1.2 * droop)).normalized()
