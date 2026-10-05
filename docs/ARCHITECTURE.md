@@ -47,7 +47,8 @@ Design choices:
     ├── config/env.ts     Public build-time config (EXPO_PUBLIC_*)
     ├── content/          Library: api (real API or offline mock), disk cache, hooks, UI
     ├── context/          Settings, RemoteConfig, Auth
-    ├── garden/           The 3D garden: model, sprite pack, three.js scene, tab
+    ├── growth/           size.ts: the seven growth sizes (the single source of truth)
+    ├── paradise/         The Paradise Garden: species, beds and slots, plants, scenes, tab (docs/PARADISE_GARDEN.md)
     ├── gl/               three.js on expo-gl: renderer hook, texture loading
     ├── hooks/            useFocusTimer
     ├── museum/           The ring gallery: model, curated store, three.js scene, tab

@@ -171,7 +171,19 @@ export function SettingsScreen() {
 
       <Section title={t('settings.focusSessions')}>
         <SettingToggle icon="bell" label={t('settings.reminders')} hint={t('settings.remindersHint')} value={settings.notificationsEnabled} onValueChange={toggleNotifications} />
-        <SettingToggle icon="music" label={t('settings.sound')} hint={t('settings.soundHint')} value={settings.soundEnabled} onValueChange={(v) => updateSettings({ soundEnabled: v })} last />
+        <SettingToggle icon="music" label={t('settings.sound')} hint={t('settings.soundHint')} value={settings.soundEnabled} onValueChange={(v) => updateSettings({ soundEnabled: v })} />
+        <SettingBlock icon="wind" label={t('settings.gardenMotion')} hint={t('settings.gardenMotionHint')} last>
+          <SegmentedControl<'full' | 'calm' | 'off'>
+            value={settings.gardenMotion ?? 'full'}
+            onChange={(v) => updateSettings({ gardenMotion: v })}
+            accessibilityLabel={t('settings.gardenMotion')}
+            segments={[
+              { value: 'full', label: t('settings.motion.full') },
+              { value: 'calm', label: t('settings.motion.calm') },
+              { value: 'off', label: t('settings.motion.off') },
+            ]}
+          />
+        </SettingBlock>
       </Section>
 
       <Section title={t('settings.appearance')}>

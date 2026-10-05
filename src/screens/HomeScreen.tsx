@@ -39,7 +39,7 @@ export function HomeScreen() {
   useLanguage();
   const [duration, setDuration] = useState(30);
   const [mode, setMode] = useState<Mode>('plants');
-  const [plant, setPlant] = useState<PlantPick | null>({ space: 'balcony', itemId: null, name: '' });
+  const [plant, setPlant] = useState<PlantPick | null>({ kind: 'balcony' });
   const [picture, setPicture] = useState<JigsawPick | null>(null);
 
   // The Start button breathes, very slowly, so it reads as alive — not as a
@@ -69,7 +69,7 @@ export function HomeScreen() {
   };
 
   const resolveImage = (): ImageRef | null => {
-    if (mode === 'plants') return plant ? { kind: 'space', space: plant.space } : null;
+    if (mode === 'plants') return plant ? (plant.kind === 'balcony' ? { kind: 'space', space: 'balcony' } : { kind: 'plant', speciesId: plant.speciesId }) : null;
     return picture;
   };
 
@@ -109,7 +109,7 @@ export function HomeScreen() {
           />
           <View style={styles.modeBody}>
             {mode === 'plants' ? (
-              <GrowPlantsTab selected={plant} onPick={setPlant} />
+              <GrowPlantsTab selected={plant} onPick={setPlant} onSeeAll={() => navigation.navigate('Tabs', { screen: 'Garden' })} />
             ) : (
               <JigsawPicturesTab selected={picture} onPick={setPicture} onSeeAll={(c) => openLibrary(c?.id)} />
             )}

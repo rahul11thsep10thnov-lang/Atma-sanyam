@@ -51,7 +51,7 @@ def _flower_mat(name, color, center=(0.95, 0.75, 0.2)):
     base = t.mix_color(t.map_range((sep, "Y"), 0.0, 0.35, 0.0, 1.0), center, color)
     var = t.node("ShaderNodeAttribute", attribute_name="var")
     base = t.mix_color(t.math("MULTIPLY", (var, "Fac"), 0.35), base, tuple(min(1, c * 1.25) for c in color))
-    p = t.principled(base, 0.55, None, Subsurface_Weight=0.2, Subsurface_Radius=(0.02, 0.01, 0.005))
+    p = t.principled(base, 0.55, None)  # the translucent mix gives the backlight; SSS costs minutes per sprite
     tr = t.node("ShaderNodeBsdfTranslucent", {"Color": tuple(c * 0.8 for c in color)})
     mix = t.node("ShaderNodeMixShader")
     t.set(mix, 0, 0.3)

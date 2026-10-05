@@ -4,9 +4,8 @@
 // coin per focused minute); the rupee value is shown in the inventory.
 import { ImageSourcePropType } from 'react-native';
 import { SpaceId } from './packTypes';
-import { EXTRA_STORE } from '../garden/sprites.generated';
 
-/** The photographed spaces (the garden lives in src/garden). */
+/** The photographed spaces (the Garden tab is the Paradise Garden, src/paradise). */
 export const SPACES: SpaceId[] = ['balcony'];
 
 export interface StoreEntry {
@@ -83,10 +82,6 @@ export const STORE: Record<string, StoreEntry> = {
   urli_bowl: { spaces: BG, coins: 70, unlockMinutes: 120, blurb: 'A brass urli with floating marigolds.' },
   diya_stand: { spaces: G, coins: 65, unlockMinutes: 90, blurb: 'A brass stand of five clay diyas. Lit at night.' },
   matka_cluster: { spaces: G, coins: 55, unlockMinutes: 60, blurb: 'Traditional clay matkas, one with tulsi.' },
-
-  // ---- the twenty-six newer garden plants (rendered as sprites for the 3D garden) ----
-  ...Object.fromEntries(Object.entries(EXTRA_STORE).map(([id, e]) => [id, { spaces: G, coins: e.coins, unlockMinutes: e.unlockMinutes, blurb: e.blurb }])),
-  planter_stand: { spaces: G, coins: 160, unlockMinutes: 120, blurb: 'A six-tier iron stand: holds six planters one above the other, so the garden takes more.' },
 
   // ---- granted, never sold ----
   art_frame: { spaces: B, coins: 0, unlockMinutes: 0, hidden: true, blurb: 'Teak frame for a finished artwork.' },

@@ -61,6 +61,8 @@ Leave `EXPO_PUBLIC_API_URL` empty to run the app without any server.
 - [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) — putting the API, database and admin console online
 - [docs/STORE_SUBMISSION.md](docs/STORE_SUBMISSION.md) — building and submitting to Google Play and the App Store
 - [docs/CREDENTIALS.md](docs/CREDENTIALS.md) — every account/key you need, where to get it, where it goes
+- [docs/SPACES.md](docs/SPACES.md) — the balcony, the garden, the museum, jigsaws, coins
+- [docs/PARADISE_GARDEN.md](docs/PARADISE_GARDEN.md) — the Paradise Garden: views, segments, growth sizes, placement, rendering
 
 ## Tests
 
@@ -68,6 +70,8 @@ Leave `EXPO_PUBLIC_API_URL` empty to run the app without any server.
 cd backend && npm test          # 63 integration tests against a real PostgreSQL database
 cd admin && npm run build       # type-checked production build
 npx tsc --noEmit                # mobile app (repo root)
+node --experimental-strip-types tools/checks/growth_sizes.mjs     # minutes → the seven growth sizes
+node --experimental-strip-types tools/checks/paradise_layout.mjs  # garden capacity and placement
 ```
 
 CI (`.github/workflows/ci.yml`) runs all of the above plus Android/iOS bundle exports on every push.
@@ -78,8 +82,11 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Android/iOS bundle ex
   a quote tile, your own photo, or the online library managed from the admin console.
 - The picture is covered by tiles that flip away in a spread-out order as time passes
   (`src/hooks/useFocusTimer.ts`, `src/components/PuzzleGrid.tsx`). A completed session of
-  thirty minutes or more keeps the picture as a framed jigsaw in one of six sizes, to hang in
-  the museum, on the balcony wall or on the garden easel (`docs/SPACES.md`).
+  fifteen minutes or more keeps the picture as a framed jigsaw in one of seven sizes, to hang in
+  the museum or on the balcony wall (`docs/SPACES.md`).
+- Or pick a plant: the session plants a seed in the Paradise Garden and grows it as the
+  minutes pass, to one of seven sizes (15, 30, 60, 90, 120, 150, 180 minutes), and it keeps
+  its place in the garden for good (`docs/PARADISE_GARDEN.md`).
 - Leaving the app starts a grace period (default 5 s, configurable from the admin console);
   stay away longer and the session fails.
-- The balcony, the 3D garden, the museum and preferences stay on the device.
+- The balcony, the Paradise Garden, the museum and preferences stay on the device.

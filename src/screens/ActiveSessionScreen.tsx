@@ -1,11 +1,12 @@
-// The focus session: a picture reveals itself tile by tile, or one of the
-// person's spaces lives around them, while a quiet timer floats over it.
-// The first ten seconds are a grace period — leaving then costs nothing.
-// After that, abandoning a session droops the focus plant and leaves a
-// wilted sapling and a broken picture behind. A completed picture session
-// of thirty minutes or more earns the picture as a framed jigsaw, and a
-// plant that just reached full growth earns a new one: the person is then
-// asked where each should go.
+// The focus session: a seed goes into the soil and a plant grows as the
+// minutes pass; or a picture reveals itself tile by tile; or the balcony
+// lives around the person while its peace lily grows. A quiet timer
+// floats at the top. The first ten seconds are a grace period: leaving
+// then costs nothing. After that, abandoning a session grows nothing and
+// leaves a wilted sapling behind. A completed plant session places the
+// plant in the garden at the size its minutes earned; a completed picture
+// session of fifteen minutes or more keeps the picture as a framed jigsaw
+// and asks where it should hang.
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Animated, BackHandler, Dimensions, Image, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -15,23 +16,19 @@ import { PuzzleGrid } from '../components/PuzzleGrid';
 import { PuzzleContent, attributionFor } from '../components/PuzzleContent';
 import { SessionResultSheet, RewardLine } from '../components/session/SessionResultSheet';
 import { PlacementOption, PlacementSheet } from '../components/session/PlacementSheet';
-import { MaturedPlant, creditCompletedSession, recordPausedSession } from '../spaces/focusEngine';
-import { STAGE_WORDS, addItem as addSpaceItem, hangArtwork as hangInSpace } from '../spaces/model';
+import { NewPlant, creditCompletedSession, recordPausedSession } from '../spaces/focusEngine';
+import { STAGE_WORDS, hangArtwork as hangInSpace } from '../spaces/model';
 import { GRACE_SECONDS } from '../spaces/catalog';
-import { SpaceId } from '../spaces/packTypes';
 import { packFor } from '../spaces/packs';
 import { loadSpace, updateSpace } from '../spaces/repository';
 import { SpaceSession } from '../spaces/ui/SpaceSession';
-import { GardenSession } from '../garden/ui/GardenSession';
-import { STAND_ITEM, STAND_LEVELS, addItem as addGardenItem, hangArtwork as hangInGarden, putOnStand } from '../garden/model';
-import { loadGarden, updateGarden } from '../garden/repository';
-import { SPRITES } from '../garden/sprites.generated';
 import { ArtworkRecord, artworkImage, findArtwork, setHome } from '../collection/model';
 import { loadCollection, updateCollection } from '../collection/repository';
 import { placeArtworkInMuseum } from '../museum/repository';
-import { gardenThumb } from '../garden/ui/GardenStoreSheet';
-import { thumbFor } from '../spaces/ui/StoreSheet';
+import { GrowthScene } from '../paradise/scene/GrowthScene';
+import { SPECIES_BY_ID } from '../paradise/catalog';
 import { useFocusTimer } from '../hooks/useFocusTimer';
+import { useReducedMotion } from '../hooks/useReducedMotion';
 import { RootStackParamList } from '../navigation/types';
 import { saveSessionRecord } from '../storage/history';
 import { SessionRecord } from '../types';
@@ -59,9 +56,6 @@ function formatTime(totalSeconds: number): string {
 
 type Result = { outcome: 'completed' } | { outcome: 'failed'; reason: 'left_app' | 'gave_up' };
 
-/** Something earned that still needs a home. */
-type Pending = { kind: 'art'; artwork: ArtworkRecord } | { kind: 'plant'; plant: MaturedPlant };
-
 function imageAspect(uri: string | number | undefined): Promise<number> {
   return new Promise((resolve) => {
     if (!uri) return resolve(0.75);
@@ -82,28 +76,31 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
   const { settings } = useSettings();
   const { config: remote } = useRemoteConfig();
   const { colors } = useTheme();
+  const reduced = useReducedMotion();
   const texts = remote.texts;
   const insets = useSafeAreaInsets();
   const totalSeconds = config.durationMinutes * 60;
   const totalPieces = config.grid.rows * config.grid.cols;
   const startedAtRef = useRef(Date.now());
+  const sessionIdRef = useRef(`${startedAtRef.current}-${Math.random().toString(36).slice(2, 8)}`);
   const [result, setResult] = useState<Result | null>(null);
   const resultRef = useRef<Result | null>(null);
   const [rewardLines, setRewardLines] = useState<RewardLine[]>([]);
-  const [pending, setPending] = useState<Pending[]>([]);
+  const [pendingArt, setPendingArt] = useState<ArtworkRecord | null>(null);
+  const [newPlant, setNewPlant] = useState<NewPlant | null>(null);
   const [placing, setPlacing] = useState(false);
   const [placeOptions, setPlaceOptions] = useState<PlacementOption[]>([]);
   const leftFreeRef = useRef(false);
 
-  // where this session happens: a space, or the balcony for picture sessions
-  const sessionSpace: SpaceId = config.image.kind === 'space' ? config.image.space : config.image.kind === 'balcony' ? 'balcony' : 'balcony';
+  const isPlant = config.image.kind === 'plant';
   const inSpace = config.image.kind === 'space' || config.image.kind === 'balcony';
-  const plantName = packFor(sessionSpace).focusPlant.name.toLowerCase();
+  const plantName = isPlant ? (SPECIES_BY_ID[(config.image as { speciesId: string }).speciesId]?.name ?? '').toLowerCase() : packFor('balcony').focusPlant.name.toLowerCase();
+  const motion: 'full' | 'calm' | 'off' = reduced ? 'off' : (settings.gardenMotion ?? 'full');
 
   const finalizeSession = useCallback(
     async (outcome: SessionRecord['outcome'], failureReason: SessionRecord['failureReason'], revealedFraction: number) => {
       const record: SessionRecord = {
-        id: `${startedAtRef.current}-${Math.random().toString(36).slice(2, 8)}`,
+        id: sessionIdRef.current,
         startedAt: startedAtRef.current,
         endedAt: Date.now(),
         durationMinutes: config.durationMinutes,
@@ -145,115 +142,30 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
     const img = config.image;
     const uri = img.kind === 'remote' || img.kind === 'custom' ? img.uri : img.kind === 'art' ? img.uri : undefined;
     imageAspect(uri)
-      .then((aspect) => creditCompletedSession(config.durationMinutes, sessionSpace, img, aspect))
+      .then((aspect) => creditCompletedSession(config.durationMinutes, img, sessionIdRef.current, aspect))
       .then((summary) => {
         const lines: RewardLine[] = [{ icon: 'coins', text: t('session.coinsLine', { coins: summary.coinsEarned + summary.bonusCoins }) }];
-        const name = summary.plant.name.toLowerCase();
-        const grew = summary.plant.after !== summary.plant.before;
-        lines.push({
-          icon: 'sprout',
-          text: summary.plant.revived ? t('session.plantRevived', { plant: name }) : grew ? t('session.plantNow', { plant: name, stage: STAGE_WORDS[summary.plant.after] ?? summary.plant.after }) : t('session.plantKept', { plant: name }),
-        });
-        if (summary.artwork) lines.push({ icon: 'puzzle', text: t('session.jigsawEarned', { title: summary.artwork.title, tier: summary.artwork.tier }) });
-        else if (summary.tooShortForJigsaw) lines.push({ icon: 'puzzle', text: t('session.noJigsaw') });
-        for (const p of summary.matured) lines.push({ icon: 'flower', text: t('session.winningPlant', { plant: p.name }) });
+        if (summary.newPlant) {
+          lines.push({ icon: 'flower', text: t('session.plantGrown', { name: summary.newPlant.name, size: summary.newPlant.size, segment: t(`paradise.segment.${summary.newPlant.segment}` as never) }) });
+          setNewPlant(summary.newPlant);
+        }
+        if (summary.plant) {
+          const name = summary.plant.name.toLowerCase();
+          const grew = summary.plant.after !== summary.plant.before;
+          lines.push({
+            icon: 'sprout',
+            text: summary.plant.revived ? t('session.plantRevived', { plant: name }) : grew ? t('session.plantNow', { plant: name, stage: STAGE_WORDS[summary.plant.after] ?? summary.plant.after }) : t('session.plantKept', { plant: name }),
+          });
+        }
+        if (summary.artwork) {
+          lines.push({ icon: 'puzzle', text: t('session.jigsawEarned', { title: summary.artwork.title, tier: summary.artwork.tier }) });
+          setPendingArt(summary.artwork);
+        } else if (summary.tooShortForJigsaw) lines.push({ icon: 'puzzle', text: t('session.noJigsaw') });
         for (const m of summary.milestones) lines.push({ icon: 'sparkles', text: t('session.milestone', { title: m.title, coins: m.coins }) });
         setRewardLines(lines);
-        const queue: Pending[] = [];
-        if (summary.artwork) queue.push({ kind: 'art', artwork: summary.artwork });
-        for (const p of summary.matured) queue.push({ kind: 'plant', plant: p });
-        setPending(queue);
       })
       .catch(() => undefined);
-  }, [finalizeSession, settings.soundEnabled, config.durationMinutes, sessionSpace, config.image]);
-
-  // ---- placing what the session earned ----
-  const current = pending[0] ?? null;
-  const prepareOptions = useCallback(async (p: Pending): Promise<PlacementOption[]> => {
-    if (p.kind === 'art') {
-      const balcony = await loadSpace('balcony');
-      const garden = await loadGarden();
-      const balconyOk = hangInSpace(balcony, p.artwork.id) !== balcony;
-      const gardenOk = hangInGarden(garden, p.artwork.id) !== garden;
-      return [
-        { id: 'museum', label: t('placement.museum'), icon: 'landmark' },
-        { id: 'balconyWall', label: t('placement.balconyWall'), icon: 'image', disabledReason: balconyOk ? undefined : t('gallery.noFrameSpot') },
-        { id: 'gardenEasel', label: t('placement.gardenEasel'), icon: 'trees', disabledReason: gardenOk ? undefined : t('placement.noRoom') },
-        { id: 'keep', label: t('placement.keep'), icon: 'library' },
-        { id: 'dump', label: t('placement.dump'), icon: 'trash', destructive: true },
-      ];
-    }
-    const plant = p.plant;
-    if (plant.space === 'garden') {
-      const garden = await loadGarden();
-      const standFree = garden.items.some((i) => i.itemId === STAND_ITEM && garden.items.filter((x) => x.standUid === i.uid).length < STAND_LEVELS);
-      return [
-        { id: 'garden', label: t('placement.garden'), icon: 'trees' },
-        { id: 'stand', label: t('garden.onStand'), icon: 'armchair', disabledReason: standFree ? undefined : t('placement.needsStand') },
-        { id: 'keepPlant', label: t('placement.keepPlant'), icon: 'library' },
-        { id: 'dump', label: t('placement.dump'), icon: 'trash', destructive: true },
-      ];
-    }
-    return [
-      { id: 'balconyFloor', label: t('placement.balconyFloor'), icon: 'sprout' },
-      { id: 'railing', label: t('placement.railing'), icon: 'armchair', disabledReason: t('placement.needsStand') },
-      { id: 'keepPlant', label: t('placement.keepPlant'), icon: 'library' },
-      { id: 'dump', label: t('placement.dump'), icon: 'trash', destructive: true },
-    ];
-  }, []);
-
-  const startPlacing = () => {
-    if (!current) return;
-    setPlacing(true);
-    prepareOptions(current).then(setPlaceOptions).catch(() => setPlaceOptions([]));
-  };
-
-  const choose = async (id: string) => {
-    if (!current) return;
-    try {
-      if (current.kind === 'art') {
-        const a = current.artwork;
-        if (id === 'museum') {
-          const c = await loadCollection();
-          await placeArtworkInMuseum(a, (x) => findArtwork(c, x));
-          await updateCollection((cc) => setHome(cc, a.id, 'museum'));
-        } else if (id === 'balconyWall') {
-          await updateSpace('balcony', (s) => hangInSpace(s, a.id));
-          await updateCollection((cc) => setHome(cc, a.id, 'balcony'));
-        } else if (id === 'gardenEasel') {
-          await updateGarden((g) => hangInGarden(g, a.id));
-          await updateCollection((cc) => setHome(cc, a.id, 'garden'));
-        } else if (id === 'dump') {
-          await updateCollection((cc) => setHome(cc, a.id, 'binned'));
-        }
-      } else {
-        const p = current.plant;
-        if (id === 'garden' || id === 'stand' || id === 'keepPlant') {
-          await updateGarden((g) => {
-            if (id === 'keepPlant') return { ...g, stored: [...g.stored, { uid: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`, itemId: p.itemId }] };
-            const r = addGardenItem(g, p.itemId);
-            if (id === 'stand' && r.placed) {
-              const stand = r.state.items.find((i) => i.itemId === STAND_ITEM && r.state.items.filter((x) => x.standUid === i.uid).length < STAND_LEVELS);
-              const on = stand ? putOnStand(r.state, r.placed.uid, stand.uid) : null;
-              return on ?? r.state;
-            }
-            return r.state;
-          });
-        } else if (id === 'balconyFloor') {
-          await updateSpace('balcony', (s) => addSpaceItem(s, p.itemId).state);
-        }
-      }
-    } catch {
-      // the artwork stays in the collection; the plant in the inventory
-    }
-    const rest = pending.slice(1);
-    setPending(rest);
-    if (rest[0]) prepareOptions(rest[0]).then(setPlaceOptions).catch(() => setPlaceOptions([]));
-    else {
-      setPlacing(false);
-      leave();
-    }
-  };
+  }, [finalizeSession, settings.soundEnabled, config.durationMinutes, config.image]);
 
   const handleFail = useCallback(
     (reason: 'left_app' | 'gave_up', revealedFraction: number) => {
@@ -262,18 +174,66 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
       finalizeSession('failed', reason, revealedFraction);
       if (settings.soundEnabled) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => undefined);
       show({ outcome: 'failed', reason });
-      recordPausedSession(sessionSpace, elapsed)
+      if (!isPlant && !inSpace) return;
+      recordPausedSession(config.image, elapsed)
         .then((summary) => {
           if (!summary) return;
-          setRewardLines([
-            { icon: 'leaf', text: summary.wilted ? t('space.plantDrooping') : t('session.droopLine', { plant: summary.plantName.toLowerCase() }) },
-            { icon: 'alert', text: t('session.penaltyLine', { space: t(`space.${sessionSpace}`).toLowerCase() }) },
-          ]);
+          if (summary.where === 'balcony') {
+            setRewardLines([
+              { icon: 'leaf', text: summary.wilted ? t('space.plantDrooping') : t('session.droopLine', { plant: summary.plantName.toLowerCase() }) },
+              { icon: 'alert', text: t('session.penaltyLine', { space: t('space.balcony').toLowerCase() }) },
+            ]);
+          } else {
+            setRewardLines([
+              { icon: 'leaf', text: t('session.noPlantGrew', { plant: summary.plantName.toLowerCase() }) },
+              { icon: 'alert', text: t('session.saplingLeft', { segment: t(`paradise.segment.${summary.where}` as never) }) },
+            ]);
+          }
         })
         .catch(() => undefined);
     },
-    [finalizeSession, settings.soundEnabled, sessionSpace]
+    [finalizeSession, settings.soundEnabled, config.image, isPlant, inSpace]
   );
+
+  // ---- hanging the framed picture ----
+  const prepareOptions = useCallback(async (a: ArtworkRecord): Promise<PlacementOption[]> => {
+    const balcony = await loadSpace('balcony');
+    const balconyOk = hangInSpace(balcony, a.id) !== balcony;
+    return [
+      { id: 'museum', label: t('placement.museum'), icon: 'landmark' },
+      { id: 'balconyWall', label: t('placement.balconyWall'), icon: 'image', disabledReason: balconyOk ? undefined : t('gallery.noFrameSpot') },
+      { id: 'keep', label: t('placement.keep'), icon: 'library' },
+      { id: 'dump', label: t('placement.dump'), icon: 'trash', destructive: true },
+    ];
+  }, []);
+
+  const startPlacing = () => {
+    if (!pendingArt) return;
+    setPlacing(true);
+    prepareOptions(pendingArt).then(setPlaceOptions).catch(() => setPlaceOptions([]));
+  };
+
+  const choose = async (id: string) => {
+    const a = pendingArt;
+    if (!a) return;
+    try {
+      if (id === 'museum') {
+        const c = await loadCollection();
+        await placeArtworkInMuseum(a, (x) => findArtwork(c, x));
+        await updateCollection((cc) => setHome(cc, a.id, 'museum'));
+      } else if (id === 'balconyWall') {
+        await updateSpace('balcony', (s) => hangInSpace(s, a.id));
+        await updateCollection((cc) => setHome(cc, a.id, 'balcony'));
+      } else if (id === 'dump') {
+        await updateCollection((cc) => setHome(cc, a.id, 'binned'));
+      }
+    } catch {
+      // the artwork stays in the collection
+    }
+    setPendingArt(null);
+    setPlacing(false);
+    leave();
+  };
 
   const { remainingSeconds, revealedCount, status, awaySecondsRemaining, giveUp, progress } = useFocusTimer({
     totalSeconds,
@@ -291,7 +251,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
     // within the grace period: no record, no penalty, no droop
     leftFreeRef.current = true;
     track('session_withdrawn', { properties: { durationMinutes: config.durationMinutes, imageKind: config.image.kind } });
-    navigation.replace('Tabs', { screen: inSpace ? spaceTab(sessionSpace) : 'Home' });
+    navigation.replace('Tabs', { screen: isPlant ? 'Garden' : inSpace ? 'History' : 'Home' });
   };
 
   const confirmGiveUp = () => {
@@ -320,19 +280,23 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
     Animated.timing(barScale, { toValue: Math.max(0.002, progress), duration: 900, useNativeDriver: true }).start();
   }, [progress, barScale]);
 
-  const leave = () => navigation.replace('Tabs', { screen: inSpace ? spaceTab(sessionSpace) : 'Home' });
+  const leave = () => {
+    if (newPlant) {
+      navigation.replace('Tabs', { screen: 'Garden', params: { arrival: newPlant.id } });
+      return;
+    }
+    navigation.replace('Tabs', { screen: isPlant ? 'Garden' : inSpace ? 'History' : 'Home' });
+  };
   const attribution = attributionFor(config.image);
-  const pendingImage = current ? (current.kind === 'art' ? artworkImage(current.artwork) : current.plant.space === 'garden' ? gardenThumb(current.plant.itemId) : thumbFor('balcony', current.plant.itemId)) : null;
-  const pendingName = current ? (current.kind === 'art' ? current.artwork.title : current.plant.space === 'garden' ? SPRITES.items[current.plant.itemId]?.name ?? current.plant.name : packFor('balcony').items[current.plant.itemId]?.name ?? current.plant.name) : '';
+  const timerAtTop = inSpace || isPlant;
+  const frozenMinutes = result?.outcome === 'failed' ? 0 : elapsedSeconds / 60;
 
   return (
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
-      {inSpace ? (
-        sessionSpace === 'garden' ? (
-          <GardenSession elapsedMinutes={result?.outcome === 'failed' ? 0 : elapsedSeconds / 60} />
-        ) : (
-          <SpaceSession space={sessionSpace} elapsedMinutes={result?.outcome === 'failed' ? 0 : elapsedSeconds / 60} />
-        )
+      {isPlant ? (
+        <GrowthScene speciesId={(config.image as { speciesId: string }).speciesId} elapsedMinutes={frozenMinutes} targetMinutes={config.durationMinutes} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} motion={motion} done={!!result} />
+      ) : inSpace ? (
+        <SpaceSession space="balcony" elapsedMinutes={frozenMinutes} />
       ) : (
         <PuzzleGrid rows={config.grid.rows} cols={config.grid.cols} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} revealedCount={revealedCount} frozen={status === 'failed'} fullBleed>
           <PuzzleContent image={config.image} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} />
@@ -346,7 +310,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
             {t('session.focus')}
           </AppText>
         </View>
-        {inSpace ? (
+        {timerAtTop ? (
           <View style={{ flex: 1 }} />
         ) : (
           <View style={styles.barTrack} pointerEvents="none">
@@ -357,12 +321,12 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
       </View>
 
       {!result && (
-        <View style={[styles.center, inSpace && { justifyContent: 'flex-start', paddingTop: insets.top + 72 }]} pointerEvents="none">
-          <AppText style={[styles.timer, typography.timer]} accessibilityRole="timer" accessibilityLabel={`${Math.ceil(remainingSeconds / 60)} minutes remaining`}>
+        <View style={[styles.center, timerAtTop && { justifyContent: 'flex-start', paddingTop: insets.top + 64 }]} pointerEvents="none">
+          <AppText style={[styles.timer, typography.timer, isPlant && styles.timerPlant]} accessibilityRole="timer" accessibilityLabel={`${Math.ceil(remainingSeconds / 60)} minutes remaining`}>
             {formatTime(remainingSeconds)}
           </AppText>
-          <AppText variant="bodySmall" style={styles.tagline}>
-            {inGrace ? t('session.graceHint', { seconds: GRACE_SECONDS - elapsedSeconds }) : inSpace ? t('session.plantGrowing', { plant: plantName }) : t('session.worldWaiting')}
+          <AppText variant="bodySmall" style={[styles.tagline, isPlant && styles.taglinePlant]}>
+            {inGrace ? t('session.graceHint', { seconds: GRACE_SECONDS - elapsedSeconds }) : timerAtTop ? t('session.plantGrowing', { plant: plantName }) : t('session.worldWaiting')}
           </AppText>
         </View>
       )}
@@ -387,21 +351,15 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
       {result?.outcome === 'completed' && !placing && (
         <SessionResultSheet
           outcome="completed"
-          title={texts.sessionCompleteTitle}
-          message={texts.sessionCompleteMessage}
+          title={isPlant ? (newPlant ? t('session.plantDoneTitle', { name: newPlant.name }) : t('session.plantShortTitle')) : texts.sessionCompleteTitle}
+          message={isPlant ? (newPlant ? t('session.plantDoneBody', { size: newPlant.size }) : t('session.plantShortBody')) : texts.sessionCompleteMessage}
           lines={rewardLines}
-          primaryLabel={current ? t('session.placeIt') : inSpace ? t('session.backTo', { space: t(`space.${sessionSpace}`).toLowerCase() }) : t('session.backHome')}
-          onPrimary={current ? startPlacing : leave}
+          primaryLabel={pendingArt ? t('session.placeIt') : newPlant ? t('session.seeInGarden') : inSpace ? t('session.backTo', { space: t('space.balcony').toLowerCase() }) : isPlant ? t('session.backTo', { space: t('tabs.garden').toLowerCase() }) : t('session.backHome')}
+          onPrimary={pendingArt ? startPlacing : leave}
         />
       )}
-      {placing && current && (
-        <PlacementSheet
-          title={current.kind === 'art' ? t('placement.artTitle') : t('placement.plantTitle')}
-          body={`${pendingName}. ${current.kind === 'art' ? t('placement.artBody') : t('placement.plantBody')}`}
-          image={pendingImage}
-          options={placeOptions}
-          onChoose={(id) => void choose(id)}
-        />
+      {placing && pendingArt && (
+        <PlacementSheet title={t('placement.artTitle')} body={`${pendingArt.title}. ${t('placement.artBody')}`} image={artworkImage(pendingArt)} options={placeOptions} onChoose={(id) => void choose(id)} />
       )}
       {result?.outcome === 'failed' && (
         <SessionResultSheet
@@ -417,10 +375,6 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
   );
 }
 
-function spaceTab(space: SpaceId): 'History' | 'Garden' {
-  return space === 'balcony' ? 'History' : 'Garden';
-}
-
 const styles = StyleSheet.create({
   screen: { flex: 1 },
   topRow: { position: 'absolute', left: space.lg, right: space.lg, flexDirection: 'row', alignItems: 'center', gap: space.md },
@@ -430,7 +384,9 @@ const styles = StyleSheet.create({
   barFill: { height: 3, width: '100%', borderRadius: 2, transformOrigin: 'left' },
   center: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' },
   timer: { color: '#FFFFFF', opacity: 0.94, textShadowColor: 'rgba(20,12,8,0.45)', textShadowOffset: { width: 0, height: 2 }, textShadowRadius: 18 },
+  timerPlant: { color: '#3A2412', opacity: 0.9, textShadowColor: 'rgba(255,245,225,0.7)', textShadowRadius: 14 },
   tagline: { color: 'rgba(255,255,255,0.8)', marginTop: space.xs, textShadowColor: 'rgba(20,12,8,0.4)', textShadowRadius: 8, paddingHorizontal: space.xl, textAlign: 'center' },
+  taglinePlant: { color: 'rgba(58,36,18,0.8)', textShadowColor: 'rgba(255,245,225,0.6)' },
   attribution: { position: 'absolute', left: space.lg, right: space.lg, alignItems: 'center' },
   attributionText: { color: 'rgba(255,255,255,0.78)', textAlign: 'center', textShadowColor: 'rgba(0,0,0,0.4)', textShadowRadius: 4 },
   grace: { position: 'absolute', left: space.lg, right: space.lg, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: 10, paddingHorizontal: 14, borderRadius: radii.md, borderWidth: 1 },

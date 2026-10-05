@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { RootStackParamList, RootTabParamList } from './types';
 import { HomeScreen } from '../screens/HomeScreen';
 import { SpaceScreen } from '../spaces/ui/SpaceScreen';
-import { GardenScreen } from '../garden/ui/GardenScreen';
+import { ParadiseScreen } from '../paradise/ui/ParadiseScreen';
 import { MuseumScreen } from '../museum/ui/MuseumScreen';
 import { LanguageScreen } from '../screens/LanguageScreen';
 import { useSettings } from '../context/SettingsContext';
@@ -24,7 +24,7 @@ const Tab = createBottomTabNavigator<RootTabParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const BalconyTab = () => <SpaceScreen space="balcony" />;
-const GardenTab = () => <GardenScreen />;
+const GardenTab = () => <ParadiseScreen />;
 
 function Tabs() {
   useLanguage();

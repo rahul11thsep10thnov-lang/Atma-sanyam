@@ -1,34 +1,21 @@
 // The collection: every jigsaw a completed focus session turned into an
-// artwork. Six sizes only, by the minutes of the completed session; under
-// thirty minutes no jigsaw is earned. Artworks are permanent: they hang in
+// artwork. Seven sizes only, by the minutes of the completed session; under
+// fifteen minutes no jigsaw is earned. Artworks are permanent: they hang in
 // a space or the museum, wait in the collection, or were thrown away.
 import { ImageSourcePropType } from 'react-native';
 import { GridDims } from '../types';
 import { gridForDuration } from '../utils/grid';
+import { PlantGrowthSize, SIZE_GRIDS, SIZE_LABEL, sizeForMinutes } from '../growth/size';
 
-export type JigsawTier = 1 | 2 | 3 | 4 | 5 | 6;
+// Jigsaw sizes are the seven growth sizes (src/growth/size.ts): one table
+// decides what a session's minutes earn, for plants and pictures alike.
+export type JigsawTier = PlantGrowthSize;
 
-/** Completed minutes → size. Below 30 minutes: no jigsaw. */
-export function tierForMinutes(minutes: number): JigsawTier | null {
-  if (minutes < 30) return null;
-  if (minutes < 60) return 1;
-  if (minutes < 90) return 2;
-  if (minutes < 120) return 3;
-  if (minutes < 150) return 4;
-  if (minutes < 180) return 5;
-  return 6;
-}
+export const tierForMinutes = sizeForMinutes;
 
-export const TIER_GRIDS: Record<JigsawTier, GridDims> = {
-  1: { rows: 3, cols: 4 },
-  2: { rows: 4, cols: 5 },
-  3: { rows: 5, cols: 6 },
-  4: { rows: 6, cols: 8 },
-  5: { rows: 8, cols: 10 },
-  6: { rows: 9, cols: 12 },
-};
+export const TIER_GRIDS: Record<JigsawTier, GridDims> = SIZE_GRIDS;
 
-export const TIER_LABEL: Record<JigsawTier, string> = { 1: 'Size 1', 2: 'Size 2', 3: 'Size 3', 4: 'Size 4', 5: 'Size 5', 6: 'Size 6' };
+export const TIER_LABEL: Record<JigsawTier, string> = SIZE_LABEL;
 
 export function gridForTier(tier: JigsawTier): GridDims {
   return TIER_GRIDS[tier];

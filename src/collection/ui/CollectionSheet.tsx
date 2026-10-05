@@ -15,7 +15,7 @@ import { ArtworkRecord, CollectionState, artworkImage, counts, owned, setHome } 
 interface Props {
   visible: boolean;
   /** Where the sheet was opened: hanging goes there. */
-  here: 'balcony' | 'garden' | 'museum';
+  here: 'balcony' | 'museum';
   collection: CollectionState;
   onClose: () => void;
   onCollection: (next: CollectionState) => void;
