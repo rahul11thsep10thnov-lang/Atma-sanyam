@@ -92,3 +92,38 @@ internal fun DrawScope.drawMiniCard(
         else -> drawSuitMotif(card.suit, center, w * 0.22f, ink)
     }
 }
+
+/** A printed Joker: blank ivory card with a crimson star and the word JOKER, at any size. */
+internal fun DrawScope.drawJokerCard(
+    topLeft: Offset,
+    cardSize: Size,
+    textMeasurer: TextMeasurer,
+    palette: CardPalette
+) {
+    drawMiniCard(card = null, topLeft = topLeft, cardSize = cardSize, textMeasurer = textMeasurer, palette = palette)
+    val w = cardSize.width
+    val center = topLeft + Offset(w / 2f, cardSize.height * 0.5f)
+    val outer = w * 0.3f
+    val inner = outer * 0.42f
+    val star = androidx.compose.ui.graphics.Path().apply {
+        for (i in 0 until 10) {
+            val radius = if (i % 2 == 0) outer else inner
+            val angle = Math.toRadians(-90.0 + 36.0 * i)
+            val x = center.x + (radius * kotlin.math.cos(angle)).toFloat()
+            val y = center.y + (radius * kotlin.math.sin(angle)).toFloat()
+            if (i == 0) moveTo(x, y) else lineTo(x, y)
+        }
+        close()
+    }
+    drawPath(star, color = palette.redInk)
+    val label = textMeasurer.measure(
+        text = "JOKER",
+        style = TextStyle(
+            color = palette.redInk,
+            fontSize = (w * 0.16f).toSp(),
+            fontWeight = FontWeight.Bold,
+            fontFamily = FontFamily.Serif
+        )
+    )
+    drawText(label, topLeft = Offset(topLeft.x + (w - label.size.width) / 2f, topLeft.y + cardSize.height * 0.12f))
+}

@@ -1,179 +1,40 @@
 package com.rangepatte.app.ui.table
 
-import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import com.rangepatte.app.R
-import com.rangepatte.app.domain.game.Deck
+import com.rangepatte.app.domain.model.AiDifficulty
+import com.rangepatte.app.domain.model.GameId
 import com.rangepatte.app.domain.model.GameInfo
 import com.rangepatte.app.domain.model.PlayMode
-import com.rangepatte.app.ui.background.BackgroundType
-import com.rangepatte.app.ui.components.CardFan
-import com.rangepatte.app.ui.components.GameHeader
-import com.rangepatte.app.ui.components.PlayerAvatar
-import com.rangepatte.app.ui.components.ScorePanel
-import com.rangepatte.app.ui.components.TurnIndicator
-import com.rangepatte.app.ui.components.WatermarkBackground
-import com.rangepatte.app.ui.components.WoodenTable
-import com.rangepatte.app.ui.components.royal.RoyalButton
-import com.rangepatte.app.ui.components.royal.RoyalButtonStyle
-import com.rangepatte.app.ui.cards.Hand
-import com.rangepatte.app.ui.rules.RulesDialog
-import com.rangepatte.app.ui.theme.GoldenGlow
-import kotlin.random.Random
-
-private const val UNDO_USES_PER_GAME = 3
+import com.rangepatte.app.game.coatpiece.CoatPieceScreen
+import com.rangepatte.app.game.dehlapakad.DehlaPakadScreen
+import com.rangepatte.app.game.lakadi.LakadiScreen
+import com.rangepatte.app.game.rummy.RummyScreen
+import com.rangepatte.app.game.solitaire.SolitaireScreen
+import com.rangepatte.app.game.spider.SpiderScreen
+import com.rangepatte.app.game.teenpatti.TeenPattiScreen
+import com.rangepatte.app.game.twentynine.TwentyNineScreen
 
 /**
- * The generic table shell every game screen is built on: header, wooden playing surface, seated
- * players and the local player's hand. No [com.rangepatte.app.domain.game.CardGameEngine] is wired
- * in yet — the cards shown here are a static shuffled demo hand so the rendering engine (Phase 3)
- * can be seen working end-to-end. Each game's own screen (Phase 7+) replaces this demo content with
- * its engine's live [com.rangepatte.app.domain.game.GameState] while reusing this same layout.
- *
- * Undo is offered — up to [UNDO_USES_PER_GAME] times — only when [playMode] has no other human
- * player who could be affected by it; see [PlayMode.allowsUndo]. There is no real move history to
- * undo yet since no engine is wired in, so the button here is a UI scaffold: it decrements a local
- * counter rather than reverting any game state. A concrete engine should replace this with a real
- * undo stack once one exists.
+ * Opens the table for [game]: each game has its own screen under `game/<name>/` (engine, AI and
+ * layout), built on the shared card, frame and dialog pieces in `game/common/`. Adding a game means
+ * adding its package and one line here.
  */
 @Composable
 fun GameTableScreen(
     game: GameInfo,
     playMode: PlayMode,
-    onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
+    playerCount: Int,
+    difficulty: AiDifficulty,
+    onBackClick: () -> Unit
 ) {
-    val demoHand = remember(game.id) { Deck.standard().shuffled(Random(game.id.ordinal)).cards.take(5) }
-    val demoOpponentHand = remember(game.id) { Deck.standard().shuffled(Random(game.id.ordinal + 100)).cards.take(5) }
-    var showRules by remember(game.id) { mutableStateOf(false) }
-    val showUndo = playMode.allowsUndo || game.maxPlayers <= 1
-    var undoUsesRemaining by remember(game.id) { mutableStateOf(UNDO_USES_PER_GAME) }
-    val youName = stringResource(R.string.player_you)
-
-    // System Back goes through the same exit path as the header arrow (which may show an ad).
-    BackHandler(onBack = onBackClick)
-    val opponentName = stringResource(R.string.player_opponent)
-
-    WatermarkBackground(backgroundType = BackgroundType.VILLAGE_CHAUPAL, modifier = modifier) {
-        Column(modifier = Modifier.fillMaxSize().padding(12.dp)) {
-            GameHeader(
-                title = stringResource(game.nameRes),
-                onBackClick = onBackClick,
-                onRulesClick = { showRules = true }
-            )
-
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp)
-            ) {
-                WoodenTable {
-                    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-                        PlayerAvatar(
-                            name = opponentName,
-                            isAI = true,
-                            modifier = Modifier.padding(top = 16.dp)
-                        )
-                        CardFan(
-                            cards = demoOpponentHand,
-                            cardWidth = 40.dp,
-                            cardHeight = 58.dp,
-                            faceUp = false,
-                            modifier = Modifier.padding(top = 8.dp)
-                        )
-
-                        Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                TurnIndicator(text = stringResource(R.string.turn_indicator_format, youName))
-                                Text(
-                                    text = stringResource(R.string.game_table_coming_soon, stringResource(game.nameRes)),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.padding(top = 12.dp, start = 24.dp, end = 24.dp)
-                                )
-                            }
-                        }
-                    }
-                }
-
-                // Warm lantern-light vignette — brighter, gold-tinted center, softly darkened
-                // edges — so the eye is drawn to the charpai rather than the whole screen reading
-                // uniformly bright.
-                Box(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .background(
-                            Brush.radialGradient(
-                                colors = listOf(
-                                    GoldenGlow.copy(alpha = 0.12f),
-                                    Color.Transparent,
-                                    Color.Black.copy(alpha = 0.16f)
-                                )
-                            )
-                        )
-                )
-
-                ScorePanel(
-                    scoresByPlayerName = listOf(youName to 0, opponentName to 0),
-                    modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)
-                )
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Hand(
-                    cards = demoHand,
-                    cardWidth = 52.dp,
-                    cardHeight = 76.dp,
-                    faceUp = true,
-                    animateDealIn = true
-                )
-            }
-
-            if (showUndo) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    RoyalButton(
-                        text = "${stringResource(R.string.action_undo)} ($undoUsesRemaining)",
-                        enabled = undoUsesRemaining > 0,
-                        style = RoyalButtonStyle.STEEL,
-                        onClick = { undoUsesRemaining = (undoUsesRemaining - 1).coerceAtLeast(0) }
-                    )
-                }
-            }
-        }
-    }
-
-    if (showRules) {
-        RulesDialog(game = game, onDismiss = { showRules = false })
+    when (game.id) {
+        GameId.SOLITAIRE -> SolitaireScreen(game, difficulty, onBackClick)
+        GameId.SPIDER_SOLITAIRE -> SpiderScreen(game, difficulty, onBackClick)
+        GameId.RUMMY -> RummyScreen(game, playMode, playerCount, difficulty, onBackClick)
+        GameId.TEEN_PATTI -> TeenPattiScreen(game, playMode, playerCount, difficulty, onBackClick)
+        GameId.TWENTY_NINE -> TwentyNineScreen(game, playMode, difficulty, onBackClick)
+        GameId.COAT_PIECE -> CoatPieceScreen(game, playMode, difficulty, onBackClick)
+        GameId.DEHLA_PAKAD -> DehlaPakadScreen(game, playMode, difficulty, onBackClick)
+        GameId.LAKADI -> LakadiScreen(game, playMode, difficulty, onBackClick)
     }
 }

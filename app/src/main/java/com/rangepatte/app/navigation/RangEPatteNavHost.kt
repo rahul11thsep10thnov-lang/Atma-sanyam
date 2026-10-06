@@ -10,11 +10,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.rangepatte.app.AppServices
+import com.rangepatte.app.domain.model.AiDifficulty
 import com.rangepatte.app.domain.model.AppLanguage
 import com.rangepatte.app.domain.model.GameCatalog
 import com.rangepatte.app.domain.model.PlayMode
@@ -145,23 +148,35 @@ fun RangEPatteNavHost(
                     GameSetupScreen(
                         game = game,
                         onBackClick = { navController.popBackStack() },
-                        onStartGame = { _, _, mode ->
-                            navController.navigate(Routes.gameTable(game.id.routeSegment, mode))
+                        onStartGame = { playerCount, difficulty, mode ->
+                            navController.navigate(Routes.gameTable(game.id.routeSegment, mode, playerCount, difficulty))
                         }
                     )
                 }
             }
-            composable(Routes.GAME_TABLE_PATTERN) { backStackEntry ->
+            composable(
+                route = Routes.GAME_TABLE_PATTERN,
+                arguments = listOf(
+                    navArgument(Routes.ARG_PLAYERS) { type = NavType.IntType; defaultValue = 4 },
+                    navArgument(Routes.ARG_DIFFICULTY) { type = NavType.StringType; defaultValue = AiDifficulty.MEDIUM.name }
+                )
+            ) { backStackEntry ->
                 val context = LocalContext.current
                 val segment = backStackEntry.arguments?.getString(Routes.ARG_GAME_ID)
                 val game = segment?.let(GameCatalog::byRouteSegment)
                 val mode = backStackEntry.arguments?.getString(Routes.ARG_MODE)
                     ?.let { runCatching { PlayMode.valueOf(it) }.getOrNull() }
                     ?: PlayMode.VS_COMPUTER
+                val playerCount = backStackEntry.arguments?.getInt(Routes.ARG_PLAYERS) ?: game?.minPlayers ?: 4
+                val difficulty = backStackEntry.arguments?.getString(Routes.ARG_DIFFICULTY)
+                    ?.let { runCatching { AiDifficulty.valueOf(it) }.getOrNull() }
+                    ?: AiDifficulty.MEDIUM
                 if (game != null) {
                     GameTableScreen(
                         game = game,
                         playMode = mode,
+                        playerCount = playerCount,
+                        difficulty = difficulty,
                         onBackClick = {
                             // Leaving a table is the natural break for a full-screen ad (if one is due).
                             val activity = context.findActivity()

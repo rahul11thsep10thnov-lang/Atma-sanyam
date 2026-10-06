@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rangepatte.app.R
 import com.rangepatte.app.domain.model.AiDifficulty
+import com.rangepatte.app.domain.model.GameId
 import com.rangepatte.app.domain.model.GameInfo
 import com.rangepatte.app.domain.model.PlayMode
 import com.rangepatte.app.ui.background.BackgroundType
@@ -96,8 +97,8 @@ fun GameSetupScreen(
                         if (isMultiplayerCapable) {
                             RoyalSectionTitle(stringResource(R.string.setup_mode_title))
                             ModeSlots(selected = mode, onSelect = { mode = it })
-                            RoyalSectionTitle(stringResource(R.string.setup_players))
-                            Row(
+                            if (game.minPlayers < game.maxPlayers) RoyalSectionTitle(stringResource(R.string.setup_players))
+                            if (game.minPlayers < game.maxPlayers) Row(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -131,6 +132,15 @@ fun GameSetupScreen(
                                     )
                                 }
                             }
+                        }
+                        difficultyHintRes(game.id)?.let { hint ->
+                            Text(
+                                text = stringResource(hint),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = ParchmentTextDim,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                            )
                         }
                         RoyalButton(
                             text = stringResource(R.string.setup_start),
@@ -213,7 +223,7 @@ private data class ModeOption(val mode: PlayMode, val icon: ImageVector, val lab
 
 private val modeOptions = listOf(
     ModeOption(PlayMode.VS_COMPUTER, Icons.Filled.Computer, R.string.setup_mode_vs_computer, available = true),
-    ModeOption(PlayMode.PASS_AND_PLAY, Icons.Filled.Groups, R.string.setup_mode_pass_play, available = true),
+    ModeOption(PlayMode.PASS_AND_PLAY, Icons.Filled.Groups, R.string.setup_mode_pass_play, available = false),
     ModeOption(PlayMode.NEARBY, Icons.Filled.Wifi, R.string.setup_mode_nearby, available = false),
     ModeOption(PlayMode.ONLINE, Icons.Filled.Public, R.string.setup_mode_online, available = false)
 )
@@ -264,6 +274,13 @@ private fun ModeSlots(selected: PlayMode, onSelect: (PlayMode) -> Unit) {
             }
         }
     }
+}
+
+/** What "difficulty" means in games where it isn't just how clever the computer is. */
+private fun difficultyHintRes(id: GameId): Int? = when (id) {
+    GameId.SOLITAIRE -> R.string.setup_hint_solitaire
+    GameId.SPIDER_SOLITAIRE -> R.string.setup_hint_spider
+    else -> null
 }
 
 private fun AiDifficulty.labelRes(): Int = when (this) {

@@ -32,8 +32,8 @@ what exists today:
 | — | Google AdMob ads (banner on every page, occasional full-screen ad after a game) with consent form | ✅ (test ad IDs until you add yours) |
 | — | ₹29/month "Remove ads?" membership + payment gateway screen | ✅ (gateway scaffold — payment partner to be plugged in) |
 | — | Multiplayer architecture scaffold (`GameRoom`/`PlayerConnection`/`GameSynchronizer` interfaces; vs-Computer and Pass & Play modes functional; Nearby/Online shown as "coming soon") | ✅ (scaffold) |
-| 7+ | Individual game engines (Solitaire, Spider, Rummy, Teen Patti / Flush, 29, Coat Piece, Dehla Pakad, Lakadi) | not started |
-| — | Real Nearby (WiFi/Bluetooth) and Online (internet) multiplayer implementation | not started |
+| 7+ | **All eight games are playable** against the computer: Solitaire, Spider Solitaire, Rummy, Teen Patti / Flush, Twenty Nine, Coat Piece, Dehla Pakad, Lakadi — each with its own engine, computer player, screen and Undo (3 uses) | ✅ |
+| — | Playing against other people: Pass & Play on one phone, Nearby (WiFi/Bluetooth) and Online (internet) | not started (shown as "coming soon") |
 
 ### The redesign, specifically
 
@@ -84,10 +84,33 @@ The app uses one fixed dark colour scheme (`ui/theme/Theme.kt`) regardless of th
 since the heritage look is its identity rather than a user preference. Grids reflow to 2/3/4
 columns by width, and the setup screen goes side-by-side on screens 600dp and wider.
 
-The game table screen currently shows a static demo hand (cards drawn from the real `Deck` engine,
-just not attached to a rules engine yet) so the rendering pipeline can be verified end-to-end before
-any specific game's rules are implemented. Each concrete game replaces that demo content with its
-own `CardGameEngine` while reusing the same table shell, header, and card components.
+## The games
+
+Each game lives in its own package under `game/<name>/` with a pure-Kotlin **engine** (rules, no
+Android code, unit-tested), a **computer player** (`*Ai.kt`) and a **screen**. `ui/table/GameTableScreen.kt`
+just opens the right one. Shared pieces are in `game/common/` (`CardView`, `GameFrame` with header /
+Rules / Undo, result dialogs, `UndoHistory`) and `game/tricks/` (the trick-taking core — follow suit,
+trumps, winner, computer card play, four-seat table, bid and trump dialogs — used by the four
+trick games).
+
+| Game | Players | How it plays here |
+|---|---|---|
+| Solitaire | 1 | Klondike. Tap a card, then where it goes. Easy turns 1 card, Medium/Hard turn 3. Auto-finish when all cards are face-up. |
+| Spider Solitaire | 1 | Two decks. Easy 1 suit, Medium 2, Hard 4. Tap a card to pick up its run, tap a column to place it; tap the stock to deal. |
+| Rummy | 2–6 | 13 cards, two decks + jokers, random wild joker. Your hand is auto-arranged into melds; Declare when all cards are grouped (pure sequence + 2 sequences). The computer works out the best melds with a bitmask search. |
+| Teen Patti / Flush | 3–6 | Points only: boot, blind/seen, call, raise (stake doubles to a cap), pack, show. Hands are revealed at a show. |
+| Twenty Nine | 4 (you + partner vs 2) | Bid 15–28 on four cards, secret trump chosen by the top bidder, hidden until someone can't follow suit, 28 card points. First to ±6 game points. |
+| Coat Piece | 4 (you + partner vs 2) | Trump caller sees 5 cards, then 13 tricks; 7+ tricks scores a court; first to 3 courts. |
+| Dehla Pakad | 4 (you + partner vs 2) | Trump is named by the first player who can't follow suit; won tricks pile up and are taken by whoever wins two in a row; capture the tens (all four = Kot). 7 hands in a row wins the match. |
+| Lakadi | 4 (each alone) | Spades always trump; bid 1–13 tricks; exact bid scores the bid, +0.1 per extra trick, a miss loses the bid; five hands. |
+
+The computers play at Easy / Medium / Hard: Easy makes occasional random plays, Hard never does.
+**Pass & Play** (several people on one phone) is shown as locked for now — hidden hands need a
+hand-over screen — and Nearby/Online are the next step (see below).
+
+**Testing:** the engines have 47 JUnit tests (`app/src/test/.../game/`), including whole games played
+by the computer against itself that check every card is accounted for, every move is legal and scores
+add up. They run on a plain JVM — `./gradlew test`.
 
 ## A note on building in this environment
 
@@ -172,6 +195,11 @@ app/src/main/java/com/rangepatte/app/
 │   ├── membership/# MembershipScreen ("Remove ads?") + CheckoutScreen (payment gateway)
 │   ├── games/ (Khel), entertainment/, settings/, setup/, table/   # screens
 ├── navigation/    # Routes.kt, BottomNavItem.kt, RangEPatteNavHost.kt
+├── game/
+│   ├── common/    # CardView, GameFrame (header + Rules + Undo), dialogs, UndoHistory, seat plaques
+│   ├── tricks/    # shared trick-taking core: engine, computer player, TrickTable, bid/trump dialogs
+│   ├── solitaire/ spider/ rummy/ teenpatti/ twentynine/ coatpiece/ dehlapakad/ lakadi/
+│   │              # per game: *Engine.kt (rules) + *Ai.kt (computer player) + *Screen.kt
 ├── AppServices.kt # app-wide singletons (membership, account, ads, payment gateway)
 ├── MainActivity.kt
 └── RangEPatteApplication.kt
@@ -183,18 +211,17 @@ an `*Engine.kt`, `*Rules.kt`, and `*Screen.kt` — never touching the shared she
 
 ## How to add a new game
 
+0. (Overview) A game is three small files under `game/<name>/`: an engine, a computer player, a screen.
 1. Add a `GameInfo` entry to `domain/model/GameCatalog.kt` (name/description string resources,
    min/max players, a `GameThumbnail` case — see below). It automatically appears on the Khel
    page and becomes navigable — `setup/{segment}` and `table/{segment}` resolve through the
    catalog with no new route needed.
 2. Add a `GameRules(...)` entry for it to each rules book in `domain/rules/` (`RulesEn.kt` at least
    — other languages fall back to English) — that's what the rules scroll popup renders.
-3. Implement a `CardGameEngine` (see `domain/game/CardGameEngine.kt`) with its own `GameState`/
-   `GameAction` types, under a new `com.rangepatte.app.game.<yourgame>` package.
-4. Build a screen that renders your engine's state using the existing card/table components
-   (`PlayingCardView`, `Hand`, `CardFan`, `WoodenTable`, `ScorePanel`, ...) instead of
-   `GameTableScreen`'s demo content, and wire it into `RangEPatteNavHost.kt` in place of the shared
-   `GameTableScreen` call for that route.
+3. Write the engine as plain immutable Kotlin (a state class plus functions that return the next
+   state) in `game/<yourgame>/`, with unit tests. For a trick-taking game, reuse `game/tricks/`.
+4. Build a screen with `GameFrame` + `CardView` (see any existing `*Screen.kt`) and add one line for
+   your `GameId` in `ui/table/GameTableScreen.kt`.
 5. Add a `when` branch for the new `GameId` in `ui/thumbnails/GameThumbnail.kt` describing its
    signature cards (the `fan(...)` helper covers most layouts) — no image asset needed.
 
@@ -278,8 +305,9 @@ No other code changes are needed — every user-facing UI string already goes th
 
 `domain/model/PlayMode.kt` and `domain/multiplayer/Multiplayer.kt` hold the current state of this:
 
-- **Working today:** `VS_COMPUTER` (play against AI) and `PASS_AND_PLAY` (multiple local players,
-  same device) — both purely local, no networking involved.
+- **Working today:** `VS_COMPUTER` (play against AI) — purely local, no networking involved.
+  `PASS_AND_PLAY` is declared but shown locked: it needs a "pass the phone" hand-over screen so
+  nobody sees another player's cards.
 - **Scaffolded, not implemented:** `NEARBY` (WiFi-Direct/Bluetooth, for players near each other
   without internet) and `ONLINE` (internet play). Both appear in the setup screen already, disabled
   with a "coming soon" label. `GameRoom`, `PlayerConnection`, and `GameSynchronizer` in
@@ -291,7 +319,9 @@ No other code changes are needed — every user-facing UI string already goes th
   have meant shipping untested networking code.
 - **To implement Nearby:** build a `GameRoom`/`PlayerConnection` pair backed by Android's Nearby
   Connections API (handles both WiFi and Bluetooth transport selection automatically), wire it into
-  a `GameSynchronizer`, and flip the two disabled `FilterChip`s in `GameSetupScreen.kt` back on.
+  a `GameSynchronizer`, and flip the locked modes' `available` flags in `GameSetupScreen.kt` on.
+  Because every engine is immutable state + pure functions, syncing means sending each move (or the
+  new state) to the other phones.
 - **To implement Online:** the same interfaces, backed by a chosen realtime backend (Firebase
   Firestore/Realtime Database is the lowest-setup option — no server to host).
 
