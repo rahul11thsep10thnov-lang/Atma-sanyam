@@ -218,4 +218,43 @@
     <string name="trick_tricks_format">चालें — आपकी टीम: %1$d · उनकी: %2$d</string>
     <string name="trick_trump_format">ट्रम्प: %1$s</string>
     <string name="trick_trump_hidden">ट्रम्प: छिपा हुआ</string>
+
+    <!-- Multiplayer tables -->
+    <string name="game_waiting_for_host">मेज़बान का इंतज़ार…</string>
+    <string name="net_connection_lost">कनेक्शन टूट गया</string>
+    <string name="net_connection_lost_hint">मेज़बान चले गए या कनेक्शन टूट गया, इसलिए यह मेज़ खत्म हो गई।</string>
+
+    <!-- Multiplayer lobby -->
+    <string name="net_host_table">मेज़ खोलें</string>
+    <string name="net_join_table">मेज़ से जुड़ें</string>
+    <string name="net_mode_nearby">आस-पास — ब्लूटूथ / वाई-फ़ाई</string>
+    <string name="net_mode_online">ऑनलाइन — इंटरनेट से</string>
+    <string name="net_perm_body">आस-पास के फ़ोन खोजने और जुड़ने के लिए खेल को ब्लूटूथ और वाई-फ़ाई की अनुमति चाहिए। कोई निजी जानकारी नहीं पढ़ी जाती।</string>
+    <string name="net_perm_allow">अनुमति दें</string>
+    <string name="net_your_name">आपका नाम</string>
+    <string name="net_enter_code">कमरे का कोड</string>
+    <string name="net_join">जुड़ें</string>
+    <string name="net_open_table">मेज़ खोलें</string>
+    <string name="net_search_tables">आस-पास की मेज़ें खोजें</string>
+    <string name="net_room_code">कमरे का कोड</string>
+    <string name="net_share_code">कोड भेजें</string>
+    <string name="net_share_message">इंडियन ताश पर मेरी %1$s की मेज़ से जुड़ें! कमरे का कोड: %2$s</string>
+    <string name="net_waiting_players">खिलाड़ियों की प्रतीक्षा…</string>
+    <string name="net_players_format">खिलाड़ी %1$d / %2$d</string>
+    <string name="net_empty_seats_note">खाली कुर्सियों पर कंप्यूटर खेलेगा।</string>
+    <string name="net_start_game">खेल शुरू करें</string>
+    <string name="net_need_one_guest">पहले कम से कम एक और खिलाड़ी को जुड़ना होगा।</string>
+    <string name="net_joined_waiting">आप जुड़ गए! मेज़बान के शुरू करने की प्रतीक्षा…</string>
+    <string name="net_connecting">जुड़ रहे हैं…</string>
+    <string name="net_no_tables">अभी कोई मेज़ नहीं मिली। अपने दोस्त से मेज़ खोलने को कहें।</string>
+    <string name="net_tap_to_join">जुड़ने के लिए मेज़ पर टैप करें</string>
+    <string name="net_err_generic">कुछ गड़बड़ हो गई: %1$s</string>
+    <string name="net_err_full">यह मेज़ भर चुकी है।</string>
+    <string name="net_err_started">यह खेल शुरू हो चुका है।</string>
+    <string name="net_err_no_room">इस कोड की कोई मेज़ नहीं है।</string>
+    <string name="net_err_wrong_game">यह कोड किसी दूसरे खेल का है।</string>
+    <string name="net_err_login">ऑनलाइन खेलने के लिए ऊपर दाएँ से लॉग इन करें।</string>
+    <string name="net_err_not_connected">इस संस्करण में ऑनलाइन खेल चालू नहीं है।</string>
+    <string name="net_err_host_left">मेज़बान ने मेज़ छोड़ दी।</string>
+    <string name="setup_others_hint">दोस्त अपने-अपने फ़ोन पर खेलते हैं। खाली कुर्सियों पर ऊपर चुने स्तर का कंप्यूटर खेलेगा।</string>
 </resources>

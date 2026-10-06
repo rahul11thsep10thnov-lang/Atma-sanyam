@@ -48,3 +48,14 @@ data class RummyState(
     val current: RummyPlayer get() = players[turn]
     fun isWild(card: RCard): Boolean = card.isPrintedJoker || card.rank == wildRank
 }
+
+/** Everything a player can do in rummy. */
+sealed interface RummyAction {
+    data object DrawStock : RummyAction
+    data object DrawDiscard : RummyAction
+    data class Discard(val cardId: Int) : RummyAction
+    /** Finish the round, putting [cardId] face-down; the other 13 cards must form a valid hand. */
+    data class Declare(val cardId: Int) : RummyAction
+    /** The host starts a new round. */
+    data object Next : RummyAction
+}

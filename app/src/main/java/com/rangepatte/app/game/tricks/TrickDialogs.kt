@@ -27,7 +27,6 @@ import androidx.compose.ui.window.DialogProperties
 import com.rangepatte.app.R
 import com.rangepatte.app.domain.model.PlayingCard
 import com.rangepatte.app.domain.model.Suit
-import com.rangepatte.app.game.common.AI_NAMES
 import com.rangepatte.app.game.common.CardView
 import com.rangepatte.app.ui.components.royal.RoyalButton
 import com.rangepatte.app.ui.components.royal.RoyalButtonStyle
@@ -135,14 +134,19 @@ fun BidDialog(
     }
 }
 
-/** The name shown for each seat: you, then the computer players (seat 2 is your partner in team games). */
+/**
+ * The name shown for each seat: "You" at this phone's seat, [names] elsewhere, and in team games the
+ * seat opposite you is marked as your partner.
+ */
 @Composable
-fun trickSeatNames(partners: Boolean): List<String> {
+fun trickSeatNames(names: List<String>, mySeat: Int, partners: Boolean): List<String> {
     val you = stringResource(R.string.player_you)
-    return listOf(
-        you,
-        AI_NAMES[0],
-        if (partners) stringResource(R.string.seat_partner_format, AI_NAMES[1]) else AI_NAMES[1],
-        AI_NAMES[2]
-    )
+    val partnerSeat = TrickEngine.partnerOf(mySeat)
+    return names.mapIndexed { seat, name ->
+        when {
+            seat == mySeat -> you
+            partners && seat == partnerSeat -> stringResource(R.string.seat_partner_format, name)
+            else -> name
+        }
+    }
 }

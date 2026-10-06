@@ -40,6 +40,7 @@ import com.rangepatte.app.domain.model.AiDifficulty
 import com.rangepatte.app.domain.model.GameId
 import com.rangepatte.app.domain.model.GameInfo
 import com.rangepatte.app.domain.model.PlayMode
+import com.rangepatte.app.net.core.GameMachines
 import com.rangepatte.app.ui.background.BackgroundType
 import com.rangepatte.app.ui.components.GameHeader
 import com.rangepatte.app.ui.components.GamePortrait
@@ -70,6 +71,7 @@ fun GameSetupScreen(
     game: GameInfo,
     onBackClick: () -> Unit,
     onStartGame: (playerCount: Int, difficulty: AiDifficulty, mode: PlayMode) -> Unit,
+    onOpenLobby: (playerCount: Int, difficulty: AiDifficulty, mode: PlayMode, host: Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var playerCount by remember(game.id) { mutableIntStateOf(game.minPlayers) }
@@ -77,6 +79,8 @@ fun GameSetupScreen(
     var mode by remember(game.id) { mutableStateOf(PlayMode.VS_COMPUTER) }
     var showRules by remember(game.id) { mutableStateOf(false) }
     val isMultiplayerCapable = game.maxPlayers > 1
+    val canPlayOnline = game.id in GameMachines.multiplayerGames
+    val withOthers = mode == PlayMode.NEARBY || mode == PlayMode.ONLINE
 
     LaunchedEffect(game.id) { showRules = true }
 
@@ -96,7 +100,7 @@ fun GameSetupScreen(
                     RoyalPanel(title = stringResource(R.string.setup_title), modifier = panelModifier) {
                         if (isMultiplayerCapable) {
                             RoyalSectionTitle(stringResource(R.string.setup_mode_title))
-                            ModeSlots(selected = mode, onSelect = { mode = it })
+                            ModeSlots(selected = mode, onSelect = { mode = it }, withOthersAvailable = canPlayOnline)
                             if (game.minPlayers < game.maxPlayers) RoyalSectionTitle(stringResource(R.string.setup_players))
                             if (game.minPlayers < game.maxPlayers) Row(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -120,7 +124,7 @@ fun GameSetupScreen(
                                 }
                             }
                         }
-                        if (!isMultiplayerCapable || mode == PlayMode.VS_COMPUTER) {
+                        run {
                             RoyalSectionTitle(stringResource(R.string.setup_difficulty))
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
                                 AiDifficulty.entries.forEach { level ->
@@ -142,13 +146,34 @@ fun GameSetupScreen(
                                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
                             )
                         }
-                        RoyalButton(
-                            text = stringResource(R.string.setup_start),
-                            onClick = { onStartGame(playerCount, difficulty, if (isMultiplayerCapable) mode else PlayMode.VS_COMPUTER) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 20.dp)
-                        )
+                        if (withOthers) {
+                            Text(
+                                text = stringResource(R.string.setup_others_hint),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = ParchmentTextDim,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                            )
+                            RoyalButton(
+                                text = stringResource(R.string.net_host_table),
+                                onClick = { onOpenLobby(playerCount, difficulty, mode, true) },
+                                modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+                            )
+                            RoyalButton(
+                                text = stringResource(R.string.net_join_table),
+                                onClick = { onOpenLobby(playerCount, difficulty, mode, false) },
+                                style = RoyalButtonStyle.STEEL,
+                                modifier = Modifier.fillMaxWidth().padding(top = 10.dp)
+                            )
+                        } else {
+                            RoyalButton(
+                                text = stringResource(R.string.setup_start),
+                                onClick = { onStartGame(playerCount, difficulty, if (isMultiplayerCapable) mode else PlayMode.VS_COMPUTER) },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 20.dp)
+                            )
+                        }
                     }
                 }
 
@@ -221,16 +246,16 @@ private fun GameInfoPanel(game: GameInfo, onRulesClick: () -> Unit, modifier: Mo
 
 private data class ModeOption(val mode: PlayMode, val icon: ImageVector, val labelRes: Int, val available: Boolean)
 
-private val modeOptions = listOf(
+private fun modeOptions(withOthersAvailable: Boolean) = listOf(
     ModeOption(PlayMode.VS_COMPUTER, Icons.Filled.Computer, R.string.setup_mode_vs_computer, available = true),
     ModeOption(PlayMode.PASS_AND_PLAY, Icons.Filled.Groups, R.string.setup_mode_pass_play, available = false),
-    ModeOption(PlayMode.NEARBY, Icons.Filled.Wifi, R.string.setup_mode_nearby, available = false),
-    ModeOption(PlayMode.ONLINE, Icons.Filled.Public, R.string.setup_mode_online, available = false)
+    ModeOption(PlayMode.NEARBY, Icons.Filled.Wifi, R.string.setup_mode_nearby, available = withOthersAvailable),
+    ModeOption(PlayMode.ONLINE, Icons.Filled.Public, R.string.setup_mode_online, available = withOthersAvailable)
 )
 
-/** Four square command slots for how to play; Nearby/Online are shown locked ("coming soon"). */
+/** Four square command slots for how to play; Pass & Play is shown locked ("coming soon"). */
 @Composable
-private fun ModeSlots(selected: PlayMode, onSelect: (PlayMode) -> Unit) {
+private fun ModeSlots(selected: PlayMode, onSelect: (PlayMode) -> Unit, withOthersAvailable: Boolean) {
     val comingSoon = stringResource(R.string.setup_mode_coming_soon)
     Row(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -238,7 +263,7 @@ private fun ModeSlots(selected: PlayMode, onSelect: (PlayMode) -> Unit) {
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState())
     ) {
-        modeOptions.forEach { option ->
+        modeOptions(withOthersAvailable).forEach { option ->
             val label = stringResource(option.labelRes)
             val isSelected = selected == option.mode
             Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(72.dp)) {

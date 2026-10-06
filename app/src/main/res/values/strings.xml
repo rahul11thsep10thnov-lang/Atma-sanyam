@@ -228,4 +228,43 @@
     <string name="trick_tricks_format">Tricks — Your team: %1$d · Them: %2$d</string>
     <string name="trick_trump_format">Trump: %1$s</string>
     <string name="trick_trump_hidden">Trump: hidden</string>
+
+    <!-- Multiplayer tables -->
+    <string name="game_waiting_for_host">Waiting for the host…</string>
+    <string name="net_connection_lost">Connection lost</string>
+    <string name="net_connection_lost_hint">The host left or the connection broke, so this table has ended.</string>
+
+    <!-- Multiplayer lobby -->
+    <string name="net_host_table">Host a table</string>
+    <string name="net_join_table">Join a table</string>
+    <string name="net_mode_nearby">Nearby — Bluetooth / Wi-Fi</string>
+    <string name="net_mode_online">Online — over the internet</string>
+    <string name="net_perm_body">To find and connect to phones nearby, the game needs permission to use Bluetooth and Wi-Fi. No personal data is read.</string>
+    <string name="net_perm_allow">Allow</string>
+    <string name="net_your_name">Your name</string>
+    <string name="net_enter_code">Room code</string>
+    <string name="net_join">Join</string>
+    <string name="net_open_table">Open the table</string>
+    <string name="net_search_tables">Find tables nearby</string>
+    <string name="net_room_code">Room code</string>
+    <string name="net_share_code">Share code</string>
+    <string name="net_share_message">Join my %1$s table on Indian Taash! Room code: %2$s</string>
+    <string name="net_waiting_players">Waiting for players…</string>
+    <string name="net_players_format">Players %1$d / %2$d</string>
+    <string name="net_empty_seats_note">Empty seats are played by the computer.</string>
+    <string name="net_start_game">Start game</string>
+    <string name="net_need_one_guest">At least one other player must join first.</string>
+    <string name="net_joined_waiting">You are in! Waiting for the host to start…</string>
+    <string name="net_connecting">Connecting…</string>
+    <string name="net_no_tables">No tables found yet. Ask your friend to open a table.</string>
+    <string name="net_tap_to_join">Tap a table to join</string>
+    <string name="net_err_generic">Something went wrong: %1$s</string>
+    <string name="net_err_full">This table is full.</string>
+    <string name="net_err_started">This game has already started.</string>
+    <string name="net_err_no_room">No table with that code.</string>
+    <string name="net_err_wrong_game">That code is for a different game.</string>
+    <string name="net_err_login">Please log in (top right) to play online.</string>
+    <string name="net_err_not_connected">Online play is not set up in this build.</string>
+    <string name="net_err_host_left">The host left the table.</string>
+    <string name="setup_others_hint">Friends play on their own phones. Empty seats are played by the computer at the difficulty chosen above.</string>
 </resources>

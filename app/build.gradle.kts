@@ -81,6 +81,9 @@ dependencies {
     implementation(libs.play.services.ads)
     implementation(libs.google.ump)
 
+    // Play with people nearby over Bluetooth / Wi-Fi, no internet needed.
+    implementation(libs.play.services.nearby)
+
     // Firebase phone-OTP auth and Firestore user database (active only with google-services.json).
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)

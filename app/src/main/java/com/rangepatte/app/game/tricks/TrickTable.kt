@@ -38,6 +38,7 @@ data class SeatView(val name: String, val cardsLeft: Int, val tag: String? = nul
 @Composable
 fun TrickTable(
     seats: List<SeatView>,
+    mySeat: Int,
     turn: Int?,
     plays: List<TrickPlay>,
     winnerSeat: Int?,
@@ -52,27 +53,29 @@ fun TrickTable(
         info.forEachIndexed { i, line -> StatusLine(text = line, highlight = highlightFirstInfo && i == 0, compact = true) }
 
         WoodenTable(modifier = Modifier.weight(1f).fillMaxWidth().padding(horizontal = 8.dp, vertical = 6.dp)) {
+            // Seats are absolute (0..3); each phone draws itself at the bottom and the others clockwise-by-play-order.
+            fun at(position: Int) = (mySeat + position) % 4
             SeatPlaque(
-                name = seats[2].name, tag = seats[2].tag, detail = seats[2].detail ?: "${seats[2].cardsLeft}",
-                isTurn = turn == 2, modifier = Modifier.align(Alignment.TopCenter).padding(top = 8.dp)
+                name = seats[at(2)].name, tag = seats[at(2)].tag, detail = seats[at(2)].detail ?: "${seats[at(2)].cardsLeft}",
+                isTurn = turn == at(2), modifier = Modifier.align(Alignment.TopCenter).padding(top = 8.dp)
             )
             SeatPlaque(
-                name = seats[3].name, tag = seats[3].tag, detail = seats[3].detail ?: "${seats[3].cardsLeft}",
-                isTurn = turn == 3, modifier = Modifier.align(Alignment.CenterStart).padding(start = 6.dp)
+                name = seats[at(3)].name, tag = seats[at(3)].tag, detail = seats[at(3)].detail ?: "${seats[at(3)].cardsLeft}",
+                isTurn = turn == at(3), modifier = Modifier.align(Alignment.CenterStart).padding(start = 6.dp)
             )
             SeatPlaque(
-                name = seats[1].name, tag = seats[1].tag, detail = seats[1].detail ?: "${seats[1].cardsLeft}",
-                isTurn = turn == 1, modifier = Modifier.align(Alignment.CenterEnd).padding(end = 6.dp)
+                name = seats[at(1)].name, tag = seats[at(1)].tag, detail = seats[at(1)].detail ?: "${seats[at(1)].cardsLeft}",
+                isTurn = turn == at(1), modifier = Modifier.align(Alignment.CenterEnd).padding(end = 6.dp)
             )
             SeatPlaque(
-                name = seats[0].name, tag = seats[0].tag, detail = seats[0].detail ?: "${seats[0].cardsLeft}",
-                isTurn = turn == 0, modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp)
+                name = seats[at(0)].name, tag = seats[at(0)].tag, detail = seats[at(0)].detail ?: "${seats[at(0)].cardsLeft}",
+                isTurn = turn == at(0), modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp)
             )
 
             // The trick in the middle: each card sits on the side of the seat that played it.
             Box(modifier = Modifier.align(Alignment.Center).size(width = 190.dp, height = 170.dp)) {
                 plays.forEach { play ->
-                    val align = when (play.seat) {
+                    val align = when ((play.seat - mySeat + 4) % 4) {
                         0 -> Alignment.BottomCenter
                         1 -> Alignment.CenterEnd
                         2 -> Alignment.TopCenter

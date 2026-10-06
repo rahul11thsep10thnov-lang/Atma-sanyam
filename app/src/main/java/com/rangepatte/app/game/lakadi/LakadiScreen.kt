@@ -1,26 +1,20 @@
 package com.rangepatte.app.game.lakadi
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.rangepatte.app.R
-import com.rangepatte.app.domain.model.AiDifficulty
 import com.rangepatte.app.domain.model.GameInfo
-import com.rangepatte.app.domain.model.PlayMode
+import com.rangepatte.app.game.common.ConnectionLostDialog
 import com.rangepatte.app.game.common.GameFrame
 import com.rangepatte.app.game.common.GameResultDialog
-import com.rangepatte.app.game.common.UndoControl
-import com.rangepatte.app.game.common.UndoHistory
+import com.rangepatte.app.game.common.undoControl
 import com.rangepatte.app.game.tricks.BidDialog
 import com.rangepatte.app.game.tricks.SeatView
+import com.rangepatte.app.game.tricks.TrickAction
 import com.rangepatte.app.game.tricks.TrickEngine
 import com.rangepatte.app.game.tricks.TrickTable
 import com.rangepatte.app.game.tricks.trickSeatNames
-import kotlinx.coroutines.delay
+import com.rangepatte.app.net.GameSession
 
 /**
  * Lakadi: four players, each for themselves, spades always trump, five hands. Bid how many tricks you
@@ -29,46 +23,17 @@ import kotlinx.coroutines.delay
 @Composable
 fun LakadiScreen(
     game: GameInfo,
-    playMode: PlayMode,
-    difficulty: AiDifficulty,
+    session: GameSession<LkState, TrickAction>,
     onBackClick: () -> Unit
 ) {
-    val seatNames = trickSeatNames(partners = false)
-    var state by remember { mutableStateOf(LakadiEngine.newGame()) }
-    val undo = remember { UndoHistory<LkState>() }
+    val state = session.state
+    val me = session.mySeat
+    val seatNames = trickSeatNames(session.seatNames, me, partners = false)
     val round = state.round
     val trickDone = TrickEngine.isTrickComplete(round)
-    val myTurn = state.phase == LkPhase.PLAYING && !trickDone && round.turn == 0
+    val myTurn = state.phase == LkPhase.PLAYING && !trickDone && round.turn == me
 
-    LaunchedEffect(state) {
-        when (state.phase) {
-            LkPhase.BIDDING -> if (state.bidTurn != 0) {
-                delay(1000)
-                state = LakadiEngine.bid(state, LakadiAi.bid(state, difficulty)) ?: state
-            }
-            LkPhase.PLAYING -> when {
-                TrickEngine.isTrickComplete(state.round) -> {
-                    delay(1300)
-                    state = LakadiEngine.resolveTrick(state)
-                }
-                state.round.turn != 0 -> {
-                    delay(800)
-                    state = LakadiEngine.play(state, LakadiAi.chooseCard(state, difficulty)) ?: state
-                }
-            }
-            else -> Unit
-        }
-    }
-
-    GameFrame(
-        game = game,
-        onBackClick = onBackClick,
-        undo = if (playMode.allowsUndo) UndoControl(
-            usesLeft = undo.usesLeft,
-            enabled = undo.canUndo && myTurn,
-            onUndo = { undo.undo()?.let { state = it } }
-        ) else null
-    ) {
+    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl()) {
         val won = TrickEngine.tricksWonBySeat(round)
         TrickTable(
             seats = List(4) { seat ->
@@ -82,6 +47,7 @@ fun LakadiScreen(
                     detail = stringResource(R.string.lk_score_format, LakadiEngine.format(state.scoresTenths[seat]))
                 )
             },
+            mySeat = me,
             turn = when (state.phase) {
                 LkPhase.BIDDING -> state.bidTurn
                 LkPhase.PLAYING -> if (trickDone) null else round.turn
@@ -89,33 +55,28 @@ fun LakadiScreen(
             },
             plays = round.plays,
             winnerSeat = if (trickDone) TrickEngine.currentWinner(round, LakadiEngine.rules) else null,
-            myHand = round.hands[0],
+            myHand = round.hands[me],
             playable = if (myTurn) TrickEngine.legal(round).map { it.id }.toSet() else emptySet(),
-            onPlay = { card ->
-                LakadiEngine.play(state, card)?.let {
-                    undo.record(state)
-                    state = it
-                }
-            },
+            onPlay = { session.submit(TrickAction.Play(it.id)) },
             info = buildList {
-                if (myTurn) add(stringResource(R.string.game_your_turn))
+                if (myTurn || (state.phase == LkPhase.BIDDING && state.bidTurn == me)) add(stringResource(R.string.game_your_turn))
                 else if (state.phase == LkPhase.PLAYING && !trickDone) add(stringResource(R.string.turn_indicator_format, seatNames[round.turn]))
-                else if (state.phase == LkPhase.BIDDING) add(if (state.bidTurn == 0) stringResource(R.string.game_your_turn) else stringResource(R.string.turn_indicator_format, seatNames[state.bidTurn]))
+                else if (state.phase == LkPhase.BIDDING) add(stringResource(R.string.turn_indicator_format, seatNames[state.bidTurn]))
                 add(stringResource(R.string.lk_hand_format, state.handNumber, LakadiEngine.HANDS_PER_GAME))
             },
             highlightFirstInfo = myTurn
         )
     }
 
-    if (state.phase == LkPhase.BIDDING && state.bidTurn == 0) {
+    if (state.phase == LkPhase.BIDDING && state.bidTurn == me) {
         BidDialog(
             title = stringResource(R.string.bid_tricks_title),
-            hand = round.hands[0],
+            hand = round.hands[me],
             min = 1,
             max = LakadiEngine.MAX_BID,
             info = listOf(stringResource(R.string.lk_hand_format, state.handNumber, LakadiEngine.HANDS_PER_GAME)),
             canPass = false,
-            onBid = { state = LakadiEngine.bid(state, it) ?: state },
+            onBid = { session.submit(TrickAction.Bid(it)) },
             onPass = {}
         )
     }
@@ -127,7 +88,7 @@ fun LakadiScreen(
         GameResultDialog(
             title = when {
                 !gameOver -> stringResource(R.string.lk_hand_over_format, state.handNumber)
-                winners == listOf(0) -> stringResource(R.string.game_you_won)
+                winners == listOf(me) -> stringResource(R.string.game_you_won)
                 else -> stringResource(R.string.lk_wins_format, seatNames[winners.first()])
             },
             lines = state.scoresTenths.indices.map { seat ->
@@ -139,13 +100,13 @@ fun LakadiScreen(
                     LakadiEngine.format(state.scoresTenths[seat])
                 )
             },
-            primaryText = if (gameOver) stringResource(R.string.game_new_game) else stringResource(R.string.game_next_round),
-            onPrimary = {
-                state = if (gameOver) LakadiEngine.newGame() else LakadiEngine.nextHand(state)
-                undo.reset()
-            },
+            primaryText = if (!session.isHost) null
+            else if (gameOver) stringResource(R.string.game_new_game) else stringResource(R.string.game_next_round),
+            onPrimary = { session.submit(TrickAction.Next) },
             secondaryText = stringResource(R.string.game_back_to_khel),
             onSecondary = onBackClick
         )
     }
+
+    if (session.connectionLost) ConnectionLostDialog(onBackClick)
 }

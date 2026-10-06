@@ -11,77 +11,46 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.rangepatte.app.R
-import com.rangepatte.app.domain.model.AiDifficulty
 import com.rangepatte.app.domain.model.GameInfo
-import com.rangepatte.app.domain.model.PlayMode
-import com.rangepatte.app.game.common.AI_NAMES
 import com.rangepatte.app.game.common.CardView
+import com.rangepatte.app.game.common.ConnectionLostDialog
 import com.rangepatte.app.game.common.GameFrame
 import com.rangepatte.app.game.common.GameResultDialog
 import com.rangepatte.app.game.common.SeatPlaque
 import com.rangepatte.app.game.common.StatusLine
-import com.rangepatte.app.game.common.UndoControl
-import com.rangepatte.app.game.common.UndoHistory
+import com.rangepatte.app.game.common.undoControl
+import com.rangepatte.app.net.GameSession
 import com.rangepatte.app.ui.components.royal.RoyalButton
 import com.rangepatte.app.ui.components.royal.RoyalButtonStyle
 import com.rangepatte.app.ui.theme.GoldBevelLight
 import com.rangepatte.app.ui.theme.GoldenGlow
 import com.rangepatte.app.ui.theme.ParchmentText
-import kotlinx.coroutines.delay
 
 /**
- * Teen Patti / Flush against 2–5 computer players, for points only (never money). Everyone puts in a
- * boot; look at your cards ("See") or play blind for half the price. On your turn Call (chaal), Raise,
- * Pack, or — when two players remain and you've seen your cards — ask for a Show.
+ * Teen Patti / Flush, against the computer or other people, for points only (never money). Everyone puts
+ * in a boot; look at your cards ("See") or play blind for half the price. On your turn Call (chaal),
+ * Raise, Pack, or — when two players remain and you've seen your cards — ask for a Show.
  */
 @Composable
 fun TeenPattiScreen(
     game: GameInfo,
-    playMode: PlayMode,
-    playerCount: Int,
-    difficulty: AiDifficulty,
+    session: GameSession<TpState, TpAction>,
     onBackClick: () -> Unit
 ) {
+    val state = session.state
+    val me = state.seats[session.mySeat]
+    val mySeat = session.mySeat
+    val seatCount = state.seats.size
     val youName = stringResource(R.string.player_you)
-    val names = remember(playerCount, youName) { listOf(youName) + AI_NAMES.take(playerCount - 1) }
-    var state by remember { mutableStateOf(TeenPattiEngine.newMatch(names)) }
-    val undo = remember { UndoHistory<TpState>() }
-    val myTurn = state.phase == TpPhase.BETTING && state.turn == 0
+    val myTurn = state.phase == TpPhase.BETTING && state.turn == mySeat
 
-    LaunchedEffect(state) {
-        if (state.phase == TpPhase.BETTING && !state.current.isHuman) {
-            delay(1100)
-            state = TeenPattiAi.takeAction(state, difficulty)
-        }
-    }
-
-    fun act(next: TpState?) {
-        if (next == null) return
-        undo.record(state)
-        state = next
-    }
-
-    val me = state.seats[0]
-    GameFrame(
-        game = game,
-        onBackClick = onBackClick,
-        undo = if (playMode.allowsUndo) UndoControl(
-            usesLeft = undo.usesLeft,
-            enabled = undo.canUndo && myTurn,
-            onUndo = { undo.undo()?.let { state = it } }
-        ) else null
-    ) {
+    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl()) {
         // Pot and stake.
         Row(
             horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally),
@@ -101,10 +70,10 @@ fun TeenPattiScreen(
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
         ) {
-            state.seats.drop(1).chunked(2).forEach { rowSeats ->
+            (1 until seatCount).map { (mySeat + it) % seatCount }.chunked(2).forEach { rowSeats ->
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    rowSeats.forEach { seat ->
-                        val index = state.seats.indexOf(seat)
+                    rowSeats.forEach { index ->
+                        val seat = state.seats[index]
                         SeatPlaque(
                             name = seat.name,
                             tag = statusOf(seat),
@@ -117,7 +86,7 @@ fun TeenPattiScreen(
             }
             state.lastAction?.let { action ->
                 Text(
-                    text = describe(action, state.seats[action.seat].name),
+                    text = describe(action, if (action.seat == mySeat) youName else state.seats[action.seat].name),
                     style = MaterialTheme.typography.bodyLarge,
                     color = ParchmentText,
                     textAlign = TextAlign.Center,
@@ -149,7 +118,7 @@ fun TeenPattiScreen(
             }
         }
         SeatPlaque(
-            name = me.name,
+            name = youName,
             tag = statusOf(me),
             detail = stringResource(R.string.tp_chips_format, me.chips),
             isTurn = myTurn,
@@ -165,21 +134,21 @@ fun TeenPattiScreen(
                 RoyalButton(
                     text = stringResource(R.string.tp_see),
                     enabled = myTurn && TeenPattiEngine.canSee(state),
-                    onClick = { act(TeenPattiEngine.see(state)) },
+                    onClick = { session.submit(TpAction.SEE) },
                     style = RoyalButtonStyle.STEEL,
                     modifier = Modifier.weight(1f)
                 )
                 RoyalButton(
                     text = stringResource(R.string.tp_pack),
                     enabled = myTurn,
-                    onClick = { act(TeenPattiEngine.pack(state)) },
+                    onClick = { session.submit(TpAction.PACK) },
                     style = RoyalButtonStyle.STEEL,
                     modifier = Modifier.weight(1f)
                 )
                 RoyalButton(
                     text = stringResource(R.string.tp_show),
                     enabled = myTurn && (TeenPattiEngine.canShow(state) || (state.activeCount == 2 && !TeenPattiEngine.canChaal(state))),
-                    onClick = { act(TeenPattiEngine.show(state)) },
+                    onClick = { session.submit(TpAction.SHOW) },
                     style = RoyalButtonStyle.STEEL,
                     modifier = Modifier.weight(1f)
                 )
@@ -188,13 +157,13 @@ fun TeenPattiScreen(
                 RoyalButton(
                     text = stringResource(R.string.tp_chaal_format, if (myTurn) TeenPattiEngine.chaalCost(state) else 0),
                     enabled = myTurn && TeenPattiEngine.canChaal(state),
-                    onClick = { act(TeenPattiEngine.chaal(state)) },
+                    onClick = { session.submit(TpAction.CHAAL) },
                     modifier = Modifier.weight(1f)
                 )
                 RoyalButton(
                     text = stringResource(R.string.tp_raise_format, if (myTurn) TeenPattiEngine.raiseCost(state) else 0),
                     enabled = myTurn && TeenPattiEngine.canRaise(state),
-                    onClick = { act(TeenPattiEngine.raise(state)) },
+                    onClick = { session.submit(TpAction.RAISE) },
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -202,31 +171,30 @@ fun TeenPattiScreen(
     }
 
     state.result?.let { result ->
-        val human = state.seats[0]
-        val broke = human.chips < TeenPattiEngine.BOOT
+        val broke = state.seats[0].chips < TeenPattiEngine.BOOT
+        val nameOf = { seat: Int -> if (seat == mySeat) youName else state.seats[seat].name }
         GameResultDialog(
-            title = if (result.winner == 0) stringResource(R.string.game_you_won) else stringResource(R.string.tp_winner_format, state.seats[result.winner].name, result.pot),
+            title = if (result.winner == mySeat) stringResource(R.string.game_you_won) else stringResource(R.string.tp_winner_format, nameOf(result.winner), result.pot),
             lines = buildList {
-                if (result.winner == 0) add(stringResource(R.string.tp_winner_format, human.name, result.pot))
-                add(stringResource(R.string.tp_chips_format, human.chips))
+                if (result.winner == mySeat) add(stringResource(R.string.tp_winner_format, youName, result.pot))
+                add(stringResource(R.string.tp_chips_format, me.chips))
                 if (broke) add(stringResource(R.string.tp_out_of_points))
             },
-            primaryText = if (broke) stringResource(R.string.game_new_game) else stringResource(R.string.tp_next_hand),
-            onPrimary = {
-                state = (if (broke) null else TeenPattiEngine.nextHand(state)) ?: TeenPattiEngine.newMatch(names)
-                if (broke) undo.reset()
-            },
+            primaryText = if (!session.isHost) null
+            else if (broke) stringResource(R.string.game_new_game) else stringResource(R.string.tp_next_hand),
+            onPrimary = { session.submit(TpAction.NEXT_HAND) },
             secondaryText = stringResource(R.string.game_back_to_khel),
             onSecondary = onBackClick,
             extra = {
                 if (result.showdown) {
-                    state.seats.filter { !it.packed }.forEach { seat ->
+                    state.seats.indices.filter { !state.seats[it].packed }.forEach { index ->
+                        val seat = state.seats[index]
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
                             modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
                         ) {
-                            Text(seat.name, style = MaterialTheme.typography.labelLarge, color = GoldBevelLight, modifier = Modifier.width(56.dp))
+                            Text(nameOf(index), style = MaterialTheme.typography.labelLarge, color = GoldBevelLight, modifier = Modifier.width(56.dp))
                             seat.hand.forEach { CardView(card = it, modifier = Modifier.width(44.dp)) }
                             Text(handName(TeenPattiRanking.evaluate(seat.hand).category), style = MaterialTheme.typography.labelMedium, color = ParchmentText)
                         }
@@ -235,6 +203,8 @@ fun TeenPattiScreen(
             }
         )
     }
+
+    if (session.connectionLost) ConnectionLostDialog(onBackClick)
 }
 
 @Composable

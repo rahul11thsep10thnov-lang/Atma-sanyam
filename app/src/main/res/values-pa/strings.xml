@@ -218,4 +218,43 @@
     <string name="trick_tricks_format">ਸਰ — ਤੁਹਾਡੀ ਟੀਮ: %1$d · ਉਨ੍ਹਾਂ ਦੀ: %2$d</string>
     <string name="trick_trump_format">ਟਰੰਪ: %1$s</string>
     <string name="trick_trump_hidden">ਟਰੰਪ: ਲੁਕਿਆ ਹੋਇਆ</string>
+
+    <!-- Multiplayer tables -->
+    <string name="game_waiting_for_host">ਮੇਜ਼ਬਾਨ ਦੀ ਉਡੀਕ…</string>
+    <string name="net_connection_lost">ਕੁਨੈਕਸ਼ਨ ਟੁੱਟ ਗਿਆ</string>
+    <string name="net_connection_lost_hint">ਮੇਜ਼ਬਾਨ ਚਲੇ ਗਏ ਜਾਂ ਕੁਨੈਕਸ਼ਨ ਟੁੱਟ ਗਿਆ, ਇਸ ਲਈ ਇਹ ਮੇਜ਼ ਖ਼ਤਮ ਹੋ ਗਈ।</string>
+
+    <!-- Multiplayer lobby -->
+    <string name="net_host_table">ਮੇਜ਼ ਖੋਲ੍ਹੋ</string>
+    <string name="net_join_table">ਮੇਜ਼ ਨਾਲ ਜੁੜੋ</string>
+    <string name="net_mode_nearby">ਨੇੜੇ — ਬਲੂਟੁੱਥ / ਵਾਈ-ਫਾਈ</string>
+    <string name="net_mode_online">ਆਨਲਾਈਨ — ਇੰਟਰਨੈੱਟ ਰਾਹੀਂ</string>
+    <string name="net_perm_body">ਨੇੜੇ ਦੇ ਫ਼ੋਨ ਲੱਭਣ ਅਤੇ ਜੁੜਨ ਲਈ ਖੇਡ ਨੂੰ ਬਲੂਟੁੱਥ ਅਤੇ ਵਾਈ-ਫਾਈ ਦੀ ਇਜਾਜ਼ਤ ਚਾਹੀਦੀ ਹੈ। ਕੋਈ ਨਿੱਜੀ ਜਾਣਕਾਰੀ ਨਹੀਂ ਪੜ੍ਹੀ ਜਾਂਦੀ।</string>
+    <string name="net_perm_allow">ਇਜਾਜ਼ਤ ਦਿਓ</string>
+    <string name="net_your_name">ਤੁਹਾਡਾ ਨਾਂ</string>
+    <string name="net_enter_code">ਕਮਰੇ ਦਾ ਕੋਡ</string>
+    <string name="net_join">ਜੁੜੋ</string>
+    <string name="net_open_table">ਮੇਜ਼ ਖੋਲ੍ਹੋ</string>
+    <string name="net_search_tables">ਨੇੜੇ ਦੇ ਮੇਜ਼ ਲੱਭੋ</string>
+    <string name="net_room_code">ਕਮਰੇ ਦਾ ਕੋਡ</string>
+    <string name="net_share_code">ਕੋਡ ਭੇਜੋ</string>
+    <string name="net_share_message">ਇੰਡੀਅਨ ਤਾਸ਼ ’ਤੇ ਮੇਰੇ %1$s ਦੇ ਮੇਜ਼ ਨਾਲ ਜੁੜੋ! ਕਮਰੇ ਦਾ ਕੋਡ: %2$s</string>
+    <string name="net_waiting_players">ਖਿਡਾਰੀਆਂ ਦੀ ਉਡੀਕ…</string>
+    <string name="net_players_format">ਖਿਡਾਰੀ %1$d / %2$d</string>
+    <string name="net_empty_seats_note">ਖਾਲੀ ਕੁਰਸੀਆਂ ’ਤੇ ਕੰਪਿਊਟਰ ਖੇਡੇਗਾ।</string>
+    <string name="net_start_game">ਖੇਡ ਸ਼ੁਰੂ ਕਰੋ</string>
+    <string name="net_need_one_guest">ਪਹਿਲਾਂ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਹੋਰ ਖਿਡਾਰੀ ਨੂੰ ਜੁੜਨਾ ਪਵੇਗਾ।</string>
+    <string name="net_joined_waiting">ਤੁਸੀਂ ਜੁੜ ਗਏ! ਮੇਜ਼ਬਾਨ ਦੇ ਸ਼ੁਰੂ ਕਰਨ ਦੀ ਉਡੀਕ…</string>
+    <string name="net_connecting">ਜੁੜ ਰਹੇ ਹਾਂ…</string>
+    <string name="net_no_tables">ਹਾਲੇ ਕੋਈ ਮੇਜ਼ ਨਹੀਂ ਮਿਲਿਆ। ਦੋਸਤ ਨੂੰ ਮੇਜ਼ ਖੋਲ੍ਹਣ ਲਈ ਕਹੋ।</string>
+    <string name="net_tap_to_join">ਜੁੜਨ ਲਈ ਮੇਜ਼ ’ਤੇ ਟੈਪ ਕਰੋ</string>
+    <string name="net_err_generic">ਕੁਝ ਗੜਬੜ ਹੋ ਗਈ: %1$s</string>
+    <string name="net_err_full">ਇਹ ਮੇਜ਼ ਭਰ ਗਿਆ ਹੈ।</string>
+    <string name="net_err_started">ਇਹ ਖੇਡ ਸ਼ੁਰੂ ਹੋ ਚੁੱਕੀ ਹੈ।</string>
+    <string name="net_err_no_room">ਇਸ ਕੋਡ ਦਾ ਕੋਈ ਮੇਜ਼ ਨਹੀਂ ਹੈ।</string>
+    <string name="net_err_wrong_game">ਇਹ ਕੋਡ ਕਿਸੇ ਹੋਰ ਖੇਡ ਦਾ ਹੈ।</string>
+    <string name="net_err_login">ਆਨਲਾਈਨ ਖੇਡਣ ਲਈ ਉੱਪਰ ਸੱਜੇ ਤੋਂ ਲੌਗ ਇਨ ਕਰੋ।</string>
+    <string name="net_err_not_connected">ਇਸ ਵਰਜਨ ਵਿੱਚ ਆਨਲਾਈਨ ਖੇਡ ਚਾਲੂ ਨਹੀਂ ਹੈ।</string>
+    <string name="net_err_host_left">ਮੇਜ਼ਬਾਨ ਨੇ ਮੇਜ਼ ਛੱਡ ਦਿੱਤਾ।</string>
+    <string name="setup_others_hint">ਦੋਸਤ ਆਪੋ-ਆਪਣੇ ਫ਼ੋਨ ’ਤੇ ਖੇਡਦੇ ਹਨ। ਖਾਲੀ ਕੁਰਸੀਆਂ ’ਤੇ ਉੱਪਰ ਚੁਣੇ ਪੱਧਰ ਦਾ ਕੰਪਿਊਟਰ ਖੇਡੇਗਾ।</string>
 </resources>

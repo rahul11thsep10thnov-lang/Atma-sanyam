@@ -218,4 +218,43 @@
     <string name="trick_tricks_format">ಸುತ್ತುಗಳು — ನಿಮ್ಮ ತಂಡ: %1$d · ಅವರ: %2$d</string>
     <string name="trick_trump_format">ಟ್ರಂಪ್: %1$s</string>
     <string name="trick_trump_hidden">ಟ್ರಂಪ್: ಮರೆಮಾಡಲಾಗಿದೆ</string>
+
+    <!-- Multiplayer tables -->
+    <string name="game_waiting_for_host">ಹೋಸ್ಟ್‌ಗಾಗಿ ಕಾಯುತ್ತಿದೆ…</string>
+    <string name="net_connection_lost">ಸಂಪರ್ಕ ಕಡಿದುಹೋಯಿತು</string>
+    <string name="net_connection_lost_hint">ಹೋಸ್ಟ್ ಹೊರಟುಹೋದರು ಅಥವಾ ಸಂಪರ್ಕ ಕಡಿದಿತು, ಆದ್ದರಿಂದ ಈ ಮೇಜು ಮುಗಿಯಿತು.</string>
+
+    <!-- Multiplayer lobby -->
+    <string name="net_host_table">ಟೇಬಲ್ ತೆರೆಯಿರಿ</string>
+    <string name="net_join_table">ಟೇಬಲ್‌ಗೆ ಸೇರಿ</string>
+    <string name="net_mode_nearby">ಹತ್ತಿರ — ಬ್ಲೂಟೂತ್ / ವೈ-ಫೈ</string>
+    <string name="net_mode_online">ಆನ್‌ಲೈನ್ — ಇಂಟರ್ನೆಟ್ ಮೂಲಕ</string>
+    <string name="net_perm_body">ಹತ್ತಿರದ ಫೋನ್‌ಗಳನ್ನು ಹುಡುಕಿ ಸಂಪರ್ಕಿಸಲು ಆಟಕ್ಕೆ ಬ್ಲೂಟೂತ್ ಮತ್ತು ವೈ-ಫೈ ಅನುಮತಿ ಬೇಕು. ಯಾವುದೇ ವೈಯಕ್ತಿಕ ಮಾಹಿತಿಯನ್ನು ಓದಲಾಗುವುದಿಲ್ಲ.</string>
+    <string name="net_perm_allow">ಅನುಮತಿಸಿ</string>
+    <string name="net_your_name">ನಿಮ್ಮ ಹೆಸರು</string>
+    <string name="net_enter_code">ಕೋಣೆಯ ಕೋಡ್</string>
+    <string name="net_join">ಸೇರಿ</string>
+    <string name="net_open_table">ಟೇಬಲ್ ತೆರೆಯಿರಿ</string>
+    <string name="net_search_tables">ಹತ್ತಿರದ ಟೇಬಲ್‌ಗಳನ್ನು ಹುಡುಕಿ</string>
+    <string name="net_room_code">ಕೋಣೆಯ ಕೋಡ್</string>
+    <string name="net_share_code">ಕೋಡ್ ಹಂಚಿಕೊಳ್ಳಿ</string>
+    <string name="net_share_message">ಇಂಡಿಯನ್ ತಾಶ್‌ನಲ್ಲಿ ನನ್ನ %1$s ಟೇಬಲ್‌ಗೆ ಸೇರಿ! ಕೋಣೆಯ ಕೋಡ್: %2$s</string>
+    <string name="net_waiting_players">ಆಟಗಾರರಿಗಾಗಿ ಕಾಯುತ್ತಿದೆ…</string>
+    <string name="net_players_format">ಆಟಗಾರರು %1$d / %2$d</string>
+    <string name="net_empty_seats_note">ಖಾಲಿ ಆಸನಗಳಲ್ಲಿ ಕಂಪ್ಯೂಟರ್ ಆಡುತ್ತದೆ.</string>
+    <string name="net_start_game">ಆಟ ಪ್ರಾರಂಭಿಸಿ</string>
+    <string name="net_need_one_guest">ಮೊದಲು ಕನಿಷ್ಠ ಒಬ್ಬ ಆಟಗಾರ ಸೇರಬೇಕು.</string>
+    <string name="net_joined_waiting">ನೀವು ಸೇರಿದ್ದೀರಿ! ಆತಿಥೇಯರು ಪ್ರಾರಂಭಿಸುವವರೆಗೆ ಕಾಯುತ್ತಿದೆ…</string>
+    <string name="net_connecting">ಸಂಪರ್ಕಿಸುತ್ತಿದೆ…</string>
+    <string name="net_no_tables">ಇನ್ನೂ ಯಾವ ಟೇಬಲ್ ಸಿಕ್ಕಿಲ್ಲ. ಟೇಬಲ್ ತೆರೆಯಲು ನಿಮ್ಮ ಸ್ನೇಹಿತರಿಗೆ ಹೇಳಿ.</string>
+    <string name="net_tap_to_join">ಸೇರಲು ಟೇಬಲ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ</string>
+    <string name="net_err_generic">ಏನೋ ತಪ್ಪಾಗಿದೆ: %1$s</string>
+    <string name="net_err_full">ಈ ಟೇಬಲ್ ತುಂಬಿದೆ.</string>
+    <string name="net_err_started">ಈ ಆಟ ಈಗಾಗಲೇ ಪ್ರಾರಂಭವಾಗಿದೆ.</string>
+    <string name="net_err_no_room">ಆ ಕೋಡ್‌ನ ಟೇಬಲ್ ಇಲ್ಲ.</string>
+    <string name="net_err_wrong_game">ಆ ಕೋಡ್ ಬೇರೆ ಆಟದ್ದು.</string>
+    <string name="net_err_login">ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಆಡಲು ಮೇಲಿನ ಬಲದಿಂದ ಲಾಗಿನ್ ಮಾಡಿ.</string>
+    <string name="net_err_not_connected">ಈ ಆವೃತ್ತಿಯಲ್ಲಿ ಆನ್‌ಲೈನ್ ಆಟ ಸಿದ್ಧವಾಗಿಲ್ಲ.</string>
+    <string name="net_err_host_left">ಆತಿಥೇಯರು ಟೇಬಲ್ ಬಿಟ್ಟರು.</string>
+    <string name="setup_others_hint">ಸ್ನೇಹಿತರು ತಮ್ಮ ತಮ್ಮ ಫೋನ್‌ಗಳಲ್ಲಿ ಆಡುತ್ತಾರೆ. ಖಾಲಿ ಆಸನಗಳಲ್ಲಿ ಮೇಲೆ ಆರಿಸಿದ ಮಟ್ಟದಲ್ಲಿ ಕಂಪ್ಯೂಟರ್ ಆಡುತ್ತದೆ.</string>
 </resources>

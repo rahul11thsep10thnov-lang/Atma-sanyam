@@ -31,6 +31,7 @@ import com.rangepatte.app.ui.language.LanguageSelectionScreen
 import com.rangepatte.app.ui.language.findActivity
 import com.rangepatte.app.ui.membership.CheckoutScreen
 import com.rangepatte.app.ui.membership.MembershipScreen
+import com.rangepatte.app.ui.multiplayer.LobbyRoute
 import com.rangepatte.app.ui.settings.SettingsScreen
 import com.rangepatte.app.ui.setup.GameSetupScreen
 import com.rangepatte.app.ui.table.GameTableScreen
@@ -150,7 +151,40 @@ fun RangEPatteNavHost(
                         onBackClick = { navController.popBackStack() },
                         onStartGame = { playerCount, difficulty, mode ->
                             navController.navigate(Routes.gameTable(game.id.routeSegment, mode, playerCount, difficulty))
+                        },
+                        onOpenLobby = { playerCount, difficulty, mode, host ->
+                            navController.navigate(Routes.lobby(game.id.routeSegment, mode, host, playerCount, difficulty))
                         }
+                    )
+                }
+            }
+            composable(
+                route = Routes.LOBBY_PATTERN,
+                arguments = listOf(
+                    navArgument(Routes.ARG_PLAYERS) { type = NavType.IntType; defaultValue = 4 },
+                    navArgument(Routes.ARG_DIFFICULTY) { type = NavType.StringType; defaultValue = AiDifficulty.MEDIUM.name }
+                )
+            ) { backStackEntry ->
+                val args = backStackEntry.arguments
+                val game = args?.getString(Routes.ARG_GAME_ID)?.let(GameCatalog::byRouteSegment)
+                val mode = args?.getString(Routes.ARG_MODE)?.let { runCatching { PlayMode.valueOf(it) }.getOrNull() }
+                if (game != null && mode != null) {
+                    val playerCount = args.getInt(Routes.ARG_PLAYERS)
+                    val difficulty = args.getString(Routes.ARG_DIFFICULTY)
+                        ?.let { runCatching { AiDifficulty.valueOf(it) }.getOrNull() }
+                        ?: AiDifficulty.MEDIUM
+                    LobbyRoute(
+                        game = game,
+                        isHost = args.getString(Routes.ARG_ROLE) == Routes.ROLE_HOST,
+                        isOnline = mode == PlayMode.ONLINE,
+                        playerCount = playerCount,
+                        difficulty = difficulty,
+                        onTableReady = {
+                            navController.navigate(Routes.gameTable(game.id.routeSegment, mode, playerCount, difficulty)) {
+                                popUpTo(Routes.LOBBY_PATTERN) { inclusive = true }
+                            }
+                        },
+                        onBackClick = { navController.popBackStack() }
                     )
                 }
             }
@@ -164,9 +198,6 @@ fun RangEPatteNavHost(
                 val context = LocalContext.current
                 val segment = backStackEntry.arguments?.getString(Routes.ARG_GAME_ID)
                 val game = segment?.let(GameCatalog::byRouteSegment)
-                val mode = backStackEntry.arguments?.getString(Routes.ARG_MODE)
-                    ?.let { runCatching { PlayMode.valueOf(it) }.getOrNull() }
-                    ?: PlayMode.VS_COMPUTER
                 val playerCount = backStackEntry.arguments?.getInt(Routes.ARG_PLAYERS) ?: game?.minPlayers ?: 4
                 val difficulty = backStackEntry.arguments?.getString(Routes.ARG_DIFFICULTY)
                     ?.let { runCatching { AiDifficulty.valueOf(it) }.getOrNull() }
@@ -174,7 +205,6 @@ fun RangEPatteNavHost(
                 if (game != null) {
                     GameTableScreen(
                         game = game,
-                        playMode = mode,
                         playerCount = playerCount,
                         difficulty = difficulty,
                         onBackClick = {

@@ -218,4 +218,43 @@
     <string name="trick_tricks_format">পিঠ — আপনার দল: %1$d · তাদের: %2$d</string>
     <string name="trick_trump_format">ট্রাম্প: %1$s</string>
     <string name="trick_trump_hidden">ট্রাম্প: লুকোনো</string>
+
+    <!-- Multiplayer tables -->
+    <string name="game_waiting_for_host">হোস্টের জন্য অপেক্ষা করছি…</string>
+    <string name="net_connection_lost">সংযোগ বিচ্ছিন্ন</string>
+    <string name="net_connection_lost_hint">হোস্ট চলে গেছেন বা সংযোগ ভেঙে গেছে, তাই এই টেবিল শেষ।</string>
+
+    <!-- Multiplayer lobby -->
+    <string name="net_host_table">টেবিল খুলুন</string>
+    <string name="net_join_table">টেবিলে যোগ দিন</string>
+    <string name="net_mode_nearby">কাছাকাছি — ব্লুটুথ / ওয়াই-ফাই</string>
+    <string name="net_mode_online">অনলাইন — ইন্টারনেটে</string>
+    <string name="net_perm_body">কাছের ফোন খুঁজে পেতে ও যুক্ত হতে খেলাটির ব্লুটুথ ও ওয়াই-ফাই ব্যবহারের অনুমতি দরকার। কোনো ব্যক্তিগত তথ্য পড়া হয় না।</string>
+    <string name="net_perm_allow">অনুমতি দিন</string>
+    <string name="net_your_name">আপনার নাম</string>
+    <string name="net_enter_code">রুমের কোড</string>
+    <string name="net_join">যোগ দিন</string>
+    <string name="net_open_table">টেবিল খুলুন</string>
+    <string name="net_search_tables">কাছের টেবিল খুঁজুন</string>
+    <string name="net_room_code">রুমের কোড</string>
+    <string name="net_share_code">কোড পাঠান</string>
+    <string name="net_share_message">ইন্ডিয়ান তাশে আমার %1$s টেবিলে যোগ দিন! রুমের কোড: %2$s</string>
+    <string name="net_waiting_players">খেলোয়াড়দের জন্য অপেক্ষা…</string>
+    <string name="net_players_format">খেলোয়াড় %1$d / %2$d</string>
+    <string name="net_empty_seats_note">ফাঁকা আসনে কম্পিউটার খেলবে।</string>
+    <string name="net_start_game">খেলা শুরু করুন</string>
+    <string name="net_need_one_guest">আগে অন্তত আরেকজন খেলোয়াড়কে যোগ দিতে হবে।</string>
+    <string name="net_joined_waiting">আপনি যোগ দিয়েছেন! হোস্টের শুরু করার অপেক্ষা…</string>
+    <string name="net_connecting">যুক্ত হচ্ছে…</string>
+    <string name="net_no_tables">এখনও কোনো টেবিল পাওয়া যায়নি। বন্ধুকে টেবিল খুলতে বলুন।</string>
+    <string name="net_tap_to_join">যোগ দিতে টেবিলে ট্যাপ করুন</string>
+    <string name="net_err_generic">কিছু ভুল হয়েছে: %1$s</string>
+    <string name="net_err_full">এই টেবিল ভরে গেছে।</string>
+    <string name="net_err_started">এই খেলা আগেই শুরু হয়ে গেছে।</string>
+    <string name="net_err_no_room">এই কোডের কোনো টেবিল নেই।</string>
+    <string name="net_err_wrong_game">এই কোডটি অন্য খেলার।</string>
+    <string name="net_err_login">অনলাইনে খেলতে উপরে ডানদিক থেকে লগ ইন করুন।</string>
+    <string name="net_err_not_connected">এই সংস্করণে অনলাইন খেলা চালু নেই।</string>
+    <string name="net_err_host_left">হোস্ট টেবিল ছেড়ে চলে গেছেন।</string>
+    <string name="setup_others_hint">বন্ধুরা নিজের নিজের ফোনে খেলে। ফাঁকা আসনে উপরে বাছা স্তরের কম্পিউটার খেলবে।</string>
 </resources>

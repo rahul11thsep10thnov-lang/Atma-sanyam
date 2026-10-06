@@ -20,9 +20,12 @@ object TeenPattiAi {
         }
     }
 
-    /** Performs the AI seat's turn (possibly looking at its cards first) and returns the new position. */
-    fun takeAction(state: TpState, difficulty: AiDifficulty, random: Random = Random.Default): TpState {
-        var s = state
+    /**
+     * The next thing the seat on turn does. Looking at the cards ([TpAction.SEE]) is its own step; the
+     * computer is then asked again and chooses its bet.
+     */
+    fun decide(state: TpState, difficulty: AiDifficulty, random: Random = Random.Default): TpAction {
+        val me = state.current
         val risk = state.stake / TeenPattiEngine.BOOT // 1, 2, 4, ... 64
 
         // Decide whether to look at the cards: the higher the stake, the more likely.
@@ -33,42 +36,43 @@ object TeenPattiAi {
             risk >= 2 -> 0.35
             else -> 0.2
         }
-        if (!s.current.seen && random.nextDouble() < seeChance) s = TeenPattiEngine.see(s) ?: s
+        if (!me.seen && random.nextDouble() < seeChance) return TpAction.SEE
 
-        val me = s.current
-        val cannotAfford = !TeenPattiEngine.canChaal(s)
-        if (cannotAfford) {
-            return TeenPattiEngine.show(s) ?: TeenPattiEngine.pack(s) ?: s
-        }
+        fun allowed(a: TpAction) = TeenPattiEngine.act(state, a) != null
+        fun firstAllowed(vararg choices: TpAction) = choices.firstOrNull(::allowed) ?: TpAction.PACK
+
+        if (!TeenPattiEngine.canChaal(state)) return firstAllowed(TpAction.SHOW, TpAction.PACK)
 
         // A little unpredictability, more of it on Easy.
-        val wild = if (difficulty == AiDifficulty.EASY) 0.2 else if (difficulty == AiDifficulty.MEDIUM) 0.08 else 0.0
+        val wild = when (difficulty) { AiDifficulty.EASY -> 0.2; AiDifficulty.MEDIUM -> 0.08; AiDifficulty.HARD -> 0.0 }
         if (random.nextDouble() < wild) {
-            val options = buildList<() -> TpState?> {
-                add { TeenPattiEngine.chaal(s) }
-                add { TeenPattiEngine.pack(s) }
-                if (TeenPattiEngine.canRaise(s)) add { TeenPattiEngine.raise(s) }
-            }
-            options.random(random)()?.let { return it }
+            val options = listOf(TpAction.CHAAL, TpAction.PACK, TpAction.RAISE).filter(::allowed)
+            if (options.isNotEmpty()) return options.random(random)
         }
 
         if (!me.seen) {
             // Playing blind: mostly just call; fold only when the stake has run away.
             return when {
-                risk >= 16 && random.nextDouble() < 0.3 -> TeenPattiEngine.pack(s)
-                TeenPattiEngine.canRaise(s) && risk < 4 && random.nextDouble() < 0.12 -> TeenPattiEngine.raise(s)
-                else -> TeenPattiEngine.chaal(s)
-            } ?: s
+                risk >= 16 && random.nextDouble() < 0.3 -> TpAction.PACK
+                TeenPattiEngine.canRaise(state) && risk < 4 && random.nextDouble() < 0.12 -> TpAction.RAISE
+                else -> TpAction.CHAAL
+            }
         }
 
         val strength = strength(me.hand)
         val packBelow = 0.22 + 0.07 * (ln(risk.toDouble()) / ln(2.0))
         return when {
-            strength < packBelow && random.nextDouble() < 0.85 -> TeenPattiEngine.pack(s)
-            TeenPattiEngine.canShow(s) && strength > 0.55 && random.nextDouble() < 0.4 -> TeenPattiEngine.show(s)
-            TeenPattiEngine.canShow(s) && strength < 0.4 && risk >= 4 -> TeenPattiEngine.pack(s)
-            strength > 0.8 && TeenPattiEngine.canRaise(s) && random.nextDouble() < 0.4 -> TeenPattiEngine.raise(s)
-            else -> TeenPattiEngine.chaal(s)
-        } ?: s
+            strength < packBelow && random.nextDouble() < 0.85 -> TpAction.PACK
+            TeenPattiEngine.canShow(state) && strength > 0.55 && random.nextDouble() < 0.4 -> TpAction.SHOW
+            TeenPattiEngine.canShow(state) && strength < 0.4 && risk >= 4 -> TpAction.PACK
+            strength > 0.8 && TeenPattiEngine.canRaise(state) && random.nextDouble() < 0.4 -> TpAction.RAISE
+            else -> TpAction.CHAAL
+        }
+    }
+
+    /** One computer action applied to [state] (used by tests and simulations). */
+    fun takeAction(state: TpState, difficulty: AiDifficulty, random: Random = Random.Default): TpState {
+        val action = decide(state, difficulty, random)
+        return TeenPattiEngine.act(state, action) ?: TeenPattiEngine.pack(state) ?: state
     }
 }

@@ -59,6 +59,9 @@ enum class TpPhase { BETTING, ENDED }
 
 enum class TpActionKind { SEE, CHAAL, RAISE, PACK, SHOW }
 
+/** What a player can do on their turn. [NEXT_HAND] is the host starting the following hand. */
+enum class TpAction { SEE, CHAAL, RAISE, PACK, SHOW, NEXT_HAND }
+
 /** The most recent thing a player did, for the table to announce. */
 data class TpLastAction(val seat: Int, val kind: TpActionKind, val amount: Int = 0, val wasBlind: Boolean = false)
 

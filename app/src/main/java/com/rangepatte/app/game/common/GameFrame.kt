@@ -90,7 +90,7 @@ fun GameFrame(
 fun GameResultDialog(
     title: String,
     lines: List<String>,
-    primaryText: String,
+    primaryText: String?,
     onPrimary: () -> Unit,
     secondaryText: String? = null,
     onSecondary: (() -> Unit)? = null,
@@ -111,11 +111,22 @@ fun GameResultDialog(
                 )
             }
             extra()
-            RoyalButton(
-                text = primaryText,
-                onClick = onPrimary,
-                modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
-            )
+            if (primaryText != null) {
+                RoyalButton(
+                    text = primaryText,
+                    onClick = onPrimary,
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+                )
+            } else {
+                // Only the host starts the next round: everyone else waits.
+                Text(
+                    text = stringResource(R.string.game_waiting_for_host),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = GoldenGlow,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+                )
+            }
             if (secondaryText != null && onSecondary != null) {
                 RoyalButton(
                     text = secondaryText,
@@ -140,3 +151,18 @@ fun StatusLine(text: String, modifier: Modifier = Modifier, highlight: Boolean =
         maxLines = 2
     )
 }
+
+/** Shown on every table when the host left or the connection broke: nothing more can be played. */
+@Composable
+fun ConnectionLostDialog(onBack: () -> Unit) {
+    GameResultDialog(
+        title = stringResource(R.string.net_connection_lost),
+        lines = listOf(stringResource(R.string.net_connection_lost_hint)),
+        primaryText = stringResource(R.string.game_back_to_khel),
+        onPrimary = onBack
+    )
+}
+
+/** The Undo button for a solo table; null (no button) when other people are playing. */
+fun <S, A> com.rangepatte.app.net.GameSession<S, A>.undoControl(): UndoControl? =
+    if (isSolo) UndoControl(usesLeft = undoUsesLeft, enabled = canUndo, onUndo = ::undo) else null

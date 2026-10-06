@@ -31,9 +31,9 @@ what exists today:
 | — | Login / Sign up by mobile number + SMS OTP, user records in an online database (Firebase) | ✅ (needs your Firebase project — demo mode until then) |
 | — | Google AdMob ads (banner on every page, occasional full-screen ad after a game) with consent form | ✅ (test ad IDs until you add yours) |
 | — | ₹29/month "Remove ads?" membership + payment gateway screen | ✅ (gateway scaffold — payment partner to be plugged in) |
-| — | Multiplayer architecture scaffold (`GameRoom`/`PlayerConnection`/`GameSynchronizer` interfaces; vs-Computer and Pass & Play modes functional; Nearby/Online shown as "coming soon") | ✅ (scaffold) |
+| — | Multiplayer: Nearby (Bluetooth/Wi-Fi) and Online (room code) tables for six games, computer fills empty seats — see *Playing with other people* | ✅ (untested on devices) |
 | 7+ | **All eight games are playable** against the computer: Solitaire, Spider Solitaire, Rummy, Teen Patti / Flush, Twenty Nine, Coat Piece, Dehla Pakad, Lakadi — each with its own engine, computer player, screen and Undo (3 uses) | ✅ |
-| — | Playing against other people: Pass & Play on one phone, Nearby (WiFi/Bluetooth) and Online (internet) | not started (shown as "coming soon") |
+| — | Playing against other people: Nearby (Bluetooth/Wi-Fi) and Online (room code) | ✅ built, untested on devices · Pass & Play on one phone not started (shown as "coming soon") |
 
 ### The redesign, specifically
 
@@ -179,8 +179,8 @@ app/src/main/java/com/rangepatte/app/
 ├── domain/
 │   ├── model/     # PlayingCard, Suit, Rank, Player, GameCatalog, AppLanguage, PlayMode
 │   ├── rules/     # RulesContent + one rules book per language (RulesEn.kt, RulesHi.kt, …)
-│   ├── game/      # Deck, DeckManager, CardGameEngine + GameState/GameAction contracts
-│   └── multiplayer/ # GameRoom/PlayerConnection/GameSynchronizer — architecture scaffold, unimplemented
+│   └── game/      # Deck, DeckManager, CardGameEngine + GameState/GameAction contracts
+├── net/           # multiplayer: lockstep sessions, lobby, Nearby + Firestore transports (see below)
 ├── ui/
 │   ├── theme/     # Color.kt, Type.kt, Shape.kt, Dimens.kt, Theme.kt — design tokens live here
 │   ├── cards/     # PlayingCardView/CardFace/CardBack renderers, SuitMotifs, CardStack, Hand, CardStyle
@@ -301,29 +301,66 @@ No other code changes are needed — every user-facing UI string already goes th
   icon vectors — replace with real artwork if desired, or regenerate via Android Studio's Image
   Asset tool).
 
-## Multiplayer roadmap
+## Playing with other people
 
-`domain/model/PlayMode.kt` and `domain/multiplayer/Multiplayer.kt` hold the current state of this:
+Rummy, Teen Patti / Flush, Twenty Nine, Coat Piece, Dehla Pakad and Lakadi can be played with
+friends. On the game's setup page pick **Nearby** or **Online**, then **Host a table** or **Join a
+table**. The host starts the game when everyone is in; any seat nobody takes is played by the
+computer, at the difficulty chosen on the setup page. (Solitaire and Spider Solitaire are one-player
+games; Pass & Play is still shown locked.) Undo is never offered at a table with other people.
 
-- **Working today:** `VS_COMPUTER` (play against AI) — purely local, no networking involved.
-  `PASS_AND_PLAY` is declared but shown locked: it needs a "pass the phone" hand-over screen so
-  nobody sees another player's cards.
-- **Scaffolded, not implemented:** `NEARBY` (WiFi-Direct/Bluetooth, for players near each other
-  without internet) and `ONLINE` (internet play). Both appear in the setup screen already, disabled
-  with a "coming soon" label. `GameRoom`, `PlayerConnection`, and `GameSynchronizer` in
-  `domain/multiplayer/Multiplayer.kt` are the interfaces a real implementation would fill in — no
-  transport, server, or Nearby Connections code exists yet.
-- **Why scaffold-only:** real networking needs a backend/transport decision (Firebase vs. a custom
-  server vs. Android's Nearby Connections API) and, critically, a second physical device to test
-  against — neither was available in the environment this was authored in. Building it blind would
-  have meant shipping untested networking code.
-- **To implement Nearby:** build a `GameRoom`/`PlayerConnection` pair backed by Android's Nearby
-  Connections API (handles both WiFi and Bluetooth transport selection automatically), wire it into
-  a `GameSynchronizer`, and flip the locked modes' `available` flags in `GameSetupScreen.kt` on.
-  Because every engine is immutable state + pure functions, syncing means sending each move (or the
-  new state) to the other phones.
-- **To implement Online:** the same interfaces, backed by a chosen realtime backend (Firebase
-  Firestore/Realtime Database is the lowest-setup option — no server to host).
+- **Nearby (Bluetooth / Wi-Fi, no internet):** Google *Nearby Connections* in star mode — the host
+  advertises, guests tap the host's name. The app asks for the Bluetooth/Nearby permissions on first
+  use (location on Android 11 and older, which Android requires for Bluetooth scanning).
+- **Online (internet):** the host gets a 5-character **room code** and shares it; friends type it in.
+  Needs Firebase (below) **and** everyone logged in, because the room lives in Firestore.
+
+### How it works (`net/`)
+
+Every game is an immutable state plus pure functions, so a table is a *lockstep* session: the host
+checks each move, numbers it, and sends it to everyone; every phone applies the same numbered moves
+in the same order and so ends up with the same game. Shuffles are seeded, so they match too.
+
+| File | Job |
+|---|---|
+| `net/core/Wire.kt` | the text messages phones send (`JOIN`, `LOBBY`, `START`, `ACT`, `DO`, `BOT`, `LEAVE`, `REJECT`) |
+| `net/core/SessionCore.kt`, `GameMachine.kt` | host-authoritative move numbering; a small adapter per game (`game/<name>/*Machine.kt`) |
+| `net/core/Lobby.kt` | who has joined, seat assignment, filling empty seats with computer players |
+| `net/Transport.kt` | "send text to the host / a peer / everyone" — all the game ever sees |
+| `net/nearby/` | the Transport over Bluetooth/Wi-Fi |
+| `net/online/` | the Transport over Firestore (`rooms/{code}` with `inbox`, `log`, `presence`) |
+| `net/GameSession.kt` | what a game screen uses: current state, `submit(move)`, computer players, leaving |
+| `ui/multiplayer/` | the lobby screen and `LobbyController` (the Android glue) |
+
+If a player leaves mid-game the computer takes over their seat; if the *host* leaves, the table ends.
+
+### Online play: Firebase setup
+
+On top of the login setup below, in the Firebase console:
+
+1. **Authentication → Phone** must be enabled (it already is for login).
+2. **Firestore rules** — signed-in players may use rooms:
+   ```
+   match /rooms/{code} {
+     allow read, create, update: if request.auth != null;
+     match /{sub=**} { allow read, write: if request.auth != null; }
+   }
+   ```
+   (Tighten this before a real launch, e.g. only the room's `host` may write `log` and update the room.)
+3. **TTL policy** (Firestore → Time-to-live): collection group `rooms`, field `expireAt`, so finished
+   rooms delete themselves after six hours.
+
+### Honest limitations
+
+- **Never tried on real phones.** The game logic and the sync protocol are covered by a simulated
+  four-phone test (`MultiplayerSessionTest`: every game, shuffled/duplicated deliveries, mixed
+  people-and-computer tables, players leaving). The Nearby, Firestore and lobby code is
+  Android-only, and has been written but not yet run on two devices — expect first-run fixes.
+- **Cards are not hidden from a hacked phone.** In lockstep every phone computes the whole game,
+  including other players' hands. That is fine among friends; a server that deals privately would
+  be needed for strangers or stakes.
+- Nearby needs both phones within a few metres; online play with a flaky connection can drop a
+  table (the guest sees "Connection lost").
 
 ## Login, ads and payments
 

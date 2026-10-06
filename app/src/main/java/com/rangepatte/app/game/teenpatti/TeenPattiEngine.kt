@@ -57,6 +57,16 @@ object TeenPattiEngine {
     fun canShow(state: TpState): Boolean =
         state.phase == TpPhase.BETTING && state.activeCount == 2 && state.current.seen
 
+    /** Performs one of the betting actions (not [TpAction.NEXT_HAND]); null if it is not allowed now. */
+    fun act(state: TpState, action: TpAction): TpState? = when (action) {
+        TpAction.SEE -> see(state)
+        TpAction.CHAAL -> chaal(state)
+        TpAction.RAISE -> raise(state)
+        TpAction.PACK -> pack(state)
+        TpAction.SHOW -> show(state)
+        TpAction.NEXT_HAND -> null
+    }
+
     fun see(state: TpState): TpState? {
         if (!canSee(state)) return null
         return state.copy(

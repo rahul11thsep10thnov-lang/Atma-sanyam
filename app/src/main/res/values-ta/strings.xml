@@ -218,4 +218,43 @@
     <string name="trick_tricks_format">சுற்றுகள் — உங்கள் அணி: %1$d · அவர்கள்: %2$d</string>
     <string name="trick_trump_format">டிரம்ப்: %1$s</string>
     <string name="trick_trump_hidden">டிரம்ப்: மறைவில்</string>
+
+    <!-- Multiplayer tables -->
+    <string name="game_waiting_for_host">ஹோஸ்ட்டுக்காகக் காத்திருக்கிறது…</string>
+    <string name="net_connection_lost">இணைப்பு துண்டிக்கப்பட்டது</string>
+    <string name="net_connection_lost_hint">ஹோஸ்ட் வெளியேறினார் அல்லது இணைப்பு முறிந்தது, எனவே இந்த மேசை முடிந்தது.</string>
+
+    <!-- Multiplayer lobby -->
+    <string name="net_host_table">மேசையைத் திறக்கவும்</string>
+    <string name="net_join_table">மேசையில் சேரவும்</string>
+    <string name="net_mode_nearby">அருகில் — புளூடூத் / வைஃபை</string>
+    <string name="net_mode_online">ஆன்லைன் — இணையம் வழியாக</string>
+    <string name="net_perm_body">அருகிலுள்ள தொலைபேசிகளைக் கண்டுபிடித்து இணைய, விளையாட்டுக்கு புளூடூத் மற்றும் வைஃபை அனுமதி தேவை. தனிப்பட்ட தகவல் எதுவும் படிக்கப்படாது.</string>
+    <string name="net_perm_allow">அனுமதி</string>
+    <string name="net_your_name">உங்கள் பெயர்</string>
+    <string name="net_enter_code">அறைக் குறியீடு</string>
+    <string name="net_join">சேரவும்</string>
+    <string name="net_open_table">மேசையைத் திறக்கவும்</string>
+    <string name="net_search_tables">அருகிலுள்ள மேசைகளைத் தேடவும்</string>
+    <string name="net_room_code">அறைக் குறியீடு</string>
+    <string name="net_share_code">குறியீட்டைப் பகிரவும்</string>
+    <string name="net_share_message">இந்தியன் தாஷில் என் %1$s மேசையில் சேருங்கள்! அறைக் குறியீடு: %2$s</string>
+    <string name="net_waiting_players">வீரர்களுக்காகக் காத்திருக்கிறது…</string>
+    <string name="net_players_format">வீரர்கள் %1$d / %2$d</string>
+    <string name="net_empty_seats_note">காலி இடங்களில் கணினி விளையாடும்.</string>
+    <string name="net_start_game">ஆட்டத்தைத் தொடங்கவும்</string>
+    <string name="net_need_one_guest">முதலில் குறைந்தது ஒரு வீரராவது சேர வேண்டும்.</string>
+    <string name="net_joined_waiting">நீங்கள் சேர்ந்துவிட்டீர்கள்! தொகுப்பாளர் தொடங்கக் காத்திருக்கிறது…</string>
+    <string name="net_connecting">இணைக்கிறது…</string>
+    <string name="net_no_tables">இன்னும் மேசைகள் எதுவும் கிடைக்கவில்லை. நண்பரை மேசையைத் திறக்கச் சொல்லுங்கள்.</string>
+    <string name="net_tap_to_join">சேர மேசையைத் தொடவும்</string>
+    <string name="net_err_generic">ஏதோ தவறு நடந்தது: %1$s</string>
+    <string name="net_err_full">இந்த மேசை நிரம்பிவிட்டது.</string>
+    <string name="net_err_started">இந்த ஆட்டம் ஏற்கெனவே தொடங்கிவிட்டது.</string>
+    <string name="net_err_no_room">அந்தக் குறியீட்டில் மேசை இல்லை.</string>
+    <string name="net_err_wrong_game">அந்தக் குறியீடு வேறு ஆட்டத்துக்கானது.</string>
+    <string name="net_err_login">ஆன்லைனில் விளையாட மேலே வலதுபுறம் உள்நுழையவும்.</string>
+    <string name="net_err_not_connected">இந்தப் பதிப்பில் ஆன்லைன் விளையாட்டு அமைக்கப்படவில்லை.</string>
+    <string name="net_err_host_left">தொகுப்பாளர் மேசையை விட்டு வெளியேறினார்.</string>
+    <string name="setup_others_hint">நண்பர்கள் தங்கள் தொலைபேசிகளில் விளையாடுவார்கள். காலி இடங்களில் மேலே தேர்ந்த நிலையில் கணினி விளையாடும்.</string>
 </resources>

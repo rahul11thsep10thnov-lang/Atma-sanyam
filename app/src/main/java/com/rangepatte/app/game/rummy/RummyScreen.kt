@@ -15,7 +15,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -28,25 +27,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.rangepatte.app.R
-import com.rangepatte.app.domain.model.AiDifficulty
 import com.rangepatte.app.domain.model.GameInfo
-import com.rangepatte.app.domain.model.PlayMode
 import com.rangepatte.app.domain.model.Rank
-import com.rangepatte.app.game.common.AI_NAMES
 import com.rangepatte.app.game.common.CardSlot
 import com.rangepatte.app.game.common.CardView
+import com.rangepatte.app.game.common.ConnectionLostDialog
 import com.rangepatte.app.game.common.GameFrame
 import com.rangepatte.app.game.common.GameResultDialog
 import com.rangepatte.app.game.common.SeatPlaque
 import com.rangepatte.app.game.common.StatusLine
-import com.rangepatte.app.game.common.UndoControl
-import com.rangepatte.app.game.common.UndoHistory
+import com.rangepatte.app.game.common.undoControl
+import com.rangepatte.app.net.GameSession
 import com.rangepatte.app.ui.components.royal.RoyalButton
 import com.rangepatte.app.ui.components.royal.RoyalButtonStyle
 import com.rangepatte.app.ui.theme.GoldBevelLight
 import com.rangepatte.app.ui.theme.ParchmentTextDim
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 /** The hand split into melds (shown grouped) and loose cards, as found by the meld solver. */
@@ -60,61 +56,40 @@ private fun sortedLoose(cards: List<RCard>): List<RCard> =
     cards.sortedWith(compareBy({ it.isPrintedJoker }, { it.suit?.ordinal ?: 0 }, { it.rank?.value ?: 0 }))
 
 /**
- * 13-card rummy against the computer. Draw from the deck or the discard pile, then discard; your hand
- * is arranged for you into sequences and sets (shown grouped). When every card is in a meld — with a
- * pure sequence and at least two sequences — pick the card to finish with and press Declare.
+ * 13-card rummy, against the computer or other people. Draw from the deck or the discard pile, then
+ * discard; your hand is arranged for you into sequences and sets (shown grouped). When every card is in
+ * a meld — with a pure sequence and at least two sequences — pick the card to finish with and press Declare.
  */
 @Composable
 fun RummyScreen(
     game: GameInfo,
-    playMode: PlayMode,
-    playerCount: Int,
-    difficulty: AiDifficulty,
+    session: GameSession<RummyState, RummyAction>,
     onBackClick: () -> Unit
 ) {
+    val state = session.state
+    val me = session.mySeat
     val youName = stringResource(R.string.player_you)
-    val names = remember(playerCount, youName) { listOf(youName) + AI_NAMES.take(playerCount - 1) }
-    var state by remember { mutableStateOf(RummyEngine.newGame(names)) }
     var selectedId by remember { mutableStateOf<Int?>(null) }
-    val undo = remember { UndoHistory<RummyState>() }
-    val myTurn = state.phase != RummyPhase.FINISHED && state.current.isHuman
+    val myTurn = state.phase != RummyPhase.FINISHED && state.turn == me
+    val seatCount = state.players.size
 
-    // The computer plays its turn after a short pause, off the main thread (the meld search is heavy-ish).
-    LaunchedEffect(state.turn, state.phase) {
-        if (state.phase != RummyPhase.FINISHED && !state.current.isHuman) {
-            delay(900)
-            val snapshot = state
-            state = withContext(Dispatchers.Default) { RummyAi.takeTurn(snapshot, difficulty) }
-        }
-    }
-
-    fun act(next: RummyState?) {
-        if (next == null) return
-        undo.record(state)
-        state = next
+    fun act(action: RummyAction) {
+        session.submit(action)
         selectedId = null
     }
 
-    val me = state.players[0]
-    val arranged by produceState<Arranged?>(null, me.hand, state.wildRank) {
+    val myHand = state.players[me].hand
+    val arranged by produceState<Arranged?>(null, myHand, state.wildRank) {
         value = withContext(Dispatchers.Default) {
-            val solution = MeldSession(me.hand, state.wildRank).arrange()
+            val solution = MeldSession(myHand, state.wildRank).arrange()
             Arranged(
-                melds = solution.melds.map { group -> orderedMeld(group.map { me.hand[it] }, state.wildRank) },
-                loose = sortedLoose(solution.leftover.map { me.hand[it] })
+                melds = solution.melds.map { group -> orderedMeld(group.map { myHand[it] }, state.wildRank) },
+                loose = sortedLoose(solution.leftover.map { myHand[it] })
             )
         }
     }
 
-    GameFrame(
-        game = game,
-        onBackClick = onBackClick,
-        undo = if (playMode.allowsUndo) UndoControl(
-            usesLeft = undo.usesLeft,
-            enabled = undo.canUndo && myTurn,
-            onUndo = { undo.undo()?.let { state = it; selectedId = null } }
-        ) else null
-    ) {
+    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl()) {
         // Opponents.
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -123,11 +98,12 @@ fun RummyScreen(
                 .horizontalScroll(rememberScrollState())
                 .padding(horizontal = 10.dp, vertical = 6.dp)
         ) {
-            state.players.drop(1).forEachIndexed { i, player ->
+            (1 until seatCount).map { (me + it) % seatCount }.forEach { seat ->
+                val player = state.players[seat]
                 SeatPlaque(
                     name = player.name,
                     detail = stringResource(R.string.rummy_cards_format, player.hand.size),
-                    isTurn = state.turn == i + 1 && state.phase != RummyPhase.FINISHED
+                    isTurn = state.turn == seat && state.phase != RummyPhase.FINISHED
                 )
             }
         }
@@ -143,7 +119,7 @@ fun RummyScreen(
                     card = null,
                     faceDown = true,
                     modifier = Modifier.width(54.dp),
-                    onClick = if (myTurn && state.phase == RummyPhase.DRAW) ({ act(RummyEngine.drawFromStock(state)) }) else null
+                    onClick = if (myTurn && state.phase == RummyPhase.DRAW) ({ act(RummyAction.DrawStock) }) else null
                 )
             }
             Pile(label = stringResource(R.string.rummy_pile_discard)) {
@@ -155,7 +131,7 @@ fun RummyScreen(
                         card = if (top.isPrintedJoker) null else top.toPlayingCard(),
                         isJoker = top.isPrintedJoker,
                         modifier = Modifier.width(54.dp),
-                        onClick = if (myTurn && state.phase == RummyPhase.DRAW) ({ act(RummyEngine.drawFromDiscard(state)) }) else null
+                        onClick = if (myTurn && state.phase == RummyPhase.DRAW) ({ act(RummyAction.DrawDiscard) }) else null
                     )
                 }
             }
@@ -190,19 +166,19 @@ fun RummyScreen(
                 RoyalButton(
                     text = stringResource(R.string.rummy_discard),
                     enabled = selectedId != null,
-                    onClick = { selectedId?.let { act(RummyEngine.discard(state, it)) } },
+                    onClick = { selectedId?.let { act(RummyAction.Discard(it)) } },
                     style = RoyalButtonStyle.STEEL
                 )
                 RoyalButton(
                     text = stringResource(R.string.rummy_declare),
                     enabled = selectedId != null,
-                    onClick = { selectedId?.let { act(RummyEngine.declare(state, it)) } }
+                    onClick = { selectedId?.let { act(RummyAction.Declare(it)) } }
                 )
             }
         }
 
         // Your hand, grouped into melds.
-        val shown = arranged ?: Arranged(emptyList(), sortedLoose(me.hand))
+        val shown = arranged ?: Arranged(emptyList(), sortedLoose(myHand))
         Row(
             horizontalArrangement = Arrangement.spacedBy(14.dp),
             verticalAlignment = Alignment.Bottom,
@@ -227,24 +203,26 @@ fun RummyScreen(
     }
 
     state.result?.let { result ->
-        val winnerName = result.winner?.let { state.players[it].name }
+        fun nameOf(seat: Int) = if (seat == me) youName else state.players[seat].name
+        val winnerName = result.winner?.let(::nameOf)
         GameResultDialog(
             title = when {
-                result.winner == 0 -> stringResource(R.string.game_you_won)
+                result.winner == me -> stringResource(R.string.game_you_won)
                 result.validDeclaration -> stringResource(R.string.rummy_declared_format, winnerName ?: "")
-                else -> stringResource(R.string.rummy_wrong_declare_format, state.players[result.declarer].name)
+                else -> stringResource(R.string.rummy_wrong_declare_format, nameOf(result.declarer))
             },
-            lines = state.players.mapIndexed { i, p -> stringResource(R.string.rummy_points_format, p.name, result.points[i]) },
-            primaryText = stringResource(R.string.game_new_game),
+            lines = state.players.indices.map { i -> stringResource(R.string.rummy_points_format, nameOf(i), result.points[i]) },
+            primaryText = if (session.isHost) stringResource(R.string.game_new_game) else null,
             onPrimary = {
-                state = RummyEngine.newGame(names)
                 selectedId = null
-                undo.reset()
+                session.submit(RummyAction.Next)
             },
             secondaryText = stringResource(R.string.game_back_to_khel),
             onSecondary = onBackClick
         )
     }
+
+    if (session.connectionLost) ConnectionLostDialog(onBackClick)
 }
 
 @Composable

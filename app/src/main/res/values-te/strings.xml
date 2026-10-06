@@ -218,4 +218,43 @@
     <string name="trick_tricks_format">ఎత్తులు — మీ జట్టు: %1$d · వారి: %2$d</string>
     <string name="trick_trump_format">ట్రంప్: %1$s</string>
     <string name="trick_trump_hidden">ట్రంప్: దాచబడింది</string>
+
+    <!-- Multiplayer tables -->
+    <string name="game_waiting_for_host">హోస్ట్ కోసం వేచి ఉంది…</string>
+    <string name="net_connection_lost">కనెక్షన్ తెగిపోయింది</string>
+    <string name="net_connection_lost_hint">హోస్ట్ వెళ్లిపోయారు లేదా కనెక్షన్ తెగింది, అందువల్ల ఈ బల్ల ముగిసింది.</string>
+
+    <!-- Multiplayer lobby -->
+    <string name="net_host_table">టేబుల్ తెరవండి</string>
+    <string name="net_join_table">టేబుల్‌లో చేరండి</string>
+    <string name="net_mode_nearby">సమీపంలో — బ్లూటూత్ / వై-ఫై</string>
+    <string name="net_mode_online">ఆన్‌లైన్ — ఇంటర్నెట్ ద్వారా</string>
+    <string name="net_perm_body">సమీపంలోని ఫోన్లను కనుగొని కనెక్ట్ అవ్వడానికి ఆటకు బ్లూటూత్, వై-ఫై అనుమతి కావాలి. వ్యక్తిగత సమాచారం ఏదీ చదవబడదు.</string>
+    <string name="net_perm_allow">అనుమతించు</string>
+    <string name="net_your_name">మీ పేరు</string>
+    <string name="net_enter_code">గది కోడ్</string>
+    <string name="net_join">చేరండి</string>
+    <string name="net_open_table">టేబుల్ తెరవండి</string>
+    <string name="net_search_tables">సమీప టేబుళ్లను వెతకండి</string>
+    <string name="net_room_code">గది కోడ్</string>
+    <string name="net_share_code">కోడ్ పంపండి</string>
+    <string name="net_share_message">ఇండియన్ తాష్‌లో నా %1$s టేబుల్‌లో చేరండి! గది కోడ్: %2$s</string>
+    <string name="net_waiting_players">ఆటగాళ్ల కోసం వేచి ఉంది…</string>
+    <string name="net_players_format">ఆటగాళ్లు %1$d / %2$d</string>
+    <string name="net_empty_seats_note">ఖాళీ సీట్లలో కంప్యూటర్ ఆడుతుంది.</string>
+    <string name="net_start_game">ఆట ప్రారంభించండి</string>
+    <string name="net_need_one_guest">ముందుగా కనీసం ఒక్క ఆటగాడైనా చేరాలి.</string>
+    <string name="net_joined_waiting">మీరు చేరారు! హోస్ట్ ప్రారంభించే వరకు వేచి ఉంది…</string>
+    <string name="net_connecting">కనెక్ట్ అవుతోంది…</string>
+    <string name="net_no_tables">ఇంకా టేబుళ్లు ఏవీ దొరకలేదు. టేబుల్ తెరవమని మీ స్నేహితుడికి చెప్పండి.</string>
+    <string name="net_tap_to_join">చేరడానికి టేబుల్‌ను తాకండి</string>
+    <string name="net_err_generic">ఏదో తప్పు జరిగింది: %1$s</string>
+    <string name="net_err_full">ఈ టేబుల్ నిండిపోయింది.</string>
+    <string name="net_err_started">ఈ ఆట ఇప్పటికే మొదలైంది.</string>
+    <string name="net_err_no_room">ఆ కోడ్‌తో టేబుల్ లేదు.</string>
+    <string name="net_err_wrong_game">ఆ కోడ్ వేరే ఆటది.</string>
+    <string name="net_err_login">ఆన్‌లైన్‌లో ఆడటానికి పై కుడివైపు లాగిన్ అవ్వండి.</string>
+    <string name="net_err_not_connected">ఈ వెర్షన్‌లో ఆన్‌లైన్ ఆట సిద్ధంగా లేదు.</string>
+    <string name="net_err_host_left">హోస్ట్ టేబుల్ వదిలి వెళ్లారు.</string>
+    <string name="setup_others_hint">స్నేహితులు వారి వారి ఫోన్లలో ఆడతారు. ఖాళీ సీట్లలో పైన ఎంచుకున్న స్థాయిలో కంప్యూటర్ ఆడుతుంది.</string>
 </resources>

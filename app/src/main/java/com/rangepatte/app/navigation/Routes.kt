@@ -27,6 +27,14 @@ object Routes {
     const val SETUP_PATTERN = "setup/{$ARG_GAME_ID}"
     const val GAME_TABLE_PATTERN = "table/{$ARG_GAME_ID}/{$ARG_MODE}?$ARG_PLAYERS={$ARG_PLAYERS}&$ARG_DIFFICULTY={$ARG_DIFFICULTY}"
 
+    const val ARG_ROLE = "role"
+    const val ROLE_HOST = "host"
+    const val ROLE_JOIN = "join"
+    const val LOBBY_PATTERN = "lobby/{$ARG_GAME_ID}/{$ARG_MODE}/{$ARG_ROLE}?$ARG_PLAYERS={$ARG_PLAYERS}&$ARG_DIFFICULTY={$ARG_DIFFICULTY}"
+
+    fun lobby(gameRouteSegment: String, mode: PlayMode, host: Boolean, playerCount: Int, difficulty: AiDifficulty) =
+        "lobby/$gameRouteSegment/${mode.name}/${if (host) ROLE_HOST else ROLE_JOIN}?$ARG_PLAYERS=$playerCount&$ARG_DIFFICULTY=${difficulty.name}"
+
     fun setup(gameRouteSegment: String) = "setup/$gameRouteSegment"
     fun gameTable(gameRouteSegment: String, mode: PlayMode, playerCount: Int, difficulty: AiDifficulty) =
         "table/$gameRouteSegment/${mode.name}?$ARG_PLAYERS=$playerCount&$ARG_DIFFICULTY=${difficulty.name}"
