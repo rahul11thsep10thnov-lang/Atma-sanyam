@@ -69,7 +69,14 @@ export function evaluate(
   }
 ): Evaluation {
   const candidate = sanitizeCandidate(raw);
-  const normalizedText = normalizeText(candidate.question_text);
+  let normalizedText = normalizeText(candidate.question_text);
+  // A generic stem ("शुद्ध वाक्य चुनिए।", "Choose the odd one") only means
+  // something together with its options; two such questions are repeats only if
+  // the options repeat too.
+  const stemTokens = normalizedText.split(' ').filter(Boolean);
+  if (stemTokens.length <= 4 && !/\d/.test(normalizedText) && candidate.options.length) {
+    normalizedText = normalizeText([candidate.question_text, ...candidate.options.map((o) => o.text)].join(' '));
+  }
   const duplicate = normalizedText ? bestMatch({ normalizedText }, opts.pool) : null;
   const validation = validateQuestion(candidate, {
     explanationRequired: opts.explanationRequired,
@@ -78,6 +85,25 @@ export function evaluate(
     duplicate,
   });
   return { candidate, validation, duplicate, normalizedText, fingerprint: fingerprint(normalizedText) };
+}
+
+/** Optional bank metadata (the extra columns of a bulk import). */
+export interface BankMeta {
+  externalId?: string | null;
+  topicLabel?: string | null;
+  subtopic?: string | null;
+  concept?: string | null;
+  cognitiveLevel?: string | null;
+  year?: number | null;
+  variationAllowed?: boolean | null;
+  variationRule?: string | null;
+  difficultyLabel?: string | null;
+  answerVerified?: boolean | null;
+  aiVerified?: boolean | null;
+  verificationMethod?: string | null;
+  qaGrade?: string | null;
+  qaFlags?: string | null;
+  qaFixes?: string | null;
 }
 
 export interface InsertMeta {
@@ -91,6 +117,7 @@ export interface InsertMeta {
   createdBy?: string | null;
   generationJobId?: string | null;
   generationBatchId?: string | null;
+  bank?: BankMeta;
   /** Non-verbal question from the figure engine. */
   figure?: { svg: string | null; kind: string; params: Record<string, unknown>; optionSvgs: (string | null)[] };
 }
@@ -130,6 +157,7 @@ export async function insertQuestion(db: Db, ev: Evaluation, meta: InsertMeta) {
         figureSvg: meta.figure?.svg ?? null,
         figureKind: meta.figure?.kind ?? null,
         figureParams: meta.figure?.params ?? null,
+        ...meta.bank,
       })
       .returning();
     await tx.insert(questionOptions).values(
@@ -401,7 +429,72 @@ export interface QuestionFilters {
   page?: number;
   pageSize?: number;
   order?: 'newest' | 'oldest';
+  /** Column to sort by (a key of SORT_COLUMNS) and direction. */
+  sort?: SortKey;
+  dir?: 'asc' | 'desc';
+  // Bank-column filters. Text columns match exactly, except the free-text
+  // ones (externalId prefix, subtopic and concept contain).
+  externalId?: string;
+  topicLabel?: string;
+  subtopic?: string;
+  concept?: string;
+  cognitiveLevel?: string;
+  year?: number;
+  variationAllowed?: boolean;
+  difficultyLabel?: string;
+  answerVerified?: boolean;
+  aiVerified?: boolean;
+  verificationMethod?: string;
+  qaGrade?: string;
+  sourceName?: string;
+  /** true: only questions used in no mock test; false: only used ones. */
+  unused?: boolean;
 }
+
+const likeEscape = (v: string) => v.replace(/[%_\\]/g, (m) => `\\${m}`);
+
+/** Mock tests a question is part of (a correlated count, used to filter and sort). */
+const usageCountSql = sql<number>`(select count(*)::int from ${mockTestQuestions} where ${mockTestQuestions.questionId} = ${questions.id})`;
+
+/** Every column the console may sort by. Anything else is rejected, so the
+ * sort key can never reach the SQL text. */
+export const SORT_COLUMNS = {
+  created: questions.createdAt,
+  updated: questions.updatedAt,
+  question: questions.questionText,
+  status: questions.status,
+  difficulty: questions.difficulty,
+  language: questions.language,
+  source: questions.source,
+  sourceName: questions.sourceName,
+  correctOption: questions.correctOption,
+  exam: exams.name,
+  subject: subjects.name,
+  chapter: chapters.name,
+  topic: topics.name,
+  externalId: questions.externalId,
+  topicLabel: questions.topicLabel,
+  subtopic: questions.subtopic,
+  concept: questions.concept,
+  cognitiveLevel: questions.cognitiveLevel,
+  year: questions.year,
+  variationAllowed: questions.variationAllowed,
+  variationRule: questions.variationRule,
+  difficultyLabel: questions.difficultyLabel,
+  answerVerified: questions.answerVerified,
+  aiVerified: questions.aiVerified,
+  verificationMethod: questions.verificationMethod,
+  qaGrade: questions.qaGrade,
+  qaFlags: questions.qaFlags,
+  validAsOf: questions.validAsOf,
+  reviewedAt: questions.reviewedAt,
+  publishedAt: questions.publishedAt,
+  duplicateScore: questions.duplicateScore,
+  checks: sql`jsonb_array_length(${questions.validationIssues})`,
+  usage: usageCountSql,
+} as const;
+export type SortKey = keyof typeof SORT_COLUMNS;
+export const SORT_KEYS = Object.keys(SORT_COLUMNS) as [SortKey, ...SortKey[]];
 
 export async function listQuestions(db: Db, f: QuestionFilters) {
   const page = Math.max(1, f.page ?? 1);
@@ -417,10 +510,28 @@ export async function listQuestions(db: Db, f: QuestionFilters) {
     f.source ? eq(questions.source, f.source) : undefined,
     f.jobId ? eq(questions.generationJobId, f.jobId) : undefined,
     f.duplicatesOnly ? isNotNull(questions.duplicateOfId) : undefined,
-    f.q ? ilike(questions.questionText, `%${f.q.replace(/[%_\\]/g, (m) => `\\${m}`)}%`) : undefined,
+    f.q ? ilike(questions.questionText, `%${likeEscape(f.q)}%`) : undefined,
+    f.externalId ? ilike(questions.externalId, `${likeEscape(f.externalId)}%`) : undefined,
+    f.topicLabel ? eq(questions.topicLabel, f.topicLabel) : undefined,
+    f.subtopic ? ilike(questions.subtopic, `%${likeEscape(f.subtopic)}%`) : undefined,
+    f.concept ? ilike(questions.concept, `%${likeEscape(f.concept)}%`) : undefined,
+    f.cognitiveLevel ? eq(questions.cognitiveLevel, f.cognitiveLevel) : undefined,
+    f.year !== undefined ? eq(questions.year, f.year) : undefined,
+    f.variationAllowed !== undefined ? eq(questions.variationAllowed, f.variationAllowed) : undefined,
+    f.difficultyLabel ? eq(questions.difficultyLabel, f.difficultyLabel) : undefined,
+    f.answerVerified !== undefined ? eq(questions.answerVerified, f.answerVerified) : undefined,
+    f.aiVerified !== undefined ? eq(questions.aiVerified, f.aiVerified) : undefined,
+    f.verificationMethod ? eq(questions.verificationMethod, f.verificationMethod) : undefined,
+    f.qaGrade ? eq(questions.qaGrade, f.qaGrade) : undefined,
+    f.sourceName ? eq(questions.sourceName, f.sourceName) : undefined,
+    f.unused === undefined ? undefined : f.unused ? sql`${usageCountSql} = 0` : sql`${usageCountSql} > 0`,
   ];
   const where = and(...conds);
   const [total] = await db.select({ n: count() }).from(questions).where(where);
+  const direction = f.dir === 'asc' ? asc : desc;
+  const orderBy = f.sort
+    ? [sql`${SORT_COLUMNS[f.sort]} ${f.dir === 'asc' ? sql`asc` : sql`desc`} nulls last`, asc(questions.id)]
+    : [f.order === 'oldest' ? asc(questions.createdAt) : direction(questions.createdAt), asc(questions.id)];
   const rows = await db
     .select({
       id: questions.id,
@@ -439,6 +550,25 @@ export async function listQuestions(db: Db, f: QuestionFilters) {
       subjectName: subjects.name,
       chapterName: chapters.name,
       topicName: topics.name,
+      sourceName: questions.sourceName,
+      validAsOf: questions.validAsOf,
+      reviewedAt: questions.reviewedAt,
+      publishedAt: questions.publishedAt,
+      externalId: questions.externalId,
+      topicLabel: questions.topicLabel,
+      subtopic: questions.subtopic,
+      concept: questions.concept,
+      cognitiveLevel: questions.cognitiveLevel,
+      year: questions.year,
+      variationAllowed: questions.variationAllowed,
+      variationRule: questions.variationRule,
+      difficultyLabel: questions.difficultyLabel,
+      answerVerified: questions.answerVerified,
+      aiVerified: questions.aiVerified,
+      verificationMethod: questions.verificationMethod,
+      qaGrade: questions.qaGrade,
+      qaFlags: questions.qaFlags,
+      usageCount: usageCountSql,
     })
     .from(questions)
     .innerJoin(exams, eq(exams.id, questions.examId))
@@ -446,10 +576,40 @@ export async function listQuestions(db: Db, f: QuestionFilters) {
     .innerJoin(chapters, eq(chapters.id, questions.chapterId))
     .leftJoin(topics, eq(topics.id, questions.topicId))
     .where(where)
-    .orderBy(f.order === 'oldest' ? asc(questions.createdAt) : desc(questions.createdAt), asc(questions.id))
+    .orderBy(...orderBy)
     .limit(pageSize)
     .offset((page - 1) * pageSize);
   return { items: rows, page, pageSize, total: Number(total?.n ?? 0) };
+}
+
+const FACET_COLUMNS = {
+  topicLabel: questions.topicLabel,
+  cognitiveLevel: questions.cognitiveLevel,
+  year: questions.year,
+  difficultyLabel: questions.difficultyLabel,
+  verificationMethod: questions.verificationMethod,
+  qaGrade: questions.qaGrade,
+  sourceName: questions.sourceName,
+} as const;
+
+/** Distinct values and counts of the low-cardinality bank columns. */
+export async function questionFacets(db: Db, scope: { examId?: string; subjectId?: string }) {
+  const where = and(
+    scope.examId ? eq(questions.examId, scope.examId) : undefined,
+    scope.subjectId ? eq(questions.subjectId, scope.subjectId) : undefined
+  );
+  const entries = await Promise.all(
+    Object.entries(FACET_COLUMNS).map(async ([key, col]) => {
+      const rows = await db
+        .select({ value: col, n: count() })
+        .from(questions)
+        .where(and(where, isNotNull(col)))
+        .groupBy(col)
+        .orderBy(asc(col));
+      return [key, rows.map((r) => ({ value: r.value as string | number, count: Number(r.n) }))] as const;
+    })
+  );
+  return Object.fromEntries(entries) as Record<keyof typeof FACET_COLUMNS, { value: string | number; count: number }[]>;
 }
 
 export async function getQuestion(db: Db, id: string) {

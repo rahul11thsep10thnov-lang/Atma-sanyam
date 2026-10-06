@@ -303,7 +303,26 @@ Console → **Import**: CSV or JSON (columns: exam, subject, chapter, topic,
 question, option_a–d, correct_option, explanation, difficulty, language,
 source_name, source_reference, valid_as_of). **Preview** runs every check
 without saving; **Import** stores valid rows in NEEDS_REVIEW and lists the
-skipped rows with reasons. Up to 2,000 rows / 5 MB per file.
+rejected rows with reasons. Up to 2,000 rows / 5 MB per file.
+
+**Bank columns.** A file may also carry `external_id, topic_label, subtopic,
+concept, cognitive_level, year, variation_allowed, variation_rule,
+difficulty_label, answer_verified, ai_verified, verification_method, qa_grade,
+qa_flags, qa_fixes` (all optional; `question_type` must be MCQ if present;
+other columns are ignored). They are stored on the question and every one is
+a sortable column and a filter in the Question Bank
+(`GET /api/admin/questions?sort=<column>&dir=asc|desc&qaGrade=A&year=2026…`,
+filter options from `GET /api/admin/questions/facets`). `external_id` makes an
+import repeatable: rows whose id is already in the exam are reported as
+"already in bank" and skipped. The language `en-hi` is a question that carries
+English and Hindi text together. Hindi function words (ने, को, से …) count as
+part of an option, and a generic stem ("शुद्ध वाक्य चुनिए।") is only a
+duplicate of another when its options repeat too.
+
+**Large files / the live database.** From `backend/` run
+`npm run seed:bank -- --file questions.csv [--dry-run]` with `DATABASE_URL`
+set: it does the same checks, works in chunks of 2,000 rows, can be re-run
+safely, and also adds any taxonomy chapters the file needs.
 
 ## Cost control summary
 

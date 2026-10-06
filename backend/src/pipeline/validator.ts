@@ -145,7 +145,10 @@ export function validateQuestion(q: QuestionCandidate, ctx: ValidationContext): 
   }
 
   // 12. Options must be distinct (text and, for numbers, value).
-  const normOptions = optionTexts.map((t) => normalizeText(t) || t.trim().toLowerCase());
+  // Hindi function words (ने, को, से, का …) are what a grammar question tests,
+  // so Devanagari options are compared as written, not with those words dropped.
+  const strictText = (t: string) => t.normalize('NFC').toLowerCase().replace(/[^\p{L}\p{N}\p{M}]+/gu, '');
+  const normOptions = optionTexts.map((t) => (/[ऀ-ॿ]/.test(t) ? strictText(t) : normalizeText(t) || strictText(t)));
   if (new Set(normOptions).size !== normOptions.length) {
     issues.push(err('DUPLICATE_OPTIONS', 'Two or more options have the same text.'));
   } else {

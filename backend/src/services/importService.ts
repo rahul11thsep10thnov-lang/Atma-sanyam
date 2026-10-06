@@ -3,7 +3,9 @@ import { audit } from '../lib/audit.js';
 import { unprocessable } from '../lib/httpError.js';
 import { LANGUAGE_MAP, LANGUAGES } from '../lib/languages.js';
 import type { ValidationIssue } from '../database/schema.js';
-import { evaluate, insertQuestion, loadDuplicatePool } from './questionService.js';
+import { and, eq, inArray } from 'drizzle-orm';
+import { questions } from '../database/schema.js';
+import { evaluate, insertQuestion, loadDuplicatePool, type BankMeta } from './questionService.js';
 import { findScopeByNames, resolveScope } from './taxonomyService.js';
 
 export const MAX_IMPORT_ROWS = 2000;
@@ -60,6 +62,68 @@ export interface ImportRow {
   source_name?: string;
   source_reference?: string;
   valid_as_of?: string;
+  // Optional bank columns, stored so the console can filter and sort on them.
+  external_id?: string;
+  topic_label?: string;
+  subtopic?: string;
+  concept?: string;
+  cognitive_level?: string;
+  year?: string;
+  variation_allowed?: string;
+  variation_rule?: string;
+  difficulty_label?: string;
+  answer_verified?: string;
+  ai_verified?: string;
+  verification_method?: string;
+  qa_grade?: string;
+  qa_flags?: string;
+  qa_fixes?: string;
+}
+
+const BOOLEAN_COLUMNS = ['variation_allowed', 'answer_verified', 'ai_verified'] as const;
+
+function parseBool(v: string): boolean | null | undefined {
+  const t = v.trim().toLowerCase();
+  if (t === '') return null;
+  if (['true', 'yes', 'y', '1'].includes(t)) return true;
+  if (['false', 'no', 'n', '0'].includes(t)) return false;
+  return undefined;
+}
+
+/** Reads the optional bank columns; returns an error message for a bad value. */
+export function bankMeta(r: Record<string, string>): { meta: BankMeta } | { error: string } {
+  const text = (k: string) => r[k]?.trim() || null;
+  const bools: Record<string, boolean | null> = {};
+  for (const k of BOOLEAN_COLUMNS) {
+    const b = parseBool(r[k] ?? '');
+    if (b === undefined) return { error: `${k} must be true or false (got "${r[k]}").` };
+    bools[k] = b;
+  }
+  let year: number | null = null;
+  if (r.year?.trim()) {
+    year = Number(r.year);
+    if (!Number.isInteger(year) || year < 1900 || year > 2100) return { error: `year must be a 4-digit year (got "${r.year}").` };
+  }
+  const grade = text('qa_grade')?.toUpperCase() ?? null;
+  return {
+    meta: {
+      externalId: text('external_id'),
+      topicLabel: text('topic_label'),
+      subtopic: text('subtopic'),
+      concept: text('concept'),
+      cognitiveLevel: text('cognitive_level'),
+      year,
+      variationAllowed: bools.variation_allowed!,
+      variationRule: text('variation_rule'),
+      difficultyLabel: text('difficulty_label'),
+      answerVerified: bools.answer_verified!,
+      aiVerified: bools.ai_verified!,
+      verificationMethod: text('verification_method'),
+      qaGrade: grade,
+      qaFlags: text('qa_flags'),
+      qaFixes: text('qa_fixes'),
+    },
+  };
 }
 
 const REQUIRED = ['exam', 'subject', 'chapter', 'question', 'option_a', 'option_b', 'option_c', 'option_d', 'correct_option', 'difficulty', 'language'] as const;
@@ -117,6 +181,8 @@ export interface ImportReport {
   total: number;
   imported: number;
   needsReview: number;
+  /** Rows whose external_id is already in the bank (a re-run of the same file). */
+  skipped: number;
   failed: number;
   rows: { row: number; ok: boolean; questionId?: string; status?: string; issues: ValidationIssue[] }[];
 }
@@ -136,12 +202,25 @@ export async function importQuestions(
   const rows = format === 'csv' ? rowsFromCsv(content) : rowsFromJson(content);
   if (rows.length === 0) throw unprocessable('No questions found in the file.');
   if (rows.length > MAX_IMPORT_ROWS) throw unprocessable(`At most ${MAX_IMPORT_ROWS} questions per import (found ${rows.length}).`);
+  return importRows(db, format, rows, adminId, opts);
+}
 
+/** The import itself, on rows that are already parsed (the CLI feeds it in chunks).
+ * `rowOffset` keeps row numbers right when a file is imported in several chunks. */
+export async function importRows(
+  db: Db,
+  format: 'csv' | 'json',
+  rows: Record<string, string>[],
+  adminId: string,
+  opts: { dryRun: boolean; source?: 'import' | 'pyq'; sourceMaterialId?: string | null; rowOffset?: number }
+): Promise<ImportReport> {
   const pools = new Map<string, { id: string; normalizedText: string }[]>();
-  const report: ImportReport = { dryRun: opts.dryRun, total: rows.length, imported: 0, needsReview: 0, failed: 0, rows: [] };
+  const report: ImportReport = { dryRun: opts.dryRun, total: rows.length, imported: 0, needsReview: 0, skipped: 0, failed: 0, rows: [] };
+  const fileExternalIds = [...new Set(rows.map((x) => x.external_id?.trim()).filter((x): x is string => !!x))];
+  const knownExternalIds = new Map<string, Set<string>>(); // exam id → external ids
 
   for (const [i, r] of rows.entries()) {
-    const rowNo = format === 'csv' ? i + 2 : i + 1; // CSV row 1 is the header
+    const rowNo = (opts.rowOffset ?? 0) + (format === 'csv' ? i + 2 : i + 1); // CSV row 1 is the header
     const fail = (message: string, code = 'IMPORT_ROW_INVALID') => {
       report.failed++;
       report.rows.push({ row: rowNo, ok: false, issues: [{ code, severity: 'error', message }] });
@@ -160,6 +239,32 @@ export async function importQuestions(
     if (!ids) {
       fail(`Unknown exam/subject/chapter${r.topic ? '/topic' : ''}: ${[r.exam, r.subject, r.chapter, r.topic].filter(Boolean).join(' › ')}.`, 'METADATA_MISSING');
       continue;
+    }
+    const bank = bankMeta(r);
+    if ('error' in bank) {
+      fail(bank.error);
+      continue;
+    }
+    if (r.question_type && !/^mcq$/i.test(r.question_type.trim())) {
+      fail(`question_type "${r.question_type}" is not supported (only MCQ).`);
+      continue;
+    }
+    if (bank.meta.externalId) {
+      // Re-importing the same file must not create the questions twice.
+      if (!knownExternalIds.has(ids.examId)) {
+        const found = await db
+          .select({ externalId: questions.externalId })
+          .from(questions)
+          .where(and(eq(questions.examId, ids.examId), inArray(questions.externalId, fileExternalIds)));
+        knownExternalIds.set(ids.examId, new Set(found.map((x) => x.externalId!)));
+      }
+      const seen = knownExternalIds.get(ids.examId)!;
+      if (seen.has(bank.meta.externalId)) {
+        report.skipped++;
+        report.rows.push({ row: rowNo, ok: false, issues: [{ code: 'ALREADY_IMPORTED', severity: 'warning', message: `${bank.meta.externalId} is already in the bank.` }] });
+        continue;
+      }
+      seen.add(bank.meta.externalId);
     }
     const scope = await resolveScope(db, ids);
     const poolKey = `${ids.examId}|${ids.subjectId}|${language}`;
@@ -197,6 +302,7 @@ export async function importQuestions(
         sourceReference: r.source_reference || null,
         sourceMaterialId: opts.sourceMaterialId ?? null,
         validAsOf: /^\d{4}-\d{2}-\d{2}$/.test(r.valid_as_of ?? '') ? r.valid_as_of! : null,
+        bank: bank.meta,
         createdBy: adminId,
       });
       questionId = row.id;
@@ -215,6 +321,7 @@ export async function importQuestions(
       source: opts.source ?? 'import',
       total: report.total,
       imported: report.imported,
+      skipped: report.skipped,
       failed: report.failed,
     });
   }

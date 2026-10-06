@@ -37,11 +37,35 @@ export interface QuestionRow {
   duplicateScore: number | null;
   validationIssues: Issue[];
   createdAt: string;
+  updatedAt: string;
   examName: string;
   subjectName: string;
   chapterName: string;
   topicName: string | null;
+  sourceName: string | null;
+  validAsOf: string | null;
+  reviewedAt: string | null;
+  publishedAt: string | null;
+  // Bank columns (set by bulk imports; empty for questions made another way).
+  externalId: string | null;
+  topicLabel: string | null;
+  subtopic: string | null;
+  concept: string | null;
+  cognitiveLevel: string | null;
+  year: number | null;
+  variationAllowed: boolean | null;
+  variationRule: string | null;
+  difficultyLabel: string | null;
+  answerVerified: boolean | null;
+  aiVerified: boolean | null;
+  verificationMethod: string | null;
+  qaGrade: string | null;
+  qaFlags: string | null;
+  /** Number of mock tests that use the question. */
+  usageCount: number;
 }
+
+export type QuestionFacets = Record<'topicLabel' | 'cognitiveLevel' | 'year' | 'difficultyLabel' | 'verificationMethod' | 'qaGrade' | 'sourceName', { value: string | number; count: number }[]>;
 
 export interface Review {
   id: string;
@@ -58,7 +82,7 @@ export interface Review {
   createdAt: string;
 }
 
-export interface QuestionDetail extends Omit<QuestionRow, 'examName' | 'subjectName' | 'chapterName' | 'topicName'> {
+export interface QuestionDetail extends Omit<QuestionRow, 'examName' | 'subjectName' | 'chapterName' | 'topicName' | 'usageCount'> {
   examId: string;
   subjectId: string;
   chapterId: string;

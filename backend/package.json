@@ -21,6 +21,7 @@
     "seed:admin:prod": "node dist/database/seedAdmin.js",
     "seed:pyq": "tsx src/database/seedPyq.ts",
     "plan:queue": "tsx src/database/planQueue.ts",
+    "seed:bank": "tsx src/database/seedBank.ts",
     "test": "vitest run"
   },
   "dependencies": {

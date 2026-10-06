@@ -386,6 +386,23 @@ export const questions = pgTable(
     figureSvg: text('figure_svg'),
     figureKind: text('figure_kind'),
     figureParams: jsonb('figure_params').$type<Record<string, unknown>>(),
+    // Optional bank metadata carried by bulk imports (the columns of the UPSI
+    // question files) so the console can filter and sort on any of them.
+    externalId: text('external_id'),
+    topicLabel: text('topic_label'),
+    subtopic: text('subtopic'),
+    concept: text('concept'),
+    cognitiveLevel: text('cognitive_level'),
+    year: integer('year'),
+    variationAllowed: boolean('variation_allowed'),
+    variationRule: text('variation_rule'),
+    difficultyLabel: text('difficulty_label'),
+    answerVerified: boolean('answer_verified'),
+    aiVerified: boolean('ai_verified'),
+    verificationMethod: text('verification_method'),
+    qaGrade: text('qa_grade'),
+    qaFlags: text('qa_flags'),
+    qaFixes: text('qa_fixes'),
     normalizedText: text('normalized_text').notNull(),
     fingerprint: text('fingerprint').notNull(),
     duplicateOfId: uuid('duplicate_of_id'),
@@ -405,6 +422,8 @@ export const questions = pgTable(
     index('questions_fingerprint_idx').on(t.fingerprint),
     index('questions_job_idx').on(t.generationJobId),
     index('questions_published_pick_idx').on(t.examId, t.language, t.status, t.difficulty),
+    index('questions_external_id_idx').on(t.examId, t.externalId),
+    index('questions_qa_grade_idx').on(t.qaGrade),
   ]
 );
 

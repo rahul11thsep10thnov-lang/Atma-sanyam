@@ -14,4 +14,4 @@ export function useLanguages() {
 }
 
 export const languageName = (code: string) =>
-  ({ 'hi-Latn': 'Hinglish', hi: 'Hindi', en: 'English' })[code] ?? code;
+  ({ 'hi-Latn': 'Hinglish', hi: 'Hindi', en: 'English', 'en-hi': 'English + Hindi' })[code] ?? code;

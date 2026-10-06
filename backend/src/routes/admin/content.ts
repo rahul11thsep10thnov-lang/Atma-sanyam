@@ -16,6 +16,8 @@ import {
   deleteQuestion,
   getQuestion,
   listQuestions,
+  questionFacets,
+  SORT_KEYS,
   transition,
   updateQuestion,
   type ReviewAction,
@@ -28,6 +30,10 @@ import { idParam, optionalUuid, pageQuery } from '../util.js';
 const STATUSES = ['draft', 'generated', 'validating', 'needs_review', 'approved', 'rejected', 'published', 'archived'] as const;
 const difficultyEnum = z.enum(['easy', 'medium', 'hard']);
 const percent = z.number().int().min(0).max(100);
+const boolQuery = z
+  .enum(['true', 'false'])
+  .optional()
+  .transform((v) => (v === undefined ? undefined : v === 'true'));
 
 const nodeBody = z.object({
   name: z.string().trim().min(1).max(160),
@@ -118,11 +124,33 @@ export function adminContentRouter(deps: AppDeps, auth: Auth, limits: RateLimits
         duplicates: z.enum(['true', 'false']).optional(),
         q: z.string().max(200).optional(),
         order: z.enum(['newest', 'oldest']).optional(),
+        sort: z.enum(SORT_KEYS).optional(),
+        dir: z.enum(['asc', 'desc']).optional(),
+        externalId: z.string().max(60).optional(),
+        topicLabel: z.string().max(200).optional(),
+        subtopic: z.string().max(200).optional(),
+        concept: z.string().max(200).optional(),
+        cognitiveLevel: z.string().max(100).optional(),
+        year: z.coerce.number().int().min(1900).max(2100).optional(),
+        variationAllowed: boolQuery,
+        difficultyLabel: z.string().max(100).optional(),
+        answerVerified: boolQuery,
+        aiVerified: boolQuery,
+        verificationMethod: z.string().max(200).optional(),
+        qaGrade: z.string().max(10).optional(),
+        sourceName: z.string().max(300).optional(),
+        unused: boolQuery,
         ...pageQuery,
       }),
       req.query
     );
     res.json(await listQuestions(db, { ...q, duplicatesOnly: q.duplicates === 'true' }));
+  });
+
+  // Distinct values (with counts) of the bank columns, for the filter drop-downs.
+  r.get('/questions/facets', A, auth.can('questions:read'), async (req, res) => {
+    const q = parse(z.object({ examId: optionalUuid, subjectId: optionalUuid }), req.query);
+    res.json(await questionFacets(db, q));
   });
 
   r.get('/questions/:id', A, auth.can('questions:read'), async (req, res) => {

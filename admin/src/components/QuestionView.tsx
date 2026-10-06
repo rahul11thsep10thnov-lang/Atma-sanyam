@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Fragment } from 'react';
 import { AlertTriangle, Bot, CheckCircle2, CircleX, Copy, ShieldCheck, UserCheck } from 'lucide-react';
 import type { QuestionDetail, Review } from '@/lib/types';
 import { fmtDate } from '@/lib/format';
@@ -83,6 +84,15 @@ export function QuestionMeta({ q }: { q: QuestionDetail }) {
           <dd>{q.validAsOf}</dd>
         </>
       )}
+      {BANK_FIELDS.map(([label, value]) => {
+        const v = value(q);
+        return v === null || v === '' ? null : (
+          <Fragment key={label}>
+            <dt>{label}</dt>
+            <dd>{v}</dd>
+          </Fragment>
+        );
+      })}
       <dt>In mock tests</dt>
       <dd>{q.usedInMockTests}</dd>
       <dt>Accuracy</dt>
@@ -90,6 +100,25 @@ export function QuestionMeta({ q }: { q: QuestionDetail }) {
     </dl>
   );
 }
+
+const yn = (v: boolean | null) => (v === null ? null : v ? 'Yes' : 'No');
+/** Bank columns from a bulk import; a row is shown only when it has a value. */
+const BANK_FIELDS: [string, (q: QuestionDetail) => string | number | null][] = [
+  ['ID', (q) => q.externalId],
+  ['Topic (file)', (q) => q.topicLabel],
+  ['Subtopic', (q) => q.subtopic],
+  ['Concept', (q) => q.concept],
+  ['Cognitive level', (q) => q.cognitiveLevel],
+  ['Difficulty (file)', (q) => q.difficultyLabel],
+  ['Year', (q) => q.year],
+  ['QA grade', (q) => q.qaGrade],
+  ['Answer verified', (q) => yn(q.answerVerified)],
+  ['AI verified', (q) => yn(q.aiVerified)],
+  ['Verified by', (q) => q.verificationMethod],
+  ['QA notes', (q) => q.qaFlags],
+  ['Variation allowed', (q) => yn(q.variationAllowed)],
+  ['Variation rule', (q) => q.variationRule],
+];
 
 export function ValidationPanel({ q }: { q: QuestionDetail }) {
   const ai = q.reviews.find((r) => r.reviewerType === 'ai');

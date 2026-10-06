@@ -12,6 +12,7 @@ interface Report {
   total: number;
   imported: number;
   needsReview: number;
+  skipped: number;
   failed: number;
   rows: { row: number; ok: boolean; questionId?: string; issues: Issue[] }[];
 }
@@ -75,6 +76,11 @@ export default function ImportPage() {
           language (English / Hindi / Hinglish or en / hi / hi-Latn), source_name, source_reference, valid_as_of (optional). Exam, subject and chapter
           can be the slug or the exact name. JSON may be an array of objects with the same keys, or with <code>options: [&quot;…&quot;, …]</code>.
         </p>
+        <p className="small muted" style={{ marginTop: 0 }}>
+          Optional bank columns, kept so you can filter and sort on them in the Question Bank: external_id (a file imported twice adds nothing the second time),
+          topic_label, subtopic, concept, cognitive_level, year, variation_allowed, variation_rule, difficulty_label, answer_verified, ai_verified,
+          verification_method, qa_grade, qa_flags, qa_fixes. Other columns are ignored. Language also accepts en-hi (English and Hindi together). Up to 2,000 rows per file.
+        </p>
         <div className="row">
           <button className="btn" disabled={!content || busy} onClick={() => run(true)}>
             Preview (dry run)
@@ -91,8 +97,8 @@ export default function ImportPage() {
           <OkAlert
             message={
               report.dryRun
-                ? `Preview: ${report.imported} of ${report.total} rows are valid, ${report.failed} would be skipped. Nothing was saved yet.`
-                : `Imported ${report.imported} questions into NEEDS_REVIEW; ${report.failed} rows skipped.`
+                ? `Preview: ${report.imported} of ${report.total} rows are valid, ${report.failed} would be rejected${report.skipped ? `, ${report.skipped} are already in the bank` : ''}. Nothing was saved yet.`
+                : `Imported ${report.imported} questions into NEEDS_REVIEW; ${report.failed} rows rejected${report.skipped ? `, ${report.skipped} were already in the bank` : ''}.`
             }
           />
           {!report.dryRun && report.imported > 0 && (
@@ -124,8 +130,10 @@ export default function ImportPage() {
                           ) : (
                             <span className="badge badge-warn">valid, with warnings</span>
                           )
+                        ) : r.issues[0]?.code === 'ALREADY_IMPORTED' ? (
+                          <span className="badge badge-warn">already in bank</span>
                         ) : (
-                          <span className="badge badge-danger">skipped</span>
+                          <span className="badge badge-danger">rejected</span>
                         )}
                       </td>
                       <td className="small">{r.issues.map((i) => i.message).join(' · ')}</td>

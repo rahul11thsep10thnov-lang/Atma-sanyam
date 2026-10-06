@@ -2,7 +2,7 @@
 // add an entry and set `enabled: true`. `script` drives the validator's
 // "question is in the requested language" check.
 
-export type Script = 'Latin' | 'Devanagari' | 'Bengali' | 'Tamil' | 'Telugu' | 'Kannada' | 'Malayalam';
+export type Script = 'Mixed' | 'Latin' | 'Devanagari' | 'Bengali' | 'Tamil' | 'Telugu' | 'Kannada' | 'Malayalam';
 
 export interface LanguageInfo {
   code: string;
@@ -18,6 +18,8 @@ export const LANGUAGES: LanguageInfo[] = [
   { code: 'hi-Latn', name: 'Hinglish', promptName: 'Hinglish (Hindi written in Roman/Latin script, with common English terms)', script: 'Latin', enabled: true },
   { code: 'hi', name: 'Hindi', promptName: 'Hindi (Devanagari script)', script: 'Devanagari', enabled: true },
   { code: 'en', name: 'English', promptName: 'English', script: 'Latin', enabled: true },
+  // Questions that carry the English and the Hindi text side by side.
+  { code: 'en-hi', name: 'English + Hindi', promptName: 'English and Hindi together (bilingual, Devanagari for Hindi)', script: 'Mixed', enabled: true },
   { code: 'bn', name: 'Bengali', promptName: 'Bengali (Bengali script)', script: 'Bengali', enabled: false },
   { code: 'mr', name: 'Marathi', promptName: 'Marathi (Devanagari script)', script: 'Devanagari', enabled: false },
   { code: 'ta', name: 'Tamil', promptName: 'Tamil (Tamil script)', script: 'Tamil', enabled: false },
@@ -30,7 +32,7 @@ export const LANGUAGES: LanguageInfo[] = [
 export const LANGUAGE_MAP = new Map(LANGUAGES.map((l) => [l.code, l]));
 export const ENABLED_LANGUAGE_CODES = LANGUAGES.filter((l) => l.enabled).map((l) => l.code) as [string, ...string[]];
 
-const SCRIPT_RANGES: Record<Script, RegExp> = {
+const SCRIPT_RANGES: Record<Exclude<Script, 'Mixed'>, RegExp> = {
   Latin: /[A-Za-z]/g,
   Devanagari: /[ऀ-ॿ]/g,
   Bengali: /[ঀ-৿]/g,
@@ -42,6 +44,7 @@ const SCRIPT_RANGES: Record<Script, RegExp> = {
 
 /** Share of letters in `text` that belong to `script` (0–1); 1 when no letters. */
 export function scriptShare(text: string, script: Script): number {
+  if (script === 'Mixed') return 1;
   const letters = text.match(/\p{L}/gu)?.length ?? 0;
   if (letters === 0) return 1;
   const matching = text.match(SCRIPT_RANGES[script])?.length ?? 0;

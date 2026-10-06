@@ -94,7 +94,11 @@ option_d, correct_option, explanation, difficulty, language, source_name,
 source_reference, valid_as_of`. **Preview** runs every check without saving
 and lists problems row by row; **Import** stores the valid rows in
 NEEDS_REVIEW. Up to 2,000 rows per file. Use this for questions your
-teachers write in Excel.
+teachers write in Excel. Extra columns such as `external_id, topic_label,
+subtopic, concept, cognitive_level, year, qa_grade, answer_verified` are kept
+and become sortable columns and filters in **Question Bank** (click a heading
+to sort; "More filters" and "Columns" are above the table). Bigger files:
+`npm run seed:bank -- --file questions.csv` in `backend/`.
 
 ### 1d. Previous-year papers
 
