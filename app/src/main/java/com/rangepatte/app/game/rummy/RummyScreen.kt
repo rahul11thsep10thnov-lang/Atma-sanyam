@@ -34,10 +34,13 @@ import com.rangepatte.app.game.common.CardView
 import com.rangepatte.app.game.common.ConnectionLostDialog
 import com.rangepatte.app.game.common.GameFrame
 import com.rangepatte.app.game.common.GameResultDialog
+import com.rangepatte.app.game.common.GroupedHand
+import com.rangepatte.app.game.common.LocalTableArea
 import com.rangepatte.app.game.common.SeatPlaque
 import com.rangepatte.app.game.common.StatusLine
 import com.rangepatte.app.game.common.undoControl
 import com.rangepatte.app.net.GameSession
+import com.rangepatte.app.ui.components.TurnIndicator
 import com.rangepatte.app.ui.components.royal.RoyalButton
 import com.rangepatte.app.ui.components.royal.RoyalButtonStyle
 import com.rangepatte.app.ui.theme.GoldBevelLight
@@ -109,6 +112,7 @@ fun RummyScreen(
         }
 
         // Deck, discard pile and the wild joker.
+        val pileWidth = minOf(84.dp, LocalTableArea.current.width * 0.2f, LocalTableArea.current.height * 0.17f)
         Row(
             horizontalArrangement = Arrangement.spacedBy(18.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
@@ -118,19 +122,19 @@ fun RummyScreen(
                 CardView(
                     card = null,
                     faceDown = true,
-                    modifier = Modifier.width(54.dp),
+                    modifier = Modifier.width(pileWidth),
                     onClick = if (myTurn && state.phase == RummyPhase.DRAW) ({ act(RummyAction.DrawStock) }) else null
                 )
             }
             Pile(label = stringResource(R.string.rummy_pile_discard)) {
                 val top = state.discard.lastOrNull()
                 if (top == null) {
-                    CardSlot(modifier = Modifier.width(54.dp))
+                    CardSlot(modifier = Modifier.width(pileWidth))
                 } else {
                     CardView(
                         card = if (top.isPrintedJoker) null else top.toPlayingCard(),
                         isJoker = top.isPrintedJoker,
-                        modifier = Modifier.width(54.dp),
+                        modifier = Modifier.width(pileWidth),
                         onClick = if (myTurn && state.phase == RummyPhase.DRAW) ({ act(RummyAction.DrawDiscard) }) else null
                     )
                 }
@@ -140,10 +144,15 @@ fun RummyScreen(
                 style = MaterialTheme.typography.titleMedium,
                 color = GoldBevelLight,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.width(96.dp)
+                modifier = Modifier.width(pileWidth * 1.8f)
             )
         }
 
+        if (myTurn) {
+            Box(modifier = Modifier.fillMaxWidth().padding(top = 6.dp), contentAlignment = Alignment.Center) {
+                TurnIndicator(text = stringResource(R.string.game_your_turn))
+            }
+        }
         StatusLine(
             text = when {
                 state.phase == RummyPhase.FINISHED -> ""
@@ -177,28 +186,23 @@ fun RummyScreen(
             }
         }
 
-        // Your hand, grouped into melds.
+        // Your hand, grouped into melds with the loose cards together: as large as the table allows, in one
+        // row or two. The card you pick rises.
         val shown = arranged ?: Arranged(emptyList(), sortedLoose(myHand))
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
-            verticalAlignment = Alignment.Bottom,
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 10.dp, vertical = 8.dp)
-        ) {
-            (shown.melds + shown.loose.map { listOf(it) }).forEachIndexed { groupIndex, group ->
-                val isMeld = groupIndex < shown.melds.size
-                HandGroup(
-                    cards = group,
-                    cardWidth = 50.dp,
-                    step = if (isMeld) 24.dp else 26.dp,
-                    selectedId = selectedId,
-                    onTap = if (myTurn && state.phase == RummyPhase.DISCARD) {
-                        { id -> selectedId = if (selectedId == id) null else id }
-                    } else null
-                )
-            }
+        // Loose cards are single-card groups that continue each other's run, so they can wrap to a second row anywhere.
+        val groups = shown.melds + shown.loose.map { listOf(it) }
+        val tight = groups.indices.map { it > shown.melds.size }
+        GroupedHand(groups = groups, tight = tight, maxCardWidth = 84.dp, modifier = Modifier.padding(bottom = 4.dp)) { card, _, positioned ->
+            CardView(
+                card = if (card.isPrintedJoker) null else card.toPlayingCard(),
+                isJoker = card.isPrintedJoker,
+                inlineIndex = true,
+                selected = card.id == selectedId,
+                modifier = positioned,
+                onClick = if (myTurn && state.phase == RummyPhase.DISCARD) {
+                    { selectedId = if (selectedId == card.id) null else card.id }
+                } else null
+            )
         }
     }
 
@@ -230,32 +234,5 @@ private fun Pile(label: String, content: @Composable () -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         content()
         Text(text = label, style = MaterialTheme.typography.labelMedium, color = ParchmentTextDim, modifier = Modifier.padding(top = 2.dp))
-    }
-}
-
-/** A run of overlapping cards (a meld, or one loose card); tapping picks a card — the picked one lifts. */
-@Composable
-private fun HandGroup(
-    cards: List<RCard>,
-    cardWidth: Dp,
-    step: Dp,
-    selectedId: Int?,
-    onTap: ((Int) -> Unit)?
-) {
-    val cardHeight = cardWidth * 1.42f
-    val lift = 10.dp
-    Box(modifier = Modifier.width(cardWidth + step * (cards.size - 1)).height(cardHeight + lift)) {
-        cards.forEachIndexed { i, card ->
-            val picked = card.id == selectedId
-            CardView(
-                card = if (card.isPrintedJoker) null else card.toPlayingCard(),
-                isJoker = card.isPrintedJoker,
-                selected = picked,
-                modifier = Modifier
-                    .width(cardWidth)
-                    .offset(x = step * i, y = if (picked) 0.dp else lift),
-                onClick = onTap?.let { tap -> { tap(card.id) } }
-            )
-        }
     }
 }

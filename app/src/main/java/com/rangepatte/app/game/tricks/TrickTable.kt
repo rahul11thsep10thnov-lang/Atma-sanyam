@@ -1,28 +1,24 @@
 package com.rangepatte.app.game.tricks
 
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.rangepatte.app.domain.model.PlayingCard
 import com.rangepatte.app.game.common.CardView
+import com.rangepatte.app.game.common.FannedHand
+import com.rangepatte.app.ui.thumbnails.CARD_ASPECT
 import com.rangepatte.app.game.common.SeatPlaque
 import com.rangepatte.app.game.common.StatusLine
-import com.rangepatte.app.ui.components.WoodenTable
 
 /** What to print on one seat's nameplate. [tag] is a small line above the name, [detail] below it. */
 data class SeatView(val name: String, val cardsLeft: Int, val tag: String? = null, val detail: String? = null)
@@ -52,28 +48,34 @@ fun TrickTable(
     Column(modifier = modifier.fillMaxSize()) {
         info.forEachIndexed { i, line -> StatusLine(text = line, highlight = highlightFirstInfo && i == 0, compact = true) }
 
-        WoodenTable(modifier = Modifier.weight(1f).fillMaxWidth().padding(horizontal = 8.dp, vertical = 6.dp)) {
+        BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth().padding(horizontal = 4.dp, vertical = 4.dp)) {
             // Seats are absolute (0..3); each phone draws itself at the bottom and the others clockwise-by-play-order.
             fun at(position: Int) = (mySeat + position) % 4
             SeatPlaque(
                 name = seats[at(2)].name, tag = seats[at(2)].tag, detail = seats[at(2)].detail ?: "${seats[at(2)].cardsLeft}",
-                isTurn = turn == at(2), modifier = Modifier.align(Alignment.TopCenter).padding(top = 8.dp)
+                isTurn = turn == at(2), modifier = Modifier.align(Alignment.TopCenter).padding(top = 4.dp)
             )
             SeatPlaque(
                 name = seats[at(3)].name, tag = seats[at(3)].tag, detail = seats[at(3)].detail ?: "${seats[at(3)].cardsLeft}",
-                isTurn = turn == at(3), modifier = Modifier.align(Alignment.CenterStart).padding(start = 6.dp)
+                isTurn = turn == at(3), modifier = Modifier.align(Alignment.CenterStart).padding(start = 2.dp)
             )
             SeatPlaque(
                 name = seats[at(1)].name, tag = seats[at(1)].tag, detail = seats[at(1)].detail ?: "${seats[at(1)].cardsLeft}",
-                isTurn = turn == at(1), modifier = Modifier.align(Alignment.CenterEnd).padding(end = 6.dp)
+                isTurn = turn == at(1), modifier = Modifier.align(Alignment.CenterEnd).padding(end = 2.dp)
             )
             SeatPlaque(
                 name = seats[at(0)].name, tag = seats[at(0)].tag, detail = seats[at(0)].detail ?: "${seats[at(0)].cardsLeft}",
-                isTurn = turn == at(0), modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp)
+                isTurn = turn == at(0), modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 4.dp)
             )
 
-            // The trick in the middle: each card sits on the side of the seat that played it.
-            Box(modifier = Modifier.align(Alignment.Center).size(width = 190.dp, height = 170.dp)) {
+            // The trick in the middle: each card sits on the side of the seat that played it. The cards are
+            // as large as the middle of the table allows, never so large that they crowd the nameplates.
+            val trickCard = minOf(84.dp, maxWidth * 0.2f, (maxHeight - 130.dp) / (CARD_ASPECT * 1.75f)).coerceAtLeast(40.dp)
+            Box(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(width = trickCard * 2.8f, height = trickCard * CARD_ASPECT * 1.75f)
+            ) {
                 plays.forEach { play ->
                     val align = when ((play.seat - mySeat + 4) % 4) {
                         0 -> Alignment.BottomCenter
@@ -84,38 +86,23 @@ fun TrickTable(
                     CardView(
                         card = play.card,
                         selected = winnerSeat == play.seat,
-                        modifier = Modifier.align(align).width(52.dp)
+                        modifier = Modifier.align(align).width(trickCard)
                     )
                 }
             }
         }
 
-        // Your hand, fanned left to right; scrolls sideways if it does not fit.
-        BoxWithConstraints(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
-            val cardWidth = 58.dp
-            val lift = 12.dp
-            val count = myHand.size
-            val fitStep = if (count > 1) (maxWidth - cardWidth - 16.dp) / (count - 1) else cardWidth
-            val step = minOf(cardWidth * 0.7f, maxOf(fitStep, 22.dp))
-            val total = if (count == 0) 0.dp else cardWidth + step * (count - 1)
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())
-            ) {
-                Box(modifier = Modifier.width(total).height(cardWidth * 1.42f + lift)) {
-                    myHand.forEachIndexed { i, card ->
-                        val canPlay = card.id in playable
-                        CardView(
-                            card = card,
-                            dimmed = playable.isNotEmpty() && !canPlay,
-                            modifier = Modifier
-                                .width(cardWidth)
-                                .offset(x = step * i, y = if (canPlay) 0.dp else lift),
-                            onClick = if (canPlay) ({ onPlay(card) }) else null
-                        )
-                    }
-                }
-            }
+        // Your hand: as large as will fit, in one fanned row or two. Cards you can play stand up; the rest
+        // sit lower and dimmed.
+        FannedHand(items = myHand, maxCardWidth = 92.dp, headroom = 12.dp, modifier = Modifier.padding(vertical = 4.dp)) { card, _, positioned ->
+            val canPlay = card.id in playable
+            CardView(
+                card = card,
+                dimmed = playable.isNotEmpty() && !canPlay,
+                inlineIndex = true,
+                modifier = positioned.offset(y = if (canPlay) 0.dp else 12.dp),
+                onClick = if (canPlay) ({ onPlay(card) }) else null
+            )
         }
     }
 }

@@ -129,8 +129,8 @@ fun SolitaireScreen(
             modifier = Modifier.padding(top = 2.dp)
         )
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-            val pad = 8.dp
-            val gap = 4.dp
+            val pad = 2.dp
+            val gap = 3.dp
             val cardWidth = (maxWidth - pad * 2 - gap * 6) / 7
             val cardHeight = cardWidth * CARD_ASPECT
             val downStep = cardWidth * 0.16f

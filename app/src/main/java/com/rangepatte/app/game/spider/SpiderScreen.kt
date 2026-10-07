@@ -116,8 +116,8 @@ fun SpiderScreen(
             StatusLine(text = stringResource(R.string.spider_fill_columns), highlight = true)
         }
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-            val pad = 6.dp
-            val gap = 2.dp
+            val pad = 2.dp
+            val gap = 1.dp
             val cardWidth = maxOf(30.dp, (maxWidth - pad * 2 - gap * 9) / 10)
             val cardHeight = cardWidth * CARD_ASPECT
             val downStep = cardWidth * 0.14f

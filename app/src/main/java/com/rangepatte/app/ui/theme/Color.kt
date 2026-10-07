@@ -56,9 +56,9 @@ val DarkSurface = Color(0xFF2E2119)
 val DarkSurfaceDim = Color(0xFF241A14)
 
 // Card-face tones (used by the card renderer, independent of app theme)
-val CardIvory = Ivory
-val CardInkRed = Color(0xFF8B2B2B)
-val CardInkBlack = Color(0xFF2A1E16)
+val CardIvory = Color(0xFFF3E4C2)
+val CardInkRed = Color(0xFF9B1C28)
+val CardInkBlack = Color(0xFF1F1812)
 val CardBorderGold = AntiqueGoldToken
 
 // Ornamentation & glow (selection highlight, flourishes, plaques)

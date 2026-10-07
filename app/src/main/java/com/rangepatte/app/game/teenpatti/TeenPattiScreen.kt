@@ -22,6 +22,8 @@ import com.rangepatte.app.game.common.CardView
 import com.rangepatte.app.game.common.ConnectionLostDialog
 import com.rangepatte.app.game.common.GameFrame
 import com.rangepatte.app.game.common.GameResultDialog
+import com.rangepatte.app.game.common.LocalTableArea
+import com.rangepatte.app.ui.thumbnails.CARD_ASPECT
 import com.rangepatte.app.game.common.SeatPlaque
 import com.rangepatte.app.game.common.StatusLine
 import com.rangepatte.app.game.common.undoControl
@@ -79,7 +81,8 @@ fun TeenPattiScreen(
                             tag = statusOf(seat),
                             detail = stringResource(R.string.tp_chips_format, seat.chips),
                             isTurn = state.phase == TpPhase.BETTING && state.turn == index,
-                            dimmed = seat.packed
+                            dimmed = seat.packed,
+                            compact = seatCount > 3
                         )
                     }
                 }
@@ -104,6 +107,9 @@ fun TeenPattiScreen(
             },
             highlight = myTurn
         )
+        // Your three cards, as large as the table allows.
+        val area = LocalTableArea.current
+        val handCard = minOf(112.dp, (area.width - 48.dp) / 3, area.height * 0.2f / CARD_ASPECT)
         Row(
             horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
             modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)
@@ -113,7 +119,7 @@ fun TeenPattiScreen(
                     card = card,
                     faceDown = !me.seen && state.phase == TpPhase.BETTING,
                     dimmed = me.packed,
-                    modifier = Modifier.width(76.dp)
+                    modifier = Modifier.width(handCard)
                 )
             }
         }

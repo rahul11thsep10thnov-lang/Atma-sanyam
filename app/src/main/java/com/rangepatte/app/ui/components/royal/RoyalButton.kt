@@ -70,7 +70,7 @@ fun RoyalButton(
             .defaultMinSize(minHeight = 44.dp)
             .clip(ButtonShape)
             .background(Brush.verticalGradient(if (pressed) listOf(bottom, top) else listOf(top, bottom)))
-            .border(1.dp, GoldBevelDark, ButtonShape)
+            .border(1.2.dp, Brush.linearGradient(listOf(GoldBevelLight, GoldBevelDark, GoldBevelLight)), ButtonShape)
             .drawBehind {
                 val inset = 2.dp.toPx()
                 drawLine(

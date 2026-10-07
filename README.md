@@ -1,8 +1,8 @@
 # Indian Taash
 
 *"Bharatiya Khel, Bharatiya Tarike"* — a native Android app (Kotlin + Jetpack Compose) styled after a
-traditional Indian village courtyard: players seated around a woven jute charpai, antique
-gold-bordered cards, brass nameplates, warm lantern light. "Indian Taash" is a temporary internal
+an old royal Indian card room: an antique waxed-walnut table, aged-ivory cards with gold borders and
+royal court portraits, brass nameplates, warm lantern light. "Indian Taash" is a temporary internal
 name; see [Renaming the app](#renaming-the-app) to change it.
 
 This is **not** a real-money gambling app. All scoring uses non-monetary points.
@@ -21,7 +21,7 @@ what exists today:
 | 4 | Home screen — later replaced by the Khel page at the owner's request | ✅ |
 | 5 | Navigation (Compose Navigation, bottom nav, setup/table routes) | ✅ |
 | 6 | Game table shell (wooden table, header, hands, score panel) | ✅ |
-| — | Village-courtyard visual redesign (charpai table, antique cards, brass plaques, animation) | ✅ |
+| — | Royal card-room redesign (waxed hardwood table, antique ivory deck with K/Q/J portraits, plaques) | ✅ |
 | — | Language picker + 8-language UI translation (English, Hindi, Tamil, Telugu, Kannada, Marathi, Bengali, Punjabi) | ✅ |
 | — | Rules scroll popup with real researched rules content for every game | ✅ |
 | — | One-clause summaries on game tiles | ✅ |
@@ -35,27 +35,34 @@ what exists today:
 | 7+ | **All eight games are playable** against the computer: Solitaire, Spider Solitaire, Rummy, Teen Patti / Flush, Twenty Nine, Coat Piece, Dehla Pakad, Lakadi — each with its own engine, computer player, screen and Undo (3 uses) | ✅ |
 | — | Playing against other people: Nearby (Bluetooth/Wi-Fi) and Online (room code) | ✅ built, untested on devices · Pass & Play on one phone not started (shown as "coming soon") |
 
-### The redesign, specifically
+### The royal card-room design system
 
-- **Charpai game table** (`ui/components/WoodenTable.kt`, `TableStyle.CHARPAI`): a procedurally
-  drawn woven jute-rope lattice inside a thick wooden frame, replacing the plain wooden panel.
-- **Antique cards** (`ui/cards/CardRenderer.kt`, `CardBackRenderer.kt`, `SuitMotifs.kt`): parchment
-  face, double gold-rule border with corner flourishes, stylized suit motifs (lotus / ornamental
-  diamond / paisley leaf / spear-leaf) alongside the small conventional ♠♥♦♣ corner glyph, and a
-  maroon-and-gold mandala card back.
-- **Brass/wood player nameplates and buttons** (`PlayerAvatar.kt`, `ScorePanel.kt`,
-  `royal/RoyalButton.kt`): wood-and-brass plaques instead of modern bubbles/flat buttons, with a
-  press-down scale animation on buttons.
-- **Typography** (`ui/theme/Type.kt`): real bundled Cinzel and Marcellus fonts (see
-  [Typography & fonts](#typography--fonts)) for the ornate title/headers, gold-colored with a
-  subtle shadow, framed by a small `OrnamentalDivider` flourish.
-- **Animation**: cards glow gold and lift slightly when selected; the local player's hand deals in
-  with a staggered fade/slide/rotate-settle; a warm gold-to-dark vignette sits over the table.
-- **Honest limitation**: the brief also asked for illustrated Mughal-miniature-style King/Queen/Jack
-  portraits. There is no image-generation tool available in the authoring environment to paint real
-  character artwork, so face cards instead get an ornamental vector crest (crown / diadem / plume —
-  see `FaceCardCrest` in `SuitMotifs.kt`) rather than a painted portrait. Swapping in real
-  illustrated art later means replacing that one composable's body — no calling screen changes.
+Every game shares one look, built from a few pieces (all drawn in code — no bitmaps, so it is crisp at
+any size and adds nothing to the download):
+
+- **Antique wood table** (`ui/components/AntiqueWoodTable.kt`): `GameFrame` puts every game on one
+  large waxed-walnut table — long grain with cathedral figures, a slanting wax sheen and lamp glow,
+  darkened edges, a thick mahogany frame with a bevel, brass inlay line, carved groove with brass
+  studs, a shadowed lip, and carved gold corner flourishes. The old woven-rope "net" is gone.
+- **The antique deck** (`ui/cards/AntiqueCard.kt`, `SuitPips.kt`, `RoyalPortraits.kt`): aged ivory
+  with paper grain and darkened edges, gold border with a fine inner rule, large mirrored corner
+  indices, clean suit pips in standard 2–10 layouts, a medallion Ace, and **original Mughal-miniature
+  style K/Q/J portraits** (jewelled turban and aigrette for the King, mukut crown, veil and nath for
+  the Queen, a young prince with a peacock feather for the Jack), double-ended like a real deck. One
+  renderer serves `CardView`, the game thumbnails and the legacy `PlayingCardView`.
+- **Royal card back** (`drawRoyalCardBack`): burgundy, antique gold, a lotus medallion and corner buds
+  — the same in every game.
+- **Plaques, turn badge, buttons** (`royal/AntiquePlaque.kt`, `TurnIndicator.kt`, `RoyalButton.kt`):
+  walnut nameplates with a double gold rule and brass studs (glowing on a player's turn), a gold
+  pill "Your turn" badge, gold-rimmed buttons.
+- **Responsive hands** (`game/common/HandLayout.kt`): `fanLayout` / `groupPlan` pick the largest cards
+  that fit the table (`LocalTableArea`, provided by `GameFrame`) — one fanned row, or two overlapped
+  rows for 13 cards when that makes the cards clearly bigger. Selected cards rise with a warm glow.
+- **Typography** (`ui/theme/Type.kt`): bundled Cinzel and Marcellus for titles, a legible serif for
+  information (see [Typography & fonts](#typography--fonts)).
+- **Honest limitation**: the K/Q/J are hand-built vector illustrations, not painted artwork — there is
+  no image tool here. They read as ornamental court miniatures at card size; for painted art, replace
+  the body of `drawBust` in `RoyalPortraits.kt` (or draw a bitmap there); no calling code changes.
 
 ### Royal-court UI kit
 
@@ -183,9 +190,9 @@ app/src/main/java/com/rangepatte/app/
 ├── net/           # multiplayer: lockstep sessions, lobby, Nearby + Firestore transports (see below)
 ├── ui/
 │   ├── theme/     # Color.kt, Type.kt, Shape.kt, Dimens.kt, Theme.kt — design tokens live here
-│   ├── cards/     # PlayingCardView/CardFace/CardBack renderers, SuitMotifs, CardStack, Hand, CardStyle
+│   ├── cards/     # AntiqueCard/SuitPips/RoyalPortraits (the deck), CardBack, PlayingCardView, CardStack, Hand, CardStyle
 │   ├── background/# BackgroundType enum + BackgroundManager (brush per scene)
-│   ├── components/# Shared widgets: royal/ UI kit, GameTile, WoodenTable, GameHeader, OrnamentalDivider, ...
+│   ├── components/# Shared widgets: royal/ UI kit, GameTile, AntiqueWoodTable, GameHeader, OrnamentalDivider, ...
 │   ├── thumbnails/# GameThumbnail, MiniCard, LakadiScoreSheet — the card art on each game tile
 │   ├── chrome/    # AppTopBar ("Remove ads?" + Login strip shown on every page)
 │   ├── ads/       # BannerAdSlot
@@ -225,14 +232,13 @@ an `*Engine.kt`, `*Rules.kt`, and `*Screen.kt` — never touching the shared she
 5. Add a `when` branch for the new `GameId` in `ui/thumbnails/GameThumbnail.kt` describing its
    signature cards (the `fan(...)` helper covers most layouts) — no image asset needed.
 
-## How to add a new card design
+## How to change the card design
 
-Card face/back painting lives entirely in `ui/cards/CardStyle.kt` (`CardPalette`),
-`CardRenderer.kt` (`CardFace`), `CardBackRenderer.kt` (`CardBack`), and `SuitMotifs.kt` (the
-lotus/diamond/paisley/spear-leaf suit emblems and the King/Queen/Jack ornamental crests). Add a new
-`CardStyle` enum value and its `CardPalette` in `CardStyle.kt` for a new color scheme, or edit the
-`draw*` functions in `SuitMotifs.kt` for new motif shapes — no other file needs to change, since
-every screen renders cards through `PlayingCardView`.
+Card painting lives in `ui/cards/`: `AntiqueCard.kt` (face, border, indices, pip layouts, Ace, Joker and
+`drawRoyalCardBack`), `SuitPips.kt` (the four suit shapes), `RoyalPortraits.kt` (K/Q/J) and
+`CardStyle.kt` (ink and paper colours). Every screen shows cards through `CardView`
+(`game/common/CardView.kt`), and the game thumbnails call the same drawing functions, so a change
+there changes the whole app.
 
 ## Typography & fonts
 

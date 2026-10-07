@@ -1,26 +1,20 @@
 package com.rangepatte.app.game.common
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.rangepatte.app.ui.theme.GoldBevelDark
+import com.rangepatte.app.ui.components.royal.antiquePlaque
 import com.rangepatte.app.ui.theme.GoldBevelLight
 import com.rangepatte.app.ui.theme.GoldenGlow
-import com.rangepatte.app.ui.theme.PanelWoodDark
-import com.rangepatte.app.ui.theme.PanelWoodLight
 import com.rangepatte.app.ui.theme.ParchmentText
 import com.rangepatte.app.ui.theme.ParchmentTextDim
 
@@ -35,18 +29,17 @@ fun SeatPlaque(
     detail: String? = null,
     tag: String? = null,
     isTurn: Boolean = false,
-    dimmed: Boolean = false
+    dimmed: Boolean = false,
+    compact: Boolean = false
 ) {
-    val shape = RoundedCornerShape(4.dp)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .widthIn(min = 72.dp, max = 180.dp)
-            .background(Brush.verticalGradient(listOf(PanelWoodLight, PanelWoodDark)), shape)
-            .border(if (isTurn) 2.dp else 1.dp, if (isTurn) GoldenGlow else GoldBevelDark, shape)
-            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .widthIn(min = 76.dp, max = 180.dp)
+            .antiquePlaque(active = isTurn)
+            .padding(horizontal = 12.dp, vertical = if (compact) 4.dp else 6.dp)
     ) {
-        if (tag != null) {
+        if (tag != null && !compact) {
             Text(
                 text = tag,
                 style = MaterialTheme.typography.labelSmall,
@@ -64,9 +57,10 @@ fun SeatPlaque(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
-        if (detail != null) {
+        val second = if (compact) listOfNotNull(tag, detail).joinToString(" · ").ifEmpty { null } else detail
+        if (second != null) {
             Text(
-                text = detail,
+                text = second,
                 style = MaterialTheme.typography.labelMedium,
                 color = GoldBevelLight,
                 textAlign = TextAlign.Center,
