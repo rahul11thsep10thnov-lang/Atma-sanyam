@@ -3,6 +3,7 @@ import Link from "next/link";
 import { requireAdmin } from "@/lib/auth/session";
 import { inboxCounts, listNotices } from "@/lib/pipeline/review";
 import { listSourcesForAdmin, sourceHealth } from "@/lib/services/sources";
+import { NEEDS_ATTENTION } from "@/lib/sources/health";
 import { NoticeStatusBadge, NoticeTypeBadge, PriorityBadge } from "@/components/admin/NoticeBadges";
 import { runPipelineNowAction, setPausedAction } from "./actions";
 
@@ -21,7 +22,7 @@ export default async function AutomationOverviewPage({ searchParams }: { searchP
     listNotices({ status: "INBOX", pageSize: 8 }),
   ]);
   const canOperate = admin.role === "SUPER_ADMIN" || admin.role === "EDITOR";
-  const failing = sources.filter((s) => s.active && sourceHealth(s) === "failing").length;
+  const failing = sources.filter((s) => NEEDS_ATTENTION.includes(sourceHealth(s))).length;
 
   const cards = [
     { label: "Inbox", value: counts.inbox, href: "/admin/automation/inbox", hint: "new + needs review + approved" },
@@ -30,7 +31,7 @@ export default async function AutomationOverviewPage({ searchParams }: { searchP
     { label: "Published", value: counts.byStatus.PUBLISHED, href: "/admin/automation/inbox?status=PUBLISHED" },
     { label: "Duplicates", value: counts.byStatus.DUPLICATE, href: "/admin/automation/duplicates" },
     { label: "Failed items", value: counts.failedItems, href: "/admin/automation/failed", warn: counts.failedItems > 0 },
-    { label: "Sources failing", value: `${failing} / ${counts.sourcesTotal}`, href: "/admin/automation/sources", warn: failing > 0 },
+    { label: "Sources needing attention", value: `${failing} / ${counts.sourcesTotal}`, href: "/admin/automation/sources?health=attention", warn: failing > 0 },
   ];
 
   return (

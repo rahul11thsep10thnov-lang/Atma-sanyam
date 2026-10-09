@@ -42,10 +42,19 @@ npm run dev                # http://localhost:3000
 The portal watches official sites itself. After the quick start:
 
 ```bash
-npm run seed:sources       # five starter official sources (SSC, UPSC, IBPS, RRB, UPPRPB)
+npm run seed:sources       # source registry: ~176 official sites (central, banking, every RRB, states, defence,
+                           # education, other) + the aggregator — all DISABLED and awaiting approval
+npm run sources:verify -- --pending   # check each one is reachable, on its official domain, robots-allowed
+                                      # and parseable; writes source-verification-report.md
+npm run sources:discover -- --verified # propose recruitment/result/admit-card sections from verified sites
 npm run pipeline:run       # one pass: check due sources, extract, resolve, dedup, queue for review
 npm run pipeline:worker    # keep running one pass every PIPELINE_INTERVAL_MINUTES (default 15)
 ```
+
+Seeded sources are never fetched until an admin **approves** and **enables**
+them (Admin → Automation → Sources → filter “Awaiting approval”). Public
+aggregators stay disabled until verified *and* their terms reviewed, and
+their notices always go to human review. See `SOURCES.md`.
 
 Then open **Admin → Automation** (`/admin/automation`): Inbox / Review
 queue to approve, correct and publish notices; Pipeline runs, Failed items,

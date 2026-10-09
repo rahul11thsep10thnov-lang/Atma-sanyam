@@ -32,13 +32,20 @@ Every variable actually read by the app, cross-checked against the code
 | `ANTHROPIC_API_KEY` | `src/lib/pipeline/extract/claude.ts` | Enables the Claude extraction stage. Unset → rules-only extraction; the pipeline still works, it just sends more notices to the review queue. The key is read by the official `@anthropic-ai/sdk` client, never logged. |
 | `AI_EXTRACTION_MODEL` | same | Defaults to `claude-opus-5-5`. |
 | `AI_EXTRACTION_EFFORT` | same | `low` / `medium` / `high`; defaults to `medium`. |
-| `AI_TRANSLATION_ENABLED` | `src/lib/pipeline/translate.ts` | Default on whenever `ANTHROPIC_API_KEY` is set: every new notice (and its recruitment) gets a Hindi title/summary, stored with `translationSource = "claude"` and shown with an "AI अनुवाद" label. `false` disables it; an admin edit of the Hindi text marks it human. |
+| `AI_TRANSLATION_ENABLED` | `src/lib/pipeline/translate.ts` | Off unless set to `true` (the site is English-only). When `true` and `ANTHROPIC_API_KEY` is set, new notices get a Hindi title/summary stored with `translationSource = "claude"`. |
 | `AI_TRANSLATION_MODEL` | same | Optional model override for translation (defaults to `AI_EXTRACTION_MODEL`, then `claude-opus-5-5`). |
 | `CLAUDE_TRIGGER_CONFIDENCE` | `src/lib/pipeline/extract/index.ts` | Rules score below which Claude is consulted (default `0.9`). Raise it to spend more on AI, lower it to spend less. |
 | `AUTO_PUBLISH_MIN_CONFIDENCE` | same | Default `0.95`. A notice is auto-approved only when `confidence × source authority` reaches this, every field is verified against the document text, and validation found nothing wrong. |
 | `REVIEW_MIN_CONFIDENCE` | same | Default `0.8`. At or above → `NEEDS_REVIEW`; below → stays `NEW`. |
 | `CRON_SECRET` | `src/app/api/admin/pipeline/run/route.ts` | Shared secret a scheduler presents as `Authorization: Bearer …` (or `x-cron-secret`) to trigger a pipeline pass. `vercel.json` defines a 30-minute cron for this route and Vercel sends the header automatically when the variable is set. Unset → cron calls are refused; admins can still run the pipeline from the dashboard and `npm run pipeline:worker` needs no secret (it talks to the DB directly). |
 | `PIPELINE_INTERVAL_MINUTES` | `scripts/pipelineWorker.ts` | Pass interval for the standalone worker (default 15). |
+| `PIPELINE_CONCURRENCY` | `src/lib/pipeline/runner.ts` | Sources checked at the same time in one pass (default 3, max 10). |
+| `PIPELINE_PER_DOMAIN_CONCURRENCY` | `src/lib/pipeline/http.ts` | Requests in flight to one site at once (default 1). Each source also has its own minimum gap between requests ("rate limit", default 1.5 s) and robots.txt `Crawl-delay` is honoured. |
+| `PIPELINE_FREQ_HIGH` / `PIPELINE_FREQ_NORMAL` / `PIPELINE_FREQ_LOW` | `src/lib/validation/source.ts` | Default check interval in minutes offered for each priority (30 / 240 / 1440). Every source can override it. |
+| `SOURCE_CHECK_RETENTION_DAYS` | `src/lib/pipeline/runner.ts` | Per-check diagnostics older than this are deleted at the end of each run (default 30). Each check's diagnostics are capped at ~4 KB. |
+| `SOURCE_DISCOVERY_TRUST_SAME_SITE` | `src/lib/pipeline/discovery.ts` | `true` lets discovery approve and enable new sections found on the *same site* as a **verified** source. Default off: everything discovered waits for an admin. Never applies to aggregators or other domains. |
+| `SOURCE_DISCOVERY_ALLOWED_DOMAINS` | same | Comma-separated extra domains (e.g. `ibps.in,sbi.co.in`) that discovery may treat as official in addition to gov.in / nic.in / ac.in / edu.in / res.in. |
+| `PIPELINE_ALLOW_PRIVATE_HOSTS` | `src/lib/pipeline/netguard.ts` | **Tests only.** Lets the fetcher reach 127.0.0.1 test servers; ignored when `NODE_ENV=production`. Never set it on a server. |
 | `OCR_ENABLED` | `src/lib/pipeline/ocr.ts` | `true` turns on tesseract.js OCR (English + Hindi) for scanned PDFs and images. Off by default; scanned documents are then recorded as an `OCR` pipeline error instead of being silently skipped. |
 
 ## Reader alerts (optional)

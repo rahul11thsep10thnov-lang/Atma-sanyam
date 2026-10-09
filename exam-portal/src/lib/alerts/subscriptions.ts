@@ -156,6 +156,8 @@ const TYPE_WORD: Record<NoticeType, { en: string; hi: string }> = {
   DEADLINE_EXTENSION: { en: "Last date extended", hi: "अंतिम तिथि बढ़ी" },
   EXAM_POSTPONED: { en: "Exam postponed", hi: "परीक्षा स्थगित" },
   EXAM_CANCELLED: { en: "Exam cancelled", hi: "परीक्षा रद्द" },
+  APPLICATION_STARTED: { en: "Application started", hi: "आवेदन शुरू" },
+  CORRECTION_WINDOW: { en: "Correction window", hi: "सुधार विंडो" },
   OTHER: { en: "Update", hi: "अपडेट" },
 };
 

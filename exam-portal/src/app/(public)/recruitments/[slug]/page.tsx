@@ -50,6 +50,8 @@ const TYPE_LABEL: Record<NoticeType, { en: string; hi: string; tone: string }> =
   DEADLINE_EXTENSION: { en: "Last date extended", hi: "अंतिम तिथि बढ़ी", tone: "bg-amber-50 text-amber-800 border-amber-200" },
   EXAM_POSTPONED: { en: "Exam postponed", hi: "परीक्षा स्थगित", tone: "bg-red-50 text-red-700 border-red-200" },
   EXAM_CANCELLED: { en: "Exam cancelled", hi: "परीक्षा रद्द", tone: "bg-red-50 text-red-700 border-red-200" },
+  APPLICATION_STARTED: { en: "Application started", hi: "आवेदन शुरू", tone: "bg-brand-50 text-brand-700 border-brand-200" },
+  CORRECTION_WINDOW: { en: "Correction window", hi: "सुधार विंडो", tone: "bg-amber-50 text-amber-800 border-amber-200" },
   OTHER: { en: "Update", hi: "अपडेट", tone: "bg-slate-50 text-slate-700 border-slate-200" },
 };
 

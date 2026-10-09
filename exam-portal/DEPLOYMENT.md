@@ -44,6 +44,14 @@ development only). Run this as a one-off step in your deploy pipeline
 *before* the new app version starts serving traffic, not from inside
 the running app.
 
+The `20261009120000_source_registry` migration (source registry, notice
+sections) only adds columns, tables, enum values and indexes, and backfills
+`canonicalUrl` / `nextCheckAt` / `sections` for existing rows. Its
+`down.sql` rolls it back by hand if ever needed (PostgreSQL cannot remove
+enum values, so the two new notice types and `ATOM` remain, unused). After
+migrating, run `npm run seed:sources` once to load the registry — every new
+source arrives disabled and awaiting approval (see `SOURCES.md`).
+
 ## 5. Build and start
 
 ```bash

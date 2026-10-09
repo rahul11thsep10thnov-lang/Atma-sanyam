@@ -14,6 +14,8 @@ export const NOTICE_TYPES = [
   "DEADLINE_EXTENSION",
   "EXAM_POSTPONED",
   "EXAM_CANCELLED",
+  "APPLICATION_STARTED",
+  "CORRECTION_WINDOW",
   "OTHER",
 ] as const;
 export type NoticeTypeValue = (typeof NOTICE_TYPES)[number];

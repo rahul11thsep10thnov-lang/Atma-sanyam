@@ -264,6 +264,9 @@ function recruitmentDateUpdates(data: NoticeExtraction): Prisma.RecruitmentUpdat
     if (data.application_start_date) out.applicationStartDate = toDate(data.application_start_date);
     if (data.application_end_date) out.applicationEndDate = toDate(data.application_end_date);
     if (data.exam_date) out.examDate = toDate(data.exam_date);
+  } else if (t === "APPLICATION_STARTED") {
+    if (data.application_start_date) out.applicationStartDate = toDate(data.application_start_date);
+    if (data.application_end_date) out.applicationEndDate = toDate(data.application_end_date);
   } else if (t === "DEADLINE_EXTENSION") {
     if (data.application_end_date) out.applicationEndDate = toDate(data.application_end_date);
   } else if (t === "ADMIT_CARD" || t === "EXAM_DATE" || t === "EXAM_POSTPONED") {

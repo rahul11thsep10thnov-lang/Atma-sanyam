@@ -13,7 +13,7 @@ import type { NoticeExtraction } from "./extract/schema";
  * with the admin's id; nothing here is reachable without a session.
  */
 export const NOTICE_STATUSES: NoticeStatus[] = ["NEW", "NEEDS_REVIEW", "AUTO_APPROVED", "APPROVED", "PUBLISHED", "REJECTED", "DUPLICATE", "FAILED"];
-export const NOTICE_TYPES_ALL: NoticeType[] = ["JOB", "ADMIT_CARD", "EXAM_DATE", "ANSWER_KEY", "RESULT", "MERIT_LIST", "SELECTION_LIST", "INTERVIEW", "DOCUMENT_VERIFICATION", "CORRIGENDUM", "DEADLINE_EXTENSION", "EXAM_POSTPONED", "EXAM_CANCELLED", "OTHER"];
+export const NOTICE_TYPES_ALL: NoticeType[] = ["JOB", "ADMIT_CARD", "EXAM_DATE", "ANSWER_KEY", "RESULT", "MERIT_LIST", "SELECTION_LIST", "INTERVIEW", "DOCUMENT_VERIFICATION", "CORRIGENDUM", "DEADLINE_EXTENSION", "EXAM_POSTPONED", "EXAM_CANCELLED", "APPLICATION_STARTED", "CORRECTION_WINDOW", "OTHER"];
 export const NOTICE_PRIORITIES: NoticePriority[] = ["URGENT", "HIGH", "NORMAL", "LOW"];
 
 export interface NoticeFilter {

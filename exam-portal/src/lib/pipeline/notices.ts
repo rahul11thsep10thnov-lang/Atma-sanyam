@@ -8,6 +8,8 @@ import type { IngestResult } from "./ingest";
 import { resolveEntities, type ResolutionResult } from "./resolve";
 import { canonicalizeUrl, findDuplicate } from "./dedup";
 import { translateNotice, isTranslationEnabled } from "./translate";
+import { classifySections } from "./classify";
+import { detectStateCode } from "@/lib/sources/regions";
 
 /**
  * Turns an ingested document (or a new version of one) into a
@@ -106,7 +108,7 @@ function noticeTitle(extracted: ExtractedNotice, fallback: string): string {
 export async function createNoticeFromIngest(ingested: IngestResult, ctx: NoticeContext = {}): Promise<NoticeResult | null> {
   const document = await prisma.document.findUnique({
     where: { id: ingested.documentId },
-    select: { id: true, sourceId: true, sourceUrl: true, filename: true, checksum: true, sourcePublishedAt: true, source: { select: { id: true, officialDomain: true, organizationId: true } } },
+    select: { id: true, sourceId: true, sourceUrl: true, filename: true, checksum: true, sourcePublishedAt: true, source: { select: { id: true, officialDomain: true, organizationId: true, isAggregator: true, stateCode: true } } },
   });
   if (!document) return null;
   const sourceId = ctx.sourceId ?? document.sourceId ?? null;
@@ -163,19 +165,36 @@ export async function createNoticeFromIngest(ingested: IngestResult, ctx: Notice
     });
   }
   const resolutionErrors = resolution && !resolution.organization.id ? ["Organization could not be resolved or created."] : [];
-  const decided = decideStatus({
+  // Aggregators are discovery sources, never the authority: their notices
+  // always go to a human, flagged, with the aggregator page kept separately.
+  const fromAggregator = document.source?.isAggregator === true;
+  if (fromAggregator) {
+    resolutionErrors.push(
+      extracted.data.official_notification_url && extracted.data.official_notification_url !== document.sourceUrl
+        ? "Found via a public aggregator: verify dates, vacancies and eligibility against the official notice before publishing."
+        : "Found via a public aggregator and no official notice link was identified: locate the recruiting organization's own notice first.",
+    );
+  }
+  const decidedRaw = decideStatus({
     overallConfidence: extracted.overallConfidence,
     validationErrors: [...validationErrors, ...resolutionErrors],
     sourceAuthority: authority,
     hasUnverifiedFields: unverified,
     entitiesCreated: resolution?.createdAny ?? true,
   });
+  const decided: NoticeStatus = fromAggregator && decidedRaw === "AUTO_APPROVED" ? "NEEDS_REVIEW" : decidedRaw;
+  const title = noticeTitle(extracted, ingested.title);
+  const sections = classifySections({ noticeType: extracted.data.notice_type, title: `${ingested.title} ${title}`, text: ingested.extractedText });
+  const stateCode = detectStateCode({ organization: extracted.data.organization, title: ingested.title, text: ingested.extractedText }) ?? document.source?.stateCode ?? null;
 
   const common = {
     noticeType: extracted.data.notice_type,
     priority,
-    title: noticeTitle(extracted, ingested.title),
+    title,
     summary: extracted.data.summary,
+    sections,
+    stateCode,
+    discoveredViaUrl: fromAggregator ? document.sourceUrl : null,
     sourceUrl: document.sourceUrl,
     canonicalUrl: canonicalizeUrl(extracted.data.official_notification_url ?? document.sourceUrl),
     sourceDomain,

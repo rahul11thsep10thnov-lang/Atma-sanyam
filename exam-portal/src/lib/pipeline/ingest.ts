@@ -5,7 +5,7 @@ import type { DocumentType } from "@/generated/prisma/enums";
 import type { Prisma } from "@/generated/prisma/client";
 import { fetchUrl, type FetchOptions } from "./http";
 import { extractPdfText, looksScanned } from "./parsers/pdf";
-import { htmlToText, htmlTitle, isPdfUrl } from "./parsers/html";
+import { htmlToText, htmlTitle, isPdfUrl, officialLinksIn } from "./parsers/html";
 import { getOcrEngine, isImageMime } from "./ocr";
 import { diffText, pairChanges } from "./changeDetection";
 import { recordPipelineError, resolvePipelineErrors } from "./errors";
@@ -17,6 +17,10 @@ export interface IngestInput {
   pipelineRunId?: string | null;
   publishedAt?: Date | null;
   fetchOptions?: FetchOptions;
+  /** Aggregator pages: append the official (gov.in/nic.in/…) links found on
+   * the page to the extracted text, so the extractor records the recruiting
+   * organization's own notice URL instead of the aggregator's. */
+  collectOfficialLinks?: boolean;
 }
 
 export interface IngestResult {
@@ -117,6 +121,10 @@ export async function ingestDocument(input: IngestInput): Promise<IngestResult> 
     const html = res.body.toString("utf8");
     extractedText = htmlToText(html);
     pageTitle = htmlTitle(html);
+    if (input.collectOfficialLinks) {
+      const links = officialLinksIn(html, res.finalUrl);
+      if (links.length) extractedText = `${extractedText}\n\nOfficial links found on this page:\n${links.join("\n")}`;
+    }
   }
 
   const title = (input.title || pageTitle || filenameFor(input.url, mime)).trim();

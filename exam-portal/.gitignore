@@ -50,3 +50,6 @@ next-env.d.ts
 # src/lib/documents/storage.ts). Never committed; production uses real
 # object storage via STORAGE_* env vars.
 /public/uploads
+
+# local output of npm run sources:verify
+source-verification-report.md

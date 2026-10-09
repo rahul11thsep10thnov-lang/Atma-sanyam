@@ -112,7 +112,7 @@ describe.skipIf(!HAS_DB)("acceptance: official site → pipeline → review → 
 
     // 2. admit card appears → same recruitment
     showAdmit = true;
-    await prisma.source.update({ where: { id: sourceId }, data: { lastCheckedAt: new Date(Date.now() - 3_600_000), etag: null, lastContentHash: null } });
+    await prisma.source.update({ where: { id: sourceId }, data: { lastCheckedAt: new Date(Date.now() - 3_600_000), nextCheckAt: new Date(Date.now() - 1000), etag: null, lastContentHash: null } });
     const r2 = await runPipeline({ trigger: "CRON", sourceIds: [sourceId], fetchOptions: noWait });
     runIds.push(r2.runId!);
     expect(r2).toMatchObject({ newDocuments: 1, newNotices: 1, duplicates: 0 });
@@ -124,7 +124,7 @@ describe.skipIf(!HAS_DB)("acceptance: official site → pipeline → review → 
 
     // 3. deadline extended in the SAME PDF → update, not duplicate
     lastDate = "26-01-2027";
-    await prisma.source.update({ where: { id: sourceId }, data: { lastCheckedAt: new Date(Date.now() - 3_600_000), etag: null, lastContentHash: null } });
+    await prisma.source.update({ where: { id: sourceId }, data: { lastCheckedAt: new Date(Date.now() - 3_600_000), nextCheckAt: new Date(Date.now() - 1000), etag: null, lastContentHash: null } });
     const r3 = await runPipeline({ trigger: "CRON", sourceIds: [sourceId], fetchOptions: noWait, force: true });
     runIds.push(r3.runId!);
     expect(r3).toMatchObject({ newDocuments: 0, newNotices: 0, updatedNotices: 1, duplicates: 0 });

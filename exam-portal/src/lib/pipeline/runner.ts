@@ -6,6 +6,7 @@ import type { FetchOptions } from "./http";
 import { reprocessDocument } from "./notices";
 import { resolvePipelineErrors } from "./errors";
 import { isPipelinePaused } from "./settings";
+import { isDue } from "@/lib/sources/health";
 
 /**
  * One scheduled pass (spec §19/§20): check every source that is due,
@@ -51,15 +52,49 @@ export const MAX_ERROR_RETRIES = 6;
 
 export async function dueSources(now = new Date(), limit = 20, sourceIds?: string[]) {
   const sources = await prisma.source.findMany({
-    where: { active: true, ...(sourceIds?.length ? { id: { in: sourceIds } } : {}) },
-    select: { id: true, name: true, priority: true, checkFrequencyMinutes: true, lastCheckedAt: true },
+    where: {
+      active: true,
+      approvalStatus: "APPROVED",
+      OR: [{ blockedUntil: null }, { blockedUntil: { lte: now } }],
+      ...(sourceIds?.length ? { id: { in: sourceIds } } : {}),
+    },
+    select: { id: true, name: true, active: true, approvalStatus: true, priority: true, checkFrequencyMinutes: true, lastCheckedAt: true, nextCheckAt: true, blockedUntil: true },
   });
-  const due = sources.filter((s) => !s.lastCheckedAt || s.lastCheckedAt.getTime() + s.checkFrequencyMinutes * 60_000 <= now.getTime());
-  due.sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority] || (a.lastCheckedAt?.getTime() ?? 0) - (b.lastCheckedAt?.getTime() ?? 0));
+  const due = sources.filter((s) => isDue(s, now));
+  const waitingSince = (s: (typeof due)[number]) => (s.nextCheckAt ?? s.lastCheckedAt)?.getTime() ?? 0;
+  due.sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority] || waitingSince(a) - waitingSince(b));
   return due.slice(0, limit);
 }
 
+/** Runs `worker` over `items` with at most `limit` in flight. */
+export async function mapLimit<T, R>(items: T[], limit: number, worker: (item: T) => Promise<R>): Promise<R[]> {
+  const results: R[] = new Array(items.length);
+  let next = 0;
+  const lanes = Array.from({ length: Math.max(1, Math.min(limit, items.length)) }, async () => {
+    while (next < items.length) {
+      const i = next++;
+      results[i] = await worker(items[i]);
+    }
+  });
+  await Promise.all(lanes);
+  return results;
+}
+
+export function runConcurrency(): number {
+  const n = Number(process.env.PIPELINE_CONCURRENCY ?? 3);
+  return Number.isFinite(n) && n >= 1 ? Math.min(Math.floor(n), 10) : 3;
+}
+
+/** Diagnostics are bounded in time as well as size. */
+export async function pruneSourceChecks(now = new Date()) {
+  const days = Number(process.env.SOURCE_CHECK_RETENTION_DAYS ?? 30);
+  const cutoff = new Date(now.getTime() - (Number.isFinite(days) && days > 0 ? days : 30) * 86_400_000);
+  const { count } = await prisma.sourceCheck.deleteMany({ where: { startedAt: { lt: cutoff } } });
+  return count;
+}
+
 function tally(summary: RunSummary, r: CheckResult) {
+  if (r.outcome === "LOCKED" || r.outcome === "NOT_APPROVED") return;
   summary.sourcesChecked += 1;
   if (r.httpStatus !== null) summary.pagesScanned += 1;
   summary.newDocuments += r.newItems;
@@ -130,11 +165,26 @@ export async function runPipeline(options: RunOptions = {}): Promise<RunSummary>
       ? await prisma.source.findMany({ where: { id: { in: options.sourceIds } }, select: { id: true, name: true, priority: true, checkFrequencyMinutes: true, lastCheckedAt: true } })
       : await dueSources(now, options.maxSources ?? 20, options.sourceIds);
 
-    for (const source of sources) {
-      const r = await checkSource(source.id, { pipelineRunId: run.id, force: options.force, fetchOptions: options.fetchOptions });
-      tally(summary, r);
-      log.sources.push({ id: source.id, name: source.name, ok: r.ok, newItems: r.newItems, notices: r.notices.length, error: r.error });
-    }
+    // Several sources at once (PIPELINE_CONCURRENCY); the fetcher's
+    // per-domain limit keeps any one site to a single connection.
+    const results = await mapLimit(sources, runConcurrency(), async (source) => {
+      try {
+        return await checkSource(source.id, { pipelineRunId: run.id, force: options.force, fetchOptions: options.fetchOptions });
+      } catch (e) {
+        return { error: e instanceof Error ? e.message : String(e) };
+      }
+    });
+    sources.forEach((source, i) => {
+      const r = results[i];
+      if ("outcome" in r) {
+        tally(summary, r);
+        log.sources.push({ id: source.id, name: source.name, ok: r.ok, newItems: r.newItems, notices: r.notices.length, error: r.error });
+      } else {
+        summary.sourcesChecked += 1;
+        summary.failures += 1;
+        log.sources.push({ id: source.id, name: source.name, ok: false, newItems: 0, notices: 0, error: r.error });
+      }
+    });
 
     // Retry failed items whose backoff has elapsed (spec §19 "retry failed").
     const checkedIds = new Set(sources.map((s) => s.id));
@@ -162,7 +212,7 @@ export async function runPipeline(options: RunOptions = {}): Promise<RunSummary>
           } else {
             log.retries.push({ errorId: err.id, ok: false, message: "still no notice" });
           }
-        } else if (err.sourceId && !checkedIds.has(err.sourceId)) {
+        } else if (err.sourceId && !checkedIds.has(err.sourceId) && (err.errorType === "FETCH" || err.errorType === "PARSE") && (await sourceRetryable(err.sourceId, now))) {
           const r = await checkSource(err.sourceId, { pipelineRunId: run.id, force: true, fetchOptions: options.fetchOptions });
           tally(summary, r);
           checkedIds.add(err.sourceId);
@@ -176,6 +226,11 @@ export async function runPipeline(options: RunOptions = {}): Promise<RunSummary>
       }
     }
 
+    try {
+      await pruneSourceChecks(now);
+    } catch (e) {
+      console.error("source-check pruning failed", e);
+    }
     summary.status = "COMPLETED";
   } catch (e) {
     summary.status = "FAILED";
@@ -201,6 +256,13 @@ export async function runPipeline(options: RunOptions = {}): Promise<RunSummary>
     },
   });
   return summary;
+}
+
+/** Source-level retries respect the same gates as scheduling: never for a
+ * disabled, unapproved or blocked (403 / Retry-After) source. */
+async function sourceRetryable(sourceId: string, now: Date) {
+  const s = await prisma.source.findUnique({ where: { id: sourceId }, select: { active: true, approvalStatus: true, blockedUntil: true } });
+  return !!s && s.active && s.approvalStatus === "APPROVED" && !(s.blockedUntil && s.blockedUntil > now);
 }
 
 /** Latest runs for the admin dashboard / status endpoint. */

@@ -1,11 +1,13 @@
 import * as cheerio from "cheerio";
 import type { CandidateItem } from "../types";
+import type { ParserConfig } from "./config";
+import { isOfficialHost, siteOf } from "../netguard";
 
 /** Words that mark a link as recruitment-related. Deliberately broad —
  * the extractor/classifier downstream decides what a notice really is;
  * this only keeps "About us" and "Contact" links out of the queue. */
 export const NOTICE_KEYWORDS =
-  /\b(recruit|recruitment|notification|notice|advertisement|advt|vacanc|admit\s*card|hall\s*ticket|result|answer\s*key|merit\s*list|select(ed|ion)\s*list|interview|document\s*verification|corrigend|addend|extension|postpone|cancel|exam(ination)?\s*(date|schedule|calendar)|syllabus|apply\s*online|application|cut[-\s]*off|scorecard|marks)\b/i;
+  /\b(recruit|recruitment|notification|notice|advertisement|advt|vacanc|admit[\s_-]*card|hall[\s_-]*ticket|result|answer[\s_-]*key|merit[\s_-]*list|select(ed|ion)[\s_-]*list|interview|document\s*verification|corrigend|addend|extension|postpone|cancel|exam(ination)?\s*(date|schedule|calendar)|syllabus|apply\s*online|application|cut[-\s]*off|scorecard|marks)\b/i;
 
 const DATE_RE =
   /(?<!\d)(\d{1,2})[-/.\s]([A-Za-z]{3,9}|\d{1,2})[-/.\s](\d{4})(?!\d)|(?<!\d)(\d{4})-(\d{2})-(\d{2})(?!\d)/;
@@ -88,4 +90,125 @@ export function htmlTitle(html: string): string | null {
   const $ = cheerio.load(html);
   const t = $("title").first().text().trim() || $("h1").first().text().trim();
   return t || null;
+}
+
+/**
+ * Configurable listing parser (Source.parserConfig). With an itemSelector
+ * each matching row/card yields at most one candidate, its title and date
+ * read from the configured sub-elements; without one it falls back to the
+ * generic scan above. Include/exclude patterns and same-site filtering
+ * apply either way.
+ */
+export function extractConfiguredCandidates(html: string, baseUrl: string, config: ParserConfig, hint?: string | null): CandidateItem[] {
+  const include = config.includeUrlPattern ? new RegExp(config.includeUrlPattern, "i") : null;
+  const exclude = config.excludeUrlPattern ? new RegExp(config.excludeUrlPattern, "i") : null;
+  const keywordFilter = config.keywordFilter ?? true;
+  let baseSite = "";
+  try {
+    baseSite = siteOf(new URL(baseUrl).hostname);
+  } catch {
+    baseSite = "";
+  }
+  const keep = (c: CandidateItem) => {
+    if (include && !include.test(c.url)) return false;
+    if (exclude && exclude.test(c.url)) return false;
+    if (config.sameSiteOnly) {
+      try {
+        if (siteOf(new URL(c.url).hostname) !== baseSite) return false;
+      } catch {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  let items: CandidateItem[];
+  if (!config.itemSelector) {
+    if (keywordFilter) {
+      items = extractCandidates(html, baseUrl, hint);
+    } else {
+      const $ = cheerio.load(html);
+      const scope = hint && hint.trim() ? $(hint) : $("body");
+      items = [];
+      const seen = new Set<string>();
+      scope.find("a[href]").each((_, el) => {
+        const url = resolveHref($(el).attr("href"), baseUrl);
+        if (!url || seen.has(url)) return;
+        seen.add(url);
+        const title = $(el).text().replace(/\s+/g, " ").trim() || url.split("/").pop() || url;
+        const row = $(el).closest("tr, li, article, div");
+        items.push({ url, title, isPdf: isPdfUrl(url), publishedAt: parseIndianDate(`${title} ${spacedText($, row.length ? row : $(el).parent())}`) });
+      });
+    }
+  } else {
+    const $ = cheerio.load(html);
+    const seen = new Set<string>();
+    items = [];
+    $(config.itemSelector).each((_, row) => {
+      const $row = $(row);
+      const link = config.linkSelector ? $row.find(config.linkSelector).first() : $row.is("a[href]") ? $row : $row.find("a[href]").first();
+      const url = resolveHref(link.attr("href"), baseUrl);
+      if (!url || seen.has(url)) return;
+      const titleEl = config.titleSelector ? $row.find(config.titleSelector).first() : link;
+      const title = titleEl.text().replace(/\s+/g, " ").trim() || link.attr("title")?.trim() || url.split("/").pop() || url;
+      if (keywordFilter && !isPdfUrl(url) && !NOTICE_KEYWORDS.test(`${title} ${url}`)) return;
+      seen.add(url);
+      const dateText = config.dateSelector ? $row.find(config.dateSelector).first().text() : spacedText($, $row);
+      items.push({ url, title, isPdf: isPdfUrl(url), publishedAt: parseIndianDate(dateText) });
+    });
+  }
+  const filtered = items.filter(keep);
+  return config.maxItems ? filtered.slice(0, config.maxItems) : filtered;
+}
+
+function resolveHref(href: string | undefined, baseUrl: string): string | null {
+  const h = (href ?? "").trim();
+  if (!h || h.startsWith("#") || /^(javascript|mailto|tel|data):/i.test(h)) return null;
+  try {
+    const u = new URL(h, baseUrl);
+    if (u.protocol !== "http:" && u.protocol !== "https:") return null;
+    u.hash = "";
+    return u.toString();
+  } catch {
+    return null;
+  }
+}
+
+const NEXT_TEXT = /^(next|next\s*page|›|»|>|>>|view\s*more|more|older\s*(posts|entries)?|अगला)$/i;
+
+/** Next-page URL for "nextLink" pagination: an explicit selector, then
+ * rel="next", then a link whose whole text reads like "Next"/"View More". */
+export function findNextPageUrl(html: string, baseUrl: string, selector?: string): string | null {
+  const $ = cheerio.load(html);
+  if (selector) {
+    const el = $(selector).first();
+    const a = el.is("a[href]") ? el : el.find("a[href]").first();
+    return resolveHref(a.attr("href"), baseUrl);
+  }
+  const rel = $('a[rel~="next"][href], link[rel~="next"][href]').first();
+  if (rel.length) return resolveHref(rel.attr("href"), baseUrl);
+  let found: string | null = null;
+  $("a[href]").each((_, el) => {
+    if (found) return;
+    const text = $(el).text().replace(/\s+/g, " ").trim();
+    if (NEXT_TEXT.test(text)) found = resolveHref($(el).attr("href"), baseUrl);
+  });
+  return found;
+}
+
+/** Links on a page that point at official government/institution hosts
+ * (gov.in, nic.in, ac.in, …), notification PDFs first. Used to recover the
+ * original notice URL from an aggregator's write-up. */
+export function officialLinksIn(html: string, baseUrl: string, limit = 10): string[] {
+  const $ = cheerio.load(html);
+  const pdfs: string[] = [];
+  const pages: string[] = [];
+  $("a[href]").each((_, el) => {
+    const url = resolveHref($(el).attr("href"), baseUrl);
+    if (!url) return;
+    if (!isOfficialHost(new URL(url).hostname)) return;
+    const bucket = isPdfUrl(url) ? pdfs : pages;
+    if (!bucket.includes(url)) bucket.push(url);
+  });
+  return [...pdfs, ...pages].slice(0, limit);
 }

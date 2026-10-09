@@ -24,6 +24,7 @@ const TYPE_RULES: Array<{ type: NoticeTypeValue; re: RegExp; confidence: number 
   { type: "DEADLINE_EXTENSION", re: /\b(extension|extended|extend)\b[^.\n]{0,60}\b(last date|closing date|date of (?:submission|application)|deadline)|\b(last date|closing date)[^.\n]{0,60}\b(extended|extension)/i, confidence: 0.9 },
   { type: "EXAM_CANCELLED", re: /\b(examination|exam|recruitment|notification)\b[^.\n]{0,40}\b(cancelled|canceled|withdrawn|scrapped)\b|\bcancellation of\b/i, confidence: 0.9 },
   { type: "EXAM_POSTPONED", re: /\b(postponed|postponement|rescheduled|deferred)\b/i, confidence: 0.9 },
+  { type: "CORRECTION_WINDOW", re: /\b(correction|edit|modification)\s+(window|facility)\b|\bcorrection in (?:the )?(?:online )?application/i, confidence: 0.85 },
   { type: "CORRIGENDUM", re: /\b(corrigendum|addendum|erratum|amendment)\b/i, confidence: 0.85 },
   { type: "DOCUMENT_VERIFICATION", re: /\bdocument\s+verification\b|\bDV\s+(schedule|list)\b/i, confidence: 0.85 },
   { type: "INTERVIEW", re: /\b(interview|viva[-\s]?voce|personality test)\b[^.\n]{0,40}\b(schedule|call|list|date|letter)\b|\bcall letter for interview\b/i, confidence: 0.8 },
@@ -33,6 +34,8 @@ const TYPE_RULES: Array<{ type: NoticeTypeValue; re: RegExp; confidence: number 
   { type: "MERIT_LIST", re: /\bmerit\s+list\b/i, confidence: 0.85 },
   { type: "RESULT", re: /\b(results?|score\s*card|marks\s+(?:sheet|statement)|cut[-\s]?off)\b/i, confidence: 0.8 },
   { type: "EXAM_DATE", re: /\b(exam(?:ination)?\s+(?:date|schedule|calendar|time[-\s]?table)|date of (?:the )?exam(?:ination)?)\b/i, confidence: 0.75 },
+  // "has started"/"started" yes; "open from <date>" no — that wording is in ordinary job notices too.
+  { type: "APPLICATION_STARTED", re: /\bapplications?\s+(?:process\s+|window\s+|link\s+)?(?:(?:has|have|is)\s+(?:been\s+)?)?(?:started|begun|activated)\b|\bapplications?\s+(?:process\s+|window\s+|link\s+)?(?:has|have|is)\s+(?:been\s+)?opened\b|\bapply\s+online\s+link\s+(?:is\s+)?(?:active|activated)\b/i, confidence: 0.8 },
   { type: "JOB", re: /\b(recruitment|vacanc(?:y|ies)|advertisement|advt\.?|applications? (?:are|is) invited|apply online|online applications?)\b/i, confidence: 0.85 },
 ];
 

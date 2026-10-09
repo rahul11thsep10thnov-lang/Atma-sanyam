@@ -30,11 +30,13 @@ export default async function TestSourcePage({ params }: { params: Promise<{ id:
         <h1 className="mt-2 text-xl font-semibold text-slate-900">Test: {source.name}</h1>
         <p className="mt-1 text-sm text-slate-600">
           Dry run of <span className="font-mono text-xs">{source.listingUrl}</span> — nothing was stored.
+          {result.finalUrl && result.finalUrl !== source.listingUrl ? <> Final URL: <span className="font-mono text-xs">{result.finalUrl}</span>.</> : null}
+          {result.pagesFetched > 1 ? ` ${result.pagesFetched} pages read (pagination).` : ""} Use “Verify now” on the source page to record a verification.
         </p>
       </div>
 
       <dl className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
-        <Stat label="Fetch" value={result.ok ? "ok" : "failed"} bad={!result.ok} />
+        <Stat label="Outcome" value={result.outcome} bad={!result.ok} />
         <Stat label="HTTP" value={result.httpStatus ? String(result.httpStatus) : "—"} />
         <Stat label="robots.txt" value={result.robotsStatus || "—"} bad={/blocked/.test(result.robotsStatus)} />
         <Stat label="Candidates" value={String(result.itemsFound)} />
@@ -69,11 +71,11 @@ export default async function TestSourcePage({ params }: { params: Promise<{ id:
                 <td className="px-4 py-2 text-slate-500">{formatDate(c.publishedAt) ?? "—"}</td>
               </tr>
             ))}
-            {result.ok && result.candidates.length === 0 ? (
+            {result.outcome === "EMPTY" ? (
               <tr>
                 <td colSpan={4} className="px-4 py-6 text-center text-slate-500">
-                  Fetched fine, but no PDF or recruitment-keyword links were found. Try a parser hint (CSS
-                  selector) or a more specific listing URL.
+                  Fetched, but no PDF or recruitment-keyword links were found — this counts as “needs attention”, not healthy. Try a
+                  parser configuration, a more specific listing URL, or the site’s RSS feed. JavaScript-rendered pages show up empty here.
                 </td>
               </tr>
             ) : null}

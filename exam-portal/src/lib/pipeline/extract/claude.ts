@@ -28,7 +28,7 @@ export const SYSTEM_PROMPT = `You extract structured facts from Indian governmen
 Rules you must follow:
 - Only report what the document states. If a value is not present, return null (or an empty list). Never infer vacancies, dates, fees, ages, eligibility, salary or URLs from what is typical for the organization.
 - Dates must be ISO yyyy-mm-dd. Indian notices write dd-mm-yyyy or dd/mm/yyyy — convert carefully (day first).
-- notice_type: JOB for a recruitment advertisement; DEADLINE_EXTENSION when an existing deadline is extended; CORRIGENDUM for a correction; ADMIT_CARD, ANSWER_KEY, RESULT, MERIT_LIST, SELECTION_LIST, INTERVIEW, DOCUMENT_VERIFICATION, EXAM_DATE, EXAM_POSTPONED, EXAM_CANCELLED as named; OTHER if none fits.
+- notice_type: JOB for a recruitment advertisement; DEADLINE_EXTENSION when an existing deadline is extended; CORRIGENDUM for a correction; ADMIT_CARD, ANSWER_KEY, RESULT, MERIT_LIST, SELECTION_LIST, INTERVIEW, DOCUMENT_VERIFICATION, EXAM_DATE, EXAM_POSTPONED, EXAM_CANCELLED as named; APPLICATION_STARTED when the notice only announces that online applications have opened for an already-advertised recruitment; CORRECTION_WINDOW when an application correction/edit window opens; OTHER if none fits.
 - organization: the issuing body's full name as written. exam_name: the examination/recruitment name as written.
 - For EVERY non-null scalar field and for vacancies/dates, add an evidence entry {field, quote} where quote is a short verbatim excerpt (≤ 200 characters) copied exactly from the document that supports the value. No evidence means the field must be null.
 - summary: two sentences, factual, in English.`;

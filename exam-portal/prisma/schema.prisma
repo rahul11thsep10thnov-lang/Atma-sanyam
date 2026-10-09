@@ -135,6 +135,7 @@ enum ContactMessageStatus {
 // --- Automated notification pipeline (see AUTOMATION_ASSESSMENT.md) -------
 
 enum SourceType {
+  ATOM
   HTML
   PDF
   RSS
@@ -142,6 +143,32 @@ enum SourceType {
   SITEMAP
   JSON
   XML
+}
+
+/// Registry grouping (spec: source categories A–G, plus public aggregators).
+enum SourceCategory {
+  CENTRAL
+  BANKING
+  RAILWAY
+  STATE
+  DEFENCE
+  EDUCATION
+  OTHER_GOVT
+  AGGREGATOR
+}
+
+/// Discovered / seeded sources wait for an admin before they can be enabled.
+enum SourceApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+/// Whether the URL was checked to be reachable, on the intended domain and parseable.
+enum SourceVerificationStatus {
+  UNVERIFIED
+  VERIFIED
+  FAILED
 }
 
 enum SourcePriority {
@@ -178,6 +205,8 @@ enum NoticeType {
   DEADLINE_EXTENSION
   EXAM_POSTPONED
   EXAM_CANCELLED
+  APPLICATION_STARTED
+  CORRECTION_WINDOW
   OTHER
 }
 
@@ -1074,19 +1103,19 @@ model RecruitmentCategory {
 /// An official page/feed the pipeline watches. etag/lastModified/
 /// lastContentHash make re-checks cheap (HTTP caching + change detection).
 model Source {
-  id                    String         @id @default(cuid())
+  id                    String                   @id @default(cuid())
   name                  String
   organizationId        String?
-  organization          Organization?  @relation(fields: [organizationId], references: [id])
+  organization          Organization?            @relation(fields: [organizationId], references: [id])
   officialDomain        String
-  listingUrl            String         @unique
-  sourceType            SourceType     @default(HTML)
+  listingUrl            String                   @unique
+  sourceType            SourceType               @default(HTML)
   rssUrl                String?
   apiUrl                String?
   parserType            String?
-  priority              SourcePriority @default(NORMAL)
-  checkFrequencyMinutes Int            @default(360)
-  active                Boolean        @default(true)
+  priority              SourcePriority           @default(NORMAL)
+  checkFrequencyMinutes Int                      @default(360)
+  active                Boolean                  @default(true)
   robotsStatus          String?
   etag                  String?
   lastModified          String?
@@ -1094,10 +1123,43 @@ model Source {
   lastCheckedAt         DateTime?
   lastSuccessAt         DateTime?
   lastError             String?
-  discoveredCount       Int            @default(0)
-  failureCount          Int            @default(0)
-  createdAt             DateTime       @default(now())
-  updatedAt             DateTime       @updatedAt
+  discoveredCount       Int                      @default(0)
+  failureCount          Int                      @default(0)
+  /// Normalised listing URL; one source record per canonical URL.
+  canonicalUrl          String?                  @unique
+  category              SourceCategory           @default(CENTRAL)
+  /// ISO 3166-2:IN subdivision code without the "IN-" prefix (UP, BR, DL…).
+  stateCode             String?
+  /// Free-text group ("RRB", "UP Recruitment", …) for bulk handling.
+  groupName             String?
+  isAggregator          Boolean                  @default(false)
+  requestTimeoutMs      Int                      @default(20000)
+  /// Minimum gap between two requests to this source's host.
+  minRequestIntervalMs  Int                      @default(1500)
+  parserConfig          Json?
+  paginationConfig      Json?
+  approvalStatus        SourceApprovalStatus     @default(APPROVED)
+  verificationStatus    SourceVerificationStatus @default(UNVERIFIED)
+  verificationNote      String?
+  lastVerifiedAt        DateTime?
+  lastExtractionAt      DateTime?
+  lastHttpStatus        Int?
+  lastDurationMs        Int?
+  /// OK | NOT_MODIFIED | UNCHANGED | EMPTY | PARSE_ERROR | HTTP_ERROR | BLOCKED | RATE_LIMITED | NETWORK | ROBOTS | INVALID_URL
+  lastOutcome           String?
+  consecutiveFailures   Int                      @default(0)
+  noticesInserted       Int                      @default(0)
+  nextCheckAt           DateTime?
+  /// Set after a 403/401/451 or a long Retry-After; the scheduler skips the source until then.
+  blockedUntil          DateTime?
+  lockedUntil           DateTime?
+  lockedBy              String?
+  alertedAt             DateTime?
+  discoveredFromId      String?
+  discoveredFrom        Source?                  @relation("SourceDiscovery", fields: [discoveredFromId], references: [id], onDelete: SetNull)
+  discovered            Source[]                 @relation("SourceDiscovery")
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
 
   checks    SourceCheck[]
   documents Document[]
@@ -1106,23 +1168,34 @@ model Source {
 
   @@index([organizationId])
   @@index([active, priority])
+  @@index([category, stateCode])
+  @@index([approvalStatus])
+  @@index([active, nextCheckAt])
+  @@index([groupName])
   @@map("sources")
 }
 
 model SourceCheck {
-  id            String       @id @default(cuid())
-  sourceId      String
-  source        Source       @relation(fields: [sourceId], references: [id], onDelete: Cascade)
-  pipelineRunId String?
-  pipelineRun   PipelineRun? @relation(fields: [pipelineRunId], references: [id])
-  startedAt     DateTime     @default(now())
-  finishedAt    DateTime?
-  ok            Boolean      @default(false)
-  httpStatus    Int?
-  changed       Boolean      @default(false)
-  itemsFound    Int          @default(0)
-  newItems      Int          @default(0)
-  error         String?
+  id                String       @id @default(cuid())
+  sourceId          String
+  source            Source       @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  pipelineRunId     String?
+  pipelineRun       PipelineRun? @relation(fields: [pipelineRunId], references: [id])
+  startedAt         DateTime     @default(now())
+  finishedAt        DateTime?
+  ok                Boolean      @default(false)
+  httpStatus        Int?
+  changed           Boolean      @default(false)
+  itemsFound        Int          @default(0)
+  newItems          Int          @default(0)
+  error             String?
+  outcome           String?
+  durationMs        Int?
+  pagesFetched      Int          @default(0)
+  noticesExtracted  Int          @default(0)
+  duplicatesSkipped Int          @default(0)
+  /// Bounded (a few KB) per-check diagnostics: final URL, redirects, page list, warnings.
+  diagnostics       Json?
 
   @@index([sourceId, startedAt])
   @@index([pipelineRunId])
@@ -1220,6 +1293,11 @@ model RecruitmentNotice {
   canonicalUrl         String?
   sourceDomain         String?
   sourcePublishedAt    DateTime?
+  /// Website sections this notice belongs to (one notice, many sections).
+  sections             String[]       @default([])
+  stateCode            String?
+  /// Set when found through a public aggregator: the aggregator page it came from.
+  discoveredViaUrl     String?
   extracted            Json?
   overallConfidence    Float?
   fieldConfidence      Json?
@@ -1262,6 +1340,10 @@ model RecruitmentNotice {
   @@index([sourceUrl])
   @@index([canonicalUrl])
   @@index([createdAt])
+  @@index([sections], type: Gin)
+  @@index([stateCode])
+  @@index([sourceId, sourcePublishedAt])
+  @@index([sourcePublishedAt])
   @@map("recruitment_notices")
 }
 

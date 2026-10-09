@@ -17,7 +17,9 @@
     "seed:content": "tsx --env-file-if-exists=.env prisma/seedContent.ts",
     "seed:sources": "tsx --env-file-if-exists=.env prisma/seedSources.ts",
     "pipeline:run": "tsx --env-file-if-exists=.env scripts/pipelineWorker.ts --once",
-    "pipeline:worker": "tsx --env-file-if-exists=.env scripts/pipelineWorker.ts"
+    "pipeline:worker": "tsx --env-file-if-exists=.env scripts/pipelineWorker.ts",
+    "sources:verify": "tsx --env-file-if-exists=.env scripts/verifySources.ts",
+    "sources:discover": "tsx --env-file-if-exists=.env scripts/discoverSources.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.131.0",
@@ -35,6 +37,7 @@
     "react-dom": "19.2.8",
     "server-only": "^0.0.1",
     "tesseract.js": "^7.0.0",
+    "undici": "^7.30.0",
     "zod": "^4.6.5"
   },
   "devDependencies": {

@@ -19,5 +19,8 @@ export default defineConfig({
     // "single run at a time" lock; run files one after another so two
     // runPipeline() calls never race each other.
     fileParallelism: false,
+    // Loopback test servers (127.0.0.1) are blocked by the SSRF guard in
+    // every other environment; tests opt in explicitly.
+    env: { PIPELINE_ALLOW_PRIVATE_HOSTS: "true" },
   },
 });
