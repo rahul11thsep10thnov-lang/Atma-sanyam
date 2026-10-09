@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { fetchUrl, FetchError, _resetThrottle, USER_AGENT } from "./http";
+import { fetchUrl, FetchError, _resetThrottle, USER_AGENT, describeNetworkError } from "./http";
 
 const noSleep = async () => {};
 
@@ -73,5 +73,15 @@ describe("fetchUrl", () => {
     await expect(
       fetchUrl("https://x.gov.in/big", { fetchImpl: fakeFetch([() => new Response("x".repeat(100))]), maxBytes: 10, sleep: noSleep }),
     ).rejects.toThrow(/too large/);
+  });
+});
+
+describe("describeNetworkError", () => {
+  it("surfaces the real cause behind fetch failed", () => {
+    const e = new TypeError("fetch failed", { cause: Object.assign(new Error("unable to verify the first certificate"), { code: "UNABLE_TO_VERIFY_LEAF_SIGNATURE" }) });
+    expect(describeNetworkError(e)).toMatch(/UNABLE_TO_VERIFY_LEAF_SIGNATURE.*chain is incomplete/);
+    const r = new TypeError("fetch failed", { cause: Object.assign(new Error("read ECONNRESET"), { code: "ECONNRESET" }) });
+    expect(describeNetworkError(r)).toMatch(/bot block/);
+    expect(describeNetworkError(new Error("plain"))).toBe("plain");
   });
 });

@@ -140,11 +140,36 @@ export async function fetchUrl(url: string, options: FetchOptions = {}): Promise
     }
   }
 
-  const message = lastError instanceof Error ? lastError.message : String(lastError);
-  throw new FetchError(`Failed after ${retries + 1} attempt(s): ${message}`);
+  throw new FetchError(`Failed after ${retries + 1} attempt(s): ${describeNetworkError(lastError)}`);
 }
 
 /** Test hook: forget per-host timing so tests don't wait on each other. */
 export function _resetThrottle() {
   lastRequestByHost.clear();
+}
+
+
+/** Node's fetch hides the real reason behind "fetch failed"; the cause
+ * (certificate problem, DNS, reset, timeout) is what an admin needs. */
+export function describeNetworkError(err: unknown): string {
+  if (!(err instanceof Error)) return String(err);
+  const cause = (err as Error & { cause?: unknown }).cause as { code?: string; message?: string; cause?: { code?: string; message?: string } } | undefined;
+  const inner = cause?.cause ?? cause;
+  const code = inner?.code ?? cause?.code;
+  const detail = inner?.message ?? cause?.message;
+  const hints: Record<string, string> = {
+    UNABLE_TO_VERIFY_LEAF_SIGNATURE: "the site's certificate chain is incomplete (browsers repair this, Node does not)",
+    UNABLE_TO_GET_ISSUER_CERT_LOCALLY: "the site's certificate chain is incomplete (browsers repair this, Node does not)",
+    CERT_HAS_EXPIRED: "the site's certificate has expired",
+    ERR_TLS_CERT_ALTNAME_INVALID: "the certificate does not match this address (try the address without or with www)",
+    DEPTH_ZERO_SELF_SIGNED_CERT: "the site uses a self-signed certificate",
+    ENOTFOUND: "the address does not exist (DNS)",
+    ECONNRESET: "the site closed the connection, usually a bot block",
+    ECONNREFUSED: "the site refused the connection",
+    ETIMEDOUT: "the connection timed out",
+    UND_ERR_CONNECT_TIMEOUT: "the connection timed out",
+  };
+  const hint = code ? hints[code] : undefined;
+  if (!code && !detail) return err.message;
+  return `${err.message} [${code ?? "no code"}${hint ? `: ${hint}` : detail ? `: ${detail}` : ""}]`;
 }
