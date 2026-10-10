@@ -472,4 +472,8 @@ export const hi: Partial<Record<StringKey, string>> = {
   'auth.privacy': 'गोपनीयता नीति',
   'auth.and': 'और',
   'auth.terms': 'शर्तें',
+  'museum.wallNo': 'दीवार {n}',
+  'museum.hangsHere': 'आपका अगला पूरा जिगसॉ यहाँ टँगेगा',
+  'museum.wallOf': 'दीवार {n} / {total}',
+  'museum.swipeHint': 'गैलरी में घूमने के लिए बाएँ या दाएँ स्वाइप करें',
 };

@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import { View } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme, NavigationState, useNavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -9,7 +10,8 @@ import { ParadiseScreen } from '../paradise/ui/ParadiseScreen';
 import { MuseumScreen } from '../museum/ui/MuseumScreen';
 import { LanguageScreen } from '../screens/LanguageScreen';
 import { useSettings } from '../context/SettingsContext';
-import { setLanguage, useLanguage, t } from '../i18n';
+import { getLanguage, Language, normaliseLanguage, setLanguage, useLanguage, t } from '../i18n';
+import { LanguagePopup } from '../components/LanguagePopup';
 import { useEffect } from 'react';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { ProgressScreen } from '../screens/ProgressScreen';
@@ -53,7 +55,9 @@ function Tabs() {
 
 export function RootNavigator() {
   const { colors, isDark } = useTheme();
-  const { settings, loading } = useSettings();
+  const { settings, loading, updateSettings } = useSettings();
+  // every time the app opens, it first asks for the language
+  const [askLanguage, setAskLanguage] = useState(true);
   // the chosen language applies before anything renders
   useEffect(() => {
     if (settings.language) setLanguage(settings.language);
@@ -87,7 +91,13 @@ export function RootNavigator() {
     }
   };
 
+  const chooseLanguage = (l: Language) => {
+    setAskLanguage(false);
+    if (l !== normaliseLanguage(settings.language)) void updateSettings({ language: l });
+  };
+
   return (
+    <View style={{ flex: 1 }}>
     <NavigationContainer
       key={language}
       theme={navTheme}
@@ -99,8 +109,8 @@ export function RootNavigator() {
         onRouteChange();
       }}
     >
-      {/* the language screen is always registered: first launch starts on it, Settings opens it */}
-      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={settings.language ? 'Tabs' : 'Language'}>
+      {/* the language screen is opened from Settings; the popup asks on every launch */}
+      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Tabs">
         <Stack.Screen name="Language" component={LanguageScreen} options={{ animation: 'fade' }} />
         <Stack.Screen name="Tabs" component={Tabs} />
         <Stack.Screen
@@ -112,5 +122,7 @@ export function RootNavigator() {
         <Stack.Screen name="Auth" component={AuthScreen} options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
       </Stack.Navigator>
     </NavigationContainer>
+    {askLanguage && <LanguagePopup current={normaliseLanguage(settings.language) ?? getLanguage()} onChoose={chooseLanguage} />}
+    </View>
   );
 }

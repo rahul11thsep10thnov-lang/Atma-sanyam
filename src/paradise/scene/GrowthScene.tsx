@@ -1,19 +1,38 @@
-// The focus session as a planting: a soft garden sky, a strip of real
-// soil along the bottom tenth of the screen, and the chosen plant growing
-// through its stages as the minutes pass. The seed drops in when the
-// session begins; roots reach down; the shoot comes up; the stages
-// cross-fade so the growth is continuous and always matches the timer.
+// The focus session as a planting, and nothing else: a plain background,
+// real soil across the bottom fifth of the screen, and the chosen plant
+// growing out of it with the timer. It starts as a seed lying in the soil;
+// the seed swells and splits, roots reach down, a shoot comes up, and the
+// plant passes through its sizes. The growth is continuous and follows the
+// timer exactly, and every passing second gives the plant a small visible
+// lift, so it is always seen to grow.
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Animated, Easing, Image, StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { growthProgress, sizeForMinutes } from '../../growth/size';
 import { gardenMetres, spriteFor } from '../model';
 import { PARADISE_IMAGES } from '../sprites.generated';
-import { Ambience, MotionLevel } from './Ambience';
+import { MotionLevel } from './Ambience';
 
-const BG = require('../../../assets/paradise/growth_bg.webp');
 const SOIL = require('../../../assets/paradise/soil.png');
 const SEED = require('../../../assets/paradise/seed.png');
+
+/** The soil takes the bottom fifth of the screen. */
+export const SOIL_FRACTION = 0.2;
+
+/** Species rendered in a pot: the pot's height and radius (metres), from
+ * tools/balcony-render. Here the pot sinks into the soil up to its rim, so
+ * every plant is seen coming straight out of the ground. */
+const POTS: Record<string, [number, number]> = {
+  lotus: [0.16, 0.34], orchid: [0.14, 0.09], monstera: [0.3, 0.18], areca_palm: [0.46, 0.24], snake_plant: [0.36, 0.17],
+  peace_lily: [0.3, 0.17], fiddle_leaf_fig: [0.4, 0.22], rubber_plant: [0.38, 0.22], philodendron: [0.24, 0.16], calathea: [0.2, 0.15],
+  croton: [0.26, 0.17], zz_plant: [0.22, 0.14], fern: [0.18, 0.17], bonsai: [0.1, 0.26], bamboo: [0.34, 0.2], spider_plant: [0.18, 0.14],
+  anthurium: [0.18, 0.13], tulsi: [0.32, 0.19], mint: [0.17, 0.15],
+};
+/** How far above the sprite's foot the plant leaves the soil, in metres on screen (22° view). */
+function emergeM(speciesId: string): number {
+  const p = POTS[speciesId];
+  return p ? p[0] * 0.927 + p[1] * 0.2 : 0;
+}
 
 export interface GrowthSceneProps {
   speciesId: string;
@@ -22,49 +41,62 @@ export interface GrowthSceneProps {
   width: number;
   height: number;
   motion: MotionLevel;
+  /** The plain colour behind the plant. */
+  background?: string;
   /** The session ended: hold the final state, no further growth. */
   done?: boolean;
 }
 
-/** Screen pixels per metre in the growth scene, so a size-7 tree still fits. */
-function scaleFor(speciesId: string, height: number): number {
-  const final = spriteFor(speciesId, 7)?.sprite;
-  const tallest = gardenMetres(final?.heightM ?? 1);
-  const room = height * 0.62;
-  return room / Math.max(0.3, tallest);
+/** Screen pixels per metre, so the plant this session ends with fills the space
+ * between the timer and the soil (what shows above the soil, not its pot). */
+function scaleFor(speciesId: string, height: number, finalSize = 7): number {
+  const final = spriteFor(speciesId, finalSize)?.sprite;
+  const hM = final?.heightM ?? 1;
+  const g = gardenMetres(hM) / hM;
+  const visible = Math.max(0.12, hM - emergeM(speciesId)) * g;
+  const room = height * 0.5;
+  return room / visible;
 }
 
-export function GrowthScene({ speciesId, elapsedMinutes, targetMinutes, width, height, motion, done }: GrowthSceneProps) {
-  const soilTop = height * 0.9;
-  const soilH = height * 0.1 + 6;
-  const ppm = useMemo(() => scaleFor(speciesId, height), [speciesId, height]);
+const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
 
-  // where the growth is, 0 (seed) .. 7, continuous
+export function GrowthScene({ speciesId, elapsedMinutes, targetMinutes, width, height, motion, background = '#FBF5EC', done }: GrowthSceneProps) {
+  const soilTop = Math.round(height * (1 - SOIL_FRACTION));
+  const soilH = height - soilTop;
+  // where the growth is: 0 → 0.6 the seed, then 0.6 → 1 the shoot to size 1, then sizes 1 → 7
   const finalSize = sizeForMinutes(targetMinutes) ?? 1;
+  const ppm = useMemo(() => scaleFor(speciesId, height, finalSize), [speciesId, height, finalSize]);
   const progress = done ? Math.min(finalSize, growthProgress(elapsedMinutes, targetMinutes)) : growthProgress(elapsedMinutes, targetMinutes);
-  const stage = Math.floor(progress);
-  const frac = progress - stage;
 
-  // the seed: falls in during the first moments, then the soil closes over it
+  // the seed drops into the soil when the session begins
   const drop = useRef(new Animated.Value(0)).current;
   const planted = useRef(false);
   useEffect(() => {
     if (planted.current) return;
     planted.current = true;
-    if (elapsedMinutes > 0.5) {
+    if (elapsedMinutes > 0.1 || motion === 'off') {
       drop.setValue(1);
       return;
     }
     Animated.sequence([
-      Animated.delay(400),
-      Animated.timing(drop, { toValue: 0.9, duration: 1100, easing: Easing.in(Easing.quad), useNativeDriver: true }),
+      Animated.delay(300),
+      Animated.timing(drop, { toValue: 0.9, duration: 1000, easing: Easing.in(Easing.quad), useNativeDriver: true }),
       Animated.spring(drop, { toValue: 1, useNativeDriver: true, friction: 4, tension: 60 }),
     ]).start();
-  }, [drop, elapsedMinutes]);
-  const seedY = drop.interpolate({ inputRange: [0, 0.9, 1], outputRange: [-height * 0.6, 0, 10] });
-  const seedOpacity = drop.interpolate({ inputRange: [0, 0.9, 0.97, 1], outputRange: [1, 1, 1, 0] });
+  }, [drop, elapsedMinutes, motion]);
+  const seedFall = drop.interpolate({ inputRange: [0, 0.9, 1], outputRange: [-height * 0.55, 0, 0] });
 
-  // breathing sway of the growing plant
+  // every second: a small lift, as if the plant had just grown a little
+  const second = Math.floor(elapsedMinutes * 60);
+  const tick = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (done || motion === 'off' || second === 0) return;
+    tick.setValue(1);
+    Animated.timing(tick, { toValue: 0, duration: 900, easing: Easing.out(Easing.cubic), useNativeDriver: true }).start();
+  }, [second, done, motion, tick]);
+  const lift = tick.interpolate({ inputRange: [0, 1], outputRange: [1, 1.025] });
+
+  // a slow breathing sway
   const sway = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     if (motion !== 'full') return;
@@ -72,75 +104,88 @@ export function GrowthScene({ speciesId, elapsedMinutes, targetMinutes, width, h
     loop.start();
     return () => loop.stop();
   }, [sway, motion]);
+  const swayDeg = sway.interpolate({ inputRange: [0, 1], outputRange: ['-1.2deg', '1.2deg'] });
 
-  // the two stages in play and their sizes on screen
-  // before size 1 the shoot is the size-1 plant emerging from the soil (the seed sprite is never shown here)
-  const a = spriteFor(speciesId, Math.max(1, stage));
-  const b = stage === 0 ? null : spriteFor(speciesId, Math.min(7, stage + 1));
-  const sizeOf = (s: typeof a) => {
-    if (!s) return { w: 0, h: 0, px: 0, py: 0 };
+  const sizeOf = (stage: number) => {
+    const s = spriteFor(speciesId, stage);
+    if (!s) return null;
     const g = gardenMetres(s.sprite.heightM) / s.sprite.heightM;
     let h = s.sprite.heightM * ppm * g;
     let w = s.sprite.widthM * ppm * g;
-    const cap = height * 0.66;
-    if (h > cap) {
-      w *= cap / h;
-      h = cap;
-    }
-    return { w, h, px: s.sprite.pivot[0], py: s.sprite.pivot[1] };
+    // never wider than the screen, never taller than the room above the soil
+    const k = Math.min(1, (width * 0.92) / w, (height * 0.66) / h);
+    w *= k;
+    h *= k;
+    // ey: where the plant leaves the soil, from the sprite's top (the pivot, or a pot's rim)
+    const ey = s.sprite.pivot[1] * h - emergeM(speciesId) * (h / s.sprite.heightM);
+    return { s, w, h, px: s.sprite.pivot[0], ey };
   };
-  const sa = sizeOf(a);
-  const sb = sizeOf(b);
-  // continuous: the current stage grows toward the next stage's size, then the next fades in
-  const emerge = Math.max(0, Math.min(1, (frac - 0.6) / 0.4));
-  const grow = stage === 0 ? 0.12 + 0.88 * emerge : 1 + frac * (sb.h && sa.h ? Math.min(1.6, sb.h / sa.h) - 1 : 0.15);
+
   const groundX = width / 2;
-  const groundY = soilTop + 2;
-  const showSeed = stage === 0 && frac < 0.6;
-  const root = Math.min(1, progress / 1.2);
+  const groundY = soilTop + 4;
+
+  // the seed: lies in the soil, swells and splits as the shoot starts
+  const seedPhase = clamp01(progress / 0.6);
+  const seedVisible = progress < 0.85;
+  const seedScale = 1 + 0.35 * seedPhase;
+  const seedOpacity = progress < 0.6 ? 1 : clamp01(1 - (progress - 0.6) / 0.25);
+
+  // the plant: before size 1 the shoot is the size-1 plant coming up from the seed
+  const stage = Math.max(1, Math.min(7, Math.floor(progress)));
+  const frac = progress < 1 ? 0 : progress - Math.floor(progress);
+  const a = sizeOf(stage);
+  const b = progress >= 1 && stage < 7 ? sizeOf(stage + 1) : null;
+  let grow: number;
+  if (progress < 0.3) grow = 0;
+  else if (progress < 1) grow = 0.04 + 0.96 * Math.pow((progress - 0.3) / 0.7, 1.15);
+  else grow = 1 + frac * (a && b ? Math.min(1.6, b.h / a.h) - 1 : 0.12);
+  const fadeIn = b && b.s.stage !== a?.s.stage ? clamp01((frac - 0.55) / 0.45) : 0;
+  const root = clamp01(progress / 1.4);
 
   return (
-    <View style={[StyleSheet.absoluteFill, { backgroundColor: '#F2D5C3' }]}>
-      <Image source={BG} style={{ position: 'absolute', left: 0, top: 0, width, height }} resizeMode="cover" fadeDuration={0} />
-      <Ambience width={width} height={height} motion={motion} skyBottom={height * 0.5} />
-      {/* the soil: the bottom tenth, with a ragged top edge */}
-      <Image source={SOIL} style={{ position: 'absolute', left: 0, top: soilTop - 8, width, height: soilH + 8 }} resizeMode="cover" fadeDuration={0} />
+    <View style={[StyleSheet.absoluteFill, { backgroundColor: background }]}>
+      {/* the plant: this size growing toward the next, the next fading in over it */}
+      {a && grow > 0 && (
+        <Animated.View pointerEvents="none" style={{ position: 'absolute', left: groundX - a.px * a.w, top: groundY - a.ey, width: a.w, height: a.h, transform: [{ translateY: a.ey - a.h / 2 }, { scale: grow }, { scaleY: lift }, { translateY: a.h / 2 - a.ey }, { rotate: swayDeg }] }}>
+          <Image source={PARADISE_IMAGES[a.s.sprite.file]} style={{ width: a.w, height: a.h }} resizeMode="stretch" fadeDuration={0} />
+        </Animated.View>
+      )}
+      {b && fadeIn > 0 && (
+        <Animated.View pointerEvents="none" style={{ position: 'absolute', left: groundX - b.px * b.w, top: groundY - b.ey, width: b.w, height: b.h, opacity: fadeIn, transform: [{ translateY: b.ey - b.h / 2 }, { scaleY: lift }, { translateY: b.h / 2 - b.ey }, { rotate: swayDeg }] }}>
+          <Image source={PARADISE_IMAGES[b.s.sprite.file]} style={{ width: b.w, height: b.h }} resizeMode="stretch" fadeDuration={0} />
+        </Animated.View>
+      )}
+      {/* the soil: the bottom fifth, in front of the plant's foot (and any pot) */}
+      <Image source={SOIL} style={{ position: 'absolute', left: 0, top: soilTop - 10, width, height: soilH + 10 }} resizeMode="cover" fadeDuration={0} />
       {/* roots, under the soil line */}
       {root > 0.02 && (
-        <View pointerEvents="none" style={{ position: 'absolute', left: groundX - 70, top: groundY, width: 140, height: soilH, overflow: 'hidden' }}>
-          <Svg width={140} height={soilH} viewBox="0 0 140 90">
+        <View pointerEvents="none" style={{ position: 'absolute', left: groundX - 80, top: groundY, width: 160, height: soilH * 0.8, overflow: 'hidden' }}>
+          <Svg width={160} height={soilH * 0.8} viewBox="0 0 160 120">
             {[
-              'M70 2 C68 20 60 30 50 48 C44 58 40 70 36 84',
-              'M70 2 C72 22 80 32 90 46 C96 56 100 68 104 82',
-              'M70 2 C70 24 66 40 64 60 C63 72 62 80 60 88',
-              'M70 2 C71 18 76 28 82 36',
-              'M70 2 C68 16 62 24 56 30',
+              'M80 2 C78 26 68 40 56 62 C49 76 44 92 40 112',
+              'M80 2 C82 28 92 42 104 60 C111 73 116 90 120 110',
+              'M80 2 C80 30 76 52 74 78 C73 94 72 106 70 118',
+              'M80 2 C81 22 87 34 94 44',
+              'M80 2 C78 20 71 30 64 38',
             ].map((d, i) => (
-              <Path key={i} d={d} stroke="#E8D6B8" strokeWidth={i < 3 ? 2.2 : 1.4} fill="none" strokeLinecap="round" strokeDasharray={[200, 200]} strokeDashoffset={200 - 200 * Math.min(1, root * (i < 3 ? 1 : 0.8))} opacity={0.85} />
+              <Path key={i} d={d} stroke="#EADBC0" strokeWidth={i < 3 ? 2.4 : 1.5} fill="none" strokeLinecap="round" strokeDasharray={[240, 240]} strokeDashoffset={240 - 240 * clamp01(root * (i < 3 ? 1 : 0.8))} opacity={0.9} />
             ))}
           </Svg>
         </View>
       )}
-      {/* the seed, dropping in */}
-      {showSeed && (
-        <Animated.Image source={SEED} style={{ position: 'absolute', left: groundX - 16, top: groundY - 20, width: 32, height: 24, opacity: seedOpacity, transform: [{ translateY: seedY }] }} />
-      )}
-      {/* the plant, stage A growing toward stage B, B fading in over it */}
-      {a && !showSeed && (
-        <Animated.View pointerEvents="none" style={{ position: 'absolute', left: groundX - sa.px * sa.w, top: groundY - sa.py * sa.h, width: sa.w, height: sa.h, transform: [{ translateY: sa.py * sa.h }, { scale: grow }, { translateY: -sa.py * sa.h }, { rotate: sway.interpolate({ inputRange: [0, 1], outputRange: ['-1.2deg', '1.2deg'] }) }] }}>
-          <Image source={PARADISE_IMAGES[a.sprite.file]} style={{ width: sa.w, height: sa.h }} resizeMode="stretch" fadeDuration={0} />
+      {/* the seed */}
+      {seedVisible && (
+        <Animated.View pointerEvents="none" style={{ position: 'absolute', left: groundX - 18, top: groundY - 16, width: 36, height: 27, opacity: seedOpacity, transform: [{ translateY: seedFall }, { scale: seedScale }, { rotate: `${-8 + seedPhase * 14}deg` }] }}>
+          <Image source={SEED} style={{ width: 36, height: 27 }} fadeDuration={0} />
+          {seedPhase > 0.45 && <View style={[styles.crack, { opacity: clamp01((seedPhase - 0.45) / 0.3) }]} />}
         </Animated.View>
       )}
-      {b && stage > 0 && b.stage !== a?.stage && frac > 0.55 && (
-        <Animated.View pointerEvents="none" style={{ position: 'absolute', left: groundX - sb.px * sb.w, top: groundY - sb.py * sb.h, width: sb.w, height: sb.h, opacity: (frac - 0.55) / 0.45, transform: [{ rotate: sway.interpolate({ inputRange: [0, 1], outputRange: ['-1.2deg', '1.2deg'] }) }] }}>
-          <Image source={PARADISE_IMAGES[b.sprite.file]} style={{ width: sb.w, height: sb.h }} resizeMode="stretch" fadeDuration={0} />
-        </Animated.View>
-      )}
-      {/* a soft shadow at the foot */}
-      {!showSeed && <View pointerEvents="none" style={{ position: 'absolute', left: groundX - Math.max(12, sa.w * 0.35 * (stage === 0 ? grow : 1)), top: groundY - 5, width: Math.max(24, sa.w * 0.7 * (stage === 0 ? grow : 1)), height: 10, borderRadius: 999, backgroundColor: 'rgba(30,18,6,0.18)' }} />}
-      <View pointerEvents="none" style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 4, backgroundColor: '#3a2412' }} />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  crack: { position: 'absolute', left: 16, top: 3, width: 3, height: 18, borderRadius: 2, backgroundColor: '#9BC46A' },
+});
 
 export { scaleFor as growthScaleFor };

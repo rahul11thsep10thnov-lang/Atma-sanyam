@@ -84,11 +84,12 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Android/iOS bundle ex
   (`src/hooks/useFocusTimer.ts`, `src/components/PuzzleGrid.tsx`). A completed session of
   fifteen minutes or more keeps the picture as a framed jigsaw in one of seven sizes, to hang in
   the museum or on the balcony wall (`docs/SPACES.md`).
-- Or pick a plant: the session plants a seed in the Paradise Garden and grows it as the
+- Or pick a plant: the session shows only soil and a seed that grows second by second as the
   minutes pass, to one of seven sizes (15, 30, 60, 90, 120, 150, 180 minutes), and it keeps
   its place in the garden, or on the balcony (room for 26 plants), until the person removes it
   (`docs/PARADISE_GARDEN.md`).
-- Bilingual: English (UN English) and Hindi, chosen on first launch and in Settings
+- Bilingual: English (UN English) and Hindi, asked in a popup every time the app opens and
+  changeable in Settings
   (`src/i18n/`); the plant catalog has its own Hindi names and descriptions.
 - The picture library's Nature collection always includes two Himalayan landscapes bundled with
   the app (`assets/library/`, CC BY 4.0, credits in `assets/library/CREDITS.csv`); Monuments come
