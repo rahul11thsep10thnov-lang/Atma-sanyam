@@ -70,14 +70,18 @@ export function CompanionPicker({
   title,
   labels,
   hint,
-  clearLabel
+  clearLabel,
+  tone = "dark"
 }: {
   initial: CompanionType | null;
   title: string;
   labels: Record<CompanionType, string>;
   hint: string;
   clearLabel: string;
+  /** "light" = white text, for use on a photograph. */
+  tone?: "dark" | "light";
 }) {
+  const light = tone === "light";
   const [selected, setSelected] = useState<CompanionType | null>(initial);
   const [pending, start] = useTransition();
   const router = useRouter();
@@ -90,7 +94,7 @@ export function CompanionPicker({
 
   return (
     <div className="mx-auto mt-10 max-w-3xl text-center">
-      <h2 className="text-xs font-semibold uppercase tracking-[0.28em] text-forest-700 sm:text-sm">{title}</h2>
+      <h2 className={`text-xs font-semibold uppercase tracking-[0.28em] sm:text-sm ${light ? "text-white drop-shadow" : "text-forest-700"}`}>{title}</h2>
       <ul className="mt-5 flex snap-x justify-start gap-6 overflow-x-auto px-2 pb-2 sm:justify-center sm:gap-10" role="radiogroup" aria-label={title}>
         {(Object.keys(ART) as CompanionType[]).map((type) => {
           const active = selected === type;
@@ -108,13 +112,13 @@ export function CompanionPicker({
                 >
                   {ART[type].icon}
                 </span>
-                <span className={`text-sm font-semibold ${active ? "text-saffron-700" : "text-charcoal"}`}>{labels[type]}</span>
+                <span className={`text-sm font-semibold ${active ? (light ? "text-saffron-300" : "text-saffron-700") : light ? "text-white drop-shadow" : "text-charcoal"}`}>{labels[type]}</span>
               </button>
             </li>
           );
         })}
       </ul>
-      <p className={`mt-3 min-h-[1.25rem] text-xs text-charcoal-light transition ${selected ? "opacity-100" : "opacity-0"}`} aria-live="polite">
+      <p className={`mt-3 min-h-[1.25rem] text-xs transition ${light ? "text-white/90" : "text-charcoal-light"} ${selected ? "opacity-100" : "opacity-0"}`} aria-live="polite">
         {selected && (
           <>
             {hint.replace("{type}", labels[selected].toLowerCase())}{" "}

@@ -14,7 +14,6 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
       <div className="container-page grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <p className="font-display text-xl font-bold text-white">{settings.site_name}</p>
-          <p className="mt-1 text-sm text-saffron-300">{dict.common.tagline}</p>
           <p className="mt-3 max-w-xs text-sm text-forest-100">{settings.footer_text ?? footer.aboutText}</p>
           {(settings.contact_email || settings.contact_phone || settings.contact_address) && (
             <address className="mt-3 text-xs not-italic text-forest-100">

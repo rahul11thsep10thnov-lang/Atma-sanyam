@@ -183,7 +183,12 @@ export function getSettings(): SiteSettings {
     writeAtomic(SETTINGS_FILE, stored);
   }
   const s = stored as Partial<SiteSettings>;
-  return { ...DEFAULT_SETTINGS, ...s, image_providers: { ...DEFAULT_SETTINGS.image_providers, ...(s.image_providers ?? {}) } };
+  const merged = { ...DEFAULT_SETTINGS, ...s, image_providers: { ...DEFAULT_SETTINGS.image_providers, ...(s.image_providers ?? {}) } };
+  // Values that were only ever the old defaults follow the new defaults (a deliberately chosen value is kept).
+  if (merged.site_name === "budgettourism") merged.site_name = DEFAULT_SETTINGS.site_name;
+  if (merged.default_hero_image === "/images/home-meadow.jpg") merged.default_hero_image = DEFAULT_SETTINGS.default_hero_image;
+  if (merged.default_seo_title === "budgettourism — Discover India, Better.") merged.default_seo_title = DEFAULT_SETTINGS.default_seo_title;
+  return merged;
 }
 
 export function saveSettings(patch: Partial<SiteSettings>): SiteSettings {

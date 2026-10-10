@@ -378,12 +378,12 @@ export interface SiteSettings {
 }
 
 export const DEFAULT_SETTINGS: SiteSettings = {
-  site_name: "budgettourism",
+  site_name: "Budget Tourism",
   tagline: "The Earth laughs in flowers.",
   logo_url: null,
   favicon_url: null,
-  default_hero_image: "/images/home-meadow.jpg",
-  default_seo_title: "budgettourism — Discover India, Better.",
+  default_hero_image: "/images/hero-waterfall.jpg",
+  default_seo_title: "Budget Tourism — India travel guides",
   default_seo_description: "Database-driven travel guides for India's destinations: attractions, history, budget hotels and restaurants.",
   social_links: [],
   contact_email: null,

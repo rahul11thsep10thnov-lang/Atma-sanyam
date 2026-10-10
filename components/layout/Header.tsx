@@ -1,17 +1,19 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Locale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
+import { siteSettings } from "@/lib/cms/queries";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import { HeaderSearch } from "@/components/search/HeaderSearch";
-import { suggestionIndex } from "@/lib/master/view";
-import { cmsSuggestions } from "@/lib/cms/queries";
+import { NavMenu } from "./NavMenu";
 
+/**
+ * Site header: a wide ink-painting wallpaper band (about 8:1), the menu at the far left, the site name
+ * centred in Open Sans, language and sign-in on the right. The round logo is larger than the band and
+ * hangs down over the top of the page below it.
+ */
 export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const { nav } = dict.common;
-  // CMS destinations and attractions first, then the seed index; duplicates by label+href are dropped.
-  const seen = new Set<string>();
-  const suggestions = [...cmsSuggestions(), ...suggestionIndex(locale)].filter((s) => (seen.has(s.label + s.href) ? false : (seen.add(s.label + s.href), true)));
-
+  const siteName = siteSettings().site_name;
   const links = [
     { href: `/${locale}`, label: nav.home },
     { href: `/${locale}/explore`, label: nav.explore },
@@ -19,40 +21,32 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   ];
 
   return (
-    <header className="sticky top-0 z-30 border-b border-forest-100 bg-offwhite/95 backdrop-blur supports-[backdrop-filter]:bg-offwhite/80">
+    <header className="relative z-30 border-b border-black/5">
       <a href="#main-content" className="skip-link">
         Skip to content
       </a>
-      <div className="container-page flex h-16 items-center justify-between gap-4">
-        <Link href={`/${locale}`} className="flex shrink-0 items-baseline gap-1 font-display text-2xl font-bold text-forest-700">
-          budgettourism
-          <span className="hidden text-xs font-sans font-medium tracking-wide text-saffron-600 sm:inline">
-            {dict.common.tagline}
-          </span>
-        </Link>
+      <div aria-hidden="true" className="absolute inset-0 overflow-hidden bg-[#f7f5f0]">
+        <Image src="/images/header-panda.jpg" alt="" fill priority sizes="100vw" className="object-cover object-[center_55%]" />
+      </div>
 
-        <nav aria-label={nav.explore} className="hidden items-center gap-6 lg:flex">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-charcoal hover:text-forest-600"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="hidden flex-1 max-w-sm md:block">
-          <HeaderSearch locale={locale} placeholder={dict.home.searchPlaceholder} suggestions={suggestions} />
+      <div className="container-page relative flex h-[clamp(104px,12.5vw,200px)] items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <NavMenu links={links} label={nav.explore} />
+          {/* Logo: bigger than the band, overflowing downwards. */}
+          <Link href={`/${locale}`} aria-label={siteName} className="absolute left-[4.25rem] top-[18%] z-40 block sm:left-20">
+            <span className="block h-[clamp(64px,15vw,250px)] w-[clamp(64px,15vw,250px)] overflow-hidden rounded-full bg-white shadow-[0_18px_40px_-12px_rgba(0,0,0,0.45)] ring-4 ring-white">
+              <Image src="/images/logo.png" alt={`${siteName} logo`} width={560} height={560} priority className="h-full w-full object-cover" />
+            </span>
+          </Link>
         </div>
+
+        <Link href={`/${locale}`} className="absolute bottom-2 left-[61%] -translate-x-1/2 whitespace-nowrap sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:-translate-y-1/2 rounded-full bg-white/70 px-3 py-1 font-brand text-lg font-extrabold tracking-tight text-forest-800 shadow-sm backdrop-blur-sm sm:px-7 sm:py-2 sm:text-4xl lg:text-5xl">
+          {siteName}
+        </Link>
 
         <div className="flex items-center gap-2">
           <LanguageSwitcher currentLocale={locale} label={nav.language} />
-          <Link
-            href={`/${locale}/profile`}
-            className="hidden rounded-full bg-forest-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-forest-700 sm:inline-block"
-          >
+          <Link href={`/${locale}/profile`} className="hidden rounded-full bg-forest-600 px-4 py-1.5 text-sm font-semibold text-white shadow-md hover:bg-forest-700 sm:inline-block">
             {nav.signIn}
           </Link>
         </div>

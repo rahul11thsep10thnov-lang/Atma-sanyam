@@ -57,7 +57,8 @@ const config: Config = {
       },
       fontFamily: {
         display: ["var(--font-playfair)", "Georgia", "serif"],
-        sans: ["var(--font-dm-sans)", "system-ui", "sans-serif"]
+        sans: ["var(--font-dm-sans)", "system-ui", "sans-serif"],
+        brand: ["var(--font-open-sans)", "system-ui", "sans-serif"]
       },
       backgroundImage: {
         "diya-pattern": "radial-gradient(circle at 1px 1px, rgba(224,138,30,0.14) 1px, transparent 0)"
