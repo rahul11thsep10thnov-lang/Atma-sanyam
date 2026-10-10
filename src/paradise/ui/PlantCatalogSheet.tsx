@@ -11,7 +11,7 @@ import { radii } from '../../theme/radii';
 import { space as sp } from '../../theme/spacing';
 import { useTheme } from '../../theme/ThemeContext';
 import { t } from '../../i18n';
-import { RARITY_UNLOCK, SEGMENT_NAME, SegmentId, Species, speciesOf, unlocked } from '../catalog';
+import { RARITY_UNLOCK, SegmentId, Species, plantName, speciesOf, unlocked } from '../catalog';
 import { hasArt, spriteFor } from '../model';
 import { PARADISE_IMAGES } from '../sprites.generated';
 
@@ -44,7 +44,7 @@ export function PlantCatalogSheet({ visible, segment, grownInSegment, onClose, o
   const list = speciesOf(segment).filter((s) => hasArt(s.id));
   const sorted = [...list].sort((a, b) => (unlocked(a, grownInSegment) === unlocked(b, grownInSegment) ? 0 : unlocked(a, grownInSegment) ? -1 : 1));
   return (
-    <Sheet visible={visible} title={t('paradise.chooseTitle')} subtitle={t('paradise.chooseSubtitle', { segment: SEGMENT_NAME[segment] })} onClose={onClose} maxHeight="86%">
+    <Sheet visible={visible} title={t('paradise.chooseTitle')} subtitle={t('paradise.chooseSubtitle', { segment: t(`paradise.segment.${segment}` as never) })} onClose={onClose} maxHeight="86%">
       <ScrollView contentContainerStyle={styles.grid} showsVerticalScrollIndicator={false}>
         {sorted.map((s) => {
           const open = unlocked(s, grownInSegment);
@@ -55,13 +55,13 @@ export function PlantCatalogSheet({ visible, segment, grownInSegment, onClose, o
               onPress={() => open && onPick(s)}
               scaleTo={0.96}
               accessibilityRole="button"
-              accessibilityLabel={open ? s.name : t('paradise.lockedA11y', { name: s.name, count: RARITY_UNLOCK[s.rarity] - grownInSegment })}
+              accessibilityLabel={open ? plantName(s.id) : t('paradise.lockedA11y', { name: plantName(s.id), count: RARITY_UNLOCK[s.rarity] - grownInSegment })}
               accessibilityState={{ disabled: !open }}
               style={[styles.card, { backgroundColor: colors.surfaceRaised, borderColor: colors.border }, !open && styles.locked]}
             >
               <View style={styles.thumbWrap}>{thumb && <Image source={thumb} style={styles.thumb} resizeMode="contain" />}</View>
               <AppText variant="bodySmallStrong" numberOfLines={1}>
-                {s.name}
+                {plantName(s.id)}
               </AppText>
               <AppText variant="caption" tone="muted" numberOfLines={1} style={{ fontStyle: 'italic' }}>
                 {s.scientificName}

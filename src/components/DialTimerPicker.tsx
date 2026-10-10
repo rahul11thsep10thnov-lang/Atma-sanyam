@@ -4,6 +4,7 @@ import Svg, { Circle } from 'react-native-svg';
 import { typography } from '../theme/colors';
 import { useTheme } from '../theme/ThemeContext';
 import { MAX_DURATION_MINUTES, MIN_DURATION_MINUTES, DURATION_STEP_MINUTES } from '../utils/grid';
+import { t } from '../i18n';
 
 interface DialTimerPickerProps {
   value: number;
@@ -66,7 +67,7 @@ export function DialTimerPicker({ value, onChange, size = 260 }: DialTimerPicker
       // Screen-reader users adjust the dial with swipe up/down instead of dragging.
       accessible
       accessibilityRole="adjustable"
-      accessibilityLabel="Session length"
+      accessibilityLabel={t('dial.a11y')}
       accessibilityValue={{ text: `${value} minutes` }}
       accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
       onAccessibilityAction={(e) => {
@@ -103,7 +104,7 @@ export function DialTimerPicker({ value, onChange, size = 260 }: DialTimerPicker
       </Svg>
       <View style={styles.centerLabel} pointerEvents="none">
         <Text style={[styles.valueText, { color: colors.text }]}>{value}</Text>
-        <Text style={[styles.unitText, { color: colors.textSecondary }]}>minutes</Text>
+        <Text style={[styles.unitText, { color: colors.textSecondary }]}>{t('dial.minutes')}</Text>
       </View>
     </View>
   );

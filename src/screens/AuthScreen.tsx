@@ -13,14 +13,15 @@ import { Card } from '../ui/Card';
 import { TextField } from '../ui/TextField';
 import { space } from '../theme/spacing';
 import { useTheme } from '../theme/ThemeContext';
+import { StringKey, t } from '../i18n';
 
 type Mode = 'signIn' | 'signUp' | 'resetRequest' | 'resetConfirm';
 
-const TITLES: Record<Mode, [string, string]> = {
-  signIn: ['Welcome back', 'Sign in to keep your preferences and get announcements.'],
-  signUp: ['Create your account', 'Optional — FOCUS works without an account.'],
-  resetRequest: ['Reset your password', 'We’ll email you a 6-digit code.'],
-  resetConfirm: ['Check your email', 'Enter the code we sent and choose a new password.'],
+const TITLES: Record<Mode, [StringKey, StringKey]> = {
+  signIn: ['auth.signInTitle', 'auth.signInBody'],
+  signUp: ['auth.signUpTitle', 'auth.signUpBody'],
+  resetRequest: ['auth.resetTitle', 'auth.resetBody'],
+  resetConfirm: ['auth.checkTitle', 'auth.checkBody'],
 };
 
 export function AuthScreen() {
@@ -59,7 +60,7 @@ export function AuthScreen() {
       if (mode === 'resetRequest') {
         await requestPasswordReset(email.trim());
         switchMode('resetConfirm');
-        setInfo('If that email has an account, a code is on its way. It expires in 15 minutes.');
+        setInfo(t('auth.codeSent'));
         return;
       }
       if (mode === 'resetConfirm') await confirmPasswordReset(email.trim(), code, password);
@@ -74,14 +75,14 @@ export function AuthScreen() {
     }
   }
 
-  const [title, subtitle] = TITLES[mode];
-  const submitLabel = { signIn: 'Sign in', signUp: 'Create account', resetRequest: 'Send code', resetConfirm: 'Reset password' }[mode];
+  const [title, subtitle] = TITLES[mode].map((k) => t(k));
+  const submitLabel = t(({ signIn: 'auth.signIn', signUp: 'auth.createAccount', resetRequest: 'auth.sendCode', resetConfirm: 'auth.resetPassword' } as const)[mode]);
 
   return (
     <KeyboardAvoidingView style={styles.flex} behavior="padding">
       <Screen scroll>
         <View style={styles.headerRow}>
-          <IconButton icon="close" label="Close" variant="filled" size={40} onPress={() => navigation.goBack()} />
+          <IconButton icon="close" label={t('close')} variant="filled" size={40} onPress={() => navigation.goBack()} />
         </View>
 
         <AppText variant="headingLarge" accessibilityRole="header">
@@ -103,11 +104,11 @@ export function AuthScreen() {
         )}
 
         {mode === 'signUp' && (
-          <TextField label="Name (optional)" icon="user" value={displayName} onChangeText={setDisplayName} autoComplete="name" textContentType="name" maxLength={60} returnKeyType="next" accessibilityLabel="Name" />
+          <TextField label={t('auth.nameOptional')} icon="user" value={displayName} onChangeText={setDisplayName} autoComplete="name" textContentType="name" maxLength={60} returnKeyType="next" accessibilityLabel={t('auth.name')} />
         )}
 
         <TextField
-          label="Email"
+          label={t('auth.email')}
           icon="mail"
           value={email}
           onChangeText={setEmail}
@@ -119,16 +120,16 @@ export function AuthScreen() {
           returnKeyType={mode === 'resetRequest' ? 'go' : 'next'}
           onSubmitEditing={mode === 'resetRequest' ? submit : undefined}
           editable={mode !== 'resetConfirm'}
-          accessibilityLabel="Email"
+          accessibilityLabel={t('auth.email')}
         />
 
         {mode === 'resetConfirm' && (
-          <TextField label="6-digit code" icon="sparkles" value={code} onChangeText={(t) => setCode(t.replace(/\D/g, '').slice(0, 6))} keyboardType="number-pad" autoComplete="one-time-code" textContentType="oneTimeCode" accessibilityLabel="6-digit code" />
+          <TextField label={t('auth.code')} icon="sparkles" value={code} onChangeText={(t) => setCode(t.replace(/\D/g, '').slice(0, 6))} keyboardType="number-pad" autoComplete="one-time-code" textContentType="oneTimeCode" accessibilityLabel={t('auth.code')} />
         )}
 
         {showPassword && (
           <TextField
-            label={mode === 'resetConfirm' ? 'New password' : 'Password'}
+            label={mode === 'resetConfirm' ? t('auth.newPassword') : t('auth.password')}
             icon="lock"
             value={password}
             onChangeText={setPassword}
@@ -137,37 +138,37 @@ export function AuthScreen() {
             textContentType={mode === 'signIn' ? 'password' : 'newPassword'}
             returnKeyType="go"
             onSubmitEditing={submit}
-            accessibilityLabel={mode === 'resetConfirm' ? 'New password' : 'Password'}
-            hint={mode === 'signUp' || mode === 'resetConfirm' ? 'At least 8 characters.' : undefined}
+            accessibilityLabel={mode === 'resetConfirm' ? t('auth.newPassword') : t('auth.password')}
+            hint={mode === 'signUp' || mode === 'resetConfirm' ? t('auth.min8') : undefined}
           />
         )}
         {mode === 'signIn' && config.features.passwordReset && (
-          <Button label="Forgot password?" variant="tertiary" size="sm" onPress={() => switchMode('resetRequest')} style={styles.inlineLink} />
+          <Button label={t('auth.forgot')} variant="tertiary" size="sm" onPress={() => switchMode('resetRequest')} style={styles.inlineLink} />
         )}
 
         <Button label={submitLabel} size="lg" fullWidth loading={busy} disabled={!canSubmit} onPress={submit} style={styles.submit} />
 
         <Button
-          label={mode === 'signIn' ? 'New here? Create an account' : mode === 'signUp' ? 'Already have an account? Sign in' : 'Back to sign in'}
+          label={mode === 'signIn' ? t('auth.toSignUp') : mode === 'signUp' ? t('auth.toSignIn') : t('auth.back')}
           variant="tertiary"
           onPress={() => switchMode(mode === 'signIn' ? 'signUp' : 'signIn')}
           style={styles.switch}
         />
         {mode === 'resetConfirm' && (
-          <Button label="Didn’t get a code? Send another" variant="tertiary" size="sm" onPress={() => switchMode('resetRequest')} style={styles.switch} />
+          <Button label={t('auth.resend')} variant="tertiary" size="sm" onPress={() => switchMode('resetRequest')} style={styles.switch} />
         )}
 
         {mode === 'signUp' && env.privacyPolicyUrl && (
           <AppText variant="caption" tone="muted" align="center" style={styles.legal}>
-            By creating an account you agree to our{' '}
+            {t('auth.agree')}{' '}
             <AppText variant="caption" tone="primary" onPress={() => void Linking.openURL(env.privacyPolicyUrl!)} accessibilityRole="link" style={styles.link}>
-              Privacy Policy
+              {t('auth.privacy')}
             </AppText>
             {env.termsUrl && (
               <>
-                {' '}and{' '}
+                {' '}{t('auth.and')}{' '}
                 <AppText variant="caption" tone="primary" onPress={() => void Linking.openURL(env.termsUrl!)} accessibilityRole="link" style={styles.link}>
-                  Terms
+                  {t('auth.terms')}
                 </AppText>
               </>
             )}

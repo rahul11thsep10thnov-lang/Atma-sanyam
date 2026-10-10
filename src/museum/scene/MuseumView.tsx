@@ -18,7 +18,7 @@ import { ThreeHandle, useThree } from '../../gl/useThree';
 import { spriteFor as paradiseSprite } from '../../paradise/model';
 import { PARADISE_IMAGES } from '../../paradise/sprites.generated';
 import { MUSEUM_TEXTURES } from '../textures';
-import { EYE_HEIGHT, FLOOR_DEPTH, MuseumObject, MuseumState, MuseumTheme, RING_RADIUS, SECTION_ARC, WALL_HEIGHT, WALL_LENGTH, WALL_RADIUS, artworkSize, snapToFloor, snapToWall } from '../model';
+import { BlankSpace, EYE_HEIGHT, FLOOR_DEPTH, MuseumObject, MuseumState, MuseumTheme, RING_RADIUS, SECTION_ARC, WALL_HEIGHT, WALL_LENGTH, WALL_RADIUS, artworkSize, blankSpaces, snapToFloor, snapToWall } from '../model';
 import { MUSEUM_STORE_BY_ID, MuseumItem, isLightItem, museumWidthOf } from '../store';
 
 export type MuseumMode = 'view' | 'edit';
@@ -87,7 +87,7 @@ export function MuseumView({ state, section, mode, artworkById, selectedId, onSe
   // camera: angle around the ring (section travel), look offsets, walk offsets, zoom
   const cam = useRef({ theta: angleOf(section, 0.5), yaw: 0, pitch: 0, along: 0, radial: 0, fov: 62 });
   const target = useRef({ ...cam.current });
-  const sceneRef = useRef<{ h: ThreeHandle; root: THREE.Group; sections: Map<number, { group: THREE.Group; mats: THREE.MeshLambertMaterial[] }>; nodes: Map<string, Node>; amb: THREE.AmbientLight; hemi: THREE.HemisphereLight; poolTex: THREE.Texture; marble: THREE.Texture | null; theme: MuseumTheme | null } | null>(null);
+  const sceneRef = useRef<{ h: ThreeHandle; root: THREE.Group; blanks: THREE.Group; sections: Map<number, { group: THREE.Group; mats: THREE.MeshLambertMaterial[] }>; nodes: Map<string, Node>; amb: THREE.AmbientLight; hemi: THREE.HemisphereLight; poolTex: THREE.Texture; marble: THREE.Texture | null; theme: MuseumTheme | null } | null>(null);
   const size = useRef({ w: 1, h: 1 });
   const drag = useRef<{ id: string; surface: MuseumObject['surfaceId'] } | null>(null);
   const pressed = useRef<{ x: number; y: number; moved: boolean } | null>(null);
@@ -111,7 +111,9 @@ export function MuseumView({ state, section, mode, artworkById, selectedId, onSe
     scene.add(amb, hemi);
     const root = new THREE.Group();
     scene.add(root);
-    sceneRef.current = { h, root, sections: new Map(), nodes: new Map(), amb, hemi, poolTex: radialTexture(96, 0.0, 2.2), marble: null, theme: null };
+    const blanks = new THREE.Group();
+    scene.add(blanks);
+    sceneRef.current = { h, root, blanks, sections: new Map(), nodes: new Map(), amb, hemi, poolTex: radialTexture(96, 0.0, 2.2), marble: null, theme: null };
     {
       loadTile(MUSEUM_TEXTURES.marble.image, 1).then((t) => {
         const s = sceneRef.current;
@@ -237,6 +239,15 @@ export function MuseumView({ state, section, mode, artworkById, selectedId, onSe
         s.nodes.set(o.objectId, n);
         s.root.add(n.group);
       }
+      // the empty frames waiting for the next finished jigsaws
+      for (const c of [...s.blanks.children]) {
+        s.blanks.remove(c);
+        disposeGroup(c);
+      }
+      const widthOf = (o: MuseumObject) => museumWidthOf(o, L.artworkById);
+      for (const id of wanted) {
+        for (const b of blankSpaces(L.state, id, widthOf)) s.blanks.add(buildBlank(b, pal, id === L.section ? 1 : 0.45));
+      }
       // selection ring, neighbours dim, lit artworks brighter
       const lights = [...s.nodes.values()].filter((n) => n.light && (n.object.on ?? true));
       for (const n of s.nodes.values()) {
@@ -276,6 +287,7 @@ export function MuseumView({ state, section, mode, artworkById, selectedId, onSe
         if (!s) return;
         for (const n of s.nodes.values()) disposeGroup(n.group);
         for (const sec of s.sections.values()) disposeGroup(sec.group);
+        disposeGroup(s.blanks);
         sceneRef.current = null;
       },
     };
@@ -563,6 +575,36 @@ function buildSection(id: number, pal: Palette, marble: THREE.Texture | null, _a
   beam.position.y = WALL_HEIGHT - 0.5;
   g.add(beam);
   return { group: g, mats };
+}
+
+/** An empty frame: a slim pale moulding round a slightly lighter panel, so
+ * the wall reads as a gallery still being filled. */
+function buildBlank(b: BlankSpace, pal: Palette, dim: number): THREE.Group {
+  const g = new THREE.Group();
+  const p = polar(WALL_RADIUS - 0.03, angleOf(b.sectionId, b.u));
+  g.position.set(p.x, b.h, p.z);
+  g.lookAt(0, b.h, 0);
+  const frame = new THREE.MeshLambertMaterial({ color: new THREE.Color(0xd9c7a6).multiplyScalar(dim) });
+  const fw = 0.045;
+  const depth = 0.035;
+  const bars: [number, number, number, number][] = [
+    [0, b.hgt / 2 - fw / 2, b.w, fw],
+    [0, -b.hgt / 2 + fw / 2, b.w, fw],
+    [-b.w / 2 + fw / 2, 0, fw, b.hgt],
+    [b.w / 2 - fw / 2, 0, fw, b.hgt],
+  ];
+  for (const [x, y, w, h] of bars) {
+    const bar = new THREE.Mesh(new THREE.BoxGeometry(w, h, depth), frame);
+    bar.position.set(x, y, depth / 2);
+    g.add(bar);
+  }
+  const panel = new THREE.Mesh(
+    new THREE.PlaneGeometry(b.w - fw * 2, b.hgt - fw * 2),
+    new THREE.MeshLambertMaterial({ color: new THREE.Color(pal.wall).lerp(new THREE.Color(0xffffff), 0.18).multiplyScalar(dim) }),
+  );
+  panel.position.z = 0.006;
+  g.add(panel);
+  return g;
 }
 
 /** An object: its group, placed and oriented; materials that take light. */

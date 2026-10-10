@@ -3,6 +3,7 @@
 import { LightState, PackItem, SpaceId, SpacePack, Stage, Variant } from './packTypes';
 import { packFor } from './packs';
 import { STORE } from './catalog';
+import { getLanguage } from '../i18n';
 
 export interface PlacedItem {
   uid: string;
@@ -91,7 +92,7 @@ export function focusVariant(pack: SpacePack, minutes: number, health: number): 
   return { variant: v && Object.keys(v.files ?? {}).length ? v : null, stage: st.id, wilted };
 }
 
-export const STAGE_WORDS: Record<string, string> = {
+const STAGE_WORDS_EN: Record<string, string> = {
   seed: 'a seed',
   seedling: 'a seedling',
   sprout: 'a sprout',
@@ -103,6 +104,22 @@ export const STAGE_WORDS: Record<string, string> = {
   flowering: 'in flower',
   grand: 'a grand old tree',
 };
+const STAGE_WORDS_HI: Record<string, string> = {
+  seed: 'एक बीज',
+  seedling: 'एक नन्हा पौधा',
+  sprout: 'एक अंकुर',
+  small: 'एक छोटा, स्वस्थ पौधा',
+  young: 'एक युवा पौधा',
+  growing: 'एक बढ़ता पौधा',
+  mature: 'एक परिपक्व पौधा',
+  large: 'एक बड़ा पेड़',
+  flowering: 'फूलों से भरा',
+  grand: 'एक विशाल पुराना पेड़',
+};
+/** Words for a growth stage, in the current language. */
+export const STAGE_WORDS: Record<string, string> = new Proxy(STAGE_WORDS_EN, {
+  get: (en, k: string) => (getLanguage() === 'hi' ? STAGE_WORDS_HI[k] : undefined) ?? en[k],
+});
 
 export function growFocusPlant(f: FocusPlantState, minutes: number): FocusPlantState {
   return { minutes: f.minutes + Math.max(0, minutes), health: Math.min(1, f.health + 0.5 + minutes * 0.01) };

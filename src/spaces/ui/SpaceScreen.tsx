@@ -2,9 +2,9 @@
 // screen and the controls float lightly over it. Tap the picture to hide
 // every control (and the tab bar); tap again to bring them back.
 // Customize turns on placement guides, which never appear otherwise.
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Animated, Pressable, StyleSheet, View } from 'react-native';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { Animated, GestureResponderEvent, Image, Pressable, StyleSheet, View } from 'react-native';
+import { RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LightState, SpaceId } from '../packTypes';
@@ -33,12 +33,57 @@ import { radii } from '../../theme/radii';
 import { space as sp } from '../../theme/spacing';
 import { duration, easing } from '../../theme/motion';
 import { t, useLanguage } from '../../i18n';
+import { useParadise } from '../../paradise/repository';
+import { onBalcony, PlantInstance, removePlant, spriteFor } from '../../paradise/model';
+import { PARADISE_IMAGES } from '../../paradise/sprites.generated';
+import { BALCONY_SPOTS, balconyMetres } from '../../paradise/balcony';
+import { plantName, SPECIES_BY_ID } from '../../paradise/catalog';
+import { RootTabParamList } from '../../navigation/types';
+
+/** A grown plant drawn on the balcony, in plate pixels. */
+interface BalconyPlant {
+  plant: PlantInstance;
+  depth: number;
+  left: number;
+  top: number;
+  w: number;
+  h: number;
+  file: string;
+  thumb?: string;
+  /** a terracotta pot under plants that grow in the ground in the garden */
+  pot: { x: number; y: number; w: number; h: number } | null;
+}
+
+function balconyPlants(plants: PlantInstance[]): BalconyPlant[] {
+  const out: BalconyPlant[] = [];
+  for (const p of plants) {
+    const spot = BALCONY_SPOTS[p.slot];
+    const sp = spriteFor(p.speciesId, p.size);
+    if (!spot || !sp) continue;
+    const habit = SPECIES_BY_ID[p.speciesId]?.habit;
+    const potted = habit === 'pot' || habit === 'water';
+    const k = (balconyMetres(sp.sprite.heightM) / sp.sprite.heightM) * spot.ppm * p.scale;
+    const h = sp.sprite.heightM * k;
+    const w = sp.sprite.widthM * k;
+    let baseY = spot.y;
+    let pot: BalconyPlant['pot'] = null;
+    if (!potted) {
+      const pw = Math.min(0.5, Math.max(0.26, sp.sprite.widthM * (balconyMetres(sp.sprite.heightM) / sp.sprite.heightM) * 0.45)) * spot.ppm;
+      const ph = pw * 0.78;
+      pot = { x: spot.x, y: spot.y, w: pw, h: ph };
+      baseY = spot.y - ph * 0.92;
+    }
+    out.push({ plant: p, depth: spot.depth, left: spot.x - sp.sprite.pivot[0] * w, top: baseY - sp.sprite.pivot[1] * h, w, h, file: sp.sprite.file, thumb: sp.sprite.thumb, pot });
+  }
+  return out;
+}
 
 const DURATIONS = [25, 45, 60, 90];
 const STATE_ICON: Record<LightState | 'auto', IconName> = { auto: 'sun', morning: 'sun', afternoon: 'sun', sunset: 'sun', evening: 'moon', night: 'moon', rain: 'rain' };
 
 export function SpaceScreen({ space }: { space: SpaceId }) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const route = useRoute<RouteProp<RootTabParamList, 'History'>>();
   const insets = useSafeAreaInsets();
   const isFocused = useIsFocused();
   useLanguage();
@@ -47,6 +92,11 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
   const [art, saveArt] = useCollection();
   const [rewards, saveRewards] = useRewards(isFocused);
   const rack = useRackCount();
+  const [paradise, saveParadise] = useParadise();
+  const grown = useMemo(() => (space === 'balcony' && paradise ? balconyPlants(paradise.plants.filter(onBalcony)) : []), [space, paradise]);
+  const [plantSel, setPlantSel] = useState<string | null>(null);
+  const [confirmRemove, setConfirmRemove] = useState(false);
+  const [glow, setGlow] = useState<string | null>(null);
 
   const [chrome, setChrome] = useState(true);
   const [editing, setEditing] = useState(false);
@@ -84,6 +134,71 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
     if (toastTimer.current) clearTimeout(toastTimer.current);
   }, []);
 
+  // a plant arrived from a session: welcome it
+  const arrival = (route.params as { arrival?: string } | undefined)?.arrival;
+  useEffect(() => {
+    if (!arrival || !paradise) return;
+    const p = paradise.plants.find((x) => x.id === arrival);
+    if (!p) return;
+    setGlow(p.id);
+    say(`${plantName(p.speciesId)} · ${t('paradise.size', { size: p.size })}`);
+    navigation.setParams({ arrival: undefined } as never);
+    const id = setTimeout(() => setGlow(null), 3200);
+    return () => clearTimeout(id);
+  }, [arrival, paradise, navigation, say]);
+
+  const onScenePress = (e: GestureResponderEvent) => {
+    if (geometry && grown.length) {
+      // native press events carry locationX; on the web it is the mouse event's offsetX
+      const ne = e.nativeEvent as { locationX?: number; locationY?: number; offsetX?: number; offsetY?: number };
+      const px = ((ne.locationX ?? ne.offsetX ?? -1) - geometry.ox) / geometry.scale;
+      const py = ((ne.locationY ?? ne.offsetY ?? -1) - geometry.oy) / geometry.scale;
+      // nearest first: the plant drawn on top wins
+      const hit = [...grown].sort((a, b) => a.depth - b.depth).find((g) => {
+        const bottom = g.pot ? g.pot.y : g.top + g.h;
+        return px >= g.left + g.w * 0.12 && px <= g.left + g.w * 0.88 && py >= g.top + g.h * 0.08 && py <= bottom;
+      });
+      if (hit) {
+        setPlantSel(hit.plant.id);
+        setConfirmRemove(false);
+        setChrome(true);
+        return;
+      }
+    }
+    if (plantSel) {
+      setPlantSel(null);
+      return;
+    }
+    setChrome((c) => !c);
+  };
+
+  const extras = useMemo(
+    () =>
+      grown.map((g) => ({
+        key: g.plant.id,
+        depth: g.depth,
+        render: (s: number) => {
+          const big = g.h * s > 120;
+          const source = PARADISE_IMAGES[big ? g.file : g.thumb ?? g.file] ?? PARADISE_IMAGES[g.file];
+          const lit = g.plant.id === plantSel || g.plant.id === glow;
+          return (
+            <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+              {g.pot && <Pot x={g.pot.x * s} y={g.pot.y * s} w={g.pot.w * s} h={g.pot.h * s} />}
+              {source !== undefined && (
+                <Image
+                  source={source}
+                  resizeMode="contain"
+                  style={{ position: 'absolute', left: g.left * s, top: g.top * s, width: g.w * s, height: g.h * s, transform: g.plant.flip ? [{ scaleX: -1 }] : undefined, opacity: lit ? 1 : 0.98 }}
+                />
+              )}
+              {lit && <View style={[styles.plantRing, { left: (g.pot?.x ?? g.left + g.w / 2) * s - 22, top: (g.pot ? g.pot.y : g.top + g.h) * s - 8 }]} />}
+            </View>
+          );
+        },
+      })),
+    [grown, plantSel, glow],
+  );
+
   const startFocus = (minutes: number) => {
     setSheet(null);
     navigation.navigate('ActiveSession', { config: { durationMinutes: minutes, image: { kind: 'space', space }, grid: gridForSession(minutes) } });
@@ -117,6 +232,8 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
     } else say(t('space.needCoins', { coins: PENALTY_REMOVAL_COINS }));
   };
 
+  const selPlant = plantSel && paradise ? paradise.plants.find((p) => p.id === plantSel && onBalcony(p)) ?? null : null;
+
   const onBin = (p: PlacedItem) => {
     const next2 = binItem(state, p.uid);
     if (next2 === state) return;
@@ -126,8 +243,8 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
 
   return (
     <View style={styles.screen}>
-      <SpaceScene space={space} state={state} art={art} light={light} rackCount={rack} mode={isFocused ? 'live' : 'still'} parallax={!editing} hiddenUid={dragging} onGeometry={setGeometry} style={StyleSheet.absoluteFill}>
-        {!editing && <Pressable style={StyleSheet.absoluteFill} onPress={() => setChrome((c) => !c)} accessibilityLabel={chrome ? t('space.hideControls') : t('space.showControls')} />}
+      <SpaceScene space={space} state={state} art={art} light={light} rackCount={rack} mode={isFocused ? 'live' : 'still'} parallax={!editing} hiddenUid={dragging} onGeometry={setGeometry} extras={extras} style={StyleSheet.absoluteFill}>
+        {!editing && <Pressable style={StyleSheet.absoluteFill} onPress={onScenePress} accessibilityLabel={chrome ? t('space.hideControls') : t('space.showControls')} />}
         {editing && geometry && (
           <EditLayer space={space} state={state} geometry={geometry} light={light} selected={sel} onSelect={setSelected} onChange={save} onDragging={setDragging} onBin={space === 'garden' ? onBin : undefined} />
         )}
@@ -162,6 +279,17 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
           </Tactile>
         </View>
       </Animated.View>
+
+      {space === 'balcony' && grown.length > 0 && showChrome && penalties === 0 && !selPlant && (
+        <View style={[styles.penaltyWrap, { top: insets.top + 52 }]} pointerEvents="none">
+          <GlassChip>
+            <Icon name="sprout" size="xs" color="#FFFFFF" />
+            <AppText variant="caption" style={styles.white}>
+              {t('balcony.plantsCount', { count: grown.length, total: BALCONY_SPOTS.length })}
+            </AppText>
+          </GlassChip>
+        </View>
+      )}
 
       {penalties > 0 && showChrome && (
         <View style={[styles.penaltyWrap, { top: insets.top + 52 }]} pointerEvents="box-none">
@@ -235,6 +363,46 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
         </>
       )}
 
+      {selPlant && paradise && !editing && !sheet && (
+        <View style={[styles.selection, { bottom: tabSpace + 76 }]} pointerEvents="box-none">
+          <View style={[styles.selectionCard, { flexDirection: 'column', alignItems: 'stretch', paddingRight: sp.sm, paddingVertical: sp.sm }]}>
+            <View style={{ gap: 2 }}>
+              <AppText variant="bodySmallStrong" style={styles.white} numberOfLines={1}>
+                {plantName(selPlant.speciesId)} · {t('paradise.size', { size: selPlant.size })}
+              </AppText>
+              <AppText variant="caption" style={styles.faint} numberOfLines={1}>
+                {t('paradise.grownFrom', { minutes: selPlant.focusMinutes })} · {new Date(selPlant.plantedAt).toLocaleDateString()}
+              </AppText>
+            </View>
+            {confirmRemove ? (
+              <View style={styles.plantActions}>
+                <AppText variant="caption" style={[styles.white, { flex: 1 }]} numberOfLines={2}>
+                  {t('balcony.deleteConfirm', { name: plantName(selPlant.speciesId) })}
+                </AppText>
+                <GlassPill label={t('cancel')} compact onPress={() => setConfirmRemove(false)} />
+                <GlassPill
+                  icon="trash"
+                  label={t('paradise.delete')}
+                  compact
+                  emphasis
+                  onPress={() => {
+                    saveParadise(removePlant(paradise, selPlant.id));
+                    say(t('paradise.deleted', { name: plantName(selPlant.speciesId) }));
+                    setPlantSel(null);
+                    setConfirmRemove(false);
+                  }}
+                />
+              </View>
+            ) : (
+              <View style={[styles.plantActions, { justifyContent: 'flex-end' }]}>
+                <GlassPill icon="trash" label={t('paradise.delete')} compact onPress={() => setConfirmRemove(true)} />
+                <GlassPill icon="close" compact onPress={() => setPlantSel(null)} accessibilityLabel={t('close')} />
+              </View>
+            )}
+          </View>
+        </View>
+      )}
+
       {toast && (
         <View style={[styles.toastWrap, { bottom: editing ? insets.bottom + 96 : tabSpace + 76 }]} pointerEvents="none">
           <GlassChip style={styles.toast}>
@@ -301,6 +469,21 @@ function formatTime(minutes: number) {
   return r ? `${h} ${t('h')} ${r} ${t('min')}` : `${h} ${t('h')}`;
 }
 
+/** A terracotta pot seen from slightly above: a rim ellipse over a tapering body. */
+function Pot({ x, y, w, h }: { x: number; y: number; w: number; h: number }) {
+  const rimH = Math.max(2, w * 0.22);
+  const bottomW = w * 0.72;
+  return (
+    <>
+      <View style={{ position: 'absolute', left: x - w * 0.55, top: y - h * 0.12, width: w * 1.1, height: h * 0.3, borderRadius: w, backgroundColor: 'rgba(30,18,10,0.28)' }} />
+      <View style={{ position: 'absolute', left: x - w / 2, top: y - h, width: w, height: h, borderTopWidth: h, borderTopColor: '#a65a35', borderLeftWidth: (w - bottomW) / 2, borderRightWidth: (w - bottomW) / 2, borderLeftColor: 'transparent', borderRightColor: 'transparent', borderBottomLeftRadius: w * 0.08, borderBottomRightRadius: w * 0.08 }} />
+      <View style={{ position: 'absolute', left: x - w / 2, top: y - h, width: w * 0.35, height: h, borderTopWidth: h, borderTopColor: 'rgba(255,220,180,0.12)', borderLeftWidth: (w - bottomW) / 2, borderLeftColor: 'transparent' }} />
+      <View style={{ position: 'absolute', left: x - w * 0.54, top: y - h - rimH * 0.5, width: w * 1.08, height: rimH, borderRadius: w, backgroundColor: '#b8673f', borderColor: '#8c4a2c', borderWidth: Math.max(1, w * 0.03) }} />
+      <View style={{ position: 'absolute', left: x - w * 0.44, top: y - h - rimH * 0.32, width: w * 0.88, height: rimH * 0.64, borderRadius: w, backgroundColor: '#4a3426' }} />
+    </>
+  );
+}
+
 function DockItem({ icon, label, onPress, emphasis, badge }: { icon: IconName; label: string; onPress: () => void; emphasis?: boolean; badge?: boolean }) {
   const ink = emphasis ? INK : '#FFFFFF';
   return (
@@ -334,6 +517,8 @@ const styles = StyleSheet.create({
   selectionCard: { flexDirection: 'row', alignItems: 'center', gap: sp.sm, paddingLeft: sp.lg, paddingRight: 6, paddingVertical: 6, borderRadius: radii.xl, backgroundColor: 'rgba(28,20,14,0.62)', borderColor: GLASS_EDGE, borderWidth: StyleSheet.hairlineWidth },
   toastWrap: { position: 'absolute', left: sp.lg, right: sp.lg, alignItems: 'center' },
   toast: { height: undefined, paddingVertical: 8, maxWidth: '100%' },
+  plantActions: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: sp.sm },
+  plantRing: { position: 'absolute', width: 44, height: 16, borderRadius: 22, borderWidth: 2, borderColor: 'rgba(255,240,200,0.9)' },
   scrim: { backgroundColor: 'rgba(20,12,8,0.25)' },
   focusCard: { position: 'absolute', left: sp.lg, right: sp.lg, padding: sp.xl, gap: sp.sm, borderRadius: radii.xl, backgroundColor: 'rgba(251,245,236,0.96)' },
   durations: { flexDirection: 'row', gap: sp.sm, marginTop: sp.sm },

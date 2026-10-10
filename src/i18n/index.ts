@@ -4,28 +4,23 @@
 import { useEffect, useState } from 'react';
 import { I18nManager } from 'react-native';
 import { en, StringKey } from './strings/en';
-import { fr } from './strings/fr';
-import { de } from './strings/de';
-import { it } from './strings/it';
-import { es } from './strings/es';
-import { ar } from './strings/ar';
-import { zh } from './strings/zh';
-import { ru } from './strings/ru';
+import { hi } from './strings/hi';
 
-export type Language = 'en' | 'fr' | 'de' | 'it' | 'es' | 'ar' | 'zh' | 'ru';
+/** FOCUS is bilingual: English (UN English) and Hindi. */
+export type Language = 'en' | 'hi';
 
 export const LANGUAGES: { id: Language; name: string; native: string; rtl?: boolean }[] = [
   { id: 'en', name: 'English', native: 'English' },
-  { id: 'fr', name: 'French', native: 'Français' },
-  { id: 'de', name: 'German', native: 'Deutsch' },
-  { id: 'it', name: 'Italian', native: 'Italiano' },
-  { id: 'es', name: 'Spanish', native: 'Español' },
-  { id: 'ar', name: 'Standard Arabic', native: 'العربية', rtl: true },
-  { id: 'zh', name: 'Mandarin Chinese', native: '中文' },
-  { id: 'ru', name: 'Russian', native: 'Русский' },
+  { id: 'hi', name: 'Hindi', native: 'हिन्दी' },
 ];
 
-const TABLES: Record<Language, Partial<Record<StringKey, string>>> = { en, fr, de, it, es, ar, zh, ru };
+const TABLES: Record<Language, Partial<Record<StringKey, string>>> = { en, hi };
+
+/** A saved choice from an older build (French, Arabic…) falls back to English. */
+export function normaliseLanguage(l: string | undefined | null): Language | undefined {
+  if (!l) return undefined;
+  return l === 'hi' ? 'hi' : 'en';
+}
 
 let current: Language = 'en';
 const listeners = new Set<(l: Language) => void>();
@@ -34,7 +29,8 @@ export function getLanguage(): Language {
   return current;
 }
 
-export function setLanguage(l: Language) {
+export function setLanguage(lang: Language | string) {
+  const l = normaliseLanguage(lang) ?? 'en';
   current = l;
   const rtl = !!LANGUAGES.find((x) => x.id === l)?.rtl;
   try {
@@ -72,3 +68,17 @@ export function useLanguage(): Language {
 }
 
 export type { StringKey };
+
+const CATEGORY_KEYS: [RegExp, StringKey][] = [
+  [/nature|landscape/i, 'home.cat.nature'],
+  [/monument|heritage/i, 'home.cat.monuments'],
+  [/wildlife|animal/i, 'home.cat.wildlife'],
+  [/spiritual|sacred/i, 'home.cat.spirituality'],
+];
+
+/** A library collection's name in the current language (the four top collections; others as the library names them). */
+export function categoryLabel(c: { id: string; name: string; parentId?: string | null }): string {
+  if (current === 'en' || c.parentId) return c.name;
+  const hit = CATEGORY_KEYS.find(([re]) => re.test(`${c.id} ${c.name}`));
+  return hit ? t(hit[1]) : c.name;
+}

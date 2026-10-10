@@ -58,6 +58,8 @@ export interface SpaceImageRef {
 export interface PlantImageRef {
   kind: 'plant';
   speciesId: string;
+  /** Where the grown plant goes: the paradise garden (default) or the balcony. */
+  place?: 'garden' | 'balcony';
 }
 
 export type ImageRef = ArtImageRef | QuoteImageRef | CustomImageRef | RemoteImageRef | BalconyImageRef | SpaceImageRef | PlantImageRef;
@@ -100,7 +102,7 @@ export interface AppSettings {
   // Colour scheme: follow the OS, or force Golden Morning / Night Balcony.
   appearance?: 'system' | 'light' | 'dark';
   // Chosen on first launch; undefined until then (the language screen shows).
-  language?: 'en' | 'fr' | 'de' | 'it' | 'es' | 'ar' | 'zh' | 'ru';
+  language?: 'en' | 'hi';
   // How alive the garden is: everything, a calm few things, or still.
   gardenMotion?: 'full' | 'calm' | 'off';
 }

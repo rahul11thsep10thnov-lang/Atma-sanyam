@@ -4,7 +4,7 @@
 import React from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import { packFor, hasImg, img } from '../../spaces/packs';
-import { SEGMENTS, SegmentId, speciesOf, unlocked } from '../../paradise/catalog';
+import { SEGMENTS, SegmentId, plantName, speciesOf, unlocked } from '../../paradise/catalog';
 import { grownIn, hasArt } from '../../paradise/model';
 import { useParadise } from '../../paradise/repository';
 import { speciesThumb } from '../../paradise/ui/PlantCatalogSheet';
@@ -59,10 +59,10 @@ export function GrowPlantsTab({ selected, onPick, onSeeAll }: { selected: PlantP
               const on = selected?.kind === 'species' && selected.speciesId === s.id;
               const thumb = speciesThumb(s.id, 7);
               return (
-                <Tactile key={s.id} onPress={() => onPick({ kind: 'species', speciesId: s.id, segment: seg })} scaleTo={0.96} accessibilityRole="button" accessibilityLabel={`${s.name}, ${t(`paradise.segment.${seg}` as never)}`} accessibilityState={{ selected: on }} style={[styles.tile, { backgroundColor: colors.surfaceRaised, borderColor: on ? colors.primary : colors.border }, on && shadow.level2]}>
+                <Tactile key={s.id} onPress={() => onPick({ kind: 'species', speciesId: s.id, segment: seg })} scaleTo={0.96} accessibilityRole="button" accessibilityLabel={`${plantName(s.id)}, ${t(`paradise.segment.${seg}` as never)}`} accessibilityState={{ selected: on }} style={[styles.tile, { backgroundColor: colors.surfaceRaised, borderColor: on ? colors.primary : colors.border }, on && shadow.level2]}>
                   <View style={styles.thumb}>{thumb && <Image source={thumb} style={styles.img} resizeMode="contain" />}</View>
                   <AppText variant="caption" numberOfLines={1} style={styles.name}>
-                    {s.name}
+                    {plantName(s.id)}
                   </AppText>
                   <AppText variant="caption" tone="secondary" numberOfLines={1} style={styles.sub}>
                     {t(`paradise.segment.${seg}` as never)}

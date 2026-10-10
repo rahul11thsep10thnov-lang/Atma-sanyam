@@ -14,7 +14,7 @@ import { STAGE_WORDS } from './model';
 import { ArtworkRecord, JigsawTier, newArtwork, tierForMinutes, addArtwork } from '../collection/model';
 import { loadCollection, saveCollection } from '../collection/repository';
 import { PlantGrowthSize } from '../growth/size';
-import { SPECIES_BY_ID, SegmentId } from '../paradise/catalog';
+import { SPECIES_BY_ID, SegmentId, plantName } from '../paradise/catalog';
 import { addPenalty as addParadisePenalty, plantFromSession } from '../paradise/model';
 import { loadParadise, saveParadise } from '../paradise/repository';
 import { ImageRef } from '../types';
@@ -25,6 +25,8 @@ export interface NewPlant {
   name: string;
   size: PlantGrowthSize;
   segment: SegmentId;
+  /** Where it ended up (a full balcony sends it to the garden). */
+  place: 'garden' | 'balcony';
 }
 
 export interface SessionOutcome {
@@ -76,10 +78,10 @@ export async function creditCompletedSession(minutes: number, image: ImageRef, s
   let newPlant: NewPlant | null = null;
   if (image.kind === 'plant') {
     const paradise = await loadParadise();
-    const r = plantFromSession(paradise, image.speciesId, minutes, sessionId);
+    const r = plantFromSession(paradise, image.speciesId, minutes, sessionId, image.place ?? 'garden');
     if (r.plant) {
       await saveParadise(r.state);
-      newPlant = { id: r.plant.id, speciesId: r.plant.speciesId, name: SPECIES_BY_ID[r.plant.speciesId]?.name ?? r.plant.speciesId, size: r.plant.size, segment: r.plant.segment };
+      newPlant = { id: r.plant.id, speciesId: r.plant.speciesId, name: plantName(r.plant.speciesId), size: r.plant.size, segment: r.plant.segment, place: r.plant.place ?? 'garden' };
     }
   } else if (image.kind === 'space' || image.kind === 'balcony') {
     const space: SpaceId = 'balcony';
@@ -129,7 +131,7 @@ export async function recordPausedSession(image: ImageRef, elapsedSeconds = GRAC
     const segment = species?.segment ?? 'flowers';
     const paradise = await loadParadise();
     await saveParadise(addParadisePenalty(paradise, segment));
-    return { wilted: false, plantName: species?.name ?? image.speciesId, where: segment, penalties: 1 };
+    return { wilted: false, plantName: plantName(image.speciesId), where: segment, penalties: 1 };
   }
   const space: SpaceId = 'balcony';
   const pack = packFor(space);

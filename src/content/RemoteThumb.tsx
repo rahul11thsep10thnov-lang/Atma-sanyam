@@ -7,6 +7,7 @@ import { radii } from '../theme/radii';
 import { useTheme } from '../theme/ThemeContext';
 import { ContentImage } from './types';
 import { ImageVariant, peekCachedImageUri, resolveImageUri } from './repository';
+import { t } from '../i18n';
 
 interface RemoteThumbProps {
   image: ContentImage;
@@ -62,7 +63,7 @@ export function RemoteThumb({ image, variant = 'thumbnail', size, onPress, selec
       )}
       {status === 'error' && (
         <Pressable style={styles.overlay} onPress={() => setAttempt((a) => a + 1)}>
-          <Text style={[styles.retryText, { color: colors.primary }]}>Retry</Text>
+          <Text style={[styles.retryText, { color: colors.primary }]}>{t('retry')}</Text>
         </Pressable>
       )}
     </Pressable>

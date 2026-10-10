@@ -6,6 +6,12 @@ orchard, pergolas of wisteria, and the mountains beyond. Every plant a
 person grows in a focus session takes a permanent place in it. It replaces
 the earlier real-time 3D garden.
 
+The painting itself has no plants of its own: the lawns, soil and water
+where the reference image had planting were cleared
+(`tools/balcony-render/gen_paradise_empty.py`), leaving the gazebo,
+waterfalls, pond, bridges, lanterns, paths, treehouse, pergolas and
+mountains. Every plant in the garden is one the person grew.
+
 ## Two views, one garden
 
 | View | What it shows | Camera |
@@ -113,10 +119,24 @@ interface ParadiseState {
 4. On completion the plant is created once (idempotent by session id),
    placed automatically, and the app travels to its segment, where the
    plant settles in with a glow and the label "Pink Lily · Size 3".
-5. Tapping a plant only **inspects** it: name, scientific name, size,
+5. Tapping a plant **inspects** it: name, scientific name, size,
    the focus that grew it, date, description, **Grow another** (which
-   opens the preview for a new session). Nothing ever regrows or
+   opens the preview for a new session) and **Remove** (with a
+   confirmation; it cannot be undone). Nothing ever regrows or
    duplicates an existing plant.
+
+## Garden or balcony
+
+The preview asks **Where will it grow?**: the garden (the default) or the
+balcony. The balcony has 26 places (`src/paradise/balcony.ts`), along the
+left wall, the railing and the far end, keeping the middle free to walk.
+Their floor positions come from the balcony's own perspective (a floor
+point at plate row y is 2950 / (y − 895) m away), so plants sort in depth
+with the furniture. Plants that grow in the ground in the garden stand in
+a terracotta pot on the balcony; trees stay pot-sized
+(`balconyMetres`). When the balcony is full, the plant goes to the
+garden. Balcony plants count towards a segment's rarity unlocks. Tap one
+on the balcony for its card and **Remove**.
 
 Abandoning a plant session after the 10-second grace leaves a wilted
 sapling in that segment; it clears for 40 coins. Sessions under 15
@@ -170,6 +190,12 @@ the same curve so a size looks the same in both places.
   number of small native-driver views.
 - Motion settings: Settings → Garden animation (Full, Calm, Off), and the
   system's reduce-motion switch turns everything off.
+
+## Languages
+
+Species names, descriptions and progressions have Hindi versions in
+`src/paradise/catalog.hi.ts`; `plantName` and `plantText` pick the current
+language.
 
 ## Persistence
 

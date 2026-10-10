@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { NavigationContainer, DefaultTheme, DarkTheme, useNavigationContainerRef } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme, NavigationState, useNavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { RootStackParamList, RootTabParamList } from './types';
@@ -58,6 +58,10 @@ export function RootNavigator() {
   useEffect(() => {
     if (settings.language) setLanguage(settings.language);
   }, [settings.language]);
+  // A language change remounts the screens so every label updates at once;
+  // the navigation state is kept, so the person stays where they were.
+  const language = useLanguage();
+  const navState = useRef<NavigationState | undefined>(undefined);
   const navTheme = {
     ...(isDark ? DarkTheme : DefaultTheme),
     colors: {
@@ -84,9 +88,20 @@ export function RootNavigator() {
   };
 
   return (
-    <NavigationContainer theme={navTheme} ref={navRef} onReady={onRouteChange} onStateChange={onRouteChange}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!loading && !settings.language && <Stack.Screen name="Language" component={LanguageScreen} options={{ animation: 'fade' }} />}
+    <NavigationContainer
+      key={language}
+      theme={navTheme}
+      ref={navRef}
+      initialState={navState.current}
+      onReady={onRouteChange}
+      onStateChange={(st) => {
+        navState.current = st;
+        onRouteChange();
+      }}
+    >
+      {/* the language screen is always registered: first launch starts on it, Settings opens it */}
+      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={settings.language ? 'Tabs' : 'Language'}>
+        <Stack.Screen name="Language" component={LanguageScreen} options={{ animation: 'fade' }} />
         <Stack.Screen name="Tabs" component={Tabs} />
         <Stack.Screen
           name="ActiveSession"

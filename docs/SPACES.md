@@ -73,9 +73,13 @@ front of the person, ending in one of seven sizes.
   picture plus a light pool); wall washes and skylights lift a whole wall.
   Tap an artwork for its story: title, collection, size, the focus that
   earned it, date, frame.
-- **Edit museum**: tap an object, drag it, turn it, make it smaller or
-  bigger, change an artwork's frame (among owned frame styles), switch a
-  light on, off, dimmer or brighter, or put it away.
+- **No customising**: the museum arranges itself. Finished jigsaws hang
+  in order, and at least ten empty frames (`MIN_BLANK_SPACES`) always wait
+  on the walls for the next ones; a new section opens when needed
+  (`ensureBlankSpaces`). The only choice the person makes is to **throw
+  away** a finished picture (from its card or from Collection), which frees
+  its place. The edit mode, the museum store and the museum settings are no
+  longer reachable; their code stays for older saved museums.
 - **Themes**: contemporary (white plaster, grey marble) and Indian
   heritage (sandstone, warm marble, teak trim).
 - **Store** (`store.ts`): 63 curated items, never more than 100, across
@@ -87,6 +91,10 @@ front of the person, ending in one of seven sizes.
   price. Buying places the object in the current section at once.
 
 ## The balcony (`src/spaces/`)
+
+Grown plants can also live here (see "Garden or balcony" in
+`docs/PARADISE_GARDEN.md`): up to 26, drawn into the photograph in depth
+order with the furniture.
 
 Unchanged in how it is built: every surface, plant and object is
 path-traced offline in Blender Cycles (`tools/balcony-render/`, fully

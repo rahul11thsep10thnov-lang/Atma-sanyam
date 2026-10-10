@@ -40,6 +40,10 @@ interface Props {
   /** Hide one placed item (it's being dragged in edit mode). */
   hiddenUid?: string | null;
   onGeometry?: (g: SceneGeometry) => void;
+  /** Extra things standing in the scene (grown plants), drawn in depth order
+   * with the space's own objects: `depth` in metres from the camera, `render`
+   * gets the plate → screen scale. */
+  extras?: { key: string; depth: number; render: (s: number) => React.ReactNode }[];
   children?: React.ReactNode;
 }
 
@@ -49,12 +53,24 @@ function place(rect: Rect, s: number) {
   return { position: 'absolute' as const, left: rect[0] * s, top: rect[1] * s, width: rect[2] * s, height: rect[3] * s };
 }
 
+type Ordered = ReturnType<typeof drawOrder>[number];
+type Extra = NonNullable<Props['extras']>[number];
+/** The space's objects and the extras, far to near (flat things like rugs first, as before). */
+function mergeByDepth(order: Ordered[], extras: Extra[]): ({ kind: 'obj'; o: Ordered } | { kind: 'extra'; x: Extra })[] {
+  const flat = order.filter((o) => o.item.flat).map((o) => ({ kind: 'obj' as const, o, d: Infinity }));
+  const rest = [
+    ...order.filter((o) => !o.item.flat).map((o) => ({ kind: 'obj' as const, o, d: o.v.depth })),
+    ...extras.map((x) => ({ kind: 'extra' as const, x, d: x.depth })),
+  ].sort((a, b) => b.d - a.d);
+  return [...flat, ...rest].map((e) => (e.kind === 'obj' ? { kind: 'obj' as const, o: e.o } : { kind: 'extra' as const, x: e.x }));
+}
+
 export function layerFor(v: Variant, source: LightState): { file: string; rect: Rect } | null {
   const f = v.files?.[source] ?? v.files?.morning ?? Object.values(v.files ?? {})[0];
   return f ?? null;
 }
 
-export function SpaceScene({ space, state, art, light, rackCount = 0, focusMinutes, focusHealth, mode = 'live', focus = [0.5, 0.52], parallax = true, style, hiddenUid, onGeometry, children }: Props) {
+export function SpaceScene({ space, state, art, light, rackCount = 0, focusMinutes, focusHealth, mode = 'live', focus = [0.5, 0.52], parallax = true, style, hiddenUid, onGeometry, extras, children }: Props) {
   const pack = packFor(space);
   const PW = pack.plate.width;
   const PH = pack.plate.height;
@@ -100,7 +116,9 @@ export function SpaceScene({ space, state, art, light, rackCount = 0, focusMinut
           <Animated.View style={[{ position: 'absolute', left: ox, top: oy, width: PW * s, height: PH * s }, near]}>
             <Image source={img(space, L.base.file)} style={place(L.base.rect, s)} />
             {L.sunMask && live && !isDark(light) && light !== 'rain' && <SunBreath space={space} file={L.sunMask.file} rect={L.sunMask.rect} s={s} />}
-            {order.map(({ p, v, item }) => {
+            {mergeByDepth(order, extras ?? []).map((e) => {
+              if (e.kind === 'extra') return <React.Fragment key={`x:${e.x.key}`}>{e.x.render(s)}</React.Fragment>;
+              const { p, v, item } = e.o;
               const layer = layerFor(v, source);
               if (!layer || !hasImg(space, layer.file)) return null;
               return (

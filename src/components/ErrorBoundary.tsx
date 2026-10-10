@@ -6,6 +6,7 @@ import { Button } from '../ui/Button';
 import { Icon } from '../ui/Icon';
 import { lightColors } from '../theme/colors';
 import { space } from '../theme/spacing';
+import { t } from '../i18n';
 
 interface State {
   hasError: boolean;
@@ -32,11 +33,11 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
         <View style={styles.badge}>
           <Icon name="leaf" size="lg" color={lightColors.growth} />
         </View>
-        <AppText variant="heading" align="center">Something went wrong</AppText>
+        <AppText variant="heading" align="center">{t('error.title')}</AppText>
         <AppText variant="body" tone="secondary" align="center" style={styles.body}>
-          Sorry about that. Your focus history is safe on this device.
+          {t('error.body')}
         </AppText>
-        <Button label="Try again" icon="reset" onPress={() => this.setState({ hasError: false })} />
+        <Button label={t('tryAgain')} icon="reset" onPress={() => this.setState({ hasError: false })} />
       </View>
     );
   }
