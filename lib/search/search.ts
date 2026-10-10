@@ -5,6 +5,7 @@ import { attractionPath } from "@/lib/master/view";
 import { localNamesOf } from "@/lib/master/translation/memory";
 import { publishedDestinations } from "@/lib/cms/store";
 import { bootstrapFromSeed } from "@/lib/cms/bootstrap";
+import { seedStubs } from "@/lib/cms/seedView";
 
 export type SearchIntent = "TRIP_FROM" | "TRIP_TO" | "NEARBY" | "SECTION" | "PLACE" | "NONE";
 
@@ -199,6 +200,12 @@ export function search(query: string, limit = 12): SearchResponse {
       if (as >= 55) push({ kind: "attraction", title: a.name, subtitle: `${d.name} · ${a.short_description}`.slice(0, 160), href: `/destinations/${d.slug}#attraction-${a.slug}`, score: as - 2.5 });
     }
   }
+  // Master-list places still being researched rank below researched guides of similar match.
+  for (const st of seedStubs()) {
+    const sc = similarity(needle, st.name);
+    if (sc >= 55) push({ kind: "destination", title: st.name, subtitle: `${st.state ?? "India"} · being researched`, href: st.href, score: sc - 5 });
+  }
+
 
   if (intent === "NONE" && hits.length > 0) intent = "PLACE";
   return { query: raw, intent, interpretation, hits: hits.sort((a, b) => b.score - a.score).slice(0, limit) };

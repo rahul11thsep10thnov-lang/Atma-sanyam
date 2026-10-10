@@ -1,0 +1,84 @@
+{
+  "id": "CMS-little-andaman",
+  "name": "Little Andaman",
+  "slug": "little-andaman",
+  "state": "Andaman and Nicobar Islands",
+  "state_slug": "andaman-and-nicobar-islands",
+  "district": null,
+  "region": null,
+  "country": "India",
+  "latitude": null,
+  "longitude": null,
+  "hero_image": null,
+  "headline": null,
+  "short_description": null,
+  "about": null,
+  "history": null,
+  "history_verified": false,
+  "transportation": null,
+  "travel_info": null,
+  "best_time_text": null,
+  "ideal_duration_text": null,
+  "nearest_airport": null,
+  "nearest_railway_station": null,
+  "categories": [],
+  "companions": [],
+  "attractions": [],
+  "hotels": [],
+  "restaurants": [],
+  "images": [],
+  "faq": [],
+  "seo": {
+    "title": null,
+    "description": null,
+    "keywords": [],
+    "canonical_path": null,
+    "og_image": null
+  },
+  "provenance": {
+    "created": [
+      {
+        "label": "India_Tourism_Master_Database_v1.xlsx (seed list — unverified)",
+        "url": null,
+        "retrieved_at": "2026-10-10T11:05:16.392Z",
+        "status": "SEED",
+        "note": "workbook field: destination_id / destination / state_ut"
+      }
+    ]
+  },
+  "pipeline": {
+    "stage": "QUEUED",
+    "import_id": "master-v1",
+    "position": 763,
+    "started_at": null,
+    "completed_at": null,
+    "last_error": null,
+    "log": [
+      {
+        "at": "2026-10-10T11:05:17.473Z",
+        "stage": "QUEUED",
+        "message": "Queued (position 763)",
+        "level": "info"
+      }
+    ]
+  },
+  "legacy_slug": null,
+  "is_sample_data": false,
+  "status": "DRAFT",
+  "created_at": "2026-10-10T11:05:16.392Z",
+  "updated_at": "2026-10-10T11:05:17.473Z",
+  "published_at": null,
+  "verification_status": "UNVERIFIED",
+  "seed": {
+    "source": "India_Tourism_Master_Database_v1.xlsx",
+    "source_id": "IN-0621",
+    "relation": "CREATED",
+    "imported_at": "2026-10-10T11:05:16.392Z",
+    "raw_type": "Destination / City",
+    "name_in_source": "Little Andaman",
+    "state_in_source": "Andaman and Nicobar Islands",
+    "content_status": "Seed record — enrich/verify",
+    "clusters": [],
+    "conflicts": []
+  }
+}

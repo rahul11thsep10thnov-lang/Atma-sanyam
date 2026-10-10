@@ -94,7 +94,7 @@ function sanitiseSource(v: unknown): SourceRef | null {
   const o = v as Record<string, unknown>;
   const label = str(o.label, 200);
   if (!label) return null;
-  return { label, url: url(o.url), retrieved_at: str(o.retrieved_at, 40), status: enumOf(o.status, ["OK", "SOURCE_UNAVAILABLE", "MANUAL", "SEED"] as const, "MANUAL"), note: str(o.note, 500) ?? undefined };
+  return { label, url: url(o.url), retrieved_at: str(o.retrieved_at, 40), status: enumOf(o.status, ["OK", "SOURCE_UNAVAILABLE", "MANUAL", "SEED", "WEB_SEARCH"] as const, "MANUAL"), note: str(o.note, 500) ?? undefined };
 }
 const sources = (v: unknown): SourceRef[] => (Array.isArray(v) ? v.map(sanitiseSource).filter((x): x is SourceRef => Boolean(x)).slice(0, 20) : []);
 
@@ -232,6 +232,7 @@ export function sanitiseDestination(input: unknown, existing: CmsDestination): C
     seo: sanitiseSeo(o.seo ?? existing.seo),
     provenance: o.provenance ? sanitiseProvenance(o.provenance) : existing.provenance,
     legacy_slug: str(o.legacy_slug, 120),
+    verification_status: o.verification_status === "VERIFIED" ? "VERIFIED" : o.verification_status === "UNVERIFIED" ? "UNVERIFIED" : existing.verification_status,
     status,
     published_at: status === "PUBLISHED" ? existing.published_at ?? now() : existing.published_at
   };

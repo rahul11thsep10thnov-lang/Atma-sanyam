@@ -13,7 +13,6 @@
     "id": "MEDIA-00158",
     "url": "placeholder://Amritsar%20skyline?w=1600&h=900",
     "thumbnail_url": null,
-    "direct_url": null,
     "source": "Placeholder (generated graphic, not a photograph)",
     "source_page_url": null,
     "photographer": null,
@@ -29,7 +28,9 @@
     "width": null,
     "height": null,
     "retrieved_at": null,
-    "sort_order": 0
+    "sort_order": 0,
+    "original_url": null,
+    "provider": "seed"
   },
   "headline": "Home of the Golden Temple",
   "short_description": "Amritsar is centred on the Golden Temple, Sikhism's holiest shrine, and the historic Jallianwala Bagh and Wagah Border.",
@@ -73,7 +74,6 @@
           "id": "MEDIA-00162",
           "url": "placeholder://Golden%20Temple%20(Harmandir%20Sahib)?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -89,7 +89,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -125,7 +127,6 @@
           "id": "MEDIA-00163",
           "url": "placeholder://Jallianwala%20Bagh?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -141,7 +142,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -177,7 +180,6 @@
           "id": "MEDIA-00164",
           "url": "placeholder://Wagah%20Border?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -193,7 +195,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -246,7 +250,6 @@
       "id": "MEDIA-00159",
       "url": "placeholder://Golden%20Temple%20(Harmandir%20Sahib)?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -262,13 +265,14 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 0
+      "sort_order": 0,
+      "original_url": null,
+      "provider": "seed"
     },
     {
       "id": "MEDIA-00160",
       "url": "placeholder://Jallianwala%20Bagh?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -284,13 +288,14 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 1
+      "sort_order": 1,
+      "original_url": null,
+      "provider": "seed"
     },
     {
       "id": "MEDIA-00161",
       "url": "placeholder://Wagah%20Border?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -306,7 +311,9 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 2
+      "sort_order": 2,
+      "original_url": null,
+      "provider": "seed"
     }
   ],
   "faq": [],
@@ -377,6 +384,20 @@
   "is_sample_data": true,
   "status": "PUBLISHED",
   "created_at": "2026-10-03T10:35:37.122Z",
-  "updated_at": "2026-10-03T10:35:37.130Z",
-  "published_at": "2026-10-03T10:35:37.122Z"
+  "updated_at": "2026-10-10T11:05:16.854Z",
+  "published_at": "2026-10-03T10:35:37.122Z",
+  "seed": {
+    "source": "India_Tourism_Master_Database_v1.xlsx",
+    "source_id": "IN-0356",
+    "relation": "LINKED",
+    "imported_at": "2026-10-10T11:05:16.061Z",
+    "raw_type": "Destination / City",
+    "name_in_source": "Amritsar",
+    "state_in_source": "Punjab",
+    "content_status": "Seed record — enrich/verify",
+    "clusters": [
+      "CL-punjab-amritsar-attari"
+    ],
+    "conflicts": []
+  }
 }

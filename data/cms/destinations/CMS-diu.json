@@ -65,6 +65,21 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-03T15:50:03.786Z",
-  "updated_at": "2026-10-03T15:50:04.459Z",
-  "published_at": null
+  "updated_at": "2026-10-10T11:05:16.411Z",
+  "published_at": null,
+  "seed": {
+    "source": "India_Tourism_Master_Database_v1.xlsx",
+    "source_id": "IN-0632",
+    "relation": "LINKED",
+    "imported_at": "2026-10-10T11:05:16.411Z",
+    "raw_type": "Destination / City",
+    "name_in_source": "Diu",
+    "state_in_source": "Dadra and Nagar Haveli and Daman and Diu",
+    "content_status": "Seed record — enrich/verify",
+    "clusters": [],
+    "conflicts": [
+      "state: workbook says \"Dadra and Nagar Haveli and Daman and Diu\", record says \"Gujarat\""
+    ]
+  },
+  "verification_status": "UNVERIFIED"
 }

@@ -30,7 +30,10 @@ import { destinationCount, getDestinationBySlug, publishedDestinations, uniqueSl
 import { emptyAttraction } from "../lib/cms/types";
 import { assess, dedupeKeys } from "../lib/cms/discovery/quality";
 import type { Found, Subject } from "../lib/cms/discovery/types";
-import type { CmsImage } from "../lib/cms/types";
+import type { CmsImage, CmsDestination } from "../lib/cms/types";
+import { emptyDestination } from "../lib/cms/types";
+import { MASTER_COLUMNS, MASTER_SOURCE, planImport, type MasterRow, type MasterWorkbook } from "../lib/cms/masterImport";
+import { allDestinations } from "../lib/cms/store";
 
 let failed = 0;
 let passed = 0;
@@ -278,6 +281,39 @@ console.log("Content CMS and pipeline");
   const a = (id: string, rating: number | null, reviews: number | null, manual = false, order = 0) => ({ ...emptyAttraction(id, id, id), rating, review_count: reviews, manual_order: manual, sort_order: order });
   const ranked = rankAttractions([a("low", 3.9, 100, false, 0), a("pinned", null, null, true, 1), a("high", 4.8, 50, false, 2), a("mid", 4.8, 10, false, 3)]);
   check("attractions rank by rating then review count, with manual overrides fixed in place", ranked.map((x) => x.id).join(",") === "high,pinned,mid,low", ranked.map((x) => x.id).join(","));
+}
+
+// ---- master workbook import (pure planning, nothing written) ----
+{
+  const row = (id: string, name: string, state: string, type = "Destination / City"): MasterRow => ({ ...(Object.fromEntries(MASTER_COLUMNS.map((c) => [c, null])) as MasterRow), destination_id: id, destination: name, state_ut: state, destination_type: type });
+  const rec = (slug: string, name: string, state: string, seedId?: string): CmsDestination => ({ ...emptyDestination(`CMS-${slug}`, name, slug, "2026-01-01T00:00:00Z"), state, ...(seedId ? { seed: { source: MASTER_SOURCE, source_id: seedId, relation: "LINKED" as const, imported_at: "", raw_type: "", name_in_source: name, state_in_source: state, content_status: "", clusters: [], conflicts: [] } } : {}) });
+  const existing = [rec("ajanta", "Ajanta", "Maharashtra"), rec("konark", "Konark", "Odisha"), rec("tsongmo-lake", "Tsongmo Lake", "Sikkim"), rec("bishnupur", "Bishnupur", "Manipur"), rec("diu", "Diu", "Gujarat"), rec("agra", "Agra", "Uttar Pradesh", "IN-0009")];
+  const wb: MasterWorkbook = { file: MASTER_SOURCE, sheets: [], clusters: [], categories: [], schema: [], missing_columns: [], destinations: [
+    row("IN-0001", "Ajanta Caves", "Maharashtra", "Heritage"), row("IN-0002", "Konark", "Odisha"), row("IN-0003", "Konark Sun Temple", "Odisha", "Heritage"),
+    row("IN-0004", "Tsomgo Lake", "Sikkim", "Nature"), row("IN-0005", "Bishnupur", "West Bengal"), row("IN-0006", "Diu", "Dadra and Nagar Haveli and Daman and Diu"),
+    row("IN-0007", "Brand New Place", "Kerala"), row("IN-0008", "Brand New Place", "Kerala"), row("IN-0009", "Agra", "Uttar Pradesh"), row("IN-0010", "Somewhere", "Atlantis"), row("bad", "No Id", "Kerala")
+  ] };
+  const kinds = Object.fromEntries(planImport(wb, existing).map((a) => [a.source_id, `${a.kind}${a.match ? `:${a.match}` : ""}${a.target_id ? `>${a.target_id}` : ""}`]));
+  check("master import links 'X Caves' to an existing 'X' in the same state", kinds["IN-0001"] === "LINK_EXISTING:SUFFIX>CMS-ajanta", kinds["IN-0001"]);
+  check("master import: a separate workbook row does not steal an exact match ('Konark Sun Temple' vs 'Konark')", kinds["IN-0002"] === "LINK_EXISTING:EXACT>CMS-konark" && kinds["IN-0003"] === "CREATE", `${kinds["IN-0002"]} ${kinds["IN-0003"]}`);
+  check("master import applies reviewed spelling variants", kinds["IN-0004"] === "LINK_EXISTING:ALIAS>CMS-tsongmo-lake", kinds["IN-0004"]);
+  check("master import keeps a same-name place in another state separate when reviewed as different", kinds["IN-0005"] === "CREATE", kinds["IN-0005"]);
+  check("master import links an exact name across states but records the conflict", kinds["IN-0006"] === "LINK_EXISTING:EXACT>CMS-diu" && planImport(wb, existing).find((a) => a.source_id === "IN-0006")!.conflicts.some((c) => c.startsWith("state:")));
+  check("master import creates new rows once and flags in-file duplicates", kinds["IN-0007"] === "CREATE" && kinds["IN-0008"] === "DUPLICATE_IN_SOURCE", `${kinds["IN-0007"]} ${kinds["IN-0008"]}`);
+  check("master import skips rows already linked (idempotent)", kinds["IN-0009"] === "ALREADY_IMPORTED:SOURCE_ID>CMS-agra", kinds["IN-0009"]);
+  check("master import rejects unknown states and malformed ids", kinds["IN-0010"] === "INVALID" && kinds["bad"] === "INVALID");
+
+  // The imported data itself: one record per workbook row, no duplicates, nothing unverified published.
+  const all = allDestinations();
+  const seeded = all.filter((d) => d.seed?.source === MASTER_SOURCE);
+  if (seeded.length) {
+    const ids = seeded.flatMap((d) => [d.seed!.source_id, ...(d.seed!.other_source_ids ?? [])]);
+    check("every master-workbook row id is linked to exactly one record", new Set(ids).size === ids.length, `${ids.length} links, ${new Set(ids).size} distinct`);
+    const keys = all.map((d) => `${d.name.toLowerCase()}|${d.state}`);
+    check("no two destination records share a name and state", new Set(keys).size === keys.length);
+    check("no two destination records share a slug", new Set(all.map((d) => d.slug)).size === all.length);
+    check("records created from the workbook are drafts marked unverified", seeded.filter((d) => d.seed!.relation === "CREATED").every((d) => d.status !== "PUBLISHED" && d.verification_status === "UNVERIFIED"));
+  }
 }
 
 console.log(`\n${passed} passed, ${failed} failed`);

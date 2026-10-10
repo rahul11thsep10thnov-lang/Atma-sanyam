@@ -1,0 +1,811 @@
+{
+  "source": "India_Tourism_Master_Database_v1.xlsx",
+  "generated_at": "2026-10-10T11:11:44.861Z",
+  "workbook": {
+    "sheets": [
+      "Destinations",
+      "Trip Clusters",
+      "Schema",
+      "Categories"
+    ],
+    "destination_rows": 681,
+    "cluster_rows": 166,
+    "categories": 9,
+    "filled_columns": {
+      "destination_id": 681,
+      "state_ut": 681,
+      "destination": 681,
+      "destination_type": 681,
+      "primary_cluster": 681,
+      "district": 0,
+      "latitude": 0,
+      "longitude": 0,
+      "best_months": 0,
+      "recommended_duration_days": 0,
+      "ideal_for": 0,
+      "key_attractions": 0,
+      "ancient_history_story": 0,
+      "historical_description": 0,
+      "current_description": 0,
+      "religious_significance": 0,
+      "local_food": 0,
+      "local_crafts": 0,
+      "activities": 0,
+      "nearby_destinations": 0,
+      "suggested_route": 0,
+      "seo_title": 0,
+      "seo_description": 0,
+      "image_queries": 0,
+      "content_status": 681
+    },
+    "missing_columns": []
+  },
+  "totals": {
+    "records_on_site": 827,
+    "created_from_workbook": 322,
+    "existing_records_linked": 358,
+    "workbook_rows_covered": 681,
+    "workbook_rows": 681,
+    "unverified": 656,
+    "published": 24
+  },
+  "counts": {
+    "created": 0,
+    "linked_existing": 0,
+    "already_imported": 681,
+    "held_for_review": 0,
+    "invalid": 0,
+    "duplicates_in_source": 0,
+    "failures": 0
+  },
+  "matches": {
+    "exact": 0,
+    "alias": 0,
+    "suffix": 0
+  },
+  "conflicts": [
+    {
+      "source_id": "IN-0024",
+      "name": "Namdapha National Park",
+      "target_id": "CMS-namdapha",
+      "conflicts": [
+        "name: workbook says \"Namdapha National Park\", record is \"Namdapha\""
+      ]
+    },
+    {
+      "source_id": "IN-0028",
+      "name": "Dong Valley",
+      "target_id": "CMS-dong",
+      "conflicts": [
+        "name: workbook says \"Dong Valley\", record is \"Dong\""
+      ]
+    },
+    {
+      "source_id": "IN-0046",
+      "name": "Nameri National Park",
+      "target_id": "CMS-nameri",
+      "conflicts": [
+        "state: workbook says \"Assam\", record says \"Arunachal Pradesh\"",
+        "name: workbook says \"Nameri National Park\", record is \"Nameri\""
+      ]
+    },
+    {
+      "source_id": "IN-0081",
+      "name": "Chapora Fort",
+      "target_id": "CMS-chapora",
+      "conflicts": [
+        "name: workbook says \"Chapora Fort\", record is \"Chapora\""
+      ]
+    },
+    {
+      "source_id": "IN-0090",
+      "name": "Divar Island",
+      "target_id": "CMS-divar",
+      "conflicts": [
+        "name: workbook says \"Divar Island\", record is \"Divar\""
+      ]
+    },
+    {
+      "source_id": "IN-0216",
+      "name": "Athirappilly Falls",
+      "target_id": "CMS-athirappilly",
+      "conflicts": [
+        "name: workbook says \"Athirappilly Falls\", record is \"Athirappilly\""
+      ]
+    },
+    {
+      "source_id": "IN-0237",
+      "name": "Kanha National Park",
+      "target_id": "CMS-kanha",
+      "conflicts": [
+        "name: workbook says \"Kanha National Park\", record is \"Kanha\""
+      ]
+    },
+    {
+      "source_id": "IN-0238",
+      "name": "Bandhavgarh National Park",
+      "target_id": "CMS-bandhavgarh",
+      "conflicts": [
+        "name: workbook says \"Bandhavgarh National Park\", record is \"Bandhavgarh\""
+      ]
+    },
+    {
+      "source_id": "IN-0241",
+      "name": "Panna National Park",
+      "target_id": "CMS-panna",
+      "conflicts": [
+        "name: workbook says \"Panna National Park\", record is \"Panna\""
+      ]
+    },
+    {
+      "source_id": "IN-0259",
+      "name": "Ajanta Caves",
+      "target_id": "CMS-ajanta",
+      "conflicts": [
+        "name: workbook says \"Ajanta Caves\", record is \"Ajanta\""
+      ]
+    },
+    {
+      "source_id": "IN-0260",
+      "name": "Ellora Caves",
+      "target_id": "CMS-ellora",
+      "conflicts": [
+        "name: workbook says \"Ellora Caves\", record is \"Ellora\""
+      ]
+    },
+    {
+      "source_id": "IN-0261",
+      "name": "Elephanta Caves",
+      "target_id": "CMS-elephanta",
+      "conflicts": [
+        "name: workbook says \"Elephanta Caves\", record is \"Elephanta\""
+      ]
+    },
+    {
+      "source_id": "IN-0262",
+      "name": "Lonar Lake",
+      "target_id": "CMS-lonar",
+      "conflicts": [
+        "name: workbook says \"Lonar Lake\", record is \"Lonar\""
+      ]
+    },
+    {
+      "source_id": "IN-0277",
+      "name": "Keibul Lamjao National Park",
+      "target_id": "CMS-keibul-lamjao",
+      "conflicts": [
+        "name: workbook says \"Keibul Lamjao National Park\", record is \"Keibul Lamjao\""
+      ]
+    },
+    {
+      "source_id": "IN-0284",
+      "name": "Dzuko Valley",
+      "target_id": "CMS-dzukou-valley",
+      "conflicts": [
+        "state: workbook says \"Manipur\", record says \"Nagaland\"",
+        "name: workbook says \"Dzuko Valley\", record is \"Dzukou Valley\"",
+        "also listed as IN-0324 \"Dzukou Valley\" (Nagaland)"
+      ]
+    },
+    {
+      "source_id": "IN-0299",
+      "name": "Laitlum Canyon",
+      "target_id": "CMS-laitlum",
+      "conflicts": [
+        "name: workbook says \"Laitlum Canyon\", record is \"Laitlum\""
+      ]
+    },
+    {
+      "source_id": "IN-0339",
+      "name": "Chilika Lake",
+      "target_id": "CMS-chilika",
+      "conflicts": [
+        "name: workbook says \"Chilika Lake\", record is \"Chilika\""
+      ]
+    },
+    {
+      "source_id": "IN-0346",
+      "name": "Similipal National Park",
+      "target_id": "CMS-simlipal",
+      "conflicts": [
+        "name: workbook says \"Similipal National Park\", record is \"Simlipal\""
+      ]
+    },
+    {
+      "source_id": "IN-0347",
+      "name": "Bhitarkanika National Park",
+      "target_id": "CMS-bhitarkanika",
+      "conflicts": [
+        "name: workbook says \"Bhitarkanika National Park\", record is \"Bhitarkanika\""
+      ]
+    },
+    {
+      "source_id": "IN-0404",
+      "name": "Tsomgo Lake",
+      "target_id": "CMS-tsongmo-lake",
+      "conflicts": [
+        "name: workbook says \"Tsomgo Lake\", record is \"Tsongmo Lake\""
+      ]
+    },
+    {
+      "source_id": "IN-0439",
+      "name": "Thiruvannamalai",
+      "target_id": "CMS-tiruvannamalai",
+      "conflicts": [
+        "name: workbook says \"Thiruvannamalai\", record is \"Tiruvannamalai\""
+      ]
+    },
+    {
+      "source_id": "IN-0447",
+      "name": "Hogenakkal Falls",
+      "target_id": "CMS-hogenakkal",
+      "conflicts": [
+        "name: workbook says \"Hogenakkal Falls\", record is \"Hogenakkal\""
+      ]
+    },
+    {
+      "source_id": "IN-0475",
+      "name": "Sepahijala Wildlife Sanctuary",
+      "target_id": "CMS-sepahijala",
+      "conflicts": [
+        "name: workbook says \"Sepahijala Wildlife Sanctuary\", record is \"Sepahijala\""
+      ]
+    },
+    {
+      "source_id": "IN-0498",
+      "name": "Dudhwa National Park",
+      "target_id": "CMS-dudhwa",
+      "conflicts": [
+        "name: workbook says \"Dudhwa National Park\", record is \"Dudhwa\""
+      ]
+    },
+    {
+      "source_id": "IN-0500",
+      "name": "Shravasti",
+      "target_id": "CMS-sravasti",
+      "conflicts": [
+        "name: workbook says \"Shravasti\", record is \"Sravasti\""
+      ]
+    },
+    {
+      "source_id": "IN-0632",
+      "name": "Diu",
+      "target_id": "CMS-diu",
+      "conflicts": [
+        "state: workbook says \"Dadra and Nagar Haveli and Daman and Diu\", record says \"Gujarat\""
+      ]
+    }
+  ],
+  "review": [],
+  "invalid": [],
+  "failures": [],
+  "clusters": {
+    "total": 166,
+    "with_all_stops_resolved": 134,
+    "unresolved_stops": 39,
+    "unresolved": [
+      {
+        "cluster": "Tirupati–Chittoor–Lepakshi",
+        "state": "Andhra Pradesh",
+        "stop": "Chittoor"
+      },
+      {
+        "cluster": "Guwahati–Hajo",
+        "state": "Assam",
+        "stop": "Hajo"
+      },
+      {
+        "cluster": "Dibrugarh–Tinsukia",
+        "state": "Assam",
+        "stop": "Tinsukia"
+      },
+      {
+        "cluster": "Vikramshila–Bhagalpur",
+        "state": "Bihar",
+        "stop": "Bhagalpur"
+      },
+      {
+        "cluster": "North Goa beaches–forts",
+        "state": "Goa",
+        "stop": "North Goa beaches"
+      },
+      {
+        "cluster": "North Goa beaches–forts",
+        "state": "Goa",
+        "stop": "forts"
+      },
+      {
+        "cluster": "South Goa beaches",
+        "state": "Goa",
+        "stop": "South Goa beaches"
+      },
+      {
+        "cluster": "Deoghar–Dumka–Maluti",
+        "state": "Jharkhand",
+        "stop": "Dumka"
+      },
+      {
+        "cluster": "North Kerala",
+        "state": "Kerala",
+        "stop": "North Kerala"
+      },
+      {
+        "cluster": "Tiger circuit",
+        "state": "Madhya Pradesh",
+        "stop": "Tiger circuit"
+      },
+      {
+        "cluster": "Nashik–Trimbakeshwar",
+        "state": "Maharashtra",
+        "stop": "Trimbakeshwar"
+      },
+      {
+        "cluster": "Konkan coast",
+        "state": "Maharashtra",
+        "stop": "Konkan coast"
+      },
+      {
+        "cluster": "Fort circuit",
+        "state": "Maharashtra",
+        "stop": "Fort circuit"
+      },
+      {
+        "cluster": "Anandpur Sahib–Rupnagar",
+        "state": "Punjab",
+        "stop": "Rupnagar"
+      },
+      {
+        "cluster": "wetlands circuit",
+        "state": "Punjab",
+        "stop": "wetlands circuit"
+      },
+      {
+        "cluster": "Jaisalmer–Sam–Desert National Park",
+        "state": "Rajasthan",
+        "stop": "Sam"
+      },
+      {
+        "cluster": "Kongu region",
+        "state": "Tamil Nadu",
+        "stop": "Kongu region"
+      },
+      {
+        "cluster": "Hyderabad heritage",
+        "state": "Telangana",
+        "stop": "Hyderabad heritage"
+      },
+      {
+        "cluster": "Adilabad waterfalls",
+        "state": "Telangana",
+        "stop": "Adilabad waterfalls"
+      },
+      {
+        "cluster": "Unakoti–Kailashahar",
+        "state": "Tripura",
+        "stop": "Kailashahar"
+      },
+      {
+        "cluster": "Buddhist circuit",
+        "state": "Uttar Pradesh",
+        "stop": "Buddhist circuit"
+      },
+      {
+        "cluster": "Nainital–Bhimtal–Mukteshwar",
+        "state": "Uttarakhand",
+        "stop": "Bhimtal"
+      },
+      {
+        "cluster": "Char Dham",
+        "state": "Uttarakhand",
+        "stop": "Char Dham"
+      },
+      {
+        "cluster": "Kumaon",
+        "state": "Uttarakhand",
+        "stop": "Kumaon"
+      },
+      {
+        "cluster": "marine-island circuit",
+        "state": "Andaman and Nicobar Islands",
+        "stop": "marine"
+      },
+      {
+        "cluster": "marine-island circuit",
+        "state": "Andaman and Nicobar Islands",
+        "stop": "island circuit"
+      },
+      {
+        "cluster": "Chandigarh heritage–Capitol Complex–Rock Garden–Sukhna",
+        "state": "Chandigarh",
+        "stop": "Chandigarh heritage"
+      },
+      {
+        "cluster": "Chandigarh–Pinjore–Morni",
+        "state": "Chandigarh",
+        "stop": "Morni"
+      },
+      {
+        "cluster": "Daman heritage–beaches",
+        "state": "Dadra and Nagar Haveli and Daman and Diu",
+        "stop": "Daman heritage"
+      },
+      {
+        "cluster": "Daman heritage–beaches",
+        "state": "Dadra and Nagar Haveli and Daman and Diu",
+        "stop": "beaches"
+      },
+      {
+        "cluster": "Diu fort–beaches–caves",
+        "state": "Dadra and Nagar Haveli and Daman and Diu",
+        "stop": "beaches"
+      },
+      {
+        "cluster": "Diu fort–beaches–caves",
+        "state": "Dadra and Nagar Haveli and Daman and Diu",
+        "stop": "caves"
+      },
+      {
+        "cluster": "Old Delhi heritage",
+        "state": "Delhi",
+        "stop": "Old Delhi heritage"
+      },
+      {
+        "cluster": "New Delhi monumental circuit",
+        "state": "Delhi",
+        "stop": "New Delhi monumental circuit"
+      },
+      {
+        "cluster": "museum–garden circuit",
+        "state": "Delhi",
+        "stop": "museum"
+      },
+      {
+        "cluster": "museum–garden circuit",
+        "state": "Delhi",
+        "stop": "garden circuit"
+      },
+      {
+        "cluster": "Puducherry French Quarter–Ashram–beaches",
+        "state": "Puducherry",
+        "stop": "Puducherry French Quarter"
+      },
+      {
+        "cluster": "Puducherry French Quarter–Ashram–beaches",
+        "state": "Puducherry",
+        "stop": "Ashram"
+      },
+      {
+        "cluster": "Puducherry French Quarter–Ashram–beaches",
+        "state": "Puducherry",
+        "stop": "beaches"
+      }
+    ]
+  },
+  "states": [
+    {
+      "state": "Andhra Pradesh",
+      "in_workbook": 16,
+      "created": 3,
+      "linked": 13,
+      "site_total": 23,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Arunachal Pradesh",
+      "in_workbook": 15,
+      "created": 4,
+      "linked": 12,
+      "site_total": 24,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Assam",
+      "in_workbook": 15,
+      "created": 14,
+      "linked": 0,
+      "site_total": 14,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Bihar",
+      "in_workbook": 15,
+      "created": 15,
+      "linked": 0,
+      "site_total": 15,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Chhattisgarh",
+      "in_workbook": 15,
+      "created": 15,
+      "linked": 0,
+      "site_total": 15,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Goa",
+      "in_workbook": 16,
+      "created": 5,
+      "linked": 11,
+      "site_total": 26,
+      "published": 1,
+      "with_coordinates": 1
+    },
+    {
+      "state": "Gujarat",
+      "in_workbook": 20,
+      "created": 5,
+      "linked": 16,
+      "site_total": 31,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Haryana",
+      "in_workbook": 14,
+      "created": 14,
+      "linked": 0,
+      "site_total": 14,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Himachal Pradesh",
+      "in_workbook": 26,
+      "created": 7,
+      "linked": 19,
+      "site_total": 45,
+      "published": 1,
+      "with_coordinates": 1
+    },
+    {
+      "state": "Jharkhand",
+      "in_workbook": 16,
+      "created": 16,
+      "linked": 0,
+      "site_total": 16,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Karnataka",
+      "in_workbook": 31,
+      "created": 8,
+      "linked": 23,
+      "site_total": 38,
+      "published": 2,
+      "with_coordinates": 2
+    },
+    {
+      "state": "Kerala",
+      "in_workbook": 24,
+      "created": 3,
+      "linked": 21,
+      "site_total": 33,
+      "published": 1,
+      "with_coordinates": 1
+    },
+    {
+      "state": "Madhya Pradesh",
+      "in_workbook": 25,
+      "created": 6,
+      "linked": 19,
+      "site_total": 25,
+      "published": 1,
+      "with_coordinates": 1
+    },
+    {
+      "state": "Maharashtra",
+      "in_workbook": 26,
+      "created": 7,
+      "linked": 19,
+      "site_total": 37,
+      "published": 1,
+      "with_coordinates": 1
+    },
+    {
+      "state": "Manipur",
+      "in_workbook": 13,
+      "created": 6,
+      "linked": 6,
+      "site_total": 15,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Meghalaya",
+      "in_workbook": 20,
+      "created": 9,
+      "linked": 11,
+      "site_total": 24,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Mizoram",
+      "in_workbook": 13,
+      "created": 5,
+      "linked": 8,
+      "site_total": 13,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Nagaland",
+      "in_workbook": 13,
+      "created": 6,
+      "linked": 7,
+      "site_total": 16,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Odisha",
+      "in_workbook": 22,
+      "created": 10,
+      "linked": 12,
+      "site_total": 28,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Punjab",
+      "in_workbook": 15,
+      "created": 14,
+      "linked": 1,
+      "site_total": 15,
+      "published": 1,
+      "with_coordinates": 1
+    },
+    {
+      "state": "Rajasthan",
+      "in_workbook": 32,
+      "created": 8,
+      "linked": 24,
+      "site_total": 35,
+      "published": 3,
+      "with_coordinates": 3
+    },
+    {
+      "state": "Sikkim",
+      "in_workbook": 18,
+      "created": 6,
+      "linked": 12,
+      "site_total": 22,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Tamil Nadu",
+      "in_workbook": 27,
+      "created": 3,
+      "linked": 24,
+      "site_total": 33,
+      "published": 3,
+      "with_coordinates": 3
+    },
+    {
+      "state": "Telangana",
+      "in_workbook": 22,
+      "created": 21,
+      "linked": 1,
+      "site_total": 22,
+      "published": 1,
+      "with_coordinates": 1
+    },
+    {
+      "state": "Tripura",
+      "in_workbook": 12,
+      "created": 7,
+      "linked": 5,
+      "site_total": 13,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Uttar Pradesh",
+      "in_workbook": 26,
+      "created": 7,
+      "linked": 19,
+      "site_total": 34,
+      "published": 7,
+      "with_coordinates": 7
+    },
+    {
+      "state": "Uttarakhand",
+      "in_workbook": 30,
+      "created": 3,
+      "linked": 27,
+      "site_total": 44,
+      "published": 1,
+      "with_coordinates": 1
+    },
+    {
+      "state": "West Bengal",
+      "in_workbook": 24,
+      "created": 8,
+      "linked": 16,
+      "site_total": 27,
+      "published": 2,
+      "with_coordinates": 2
+    },
+    {
+      "state": "Andaman and Nicobar Islands",
+      "in_workbook": 17,
+      "created": 17,
+      "linked": 0,
+      "site_total": 17,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Chandigarh",
+      "in_workbook": 8,
+      "created": 8,
+      "linked": 0,
+      "site_total": 8,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Dadra and Nagar Haveli and Daman and Diu",
+      "in_workbook": 13,
+      "created": 12,
+      "linked": 0,
+      "site_total": 12,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Delhi",
+      "in_workbook": 18,
+      "created": 18,
+      "linked": 0,
+      "site_total": 19,
+      "published": 1,
+      "with_coordinates": 1
+    },
+    {
+      "state": "Jammu and Kashmir",
+      "in_workbook": 23,
+      "created": 5,
+      "linked": 18,
+      "site_total": 29,
+      "published": 1,
+      "with_coordinates": 1
+    },
+    {
+      "state": "Ladakh",
+      "in_workbook": 21,
+      "created": 7,
+      "linked": 14,
+      "site_total": 25,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Lakshadweep",
+      "in_workbook": 10,
+      "created": 10,
+      "linked": 0,
+      "site_total": 10,
+      "published": 0,
+      "with_coordinates": 0
+    },
+    {
+      "state": "Puducherry",
+      "in_workbook": 10,
+      "created": 10,
+      "linked": 0,
+      "site_total": 10,
+      "published": 0,
+      "with_coordinates": 0
+    }
+  ],
+  "queued_for_enrichment": 0
+}

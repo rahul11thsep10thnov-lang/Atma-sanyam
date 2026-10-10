@@ -21,7 +21,10 @@
   "ideal_duration_text": null,
   "nearest_airport": null,
   "nearest_railway_station": null,
-  "categories": [],
+  "categories": [
+    "HERITAGE",
+    "HISTORICAL"
+  ],
   "companions": [],
   "attractions": [],
   "hotels": [],
@@ -42,6 +45,15 @@
         "url": null,
         "retrieved_at": "2026-10-03T15:50:03.740Z",
         "status": "MANUAL"
+      }
+    ],
+    "categories": [
+      {
+        "label": "India_Tourism_Master_Database_v1.xlsx (seed list — unverified)",
+        "url": null,
+        "retrieved_at": "2026-10-10T11:05:15.750Z",
+        "status": "SEED",
+        "note": "workbook field: destination_type"
       }
     ]
   },
@@ -65,6 +77,21 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-03T15:50:03.740Z",
-  "updated_at": "2026-10-03T15:50:04.400Z",
-  "published_at": null
+  "updated_at": "2026-10-10T11:05:15.750Z",
+  "published_at": null,
+  "seed": {
+    "source": "India_Tourism_Master_Database_v1.xlsx",
+    "source_id": "IN-0081",
+    "relation": "LINKED",
+    "imported_at": "2026-10-10T11:05:15.750Z",
+    "raw_type": "Heritage",
+    "name_in_source": "Chapora Fort",
+    "state_in_source": "Goa",
+    "content_status": "Seed record — enrich/verify",
+    "clusters": [],
+    "conflicts": [
+      "name: workbook says \"Chapora Fort\", record is \"Chapora\""
+    ]
+  },
+  "verification_status": "UNVERIFIED"
 }

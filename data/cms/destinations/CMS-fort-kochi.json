@@ -21,7 +21,10 @@
   "ideal_duration_text": null,
   "nearest_airport": null,
   "nearest_railway_station": null,
-  "categories": [],
+  "categories": [
+    "HERITAGE",
+    "HISTORICAL"
+  ],
   "companions": [],
   "attractions": [],
   "hotels": [],
@@ -42,6 +45,15 @@
         "url": null,
         "retrieved_at": "2026-10-03T15:50:03.679Z",
         "status": "MANUAL"
+      }
+    ],
+    "categories": [
+      {
+        "label": "India_Tourism_Master_Database_v1.xlsx (seed list — unverified)",
+        "url": null,
+        "retrieved_at": "2026-10-10T11:05:15.885Z",
+        "status": "SEED",
+        "note": "workbook field: destination_type"
       }
     ]
   },
@@ -65,6 +77,19 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-03T15:50:03.679Z",
-  "updated_at": "2026-10-03T15:50:04.309Z",
-  "published_at": null
+  "updated_at": "2026-10-10T11:06:16.574Z",
+  "published_at": null,
+  "seed": {
+    "source": "India_Tourism_Master_Database_v1.xlsx",
+    "source_id": "IN-0201",
+    "relation": "LINKED",
+    "imported_at": "2026-10-10T11:05:15.885Z",
+    "raw_type": "Heritage",
+    "name_in_source": "Fort Kochi",
+    "state_in_source": "Kerala",
+    "content_status": "Seed record — enrich/verify",
+    "clusters": [],
+    "conflicts": []
+  },
+  "verification_status": "UNVERIFIED"
 }

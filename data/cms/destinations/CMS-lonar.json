@@ -21,7 +21,9 @@
   "ideal_duration_text": null,
   "nearest_airport": null,
   "nearest_railway_station": null,
-  "categories": [],
+  "categories": [
+    "NATURE"
+  ],
   "companions": [],
   "attractions": [],
   "hotels": [],
@@ -42,6 +44,15 @@
         "url": null,
         "retrieved_at": "2026-10-03T15:50:03.764Z",
         "status": "MANUAL"
+      }
+    ],
+    "categories": [
+      {
+        "label": "India_Tourism_Master_Database_v1.xlsx (seed list — unverified)",
+        "url": null,
+        "retrieved_at": "2026-10-10T11:05:15.951Z",
+        "status": "SEED",
+        "note": "workbook field: destination_type"
       }
     ]
   },
@@ -65,6 +76,21 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-03T15:50:03.764Z",
-  "updated_at": "2026-10-03T15:50:04.434Z",
-  "published_at": null
+  "updated_at": "2026-10-10T11:05:15.951Z",
+  "published_at": null,
+  "seed": {
+    "source": "India_Tourism_Master_Database_v1.xlsx",
+    "source_id": "IN-0262",
+    "relation": "LINKED",
+    "imported_at": "2026-10-10T11:05:15.951Z",
+    "raw_type": "Nature",
+    "name_in_source": "Lonar Lake",
+    "state_in_source": "Maharashtra",
+    "content_status": "Seed record — enrich/verify",
+    "clusters": [],
+    "conflicts": [
+      "name: workbook says \"Lonar Lake\", record is \"Lonar\""
+    ]
+  },
+  "verification_status": "UNVERIFIED"
 }

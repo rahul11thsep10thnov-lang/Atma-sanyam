@@ -9,6 +9,11 @@ import { summaryOf } from "@/lib/master/view";
 import { DestinationCard } from "@/components/destination/DestinationCard";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
+import Link from "next/link";
+import { publishedCards } from "@/lib/cms/queries";
+import { draftCircuits, seedStubsOfState } from "@/lib/cms/seedView";
+import { CmsCard } from "@/components/cms/CmsCard";
+import { DraftCircuits } from "@/components/cms/DraftCircuits";
 
 interface PageParams {
   locale: string;
@@ -29,7 +34,7 @@ export function generateMetadata({ params }: { params: PageParams }): Metadata {
   return {
     title,
     description,
-    robots: dests.length === 0 ? { index: false, follow: true } : undefined,
+    robots: dests.length === 0 && !publishedCards().some((c) => c.state === state.name) ? { index: false, follow: true } : undefined,
     alternates: { canonical: `/${locale}/india/${state.slug}`, languages: Object.fromEntries(locales.map((l) => [l, `/${l}/india/${state.slug}`])) }
   };
 }
@@ -43,6 +48,11 @@ export default function StatePage({ params }: { params: PageParams }) {
   const t = dict.destination.pages;
   const ui = dict.common.ui;
   const dests = destinationsOfState(state.id).sort((a, b) => b.popularity - a.popularity);
+  const tc = dict.destination.cms;
+  const seedSlugs = new Set(dests.map((d) => d.slug));
+  const guides = publishedCards().filter((c) => c.state === state.name && !seedSlugs.has(c.slug));
+  const stubs = seedStubsOfState(state.name);
+  const circuits = draftCircuits(state.name);
   const crumbs = [
     { label: dict.common.nav.home, href: `/${locale}` },
     { label: "India", href: `/${locale}/explore` },
@@ -84,16 +94,40 @@ export default function StatePage({ params }: { params: PageParams }) {
 
       <section className="container-page py-8">
         <h2 className="section-heading">{t.destinationsIn.replace("{name}", localStateName(locale, state.slug, state.name))}</h2>
-        {dests.length === 0 ? (
+        {dests.length === 0 && guides.length === 0 ? (
           <p className="mt-4 text-sm text-charcoal-light">{t.stateNoDestinations}</p>
         ) : (
           <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {dests.map((d) => (
               <DestinationCard key={d.id} destination={summaryOf(d)} locale={locale} bestTimeLabel={dict.home.card.bestTime} exploreLabel={dict.home.card.explore} fluid />
             ))}
+            {guides.map((c) => (
+              <CmsCard key={c.id} card={c} locale={locale} bestTimeLabel={dict.home.card.bestTime} fluid />
+            ))}
           </div>
         )}
       </section>
+
+      {circuits.length > 0 && (
+        <section className="container-page pb-8">
+          <h2 className="section-heading">{tc.draftCircuitsTitle}</h2>
+          <DraftCircuits circuits={circuits} locale={locale} note={tc.draftCircuitsNote} typicalDays={tc.typicalDays} />
+        </section>
+      )}
+
+      {stubs.length > 0 && (
+        <section className="container-page pb-10">
+          <h2 className="section-heading">{tc.beingResearchedTitle}</h2>
+          <p className="mt-1 max-w-2xl text-sm text-charcoal-light">{tc.beingResearchedIntro}</p>
+          <ul className="mt-4 flex flex-wrap gap-2">
+            {stubs.map((x) => (
+              <li key={x.id}>
+                <Link href={`/${locale}${x.href}`} className="inline-block rounded-full bg-peach px-3 py-1 text-sm text-forest-700 ring-1 ring-black/5 hover:bg-white">{x.name}</Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </>
   );
 }

@@ -13,7 +13,6 @@
     "id": "MEDIA-00116",
     "url": "placeholder://Hyderabad%20skyline?w=1600&h=900",
     "thumbnail_url": null,
-    "direct_url": null,
     "source": "Placeholder (generated graphic, not a photograph)",
     "source_page_url": null,
     "photographer": null,
@@ -29,7 +28,9 @@
     "width": null,
     "height": null,
     "retrieved_at": null,
-    "sort_order": 0
+    "sort_order": 0,
+    "original_url": null,
+    "provider": "seed"
   },
   "headline": "City of Pearls and Nizams",
   "short_description": "Hyderabad blends Qutb Shahi and Nizam-era monuments with a booming IT sector and world-famous biryani.",
@@ -70,7 +71,6 @@
           "id": "MEDIA-00120",
           "url": "placeholder://Charminar?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -86,7 +86,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -122,7 +124,6 @@
           "id": "MEDIA-00121",
           "url": "placeholder://Golconda%20Fort?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -138,7 +139,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -174,7 +177,6 @@
           "id": "MEDIA-00122",
           "url": "placeholder://Chowmahalla%20Palace?w=1200&h=800",
           "thumbnail_url": null,
-          "direct_url": null,
           "source": "Placeholder (generated graphic, not a photograph)",
           "source_page_url": null,
           "photographer": null,
@@ -190,7 +192,9 @@
           "width": null,
           "height": null,
           "retrieved_at": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "original_url": null,
+          "provider": "seed"
         }
       ],
       "sources": [
@@ -243,7 +247,6 @@
       "id": "MEDIA-00117",
       "url": "placeholder://Charminar?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -259,13 +262,14 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 0
+      "sort_order": 0,
+      "original_url": null,
+      "provider": "seed"
     },
     {
       "id": "MEDIA-00118",
       "url": "placeholder://Golconda%20Fort?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -281,13 +285,14 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 1
+      "sort_order": 1,
+      "original_url": null,
+      "provider": "seed"
     },
     {
       "id": "MEDIA-00119",
       "url": "placeholder://Chowmahalla%20Palace?w=1600&h=900",
       "thumbnail_url": null,
-      "direct_url": null,
       "source": "Placeholder (generated graphic, not a photograph)",
       "source_page_url": null,
       "photographer": null,
@@ -303,7 +308,9 @@
       "width": null,
       "height": null,
       "retrieved_at": null,
-      "sort_order": 2
+      "sort_order": 2,
+      "original_url": null,
+      "provider": "seed"
     }
   ],
   "faq": [],
@@ -374,6 +381,18 @@
   "is_sample_data": true,
   "status": "PUBLISHED",
   "created_at": "2026-10-03T10:35:37.122Z",
-  "updated_at": "2026-10-03T10:35:37.129Z",
-  "published_at": "2026-10-03T10:35:37.122Z"
+  "updated_at": "2026-10-10T11:05:16.165Z",
+  "published_at": "2026-10-03T10:35:37.122Z",
+  "seed": {
+    "source": "India_Tourism_Master_Database_v1.xlsx",
+    "source_id": "IN-0448",
+    "relation": "LINKED",
+    "imported_at": "2026-10-10T11:05:16.165Z",
+    "raw_type": "Destination / City",
+    "name_in_source": "Hyderabad",
+    "state_in_source": "Telangana",
+    "content_status": "Seed record — enrich/verify",
+    "clusters": [],
+    "conflicts": []
+  }
 }

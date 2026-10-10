@@ -8,6 +8,8 @@ import { destinationBySlug, getDb, majorDestinations } from "@/lib/master/repo";
 import { suggestFor } from "@/lib/master/routeView";
 import { SignInButton } from "@/components/auth/AuthButton";
 import { RouteCard } from "@/components/plan/RouteCard";
+import { draftCircuits } from "@/lib/cms/seedView";
+import { DraftCircuits } from "@/components/cms/DraftCircuits";
 
 export const metadata: Metadata = {
   title: "Trip routes and planner",
@@ -28,6 +30,9 @@ export default async function TripsPage({ params, searchParams }: { params: { lo
   const days = Math.min(21, Math.max(1, Number(searchParams.days) || 3));
   const routes = start ? suggestFor(start.id, days) : [];
   const nameOf = (id: string) => db.destinations.find((d) => d.id === id)?.name ?? id;
+  const drafts = draftCircuits();
+  const draftStates = [...new Set(drafts.map((c) => c.state))];
+  const tc = dict.destination.cms;
   const field = "mt-1 rounded-lg border border-forest-200 bg-white px-3 py-2 text-sm text-charcoal";
 
   return (
@@ -84,6 +89,24 @@ export default async function TripsPage({ params, searchParams }: { params: { lo
           })}
         </ul>
       </section>
+
+      {drafts.length > 0 && (
+        <section className="mt-12" aria-labelledby="draft-circuits">
+          <h2 id="draft-circuits" className="section-heading">{tc.draftCircuitsTitle}</h2>
+          <p className="mt-1 text-sm text-charcoal-light">{drafts.length} · {draftStates.length} states and union territories</p>
+          <div className="mt-4 space-y-3">
+            {draftStates.map((st) => {
+              const list = drafts.filter((c) => c.state === st);
+              return (
+                <details key={st} className="rounded-2xl bg-white/60 p-4 ring-1 ring-black/5">
+                  <summary className="cursor-pointer font-display text-base font-semibold text-charcoal">{st} <span className="text-sm font-normal text-charcoal-light">({list.length})</span></summary>
+                  <DraftCircuits circuits={list} locale={locale} note={tc.draftCircuitsNote} typicalDays={tc.typicalDays} />
+                </details>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       <section className="mt-12" aria-labelledby="my-trips">
         <h2 id="my-trips" className="section-heading">{dict.common.nav.myTrips}</h2>

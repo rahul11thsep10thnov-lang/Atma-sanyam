@@ -6,6 +6,7 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 import { publishedCards } from "@/lib/cms/queries";
 import { CmsCard } from "@/components/cms/CmsCard";
 import { CMS_CATEGORIES } from "@/lib/cms/types";
+import { seedStubs } from "@/lib/cms/seedView";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Destinations", description: "Every published destination guide." };
@@ -18,7 +19,11 @@ export default function DestinationsIndex({ params, searchParams }: { params: { 
   const dict = getDictionary(locale);
   const t = dict.destination.cms;
   let list = publishedCards();
-  const states = [...new Set(list.map((c) => c.state).filter((s): s is string => Boolean(s)))].sort();
+  // Master-list places not yet researched: listed by name only (no category, since the list's typing is unverified).
+  const allStubs = seedStubs();
+  const stubs = searchParams.category ? [] : allStubs.filter((s) => !searchParams.state || s.state === searchParams.state);
+  const stubStates = [...new Set(stubs.map((s) => s.state ?? "India"))].sort();
+  const states = [...new Set([...list.map((c) => c.state), ...allStubs.map((s) => s.state)].filter((s): s is string => Boolean(s)))].sort();
   if (searchParams.state) list = list.filter((c) => c.state === searchParams.state);
   if (searchParams.category) list = list.filter((c) => c.categories.includes(searchParams.category as (typeof CMS_CATEGORIES)[number]));
   const page = Math.max(1, Number(searchParams.page) || 1);
@@ -63,6 +68,24 @@ export default function DestinationsIndex({ params, searchParams }: { params: { 
             <Link key={n} href={href({ page: String(n) })} className={pill(n === page)} aria-current={n === page ? "page" : undefined}>{n}</Link>
           ))}
         </nav>
+      )}
+      {stubs.length > 0 && (
+        <section className="mt-12" aria-labelledby="being-researched">
+          <h2 id="being-researched" className="section-heading">{t.beingResearchedTitle}</h2>
+          <p className="mt-1 max-w-2xl text-sm text-charcoal-light">{t.beingResearchedIntro} · {t.beingResearchedCount.replace("{n}", String(stubs.length))}</p>
+          <div className="mt-5 columns-1 gap-6 sm:columns-2 lg:columns-3">
+            {stubStates.map((st) => (
+              <div key={st} className="mb-5 break-inside-avoid rounded-2xl bg-peach p-4 ring-1 ring-black/5">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-saffron-700">{st}</h3>
+                <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm">
+                  {stubs.filter((x) => (x.state ?? "India") === st).map((x) => (
+                    <li key={x.id}><Link href={`/${locale}${x.href}`} className="text-forest-700 hover:underline">{x.name}</Link></li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
       )}
     </div>
   );

@@ -4,6 +4,7 @@ import { allDestinations, getDestinationBySlug, getSettings, publishedDestinatio
 import { assetOf } from "./images";
 import type { ImageAsset } from "@/lib/types";
 import type { CmsCategory, CmsDestination, CompanionType, SiteSettings } from "./types";
+import { seedStubs } from "./seedView";
 
 /**
  * Read side of the CMS for public pages. Only PUBLISHED records are ever
@@ -112,5 +113,6 @@ export function cmsSuggestions(): Array<{ label: string; sublabel: string; href:
     out.push({ label: d.name, sublabel: d.state ?? "India", href: `/destinations/${d.slug}` });
     for (const a of d.attractions) if (a.status === "ACTIVE") out.push({ label: a.name, sublabel: `${d.name} · attraction`, href: `/destinations/${d.slug}#attraction-${a.slug}` });
   }
+  for (const s of seedStubs()) out.push({ label: s.name, sublabel: `${s.state ?? "India"} · being researched`, href: s.href });
   return out;
 }

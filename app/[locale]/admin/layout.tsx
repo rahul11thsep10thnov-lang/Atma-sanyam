@@ -35,6 +35,7 @@ export default async function AdminLayout({ children, params }: { children: Reac
             <Link href={`${base}/cms/review`} className={`${link} font-semibold text-forest-700`}>Review next destination →</Link>
             <Link href={`${base}/cms/destinations`} className={link}>Destinations</Link>
             <Link href={`${base}/cms/import`} className={link}>Import PDF</Link>
+            <Link href={`${base}/cms/master-import`} className={link}>Master database import</Link>
             <Link href={`${base}/cms/pipeline`} className={link}>Pipeline</Link>
             <Link href={`${base}/cms/providers`} className={link}>Image Providers</Link>
             <Link href={`${base}/cms/settings`} className={link}>Settings</Link>

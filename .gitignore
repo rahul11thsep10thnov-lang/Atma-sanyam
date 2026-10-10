@@ -36,3 +36,6 @@ next-env.d.ts
 /data/media/
 /data/cms/secrets.json
 /data/cms/cache/
+
+# Master import run state (resumable checkpoint)
+/data/cms/imports/*-checkpoint.json

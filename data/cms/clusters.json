@@ -1,0 +1,4418 @@
+{
+  "source": "India_Tourism_Master_Database_v1.xlsx",
+  "imported_at": "2026-10-10T11:11:44.855Z",
+  "note": "Draft circuits from the master workbook. Road/rail timings are not validated.",
+  "clusters": [
+    {
+      "id": "CL-andhra-pradesh-tirupati-chittoor-lepakshi",
+      "slug": "tirupati-chittoor-lepakshi",
+      "state": "Andhra Pradesh",
+      "name": "Tirupati–Chittoor–Lepakshi",
+      "parts": [
+        "Tirupati",
+        "Chittoor",
+        "Lepakshi"
+      ],
+      "members": [
+        {
+          "part": "Tirupati",
+          "destination_id": "CMS-tirupati"
+        },
+        {
+          "part": "Chittoor",
+          "destination_id": null
+        },
+        {
+          "part": "Lepakshi",
+          "destination_id": "CMS-lepakshi"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.472Z"
+    },
+    {
+      "id": "CL-andhra-pradesh-visakhapatnam-araku",
+      "slug": "visakhapatnam-araku",
+      "state": "Andhra Pradesh",
+      "name": "Visakhapatnam–Araku",
+      "parts": [
+        "Visakhapatnam",
+        "Araku"
+      ],
+      "members": [
+        {
+          "part": "Visakhapatnam",
+          "destination_id": "CMS-visakhapatnam"
+        },
+        {
+          "part": "Araku",
+          "destination_id": "CMS-araku-valley"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.477Z"
+    },
+    {
+      "id": "CL-andhra-pradesh-amaravati-vijayawada-rajahmundry",
+      "slug": "amaravati-vijayawada-rajahmundry",
+      "state": "Andhra Pradesh",
+      "name": "Amaravati–Vijayawada–Rajahmundry",
+      "parts": [
+        "Amaravati",
+        "Vijayawada",
+        "Rajahmundry"
+      ],
+      "members": [
+        {
+          "part": "Amaravati",
+          "destination_id": "CMS-amaravati"
+        },
+        {
+          "part": "Vijayawada",
+          "destination_id": "CMS-vijayawada"
+        },
+        {
+          "part": "Rajahmundry",
+          "destination_id": "CMS-rajahmundry"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.480Z"
+    },
+    {
+      "id": "CL-arunachal-pradesh-guwahati-bomdila-dirang-tawang",
+      "slug": "guwahati-bomdila-dirang-tawang",
+      "state": "Arunachal Pradesh",
+      "name": "Guwahati–Bomdila–Dirang–Tawang",
+      "parts": [
+        "Guwahati",
+        "Bomdila",
+        "Dirang",
+        "Tawang"
+      ],
+      "members": [
+        {
+          "part": "Guwahati",
+          "destination_id": "CMS-guwahati"
+        },
+        {
+          "part": "Bomdila",
+          "destination_id": "CMS-bomdila"
+        },
+        {
+          "part": "Dirang",
+          "destination_id": "CMS-dirang"
+        },
+        {
+          "part": "Tawang",
+          "destination_id": "CMS-tawang"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.486Z"
+    },
+    {
+      "id": "CL-arunachal-pradesh-ziro-itanagar",
+      "slug": "ziro-itanagar",
+      "state": "Arunachal Pradesh",
+      "name": "Ziro–Itanagar",
+      "parts": [
+        "Ziro",
+        "Itanagar"
+      ],
+      "members": [
+        {
+          "part": "Ziro",
+          "destination_id": "CMS-ziro"
+        },
+        {
+          "part": "Itanagar",
+          "destination_id": "CMS-itanagar"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.488Z"
+    },
+    {
+      "id": "CL-arunachal-pradesh-pasighat-roing",
+      "slug": "pasighat-roing",
+      "state": "Arunachal Pradesh",
+      "name": "Pasighat–Roing",
+      "parts": [
+        "Pasighat",
+        "Roing"
+      ],
+      "members": [
+        {
+          "part": "Pasighat",
+          "destination_id": "CMS-pasighat"
+        },
+        {
+          "part": "Roing",
+          "destination_id": "CMS-roing"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.490Z"
+    },
+    {
+      "id": "CL-assam-guwahati-hajo",
+      "slug": "guwahati-hajo",
+      "state": "Assam",
+      "name": "Guwahati–Hajo",
+      "parts": [
+        "Guwahati",
+        "Hajo"
+      ],
+      "members": [
+        {
+          "part": "Guwahati",
+          "destination_id": "CMS-guwahati"
+        },
+        {
+          "part": "Hajo",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.492Z"
+    },
+    {
+      "id": "CL-assam-kaziranga-tezpur",
+      "slug": "kaziranga-tezpur",
+      "state": "Assam",
+      "name": "Kaziranga–Tezpur",
+      "parts": [
+        "Kaziranga",
+        "Tezpur"
+      ],
+      "members": [
+        {
+          "part": "Kaziranga",
+          "destination_id": "CMS-kaziranga-national-park"
+        },
+        {
+          "part": "Tezpur",
+          "destination_id": "CMS-tezpur"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.494Z"
+    },
+    {
+      "id": "CL-assam-jorhat-majuli-sivasagar",
+      "slug": "jorhat-majuli-sivasagar",
+      "state": "Assam",
+      "name": "Jorhat–Majuli–Sivasagar",
+      "parts": [
+        "Jorhat",
+        "Majuli",
+        "Sivasagar"
+      ],
+      "members": [
+        {
+          "part": "Jorhat",
+          "destination_id": "CMS-jorhat"
+        },
+        {
+          "part": "Majuli",
+          "destination_id": "CMS-majuli"
+        },
+        {
+          "part": "Sivasagar",
+          "destination_id": "CMS-sivasagar"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.497Z"
+    },
+    {
+      "id": "CL-assam-dibrugarh-tinsukia",
+      "slug": "dibrugarh-tinsukia",
+      "state": "Assam",
+      "name": "Dibrugarh–Tinsukia",
+      "parts": [
+        "Dibrugarh",
+        "Tinsukia"
+      ],
+      "members": [
+        {
+          "part": "Dibrugarh",
+          "destination_id": "CMS-dibrugarh"
+        },
+        {
+          "part": "Tinsukia",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.500Z"
+    },
+    {
+      "id": "CL-bihar-patna-vaishali-nalanda-rajgir-pawapuri",
+      "slug": "patna-vaishali-nalanda-rajgir-pawapuri",
+      "state": "Bihar",
+      "name": "Patna–Vaishali–Nalanda–Rajgir–Pawapuri",
+      "parts": [
+        "Patna",
+        "Vaishali",
+        "Nalanda",
+        "Rajgir",
+        "Pawapuri"
+      ],
+      "members": [
+        {
+          "part": "Patna",
+          "destination_id": "CMS-patna"
+        },
+        {
+          "part": "Vaishali",
+          "destination_id": "CMS-vaishali"
+        },
+        {
+          "part": "Nalanda",
+          "destination_id": "CMS-nalanda"
+        },
+        {
+          "part": "Rajgir",
+          "destination_id": "CMS-rajgir"
+        },
+        {
+          "part": "Pawapuri",
+          "destination_id": "CMS-pawapuri"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.505Z"
+    },
+    {
+      "id": "CL-bihar-bodh-gaya-gaya",
+      "slug": "bodh-gaya-gaya",
+      "state": "Bihar",
+      "name": "Bodh Gaya–Gaya",
+      "parts": [
+        "Bodh Gaya",
+        "Gaya"
+      ],
+      "members": [
+        {
+          "part": "Bodh Gaya",
+          "destination_id": "CMS-bodh-gaya"
+        },
+        {
+          "part": "Gaya",
+          "destination_id": "CMS-gaya"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.507Z"
+    },
+    {
+      "id": "CL-bihar-vikramshila-bhagalpur",
+      "slug": "vikramshila-bhagalpur",
+      "state": "Bihar",
+      "name": "Vikramshila–Bhagalpur",
+      "parts": [
+        "Vikramshila",
+        "Bhagalpur"
+      ],
+      "members": [
+        {
+          "part": "Vikramshila",
+          "destination_id": "CMS-vikramshila"
+        },
+        {
+          "part": "Bhagalpur",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.509Z"
+    },
+    {
+      "id": "CL-chhattisgarh-raipur-sirpur",
+      "slug": "raipur-sirpur",
+      "state": "Chhattisgarh",
+      "name": "Raipur–Sirpur",
+      "parts": [
+        "Raipur",
+        "Sirpur"
+      ],
+      "members": [
+        {
+          "part": "Raipur",
+          "destination_id": "CMS-raipur"
+        },
+        {
+          "part": "Sirpur",
+          "destination_id": "CMS-sirpur"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.511Z"
+    },
+    {
+      "id": "CL-chhattisgarh-jagdalpur-chitrakote-tirathgarh-kanger-valley",
+      "slug": "jagdalpur-chitrakote-tirathgarh-kanger-valley",
+      "state": "Chhattisgarh",
+      "name": "Jagdalpur–Chitrakote–Tirathgarh–Kanger Valley",
+      "parts": [
+        "Jagdalpur",
+        "Chitrakote",
+        "Tirathgarh",
+        "Kanger Valley"
+      ],
+      "members": [
+        {
+          "part": "Jagdalpur",
+          "destination_id": "CMS-jagdalpur"
+        },
+        {
+          "part": "Chitrakote",
+          "destination_id": "CMS-chitrakote-falls"
+        },
+        {
+          "part": "Tirathgarh",
+          "destination_id": "CMS-tirathgarh-falls"
+        },
+        {
+          "part": "Kanger Valley",
+          "destination_id": "CMS-kanger-valley-national-park"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.516Z"
+    },
+    {
+      "id": "CL-chhattisgarh-mainpat",
+      "slug": "mainpat",
+      "state": "Chhattisgarh",
+      "name": "Mainpat",
+      "parts": [
+        "Mainpat"
+      ],
+      "members": [
+        {
+          "part": "Mainpat",
+          "destination_id": "CMS-mainpat"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.517Z"
+    },
+    {
+      "id": "CL-goa-north-goa-beaches-forts",
+      "slug": "north-goa-beaches-forts",
+      "state": "Goa",
+      "name": "North Goa beaches–forts",
+      "parts": [
+        "North Goa beaches",
+        "forts"
+      ],
+      "members": [
+        {
+          "part": "North Goa beaches",
+          "destination_id": null
+        },
+        {
+          "part": "forts",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.519Z"
+    },
+    {
+      "id": "CL-goa-panaji-old-goa",
+      "slug": "panaji-old-goa",
+      "state": "Goa",
+      "name": "Panaji–Old Goa",
+      "parts": [
+        "Panaji",
+        "Old Goa"
+      ],
+      "members": [
+        {
+          "part": "Panaji",
+          "destination_id": "CMS-panaji"
+        },
+        {
+          "part": "Old Goa",
+          "destination_id": "CMS-old-goa"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.522Z"
+    },
+    {
+      "id": "CL-goa-south-goa-beaches",
+      "slug": "south-goa-beaches",
+      "state": "Goa",
+      "name": "South Goa beaches",
+      "parts": [
+        "South Goa beaches"
+      ],
+      "members": [
+        {
+          "part": "South Goa beaches",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.523Z"
+    },
+    {
+      "id": "CL-goa-mollem-dudhsagar",
+      "slug": "mollem-dudhsagar",
+      "state": "Goa",
+      "name": "Mollem–Dudhsagar",
+      "parts": [
+        "Mollem",
+        "Dudhsagar"
+      ],
+      "members": [
+        {
+          "part": "Mollem",
+          "destination_id": "CMS-mollem"
+        },
+        {
+          "part": "Dudhsagar",
+          "destination_id": "CMS-dudhsagar-falls"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.525Z"
+    },
+    {
+      "id": "CL-gujarat-ahmedabad-modhera-patan",
+      "slug": "ahmedabad-modhera-patan",
+      "state": "Gujarat",
+      "name": "Ahmedabad–Modhera–Patan",
+      "parts": [
+        "Ahmedabad",
+        "Modhera",
+        "Patan"
+      ],
+      "members": [
+        {
+          "part": "Ahmedabad",
+          "destination_id": "CMS-ahmedabad"
+        },
+        {
+          "part": "Modhera",
+          "destination_id": "CMS-modhera"
+        },
+        {
+          "part": "Patan",
+          "destination_id": "CMS-patan"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.528Z"
+    },
+    {
+      "id": "CL-gujarat-dwarka-somnath-porbandar",
+      "slug": "dwarka-somnath-porbandar",
+      "state": "Gujarat",
+      "name": "Dwarka–Somnath–Porbandar",
+      "parts": [
+        "Dwarka",
+        "Somnath",
+        "Porbandar"
+      ],
+      "members": [
+        {
+          "part": "Dwarka",
+          "destination_id": "CMS-dwarka"
+        },
+        {
+          "part": "Somnath",
+          "destination_id": "CMS-somnath"
+        },
+        {
+          "part": "Porbandar",
+          "destination_id": "CMS-porbandar"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.531Z"
+    },
+    {
+      "id": "CL-gujarat-kutch-bhuj-dholavira",
+      "slug": "kutch-bhuj-dholavira",
+      "state": "Gujarat",
+      "name": "Kutch–Bhuj–Dholavira",
+      "parts": [
+        "Kutch",
+        "Bhuj",
+        "Dholavira"
+      ],
+      "members": [
+        {
+          "part": "Kutch",
+          "destination_id": "CMS-kutch"
+        },
+        {
+          "part": "Bhuj",
+          "destination_id": "CMS-bhuj"
+        },
+        {
+          "part": "Dholavira",
+          "destination_id": "CMS-dholavira"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.534Z"
+    },
+    {
+      "id": "CL-gujarat-kevadia-vadodara",
+      "slug": "kevadia-vadodara",
+      "state": "Gujarat",
+      "name": "Kevadia–Vadodara",
+      "parts": [
+        "Kevadia",
+        "Vadodara"
+      ],
+      "members": [
+        {
+          "part": "Kevadia",
+          "destination_id": "CMS-kevadia"
+        },
+        {
+          "part": "Vadodara",
+          "destination_id": "CMS-vadodara"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.536Z"
+    },
+    {
+      "id": "CL-haryana-delhi-gurugram-sultanpur",
+      "slug": "delhi-gurugram-sultanpur",
+      "state": "Haryana",
+      "name": "Delhi–Gurugram–Sultanpur",
+      "parts": [
+        "Delhi",
+        "Gurugram",
+        "Sultanpur"
+      ],
+      "members": [
+        {
+          "part": "Delhi",
+          "destination_id": "CMS-delhi"
+        },
+        {
+          "part": "Gurugram",
+          "destination_id": "CMS-gurugram"
+        },
+        {
+          "part": "Sultanpur",
+          "destination_id": "CMS-sultanpur-national-park"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.539Z"
+    },
+    {
+      "id": "CL-haryana-kurukshetra-panipat",
+      "slug": "kurukshetra-panipat",
+      "state": "Haryana",
+      "name": "Kurukshetra–Panipat",
+      "parts": [
+        "Kurukshetra",
+        "Panipat"
+      ],
+      "members": [
+        {
+          "part": "Kurukshetra",
+          "destination_id": "CMS-kurukshetra"
+        },
+        {
+          "part": "Panipat",
+          "destination_id": "CMS-panipat"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.541Z"
+    },
+    {
+      "id": "CL-haryana-pinjore-morni",
+      "slug": "pinjore-morni",
+      "state": "Haryana",
+      "name": "Pinjore–Morni",
+      "parts": [
+        "Pinjore",
+        "Morni"
+      ],
+      "members": [
+        {
+          "part": "Pinjore",
+          "destination_id": "CMS-pinjore"
+        },
+        {
+          "part": "Morni",
+          "destination_id": "CMS-morni-hills"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.543Z"
+    },
+    {
+      "id": "CL-himachal-pradesh-shimla-kufri-chail",
+      "slug": "shimla-kufri-chail",
+      "state": "Himachal Pradesh",
+      "name": "Shimla–Kufri–Chail",
+      "parts": [
+        "Shimla",
+        "Kufri",
+        "Chail"
+      ],
+      "members": [
+        {
+          "part": "Shimla",
+          "destination_id": "CMS-shimla"
+        },
+        {
+          "part": "Kufri",
+          "destination_id": "CMS-kufri"
+        },
+        {
+          "part": "Chail",
+          "destination_id": "CMS-chail"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.546Z"
+    },
+    {
+      "id": "CL-himachal-pradesh-manali-solang-rohtang",
+      "slug": "manali-solang-rohtang",
+      "state": "Himachal Pradesh",
+      "name": "Manali–Solang–Rohtang",
+      "parts": [
+        "Manali",
+        "Solang",
+        "Rohtang"
+      ],
+      "members": [
+        {
+          "part": "Manali",
+          "destination_id": "CMS-manali"
+        },
+        {
+          "part": "Solang",
+          "destination_id": "CMS-solang-valley"
+        },
+        {
+          "part": "Rohtang",
+          "destination_id": "CMS-rohtang-pass"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.549Z"
+    },
+    {
+      "id": "CL-himachal-pradesh-dharamshala-mcleod-ganj",
+      "slug": "dharamshala-mcleod-ganj",
+      "state": "Himachal Pradesh",
+      "name": "Dharamshala–McLeod Ganj",
+      "parts": [
+        "Dharamshala",
+        "McLeod Ganj"
+      ],
+      "members": [
+        {
+          "part": "Dharamshala",
+          "destination_id": "CMS-dharamshala"
+        },
+        {
+          "part": "McLeod Ganj",
+          "destination_id": "CMS-mcleod-ganj"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.551Z"
+    },
+    {
+      "id": "CL-himachal-pradesh-kullu-manikaran-kasol",
+      "slug": "kullu-manikaran-kasol",
+      "state": "Himachal Pradesh",
+      "name": "Kullu–Manikaran–Kasol",
+      "parts": [
+        "Kullu",
+        "Manikaran",
+        "Kasol"
+      ],
+      "members": [
+        {
+          "part": "Kullu",
+          "destination_id": "CMS-kullu"
+        },
+        {
+          "part": "Manikaran",
+          "destination_id": "CMS-manikaran"
+        },
+        {
+          "part": "Kasol",
+          "destination_id": "CMS-kasol"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.554Z"
+    },
+    {
+      "id": "CL-himachal-pradesh-spiti",
+      "slug": "spiti",
+      "state": "Himachal Pradesh",
+      "name": "Spiti",
+      "parts": [
+        "Spiti"
+      ],
+      "members": [
+        {
+          "part": "Spiti",
+          "destination_id": "CMS-spiti-valley"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.556Z"
+    },
+    {
+      "id": "CL-himachal-pradesh-kinnaur",
+      "slug": "kinnaur",
+      "state": "Himachal Pradesh",
+      "name": "Kinnaur",
+      "parts": [
+        "Kinnaur"
+      ],
+      "members": [
+        {
+          "part": "Kinnaur",
+          "destination_id": "CMS-kinnaur"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.557Z"
+    },
+    {
+      "id": "CL-jharkhand-ranchi-waterfalls",
+      "slug": "ranchi-waterfalls",
+      "state": "Jharkhand",
+      "name": "Ranchi waterfalls",
+      "parts": [
+        "Ranchi waterfalls"
+      ],
+      "members": [
+        {
+          "part": "Ranchi waterfalls",
+          "destination_id": "CMS-ranchi"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.558Z"
+    },
+    {
+      "id": "CL-jharkhand-deoghar-dumka-maluti",
+      "slug": "deoghar-dumka-maluti",
+      "state": "Jharkhand",
+      "name": "Deoghar–Dumka–Maluti",
+      "parts": [
+        "Deoghar",
+        "Dumka",
+        "Maluti"
+      ],
+      "members": [
+        {
+          "part": "Deoghar",
+          "destination_id": "CMS-deoghar"
+        },
+        {
+          "part": "Dumka",
+          "destination_id": null
+        },
+        {
+          "part": "Maluti",
+          "destination_id": "CMS-maluti"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.561Z"
+    },
+    {
+      "id": "CL-jharkhand-netarhat-betla",
+      "slug": "netarhat-betla",
+      "state": "Jharkhand",
+      "name": "Netarhat–Betla",
+      "parts": [
+        "Netarhat",
+        "Betla"
+      ],
+      "members": [
+        {
+          "part": "Netarhat",
+          "destination_id": "CMS-netarhat"
+        },
+        {
+          "part": "Betla",
+          "destination_id": "CMS-betla-national-park"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.563Z"
+    },
+    {
+      "id": "CL-jharkhand-parasnath-hazaribagh",
+      "slug": "parasnath-hazaribagh",
+      "state": "Jharkhand",
+      "name": "Parasnath–Hazaribagh",
+      "parts": [
+        "Parasnath",
+        "Hazaribagh"
+      ],
+      "members": [
+        {
+          "part": "Parasnath",
+          "destination_id": "CMS-parasnath"
+        },
+        {
+          "part": "Hazaribagh",
+          "destination_id": "CMS-hazaribagh"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.565Z"
+    },
+    {
+      "id": "CL-karnataka-bengaluru-mysuru",
+      "slug": "bengaluru-mysuru",
+      "state": "Karnataka",
+      "name": "Bengaluru–Mysuru",
+      "parts": [
+        "Bengaluru",
+        "Mysuru"
+      ],
+      "members": [
+        {
+          "part": "Bengaluru",
+          "destination_id": "CMS-bengaluru"
+        },
+        {
+          "part": "Mysuru",
+          "destination_id": "CMS-mysuru"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.567Z"
+    },
+    {
+      "id": "CL-karnataka-hampi-badami-aihole-pattadakal",
+      "slug": "hampi-badami-aihole-pattadakal",
+      "state": "Karnataka",
+      "name": "Hampi–Badami–Aihole–Pattadakal",
+      "parts": [
+        "Hampi",
+        "Badami",
+        "Aihole",
+        "Pattadakal"
+      ],
+      "members": [
+        {
+          "part": "Hampi",
+          "destination_id": "CMS-hampi"
+        },
+        {
+          "part": "Badami",
+          "destination_id": "CMS-badami"
+        },
+        {
+          "part": "Aihole",
+          "destination_id": "CMS-aihole"
+        },
+        {
+          "part": "Pattadakal",
+          "destination_id": "CMS-pattadakal"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.571Z"
+    },
+    {
+      "id": "CL-karnataka-coorg-chikmagalur",
+      "slug": "coorg-chikmagalur",
+      "state": "Karnataka",
+      "name": "Coorg–Chikmagalur",
+      "parts": [
+        "Coorg",
+        "Chikmagalur"
+      ],
+      "members": [
+        {
+          "part": "Coorg",
+          "destination_id": "CMS-coorg"
+        },
+        {
+          "part": "Chikmagalur",
+          "destination_id": "CMS-chikmagalur"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.573Z"
+    },
+    {
+      "id": "CL-karnataka-gokarna-udupi-murudeshwar",
+      "slug": "gokarna-udupi-murudeshwar",
+      "state": "Karnataka",
+      "name": "Gokarna–Udupi–Murudeshwar",
+      "parts": [
+        "Gokarna",
+        "Udupi",
+        "Murudeshwar"
+      ],
+      "members": [
+        {
+          "part": "Gokarna",
+          "destination_id": "CMS-gokarna"
+        },
+        {
+          "part": "Udupi",
+          "destination_id": "CMS-udupi"
+        },
+        {
+          "part": "Murudeshwar",
+          "destination_id": "CMS-murudeshwar"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.576Z"
+    },
+    {
+      "id": "CL-karnataka-dandeli-kudremukh",
+      "slug": "dandeli-kudremukh",
+      "state": "Karnataka",
+      "name": "Dandeli–Kudremukh",
+      "parts": [
+        "Dandeli",
+        "Kudremukh"
+      ],
+      "members": [
+        {
+          "part": "Dandeli",
+          "destination_id": "CMS-dandeli"
+        },
+        {
+          "part": "Kudremukh",
+          "destination_id": "CMS-kudremukh"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.578Z"
+    },
+    {
+      "id": "CL-kerala-kochi-alappuzha-kumarakom",
+      "slug": "kochi-alappuzha-kumarakom",
+      "state": "Kerala",
+      "name": "Kochi–Alappuzha–Kumarakom",
+      "parts": [
+        "Kochi",
+        "Alappuzha",
+        "Kumarakom"
+      ],
+      "members": [
+        {
+          "part": "Kochi",
+          "destination_id": "CMS-kochi"
+        },
+        {
+          "part": "Alappuzha",
+          "destination_id": "CMS-alappuzha"
+        },
+        {
+          "part": "Kumarakom",
+          "destination_id": "CMS-kumarakom"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.581Z"
+    },
+    {
+      "id": "CL-kerala-munnar-thekkady",
+      "slug": "munnar-thekkady",
+      "state": "Kerala",
+      "name": "Munnar–Thekkady",
+      "parts": [
+        "Munnar",
+        "Thekkady"
+      ],
+      "members": [
+        {
+          "part": "Munnar",
+          "destination_id": "CMS-munnar"
+        },
+        {
+          "part": "Thekkady",
+          "destination_id": "CMS-thekkady"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.583Z"
+    },
+    {
+      "id": "CL-kerala-wayanad",
+      "slug": "wayanad",
+      "state": "Kerala",
+      "name": "Wayanad",
+      "parts": [
+        "Wayanad"
+      ],
+      "members": [
+        {
+          "part": "Wayanad",
+          "destination_id": "CMS-wayanad"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.584Z"
+    },
+    {
+      "id": "CL-kerala-thiruvananthapuram-kovalam-varkala",
+      "slug": "thiruvananthapuram-kovalam-varkala",
+      "state": "Kerala",
+      "name": "Thiruvananthapuram–Kovalam–Varkala",
+      "parts": [
+        "Thiruvananthapuram",
+        "Kovalam",
+        "Varkala"
+      ],
+      "members": [
+        {
+          "part": "Thiruvananthapuram",
+          "destination_id": "CMS-thiruvananthapuram"
+        },
+        {
+          "part": "Kovalam",
+          "destination_id": "CMS-kovalam"
+        },
+        {
+          "part": "Varkala",
+          "destination_id": "CMS-varkala"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.587Z"
+    },
+    {
+      "id": "CL-kerala-north-kerala",
+      "slug": "north-kerala",
+      "state": "Kerala",
+      "name": "North Kerala",
+      "parts": [
+        "North Kerala"
+      ],
+      "members": [
+        {
+          "part": "North Kerala",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.588Z"
+    },
+    {
+      "id": "CL-madhya-pradesh-bhopal-sanchi-bhimbetka",
+      "slug": "bhopal-sanchi-bhimbetka",
+      "state": "Madhya Pradesh",
+      "name": "Bhopal–Sanchi–Bhimbetka",
+      "parts": [
+        "Bhopal",
+        "Sanchi",
+        "Bhimbetka"
+      ],
+      "members": [
+        {
+          "part": "Bhopal",
+          "destination_id": "CMS-bhopal"
+        },
+        {
+          "part": "Sanchi",
+          "destination_id": "CMS-sanchi"
+        },
+        {
+          "part": "Bhimbetka",
+          "destination_id": "CMS-bhimbetka"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.591Z"
+    },
+    {
+      "id": "CL-madhya-pradesh-khajuraho-orchha",
+      "slug": "khajuraho-orchha",
+      "state": "Madhya Pradesh",
+      "name": "Khajuraho–Orchha",
+      "parts": [
+        "Khajuraho",
+        "Orchha"
+      ],
+      "members": [
+        {
+          "part": "Khajuraho",
+          "destination_id": "CMS-khajuraho"
+        },
+        {
+          "part": "Orchha",
+          "destination_id": "CMS-orchha"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.594Z"
+    },
+    {
+      "id": "CL-madhya-pradesh-gwalior-datia",
+      "slug": "gwalior-datia",
+      "state": "Madhya Pradesh",
+      "name": "Gwalior–Datia",
+      "parts": [
+        "Gwalior",
+        "Datia"
+      ],
+      "members": [
+        {
+          "part": "Gwalior",
+          "destination_id": "CMS-gwalior"
+        },
+        {
+          "part": "Datia",
+          "destination_id": "CMS-datia"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.595Z"
+    },
+    {
+      "id": "CL-madhya-pradesh-indore-ujjain-omkareshwar-maheshwar",
+      "slug": "indore-ujjain-omkareshwar-maheshwar",
+      "state": "Madhya Pradesh",
+      "name": "Indore–Ujjain–Omkareshwar–Maheshwar",
+      "parts": [
+        "Indore",
+        "Ujjain",
+        "Omkareshwar",
+        "Maheshwar"
+      ],
+      "members": [
+        {
+          "part": "Indore",
+          "destination_id": "CMS-indore"
+        },
+        {
+          "part": "Ujjain",
+          "destination_id": "CMS-ujjain"
+        },
+        {
+          "part": "Omkareshwar",
+          "destination_id": "CMS-omkareshwar"
+        },
+        {
+          "part": "Maheshwar",
+          "destination_id": "CMS-maheshwar"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.599Z"
+    },
+    {
+      "id": "CL-madhya-pradesh-jabalpur-pachmarhi",
+      "slug": "jabalpur-pachmarhi",
+      "state": "Madhya Pradesh",
+      "name": "Jabalpur–Pachmarhi",
+      "parts": [
+        "Jabalpur",
+        "Pachmarhi"
+      ],
+      "members": [
+        {
+          "part": "Jabalpur",
+          "destination_id": "CMS-jabalpur"
+        },
+        {
+          "part": "Pachmarhi",
+          "destination_id": "CMS-pachmarhi"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.601Z"
+    },
+    {
+      "id": "CL-madhya-pradesh-tiger-circuit",
+      "slug": "tiger-circuit",
+      "state": "Madhya Pradesh",
+      "name": "Tiger circuit",
+      "parts": [
+        "Tiger circuit"
+      ],
+      "members": [
+        {
+          "part": "Tiger circuit",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.602Z"
+    },
+    {
+      "id": "CL-maharashtra-mumbai-pune-lonavala",
+      "slug": "mumbai-pune-lonavala",
+      "state": "Maharashtra",
+      "name": "Mumbai–Pune–Lonavala",
+      "parts": [
+        "Mumbai",
+        "Pune",
+        "Lonavala"
+      ],
+      "members": [
+        {
+          "part": "Mumbai",
+          "destination_id": "CMS-mumbai"
+        },
+        {
+          "part": "Pune",
+          "destination_id": "CMS-pune"
+        },
+        {
+          "part": "Lonavala",
+          "destination_id": "CMS-lonavala"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.605Z"
+    },
+    {
+      "id": "CL-maharashtra-nashik-trimbakeshwar",
+      "slug": "nashik-trimbakeshwar",
+      "state": "Maharashtra",
+      "name": "Nashik–Trimbakeshwar",
+      "parts": [
+        "Nashik",
+        "Trimbakeshwar"
+      ],
+      "members": [
+        {
+          "part": "Nashik",
+          "destination_id": "CMS-nashik"
+        },
+        {
+          "part": "Trimbakeshwar",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.608Z"
+    },
+    {
+      "id": "CL-maharashtra-chhatrapati-sambhajinagar-ajanta-ellora",
+      "slug": "chhatrapati-sambhajinagar-ajanta-ellora",
+      "state": "Maharashtra",
+      "name": "Chhatrapati Sambhajinagar–Ajanta–Ellora",
+      "parts": [
+        "Chhatrapati Sambhajinagar",
+        "Ajanta",
+        "Ellora"
+      ],
+      "members": [
+        {
+          "part": "Chhatrapati Sambhajinagar",
+          "destination_id": "CMS-chhatrapati-sambhajinagar"
+        },
+        {
+          "part": "Ajanta",
+          "destination_id": "CMS-ajanta"
+        },
+        {
+          "part": "Ellora",
+          "destination_id": "CMS-ellora"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.611Z"
+    },
+    {
+      "id": "CL-maharashtra-konkan-coast",
+      "slug": "konkan-coast",
+      "state": "Maharashtra",
+      "name": "Konkan coast",
+      "parts": [
+        "Konkan coast"
+      ],
+      "members": [
+        {
+          "part": "Konkan coast",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.612Z"
+    },
+    {
+      "id": "CL-maharashtra-fort-circuit",
+      "slug": "fort-circuit",
+      "state": "Maharashtra",
+      "name": "Fort circuit",
+      "parts": [
+        "Fort circuit"
+      ],
+      "members": [
+        {
+          "part": "Fort circuit",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.613Z"
+    },
+    {
+      "id": "CL-maharashtra-tadoba",
+      "slug": "tadoba",
+      "state": "Maharashtra",
+      "name": "Tadoba",
+      "parts": [
+        "Tadoba"
+      ],
+      "members": [
+        {
+          "part": "Tadoba",
+          "destination_id": "CMS-tadoba"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.615Z"
+    },
+    {
+      "id": "CL-manipur-imphal-kangla-moirang-loktak",
+      "slug": "imphal-kangla-moirang-loktak",
+      "state": "Manipur",
+      "name": "Imphal–Kangla–Moirang–Loktak",
+      "parts": [
+        "Imphal",
+        "Kangla",
+        "Moirang",
+        "Loktak"
+      ],
+      "members": [
+        {
+          "part": "Imphal",
+          "destination_id": "CMS-imphal"
+        },
+        {
+          "part": "Kangla",
+          "destination_id": "CMS-kangla-fort"
+        },
+        {
+          "part": "Moirang",
+          "destination_id": "CMS-moirang"
+        },
+        {
+          "part": "Loktak",
+          "destination_id": "CMS-loktak-lake"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.619Z"
+    },
+    {
+      "id": "CL-manipur-ukhrul-shirui",
+      "slug": "ukhrul-shirui",
+      "state": "Manipur",
+      "name": "Ukhrul–Shirui",
+      "parts": [
+        "Ukhrul",
+        "Shirui"
+      ],
+      "members": [
+        {
+          "part": "Ukhrul",
+          "destination_id": "CMS-ukhrul"
+        },
+        {
+          "part": "Shirui",
+          "destination_id": "CMS-shirui-hills"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.620Z"
+    },
+    {
+      "id": "CL-manipur-moreh",
+      "slug": "moreh",
+      "state": "Manipur",
+      "name": "Moreh",
+      "parts": [
+        "Moreh"
+      ],
+      "members": [
+        {
+          "part": "Moreh",
+          "destination_id": "CMS-moreh"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.621Z"
+    },
+    {
+      "id": "CL-meghalaya-shillong-cherrapunji",
+      "slug": "shillong-cherrapunji",
+      "state": "Meghalaya",
+      "name": "Shillong–Cherrapunji",
+      "parts": [
+        "Shillong",
+        "Cherrapunji"
+      ],
+      "members": [
+        {
+          "part": "Shillong",
+          "destination_id": "CMS-shillong"
+        },
+        {
+          "part": "Cherrapunji",
+          "destination_id": "CMS-cherrapunji"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.624Z"
+    },
+    {
+      "id": "CL-meghalaya-dawki-mawlynnong",
+      "slug": "dawki-mawlynnong",
+      "state": "Meghalaya",
+      "name": "Dawki–Mawlynnong",
+      "parts": [
+        "Dawki",
+        "Mawlynnong"
+      ],
+      "members": [
+        {
+          "part": "Dawki",
+          "destination_id": "CMS-dawki"
+        },
+        {
+          "part": "Mawlynnong",
+          "destination_id": "CMS-mawlynnong"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.626Z"
+    },
+    {
+      "id": "CL-meghalaya-jowai",
+      "slug": "jowai",
+      "state": "Meghalaya",
+      "name": "Jowai",
+      "parts": [
+        "Jowai"
+      ],
+      "members": [
+        {
+          "part": "Jowai",
+          "destination_id": "CMS-jowai"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.627Z"
+    },
+    {
+      "id": "CL-meghalaya-tura-nokrek",
+      "slug": "tura-nokrek",
+      "state": "Meghalaya",
+      "name": "Tura–Nokrek",
+      "parts": [
+        "Tura",
+        "Nokrek"
+      ],
+      "members": [
+        {
+          "part": "Tura",
+          "destination_id": "CMS-tura"
+        },
+        {
+          "part": "Nokrek",
+          "destination_id": "CMS-nokrek-national-park"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.629Z"
+    },
+    {
+      "id": "CL-mizoram-aizawl-reiek",
+      "slug": "aizawl-reiek",
+      "state": "Mizoram",
+      "name": "Aizawl–Reiek",
+      "parts": [
+        "Aizawl",
+        "Reiek"
+      ],
+      "members": [
+        {
+          "part": "Aizawl",
+          "destination_id": "CMS-aizawl"
+        },
+        {
+          "part": "Reiek",
+          "destination_id": "CMS-reiek"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.630Z"
+    },
+    {
+      "id": "CL-mizoram-champhai",
+      "slug": "champhai",
+      "state": "Mizoram",
+      "name": "Champhai",
+      "parts": [
+        "Champhai"
+      ],
+      "members": [
+        {
+          "part": "Champhai",
+          "destination_id": "CMS-champhai"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.631Z"
+    },
+    {
+      "id": "CL-mizoram-thenzawl-vantawng",
+      "slug": "thenzawl-vantawng",
+      "state": "Mizoram",
+      "name": "Thenzawl–Vantawng",
+      "parts": [
+        "Thenzawl",
+        "Vantawng"
+      ],
+      "members": [
+        {
+          "part": "Thenzawl",
+          "destination_id": "CMS-thenzawl"
+        },
+        {
+          "part": "Vantawng",
+          "destination_id": "CMS-vantawng-falls"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.633Z"
+    },
+    {
+      "id": "CL-mizoram-lunglei",
+      "slug": "lunglei",
+      "state": "Mizoram",
+      "name": "Lunglei",
+      "parts": [
+        "Lunglei"
+      ],
+      "members": [
+        {
+          "part": "Lunglei",
+          "destination_id": "CMS-lunglei"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.634Z"
+    },
+    {
+      "id": "CL-nagaland-kohima-kisama-khonoma",
+      "slug": "kohima-kisama-khonoma",
+      "state": "Nagaland",
+      "name": "Kohima–Kisama–Khonoma",
+      "parts": [
+        "Kohima",
+        "Kisama",
+        "Khonoma"
+      ],
+      "members": [
+        {
+          "part": "Kohima",
+          "destination_id": "CMS-kohima"
+        },
+        {
+          "part": "Kisama",
+          "destination_id": "CMS-kisama-heritage-village"
+        },
+        {
+          "part": "Khonoma",
+          "destination_id": "CMS-khonoma"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.638Z"
+    },
+    {
+      "id": "CL-nagaland-mokokchung",
+      "slug": "mokokchung",
+      "state": "Nagaland",
+      "name": "Mokokchung",
+      "parts": [
+        "Mokokchung"
+      ],
+      "members": [
+        {
+          "part": "Mokokchung",
+          "destination_id": "CMS-mokokchung"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.639Z"
+    },
+    {
+      "id": "CL-nagaland-mon-longwa",
+      "slug": "mon-longwa",
+      "state": "Nagaland",
+      "name": "Mon–Longwa",
+      "parts": [
+        "Mon",
+        "Longwa"
+      ],
+      "members": [
+        {
+          "part": "Mon",
+          "destination_id": "CMS-mon"
+        },
+        {
+          "part": "Longwa",
+          "destination_id": "CMS-longwa"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.640Z"
+    },
+    {
+      "id": "CL-nagaland-dzukou",
+      "slug": "dzukou",
+      "state": "Nagaland",
+      "name": "Dzukou",
+      "parts": [
+        "Dzukou"
+      ],
+      "members": [
+        {
+          "part": "Dzukou",
+          "destination_id": "CMS-dzukou-valley"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.641Z"
+    },
+    {
+      "id": "CL-odisha-bhubaneswar-dhauli-udayagiri-khandagiri",
+      "slug": "bhubaneswar-dhauli-udayagiri-khandagiri",
+      "state": "Odisha",
+      "name": "Bhubaneswar–Dhauli–Udayagiri–Khandagiri",
+      "parts": [
+        "Bhubaneswar",
+        "Dhauli",
+        "Udayagiri",
+        "Khandagiri"
+      ],
+      "members": [
+        {
+          "part": "Bhubaneswar",
+          "destination_id": "CMS-bhubaneswar"
+        },
+        {
+          "part": "Dhauli",
+          "destination_id": "CMS-dhauli"
+        },
+        {
+          "part": "Udayagiri",
+          "destination_id": "CMS-udayagiri-caves"
+        },
+        {
+          "part": "Khandagiri",
+          "destination_id": "CMS-khandagiri-caves"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.645Z"
+    },
+    {
+      "id": "CL-odisha-puri-konark-raghurajpur",
+      "slug": "puri-konark-raghurajpur",
+      "state": "Odisha",
+      "name": "Puri–Konark–Raghurajpur",
+      "parts": [
+        "Puri",
+        "Konark",
+        "Raghurajpur"
+      ],
+      "members": [
+        {
+          "part": "Puri",
+          "destination_id": "CMS-puri"
+        },
+        {
+          "part": "Konark",
+          "destination_id": "CMS-konark"
+        },
+        {
+          "part": "Raghurajpur",
+          "destination_id": "CMS-raghurajpur"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.648Z"
+    },
+    {
+      "id": "CL-odisha-chilika",
+      "slug": "chilika",
+      "state": "Odisha",
+      "name": "Chilika",
+      "parts": [
+        "Chilika"
+      ],
+      "members": [
+        {
+          "part": "Chilika",
+          "destination_id": "CMS-chilika"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.649Z"
+    },
+    {
+      "id": "CL-odisha-similipal",
+      "slug": "similipal",
+      "state": "Odisha",
+      "name": "Similipal",
+      "parts": [
+        "Similipal"
+      ],
+      "members": [
+        {
+          "part": "Similipal",
+          "destination_id": "CMS-simlipal"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.650Z"
+    },
+    {
+      "id": "CL-odisha-koraput-deomali",
+      "slug": "koraput-deomali",
+      "state": "Odisha",
+      "name": "Koraput–Deomali",
+      "parts": [
+        "Koraput",
+        "Deomali"
+      ],
+      "members": [
+        {
+          "part": "Koraput",
+          "destination_id": "CMS-koraput"
+        },
+        {
+          "part": "Deomali",
+          "destination_id": "CMS-deomali"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.652Z"
+    },
+    {
+      "id": "CL-punjab-amritsar-attari",
+      "slug": "amritsar-attari",
+      "state": "Punjab",
+      "name": "Amritsar–Attari",
+      "parts": [
+        "Amritsar",
+        "Attari"
+      ],
+      "members": [
+        {
+          "part": "Amritsar",
+          "destination_id": "CMS-amritsar"
+        },
+        {
+          "part": "Attari",
+          "destination_id": "CMS-attari-wagah-border"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.654Z"
+    },
+    {
+      "id": "CL-punjab-anandpur-sahib-rupnagar",
+      "slug": "anandpur-sahib-rupnagar",
+      "state": "Punjab",
+      "name": "Anandpur Sahib–Rupnagar",
+      "parts": [
+        "Anandpur Sahib",
+        "Rupnagar"
+      ],
+      "members": [
+        {
+          "part": "Anandpur Sahib",
+          "destination_id": "CMS-anandpur-sahib"
+        },
+        {
+          "part": "Rupnagar",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.656Z"
+    },
+    {
+      "id": "CL-punjab-patiala-kapurthala",
+      "slug": "patiala-kapurthala",
+      "state": "Punjab",
+      "name": "Patiala–Kapurthala",
+      "parts": [
+        "Patiala",
+        "Kapurthala"
+      ],
+      "members": [
+        {
+          "part": "Patiala",
+          "destination_id": "CMS-patiala"
+        },
+        {
+          "part": "Kapurthala",
+          "destination_id": "CMS-kapurthala"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.658Z"
+    },
+    {
+      "id": "CL-punjab-wetlands-circuit",
+      "slug": "wetlands-circuit",
+      "state": "Punjab",
+      "name": "wetlands circuit",
+      "parts": [
+        "wetlands circuit"
+      ],
+      "members": [
+        {
+          "part": "wetlands circuit",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.659Z"
+    },
+    {
+      "id": "CL-rajasthan-jaipur-ajmer-pushkar",
+      "slug": "jaipur-ajmer-pushkar",
+      "state": "Rajasthan",
+      "name": "Jaipur–Ajmer–Pushkar",
+      "parts": [
+        "Jaipur",
+        "Ajmer",
+        "Pushkar"
+      ],
+      "members": [
+        {
+          "part": "Jaipur",
+          "destination_id": "CMS-jaipur"
+        },
+        {
+          "part": "Ajmer",
+          "destination_id": "CMS-ajmer"
+        },
+        {
+          "part": "Pushkar",
+          "destination_id": "CMS-pushkar"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.662Z"
+    },
+    {
+      "id": "CL-rajasthan-jodhpur-osian",
+      "slug": "jodhpur-osian",
+      "state": "Rajasthan",
+      "name": "Jodhpur–Osian",
+      "parts": [
+        "Jodhpur",
+        "Osian"
+      ],
+      "members": [
+        {
+          "part": "Jodhpur",
+          "destination_id": "CMS-jodhpur"
+        },
+        {
+          "part": "Osian",
+          "destination_id": "CMS-osian"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.664Z"
+    },
+    {
+      "id": "CL-rajasthan-jaisalmer-sam-desert-national-park",
+      "slug": "jaisalmer-sam-desert-national-park",
+      "state": "Rajasthan",
+      "name": "Jaisalmer–Sam–Desert National Park",
+      "parts": [
+        "Jaisalmer",
+        "Sam",
+        "Desert National Park"
+      ],
+      "members": [
+        {
+          "part": "Jaisalmer",
+          "destination_id": "CMS-jaisalmer"
+        },
+        {
+          "part": "Sam",
+          "destination_id": null
+        },
+        {
+          "part": "Desert National Park",
+          "destination_id": "CMS-desert-national-park"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.668Z"
+    },
+    {
+      "id": "CL-rajasthan-udaipur-kumbhalgarh-ranakpur",
+      "slug": "udaipur-kumbhalgarh-ranakpur",
+      "state": "Rajasthan",
+      "name": "Udaipur–Kumbhalgarh–Ranakpur",
+      "parts": [
+        "Udaipur",
+        "Kumbhalgarh",
+        "Ranakpur"
+      ],
+      "members": [
+        {
+          "part": "Udaipur",
+          "destination_id": "CMS-udaipur"
+        },
+        {
+          "part": "Kumbhalgarh",
+          "destination_id": "CMS-kumbhalgarh"
+        },
+        {
+          "part": "Ranakpur",
+          "destination_id": "CMS-ranakpur"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.671Z"
+    },
+    {
+      "id": "CL-rajasthan-chittorgarh-bundi-kota",
+      "slug": "chittorgarh-bundi-kota",
+      "state": "Rajasthan",
+      "name": "Chittorgarh–Bundi–Kota",
+      "parts": [
+        "Chittorgarh",
+        "Bundi",
+        "Kota"
+      ],
+      "members": [
+        {
+          "part": "Chittorgarh",
+          "destination_id": "CMS-chittorgarh"
+        },
+        {
+          "part": "Bundi",
+          "destination_id": "CMS-bundi"
+        },
+        {
+          "part": "Kota",
+          "destination_id": "CMS-kota"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.674Z"
+    },
+    {
+      "id": "CL-rajasthan-bikaner-shekhawati",
+      "slug": "bikaner-shekhawati",
+      "state": "Rajasthan",
+      "name": "Bikaner–Shekhawati",
+      "parts": [
+        "Bikaner",
+        "Shekhawati"
+      ],
+      "members": [
+        {
+          "part": "Bikaner",
+          "destination_id": "CMS-bikaner"
+        },
+        {
+          "part": "Shekhawati",
+          "destination_id": "CMS-shekhawati"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.676Z"
+    },
+    {
+      "id": "CL-rajasthan-alwar-sariska-bharatpur",
+      "slug": "alwar-sariska-bharatpur",
+      "state": "Rajasthan",
+      "name": "Alwar–Sariska–Bharatpur",
+      "parts": [
+        "Alwar",
+        "Sariska",
+        "Bharatpur"
+      ],
+      "members": [
+        {
+          "part": "Alwar",
+          "destination_id": "CMS-alwar"
+        },
+        {
+          "part": "Sariska",
+          "destination_id": "CMS-sariska"
+        },
+        {
+          "part": "Bharatpur",
+          "destination_id": "CMS-bharatpur"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.678Z"
+    },
+    {
+      "id": "CL-sikkim-gangtok-tsomgo-nathula",
+      "slug": "gangtok-tsomgo-nathula",
+      "state": "Sikkim",
+      "name": "Gangtok–Tsomgo–Nathula",
+      "parts": [
+        "Gangtok",
+        "Tsomgo",
+        "Nathula"
+      ],
+      "members": [
+        {
+          "part": "Gangtok",
+          "destination_id": "CMS-gangtok"
+        },
+        {
+          "part": "Tsomgo",
+          "destination_id": "CMS-tsongmo-lake"
+        },
+        {
+          "part": "Nathula",
+          "destination_id": "CMS-nathula-pass"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.681Z"
+    },
+    {
+      "id": "CL-sikkim-pelling-yuksom",
+      "slug": "pelling-yuksom",
+      "state": "Sikkim",
+      "name": "Pelling–Yuksom",
+      "parts": [
+        "Pelling",
+        "Yuksom"
+      ],
+      "members": [
+        {
+          "part": "Pelling",
+          "destination_id": "CMS-pelling"
+        },
+        {
+          "part": "Yuksom",
+          "destination_id": "CMS-yuksom"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.684Z"
+    },
+    {
+      "id": "CL-sikkim-lachung-yumthang-zero-point",
+      "slug": "lachung-yumthang-zero-point",
+      "state": "Sikkim",
+      "name": "Lachung–Yumthang–Zero Point",
+      "parts": [
+        "Lachung",
+        "Yumthang",
+        "Zero Point"
+      ],
+      "members": [
+        {
+          "part": "Lachung",
+          "destination_id": "CMS-lachung"
+        },
+        {
+          "part": "Yumthang",
+          "destination_id": "CMS-yumthang-valley"
+        },
+        {
+          "part": "Zero Point",
+          "destination_id": "CMS-zero-point"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.687Z"
+    },
+    {
+      "id": "CL-sikkim-lachen-gurudongmar",
+      "slug": "lachen-gurudongmar",
+      "state": "Sikkim",
+      "name": "Lachen–Gurudongmar",
+      "parts": [
+        "Lachen",
+        "Gurudongmar"
+      ],
+      "members": [
+        {
+          "part": "Lachen",
+          "destination_id": "CMS-lachen"
+        },
+        {
+          "part": "Gurudongmar",
+          "destination_id": "CMS-gurudongmar-lake"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.689Z"
+    },
+    {
+      "id": "CL-sikkim-zuluk",
+      "slug": "zuluk",
+      "state": "Sikkim",
+      "name": "Zuluk",
+      "parts": [
+        "Zuluk"
+      ],
+      "members": [
+        {
+          "part": "Zuluk",
+          "destination_id": "CMS-zuluk"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.690Z"
+    },
+    {
+      "id": "CL-tamil-nadu-chennai-mahabalipuram-kanchipuram",
+      "slug": "chennai-mahabalipuram-kanchipuram",
+      "state": "Tamil Nadu",
+      "name": "Chennai–Mahabalipuram–Kanchipuram",
+      "parts": [
+        "Chennai",
+        "Mahabalipuram",
+        "Kanchipuram"
+      ],
+      "members": [
+        {
+          "part": "Chennai",
+          "destination_id": "CMS-chennai"
+        },
+        {
+          "part": "Mahabalipuram",
+          "destination_id": "CMS-mahabalipuram"
+        },
+        {
+          "part": "Kanchipuram",
+          "destination_id": "CMS-kanchipuram"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.693Z"
+    },
+    {
+      "id": "CL-tamil-nadu-thanjavur-kumbakonam-chidambaram",
+      "slug": "thanjavur-kumbakonam-chidambaram",
+      "state": "Tamil Nadu",
+      "name": "Thanjavur–Kumbakonam–Chidambaram",
+      "parts": [
+        "Thanjavur",
+        "Kumbakonam",
+        "Chidambaram"
+      ],
+      "members": [
+        {
+          "part": "Thanjavur",
+          "destination_id": "CMS-thanjavur"
+        },
+        {
+          "part": "Kumbakonam",
+          "destination_id": "CMS-kumbakonam"
+        },
+        {
+          "part": "Chidambaram",
+          "destination_id": "CMS-chidambaram"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.696Z"
+    },
+    {
+      "id": "CL-tamil-nadu-madurai-rameswaram-dhanushkodi",
+      "slug": "madurai-rameswaram-dhanushkodi",
+      "state": "Tamil Nadu",
+      "name": "Madurai–Rameswaram–Dhanushkodi",
+      "parts": [
+        "Madurai",
+        "Rameswaram",
+        "Dhanushkodi"
+      ],
+      "members": [
+        {
+          "part": "Madurai",
+          "destination_id": "CMS-madurai"
+        },
+        {
+          "part": "Rameswaram",
+          "destination_id": "CMS-rameswaram"
+        },
+        {
+          "part": "Dhanushkodi",
+          "destination_id": "CMS-dhanushkodi"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.699Z"
+    },
+    {
+      "id": "CL-tamil-nadu-nilgiris",
+      "slug": "nilgiris",
+      "state": "Tamil Nadu",
+      "name": "Nilgiris",
+      "parts": [
+        "Nilgiris"
+      ],
+      "members": [
+        {
+          "part": "Nilgiris",
+          "destination_id": "CMS-ooty"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.700Z"
+    },
+    {
+      "id": "CL-tamil-nadu-kodaikanal",
+      "slug": "kodaikanal",
+      "state": "Tamil Nadu",
+      "name": "Kodaikanal",
+      "parts": [
+        "Kodaikanal"
+      ],
+      "members": [
+        {
+          "part": "Kodaikanal",
+          "destination_id": "CMS-kodaikanal"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.701Z"
+    },
+    {
+      "id": "CL-tamil-nadu-kongu-region",
+      "slug": "kongu-region",
+      "state": "Tamil Nadu",
+      "name": "Kongu region",
+      "parts": [
+        "Kongu region"
+      ],
+      "members": [
+        {
+          "part": "Kongu region",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.702Z"
+    },
+    {
+      "id": "CL-telangana-hyderabad-heritage",
+      "slug": "hyderabad-heritage",
+      "state": "Telangana",
+      "name": "Hyderabad heritage",
+      "parts": [
+        "Hyderabad heritage"
+      ],
+      "members": [
+        {
+          "part": "Hyderabad heritage",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.704Z"
+    },
+    {
+      "id": "CL-telangana-warangal-ramappa-laknavaram",
+      "slug": "warangal-ramappa-laknavaram",
+      "state": "Telangana",
+      "name": "Warangal–Ramappa–Laknavaram",
+      "parts": [
+        "Warangal",
+        "Ramappa",
+        "Laknavaram"
+      ],
+      "members": [
+        {
+          "part": "Warangal",
+          "destination_id": "CMS-warangal"
+        },
+        {
+          "part": "Ramappa",
+          "destination_id": "CMS-ramappa-temple"
+        },
+        {
+          "part": "Laknavaram",
+          "destination_id": "CMS-laknavaram-lake"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.707Z"
+    },
+    {
+      "id": "CL-telangana-bhadrachalam",
+      "slug": "bhadrachalam",
+      "state": "Telangana",
+      "name": "Bhadrachalam",
+      "parts": [
+        "Bhadrachalam"
+      ],
+      "members": [
+        {
+          "part": "Bhadrachalam",
+          "destination_id": "CMS-bhadrachalam"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.708Z"
+    },
+    {
+      "id": "CL-telangana-yadadri-vemulawada",
+      "slug": "yadadri-vemulawada",
+      "state": "Telangana",
+      "name": "Yadadri–Vemulawada",
+      "parts": [
+        "Yadadri",
+        "Vemulawada"
+      ],
+      "members": [
+        {
+          "part": "Yadadri",
+          "destination_id": "CMS-yadadri"
+        },
+        {
+          "part": "Vemulawada",
+          "destination_id": "CMS-vemulawada"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.710Z"
+    },
+    {
+      "id": "CL-telangana-adilabad-waterfalls",
+      "slug": "adilabad-waterfalls",
+      "state": "Telangana",
+      "name": "Adilabad waterfalls",
+      "parts": [
+        "Adilabad waterfalls"
+      ],
+      "members": [
+        {
+          "part": "Adilabad waterfalls",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.711Z"
+    },
+    {
+      "id": "CL-tripura-agartala-ujjayanta-neermahal",
+      "slug": "agartala-ujjayanta-neermahal",
+      "state": "Tripura",
+      "name": "Agartala–Ujjayanta–Neermahal",
+      "parts": [
+        "Agartala",
+        "Ujjayanta",
+        "Neermahal"
+      ],
+      "members": [
+        {
+          "part": "Agartala",
+          "destination_id": "CMS-agartala"
+        },
+        {
+          "part": "Ujjayanta",
+          "destination_id": "CMS-ujjayanta-palace"
+        },
+        {
+          "part": "Neermahal",
+          "destination_id": "CMS-neermahal"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.715Z"
+    },
+    {
+      "id": "CL-tripura-unakoti-kailashahar",
+      "slug": "unakoti-kailashahar",
+      "state": "Tripura",
+      "name": "Unakoti–Kailashahar",
+      "parts": [
+        "Unakoti",
+        "Kailashahar"
+      ],
+      "members": [
+        {
+          "part": "Unakoti",
+          "destination_id": "CMS-unakoti"
+        },
+        {
+          "part": "Kailashahar",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.717Z"
+    },
+    {
+      "id": "CL-tripura-jampui",
+      "slug": "jampui",
+      "state": "Tripura",
+      "name": "Jampui",
+      "parts": [
+        "Jampui"
+      ],
+      "members": [
+        {
+          "part": "Jampui",
+          "destination_id": "CMS-jampui-hills"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.718Z"
+    },
+    {
+      "id": "CL-tripura-chabimura-dumboor",
+      "slug": "chabimura-dumboor",
+      "state": "Tripura",
+      "name": "Chabimura–Dumboor",
+      "parts": [
+        "Chabimura",
+        "Dumboor"
+      ],
+      "members": [
+        {
+          "part": "Chabimura",
+          "destination_id": "CMS-chabimura"
+        },
+        {
+          "part": "Dumboor",
+          "destination_id": "CMS-dumboor-lake"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.720Z"
+    },
+    {
+      "id": "CL-uttar-pradesh-delhi-agra-fatehpur-sikri",
+      "slug": "delhi-agra-fatehpur-sikri",
+      "state": "Uttar Pradesh",
+      "name": "Delhi–Agra–Fatehpur Sikri",
+      "parts": [
+        "Delhi",
+        "Agra",
+        "Fatehpur Sikri"
+      ],
+      "members": [
+        {
+          "part": "Delhi",
+          "destination_id": "CMS-delhi"
+        },
+        {
+          "part": "Agra",
+          "destination_id": "CMS-agra"
+        },
+        {
+          "part": "Fatehpur Sikri",
+          "destination_id": "CMS-fatehpur-sikri"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.723Z"
+    },
+    {
+      "id": "CL-uttar-pradesh-mathura-vrindavan-govardhan-barsana",
+      "slug": "mathura-vrindavan-govardhan-barsana",
+      "state": "Uttar Pradesh",
+      "name": "Mathura–Vrindavan–Govardhan–Barsana",
+      "parts": [
+        "Mathura",
+        "Vrindavan",
+        "Govardhan",
+        "Barsana"
+      ],
+      "members": [
+        {
+          "part": "Mathura",
+          "destination_id": "CMS-mathura"
+        },
+        {
+          "part": "Vrindavan",
+          "destination_id": "CMS-vrindavan"
+        },
+        {
+          "part": "Govardhan",
+          "destination_id": "CMS-govardhan"
+        },
+        {
+          "part": "Barsana",
+          "destination_id": "CMS-barsana"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.727Z"
+    },
+    {
+      "id": "CL-uttar-pradesh-lucknow-kanpur",
+      "slug": "lucknow-kanpur",
+      "state": "Uttar Pradesh",
+      "name": "Lucknow–Kanpur",
+      "parts": [
+        "Lucknow",
+        "Kanpur"
+      ],
+      "members": [
+        {
+          "part": "Lucknow",
+          "destination_id": "CMS-lucknow"
+        },
+        {
+          "part": "Kanpur",
+          "destination_id": "CMS-kanpur"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.729Z"
+    },
+    {
+      "id": "CL-uttar-pradesh-prayagraj-varanasi-sarnath",
+      "slug": "prayagraj-varanasi-sarnath",
+      "state": "Uttar Pradesh",
+      "name": "Prayagraj–Varanasi–Sarnath",
+      "parts": [
+        "Prayagraj",
+        "Varanasi",
+        "Sarnath"
+      ],
+      "members": [
+        {
+          "part": "Prayagraj",
+          "destination_id": "CMS-prayagraj"
+        },
+        {
+          "part": "Varanasi",
+          "destination_id": "CMS-varanasi"
+        },
+        {
+          "part": "Sarnath",
+          "destination_id": "CMS-sarnath"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.732Z"
+    },
+    {
+      "id": "CL-uttar-pradesh-ayodhya",
+      "slug": "ayodhya",
+      "state": "Uttar Pradesh",
+      "name": "Ayodhya",
+      "parts": [
+        "Ayodhya"
+      ],
+      "members": [
+        {
+          "part": "Ayodhya",
+          "destination_id": "CMS-ayodhya"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.733Z"
+    },
+    {
+      "id": "CL-uttar-pradesh-chitrakoot",
+      "slug": "chitrakoot",
+      "state": "Uttar Pradesh",
+      "name": "Chitrakoot",
+      "parts": [
+        "Chitrakoot"
+      ],
+      "members": [
+        {
+          "part": "Chitrakoot",
+          "destination_id": "CMS-chitrakoot"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.734Z"
+    },
+    {
+      "id": "CL-uttar-pradesh-buddhist-circuit",
+      "slug": "buddhist-circuit",
+      "state": "Uttar Pradesh",
+      "name": "Buddhist circuit",
+      "parts": [
+        "Buddhist circuit"
+      ],
+      "members": [
+        {
+          "part": "Buddhist circuit",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.735Z"
+    },
+    {
+      "id": "CL-uttar-pradesh-dudhwa",
+      "slug": "dudhwa",
+      "state": "Uttar Pradesh",
+      "name": "Dudhwa",
+      "parts": [
+        "Dudhwa"
+      ],
+      "members": [
+        {
+          "part": "Dudhwa",
+          "destination_id": "CMS-dudhwa"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.736Z"
+    },
+    {
+      "id": "CL-uttarakhand-haridwar-rishikesh-dehradun",
+      "slug": "haridwar-rishikesh-dehradun",
+      "state": "Uttarakhand",
+      "name": "Haridwar–Rishikesh–Dehradun",
+      "parts": [
+        "Haridwar",
+        "Rishikesh",
+        "Dehradun"
+      ],
+      "members": [
+        {
+          "part": "Haridwar",
+          "destination_id": "CMS-haridwar"
+        },
+        {
+          "part": "Rishikesh",
+          "destination_id": "CMS-rishikesh"
+        },
+        {
+          "part": "Dehradun",
+          "destination_id": "CMS-dehradun"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.739Z"
+    },
+    {
+      "id": "CL-uttarakhand-mussoorie-dhanaulti",
+      "slug": "mussoorie-dhanaulti",
+      "state": "Uttarakhand",
+      "name": "Mussoorie–Dhanaulti",
+      "parts": [
+        "Mussoorie",
+        "Dhanaulti"
+      ],
+      "members": [
+        {
+          "part": "Mussoorie",
+          "destination_id": "CMS-mussoorie"
+        },
+        {
+          "part": "Dhanaulti",
+          "destination_id": "CMS-dhanaulti"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.741Z"
+    },
+    {
+      "id": "CL-uttarakhand-nainital-bhimtal-mukteshwar",
+      "slug": "nainital-bhimtal-mukteshwar",
+      "state": "Uttarakhand",
+      "name": "Nainital–Bhimtal–Mukteshwar",
+      "parts": [
+        "Nainital",
+        "Bhimtal",
+        "Mukteshwar"
+      ],
+      "members": [
+        {
+          "part": "Nainital",
+          "destination_id": "CMS-nainital"
+        },
+        {
+          "part": "Bhimtal",
+          "destination_id": null
+        },
+        {
+          "part": "Mukteshwar",
+          "destination_id": "CMS-mukteshwar"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.744Z"
+    },
+    {
+      "id": "CL-uttarakhand-char-dham",
+      "slug": "char-dham",
+      "state": "Uttarakhand",
+      "name": "Char Dham",
+      "parts": [
+        "Char Dham"
+      ],
+      "members": [
+        {
+          "part": "Char Dham",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.745Z"
+    },
+    {
+      "id": "CL-uttarakhand-valley-of-flowers-badrinath",
+      "slug": "valley-of-flowers-badrinath",
+      "state": "Uttarakhand",
+      "name": "Valley of Flowers–Badrinath",
+      "parts": [
+        "Valley of Flowers",
+        "Badrinath"
+      ],
+      "members": [
+        {
+          "part": "Valley of Flowers",
+          "destination_id": "CMS-valley-of-flowers"
+        },
+        {
+          "part": "Badrinath",
+          "destination_id": "CMS-badrinath"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.748Z"
+    },
+    {
+      "id": "CL-uttarakhand-auli-joshimath",
+      "slug": "auli-joshimath",
+      "state": "Uttarakhand",
+      "name": "Auli–Joshimath",
+      "parts": [
+        "Auli",
+        "Joshimath"
+      ],
+      "members": [
+        {
+          "part": "Auli",
+          "destination_id": "CMS-auli"
+        },
+        {
+          "part": "Joshimath",
+          "destination_id": "CMS-joshimath"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.750Z"
+    },
+    {
+      "id": "CL-uttarakhand-kumaon",
+      "slug": "kumaon",
+      "state": "Uttarakhand",
+      "name": "Kumaon",
+      "parts": [
+        "Kumaon"
+      ],
+      "members": [
+        {
+          "part": "Kumaon",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.751Z"
+    },
+    {
+      "id": "CL-uttarakhand-tehri-chopta",
+      "slug": "tehri-chopta",
+      "state": "Uttarakhand",
+      "name": "Tehri–Chopta",
+      "parts": [
+        "Tehri",
+        "Chopta"
+      ],
+      "members": [
+        {
+          "part": "Tehri",
+          "destination_id": "CMS-tehri"
+        },
+        {
+          "part": "Chopta",
+          "destination_id": "CMS-chopta"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.752Z"
+    },
+    {
+      "id": "CL-west-bengal-kolkata-chandannagar",
+      "slug": "kolkata-chandannagar",
+      "state": "West Bengal",
+      "name": "Kolkata–Chandannagar",
+      "parts": [
+        "Kolkata",
+        "Chandannagar"
+      ],
+      "members": [
+        {
+          "part": "Kolkata",
+          "destination_id": "CMS-kolkata"
+        },
+        {
+          "part": "Chandannagar",
+          "destination_id": "CMS-chandannagar"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.754Z"
+    },
+    {
+      "id": "CL-west-bengal-darjeeling-kurseong",
+      "slug": "darjeeling-kurseong",
+      "state": "West Bengal",
+      "name": "Darjeeling–Kurseong",
+      "parts": [
+        "Darjeeling",
+        "Kurseong"
+      ],
+      "members": [
+        {
+          "part": "Darjeeling",
+          "destination_id": "CMS-darjeeling"
+        },
+        {
+          "part": "Kurseong",
+          "destination_id": "CMS-kurseong"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.756Z"
+    },
+    {
+      "id": "CL-west-bengal-kalimpong-lava-lolegaon",
+      "slug": "kalimpong-lava-lolegaon",
+      "state": "West Bengal",
+      "name": "Kalimpong–Lava–Lolegaon",
+      "parts": [
+        "Kalimpong",
+        "Lava",
+        "Lolegaon"
+      ],
+      "members": [
+        {
+          "part": "Kalimpong",
+          "destination_id": "CMS-kalimpong"
+        },
+        {
+          "part": "Lava",
+          "destination_id": "CMS-lava"
+        },
+        {
+          "part": "Lolegaon",
+          "destination_id": "CMS-lolegaon"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.760Z"
+    },
+    {
+      "id": "CL-west-bengal-dooars",
+      "slug": "dooars",
+      "state": "West Bengal",
+      "name": "Dooars",
+      "parts": [
+        "Dooars"
+      ],
+      "members": [
+        {
+          "part": "Dooars",
+          "destination_id": "CMS-dooars"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.761Z"
+    },
+    {
+      "id": "CL-west-bengal-sundarbans",
+      "slug": "sundarbans",
+      "state": "West Bengal",
+      "name": "Sundarbans",
+      "parts": [
+        "Sundarbans"
+      ],
+      "members": [
+        {
+          "part": "Sundarbans",
+          "destination_id": "CMS-sundarbans"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.762Z"
+    },
+    {
+      "id": "CL-west-bengal-shantiniketan-bishnupur",
+      "slug": "shantiniketan-bishnupur",
+      "state": "West Bengal",
+      "name": "Shantiniketan–Bishnupur",
+      "parts": [
+        "Shantiniketan",
+        "Bishnupur"
+      ],
+      "members": [
+        {
+          "part": "Shantiniketan",
+          "destination_id": "CMS-shantiniketan"
+        },
+        {
+          "part": "Bishnupur",
+          "destination_id": "CMS-bishnupur-west-bengal"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.764Z"
+    },
+    {
+      "id": "CL-west-bengal-murshidabad",
+      "slug": "murshidabad",
+      "state": "West Bengal",
+      "name": "Murshidabad",
+      "parts": [
+        "Murshidabad"
+      ],
+      "members": [
+        {
+          "part": "Murshidabad",
+          "destination_id": "CMS-murshidabad"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.765Z"
+    },
+    {
+      "id": "CL-jammu-and-kashmir-srinagar-gulmarg-sonamarg",
+      "slug": "srinagar-gulmarg-sonamarg",
+      "state": "Jammu and Kashmir",
+      "name": "Srinagar–Gulmarg–Sonamarg",
+      "parts": [
+        "Srinagar",
+        "Gulmarg",
+        "Sonamarg"
+      ],
+      "members": [
+        {
+          "part": "Srinagar",
+          "destination_id": "CMS-srinagar"
+        },
+        {
+          "part": "Gulmarg",
+          "destination_id": "CMS-gulmarg"
+        },
+        {
+          "part": "Sonamarg",
+          "destination_id": "CMS-sonamarg"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.768Z"
+    },
+    {
+      "id": "CL-jammu-and-kashmir-pahalgam-aru-betaab",
+      "slug": "pahalgam-aru-betaab",
+      "state": "Jammu and Kashmir",
+      "name": "Pahalgam–Aru–Betaab",
+      "parts": [
+        "Pahalgam",
+        "Aru",
+        "Betaab"
+      ],
+      "members": [
+        {
+          "part": "Pahalgam",
+          "destination_id": "CMS-pahalgam"
+        },
+        {
+          "part": "Aru",
+          "destination_id": "CMS-aru-valley"
+        },
+        {
+          "part": "Betaab",
+          "destination_id": "CMS-betaab-valley"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.771Z"
+    },
+    {
+      "id": "CL-jammu-and-kashmir-jammu-vaishno-devi-shiv-khori",
+      "slug": "jammu-vaishno-devi-shiv-khori",
+      "state": "Jammu and Kashmir",
+      "name": "Jammu–Vaishno Devi–Shiv Khori",
+      "parts": [
+        "Jammu",
+        "Vaishno Devi",
+        "Shiv Khori"
+      ],
+      "members": [
+        {
+          "part": "Jammu",
+          "destination_id": "CMS-jammu"
+        },
+        {
+          "part": "Vaishno Devi",
+          "destination_id": "CMS-vaishno-devi-katra"
+        },
+        {
+          "part": "Shiv Khori",
+          "destination_id": "CMS-shiv-khori"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.775Z"
+    },
+    {
+      "id": "CL-jammu-and-kashmir-gurez",
+      "slug": "gurez",
+      "state": "Jammu and Kashmir",
+      "name": "Gurez",
+      "parts": [
+        "Gurez"
+      ],
+      "members": [
+        {
+          "part": "Gurez",
+          "destination_id": "CMS-gurez-valley"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.776Z"
+    },
+    {
+      "id": "CL-jammu-and-kashmir-patnitop-sanasar",
+      "slug": "patnitop-sanasar",
+      "state": "Jammu and Kashmir",
+      "name": "Patnitop–Sanasar",
+      "parts": [
+        "Patnitop",
+        "Sanasar"
+      ],
+      "members": [
+        {
+          "part": "Patnitop",
+          "destination_id": "CMS-patnitop"
+        },
+        {
+          "part": "Sanasar",
+          "destination_id": "CMS-sanasar"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.778Z"
+    },
+    {
+      "id": "CL-ladakh-leh-nubra-pangong",
+      "slug": "leh-nubra-pangong",
+      "state": "Ladakh",
+      "name": "Leh–Nubra–Pangong",
+      "parts": [
+        "Leh",
+        "Nubra",
+        "Pangong"
+      ],
+      "members": [
+        {
+          "part": "Leh",
+          "destination_id": "CMS-leh"
+        },
+        {
+          "part": "Nubra",
+          "destination_id": "CMS-nubra-valley"
+        },
+        {
+          "part": "Pangong",
+          "destination_id": "CMS-pangong-lake"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.781Z"
+    },
+    {
+      "id": "CL-ladakh-leh-alchi-lamayuru",
+      "slug": "leh-alchi-lamayuru",
+      "state": "Ladakh",
+      "name": "Leh–Alchi–Lamayuru",
+      "parts": [
+        "Leh",
+        "Alchi",
+        "Lamayuru"
+      ],
+      "members": [
+        {
+          "part": "Leh",
+          "destination_id": "CMS-leh"
+        },
+        {
+          "part": "Alchi",
+          "destination_id": "CMS-alchi"
+        },
+        {
+          "part": "Lamayuru",
+          "destination_id": "CMS-lamayuru"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.783Z"
+    },
+    {
+      "id": "CL-ladakh-tso-moriri-tso-kar",
+      "slug": "tso-moriri-tso-kar",
+      "state": "Ladakh",
+      "name": "Tso Moriri–Tso Kar",
+      "parts": [
+        "Tso Moriri",
+        "Tso Kar"
+      ],
+      "members": [
+        {
+          "part": "Tso Moriri",
+          "destination_id": "CMS-tso-moriri"
+        },
+        {
+          "part": "Tso Kar",
+          "destination_id": "CMS-tso-kar"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.786Z"
+    },
+    {
+      "id": "CL-ladakh-hanle",
+      "slug": "hanle",
+      "state": "Ladakh",
+      "name": "Hanle",
+      "parts": [
+        "Hanle"
+      ],
+      "members": [
+        {
+          "part": "Hanle",
+          "destination_id": "CMS-hanle"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.787Z"
+    },
+    {
+      "id": "CL-ladakh-kargil-drass",
+      "slug": "kargil-drass",
+      "state": "Ladakh",
+      "name": "Kargil–Drass",
+      "parts": [
+        "Kargil",
+        "Drass"
+      ],
+      "members": [
+        {
+          "part": "Kargil",
+          "destination_id": "CMS-kargil"
+        },
+        {
+          "part": "Drass",
+          "destination_id": "CMS-drass"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.789Z"
+    },
+    {
+      "id": "CL-ladakh-zanskar",
+      "slug": "zanskar",
+      "state": "Ladakh",
+      "name": "Zanskar",
+      "parts": [
+        "Zanskar"
+      ],
+      "members": [
+        {
+          "part": "Zanskar",
+          "destination_id": "CMS-zanskar"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.790Z"
+    },
+    {
+      "id": "CL-andaman-and-nicobar-islands-sri-vijaya-puram-cellular-jail-ross-island",
+      "slug": "sri-vijaya-puram-cellular-jail-ross-island",
+      "state": "Andaman and Nicobar Islands",
+      "name": "Sri Vijaya Puram–Cellular Jail–Ross Island",
+      "parts": [
+        "Sri Vijaya Puram",
+        "Cellular Jail",
+        "Ross Island"
+      ],
+      "members": [
+        {
+          "part": "Sri Vijaya Puram",
+          "destination_id": "CMS-sri-vijaya-puram"
+        },
+        {
+          "part": "Cellular Jail",
+          "destination_id": "CMS-cellular-jail"
+        },
+        {
+          "part": "Ross Island",
+          "destination_id": "CMS-ross-island"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.794Z"
+    },
+    {
+      "id": "CL-andaman-and-nicobar-islands-swaraj-dweep-radhanagar-elephant-beach",
+      "slug": "swaraj-dweep-radhanagar-elephant-beach",
+      "state": "Andaman and Nicobar Islands",
+      "name": "Swaraj Dweep–Radhanagar–Elephant Beach",
+      "parts": [
+        "Swaraj Dweep",
+        "Radhanagar",
+        "Elephant Beach"
+      ],
+      "members": [
+        {
+          "part": "Swaraj Dweep",
+          "destination_id": "CMS-swaraj-dweep"
+        },
+        {
+          "part": "Radhanagar",
+          "destination_id": "CMS-radhanagar-beach"
+        },
+        {
+          "part": "Elephant Beach",
+          "destination_id": "CMS-elephant-beach"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.797Z"
+    },
+    {
+      "id": "CL-andaman-and-nicobar-islands-shaheed-dweep",
+      "slug": "shaheed-dweep",
+      "state": "Andaman and Nicobar Islands",
+      "name": "Shaheed Dweep",
+      "parts": [
+        "Shaheed Dweep"
+      ],
+      "members": [
+        {
+          "part": "Shaheed Dweep",
+          "destination_id": "CMS-shaheed-dweep"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.799Z"
+    },
+    {
+      "id": "CL-andaman-and-nicobar-islands-baratang",
+      "slug": "baratang",
+      "state": "Andaman and Nicobar Islands",
+      "name": "Baratang",
+      "parts": [
+        "Baratang"
+      ],
+      "members": [
+        {
+          "part": "Baratang",
+          "destination_id": "CMS-baratang"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.800Z"
+    },
+    {
+      "id": "CL-andaman-and-nicobar-islands-marine-island-circuit",
+      "slug": "marine-island-circuit",
+      "state": "Andaman and Nicobar Islands",
+      "name": "marine-island circuit",
+      "parts": [
+        "marine",
+        "island circuit"
+      ],
+      "members": [
+        {
+          "part": "marine",
+          "destination_id": null
+        },
+        {
+          "part": "island circuit",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.803Z"
+    },
+    {
+      "id": "CL-chandigarh-chandigarh-heritage-capitol-complex-rock-garden-sukhna",
+      "slug": "chandigarh-heritage-capitol-complex-rock-garden-sukhna",
+      "state": "Chandigarh",
+      "name": "Chandigarh heritage–Capitol Complex–Rock Garden–Sukhna",
+      "parts": [
+        "Chandigarh heritage",
+        "Capitol Complex",
+        "Rock Garden",
+        "Sukhna"
+      ],
+      "members": [
+        {
+          "part": "Chandigarh heritage",
+          "destination_id": null
+        },
+        {
+          "part": "Capitol Complex",
+          "destination_id": "CMS-capitol-complex"
+        },
+        {
+          "part": "Rock Garden",
+          "destination_id": "CMS-rock-garden"
+        },
+        {
+          "part": "Sukhna",
+          "destination_id": "CMS-sukhna-lake"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.821Z"
+    },
+    {
+      "id": "CL-chandigarh-chandigarh-pinjore-morni",
+      "slug": "chandigarh-pinjore-morni",
+      "state": "Chandigarh",
+      "name": "Chandigarh–Pinjore–Morni",
+      "parts": [
+        "Chandigarh",
+        "Pinjore",
+        "Morni"
+      ],
+      "members": [
+        {
+          "part": "Chandigarh",
+          "destination_id": "CMS-chandigarh"
+        },
+        {
+          "part": "Pinjore",
+          "destination_id": "CMS-pinjore"
+        },
+        {
+          "part": "Morni",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.824Z"
+    },
+    {
+      "id": "CL-dadra-and-nagar-haveli-and-daman-and-diu-daman-heritage-beaches",
+      "slug": "daman-heritage-beaches",
+      "state": "Dadra and Nagar Haveli and Daman and Diu",
+      "name": "Daman heritage–beaches",
+      "parts": [
+        "Daman heritage",
+        "beaches"
+      ],
+      "members": [
+        {
+          "part": "Daman heritage",
+          "destination_id": null
+        },
+        {
+          "part": "beaches",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.826Z"
+    },
+    {
+      "id": "CL-dadra-and-nagar-haveli-and-daman-and-diu-diu-fort-beaches-caves",
+      "slug": "diu-fort-beaches-caves",
+      "state": "Dadra and Nagar Haveli and Daman and Diu",
+      "name": "Diu fort–beaches–caves",
+      "parts": [
+        "Diu fort",
+        "beaches",
+        "caves"
+      ],
+      "members": [
+        {
+          "part": "Diu fort",
+          "destination_id": "CMS-diu-fort"
+        },
+        {
+          "part": "beaches",
+          "destination_id": null
+        },
+        {
+          "part": "caves",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.830Z"
+    },
+    {
+      "id": "CL-dadra-and-nagar-haveli-and-daman-and-diu-silvassa-dudhani",
+      "slug": "silvassa-dudhani",
+      "state": "Dadra and Nagar Haveli and Daman and Diu",
+      "name": "Silvassa–Dudhani",
+      "parts": [
+        "Silvassa",
+        "Dudhani"
+      ],
+      "members": [
+        {
+          "part": "Silvassa",
+          "destination_id": "CMS-silvassa"
+        },
+        {
+          "part": "Dudhani",
+          "destination_id": "CMS-dudhani"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.832Z"
+    },
+    {
+      "id": "CL-delhi-old-delhi-heritage",
+      "slug": "old-delhi-heritage",
+      "state": "Delhi",
+      "name": "Old Delhi heritage",
+      "parts": [
+        "Old Delhi heritage"
+      ],
+      "members": [
+        {
+          "part": "Old Delhi heritage",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.833Z"
+    },
+    {
+      "id": "CL-delhi-new-delhi-monumental-circuit",
+      "slug": "new-delhi-monumental-circuit",
+      "state": "Delhi",
+      "name": "New Delhi monumental circuit",
+      "parts": [
+        "New Delhi monumental circuit"
+      ],
+      "members": [
+        {
+          "part": "New Delhi monumental circuit",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.834Z"
+    },
+    {
+      "id": "CL-delhi-mehrauli-qutub",
+      "slug": "mehrauli-qutub",
+      "state": "Delhi",
+      "name": "Mehrauli–Qutub",
+      "parts": [
+        "Mehrauli",
+        "Qutub"
+      ],
+      "members": [
+        {
+          "part": "Mehrauli",
+          "destination_id": "CMS-mehrauli-archaeological-park"
+        },
+        {
+          "part": "Qutub",
+          "destination_id": "CMS-qutub-minar"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.837Z"
+    },
+    {
+      "id": "CL-delhi-museum-garden-circuit",
+      "slug": "museum-garden-circuit",
+      "state": "Delhi",
+      "name": "museum–garden circuit",
+      "parts": [
+        "museum",
+        "garden circuit"
+      ],
+      "members": [
+        {
+          "part": "museum",
+          "destination_id": null
+        },
+        {
+          "part": "garden circuit",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.839Z"
+    },
+    {
+      "id": "CL-lakshadweep-kavaratti-agatti",
+      "slug": "kavaratti-agatti",
+      "state": "Lakshadweep",
+      "name": "Kavaratti–Agatti",
+      "parts": [
+        "Kavaratti",
+        "Agatti"
+      ],
+      "members": [
+        {
+          "part": "Kavaratti",
+          "destination_id": "CMS-kavaratti"
+        },
+        {
+          "part": "Agatti",
+          "destination_id": "CMS-agatti"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.841Z"
+    },
+    {
+      "id": "CL-lakshadweep-bangaram-thinnakara",
+      "slug": "bangaram-thinnakara",
+      "state": "Lakshadweep",
+      "name": "Bangaram–Thinnakara",
+      "parts": [
+        "Bangaram",
+        "Thinnakara"
+      ],
+      "members": [
+        {
+          "part": "Bangaram",
+          "destination_id": "CMS-bangaram"
+        },
+        {
+          "part": "Thinnakara",
+          "destination_id": "CMS-thinnakara"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.843Z"
+    },
+    {
+      "id": "CL-lakshadweep-kadmat-kalpeni",
+      "slug": "kadmat-kalpeni",
+      "state": "Lakshadweep",
+      "name": "Kadmat–Kalpeni",
+      "parts": [
+        "Kadmat",
+        "Kalpeni"
+      ],
+      "members": [
+        {
+          "part": "Kadmat",
+          "destination_id": "CMS-kadmat"
+        },
+        {
+          "part": "Kalpeni",
+          "destination_id": "CMS-kalpeni"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.845Z"
+    },
+    {
+      "id": "CL-lakshadweep-minicoy",
+      "slug": "minicoy",
+      "state": "Lakshadweep",
+      "name": "Minicoy",
+      "parts": [
+        "Minicoy"
+      ],
+      "members": [
+        {
+          "part": "Minicoy",
+          "destination_id": "CMS-minicoy"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.846Z"
+    },
+    {
+      "id": "CL-puducherry-puducherry-french-quarter-ashram-beaches",
+      "slug": "puducherry-french-quarter-ashram-beaches",
+      "state": "Puducherry",
+      "name": "Puducherry French Quarter–Ashram–beaches",
+      "parts": [
+        "Puducherry French Quarter",
+        "Ashram",
+        "beaches"
+      ],
+      "members": [
+        {
+          "part": "Puducherry French Quarter",
+          "destination_id": null
+        },
+        {
+          "part": "Ashram",
+          "destination_id": null
+        },
+        {
+          "part": "beaches",
+          "destination_id": null
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.849Z"
+    },
+    {
+      "id": "CL-puducherry-auroville",
+      "slug": "auroville",
+      "state": "Puducherry",
+      "name": "Auroville",
+      "parts": [
+        "Auroville"
+      ],
+      "members": [
+        {
+          "part": "Auroville",
+          "destination_id": "CMS-auroville"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.850Z"
+    },
+    {
+      "id": "CL-puducherry-chunnambar-paradise-beach",
+      "slug": "chunnambar-paradise-beach",
+      "state": "Puducherry",
+      "name": "Chunnambar–Paradise Beach",
+      "parts": [
+        "Chunnambar",
+        "Paradise Beach"
+      ],
+      "members": [
+        {
+          "part": "Chunnambar",
+          "destination_id": "CMS-chunnambar"
+        },
+        {
+          "part": "Paradise Beach",
+          "destination_id": "CMS-paradise-beach"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.853Z"
+    },
+    {
+      "id": "CL-puducherry-puducherry-gingee",
+      "slug": "puducherry-gingee",
+      "state": "Puducherry",
+      "name": "Puducherry–Gingee",
+      "parts": [
+        "Puducherry",
+        "Gingee"
+      ],
+      "members": [
+        {
+          "part": "Puducherry",
+          "destination_id": "CMS-puducherry"
+        },
+        {
+          "part": "Gingee",
+          "destination_id": "CMS-gingee-fort"
+        }
+      ],
+      "typical_days": null,
+      "start_point": null,
+      "end_point": null,
+      "status_in_source": "Draft cluster — validate road/rail timing",
+      "source": "India_Tourism_Master_Database_v1.xlsx",
+      "imported_at": "2026-10-10T11:11:44.855Z"
+    }
+  ]
+}

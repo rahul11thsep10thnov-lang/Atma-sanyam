@@ -568,6 +568,10 @@ model Destination {
   is_sample_data  Boolean       @default(true)
   source_id       String?
   last_verified_at DateTime?
+  // Master workbook rows (India_Tourism_Master_Database_v1.xlsx, e.g. "IN-0001") this record stands for.
+  // Additive and optional: existing rows keep working; imported rows start UNVERIFIED.
+  seed_source_ids     String[]
+  verification_status String?  @default("UNVERIFIED")
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
 

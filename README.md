@@ -152,6 +152,25 @@ PDF → 500 destinations → destination 1 → ~10 attractions → Image Discove
 
 Admin APIs (all behind `authorizeAdmin`): `/api/admin/cms/destinations` (+ `/{id}`, `/{id}/action`, `/{id}/images` = finalise, `/bulk`), `/api/admin/cms/upload`, `/api/admin/cms/settings`, `/api/admin/cms/providers`, `/api/admin/cms/import`, `/api/admin/cms/pipeline`.
 
+## Master database import (India_Tourism_Master_Database_v1.xlsx)
+
+The owner's master list lives at `data/source/India_Tourism_Master_Database_v1.xlsx` (sheets **Destinations** — 681 rows, IDs `IN-0001…`, all 36 States/UTs — **Trip Clusters** — 166 draft circuits — **Schema**, **Categories**).
+
+```
+npm run import:master -- --dry-run      # plan only: create / link / review / invalid, nothing written
+npm run import:master                   # apply in batches of 50 with a checkpoint; prints totals
+npm run import:master -- path/to/v2.xlsx --batch 100 --restart --no-queue
+```
+
+or **Admin → Master database import** (upload, *Preview*, *Apply import*, coverage by state, conflicts to check, circuit stops without a page).
+
+- **No duplicates, nothing overwritten.** Each row is matched to an existing record by exact name + state, a reviewed spelling variant (`KNOWN_ALIASES`: Tsomgo↔Tsongmo, Thiruvannamalai↔Tiruvannamalai, Shravasti↔Sravasti…), or the same name with a *National Park / Caves / Lake / Fort / Falls…* suffix in the same state. A match is **linked** (`seed.source_id` on the record); existing IDs, slugs, content, status and relationships are untouched and only *empty* fields may be filled. A suffix match never takes a record that another row names exactly (*Konark Sun Temple* is not *Konark*). Places reviewed as different despite a similar name (`KNOWN_DISTINCT`: Bishnupur WB ≠ Bishnupur Manipur, Bharatpur Beach ≠ Bharatpur, Diu Fort ≠ Diu) get their own record. A place listed under two states (Dzükou Valley) is one record carrying both row IDs. Differences (state, spelling) are kept in `seed.conflicts` and shown in the editor and the report — never auto-resolved.
+- **Unmatched rows** become `DRAFT` records marked `verification_status: UNVERIFIED`, with provenance *seed list — unverified*, and join the research queue after the PDF list.
+- **Idempotent and resumable.** Rows already linked are skipped on every run (a second run reports 0 created / 681 already imported); finished rows are checkpointed per batch (`data/cms/imports/master-v1-checkpoint.json`, git-ignored).
+- **Circuits.** Each Trip Cluster is split into stops and linked to destination records in the same state (`data/cms/clusters.json`); themes such as “beaches” or “Tiger circuit” stay unlinked and are listed in the report.
+- **On the site.** Unpublished master-list places get a short *Being researched* page at `/destinations/{slug}` — name, state, the list's classification, its draft circuits and published guides nearby; any location hint shows *unverified* with its source. These pages are `noindex`, are not in the sitemap, appear in search/autocomplete as *being researched*, on the destinations index and on state pages. Draft circuits appear on `/trips`, state pages and destination pages, labelled as unvalidated. Nothing from a draft (descriptions, history, hours, prices, photos) is shown until an editor publishes the page.
+- Report: `data/cms/imports/master-v1-report.json` (totals, this run, matches, conflicts, per-state coverage, unresolved circuit stops). The v1 workbook fills only `destination_id`, `state_ut`, `destination`, `destination_type`, `primary_cluster` and `content_status`; every content column is empty, so descriptions, coordinates and images come from the research pipeline, not the workbook.
+
 ## Honest limits (read before launching)
 
 - **CMS records are files.** `data/cms/` is a single-process, file-backed store — fine for one editor and one server; move to PostgreSQL (the Prisma schema already mirrors the records) before running several instances.

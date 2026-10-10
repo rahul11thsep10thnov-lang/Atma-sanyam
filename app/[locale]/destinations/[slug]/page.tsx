@@ -15,6 +15,9 @@ import { AttractionList } from "@/components/cms/AttractionList";
 import { HotelList, RestaurantList } from "@/components/cms/Listings";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { BreadcrumbJsonLd, CmsDestinationJsonLd, FaqJsonLd } from "@/components/seo/JsonLd";
+import { draftCircuitsOf, seedStubBySlug } from "@/lib/cms/seedView";
+import { SeedStubPage } from "@/components/cms/SeedStubPage";
+import { DraftCircuits } from "@/components/cms/DraftCircuits";
 
 export const dynamic = "force-dynamic";
 
@@ -41,7 +44,11 @@ async function resolve(slug: string, query?: Query) {
 
 export async function generateMetadata({ params, searchParams }: { params: Params; searchParams?: Query }): Promise<Metadata> {
   const { d, preview } = await resolve(params.slug, searchParams);
-  if (!d) return {};
+  if (!d) {
+    // Master-list place not yet researched: a thin page that search engines should not index.
+    const stub = seedStubBySlug(params.slug);
+    return stub ? { title: { absolute: `${stub.name}${stub.state ? `, ${stub.state}` : ""} | ${siteSettings().site_name}` }, robots: "noindex, follow" } : {};
+  }
   const locale: Locale = isLocale(params.locale) ? params.locale : "en";
   const settings = siteSettings();
   const title = d.seo.title ?? `${d.name} Travel Guide${d.state ? ` — ${d.state}` : ""} | ${settings.site_name}`;
@@ -66,12 +73,17 @@ export default async function CmsDestinationPage({ params, searchParams }: { par
   if (!isLocale(params.locale)) notFound();
   const locale: Locale = params.locale;
   const { d, preview } = await resolve(params.slug, searchParams);
-  if (!d) notFound();
+  if (!d) {
+    const stub = seedStubBySlug(params.slug);
+    if (stub) return <SeedStubPage stub={stub} locale={locale} dict={getDictionary(locale)} />;
+    notFound();
+  }
   const dict = getDictionary(locale);
   const t = dict.destination.cms;
   const hero = assetOf(d.hero_image, d.name, 1600, 900);
   const heroCredit = d.hero_image ? creditOf(d.hero_image) : null;
   const path = `/destinations/${d.slug}`;
+  const circuits = draftCircuitsOf(d);
 
   const crumbs = [
     { label: dict.common.nav.home, href: `/${locale}` },
@@ -239,6 +251,15 @@ export default async function CmsDestinationPage({ params, searchParams }: { par
                 </li>
               ))}
             </ul>
+          </div>
+        </section>
+      )}
+
+      {circuits.length > 0 && (
+        <section className="border-b border-forest-100/70 py-10">
+          <div className="container-page">
+            <h2 className="section-heading">{t.circuitsIncluding.replace("{name}", d.name)}</h2>
+            <DraftCircuits circuits={circuits} locale={locale} note={t.draftCircuitsNote} typicalDays={t.typicalDays} highlight={d.name} />
           </div>
         </section>
       )}

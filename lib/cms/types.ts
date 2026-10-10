@@ -22,7 +22,8 @@ export const CMS_CATEGORIES = [
 ] as const;
 export type CmsCategory = (typeof CMS_CATEGORIES)[number];
 
-export type SourceStatus = "OK" | "SOURCE_UNAVAILABLE" | "MANUAL" | "SEED";
+/** WEB_SEARCH: taken from a web-search result that cites the URL; the page itself was not fetched, so the value is unverified. */
+export type SourceStatus = "OK" | "SOURCE_UNAVAILABLE" | "MANUAL" | "SEED" | "WEB_SEARCH";
 
 /** Where a piece of information came from. */
 export interface SourceRef {
@@ -305,12 +306,56 @@ export interface CmsDestination {
 
   /** Slug of the richer seed guide under /india/{state}/{slug}, when one exists. */
   legacy_slug: string | null;
+
+  /** Link to the row this record came from (or was matched to) in a master seed list, e.g. the India Tourism Master Database. */
+  seed?: SeedLink | null;
+  /** Seed records start UNVERIFIED; an editor sets VERIFIED once the facts are checked against sources. */
+  verification_status?: "UNVERIFIED" | "VERIFIED";
   is_sample_data: boolean;
 
   status: PublicationStatus;
   created_at: string;
   updated_at: string;
   published_at: string | null;
+}
+
+export interface SeedLink {
+  /** Workbook name, e.g. "India_Tourism_Master_Database_v1.xlsx". */
+  source: string;
+  /** Stable row id in that workbook, e.g. "IN-0001". */
+  source_id: string;
+  /** Further rows of the same workbook that describe this same place (e.g. a valley listed under two states). */
+  other_source_ids?: string[];
+  /** "CREATED" = this record was made from the row; "LINKED" = the row matched a record that already existed. */
+  relation: "CREATED" | "LINKED";
+  imported_at: string;
+  /** destination_type exactly as written in the workbook. */
+  raw_type: string;
+  /** Name and state exactly as written in the workbook. */
+  name_in_source: string;
+  state_in_source: string;
+  content_status: string;
+  /** Trip clusters (by cluster id) this destination belongs to. */
+  clusters: string[];
+  /** Differences between the workbook and the existing record that an editor should resolve. */
+  conflicts: string[];
+}
+
+/** A trip circuit from the master workbook's "Trip Clusters" sheet. Timings are not validated. */
+export interface TripCluster {
+  id: string;
+  slug: string;
+  state: string;
+  name: string;
+  parts: string[];
+  /** Each named stop, resolved to a destination record where one matches. */
+  members: Array<{ part: string; destination_id: string | null }>;
+  typical_days: string | null;
+  start_point: string | null;
+  end_point: string | null;
+  status_in_source: string;
+  source: string;
+  imported_at: string;
 }
 
 export interface ImportCandidate {

@@ -420,6 +420,20 @@
   "is_sample_data": true,
   "status": "PUBLISHED",
   "created_at": "2026-10-03T10:35:37.122Z",
-  "updated_at": "2026-10-03T15:50:04.156Z",
-  "published_at": "2026-10-03T10:35:37.122Z"
+  "updated_at": "2026-10-10T11:05:16.982Z",
+  "published_at": "2026-10-03T10:35:37.122Z",
+  "seed": {
+    "source": "India_Tourism_Master_Database_v1.xlsx",
+    "source_id": "IN-0538",
+    "relation": "LINKED",
+    "imported_at": "2026-10-10T11:05:16.280Z",
+    "raw_type": "Destination / City",
+    "name_in_source": "Kolkata",
+    "state_in_source": "West Bengal",
+    "content_status": "Seed record — enrich/verify",
+    "clusters": [
+      "CL-west-bengal-kolkata-chandannagar"
+    ],
+    "conflicts": []
+  }
 }

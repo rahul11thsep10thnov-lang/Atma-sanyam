@@ -94,6 +94,16 @@ export function DestinationEditor({ initial, base, siteBase, states }: { initial
       </div>
 
       {msg && <Notice tone={msg.tone}>{msg.text}</Notice>}
+      {d.seed && (
+        <Notice tone={d.verification_status === "VERIFIED" ? "ok" : "warn"}>
+          Master list row {d.seed.source_id}{d.seed.other_source_ids?.length ? ` (also ${d.seed.other_source_ids.join(", ")})` : ""} · {d.seed.relation === "CREATED" ? "created from" : "linked to"} {d.seed.source} · listed as “{d.seed.raw_type}”
+          {d.seed.conflicts.length > 0 && <> · <strong>Check:</strong> {d.seed.conflicts.join("; ")}</>}
+          <label className="mt-2 flex items-center gap-2 font-medium">
+            <input type="checkbox" checked={d.verification_status === "VERIFIED"} onChange={(e) => patch({ verification_status: e.target.checked ? "VERIFIED" : "UNVERIFIED" })} />
+            Name, state, location and facts checked against reliable sources (seed records start unverified)
+          </label>
+        </Notice>
+      )}
       {d.pipeline.stage === "AWAITING_APPROVAL" && <Notice tone="warn">The pipeline is waiting for image approval on this destination. <Link href={`${base}/destinations/${d.id}/images`} className="font-semibold underline">Open the approval screen</Link>.</Notice>}
       {d.pipeline.stage === "READY_TO_PUBLISH" && <Notice tone="warn">Content and images are final. Review the tabs below, then press <strong>Publish</strong> (or publish from the <Link href={`${base}/pipeline`} className="font-semibold underline">pipeline screen</Link>).</Notice>}
 

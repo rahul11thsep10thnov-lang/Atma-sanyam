@@ -65,6 +65,21 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-03T15:50:03.503Z",
-  "updated_at": "2026-10-03T15:50:03.995Z",
-  "published_at": null
+  "updated_at": "2026-10-10T11:05:17.032Z",
+  "published_at": null,
+  "seed": {
+    "source": "India_Tourism_Master_Database_v1.xlsx",
+    "source_id": "IN-0512",
+    "relation": "LINKED",
+    "imported_at": "2026-10-10T11:05:16.250Z",
+    "raw_type": "Destination / City",
+    "name_in_source": "Nainital",
+    "state_in_source": "Uttarakhand",
+    "content_status": "Seed record — enrich/verify",
+    "clusters": [
+      "CL-uttarakhand-nainital-bhimtal-mukteshwar"
+    ],
+    "conflicts": []
+  },
+  "verification_status": "UNVERIFIED"
 }

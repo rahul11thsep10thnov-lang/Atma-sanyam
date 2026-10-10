@@ -21,7 +21,10 @@
   "ideal_duration_text": null,
   "nearest_airport": null,
   "nearest_railway_station": null,
-  "categories": [],
+  "categories": [
+    "WILDLIFE",
+    "NATURE"
+  ],
   "companions": [],
   "attractions": [],
   "hotels": [],
@@ -42,6 +45,15 @@
         "url": null,
         "retrieved_at": "2026-10-03T15:50:03.781Z",
         "status": "MANUAL"
+      }
+    ],
+    "categories": [
+      {
+        "label": "India_Tourism_Master_Database_v1.xlsx (seed list — unverified)",
+        "url": null,
+        "retrieved_at": "2026-10-10T11:05:15.771Z",
+        "status": "SEED",
+        "note": "workbook field: destination_type"
       }
     ]
   },
@@ -65,6 +77,19 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-03T15:50:03.781Z",
-  "updated_at": "2026-10-03T15:50:04.454Z",
-  "published_at": null
+  "updated_at": "2026-10-10T11:05:15.771Z",
+  "published_at": null,
+  "seed": {
+    "source": "India_Tourism_Master_Database_v1.xlsx",
+    "source_id": "IN-0103",
+    "relation": "LINKED",
+    "imported_at": "2026-10-10T11:05:15.771Z",
+    "raw_type": "Wildlife & Nature",
+    "name_in_source": "Gir National Park",
+    "state_in_source": "Gujarat",
+    "content_status": "Seed record — enrich/verify",
+    "clusters": [],
+    "conflicts": []
+  },
+  "verification_status": "UNVERIFIED"
 }

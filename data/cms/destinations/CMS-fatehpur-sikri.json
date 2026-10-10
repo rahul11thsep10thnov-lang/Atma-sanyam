@@ -65,6 +65,21 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-03T15:50:03.844Z",
-  "updated_at": "2026-10-03T15:50:04.546Z",
-  "published_at": null
+  "updated_at": "2026-10-10T11:05:16.939Z",
+  "published_at": null,
+  "seed": {
+    "source": "India_Tourism_Master_Database_v1.xlsx",
+    "source_id": "IN-0484",
+    "relation": "LINKED",
+    "imported_at": "2026-10-10T11:05:16.216Z",
+    "raw_type": "Destination / City",
+    "name_in_source": "Fatehpur Sikri",
+    "state_in_source": "Uttar Pradesh",
+    "content_status": "Seed record — enrich/verify",
+    "clusters": [
+      "CL-uttar-pradesh-delhi-agra-fatehpur-sikri"
+    ],
+    "conflicts": []
+  },
+  "verification_status": "UNVERIFIED"
 }
