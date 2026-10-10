@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import type { CompanionType } from "@/lib/cms/types";
@@ -95,8 +96,8 @@ export function CompanionPicker({
   return (
     <div className="mx-auto mt-10 max-w-3xl text-center">
       <h2 className={`text-xs font-semibold uppercase tracking-[0.28em] sm:text-sm ${light ? "text-white drop-shadow" : "text-forest-700"}`}>{title}</h2>
-      <ul className="mt-5 flex snap-x justify-start gap-6 overflow-x-auto px-2 pb-2 sm:justify-center sm:gap-10" role="radiogroup" aria-label={title}>
-        {(Object.keys(ART) as CompanionType[]).map((type) => {
+      <ul className="mt-5 flex snap-x justify-start gap-6 overflow-x-auto px-3 pb-3 pt-3 sm:justify-center sm:gap-10" role="radiogroup" aria-label={title}>
+        {(["SOLO", "COUPLE", "FRIENDS", "FAMILY"] as CompanionType[]).map((type) => {
           const active = selected === type;
           return (
             <li key={type} className="snap-center shrink-0">
@@ -108,9 +109,9 @@ export function CompanionPicker({
                 className="group flex flex-col items-center gap-2 outline-none"
               >
                 <span
-                  className={`relative block h-20 w-20 overflow-hidden rounded-full bg-gradient-to-br p-4 ring-4 transition sm:h-24 sm:w-24 ${ART[type].bg} ${active ? "ring-saffron-500 scale-105 shadow-lg" : "ring-white shadow-md group-hover:scale-105 group-focus-visible:ring-forest-500"}`}
+                  className={`relative block h-20 w-20 overflow-hidden rounded-full bg-gradient-to-br ring-4 transition sm:h-24 sm:w-24 ${ART[type].bg} ${active ? "ring-saffron-500 scale-105 shadow-lg" : "ring-white shadow-md group-hover:scale-105 group-focus-visible:ring-forest-500"}`}
                 >
-                  {ART[type].icon}
+                  <Image src={`/images/companions/${type.toLowerCase()}.jpg`} alt="" fill sizes="96px" className="scale-110 object-cover" />
                 </span>
                 <span className={`text-sm font-semibold ${active ? (light ? "text-saffron-300" : "text-saffron-700") : light ? "text-white drop-shadow" : "text-charcoal"}`}>{labels[type]}</span>
               </button>

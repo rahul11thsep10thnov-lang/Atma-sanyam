@@ -7,9 +7,9 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 import { NavMenu } from "./NavMenu";
 
 /**
- * Site header: a wide ink-painting wallpaper band (about 8:1), the menu at the far left, the site name
- * centred in Open Sans, language and sign-in on the right. The round logo is larger than the band and
- * hangs down over the top of the page below it.
+ * Site header: the ink-painting wallpaper at its own proportions (nothing cropped), the menu at the far
+ * left, language and sign-in on the right. The round logo sits between the panda and the quote, half on
+ * the wallpaper and half over the section below.
  */
 export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const { nav } = dict.common;
@@ -26,22 +26,19 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         Skip to content
       </a>
       <div aria-hidden="true" className="absolute inset-0 overflow-hidden bg-[#f7f5f0]">
-        <Image src="/images/header-panda.jpg" alt="" fill priority sizes="100vw" className="object-cover object-[center_55%]" />
+        <Image src="/images/header-panda.jpg" alt="" fill priority sizes="100vw" className="object-cover object-center" />
       </div>
 
-      <div className="container-page relative flex h-[clamp(104px,12.5vw,200px)] items-center justify-between gap-3">
+      <div className="relative flex aspect-[2172/430] min-h-[96px] w-full px-4 sm:px-6 lg:px-8 items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <NavMenu links={links} label={nav.explore} />
-          {/* Logo: bigger than the band, overflowing downwards. */}
-          <Link href={`/${locale}`} aria-label={siteName} className="absolute left-[4.25rem] top-[18%] z-40 block sm:left-20">
-            <span className="block h-[clamp(64px,15vw,250px)] w-[clamp(64px,15vw,250px)] overflow-hidden rounded-full bg-white shadow-[0_18px_40px_-12px_rgba(0,0,0,0.45)] ring-4 ring-white">
-              <Image src="/images/logo.png" alt={`${siteName} logo`} width={560} height={560} priority className="h-full w-full object-cover" />
-            </span>
-          </Link>
         </div>
 
-        <Link href={`/${locale}`} className="absolute bottom-2 left-[61%] -translate-x-1/2 whitespace-nowrap sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:-translate-y-1/2 rounded-full bg-white/70 px-3 py-1 font-brand text-lg font-extrabold tracking-tight text-forest-800 shadow-sm backdrop-blur-sm sm:px-7 sm:py-2 sm:text-4xl lg:text-5xl">
-          {siteName}
+        {/* Logo between the panda and the quote, half on the wallpaper and half below it. */}
+        <Link href={`/${locale}`} aria-label={siteName} className="absolute left-[46%] top-[calc(100%-var(--logo)/2)] z-40 block -translate-x-1/2 [--logo:clamp(72px,11.5vw,240px)]">
+          <span className="block aspect-square h-[var(--logo)] overflow-hidden rounded-full drop-shadow-[0_14px_24px_rgba(0,0,0,0.4)]">
+            <Image src="/images/logo-bt.png" alt={`${siteName} logo`} width={600} height={600} priority className="h-full w-full object-contain" />
+          </span>
         </Link>
 
         <div className="flex items-center gap-2">
