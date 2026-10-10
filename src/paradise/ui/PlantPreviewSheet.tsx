@@ -2,7 +2,7 @@
 // story, the seven sizes it can reach and the minutes each one asks for,
 // a duration to choose, and Start focus. Nothing is planted until the
 // session completes.
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import { Sheet } from '../../spaces/ui/Sheet';
 import { AppText } from '../../ui/AppText';
@@ -22,14 +22,17 @@ interface Props {
   species: Species | null;
   onClose: () => void;
   onStart: (species: Species, minutes: number, place: PlantPlace) => void;
+  /** Where the place chooser starts (the balcony's own catalog starts on the balcony). */
+  initialPlace?: PlantPlace;
 }
 
 const DURATIONS = [15, 25, 30, 45, 60, 90, 120, 150, 180];
 
-export function PlantPreviewSheet({ visible, species, onClose, onStart }: Props) {
+export function PlantPreviewSheet({ visible, species, onClose, onStart, initialPlace = 'garden' }: Props) {
   const { colors } = useTheme();
   const [minutes, setMinutes] = useState(30);
-  const [place, setPlace] = useState<PlantPlace>('garden');
+  const [place, setPlace] = useState<PlantPlace>(initialPlace);
+  useEffect(() => setPlace(initialPlace), [initialPlace, species]);
   const size = sizeForMinutes(minutes) ?? 1;
   const hero = useMemo(() => (species ? speciesImage(species.id, 7) : null), [species]);
   const current = useMemo(() => (species ? speciesImage(species.id, size) : null), [species, size]);

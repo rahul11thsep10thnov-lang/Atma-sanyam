@@ -52,49 +52,47 @@ front of the person, ending in one of seven sizes.
 
 ## The museum (`src/museum/`)
 
-- **Geometry** (`model.ts`): a ring; the viewer stands inside it and the
-  artworks hang on the curved outer wall. Each **section** is one eighth of
-  the ring (an 11.8 m wall, 5.2 m high, a 6 m floor band, a column at each
-  edge). Only the current section and its neighbours are built; the
-  neighbours are darker and curve away. Swiping walks to the next section
-  with an eased camera move; one finger looks around, two fingers walk,
-  pinch zooms. A full wall opens the next section automatically.
-- **Placement**: every object is a record (`MuseumObject`: item, section,
-  surface, position along the wall or depth on the floor, height,
-  rotation, scale, frame, light on/off and intensity, display status).
-  Surfaces: `MUSEUM_WALL`, `MUSEUM_FLOOR`, `DISPLAY_PEDESTAL`,
-  `DISPLAY_CASE`, `TABLETOP`, `SHELF`. `snapToWall` keeps a wall object
-  inside the wall, at hanging height and clear of its neighbours;
-  `snapToFloor` keeps floor objects on the floor band; small objects rest
-  on a carrier and move with it.
-- **Artworks**: width by jigsaw size (0.62 m for size 1 to 2 m for size 6),
-  height by the picture's aspect, a frame in the chosen style. A spotlight
-  near an artwork brightens it (a real SpotLight on the Lambert wall and
-  picture plus a light pool); wall washes and skylights lift a whole wall.
-  Tap an artwork for its story: title, collection, size, the focus that
-  earned it, date, frame.
-- **No customising**: the museum arranges itself. Finished jigsaws hang
-  in order, and at least ten empty frames (`MIN_BLANK_SPACES`) always wait
-  on the walls for the next ones; a new section opens when needed
-  (`ensureBlankSpaces`). The only choice the person makes is to **throw
-  away** a finished picture (from its card or from Collection), which frees
-  its place. The edit mode, the museum store and the museum settings are no
-  longer reachable; their code stays for older saved museums.
-- **Themes**: contemporary (white plaster, grey marble) and Indian
-  heritage (sandstone, warm marble, teak trim).
-- **Store** (`store.ts`): 63 curated items, never more than 100, across
-  Artwork & frames, Lighting, Exhibition, Furniture, Architecture,
-  Decoration, Heritage, Information, Security & realism, Premium. Each
-  carries an evaluation record (utility, placement, visible consequence,
-  interaction, performance cost, purchase value) shown in the store, and a
-  rarity (basic, premium, rare, epic, legendary) that follows its coin
-  price. Buying places the object in the current section at once.
+A curved white gallery with carved walls, seen one wall at a time.
+
+- **The wall** is a rendered plate (`assets/museum/wall_{a,b,c}.webp`,
+  `tools/balcony-render/render_museum.py`): a square niche with an
+  egg-and-dart frame and rosette corners, a carved cartouche with a shell,
+  scrolls and garlands above it, an acanthus frieze and dentil cornice, a
+  coffered ceiling, fluted columns with carved capitals, carved dado panels.
+  In front of each column stands a marble pedestal with a glass vitrine
+  holding an artefact (an amphora, a bust or an urn; the three plates vary
+  them), with a brass label. A rope barrier stands in front of the niche,
+  and an alarm unit with a red light is fixed to the wall. The bay is built
+  flat and bent onto a 5 m circle, so the gallery is curved.
+- **One jigsaw per wall** (`walls.ts`): finished jigsaws hang in the order
+  they were earned, each framed (gilt frame, cream mount) in the niche of
+  its own wall. The frame's size follows the jigsaw's size, 1 to 7
+  (`TIER_FILL`: 42 % of the niche for size 1 up to 95 % for size 7).
+  After them, at least ten empty walls (`MIN_EMPTY_WALLS`) always wait,
+  each with a card saying the next jigsaw will hang there.
+- **Walking** (`ui/GalleryWalls.tsx`): swipe left or right; the next wall
+  slides in while the walls either side turn in on the curve (a
+  perspective turn of 34° and a little darkening), so the room reads as a
+  circle. The arrows at the top do the same; reduced motion switches the
+  movement off.
+- **No customising**: the museum arranges itself. Tap a picture for its
+  card (title, collection, size and pieces, the focus that earned it, date);
+  the only action is to **throw it away**, here or from Collection, which
+  frees its wall.
+
+The earlier three.js ring gallery, its edit mode and its store are gone;
+`model.ts` still keeps the saved list of hung artworks, and `store.ts` the
+frame widths it uses.
 
 ## The balcony (`src/spaces/`)
 
-Grown plants can also live here (see "Garden or balcony" in
+Grown plants live here too (see "Garden or balcony" in
 `docs/PARADISE_GARDEN.md`): up to 26, drawn into the photograph in depth
-order with the furniture.
+order with the furniture. **Grow a plant** (above the dock) opens the plant
+catalog with the five segments as chips; its preview starts on the
+balcony. The balcony has no focus button of its own any more, and its old
+peace-lily focus plant no longer grows; the Home screen's peace lily is a
+paradise plant grown for the balcony.
 
 Unchanged in how it is built: every surface, plant and object is
 path-traced offline in Blender Cycles (`tools/balcony-render/`, fully

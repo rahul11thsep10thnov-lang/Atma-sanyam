@@ -1,7 +1,8 @@
 // A photographed space's tab (the balcony): the photograph fills the
 // screen and the controls float lightly over it. Tap the picture to hide
 // every control (and the tab bar); tap again to bring them back.
-// Customize turns on placement guides, which never appear otherwise.
+// "Grow a plant" opens the plant catalog; the plant grows in a focus
+// session and then stands here. Customize turns on placement guides.
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Animated, GestureResponderEvent, Image, Pressable, StyleSheet, View } from 'react-native';
 import { RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
@@ -10,7 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LightState, SpaceId } from '../packTypes';
 import { packFor } from '../packs';
 import { STORE, PENALTY_REMOVAL_COINS } from '../catalog';
-import { binItem, focusVariant, hangArtwork, isFixed, isPenalty, PlacedItem, slotsFor, stageIndexFor, storeItem, turnItem, STAGE_WORDS } from '../model';
+import { binItem, hangArtwork, isFixed, isPenalty, PlacedItem, slotsFor, storeItem, turnItem } from '../model';
 import { SpaceScene, SceneGeometry } from '../scene/SpaceScene';
 import { ATMOSPHERE_ORDER, nextAtmosphere, resolveState } from '../states';
 import { useRackCount, useRewards, useSpace } from '../useSpaces';
@@ -37,7 +38,11 @@ import { useParadise } from '../../paradise/repository';
 import { onBalcony, PlantInstance, removePlant, spriteFor } from '../../paradise/model';
 import { PARADISE_IMAGES } from '../../paradise/sprites.generated';
 import { BALCONY_SPOTS, balconyMetres } from '../../paradise/balcony';
-import { plantName, SPECIES_BY_ID } from '../../paradise/catalog';
+import { plantName, SegmentId, Species, SPECIES_BY_ID } from '../../paradise/catalog';
+import { grownIn, PlantPlace } from '../../paradise/model';
+import { PlantCatalogSheet } from '../../paradise/ui/PlantCatalogSheet';
+import { PlantPreviewSheet } from '../../paradise/ui/PlantPreviewSheet';
+import { Button } from '../../ui/Button';
 import { RootTabParamList } from '../../navigation/types';
 
 /** A grown plant drawn on the balcony, in plate pixels. */
@@ -78,7 +83,6 @@ function balconyPlants(plants: PlantInstance[]): BalconyPlant[] {
   return out;
 }
 
-const DURATIONS = [25, 45, 60, 90];
 const STATE_ICON: Record<LightState | 'auto', IconName> = { auto: 'sun', morning: 'sun', afternoon: 'sun', sunset: 'sun', evening: 'moon', night: 'moon', rain: 'rain' };
 
 export function SpaceScreen({ space }: { space: SpaceId }) {
@@ -100,7 +104,9 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
 
   const [chrome, setChrome] = useState(true);
   const [editing, setEditing] = useState(false);
-  const [sheet, setSheet] = useState<'store' | 'inventory' | 'gallery' | 'focus' | 'ad' | null>(null);
+  const [sheet, setSheet] = useState<'store' | 'inventory' | 'gallery' | 'catalog' | 'preview' | 'ad' | null>(null);
+  const [catalogSegment, setCatalogSegment] = useState<SegmentId>('indoor');
+  const [preview, setPreview] = useState<Species | null>(null);
   const [selected, setSelected] = useState<PlacedItem | null>(null);
   const [dragging, setDragging] = useState<string | null>(null);
   const [geometry, setGeometry] = useState<SceneGeometry | null>(null);
@@ -199,23 +205,16 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
     [grown, plantSel, glow],
   );
 
-  const startFocus = (minutes: number) => {
+  const startFocus = (species: Species, minutes: number, place: PlantPlace) => {
     setSheet(null);
-    navigation.navigate('ActiveSession', { config: { durationMinutes: minutes, image: { kind: 'space', space }, grid: gridForSession(minutes) } });
+    setPreview(null);
+    navigation.navigate('ActiveSession', { config: { durationMinutes: minutes, image: { kind: 'plant', speciesId: species.id, place }, grid: gridForSession(minutes) } });
   };
 
   if (!state || !rewards || !art) return <View style={styles.screen} />;
 
   const light = resolveState(state.atmosphere);
   const tabSpace = TAB_BAR_HEIGHT + Math.max(insets.bottom, TAB_BAR_MARGIN) + sp.md;
-  const plant = focusVariant(pack, state.focus.minutes, state.focus.health);
-  const stages = pack.focusPlant.stages;
-  const next = stages[stageIndexFor(stages, state.focus.minutes) + 1];
-  const plantLine = plant.wilted
-    ? t('space.plantDrooping')
-    : next
-      ? `${STAGE_WORDS[plant.stage] ?? plant.stage} · ${t('space.toGrow', { time: formatTime(next.minutes - state.focus.minutes) })}`
-      : STAGE_WORDS[plant.stage] ?? plant.stage;
 
   const sel = selected ? state.placed.find((p) => p.uid === selected.uid) ?? null : null;
   const turns = sel ? pack.items[sel.itemId]?.variants?.[sel.slot]?.length ?? 1 : 1;
@@ -253,9 +252,9 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
       {/* ambient status, top */}
       <Animated.View style={[styles.top, { top: insets.top + sp.sm, opacity: fade }]} pointerEvents={showChrome ? 'box-none' : 'none'}>
         <GlassChip style={{ flexShrink: 1 }}>
-          <Icon name="sprout" size="xs" color={plant.wilted ? '#F3D9A6' : '#FFFFFF'} />
+          <Icon name="sprout" size="xs" color="#FFFFFF" />
           <AppText variant="caption" style={styles.white} numberOfLines={1}>
-            {pack.focusPlant.name} · {plantLine}
+            {t('balcony.plantsCount', { count: grown.length, total: BALCONY_SPOTS.length })}
           </AppText>
         </GlassChip>
         <View style={styles.topRight}>
@@ -280,17 +279,6 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
         </View>
       </Animated.View>
 
-      {space === 'balcony' && grown.length > 0 && showChrome && penalties === 0 && !selPlant && (
-        <View style={[styles.penaltyWrap, { top: insets.top + 52 }]} pointerEvents="none">
-          <GlassChip>
-            <Icon name="sprout" size="xs" color="#FFFFFF" />
-            <AppText variant="caption" style={styles.white}>
-              {t('balcony.plantsCount', { count: grown.length, total: BALCONY_SPOTS.length })}
-            </AppText>
-          </GlassChip>
-        </View>
-      )}
-
       {penalties > 0 && showChrome && (
         <View style={[styles.penaltyWrap, { top: insets.top + 52 }]} pointerEvents="box-none">
           <Tactile onPress={() => setSheet('inventory')} accessibilityRole="button" accessibilityLabel={t('space.penaltyNotice', { count: penalties })} style={styles.chipBtn}>
@@ -306,8 +294,8 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
 
       {/* the dock */}
       <Animated.View style={[styles.dockWrap, { bottom: tabSpace, opacity: fade }]} pointerEvents={showChrome ? 'box-none' : 'none'}>
+        <Button label={t('paradise.growPlant')} icon="sprout" size="lg" onPress={() => { setPlantSel(null); setSheet('catalog'); }} style={styles.grow} />
         <View style={styles.dock}>
-          <DockItem icon="timer" label={t('dock.focus')} emphasis onPress={() => setSheet('focus')} />
           <DockItem icon="move" label={t('dock.customize')} onPress={() => { setEditing(true); setSelected(null); }} />
           <DockItem icon="store" label={t('dock.store')} onPress={() => setSheet('store')} />
           <DockItem icon="armchair" label={t('dock.inventory')} onPress={() => setSheet('inventory')} badge={penalties > 0} />
@@ -364,7 +352,7 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
       )}
 
       {selPlant && paradise && !editing && !sheet && (
-        <View style={[styles.selection, { bottom: tabSpace + 76 }]} pointerEvents="box-none">
+        <View style={[styles.selection, { bottom: tabSpace + 136 }]} pointerEvents="box-none">
           <View style={[styles.selectionCard, { flexDirection: 'column', alignItems: 'stretch', paddingRight: sp.sm, paddingVertical: sp.sm }]}>
             <View style={{ gap: 2 }}>
               <AppText variant="bodySmallStrong" style={styles.white} numberOfLines={1}>
@@ -404,7 +392,7 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
       )}
 
       {toast && (
-        <View style={[styles.toastWrap, { bottom: editing ? insets.bottom + 96 : tabSpace + 76 }]} pointerEvents="none">
+        <View style={[styles.toastWrap, { bottom: editing ? insets.bottom + 96 : tabSpace + 136 }]} pointerEvents="none">
           <GlassChip style={styles.toast}>
             <AppText variant="caption" style={styles.white}>
               {toast}
@@ -413,32 +401,8 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
         </View>
       )}
 
-      {sheet === 'focus' && (
-        <View style={StyleSheet.absoluteFill}>
-          <Pressable style={[StyleSheet.absoluteFill, styles.scrim]} onPress={() => setSheet(null)} accessibilityLabel={t('close')} />
-          <View style={[styles.focusCard, { bottom: insets.bottom + sp.xl }]}>
-            <AppText variant="subheading" style={{ color: INK }}>
-              {t(`focusCard.title.${space}`)}
-            </AppText>
-            <AppText variant="bodySmall" style={{ color: 'rgba(43,33,24,0.7)' }}>
-              {t('focusCard.body', { plant: pack.focusPlant.name.toLowerCase() })}
-            </AppText>
-            <View style={styles.durations}>
-              {DURATIONS.map((m) => (
-                <Tactile key={m} onPress={() => startFocus(m)} accessibilityRole="button" accessibilityLabel={t('focusCard.forMinutes', { minutes: m })} style={styles.duration}>
-                  <AppText variant="heading" style={{ color: INK }}>
-                    {m}
-                  </AppText>
-                  <AppText variant="caption" style={{ color: 'rgba(43,33,24,0.6)' }}>
-                    {t('min')}
-                  </AppText>
-                </Tactile>
-              ))}
-            </View>
-          </View>
-        </View>
-      )}
-
+      <PlantCatalogSheet visible={sheet === 'catalog'} segment={catalogSegment} grownInSegment={paradise ? grownIn(paradise, catalogSegment) : 0} grownBy={(sg) => (paradise ? grownIn(paradise, sg) : 0)} onClose={() => setSheet(null)} onPick={(sp2) => { setCatalogSegment(sp2.segment); setPreview(sp2); setSheet('preview'); }} />
+      <PlantPreviewSheet visible={sheet === 'preview'} species={preview} initialPlace="balcony" onClose={() => setSheet(preview ? 'catalog' : null)} onStart={startFocus} />
       <StoreSheet visible={sheet === 'store'} space={space} state={state} rewards={rewards} onClose={() => setSheet(null)} onState={save} onRewards={saveRewards} onToast={say} />
       <InventorySheet visible={sheet === 'inventory'} space={space} state={state} rewards={rewards} onClose={() => setSheet(null)} onState={save} onClearPenalty={(uid) => void clearPenalty(uid)} onToast={say} />
       <CollectionSheet
@@ -459,14 +423,6 @@ export function SpaceScreen({ space }: { space: SpaceId }) {
       <AdSheet visible={sheet === 'ad'} rewards={rewards} onClose={() => setSheet(null)} onRewards={saveRewards} onToast={say} />
     </View>
   );
-}
-
-function formatTime(minutes: number) {
-  const m = Math.ceil(minutes);
-  if (m < 60) return `${m} ${t('min')}`;
-  const h = Math.floor(m / 60);
-  const r = m % 60;
-  return r ? `${h} ${t('h')} ${r} ${t('min')}` : `${h} ${t('h')}`;
 }
 
 /** A terracotta pot seen from slightly above: a rim ellipse over a tapering body. */
@@ -507,7 +463,8 @@ const styles = StyleSheet.create({
   topRight: { flexDirection: 'row', gap: 6 },
   chipBtn: { borderRadius: radii.pill },
   penaltyWrap: { position: 'absolute', left: sp.lg, right: sp.lg, alignItems: 'flex-start' },
-  dockWrap: { position: 'absolute', left: sp.sm, right: sp.sm, alignItems: 'center' },
+  dockWrap: { position: 'absolute', left: sp.sm, right: sp.sm, alignItems: 'center', gap: sp.sm },
+  grow: { alignSelf: 'stretch', marginHorizontal: sp.sm },
   dock: { flexDirection: 'row', gap: 2, padding: 5, borderRadius: radii.xl, backgroundColor: GLASS, borderColor: GLASS_EDGE, borderWidth: StyleSheet.hairlineWidth },
   dockItem: { width: 66, height: 56, borderRadius: radii.lg, alignItems: 'center', justifyContent: 'center', gap: 3 },
   dockEmphasis: { backgroundColor: CREAM },
@@ -520,7 +477,4 @@ const styles = StyleSheet.create({
   plantActions: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: sp.sm },
   plantRing: { position: 'absolute', width: 44, height: 16, borderRadius: 22, borderWidth: 2, borderColor: 'rgba(255,240,200,0.9)' },
   scrim: { backgroundColor: 'rgba(20,12,8,0.25)' },
-  focusCard: { position: 'absolute', left: sp.lg, right: sp.lg, padding: sp.xl, gap: sp.sm, borderRadius: radii.xl, backgroundColor: 'rgba(251,245,236,0.96)' },
-  durations: { flexDirection: 'row', gap: sp.sm, marginTop: sp.sm },
-  duration: { flex: 1, height: 72, borderRadius: radii.lg, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(43,33,24,0.07)' },
 });

@@ -69,7 +69,7 @@ export function HomeScreen() {
   };
 
   const resolveImage = (): ImageRef | null => {
-    if (mode === 'plants') return plant ? (plant.kind === 'balcony' ? { kind: 'space', space: 'balcony' } : { kind: 'plant', speciesId: plant.speciesId }) : null;
+    if (mode === 'plants') return plant ? (plant.kind === 'balcony' ? { kind: 'plant', speciesId: 'peace_lily', place: 'balcony' } : { kind: 'plant', speciesId: plant.speciesId }) : null;
     return picture;
   };
 

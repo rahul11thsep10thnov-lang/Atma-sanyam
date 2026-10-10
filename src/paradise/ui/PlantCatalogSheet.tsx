@@ -1,7 +1,7 @@
 // Choosing what to grow next: a segment's species, each as its own card
 // with the plant at full size, its rarity and whether the garden has
 // earned it yet. Picking one opens its preview; nothing is planted here.
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import { Sheet } from '../../spaces/ui/Sheet';
 import { AppText } from '../../ui/AppText';
@@ -11,7 +11,7 @@ import { radii } from '../../theme/radii';
 import { space as sp } from '../../theme/spacing';
 import { useTheme } from '../../theme/ThemeContext';
 import { t } from '../../i18n';
-import { RARITY_UNLOCK, SegmentId, Species, plantName, speciesOf, unlocked } from '../catalog';
+import { RARITY_UNLOCK, SEGMENTS, SegmentId, Species, plantName, speciesOf, unlocked } from '../catalog';
 import { hasArt, spriteFor } from '../model';
 import { PARADISE_IMAGES } from '../sprites.generated';
 
@@ -21,6 +21,8 @@ interface Props {
   grownInSegment: number;
   onClose: () => void;
   onPick: (species: Species) => void;
+  /** Show the five segments as chips to choose from (the balcony's catalog). */
+  grownBy?: (segment: SegmentId) => number;
 }
 
 /** The full-resolution sprite, for large pictures (the preview's hero). */
@@ -39,12 +41,30 @@ export function speciesThumb(speciesId: string, stage = 7): number | null {
 
 const RARITY_COLOR: Record<Species['rarity'], string> = { common: '#8FA56B', uncommon: '#5B8DC9', rare: '#B5744A' };
 
-export function PlantCatalogSheet({ visible, segment, grownInSegment, onClose, onPick }: Props) {
+export function PlantCatalogSheet({ visible, segment: initialSegment, grownInSegment: initialGrown, onClose, onPick, grownBy }: Props) {
   const { colors } = useTheme();
+  const [chosen, setChosen] = useState<SegmentId>(initialSegment);
+  useEffect(() => setChosen(initialSegment), [initialSegment, visible]);
+  const segment = grownBy ? chosen : initialSegment;
+  const grownInSegment = grownBy ? grownBy(segment) : initialGrown;
   const list = speciesOf(segment).filter((s) => hasArt(s.id));
   const sorted = [...list].sort((a, b) => (unlocked(a, grownInSegment) === unlocked(b, grownInSegment) ? 0 : unlocked(a, grownInSegment) ? -1 : 1));
   return (
     <Sheet visible={visible} title={t('paradise.chooseTitle')} subtitle={t('paradise.chooseSubtitle', { segment: t(`paradise.segment.${segment}` as never) })} onClose={onClose} maxHeight="86%">
+      {grownBy && (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.segWrap} contentContainerStyle={styles.segs}>
+          {SEGMENTS.map((sg) => {
+            const on = sg === segment;
+            return (
+              <Tactile key={sg} onPress={() => setChosen(sg)} accessibilityRole="button" accessibilityState={{ selected: on }} style={[styles.seg, { backgroundColor: on ? colors.primary : colors.surfaceRaised, borderColor: on ? colors.primary : colors.border }]}>
+                <AppText variant="bodySmallStrong" style={{ color: on ? colors.textOnAccent : colors.text }}>
+                  {t(`paradise.segment.${sg}` as never)}
+                </AppText>
+              </Tactile>
+            );
+          })}
+        </ScrollView>
+      )}
       <ScrollView contentContainerStyle={styles.grid} showsVerticalScrollIndicator={false}>
         {sorted.map((s) => {
           const open = unlocked(s, grownInSegment);
@@ -94,6 +114,9 @@ export function PlantCatalogSheet({ visible, segment, grownInSegment, onClose, o
 }
 
 const styles = StyleSheet.create({
+  segWrap: { flexGrow: 0, marginBottom: sp.md },
+  segs: { gap: sp.sm },
+  seg: { paddingHorizontal: sp.md, paddingVertical: 8, borderRadius: radii.pill, borderWidth: 1 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: sp.md, paddingBottom: sp.lg },
   card: { width: '47%', flexGrow: 0, borderWidth: 1, borderRadius: radii.md, padding: sp.sm, gap: 2 },
   locked: { opacity: 0.55 },

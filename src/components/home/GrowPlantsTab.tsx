@@ -1,9 +1,8 @@
-// "Grow plants": what the next session can grow. The balcony's peace lily
-// first, then the paradise garden's species a person has earned, by
+// "Grow plants": what the next session can grow. A peace lily for the
+// balcony first, then the paradise garden's species a person has earned, by
 // segment. Picking one starts the session with that plant.
 import React from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
-import { packFor, hasImg, img } from '../../spaces/packs';
 import { SEGMENTS, SegmentId, plantName, speciesOf, unlocked } from '../../paradise/catalog';
 import { grownIn, hasArt } from '../../paradise/model';
 import { useParadise } from '../../paradise/repository';
@@ -18,18 +17,12 @@ import { t } from '../../i18n';
 
 export type PlantPick = { kind: 'balcony' } | { kind: 'species'; speciesId: string; segment: SegmentId };
 
-function balconyThumb() {
-  const pack = packFor('balcony');
-  const st = pack.focusPlant.stages[pack.focusPlant.stages.length - 1]?.healthy;
-  const f = st?.files?.morning ?? (st ? Object.values(st.files ?? {})[0] : null);
-  return f && hasImg('balcony', f.file) ? img('balcony', f.file) : null;
-}
-
 export function GrowPlantsTab({ selected, onPick, onSeeAll }: { selected: PlantPick | null; onPick: (p: PlantPick) => void; onSeeAll: () => void }) {
   const { colors, shadow } = useTheme();
   const [paradise] = useParadise();
   const balconyOn = selected?.kind === 'balcony';
-  const balconyName = packFor('balcony').focusPlant.name;
+  const balconyName = plantName('peace_lily');
+  const balconyThumb = speciesThumb('peace_lily', 7);
   return (
     <View>
       <AppText variant="bodySmall" tone="secondary" style={styles.hint}>
@@ -37,7 +30,7 @@ export function GrowPlantsTab({ selected, onPick, onSeeAll }: { selected: PlantP
       </AppText>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.stripWrap} contentContainerStyle={styles.strip}>
         <Tactile onPress={() => onPick({ kind: 'balcony' })} scaleTo={0.96} accessibilityRole="button" accessibilityLabel={`${balconyName}, ${t('space.balcony')}`} accessibilityState={{ selected: balconyOn }} style={[styles.tile, { backgroundColor: colors.surfaceRaised, borderColor: balconyOn ? colors.primary : colors.border }, balconyOn && shadow.level2]}>
-          <View style={styles.thumb}>{balconyThumb() && <Image source={balconyThumb()!} style={styles.img} resizeMode="cover" />}</View>
+          <View style={styles.thumb}>{balconyThumb && <Image source={balconyThumb} style={styles.img} resizeMode="contain" />}</View>
           <AppText variant="caption" numberOfLines={1} style={styles.name}>
             {balconyName}
           </AppText>

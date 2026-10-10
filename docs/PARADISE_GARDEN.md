@@ -110,12 +110,14 @@ interface ParadiseState {
 2. A species opens its **preview**: the plant large, name, scientific name,
    description, how it grows, the seven sizes with their minutes, and the
    focus length picker that says which size it will reach.
-3. **Start focus** opens the growth scene: the timer at the top, a soft
-   sunset garden behind, real soil along the bottom tenth of the screen.
-   The seed falls and the soil closes over it, roots reach down, the shoot
-   comes up, and the plant passes through its stages, cross-fading so the
-   growth is continuous. Growth follows the timer (`growthProgress`), so
-   after leaving and coming back it shows exactly where it should be.
+3. **Start focus** opens the growth scene, and it shows nothing but the
+   plant: a plain background (the app's own), real soil across the bottom
+   fifth of the screen, and the timer at the top. The seed drops into the
+   soil, swells and splits, roots reach down, a shoot comes up, and the
+   plant passes through its sizes, cross-fading so the growth is
+   continuous. Growth follows the timer (`growthProgress`), so after
+   leaving and coming back it shows exactly where it should be, and every
+   passing second gives the plant a small visible lift.
 4. On completion the plant is created once (idempotent by session id),
    placed automatically, and the app travels to its segment, where the
    plant settles in with a glow and the label "Pink Lily · Size 3".
@@ -155,9 +157,9 @@ elevation, with its size in metres and its ground pivot recorded.
   coronas, spathes, spikes, buds) and the lush bush with a leaf-clad core.
 - `render_paradise.py` renders; `gen_paradise_pack.py` writes
   `src/paradise/sprites.generated.ts`.
-- `gen_paradise_plate.py`, `gen_paradise_growth_bg.py`,
-  `gen_paradise_soil.py` build the plate, the session background and the
-  soil from the reference image.
+- `gen_paradise_plate.py` and `gen_paradise_soil.py` build the plate and
+  the soil from the reference image (`gen_paradise_growth_bg.py` made the
+  old session background, no longer shown).
 
 ```bash
 cd tools/balcony-render

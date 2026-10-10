@@ -470,6 +470,10 @@ export const en = {
   'auth.privacy': 'Privacy Policy',
   'auth.and': 'and',
   'auth.terms': 'Terms',
+  'museum.wallNo': 'WALL {n}',
+  'museum.hangsHere': 'Your next finished jigsaw will hang here',
+  'museum.wallOf': 'Wall {n} of {total}',
+  'museum.swipeHint': 'Swipe left or right to walk round the gallery',
 } as const;
 
 export type StringKey = keyof typeof en;

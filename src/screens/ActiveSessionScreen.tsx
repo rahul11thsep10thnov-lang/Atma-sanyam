@@ -296,7 +296,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
   return (
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
       {isPlant ? (
-        <GrowthScene speciesId={(config.image as { speciesId: string }).speciesId} elapsedMinutes={frozenMinutes} targetMinutes={config.durationMinutes} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} motion={motion} done={!!result} />
+        <GrowthScene speciesId={(config.image as { speciesId: string }).speciesId} elapsedMinutes={frozenMinutes} targetMinutes={config.durationMinutes} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} motion={motion} background={colors.background} done={!!result} />
       ) : inSpace ? (
         <SpaceSession space="balcony" elapsedMinutes={frozenMinutes} />
       ) : (
@@ -324,10 +324,10 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
 
       {!result && (
         <View style={[styles.center, timerAtTop && { justifyContent: 'flex-start', paddingTop: insets.top + 64 }]} pointerEvents="none">
-          <AppText style={[styles.timer, typography.timer, isPlant && styles.timerPlant]} accessibilityRole="timer" accessibilityLabel={`${Math.ceil(remainingSeconds / 60)} minutes remaining`}>
+          <AppText style={[styles.timer, typography.timer, isPlant && styles.timerPlant, isPlant && { color: colors.text }]} accessibilityRole="timer" accessibilityLabel={`${Math.ceil(remainingSeconds / 60)} minutes remaining`}>
             {formatTime(remainingSeconds)}
           </AppText>
-          <AppText variant="bodySmall" style={[styles.tagline, isPlant && styles.taglinePlant]}>
+          <AppText variant="bodySmall" style={[styles.tagline, isPlant && styles.taglinePlant, isPlant && { color: colors.textSecondary }]}>
             {inGrace ? t('session.graceHint', { seconds: GRACE_SECONDS - elapsedSeconds }) : timerAtTop ? t('session.plantGrowing', { plant: plantLabel }) : t('session.worldWaiting')}
           </AppText>
         </View>
