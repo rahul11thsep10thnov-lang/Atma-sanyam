@@ -86,7 +86,13 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Android/iOS bundle ex
   the museum or on the balcony wall (`docs/SPACES.md`).
 - Or pick a plant: the session plants a seed in the Paradise Garden and grows it as the
   minutes pass, to one of seven sizes (15, 30, 60, 90, 120, 150, 180 minutes), and it keeps
-  its place in the garden for good (`docs/PARADISE_GARDEN.md`).
+  its place in the garden, or on the balcony (room for 26 plants), until the person removes it
+  (`docs/PARADISE_GARDEN.md`).
+- Bilingual: English (UN English) and Hindi, chosen on first launch and in Settings
+  (`src/i18n/`); the plant catalog has its own Hindi names and descriptions.
+- The picture library's Nature collection always includes two Himalayan landscapes bundled with
+  the app (`assets/library/`, CC BY 4.0, credits in `assets/library/CREDITS.csv`); Monuments come
+  from the library's Heritage collection when it is connected.
 - Leaving the app starts a grace period (default 5 s, configurable from the admin console);
   stay away longer and the session fails.
 - The balcony, the Paradise Garden, the museum and preferences stay on the device.

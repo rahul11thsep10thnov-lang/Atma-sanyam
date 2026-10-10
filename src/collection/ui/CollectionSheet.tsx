@@ -23,12 +23,14 @@ interface Props {
   onHangHere: (a: ArtworkRecord) => boolean;
   /** Take it down from this place. */
   onTakeDown: (a: ArtworkRecord) => void;
+  /** Only throwing away is offered (the museum arranges itself). */
+  binOnly?: boolean;
   onToast: (text: string) => void;
 }
 
 const HOME_LABEL: Record<string, string> = { balcony: 'space.balcony', garden: 'space.garden', museum: 'tabs.museum' };
 
-export function CollectionSheet({ visible, here, collection, onClose, onCollection, onHangHere, onTakeDown, onToast }: Props) {
+export function CollectionSheet({ visible, here, collection, onClose, onCollection, onHangHere, onTakeDown, onToast, binOnly }: Props) {
   const { colors } = useTheme();
   const list = owned(collection).slice().reverse();
   const c = counts(collection);
@@ -59,7 +61,7 @@ export function CollectionSheet({ visible, here, collection, onClose, onCollecti
                   {hereNow ? t('gallery.hungHere') : elsewhere ? t('gallery.hungIn', { space: t(HOME_LABEL[elsewhere] as never) }) : t('museum.stored')} · {t('museum.jigsawSize', { tier: a.tier })}
                 </AppText>
                 <View style={styles.actions}>
-                  {hereNow ? (
+                  {binOnly ? null : hereNow ? (
                     <Button label={t('museum.storeAway')} size="sm" variant="secondary" onPress={() => { onTakeDown(a); onCollection(setHome(collection, a.id, 'collection')); }} />
                   ) : (
                     <Button
@@ -74,14 +76,16 @@ export function CollectionSheet({ visible, here, collection, onClose, onCollecti
                       }}
                     />
                   )}
-                  {!hereNow && !elsewhere && (
+                  {(binOnly || (!hereNow && !elsewhere)) && (
                     <Button
-                      label=""
+                      label={binOnly ? t('museum.bin') : ''}
                       icon="trash"
                       size="sm"
-                      variant="tertiary"
+                      variant={binOnly ? 'secondary' : 'tertiary'}
                       accessibilityLabel={t('gallery.throwAway', { title: a.title })}
                       onPress={() => {
+                        // off whatever wall it hangs on, then gone for good
+                        if (a.home !== 'collection') onTakeDown(a);
                         onCollection(setHome(collection, a.id, 'binned'));
                         onToast(t('gallery.thrown', { title: a.title }));
                       }}

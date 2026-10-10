@@ -277,6 +277,7 @@ export function ParadiseScene(props: ParadiseSceneProps) {
     const near = view.mode === 'segment' ? SEGMENT_RANGE[view.segment] : null;
     const visible = (x: number) => !near || (x > near[0] - 0.12 && x < near[1] + 0.12);
     for (const p of state.plants) {
+      if (p.place === 'balcony') continue;
       const slot = p.slot >= 0 ? slotsBySegment.get(p.segment)?.[p.slot] : undefined;
       if (!slot || !visible(slot.x)) continue;
       const sp = spriteFor(p.speciesId, p.size);

@@ -19,11 +19,12 @@ import { TextField } from '../ui/TextField';
 import { radii } from '../theme/radii';
 import { space } from '../theme/spacing';
 import { useTheme } from '../theme/ThemeContext';
+import { categoryLabel, StringKey, t } from '../i18n';
 
 const SORTS: { value: SortOrder; label: string }[] = [
-  { value: 'popular', label: 'Popular' },
-  { value: 'newest', label: 'Newest' },
-  { value: 'title', label: 'A–Z' },
+  { value: 'popular', label: 'library.popular' },
+  { value: 'newest', label: 'library.newest' },
+  { value: 'title', label: 'library.az' },
 ];
 
 const GRID_GAP = space.md;
@@ -100,22 +101,22 @@ export function ContentBrowserScreen() {
   return (
     <View style={[styles.screen, { backgroundColor: colors.background, paddingTop: insets.top + space.md }]}>
       <View style={styles.headerRow}>
-        <IconButton icon="close" label="Close the library" variant="filled" size={40} onPress={() => navigation.goBack()} />
-        <AppText variant="subheading">Picture library</AppText>
+        <IconButton icon="close" label={t('library.close')} variant="filled" size={40} onPress={() => navigation.goBack()} />
+        <AppText variant="subheading">{t('library.title')}</AppText>
         <View style={{ width: 40 }} />
       </View>
 
-      <TextField icon="search" value={searchInput} onChangeText={setSearchInput} placeholder="Search pictures, places, tags" returnKeyType="search" accessibilityLabel="Search the library" />
+      <TextField icon="search" value={searchInput} onChangeText={setSearchInput} placeholder={t('library.search')} returnKeyType="search" accessibilityLabel={t('library.searchA11y')} />
 
       <View style={styles.breadcrumbRow}>
-        <Tactile onPress={() => selectBreadcrumb(-1)} haptic={false} accessibilityRole="button" accessibilityLabel="All collections">
-          <AppText variant="bodySmallStrong" tone={path.length === 0 ? 'primary' : 'muted'}>All</AppText>
+        <Tactile onPress={() => selectBreadcrumb(-1)} haptic={false} accessibilityRole="button" accessibilityLabel={t('library.allA11y')}>
+          <AppText variant="bodySmallStrong" tone={path.length === 0 ? 'primary' : 'muted'}>{t('library.all')}</AppText>
         </Tactile>
         {path.map((node, i) => (
           <View key={node.id} style={styles.breadcrumbItem}>
             <Icon name="chevronRight" size="xs" color="icon" />
-            <Tactile onPress={() => selectBreadcrumb(i)} haptic={false} accessibilityRole="button" accessibilityLabel={node.name}>
-              <AppText variant="bodySmallStrong" tone={i === path.length - 1 ? 'primary' : 'muted'}>{node.name}</AppText>
+            <Tactile onPress={() => selectBreadcrumb(i)} haptic={false} accessibilityRole="button" accessibilityLabel={categoryLabel(node)}>
+              <AppText variant="bodySmallStrong" tone={i === path.length - 1 ? 'primary' : 'muted'}>{categoryLabel(node)}</AppText>
             </Tactile>
           </View>
         ))}
@@ -139,7 +140,7 @@ export function ContentBrowserScreen() {
                 accessibilityState={{ selected: active }}
                 style={[styles.chip, { backgroundColor: active ? colors.primary : colors.surfaceRaised, borderColor: active ? colors.primary : colors.border }]}
               >
-                <AppText variant="bodySmallStrong" style={{ color: active ? colors.textOnAccent : colors.text }}>{item.name}</AppText>
+                <AppText variant="bodySmallStrong" style={{ color: active ? colors.textOnAccent : colors.text }}>{categoryLabel(item)}</AppText>
               </Tactile>
             );
           }}
@@ -147,7 +148,7 @@ export function ContentBrowserScreen() {
       )}
 
       <View style={styles.sortRow}>
-        <SegmentedControl<SortOrder> segments={SORTS} value={filters.sort} onChange={setSort} accessibilityLabel="Sort order" />
+        <SegmentedControl<SortOrder> segments={SORTS.map((x) => ({ ...x, label: t(x.label as StringKey) }))} value={filters.sort} onChange={setSort} accessibilityLabel={t('library.sort')} />
       </View>
 
       <View style={styles.gridWrap} onLayout={(e) => setGridWidth(e.nativeEvent.layout.width)}>
@@ -159,15 +160,15 @@ export function ContentBrowserScreen() {
           <View style={styles.centerFill}>
             <Icon name="alert" size="lg" color="warning" />
             <AppText variant="body" tone="secondary" align="center" style={styles.stateText}>
-              Something interrupted the connection.
+              {t('library.error')}
             </AppText>
-            <Button label="Try again" icon="reset" variant="secondary" onPress={retry} />
+            <Button label={t('tryAgain')} icon="reset" variant="secondary" onPress={retry} />
           </View>
         ) : images.length === 0 ? (
           <View style={styles.centerFill}>
             <Icon name="images" size="lg" color="icon" />
             <AppText variant="body" tone="secondary" align="center" style={styles.stateText}>
-              No pictures match yet.
+              {t('library.none')}
             </AppText>
           </View>
         ) : (

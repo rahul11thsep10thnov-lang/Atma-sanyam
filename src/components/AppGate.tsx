@@ -12,6 +12,7 @@ import { Card } from '../ui/Card';
 import { Icon, IconName } from '../ui/Icon';
 import { space } from '../theme/spacing';
 import { useTheme } from '../theme/ThemeContext';
+import { t } from '../i18n';
 
 function storeUrl(cfg: { iosStoreUrl: string; androidStoreUrl: string }) {
   return Platform.OS === 'ios' ? cfg.iosStoreUrl : Platform.OS === 'android' ? cfg.androidStoreUrl : '';
@@ -37,7 +38,7 @@ export function AppGate({ children }: { children: React.ReactNode }) {
   const [dismissedUpdate, setDismissedUpdate] = useState(false);
 
   if (config.maintenance.enabled) {
-    return <FullScreenMessage icon="leaf" title="Back soon" message={config.maintenance.message} action={{ label: 'Check again', onPress: () => void refresh() }} />;
+    return <FullScreenMessage icon="leaf" title={t('gate.backSoon')} message={config.maintenance.message} action={{ label: t('gate.checkAgain'), onPress: () => void refresh() }} />;
   }
 
   const url = storeUrl(config.appVersion);
@@ -45,9 +46,9 @@ export function AppGate({ children }: { children: React.ReactNode }) {
     return (
       <FullScreenMessage
         icon="sparkles"
-        title="Update required"
-        message={`${config.appVersion.updateMessage}\nThis version (${appVersion}) is no longer supported.`}
-        action={url ? { label: 'Update now', onPress: () => void Linking.openURL(url) } : undefined}
+        title={t('gate.updateRequired')}
+        message={`${config.appVersion.updateMessage}\n${t('gate.unsupported', { version: appVersion })}`}
+        action={url ? { label: t('gate.updateNow'), onPress: () => void Linking.openURL(url) } : undefined}
       />
     );
   }
@@ -60,8 +61,8 @@ export function AppGate({ children }: { children: React.ReactNode }) {
         <Card variant="floating" padding="md" style={[styles.banner, { top: insets.top + space.sm }]} accessibilityRole="alert">
           <View style={styles.bannerRow}>
             <AppText variant="bodySmall" style={{ flex: 1 }} numberOfLines={2}>{config.appVersion.updateMessage}</AppText>
-            {!!url && <Button label="Update" size="sm" variant="tertiary" onPress={() => void Linking.openURL(url)} />}
-            <IconButton icon="close" label="Dismiss update notice" size={32} onPress={() => setDismissedUpdate(true)} />
+            {!!url && <Button label={t('gate.update')} size="sm" variant="tertiary" onPress={() => void Linking.openURL(url)} />}
+            <IconButton icon="close" label={t('gate.dismiss')} size={32} onPress={() => setDismissedUpdate(true)} />
           </View>
         </Card>
       )}

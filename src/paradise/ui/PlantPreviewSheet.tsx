@@ -13,14 +13,15 @@ import { space as sp } from '../../theme/spacing';
 import { useTheme } from '../../theme/ThemeContext';
 import { t } from '../../i18n';
 import { PlantGrowthSize, SIZE_MINUTES, minutesRange, sizeForMinutes } from '../../growth/size';
-import { PREVIEW_SIZES, SEGMENT_NAME, Species } from '../catalog';
+import { PREVIEW_SIZES, Species, plantName, plantText } from '../catalog';
+import { PlantPlace } from '../model';
 import { speciesImage, speciesThumb } from './PlantCatalogSheet';
 
 interface Props {
   visible: boolean;
   species: Species | null;
   onClose: () => void;
-  onStart: (species: Species, minutes: number) => void;
+  onStart: (species: Species, minutes: number, place: PlantPlace) => void;
 }
 
 const DURATIONS = [15, 25, 30, 45, 60, 90, 120, 150, 180];
@@ -28,19 +29,20 @@ const DURATIONS = [15, 25, 30, 45, 60, 90, 120, 150, 180];
 export function PlantPreviewSheet({ visible, species, onClose, onStart }: Props) {
   const { colors } = useTheme();
   const [minutes, setMinutes] = useState(30);
+  const [place, setPlace] = useState<PlantPlace>('garden');
   const size = sizeForMinutes(minutes) ?? 1;
   const hero = useMemo(() => (species ? speciesImage(species.id, 7) : null), [species]);
   const current = useMemo(() => (species ? speciesImage(species.id, size) : null), [species, size]);
   if (!species) return null;
   return (
-    <Sheet visible={visible} title={species.name} subtitle={`${species.scientificName} · ${SEGMENT_NAME[species.segment]}`} onClose={onClose} maxHeight="92%">
+    <Sheet visible={visible} title={plantName(species.id)} subtitle={`${species.scientificName} · ${t(`paradise.segment.${species.segment}` as never)}`} onClose={onClose} maxHeight="92%">
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
         <View style={[styles.hero, { backgroundColor: '#EEE6D6' }]}>{(current ?? hero) && <Image source={(current ?? hero)!} style={styles.heroImg} resizeMode="contain" />}</View>
         <AppText variant="bodySmall" tone="secondary">
-          {species.description}
+          {plantText(species.id).description}
         </AppText>
         <AppText variant="caption" tone="muted">
-          {species.progression}
+          {plantText(species.id).progression}
         </AppText>
 
         <AppText variant="overline" tone="muted" style={{ marginTop: sp.sm }}>
@@ -80,7 +82,19 @@ export function PlantPreviewSheet({ visible, species, onClose, onStart }: Props)
         <AppText variant="caption" tone="secondary" align="center">
           {t('paradise.willReach', { minutes, size })}
         </AppText>
-        <Button label={t('paradise.startFocus')} icon="sprout" size="lg" fullWidth onPress={() => onStart(species, minutes)} style={{ marginTop: sp.sm }} />
+        <AppText variant="overline" tone="muted" style={{ marginTop: sp.sm }}>
+          {t('paradise.growWhere').toUpperCase()}
+        </AppText>
+        <View style={styles.places}>
+          {(['garden', 'balcony'] as PlantPlace[]).map((p) => (
+            <Tactile key={p} onPress={() => setPlace(p)} accessibilityRole="radio" accessibilityState={{ selected: p === place }} accessibilityLabel={t(p === 'garden' ? 'tabs.garden' : 'tabs.balcony')} style={[styles.place, { borderColor: p === place ? colors.primary : colors.border, backgroundColor: p === place ? colors.accentSoft : colors.surface }]}>
+              <AppText variant="bodySmallStrong" tone={p === place ? 'primary' : 'text'}>
+                {t(p === 'garden' ? 'tabs.garden' : 'tabs.balcony')}
+              </AppText>
+            </Tactile>
+          ))}
+        </View>
+        <Button label={t('paradise.startFocus')} icon="sprout" size="lg" fullWidth onPress={() => onStart(species, minutes, place)} style={{ marginTop: sp.sm }} />
       </ScrollView>
     </Sheet>
   );
@@ -94,5 +108,7 @@ const styles = StyleSheet.create({
   sizeCard: { width: 96, borderWidth: 1.5, borderRadius: radii.md, padding: 6, alignItems: 'center', gap: 2 },
   sizeThumb: { width: 72, height: 72, alignItems: 'center', justifyContent: 'center' },
   durations: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  places: { flexDirection: 'row', gap: sp.sm },
+  place: { flex: 1, height: 44, borderWidth: 1.5, borderRadius: radii.md, alignItems: 'center', justifyContent: 'center' },
   duration: { paddingHorizontal: 14, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', minWidth: 56 },
 });

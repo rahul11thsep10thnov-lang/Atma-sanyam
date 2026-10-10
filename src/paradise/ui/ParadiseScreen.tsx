@@ -23,9 +23,9 @@ import { radii } from '../../theme/radii';
 import { space as sp } from '../../theme/spacing';
 import { duration, easing } from '../../theme/motion';
 import { t, useLanguage } from '../../i18n';
-import { SEGMENTS, SEGMENT_NAME, SPECIES_BY_ID, SegmentId, Species } from '../catalog';
+import { SEGMENTS, SPECIES_BY_ID, SegmentId, Species, plantName, plantText } from '../catalog';
 import { SEGMENT_RANGE } from '../layout';
-import { PlantInstance, Penalty, clearPenalty, counts, grownIn, shuffleSegment } from '../model';
+import { PlantInstance, PlantPlace, Penalty, clearPenalty, counts, grownIn, removePlant, shuffleSegment } from '../model';
 import { useParadise } from '../repository';
 import { Ambience } from '../scene/Ambience';
 import { MotionLevel, ParadiseScene, SceneView } from '../scene/ParadiseScene';
@@ -54,6 +54,7 @@ export function ParadiseScreen() {
   const [catalogSegment, setCatalogSegment] = useState<SegmentId>('flowers');
   const [preview, setPreview] = useState<Species | null>(null);
   const [selected, setSelected] = useState<PlantInstance | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [penalty, setPenalty] = useState<Penalty | null>(null);
   const [arrival, setArrival] = useState<string | null>(null);
   const [centre, setCentre] = useState(0.5);
@@ -89,7 +90,7 @@ export function ParadiseScreen() {
     // the welcome label waits for the camera; clearing the route param must not cancel it
     if (arrivalTimer.current) clearTimeout(arrivalTimer.current);
     arrivalTimer.current = setTimeout(() => {
-      say(t('paradise.arrived', { name: SPECIES_BY_ID[plant.speciesId]?.name ?? plant.speciesId, size: plant.size }));
+      say(t('paradise.arrived', { name: plantName(plant.speciesId), size: plant.size }));
     }, 1100);
     navigation.setParams({ arrival: undefined } as never);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -113,10 +114,10 @@ export function ParadiseScreen() {
     if (arrivalTimer.current) clearTimeout(arrivalTimer.current);
   }, []);
 
-  const startFocus = (species: Species, minutes: number) => {
+  const startFocus = (species: Species, minutes: number, place: PlantPlace) => {
     setSheet(null);
     setPreview(null);
-    navigation.navigate('ActiveSession', { config: { durationMinutes: minutes, image: { kind: 'plant', speciesId: species.id }, grid: gridForSession(minutes) } });
+    navigation.navigate('ActiveSession', { config: { durationMinutes: minutes, image: { kind: 'plant', speciesId: species.id, place }, grid: gridForSession(minutes) } });
   };
 
   const openCatalog = (segment: SegmentId) => {
@@ -159,7 +160,7 @@ export function ParadiseScreen() {
     say(t('space.penaltyCleared'));
   };
 
-  const total = useMemo(() => (state ? state.plants.length : 0), [state]);
+  const total = useMemo(() => (state ? state.plants.filter((p) => p.place !== 'balcony').length : 0), [state]);
   const perSegment = useMemo(() => (state ? counts(state) : null), [state]);
 
   if (!state || !rewards) return <View style={styles.screen} />;
@@ -261,7 +262,7 @@ export function ParadiseScreen() {
             <View style={styles.cardThumb}>{speciesThumb(sel.speciesId, sel.size) && <Image source={speciesThumb(sel.speciesId, sel.size)!} style={{ width: '90%', height: '90%' }} resizeMode="contain" />}</View>
             <View style={{ flex: 1, gap: 2 }}>
               <AppText variant="bodyStrong" style={styles.white} numberOfLines={1}>
-                {selSpecies.name} · {t('paradise.size', { size: sel.size })}
+                {plantName(sel.speciesId)} · {t('paradise.size', { size: sel.size })}
               </AppText>
               <AppText variant="caption" style={styles.faint} numberOfLines={1}>
                 {selSpecies.scientificName}
@@ -270,14 +271,30 @@ export function ParadiseScreen() {
                 {t('paradise.grownFrom', { minutes: sel.focusMinutes })} · {new Date(sel.plantedAt).toLocaleDateString()}
               </AppText>
               <AppText variant="caption" style={styles.faint} numberOfLines={3}>
-                {selSpecies.description}
+                {plantText(sel.speciesId).description}
               </AppText>
             </View>
           </View>
-          <View style={styles.cardActions}>
-            <GlassPill icon="sprout" label={t('paradise.growAnother')} compact emphasis onPress={() => { setPreview(selSpecies); setSelected(null); setSheet('preview'); }} />
-            <GlassPill icon="close" compact onPress={() => setSelected(null)} accessibilityLabel={t('close')} />
-          </View>
+          {confirmDelete === sel.id ? (
+            <View style={styles.cardActions}>
+              <AppText variant="caption" style={[styles.white, { flex: 1 }]} numberOfLines={2}>
+                {t('paradise.deleteConfirm', { name: plantName(sel.speciesId) })}
+              </AppText>
+              <GlassPill label={t('cancel')} compact onPress={() => setConfirmDelete(null)} />
+              <GlassPill icon="trash" label={t('paradise.delete')} compact emphasis onPress={() => {
+                save(removePlant(state, sel.id));
+                setSelected(null);
+                setConfirmDelete(null);
+                say(t('paradise.deleted', { name: plantName(sel.speciesId) }));
+              }} />
+            </View>
+          ) : (
+            <View style={styles.cardActions}>
+              <GlassPill icon="trash" compact onPress={() => setConfirmDelete(sel.id)} accessibilityLabel={t('paradise.delete')} />
+              <GlassPill icon="sprout" label={t('paradise.growAnother')} compact emphasis onPress={() => { setPreview(selSpecies); setSelected(null); setSheet('preview'); }} />
+              <GlassPill icon="close" compact onPress={() => setSelected(null)} accessibilityLabel={t('close')} />
+            </View>
+          )}
         </View>
       )}
       {penalty && (
@@ -310,7 +327,7 @@ export function ParadiseScreen() {
       )}
 
       <PlantCatalogSheet visible={sheet === 'catalog'} segment={catalogSegment} grownInSegment={grownIn(state, catalogSegment)} onClose={() => setSheet(null)} onPick={(s) => { setPreview(s); setSheet('preview'); }} />
-      <PlantPreviewSheet visible={sheet === 'preview'} species={preview} onClose={() => setSheet(preview && SEGMENT_NAME[preview.segment] ? 'catalog' : null)} onStart={startFocus} />
+      <PlantPreviewSheet visible={sheet === 'preview'} species={preview} onClose={() => setSheet(preview ? 'catalog' : null)} onStart={startFocus} />
       <AdSheet visible={sheet === 'ad'} rewards={rewards} onClose={() => setSheet(null)} onRewards={saveRewards} onToast={say} />
     </View>
   );

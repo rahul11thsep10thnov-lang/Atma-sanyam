@@ -13,7 +13,7 @@ import { Tactile } from '../ui/Pressable';
 import { radii } from '../theme/radii';
 import { space } from '../theme/spacing';
 import { useTheme } from '../theme/ThemeContext';
-import { Language, LANGUAGES, setLanguage, t, getLanguage } from '../i18n';
+import { Language, LANGUAGES, normaliseLanguage, t, getLanguage } from '../i18n';
 import { AnimatedWallpaper } from '../components/AnimatedWallpaper';
 
 export function LanguageScreen() {
@@ -21,13 +21,16 @@ export function LanguageScreen() {
   const insets = useSafeAreaInsets();
   const { colors, shadow } = useTheme();
   const { settings, updateSettings } = useSettings();
-  const [choice, setChoice] = useState<Language>(settings.language ?? getLanguage());
+  const [choice, setChoice] = useState<Language>(normaliseLanguage(settings.language) ?? getLanguage());
 
+  // The app switches language by remounting the navigator (RootNavigator applies
+  // settings.language), so leave this screen first and save the choice after:
+  // the remount then restores the screen being returned to, in the new language.
   const confirm = async () => {
-    setLanguage(choice);
-    await updateSettings({ language: choice });
     if (navigation.canGoBack()) navigation.goBack();
     else navigation.replace('Tabs', { screen: 'Home' });
+    await new Promise((r) => setTimeout(r, 350));
+    await updateSettings({ language: choice });
   };
 
   return (
@@ -45,10 +48,7 @@ export function LanguageScreen() {
             return (
               <Tactile
                 key={l.id}
-                onPress={() => {
-                  setChoice(l.id);
-                  setLanguage(l.id);
-                }}
+                onPress={() => setChoice(l.id)}
                 accessibilityRole="radio"
                 accessibilityState={{ selected: on }}
                 accessibilityLabel={l.name}

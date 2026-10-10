@@ -5,8 +5,11 @@
 import { PlantGrowthSize, sizeForMinutes } from '../growth/size';
 import { SEGMENTS, SPECIES_BY_ID, SegmentId, Species } from './catalog';
 import { Slot, rng, slotsFor } from './layout';
+import { BALCONY_SPOTS } from './balcony';
 import { PARADISE_SPRITES } from './sprites.generated';
 import { Sprite } from './types';
+
+export type PlantPlace = 'garden' | 'balcony';
 
 export interface PlantInstance {
   id: string;
@@ -17,8 +20,11 @@ export interface PlantInstance {
   focusMinutes: number;
   plantedAt: number;
   sessionId: string;
-  /** Index into the segment's slots for its layout seed; -1 while homeless. */
+  /** Index into the segment's slots for its layout seed (or into
+   * BALCONY_SPOTS on the balcony); -1 while homeless. */
   slot: number;
+  /** Where it grows: the paradise garden (the default) or the balcony. */
+  place?: PlantPlace;
   /** A little lean and size variation so no two look stamped. */
   rotation: number;
   scale: number;
@@ -136,7 +142,7 @@ function chooseSlot(slots: Slot[], taken: Set<number>, species: Species, size: P
 function occupiedIn(state: ParadiseState, segment: SegmentId, slots: Slot[]): { taken: Set<number>; points: { x: number; y: number }[] } {
   const taken = new Set<number>();
   const points: { x: number; y: number }[] = [];
-  for (const p of [...state.plants, ...state.penalties]) {
+  for (const p of [...state.plants.filter(inGarden), ...state.penalties]) {
     if (p.segment !== segment || p.slot < 0) continue;
     taken.add(p.slot);
     const s = slots[p.slot];
@@ -145,18 +151,33 @@ function occupiedIn(state: ParadiseState, segment: SegmentId, slots: Slot[]): { 
   return { taken, points };
 }
 
+export const inGarden = (p: { place?: PlantPlace }) => (p.place ?? 'garden') === 'garden';
+export const onBalcony = (p: { place?: PlantPlace }) => p.place === 'balcony';
+
+/** The first free spot on the balcony, far end first; -1 when all are taken. */
+export function freeBalconySpot(state: ParadiseState): number {
+  const taken = new Set(state.plants.filter(onBalcony).map((p) => p.slot));
+  return BALCONY_SPOTS.findIndex((_, i) => !taken.has(i));
+}
+
 /** A completed session's plant takes its permanent place. */
-export function plantFromSession(state: ParadiseState, speciesId: string, minutes: number, sessionId: string): { state: ParadiseState; plant: PlantInstance | null } {
+export function plantFromSession(state: ParadiseState, speciesId: string, minutes: number, sessionId: string, place: PlantPlace = 'garden'): { state: ParadiseState; plant: PlantInstance | null } {
   const species = SPECIES_BY_ID[speciesId];
   const size = sizeForMinutes(minutes);
   if (!species || !size) return { state, plant: null };
   // one plant per session, whatever happens on the way back from the timer
   const dup = state.plants.find((p) => p.sessionId === sessionId);
   if (dup) return { state, plant: dup };
-  const slots = slotsFor(species.segment, state.layoutSeed[species.segment]);
-  const { taken, points } = occupiedIn(state, species.segment, slots);
   const seed = hash(sessionId);
-  const slot = chooseSlot(slots, taken, species, size, seed, points);
+  // the balcony takes it while it has room; a full balcony sends it to the garden
+  const balconySpot = place === 'balcony' ? freeBalconySpot(state) : -1;
+  const where: PlantPlace = balconySpot >= 0 ? 'balcony' : 'garden';
+  let slot = balconySpot;
+  if (where === 'garden') {
+    const slots = slotsFor(species.segment, state.layoutSeed[species.segment]);
+    const { taken, points } = occupiedIn(state, species.segment, slots);
+    slot = chooseSlot(slots, taken, species, size, seed, points);
+  }
   const r = rng(seed + 1);
   const plant: PlantInstance = {
     id: uid(),
@@ -167,20 +188,21 @@ export function plantFromSession(state: ParadiseState, speciesId: string, minute
     plantedAt: Date.now(),
     sessionId,
     slot,
+    place: where,
     rotation: (r() - 0.5) * 4,
     scale: 0.93 + r() * 0.14,
     flip: r() < 0.5,
   };
-  return { state: { ...state, plants: [...state.plants, plant], lastSegment: species.segment }, plant };
+  return { state: { ...state, plants: [...state.plants, plant], lastSegment: where === 'garden' ? species.segment : state.lastSegment }, plant };
 }
 
 /** Rearrange a segment: same plants, same sizes, new places. */
 export function shuffleSegment(state: ParadiseState, segment: SegmentId): ParadiseState {
   const seed = (state.layoutSeed[segment] * 1103515245 + 12345) >>> 0 || 7;
   const slots = slotsFor(segment, seed);
-  const next: ParadiseState = { ...state, layoutSeed: { ...state.layoutSeed, [segment]: seed }, plants: state.plants.map((p) => (p.segment === segment ? { ...p, slot: -1 } : p)), penalties: state.penalties.map((p) => (p.segment === segment ? { ...p, slot: -1 } : p)) };
+  const next: ParadiseState = { ...state, layoutSeed: { ...state.layoutSeed, [segment]: seed }, plants: state.plants.map((p) => (p.segment === segment && inGarden(p) ? { ...p, slot: -1 } : p)), penalties: state.penalties.map((p) => (p.segment === segment ? { ...p, slot: -1 } : p)) };
   // biggest first, so the back of the beds goes to the tallest
-  const order = next.plants.filter((p) => p.segment === segment).sort((a, b) => b.size - a.size || a.plantedAt - b.plantedAt);
+  const order = next.plants.filter((p) => p.segment === segment && inGarden(p)).sort((a, b) => b.size - a.size || a.plantedAt - b.plantedAt);
   const taken = new Set<number>();
   const points: { x: number; y: number }[] = [];
   const placed = new Map<string, number>();
@@ -207,10 +229,10 @@ export function shuffleSegment(state: ParadiseState, segment: SegmentId): Paradi
 /** Plants without a place (a full bed at the time, or carried over from an
  * older garden) take the best free slot, biggest first. Placed plants never move. */
 export function rehome(state: ParadiseState): ParadiseState {
-  if (!state.plants.some((p) => p.slot < 0)) return state;
+  if (!state.plants.some((p) => p.slot < 0 && inGarden(p))) return state;
   let plants = state.plants;
   for (const segment of SEGMENTS) {
-    const homeless = plants.filter((p) => p.segment === segment && p.slot < 0).sort((a, b) => b.size - a.size || a.plantedAt - b.plantedAt);
+    const homeless = plants.filter((p) => p.segment === segment && p.slot < 0 && inGarden(p)).sort((a, b) => b.size - a.size || a.plantedAt - b.plantedAt);
     if (!homeless.length) continue;
     const slots = slotsFor(segment, state.layoutSeed[segment]);
     const { taken, points } = occupiedIn({ ...state, plants }, segment, slots);
@@ -239,6 +261,12 @@ export function addPenalty(state: ParadiseState, segment: SegmentId): ParadiseSt
   return { ...state, penalties: [...state.penalties, { id, segment, slot, placedAt: Date.now() }] };
 }
 
+/** The person removes a plant they grew: its place frees up for the next one. */
+export function removePlant(state: ParadiseState, id: string): ParadiseState {
+  if (!state.plants.some((p) => p.id === id)) return state;
+  return { ...state, plants: state.plants.filter((p) => p.id !== id) };
+}
+
 export function clearPenalty(state: ParadiseState, id: string): ParadiseState {
   if (!state.penalties.some((p) => p.id === id)) return state;
   return { ...state, penalties: state.penalties.filter((p) => p.id !== id) };
@@ -247,16 +275,17 @@ export function clearPenalty(state: ParadiseState, id: string): ParadiseState {
 // ---- queries ---------------------------------------------------------------------------
 
 export function plantsIn(state: ParadiseState, segment: SegmentId): PlantInstance[] {
-  return state.plants.filter((p) => p.segment === segment);
+  return state.plants.filter((p) => p.segment === segment && inGarden(p));
 }
 
+/** Plants of a segment's species grown anywhere (garden or balcony): this opens rarer species. */
 export function grownIn(state: ParadiseState, segment: SegmentId): number {
-  return plantsIn(state, segment).length;
+  return state.plants.filter((p) => p.segment === segment).length;
 }
 
 export function counts(state: ParadiseState): Record<SegmentId, number> {
   const c = Object.fromEntries(SEGMENTS.map((s) => [s, 0])) as Record<SegmentId, number>;
-  for (const p of state.plants) c[p.segment]++;
+  for (const p of state.plants) if (inGarden(p)) c[p.segment]++;
   return c;
 }
 

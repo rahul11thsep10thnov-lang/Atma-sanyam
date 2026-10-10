@@ -26,7 +26,7 @@ import { ArtworkRecord, artworkImage, findArtwork, setHome } from '../collection
 import { loadCollection, updateCollection } from '../collection/repository';
 import { placeArtworkInMuseum } from '../museum/repository';
 import { GrowthScene } from '../paradise/scene/GrowthScene';
-import { SPECIES_BY_ID } from '../paradise/catalog';
+import { plantName as speciesName } from '../paradise/catalog';
 import { useFocusTimer } from '../hooks/useFocusTimer';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { RootStackParamList } from '../navigation/types';
@@ -94,7 +94,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
 
   const isPlant = config.image.kind === 'plant';
   const inSpace = config.image.kind === 'space' || config.image.kind === 'balcony';
-  const plantName = isPlant ? (SPECIES_BY_ID[(config.image as { speciesId: string }).speciesId]?.name ?? '').toLowerCase() : packFor('balcony').focusPlant.name.toLowerCase();
+  const plantLabel = isPlant ? speciesName((config.image as { speciesId: string }).speciesId) : packFor('balcony').focusPlant.name.toLowerCase();
   const motion: 'full' | 'calm' | 'off' = reduced ? 'off' : (settings.gardenMotion ?? 'full');
 
   const finalizeSession = useCallback(
@@ -148,6 +148,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
         if (summary.newPlant) {
           lines.push({ icon: 'flower', text: t('session.plantGrown', { name: summary.newPlant.name, size: summary.newPlant.size, segment: t(`paradise.segment.${summary.newPlant.segment}` as never) }) });
           setNewPlant(summary.newPlant);
+          if (img.kind === 'plant' && img.place === 'balcony' && summary.newPlant.place === 'garden') lines.push({ icon: 'alert', text: t('balcony.full') });
         }
         if (summary.plant) {
           const name = summary.plant.name.toLowerCase();
@@ -180,12 +181,12 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
           if (!summary) return;
           if (summary.where === 'balcony') {
             setRewardLines([
-              { icon: 'leaf', text: summary.wilted ? t('space.plantDrooping') : t('session.droopLine', { plant: summary.plantName.toLowerCase() }) },
+              { icon: 'leaf', text: summary.wilted ? t('space.plantDrooping') : t('session.droopLine', { plant: summary.plantName }) },
               { icon: 'alert', text: t('session.penaltyLine', { space: t('space.balcony').toLowerCase() }) },
             ]);
           } else {
             setRewardLines([
-              { icon: 'leaf', text: t('session.noPlantGrew', { plant: summary.plantName.toLowerCase() }) },
+              { icon: 'leaf', text: t('session.noPlantGrew', { plant: summary.plantName }) },
               { icon: 'alert', text: t('session.saplingLeft', { segment: t(`paradise.segment.${summary.where}` as never) }) },
             ]);
           }
@@ -282,7 +283,8 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
 
   const leave = () => {
     if (newPlant) {
-      navigation.replace('Tabs', { screen: 'Garden', params: { arrival: newPlant.id } });
+      if (newPlant.place === 'balcony') navigation.replace('Tabs', { screen: 'History', params: { arrival: newPlant.id } });
+      else navigation.replace('Tabs', { screen: 'Garden', params: { arrival: newPlant.id } });
       return;
     }
     navigation.replace('Tabs', { screen: isPlant ? 'Garden' : inSpace ? 'History' : 'Home' });
@@ -326,7 +328,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
             {formatTime(remainingSeconds)}
           </AppText>
           <AppText variant="bodySmall" style={[styles.tagline, isPlant && styles.taglinePlant]}>
-            {inGrace ? t('session.graceHint', { seconds: GRACE_SECONDS - elapsedSeconds }) : timerAtTop ? t('session.plantGrowing', { plant: plantName }) : t('session.worldWaiting')}
+            {inGrace ? t('session.graceHint', { seconds: GRACE_SECONDS - elapsedSeconds }) : timerAtTop ? t('session.plantGrowing', { plant: plantLabel }) : t('session.worldWaiting')}
           </AppText>
         </View>
       )}
@@ -352,9 +354,9 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
         <SessionResultSheet
           outcome="completed"
           title={isPlant ? (newPlant ? t('session.plantDoneTitle', { name: newPlant.name }) : t('session.plantShortTitle')) : texts.sessionCompleteTitle}
-          message={isPlant ? (newPlant ? t('session.plantDoneBody', { size: newPlant.size }) : t('session.plantShortBody')) : texts.sessionCompleteMessage}
+          message={isPlant ? (newPlant ? t(newPlant.place === 'balcony' ? 'session.plantDoneBodyBalcony' : 'session.plantDoneBody', { size: newPlant.size }) : t('session.plantShortBody')) : texts.sessionCompleteMessage}
           lines={rewardLines}
-          primaryLabel={pendingArt ? t('session.placeIt') : newPlant ? t('session.seeInGarden') : inSpace ? t('session.backTo', { space: t('space.balcony').toLowerCase() }) : isPlant ? t('session.backTo', { space: t('tabs.garden').toLowerCase() }) : t('session.backHome')}
+          primaryLabel={pendingArt ? t('session.placeIt') : newPlant ? t(newPlant.place === 'balcony' ? 'session.seeOnBalcony' : 'session.seeInGarden') : inSpace ? t('session.backTo', { space: t('space.balcony').toLowerCase() }) : isPlant ? t('session.backTo', { space: t('tabs.garden').toLowerCase() }) : t('session.backHome')}
           onPrimary={pendingArt ? startPlacing : leave}
         />
       )}

@@ -72,7 +72,7 @@ export function SettingsScreen() {
     const result = await setPushEnabled(value);
     setPushBusy(false);
     if (result.ok) updateSettings({ pushEnabled: value });
-    else Alert.alert('Announcements', result.reason);
+    else Alert.alert(t('settings.announcements'), result.reason);
   };
 
   const handleClearHistory = () => {
@@ -84,12 +84,12 @@ export function SettingsScreen() {
 
   const confirmDelete = () => {
     Alert.alert(
-      'Delete your account?',
-      'This permanently deletes your FOCUS account. Your focus history on this device is kept. This cannot be undone.',
+      t('settings.deleteTitle'),
+      t('settings.deleteBody'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('cancel'), style: 'cancel' },
         {
-          text: 'Delete',
+          text: t('settings.delete'),
           style: 'destructive',
           onPress: async () => {
             setDeleteBusy(true);
@@ -97,9 +97,9 @@ export function SettingsScreen() {
               await deleteAccount(deletePassword);
               setDeleting(false);
               setDeletePassword('');
-              Alert.alert('Account deleted', 'Your account and its data have been removed.');
+              Alert.alert(t('settings.deleted'), t('settings.deletedBody'));
             } catch (e) {
-              Alert.alert('Could not delete account', friendlyError(e));
+              Alert.alert(t('settings.deleteFailed'), friendlyError(e));
             } finally {
               setDeleteBusy(false);
             }
@@ -134,7 +134,7 @@ export function SettingsScreen() {
             <View style={styles.accountBox}>
               <View style={styles.rowBetween}>
                 <View style={{ flex: 1 }}>
-                  <AppText variant="bodyStrong">{user.displayName || 'Signed in'}</AppText>
+                  <AppText variant="bodyStrong">{user.displayName || t('settings.signedIn')}</AppText>
                   <AppText variant="bodySmall" tone="secondary">{user.email}</AppText>
                 </View>
                 <Button label={t('settings.signOut')} variant="secondary" size="sm" icon="logOut" onPress={() => void signOut()} />
@@ -149,10 +149,10 @@ export function SettingsScreen() {
                     secureTextEntry
                     value={deletePassword}
                     onChangeText={setDeletePassword}
-                    placeholder="Password"
+                    placeholder={t('auth.password')}
                     placeholderTextColor={colors.textMuted}
                     autoComplete="current-password"
-                    accessibilityLabel="Password to confirm deletion"
+                    accessibilityLabel={t('settings.passwordA11y')}
                   />
                   <View style={styles.rowBetween}>
                     <Button label={t('cancel')} variant="tertiary" size="sm" onPress={() => { setDeleting(false); setDeletePassword(''); }} />
@@ -191,7 +191,7 @@ export function SettingsScreen() {
           <SegmentedControl<Appearance>
             value={appearance}
             onChange={(v) => updateSettings({ appearance: v })}
-            accessibilityLabel="Theme"
+            accessibilityLabel={t('settings.theme')}
             segments={[
               { value: 'system', label: t('settings.themeAuto') },
               { value: 'light', label: t('settings.themeMorning') },

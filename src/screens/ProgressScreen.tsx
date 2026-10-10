@@ -82,7 +82,7 @@ function WeekBars({ week }: { week: { day: number; minutes: number }[] }) {
         <AppText variant="subheading">{t('progress.thisWeek')}</AppText>
         <AppText variant="bodySmall" tone="secondary">{formatMinutes(week.reduce((s, d) => s + d.minutes, 0))} focused</AppText>
       </View>
-      <View style={styles.bars} accessibilityLabel={`Minutes focused per day: ${week.map((d) => `${new Date(d.day).toLocaleDateString(undefined, { weekday: 'short' })} ${d.minutes}`).join(', ')}`}>
+      <View style={styles.bars} accessibilityLabel={t('progress.weekA11y', { days: week.map((d) => `${new Date(d.day).toLocaleDateString(undefined, { weekday: 'short' })} ${d.minutes}`).join(', ') })}>
         {week.map((d) => {
           const h = Math.max(4, Math.round((d.minutes / max) * 96));
           const isToday = d.day === today;
@@ -136,7 +136,7 @@ export function ProgressScreen() {
       </View>
       <WeekBars week={stats.week} />
       {history.length > 0 && (
-        <AppText variant="overline" tone="muted" style={styles.gridLabel}>RECENT SESSIONS</AppText>
+        <AppText variant="overline" tone="muted" style={styles.gridLabel}>{t('progress.recent').toUpperCase()}</AppText>
       )}
     </View>
   );
@@ -153,9 +153,9 @@ export function ProgressScreen() {
             <View style={[styles.emptyPot, { backgroundColor: colors.growthSoft }]}>
               <Icon name="sprout" size="lg" color={colors.growth} />
             </View>
-            <AppText variant="subheading" align="center">No sessions yet</AppText>
+            <AppText variant="subheading" align="center">{t('progress.noneYet')}</AppText>
             <AppText variant="bodySmall" tone="secondary" align="center" style={styles.emptyText}>
-              Your first focus session can grow something here.
+              {t('progress.noneYetBody')}
             </AppText>
             <Button label={t('home.start')} icon="play" onPress={() => navigation.navigate('Tabs', { screen: 'Home' })} style={styles.emptyBtn} />
           </Card>
@@ -167,10 +167,10 @@ export function ProgressScreen() {
           <View style={{ width: THUMB }}>
             <SessionThumb session={item} size={THUMB} />
             <AppText variant="caption" tone="secondary" style={styles.itemMeta} numberOfLines={1}>
-              {item.durationMinutes}m · {new Date(item.startedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}
+              {t('progress.minShort', { minutes: item.durationMinutes })} · {new Date(item.startedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}
             </AppText>
             {item.outcome === 'failed' && (
-              <AppText variant="caption" tone="muted">paused</AppText>
+              <AppText variant="caption" tone="muted">{t('progress.paused')}</AppText>
             )}
           </View>
         )}

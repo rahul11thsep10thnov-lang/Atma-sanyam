@@ -2,6 +2,8 @@
 // A species is a kind of plant; a grown plant is an instance of one (see
 // model.ts). Rarity gates what the catalog offers as the garden fills.
 import { PlantGrowthSize } from '../growth/size';
+import { getLanguage } from '../i18n';
+import { SPECIES_HI } from './catalog.hi';
 
 export type SegmentId = 'flowers' | 'trees' | 'indoor' | 'fruits' | 'herbs';
 export const SEGMENTS: SegmentId[] = ['flowers', 'trees', 'indoor', 'fruits', 'herbs'];
@@ -140,3 +142,16 @@ export function unlocked(species: Species, grownInSegment: number): boolean {
 
 /** The sizes a preview lists, with the minutes each needs. */
 export const PREVIEW_SIZES: PlantGrowthSize[] = [1, 2, 3, 4, 5, 6, 7];
+
+/** A species' name in the current language. */
+export function plantName(id: string): string {
+  if (getLanguage() === 'hi') return SPECIES_HI[id]?.name ?? SPECIES_BY_ID[id]?.name ?? id;
+  return SPECIES_BY_ID[id]?.name ?? id;
+}
+
+/** A species' description and growth note in the current language. */
+export function plantText(id: string): { description: string; progression: string } {
+  const en = SPECIES_BY_ID[id];
+  const hi = getLanguage() === 'hi' ? SPECIES_HI[id] : undefined;
+  return { description: hi?.description ?? en?.description ?? '', progression: hi?.progression ?? en?.progression ?? '' };
+}

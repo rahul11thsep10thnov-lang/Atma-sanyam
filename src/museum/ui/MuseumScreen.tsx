@@ -1,8 +1,8 @@
 // The museum tab: the ring gallery fills the screen and a few controls
 // float over it. Swipe to walk from section to section; tap an artwork
-// for its story. Edit museum lets a finger carry any object along the
-// wall or across the floor, turn and resize it, change an artwork's
-// frame, switch lights on, off and brighter, or put a thing away.
+// for its story. The museum arranges itself: finished jigsaws hang in
+// the next free frame, at least ten empty frames are always waiting, and
+// the only thing a person does to an artwork is keep it or throw it away.
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Animated, Pressable, StyleSheet, View } from 'react-native';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
@@ -27,7 +27,7 @@ import { duration, easing } from '../../theme/motion';
 import { useTheme } from '../../theme/ThemeContext';
 import { t, useLanguage } from '../../i18n';
 import { MuseumView } from '../scene/MuseumView';
-import { MuseumObject, MuseumState, MuseumTheme, artworkSize, hangInMuseum, moveObject, ownsFrame, snapToWall, storeObject, takeDownFromMuseum, updateObject } from '../model';
+import { MuseumObject, MuseumState, MuseumTheme, artworkSize, ensureBlankSpaces, hangInMuseum, moveObject, ownsFrame, snapToWall, storeObject, takeDownFromMuseum, updateObject } from '../model';
 import { useMuseum } from '../repository';
 import { MUSEUM_STORE, MUSEUM_STORE_BY_ID, isLightItem, museumWidthOf } from '../store';
 import { MuseumStoreSheet, placeBought } from './MuseumStoreSheet';
@@ -50,6 +50,7 @@ export function MuseumScreen() {
   const [sheet, setSheet] = useState<SheetId>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [info, setInfo] = useState<ArtworkRecord | null>(null);
+  const [confirmBin, setConfirmBin] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fade = useRef(new Animated.Value(1)).current;
@@ -73,6 +74,12 @@ export function MuseumScreen() {
   useEffect(() => {
     if (state && section > state.sections) setSection(state.sections);
   }, [state, section]);
+  // at least ten empty frames are always on the walls, whatever happened before
+  useEffect(() => {
+    if (!state || !collection) return;
+    const next = ensureBlankSpaces(state, (o) => museumWidthOf(o, (id) => findArtwork(collection, id)));
+    if (next.sections !== state.sections) save(next);
+  }, [state, collection, save]);
 
   const say = useCallback((text: string) => {
     setToast(text);
@@ -163,7 +170,15 @@ export function MuseumScreen() {
     setSelectedId(null);
   };
 
-  const storedObjects = state.objects.filter((o) => o.displayStatus === 'stored');
+  const widthOf = (o: MuseumObject) => museumWidthOf(o, artworkById);
+  /** Throw a finished jigsaw away for good: off the wall, out of the collection. */
+  const throwAway = (a: ArtworkRecord) => {
+    save(ensureBlankSpaces(takeDownFromMuseum(state, a.id), widthOf));
+    saveCollection(setHome(collection, a.id, 'binned'));
+    setInfo(null);
+    setConfirmBin(null);
+    say(t('gallery.thrown', { title: a.title }));
+  };
 
   return (
     <View style={styles.screen}>
@@ -213,10 +228,6 @@ export function MuseumScreen() {
       <Animated.View style={[styles.dockWrap, { bottom: tabSpace, opacity: fade }]} pointerEvents={showChrome ? 'box-none' : 'none'}>
         <View style={styles.dock}>
           <DockItem icon="images" label={t('museum.collection')} emphasis onPress={() => setSheet('collection')} badge={c.stored > 0} />
-          <DockItem icon="move" label={t('museum.editShort')} onPress={() => { setEditing(true); setSelectedId(null); setInfo(null); }} />
-          <DockItem icon="store" label={t('museum.store')} onPress={() => setSheet('store')} />
-          <DockItem icon="settings" label={t('museum.settings')} onPress={() => setSheet('settings')} />
-          <DockItem icon="home" label={t('museum.exit')} onPress={() => navigation.navigate('Tabs', { screen: 'Home' })} />
         </View>
       </Animated.View>
 
@@ -240,52 +251,22 @@ export function MuseumScreen() {
             <AppText variant="bodySmall" style={styles.infoLine}>
               {t('museum.info.frame', { frame: MUSEUM_STORE_BY_ID[info.frameId === 'teak' ? 'frame_teak' : info.frameId]?.name ?? info.frameId })}
             </AppText>
-            <Button label={t('close')} variant="secondary" size="sm" onPress={() => setInfo(null)} style={{ alignSelf: 'flex-end', marginTop: sp.sm }} />
+            {confirmBin === info.id ? (
+              <View style={styles.infoActions}>
+                <AppText variant="caption" style={[styles.infoLine, { flex: 1 }]}>
+                  {t('museum.binConfirm')}
+                </AppText>
+                <Button label={t('cancel')} variant="secondary" size="sm" onPress={() => setConfirmBin(null)} />
+                <Button label={t('museum.bin')} size="sm" onPress={() => throwAway(info)} />
+              </View>
+            ) : (
+              <View style={styles.infoActions}>
+                <Button label={t('museum.bin')} variant="secondary" size="sm" onPress={() => setConfirmBin(info.id)} />
+                <Button label={t('close')} variant="secondary" size="sm" onPress={() => setInfo(null)} />
+              </View>
+            )}
           </View>
         </View>
-      )}
-
-      {/* edit museum */}
-      {editing && (
-        <>
-          <View style={[styles.editTop, { top: insets.top + sp.sm }]} pointerEvents="box-none">
-            <GlassChip style={{ flexShrink: 1 }}>
-              <Icon name="move" size="xs" color="#FFFFFF" />
-              <AppText variant="caption" style={styles.white} numberOfLines={2}>
-                {sel ? t('museum.editHint') : t('edit.tapSomething')}
-              </AppText>
-            </GlassChip>
-            <GlassPill icon="check" label={t('done')} emphasis compact onPress={() => { setEditing(false); setSelectedId(null); }} />
-          </View>
-          {sel && (
-            <View style={[styles.selection, { bottom: insets.bottom + sp.xl }]} pointerEvents="box-none">
-              <View style={styles.selectionCard}>
-                <View style={styles.selectionHead}>
-                  <AppText variant="bodySmallStrong" style={styles.white} numberOfLines={1}>
-                    {selName}
-                  </AppText>
-                  <AppText variant="caption" style={styles.faint} numberOfLines={1}>
-                    {t('museum.section', { n: sel.sectionId })} · ×{sel.scale.toFixed(1)}
-                  </AppText>
-                </View>
-                <View style={styles.actions}>
-                  {sel.surfaceId !== 'MUSEUM_WALL' && <GlassPill icon="reset" label={t('museum.action.rotate')} compact onPress={() => save(updateObject(state, sel.objectId, { rotation: (sel.rotation + 30) % 360 }))} />}
-                  <GlassPill icon="chevronDown" label={t('museum.action.smaller')} compact onPress={() => rescale(sel, 1 / 1.12)} />
-                  <GlassPill icon="plus" label={t('museum.action.bigger')} compact onPress={() => rescale(sel, 1.12)} />
-                  {selArt && <GlassPill icon="image" label={t('museum.action.frame')} compact onPress={() => cycleFrame(selArt)} />}
-                  {isLightItem(sel.itemId) && (
-                    <>
-                      <GlassPill icon="lamp" label={(sel.on ?? true) ? t('museum.action.off') : t('museum.action.on')} compact onPress={() => save(updateObject(state, sel.objectId, { on: !(sel.on ?? true) }))} />
-                      <GlassPill icon="moon" label={t('museum.action.dimmer')} compact onPress={() => save(updateObject(state, sel.objectId, { intensity: Math.max(0.2, +((sel.intensity ?? 1) - 0.2).toFixed(1)) }))} />
-                      <GlassPill icon="sun" label={t('museum.action.brighter')} compact onPress={() => save(updateObject(state, sel.objectId, { intensity: Math.min(1.6, +((sel.intensity ?? 1) + 0.2).toFixed(1)) }))} />
-                    </>
-                  )}
-                  <GlassPill icon="trash" label={t('museum.action.store')} compact onPress={() => putAway(sel)} />
-                </View>
-              </View>
-            </View>
-          )}
-        </>
       )}
 
       {toast && (
@@ -301,71 +282,20 @@ export function MuseumScreen() {
       <CollectionSheet
         visible={sheet === 'collection'}
         here="museum"
+        binOnly
         collection={collection}
         onClose={() => setSheet(null)}
         onCollection={saveCollection}
         onHangHere={(a) => {
-          const r = hangInMuseum(state, a, (o) => museumWidthOf(o, artworkById), section);
-          save(r.state);
-          if (r.opened) say(t('museum.newSection'));
+          const r = hangInMuseum(state, a, widthOf, section);
+          save(ensureBlankSpaces(r.state, widthOf));
           setSection(r.sectionId);
           return true;
         }}
-        onTakeDown={(a) => save(takeDownFromMuseum(state, a.id))}
+        onTakeDown={(a) => save(ensureBlankSpaces(takeDownFromMuseum(state, a.id), widthOf))}
         onToast={say}
       />
-      <MuseumStoreSheet visible={sheet === 'store'} state={state} section={section} rewards={rewards} artworkById={artworkById} onClose={() => setSheet(null)} onState={save} onRewards={saveRewards} onToast={say} />
       <AdSheet visible={sheet === 'ad'} rewards={rewards} onClose={() => setSheet(null)} onRewards={saveRewards} onToast={say} />
-      <Sheet visible={sheet === 'settings'} title={t('museum.settings')} subtitle={t('museum.settingsBody')} onClose={() => setSheet(null)}>
-        <View style={{ gap: sp.md }}>
-          <AppText variant="overline" tone="muted">
-            {t('museum.theme').toUpperCase()}
-          </AppText>
-          <View style={{ flexDirection: 'row', gap: sp.sm }}>
-            {(['modern', 'heritage'] as MuseumTheme[]).map((th) => (
-              <Button key={th} label={t(`museum.theme.${th}` as never)} variant={state.theme === th ? 'primary' : 'secondary'} size="sm" onPress={() => save({ ...state, theme: th })} style={{ flex: 1 }} />
-            ))}
-          </View>
-          <AppText variant="overline" tone="muted">
-            {t('museum.sections').toUpperCase()}
-          </AppText>
-          <AppText variant="bodySmall" tone="secondary">
-            {t('museum.owned', { owned: c.owned, displayed: c.displayed, stored: c.stored })} · {t('museum.sectionOf', { n: section, total: state.sections })}
-          </AppText>
-          {storedObjects.length > 0 && (
-            <>
-              <AppText variant="overline" tone="muted">
-                {t('museum.inventory').toUpperCase()}
-              </AppText>
-              {storedObjects.map((o) => (
-                <View key={o.objectId} style={[styles.invRow, { borderColor: colors.border }]}>
-                  <AppText variant="bodySmall" style={{ flex: 1 }}>
-                    {MUSEUM_STORE_BY_ID[o.itemId]?.name ?? o.itemId}
-                  </AppText>
-                  <Button
-                    label={t('museum.bringOut')}
-                    size="sm"
-                    variant="secondary"
-                    onPress={() => {
-                      const it = MUSEUM_STORE_BY_ID[o.itemId];
-                      if (!it) return;
-                      const without = { ...state, objects: state.objects.filter((x) => x.objectId !== o.objectId) };
-                      // place it again in this section, as if just bought
-                      const r = placeBought(without, it, section, artworkById);
-                      if (!r) {
-                        say(t('museum.noRoom'));
-                        return;
-                      }
-                      save(r.state);
-                      say(t('museum.placed', { name: it.name, n: section }));
-                    }}
-                  />
-                </View>
-              ))}
-            </>
-          )}
-        </View>
-      </Sheet>
     </View>
   );
 }
@@ -406,5 +336,6 @@ const styles = StyleSheet.create({
   scrim: { backgroundColor: 'rgba(20,12,8,0.25)' },
   infoCard: { position: 'absolute', left: sp.lg, right: sp.lg, padding: sp.xl, gap: 4, borderRadius: radii.xl, backgroundColor: 'rgba(251,245,236,0.96)' },
   infoLine: { color: 'rgba(43,33,24,0.72)' },
+  infoActions: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: sp.sm, marginTop: sp.sm },
   invRow: { flexDirection: 'row', alignItems: 'center', gap: sp.sm, paddingVertical: 6, borderBottomWidth: StyleSheet.hairlineWidth },
 });

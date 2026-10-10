@@ -101,7 +101,7 @@ export function HomeScreen() {
           <ModeChips<Mode>
             value={mode}
             onChange={setMode}
-            accessibilityLabel="What to focus on"
+            accessibilityLabel={t('home.focusOnA11y')}
             chips={[
               { value: 'plants', label: t('home.growPlants') },
               { value: 'jigsaw', label: t('home.revealJigsaws') },

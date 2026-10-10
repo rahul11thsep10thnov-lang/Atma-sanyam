@@ -4,7 +4,7 @@
 // position along the wall or floor, height), how (rotation, scale,
 // frame, light) and whether it is out or stored. Nothing is ever lost
 // for lack of wall space: a full ring simply opens the next section.
-import { JigsawTier } from '../collection/model';
+import type { JigsawTier } from '../collection/model';
 
 export type SurfaceId = 'MUSEUM_WALL' | 'MUSEUM_FLOOR' | 'DISPLAY_PEDESTAL' | 'DISPLAY_CASE' | 'TABLETOP' | 'SHELF';
 export type MuseumTheme = 'modern' | 'heritage';
@@ -235,4 +235,53 @@ export function freeFloorSpot(m: MuseumState, sectionId: number, footprint: numb
     }
   }
   return null;
+}
+
+// ---- blank spaces --------------------------------------------------------------------
+/** An empty frame on the wall, waiting for the next finished jigsaw. */
+export interface BlankSpace {
+  sectionId: number;
+  u: number;
+  h: number;
+  w: number;
+  hgt: number;
+}
+
+/** The museum always shows at least this many empty frames. */
+export const MIN_BLANK_SPACES = 10;
+/** A blank space is the size of a mid-sized (size 3) landscape jigsaw, framed. */
+export const BLANK_SIZE = artworkSize(3, 4 / 3);
+
+/** The empty frames along one section's wall, in the gaps between artworks. */
+export function blankSpaces(m: MuseumState, sectionId: number, widthOf: (o: MuseumObject) => number): BlankSpace[] {
+  const out: BlankSpace[] = [];
+  const w = BLANK_SIZE.fw;
+  const gap = 0.55;
+  const lo = WALL_MARGIN + w / 2;
+  const hi = WALL_LENGTH - WALL_MARGIN - w / 2;
+  const taken = wallIntervals(m, sectionId, widthOf).map(([a, b]) => [a - gap / 2, b + gap / 2] as [number, number]);
+  const h = Math.max(WALL_MIN_H + BLANK_SIZE.fh / 2, Math.min(WALL_MAX_H - BLANK_SIZE.fh / 2, EYE_HEIGHT));
+  let x = lo;
+  while (x <= hi) {
+    const clash = taken.find(([a, b]) => x + w / 2 > a && x - w / 2 < b);
+    if (clash) {
+      x = clash[1] + w / 2 + 0.001;
+      continue;
+    }
+    out.push({ sectionId, u: x / WALL_LENGTH, h, w, hgt: BLANK_SIZE.fh });
+    x += w + gap;
+  }
+  return out;
+}
+
+/** Every blank space in the museum. */
+export function allBlankSpaces(m: MuseumState, widthOf: (o: MuseumObject) => number): BlankSpace[] {
+  return sectionsOf(m).flatMap((s) => blankSpaces(m, s, widthOf));
+}
+
+/** Open sections until the museum shows at least MIN_BLANK_SPACES empty frames. */
+export function ensureBlankSpaces(m: MuseumState, widthOf: (o: MuseumObject) => number): MuseumState {
+  let state = m;
+  for (let guard = 0; guard < 8 && allBlankSpaces(state, widthOf).length < MIN_BLANK_SPACES; guard++) state = openSection(state);
+  return state;
 }
