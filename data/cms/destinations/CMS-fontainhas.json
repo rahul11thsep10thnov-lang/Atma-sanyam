@@ -4,11 +4,11 @@
   "slug": "fontainhas",
   "state": "Goa",
   "state_slug": "goa",
-  "district": null,
+  "district": "North Goa",
   "region": null,
   "country": "India",
-  "latitude": null,
-  "longitude": null,
+  "latitude": 15.4961,
+  "longitude": 73.8311,
   "hero_image": null,
   "headline": null,
   "short_description": null,
@@ -44,6 +44,24 @@
         "status": "SEED",
         "note": "workbook field: destination_id / destination / state_ut"
       }
+    ],
+    "district": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Fontainhas_(quarter)",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "Latin Quarter of Panaji; district inferred from Panaji"
+      }
+    ],
+    "coordinates": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Fontainhas_(quarter)",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "Latin Quarter of Panaji; district inferred from Panaji"
+      }
     ]
   },
   "pipeline": {
@@ -66,7 +84,7 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-10T11:05:15.759Z",
-  "updated_at": "2026-10-10T11:05:17.221Z",
+  "updated_at": "2026-10-10T11:21:00.318Z",
   "published_at": null,
   "verification_status": "UNVERIFIED",
   "seed": {

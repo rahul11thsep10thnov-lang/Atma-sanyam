@@ -4,11 +4,11 @@
   "slug": "chitrakote-falls",
   "state": "Chhattisgarh",
   "state_slug": "chhattisgarh",
-  "district": null,
+  "district": "Bastar",
   "region": null,
   "country": "India",
-  "latitude": null,
-  "longitude": null,
+  "latitude": 19.2065,
+  "longitude": 81.7,
   "hero_image": null,
   "headline": null,
   "short_description": null,
@@ -55,6 +55,24 @@
         "status": "SEED",
         "note": "workbook field: destination_type"
       }
+    ],
+    "district": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Chitrakote_Falls",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "unverified — check before publishing"
+      }
+    ],
+    "coordinates": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Chitrakote_Falls",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "unverified — check before publishing"
+      }
     ]
   },
   "pipeline": {
@@ -77,7 +95,7 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-10T11:05:15.729Z",
-  "updated_at": "2026-10-10T11:05:17.201Z",
+  "updated_at": "2026-10-10T11:21:00.290Z",
   "published_at": null,
   "verification_status": "UNVERIFIED",
   "seed": {

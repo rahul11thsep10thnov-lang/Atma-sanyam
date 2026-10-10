@@ -4,11 +4,11 @@
   "slug": "sivasagar",
   "state": "Assam",
   "state_slug": "assam",
-  "district": null,
+  "district": "Sivasagar",
   "region": null,
   "country": "India",
-  "latitude": null,
-  "longitude": null,
+  "latitude": 26.98889,
+  "longitude": 94.63889,
   "hero_image": null,
   "headline": null,
   "short_description": null,
@@ -44,6 +44,24 @@
         "status": "SEED",
         "note": "workbook field: destination_id / destination / state_ut"
       }
+    ],
+    "district": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Sivasagar",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "district is the eponymous one (not stated by the source)"
+      }
+    ],
+    "coordinates": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Sivasagar",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "district is the eponymous one (not stated by the source)"
+      }
     ]
   },
   "pipeline": {
@@ -66,7 +84,7 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-10T11:05:15.701Z",
-  "updated_at": "2026-10-10T11:05:17.163Z",
+  "updated_at": "2026-10-10T11:17:54.632Z",
   "published_at": null,
   "verification_status": "UNVERIFIED",
   "seed": {

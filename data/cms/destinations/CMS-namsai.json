@@ -4,11 +4,11 @@
   "slug": "namsai",
   "state": "Arunachal Pradesh",
   "state_slug": "arunachal-pradesh",
-  "district": null,
+  "district": "Namsai",
   "region": null,
   "country": "India",
-  "latitude": null,
-  "longitude": null,
+  "latitude": 27.6689,
+  "longitude": 95.8714,
   "hero_image": null,
   "headline": null,
   "short_description": null,
@@ -44,6 +44,24 @@
         "status": "SEED",
         "note": "workbook field: destination_id / destination / state_ut"
       }
+    ],
+    "district": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Namsai,_Arunachal_Pradesh",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "unverified — check before publishing"
+      }
+    ],
+    "coordinates": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Namsai,_Arunachal_Pradesh",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "unverified — check before publishing"
+      }
     ]
   },
   "pipeline": {
@@ -66,7 +84,7 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-10T11:05:15.692Z",
-  "updated_at": "2026-10-10T11:05:17.152Z",
+  "updated_at": "2026-10-10T11:17:54.616Z",
   "published_at": null,
   "verification_status": "UNVERIFIED",
   "seed": {

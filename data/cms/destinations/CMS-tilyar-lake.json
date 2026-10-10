@@ -4,11 +4,11 @@
   "slug": "tilyar-lake",
   "state": "Haryana",
   "state_slug": "haryana",
-  "district": null,
+  "district": "Rohtak",
   "region": null,
   "country": "India",
-  "latitude": null,
-  "longitude": null,
+  "latitude": 28.87889,
+  "longitude": 76.63583,
   "hero_image": null,
   "headline": null,
   "short_description": null,
@@ -55,6 +55,24 @@
         "status": "SEED",
         "note": "workbook field: destination_type"
       }
+    ],
+    "district": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Tilyar_Lake",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "unverified — check before publishing"
+      }
+    ],
+    "coordinates": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Tilyar_Lake",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "unverified — check before publishing"
+      }
     ]
   },
   "pipeline": {
@@ -77,7 +95,7 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-10T11:05:15.796Z",
-  "updated_at": "2026-10-10T11:05:17.246Z",
+  "updated_at": "2026-10-10T11:21:00.353Z",
   "published_at": null,
   "verification_status": "UNVERIFIED",
   "seed": {

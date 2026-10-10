@@ -4,11 +4,11 @@
   "slug": "gurugram",
   "state": "Haryana",
   "state_slug": "haryana",
-  "district": null,
+  "district": "Gurugram",
   "region": null,
   "country": "India",
-  "latitude": null,
-  "longitude": null,
+  "latitude": 28.456,
+  "longitude": 77.029,
   "hero_image": null,
   "headline": null,
   "short_description": null,
@@ -44,6 +44,24 @@
         "status": "SEED",
         "note": "workbook field: destination_id / destination / state_ut"
       }
+    ],
+    "district": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Gurgaon",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "district HQ"
+      }
+    ],
+    "coordinates": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Gurgaon",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "district HQ"
+      }
     ]
   },
   "pipeline": {
@@ -66,7 +84,7 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-10T11:05:15.780Z",
-  "updated_at": "2026-10-10T11:05:17.229Z",
+  "updated_at": "2026-10-10T11:21:00.330Z",
   "published_at": null,
   "verification_status": "UNVERIFIED",
   "seed": {

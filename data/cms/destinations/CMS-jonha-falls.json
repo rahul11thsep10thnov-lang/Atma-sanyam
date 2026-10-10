@@ -4,11 +4,11 @@
   "slug": "jonha-falls",
   "state": "Jharkhand",
   "state_slug": "jharkhand",
-  "district": null,
+  "district": "Ranchi",
   "region": null,
   "country": "India",
-  "latitude": null,
-  "longitude": null,
+  "latitude": 23.34167,
+  "longitude": 85.60833,
   "hero_image": null,
   "headline": null,
   "short_description": null,
@@ -55,6 +55,24 @@
         "status": "SEED",
         "note": "workbook field: destination_type"
       }
+    ],
+    "district": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Jonha_Falls",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "also called Gautamdhara Falls"
+      }
+    ],
+    "coordinates": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Jonha_Falls",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "also called Gautamdhara Falls"
+      }
     ]
   },
   "pipeline": {
@@ -77,7 +95,7 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-10T11:05:15.826Z",
-  "updated_at": "2026-10-10T11:05:17.259Z",
+  "updated_at": "2026-10-10T11:21:00.370Z",
   "published_at": null,
   "verification_status": "UNVERIFIED",
   "seed": {

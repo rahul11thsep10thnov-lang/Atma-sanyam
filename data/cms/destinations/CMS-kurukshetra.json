@@ -4,11 +4,11 @@
   "slug": "kurukshetra",
   "state": "Haryana",
   "state_slug": "haryana",
-  "district": null,
+  "district": "Kurukshetra",
   "region": null,
   "country": "India",
-  "latitude": null,
-  "longitude": null,
+  "latitude": 29.9657,
+  "longitude": 76.837,
   "hero_image": null,
   "headline": null,
   "short_description": null,
@@ -44,6 +44,24 @@
         "status": "SEED",
         "note": "workbook field: destination_id / destination / state_ut"
       }
+    ],
+    "district": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Kurukshetra",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "district extent per kurukshetra.gov.in"
+      }
+    ],
+    "coordinates": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Kurukshetra",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "district extent per kurukshetra.gov.in"
+      }
     ]
   },
   "pipeline": {
@@ -66,7 +84,7 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-10T11:05:15.781Z",
-  "updated_at": "2026-10-10T11:05:17.231Z",
+  "updated_at": "2026-10-10T11:21:00.331Z",
   "published_at": null,
   "verification_status": "UNVERIFIED",
   "seed": {

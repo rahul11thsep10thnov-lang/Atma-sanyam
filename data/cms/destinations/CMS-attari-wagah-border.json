@@ -4,7 +4,7 @@
   "slug": "attari-wagah-border",
   "state": "Punjab",
   "state_slug": "punjab",
-  "district": null,
+  "district": "Amritsar",
   "region": null,
   "country": "India",
   "latitude": null,
@@ -44,6 +44,15 @@
         "status": "SEED",
         "note": "workbook field: destination_id / destination / state_ut"
       }
+    ],
+    "district": [
+      {
+        "label": "India Cine Hub (via web search)",
+        "url": "https://indiacinehub.gov.in/location/waghaattari-border-amritsar",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "about 28–32 km west of Amritsar; no Indian-side coordinates found"
+      }
     ]
   },
   "pipeline": {
@@ -66,7 +75,7 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-10T11:05:16.066Z",
-  "updated_at": "2026-10-10T11:06:16.573Z",
+  "updated_at": "2026-10-10T11:23:51.510Z",
   "published_at": null,
   "verification_status": "UNVERIFIED",
   "seed": {

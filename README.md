@@ -171,6 +171,17 @@ or **Admin → Master database import** (upload, *Preview*, *Apply import*, cove
 - **On the site.** Unpublished master-list places get a short *Being researched* page at `/destinations/{slug}` — name, state, the list's classification, its draft circuits and published guides nearby; any location hint shows *unverified* with its source. These pages are `noindex`, are not in the sitemap, appear in search/autocomplete as *being researched*, on the destinations index and on state pages. Draft circuits appear on `/trips`, state pages and destination pages, labelled as unvalidated. Nothing from a draft (descriptions, history, hours, prices, photos) is shown until an editor publishes the page.
 - Report: `data/cms/imports/master-v1-report.json` (totals, this run, matches, conflicts, per-state coverage, unresolved circuit stops). The v1 workbook fills only `destination_id`, `state_ut`, `destination`, `destination_type`, `primary_cluster` and `content_status`; every content column is empty, so descriptions, coordinates and images come from the research pipeline, not the workbook.
 
+### Location enrichment for master-list records
+
+```
+npm run enrich:seed -- --from-file data/source/master-v1-websearch.json   # apply collected, cited hints
+npm run enrich:seed -- --wikipedia --limit 200                          # Wikipedia + Wikidata lookup (run where they are reachable)
+```
+
+Fills **district** and **coordinates** only, and only where the field is empty. Every value carries its source URL and stays *unverified* (`provenance.coordinates` / `provenance.district`, status `WEB_SEARCH` for values taken from a cited web-search answer, `OK` for values fetched from Wikipedia/Wikidata directly). Coordinates outside India or implausibly far from the state's capital are rejected (`plausibleLocation`). Published records are never changed by this. The *Being researched* page shows these hints with an *unverified* label and the source link; nothing is marked verified until an editor ticks the box in the editor. Progress is saved after every record, so the Wikipedia mode can be stopped and resumed.
+
+`data/source/master-v1-websearch.json` holds 196 cited hints collected with one web search per place (district and coordinates for 187 of the 322 records created from the workbook). The research pipeline (Wikipedia, Incredible India, images) still has to run for every queued record before an editor can publish it.
+
 ## Honest limits (read before launching)
 
 - **CMS records are files.** `data/cms/` is a single-process, file-backed store — fine for one editor and one server; move to PostgreSQL (the Prisma schema already mirrors the records) before running several instances.

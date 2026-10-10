@@ -17,6 +17,7 @@
     "verify:engine": "tsx --tsconfig tsconfig.seed.json scripts/verify-engine.ts",
     "test:discovery": "tsx --tsconfig tsconfig.seed.json scripts/test-discovery.ts",
     "verify:seed-types": "tsc --noEmit -p tsconfig.seed.json",
+    "enrich:seed": "tsx --tsconfig tsconfig.seed.json scripts/enrich-seed.ts",
     "import:master": "tsx --tsconfig tsconfig.seed.json scripts/import-master.ts",
     "import:facts": "tsx --tsconfig tsconfig.seed.json scripts/import-facts.ts",
     "translate": "tsx --tsconfig tsconfig.seed.json scripts/translate.ts"

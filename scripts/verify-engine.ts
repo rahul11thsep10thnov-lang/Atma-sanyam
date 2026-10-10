@@ -34,6 +34,7 @@ import type { CmsImage, CmsDestination } from "../lib/cms/types";
 import { emptyDestination } from "../lib/cms/types";
 import { MASTER_COLUMNS, MASTER_SOURCE, planImport, type MasterRow, type MasterWorkbook } from "../lib/cms/masterImport";
 import { allDestinations } from "../lib/cms/store";
+import { plausibleLocation } from "../lib/cms/enrich";
 
 let failed = 0;
 let passed = 0;
@@ -303,6 +304,11 @@ console.log("Content CMS and pipeline");
   check("master import skips rows already linked (idempotent)", kinds["IN-0009"] === "ALREADY_IMPORTED:SOURCE_ID>CMS-agra", kinds["IN-0009"]);
   check("master import rejects unknown states and malformed ids", kinds["IN-0010"] === "INVALID" && kinds["bad"] === "INVALID");
 
+  // Location hints: outside India or far from the state is rejected; a nearby point passes.
+  check("location check accepts a point inside the state", plausibleLocation("Bihar", 24.695, 84.9925) === null);
+  check("location check rejects a point in another state", plausibleLocation("Delhi", 19.07, 72.88) !== null && plausibleLocation("Goa", 28.6, 77.2) !== null);
+  check("location check rejects a point outside India", plausibleLocation("Assam", 51.5, -0.12) === "outside India");
+
   // The imported data itself: one record per workbook row, no duplicates, nothing unverified published.
   const all = allDestinations();
   const seeded = all.filter((d) => d.seed?.source === MASTER_SOURCE);
@@ -312,6 +318,7 @@ console.log("Content CMS and pipeline");
     const keys = all.map((d) => `${d.name.toLowerCase()}|${d.state}`);
     check("no two destination records share a name and state", new Set(keys).size === keys.length);
     check("no two destination records share a slug", new Set(all.map((d) => d.slug)).size === all.length);
+    check("every location value added by enrichment cites a source URL and stays unverified", seeded.every((d) => ["coordinates", "district"].every((f) => (d.provenance[f] ?? []).filter((r) => r.status === "WEB_SEARCH").every((r) => Boolean(r.url)))) && seeded.filter((d) => d.status !== "PUBLISHED").every((d) => d.verification_status !== "VERIFIED"));
     check("records created from the workbook are drafts marked unverified", seeded.filter((d) => d.seed!.relation === "CREATED").every((d) => d.status !== "PUBLISHED" && d.verification_status === "UNVERIFIED"));
   }
 }

@@ -4,11 +4,11 @@
   "slug": "harike-wetland",
   "state": "Punjab",
   "state_slug": "punjab",
-  "district": null,
+  "district": "Tarn Taran / Ferozepur",
   "region": null,
   "country": "India",
-  "latitude": null,
-  "longitude": null,
+  "latitude": 31.15,
+  "longitude": 74.9667,
   "hero_image": null,
   "headline": null,
   "short_description": null,
@@ -44,6 +44,24 @@
         "status": "SEED",
         "note": "workbook field: destination_id / destination / state_ut"
       }
+    ],
+    "district": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Harike_Wetland",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "on the district boundary"
+      }
+    ],
+    "coordinates": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Harike_Wetland",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "on the district boundary"
+      }
     ]
   },
   "pipeline": {
@@ -66,7 +84,7 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-10T11:05:16.076Z",
-  "updated_at": "2026-10-10T11:05:17.355Z",
+  "updated_at": "2026-10-10T11:23:51.521Z",
   "published_at": null,
   "verification_status": "UNVERIFIED",
   "seed": {

@@ -4,11 +4,11 @@
   "slug": "chowmahalla-palace",
   "state": "Telangana",
   "state_slug": "telangana",
-  "district": null,
+  "district": "Hyderabad",
   "region": null,
   "country": "India",
-  "latitude": null,
-  "longitude": null,
+  "latitude": 17.35825,
+  "longitude": 78.4717,
   "hero_image": null,
   "headline": null,
   "short_description": null,
@@ -56,6 +56,24 @@
         "status": "SEED",
         "note": "workbook field: destination_type"
       }
+    ],
+    "district": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Chowmahalla_Palace",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "unverified — check before publishing"
+      }
+    ],
+    "coordinates": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Chowmahalla_Palace",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "unverified — check before publishing"
+      }
     ]
   },
   "pipeline": {
@@ -78,7 +96,7 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-10T11:05:16.172Z",
-  "updated_at": "2026-10-10T11:05:17.386Z",
+  "updated_at": "2026-10-10T11:23:51.555Z",
   "published_at": null,
   "verification_status": "UNVERIFIED",
   "seed": {

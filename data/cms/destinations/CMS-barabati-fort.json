@@ -4,11 +4,11 @@
   "slug": "barabati-fort",
   "state": "Odisha",
   "state_slug": "odisha",
-  "district": null,
+  "district": "Cuttack",
   "region": null,
   "country": "India",
-  "latitude": null,
-  "longitude": null,
+  "latitude": 20.48355,
+  "longitude": 85.86722,
   "hero_image": null,
   "headline": null,
   "short_description": null,
@@ -56,6 +56,24 @@
         "status": "SEED",
         "note": "workbook field: destination_type"
       }
+    ],
+    "district": [
+      {
+        "label": "latitude.to / ASI report (via web search)",
+        "url": "https://latitude.to/articles-by-country/in/india/63843/barabati-fort",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "unverified — check before publishing"
+      }
+    ],
+    "coordinates": [
+      {
+        "label": "latitude.to / ASI report (via web search)",
+        "url": "https://latitude.to/articles-by-country/in/india/63843/barabati-fort",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "unverified — check before publishing"
+      }
     ]
   },
   "pipeline": {
@@ -78,7 +96,7 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-10T11:05:16.049Z",
-  "updated_at": "2026-10-10T11:05:17.337Z",
+  "updated_at": "2026-10-10T11:23:51.499Z",
   "published_at": null,
   "verification_status": "UNVERIFIED",
   "seed": {

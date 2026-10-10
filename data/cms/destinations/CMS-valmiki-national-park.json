@@ -4,11 +4,11 @@
   "slug": "valmiki-national-park",
   "state": "Bihar",
   "state_slug": "bihar",
-  "district": null,
+  "district": "West Champaran",
   "region": null,
   "country": "India",
-  "latitude": null,
-  "longitude": null,
+  "latitude": 27.33167,
+  "longitude": 84.1625,
   "hero_image": null,
   "headline": null,
   "short_description": null,
@@ -56,6 +56,24 @@
         "status": "SEED",
         "note": "workbook field: destination_type"
       }
+    ],
+    "district": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Valmiki_National_Park",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "unverified — check before publishing"
+      }
+    ],
+    "coordinates": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Valmiki_National_Park",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "unverified — check before publishing"
+      }
     ]
   },
   "pipeline": {
@@ -78,7 +96,7 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-10T11:05:15.719Z",
-  "updated_at": "2026-10-10T11:05:17.189Z",
+  "updated_at": "2026-10-10T11:21:00.276Z",
   "published_at": null,
   "verification_status": "UNVERIFIED",
   "seed": {

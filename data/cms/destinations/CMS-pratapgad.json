@@ -4,11 +4,11 @@
   "slug": "pratapgad",
   "state": "Maharashtra",
   "state_slug": "maharashtra",
-  "district": null,
+  "district": "Satara",
   "region": null,
   "country": "India",
-  "latitude": null,
-  "longitude": null,
+  "latitude": 17.93622,
+  "longitude": 73.57761,
   "hero_image": null,
   "headline": null,
   "short_description": null,
@@ -44,6 +44,24 @@
         "status": "SEED",
         "note": "workbook field: destination_id / destination / state_ut"
       }
+    ],
+    "district": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Pratapgad",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "about 24 km from Mahabaleshwar"
+      }
+    ],
+    "coordinates": [
+      {
+        "label": "Wikipedia (via web search)",
+        "url": "https://en.wikipedia.org/wiki/Pratapgad",
+        "retrieved_at": "2026-10-10",
+        "status": "WEB_SEARCH",
+        "note": "about 24 km from Mahabaleshwar"
+      }
     ]
   },
   "pipeline": {
@@ -66,7 +84,7 @@
   "is_sample_data": false,
   "status": "DRAFT",
   "created_at": "2026-10-10T11:05:15.959Z",
-  "updated_at": "2026-10-10T11:05:17.297Z",
+  "updated_at": "2026-10-10T11:21:00.425Z",
   "published_at": null,
   "verification_status": "UNVERIFIED",
   "seed": {
