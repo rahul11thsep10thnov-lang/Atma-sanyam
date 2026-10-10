@@ -21,7 +21,7 @@ export function DestinationCard({
   return (
     <Link
       href={`/${locale}/india/${destination.stateSlug}/${destination.slug}`}
-      className={`group flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg ${fluid ? "w-full" : "w-64 shrink-0 sm:w-72"}`}
+      className={`group flex flex-col overflow-hidden rounded-2xl bg-peach shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg ${fluid ? "w-full" : "w-64 shrink-0 sm:w-72"}`}
     >
       <div className="relative h-40 w-full overflow-hidden bg-forest-100">
         <SmartImage

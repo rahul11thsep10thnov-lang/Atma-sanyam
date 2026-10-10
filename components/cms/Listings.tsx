@@ -40,7 +40,7 @@ export function HotelList({ hotels, name, dict }: { hotels: CmsHotel[]; name: st
   return (
     <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {list.map((h) => (
-        <li key={h.id} className="flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5">
+        <li key={h.id} className="flex flex-col overflow-hidden rounded-2xl bg-peach shadow-sm ring-1 ring-black/5">
           <Photo images={h.images} label={t.noImage} />
           <div className="flex flex-1 flex-col p-4 text-sm">
             <h3 className="font-display text-lg font-semibold text-charcoal">{h.name}</h3>
@@ -91,7 +91,7 @@ export function RestaurantList({ restaurants, name, dict }: { restaurants: CmsRe
   return (
     <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {list.map((r) => (
-        <li key={r.id} className="flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5">
+        <li key={r.id} className="flex flex-col overflow-hidden rounded-2xl bg-peach shadow-sm ring-1 ring-black/5">
           <Photo images={r.images} label={t.noImage} />
           <div className="flex flex-1 flex-col p-4 text-sm">
             <h3 className="font-display text-lg font-semibold text-charcoal">{r.name}</h3>

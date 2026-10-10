@@ -18,7 +18,7 @@ export function ImageGallery({ images, creditLabel }: { images: GalleryImage[]; 
   if (!images.length) return null;
   const current = images[Math.min(index, images.length - 1)];
   return (
-    <figure className="overflow-hidden rounded-2xl bg-white ring-1 ring-black/5">
+    <figure className="overflow-hidden rounded-2xl bg-peach ring-1 ring-black/5">
       <div className="relative aspect-[16/10] w-full bg-forest-100">
         <CmsImg image={current.asset} className="h-full w-full object-cover" sizes="(min-width: 1024px) 640px, 100vw" fill />
       </div>

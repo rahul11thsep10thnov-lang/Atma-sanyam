@@ -27,7 +27,7 @@ export function FestivalRail({
           <Link
             key={festival.id}
             href={`/${locale}${festival.href}`}
-            className="group flex w-64 shrink-0 snap-start flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg sm:w-72"
+            className="group flex w-64 shrink-0 snap-start flex-col overflow-hidden rounded-2xl bg-peach shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg sm:w-72"
           >
             <div className="relative h-32 w-full overflow-hidden bg-terracotta-100">
               <SmartImage image={festival.image} className="h-full w-full object-cover" />

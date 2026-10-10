@@ -7,7 +7,7 @@ export function CmsCard({ card, locale, bestTimeLabel, fluid = false, large = fa
   return (
     <Link
       href={`/${locale}${card.href}`}
-      className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg ${fluid ? "w-full" : large ? "w-72 shrink-0 sm:w-80" : "w-60 shrink-0 sm:w-68"}`}
+      className={`group relative flex flex-col overflow-hidden rounded-2xl bg-peach shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg ${fluid ? "w-full" : large ? "w-72 shrink-0 sm:w-80" : "w-60 shrink-0 sm:w-68"}`}
     >
       <div className={`relative w-full overflow-hidden bg-forest-100 ${large ? "aspect-[4/3]" : "aspect-[3/2]"}`}>
         <CmsImg image={card.image} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" sizes="(min-width: 640px) 320px, 80vw" fill />

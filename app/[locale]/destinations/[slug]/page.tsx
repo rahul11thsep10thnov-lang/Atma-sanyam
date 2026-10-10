@@ -166,14 +166,14 @@ export default async function CmsDestinationPage({ params, searchParams }: { par
           </div>
           <aside className="space-y-4">
             {d.transportation && (
-              <div className="rounded-2xl bg-white p-4 ring-1 ring-black/5">
+              <div className="rounded-2xl bg-peach p-4 ring-1 ring-black/5">
                 <h3 className="text-xs font-semibold uppercase tracking-wide text-forest-700">{t.gettingThere}</h3>
                 <RichText text={d.transportation} className="mt-2 !text-sm" />
                 <Sources field="transportation" />
               </div>
             )}
             {d.travel_info && (
-              <div className="rounded-2xl bg-white p-4 ring-1 ring-black/5">
+              <div className="rounded-2xl bg-peach p-4 ring-1 ring-black/5">
                 <h3 className="text-xs font-semibold uppercase tracking-wide text-forest-700">{t.travelInfo}</h3>
                 <RichText text={d.travel_info} className="mt-2 !text-sm" />
               </div>
@@ -247,7 +247,7 @@ export default async function CmsDestinationPage({ params, searchParams }: { par
         <section className="border-b border-forest-100/70 py-10">
           <div className="container-page">
             <h2 className="section-heading">{dict.destination.sectionTitles.faq}</h2>
-            <dl className="mt-4 max-w-3xl divide-y divide-forest-100 rounded-2xl bg-white ring-1 ring-black/5">
+            <dl className="mt-4 max-w-3xl divide-y divide-forest-100 rounded-2xl bg-peach ring-1 ring-black/5">
               {d.faq.map((f, i) => (
                 <div key={i} className="p-4">
                   <dt className="font-semibold text-charcoal">{f.question}</dt>

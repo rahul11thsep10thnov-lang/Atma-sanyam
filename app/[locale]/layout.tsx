@@ -26,6 +26,8 @@ export default function LocaleLayout({
   return (
     <div className="flex min-h-screen flex-col">
       <HtmlLang locale={locale} />
+      {/* Travel-doodle wallpaper fixed behind every page, faded so content stays readable. */}
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 bg-[url('/images/page-doodle.jpg')] bg-cover bg-center opacity-[0.14]" />
       <Header locale={locale} dict={dict} />
       <main id="main-content" className="flex-1 pb-16 md:pb-0">
         {children}

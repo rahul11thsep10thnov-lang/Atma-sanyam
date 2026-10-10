@@ -46,8 +46,6 @@ export default function HomePage({ params }: { params: { locale: string } }) {
 
   return (
     <>
-      {/* Travel-doodle wallpaper, fixed behind everything below the hero, faded so content stays readable. */}
-      <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 bg-[url('/images/page-doodle.jpg')] bg-cover bg-center opacity-[0.14]" />
       <Hero
         locale={locale}
         backgroundUrl={settings.default_hero_image ?? "/images/hero-waterfall.jpg"}

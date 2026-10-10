@@ -19,7 +19,7 @@ export function AttractionList({ attractions, dict }: { attractions: CmsAttracti
         const gallery = approved.map((img) => ({ asset: assetOf(img, a.name, 1200, 750), caption: img.caption, credit: creditOf(img) }));
         const sources = a.sources.filter((s) => s.status !== "SEED" || true);
         return (
-          <li key={a.id} id={`attraction-${a.slug}`} className="scroll-mt-32 grid gap-5 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5 md:grid-cols-[1fr_1.15fr] md:p-6">
+          <li key={a.id} id={`attraction-${a.slug}`} className="scroll-mt-32 grid gap-5 rounded-3xl bg-peach p-5 shadow-sm ring-1 ring-black/5 md:grid-cols-[1fr_1.15fr] md:p-6">
             <div className="order-2 md:order-1">
               <div className="flex items-start gap-3">
                 <span className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-forest-600 font-display text-base font-bold text-white">{i + 1}</span>

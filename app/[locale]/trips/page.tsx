@@ -73,7 +73,7 @@ export default async function TripsPage({ params, searchParams }: { params: { lo
             const stops = db.circuit_destinations.filter((cd) => cd.circuit_id === c.id).sort((a, b) => a.sequence_number - b.sequence_number);
             return (
               <li key={c.id}>
-                <Link href={`/${locale}/trips/${c.slug}`} className="block h-full rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
+                <Link href={`/${locale}/trips/${c.slug}`} className="block h-full rounded-2xl bg-peach p-4 shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
                   <h3 className="font-display text-base font-semibold text-charcoal">{c.name}</h3>
                   <p className="mt-1 line-clamp-2 text-sm text-charcoal-light">{c.description}</p>
                   <p className="mt-2 text-xs text-forest-700">{stops.map((s) => nameOf(s.destination_id)).join(" → ")}</p>

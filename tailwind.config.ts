@@ -50,6 +50,7 @@ const config: Config = {
           900: "#24110C"
         },
         offwhite: "#FBF7F0",
+        peach: "#FFEFE3",
         charcoal: {
           DEFAULT: "#211F1D",
           light: "#3A3733"

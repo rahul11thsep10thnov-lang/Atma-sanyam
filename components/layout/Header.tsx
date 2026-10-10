@@ -5,6 +5,7 @@ import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { siteSettings } from "@/lib/cms/queries";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { NavMenu } from "./NavMenu";
+import { HeaderSwitch } from "./HeaderSwitch";
 
 /**
  * Site header: the ink-painting wallpaper at its own proportions (nothing cropped), the menu at the far
@@ -20,7 +21,29 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
     { href: `/${locale}/trips`, label: nav.trips }
   ];
 
-  return (
+  const actions = (
+    <div className="flex items-center gap-2">
+      <LanguageSwitcher currentLocale={locale} label={nav.language} />
+      <Link href={`/${locale}/profile`} className="hidden rounded-full bg-forest-600 px-4 py-1.5 text-sm font-semibold text-white shadow-md hover:bg-forest-700 sm:inline-block">
+        {nav.signIn}
+      </Link>
+    </div>
+  );
+
+  // Inner pages: no wallpaper band and no logo — a slim translucent bar over the page wallpaper.
+  const nested = (
+    <header className="sticky top-0 z-30 border-b border-black/5 bg-white/70 backdrop-blur">
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
+      <div className="flex h-16 w-full items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+        <NavMenu links={links} label={nav.explore} />
+        {actions}
+      </div>
+    </header>
+  );
+
+  const home = (
     <header className="relative z-30 border-b border-black/5">
       <a href="#main-content" className="skip-link">
         Skip to content
@@ -41,13 +64,10 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           </span>
         </Link>
 
-        <div className="flex items-center gap-2">
-          <LanguageSwitcher currentLocale={locale} label={nav.language} />
-          <Link href={`/${locale}/profile`} className="hidden rounded-full bg-forest-600 px-4 py-1.5 text-sm font-semibold text-white shadow-md hover:bg-forest-700 sm:inline-block">
-            {nav.signIn}
-          </Link>
-        </div>
+        {actions}
       </div>
     </header>
   );
+
+  return <HeaderSwitch homePath={`/${locale}`} home={home} nested={nested} />;
 }
