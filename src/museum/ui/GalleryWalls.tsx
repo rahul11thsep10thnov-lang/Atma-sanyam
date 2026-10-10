@@ -103,7 +103,7 @@ export function GalleryWalls({ walls, index, onIndex, onTapArt, onTapEmpty, widt
         const transform = [
           { perspective: width * 2.2 },
           { translateX: d.interpolate({ inputRange: [-2, -1, 0, 1, 2], outputRange: [-width * 1.62, -width * 0.86, 0, width * 0.86, width * 1.62], extrapolate: 'clamp' }) },
-          { rotateY: d.interpolate({ inputRange: [-2, -1, 0, 1, 2], outputRange: [`${-TURN * 1.9}deg`, `${-TURN}deg`, '0deg', `${TURN}deg`, `${TURN * 1.9}deg`], extrapolate: 'clamp' }) },
+          { rotateY: d.interpolate({ inputRange: [-2, -1, 0, 1, 2], outputRange: [`${TURN * 1.9}deg`, `${TURN}deg`, '0deg', `${-TURN}deg`, `${-TURN * 1.9}deg`], extrapolate: 'clamp' }) },
           { scale: d.interpolate({ inputRange: [-1, 0, 1], outputRange: [0.92, 1, 0.92], extrapolate: 'clamp' }) },
         ];
         const shade = d.interpolate({ inputRange: [-1.5, -1, 0, 1, 1.5], outputRange: [0.55, 0.32, 0, 0.32, 0.55], extrapolate: 'clamp' });

@@ -19,6 +19,21 @@ const SEED = require('../../../assets/paradise/seed.png');
 /** The soil takes the bottom fifth of the screen. */
 export const SOIL_FRACTION = 0.2;
 
+/** Species rendered in a pot: the pot's height and radius (metres), from
+ * tools/balcony-render. Here the pot sinks into the soil up to its rim, so
+ * every plant is seen coming straight out of the ground. */
+const POTS: Record<string, [number, number]> = {
+  lotus: [0.16, 0.34], orchid: [0.14, 0.09], monstera: [0.3, 0.18], areca_palm: [0.46, 0.24], snake_plant: [0.36, 0.17],
+  peace_lily: [0.3, 0.17], fiddle_leaf_fig: [0.4, 0.22], rubber_plant: [0.38, 0.22], philodendron: [0.24, 0.16], calathea: [0.2, 0.15],
+  croton: [0.26, 0.17], zz_plant: [0.22, 0.14], fern: [0.18, 0.17], bonsai: [0.1, 0.26], bamboo: [0.34, 0.2], spider_plant: [0.18, 0.14],
+  anthurium: [0.18, 0.13], tulsi: [0.32, 0.19], mint: [0.17, 0.15],
+};
+/** How far above the sprite's foot the plant leaves the soil, in metres on screen (22° view). */
+function emergeM(speciesId: string): number {
+  const p = POTS[speciesId];
+  return p ? p[0] * 0.927 + p[1] * 0.2 : 0;
+}
+
 export interface GrowthSceneProps {
   speciesId: string;
   elapsedMinutes: number;
@@ -32,12 +47,15 @@ export interface GrowthSceneProps {
   done?: boolean;
 }
 
-/** Screen pixels per metre, so the finished plant fits between the timer and the soil. */
-function scaleFor(speciesId: string, height: number): number {
-  const final = spriteFor(speciesId, 7)?.sprite;
-  const tallest = gardenMetres(final?.heightM ?? 1);
-  const room = height * 0.52;
-  return room / Math.max(0.3, tallest);
+/** Screen pixels per metre, so the plant this session ends with fills the space
+ * between the timer and the soil (what shows above the soil, not its pot). */
+function scaleFor(speciesId: string, height: number, finalSize = 7): number {
+  const final = spriteFor(speciesId, finalSize)?.sprite;
+  const hM = final?.heightM ?? 1;
+  const g = gardenMetres(hM) / hM;
+  const visible = Math.max(0.12, hM - emergeM(speciesId)) * g;
+  const room = height * 0.5;
+  return room / visible;
 }
 
 const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
@@ -45,10 +63,9 @@ const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
 export function GrowthScene({ speciesId, elapsedMinutes, targetMinutes, width, height, motion, background = '#FBF5EC', done }: GrowthSceneProps) {
   const soilTop = Math.round(height * (1 - SOIL_FRACTION));
   const soilH = height - soilTop;
-  const ppm = useMemo(() => scaleFor(speciesId, height), [speciesId, height]);
-
   // where the growth is: 0 → 0.6 the seed, then 0.6 → 1 the shoot to size 1, then sizes 1 → 7
   const finalSize = sizeForMinutes(targetMinutes) ?? 1;
+  const ppm = useMemo(() => scaleFor(speciesId, height, finalSize), [speciesId, height, finalSize]);
   const progress = done ? Math.min(finalSize, growthProgress(elapsedMinutes, targetMinutes)) : growthProgress(elapsedMinutes, targetMinutes);
 
   // the seed drops into the soil when the session begins
@@ -95,16 +112,17 @@ export function GrowthScene({ speciesId, elapsedMinutes, targetMinutes, width, h
     const g = gardenMetres(s.sprite.heightM) / s.sprite.heightM;
     let h = s.sprite.heightM * ppm * g;
     let w = s.sprite.widthM * ppm * g;
-    const cap = height * 0.56;
-    if (h > cap) {
-      w *= cap / h;
-      h = cap;
-    }
-    return { s, w, h, px: s.sprite.pivot[0], py: s.sprite.pivot[1] };
+    // never wider than the screen, never taller than the room above the soil
+    const k = Math.min(1, (width * 0.92) / w, (height * 0.66) / h);
+    w *= k;
+    h *= k;
+    // ey: where the plant leaves the soil, from the sprite's top (the pivot, or a pot's rim)
+    const ey = s.sprite.pivot[1] * h - emergeM(speciesId) * (h / s.sprite.heightM);
+    return { s, w, h, px: s.sprite.pivot[0], ey };
   };
 
   const groundX = width / 2;
-  const groundY = soilTop + soilH * 0.12;
+  const groundY = soilTop + 4;
 
   // the seed: lies in the soil, swells and splits as the shoot starts
   const seedPhase = clamp01(progress / 0.6);
@@ -126,7 +144,18 @@ export function GrowthScene({ speciesId, elapsedMinutes, targetMinutes, width, h
 
   return (
     <View style={[StyleSheet.absoluteFill, { backgroundColor: background }]}>
-      {/* the soil: the bottom fifth */}
+      {/* the plant: this size growing toward the next, the next fading in over it */}
+      {a && grow > 0 && (
+        <Animated.View pointerEvents="none" style={{ position: 'absolute', left: groundX - a.px * a.w, top: groundY - a.ey, width: a.w, height: a.h, transform: [{ translateY: a.ey - a.h / 2 }, { scale: grow }, { scaleY: lift }, { translateY: a.h / 2 - a.ey }, { rotate: swayDeg }] }}>
+          <Image source={PARADISE_IMAGES[a.s.sprite.file]} style={{ width: a.w, height: a.h }} resizeMode="stretch" fadeDuration={0} />
+        </Animated.View>
+      )}
+      {b && fadeIn > 0 && (
+        <Animated.View pointerEvents="none" style={{ position: 'absolute', left: groundX - b.px * b.w, top: groundY - b.ey, width: b.w, height: b.h, opacity: fadeIn, transform: [{ translateY: b.ey - b.h / 2 }, { scaleY: lift }, { translateY: b.h / 2 - b.ey }, { rotate: swayDeg }] }}>
+          <Image source={PARADISE_IMAGES[b.s.sprite.file]} style={{ width: b.w, height: b.h }} resizeMode="stretch" fadeDuration={0} />
+        </Animated.View>
+      )}
+      {/* the soil: the bottom fifth, in front of the plant's foot (and any pot) */}
       <Image source={SOIL} style={{ position: 'absolute', left: 0, top: soilTop - 10, width, height: soilH + 10 }} resizeMode="cover" fadeDuration={0} />
       {/* roots, under the soil line */}
       {root > 0.02 && (
@@ -149,17 +178,6 @@ export function GrowthScene({ speciesId, elapsedMinutes, targetMinutes, width, h
         <Animated.View pointerEvents="none" style={{ position: 'absolute', left: groundX - 18, top: groundY - 16, width: 36, height: 27, opacity: seedOpacity, transform: [{ translateY: seedFall }, { scale: seedScale }, { rotate: `${-8 + seedPhase * 14}deg` }] }}>
           <Image source={SEED} style={{ width: 36, height: 27 }} fadeDuration={0} />
           {seedPhase > 0.45 && <View style={[styles.crack, { opacity: clamp01((seedPhase - 0.45) / 0.3) }]} />}
-        </Animated.View>
-      )}
-      {/* the plant: this size growing toward the next, the next fading in over it */}
-      {a && grow > 0 && (
-        <Animated.View pointerEvents="none" style={{ position: 'absolute', left: groundX - a.px * a.w, top: groundY - a.py * a.h, width: a.w, height: a.h, transform: [{ translateY: a.py * a.h }, { scale: grow }, { scaleY: lift }, { translateY: -a.py * a.h }, { rotate: swayDeg }] }}>
-          <Image source={PARADISE_IMAGES[a.s.sprite.file]} style={{ width: a.w, height: a.h }} resizeMode="stretch" fadeDuration={0} />
-        </Animated.View>
-      )}
-      {b && fadeIn > 0 && (
-        <Animated.View pointerEvents="none" style={{ position: 'absolute', left: groundX - b.px * b.w, top: groundY - b.py * b.h, width: b.w, height: b.h, opacity: fadeIn, transform: [{ translateY: b.py * b.h }, { scaleY: lift }, { translateY: -b.py * b.h }, { rotate: swayDeg }] }}>
-          <Image source={PARADISE_IMAGES[b.s.sprite.file]} style={{ width: b.w, height: b.h }} resizeMode="stretch" fadeDuration={0} />
         </Animated.View>
       )}
     </View>

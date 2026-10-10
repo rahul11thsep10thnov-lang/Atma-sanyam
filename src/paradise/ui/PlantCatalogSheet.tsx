@@ -114,8 +114,8 @@ export function PlantCatalogSheet({ visible, segment: initialSegment, grownInSeg
 }
 
 const styles = StyleSheet.create({
-  segWrap: { flexGrow: 0, marginBottom: sp.md },
-  segs: { gap: sp.sm },
+  segWrap: { flexGrow: 0, flexShrink: 0, height: 44, marginBottom: sp.md },
+  segs: { gap: sp.sm, alignItems: 'center', paddingRight: sp.md },
   seg: { paddingHorizontal: sp.md, paddingVertical: 8, borderRadius: radii.pill, borderWidth: 1 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: sp.md, paddingBottom: sp.lg },
   card: { width: '47%', flexGrow: 0, borderWidth: 1, borderRadius: radii.md, padding: sp.sm, gap: 2 },

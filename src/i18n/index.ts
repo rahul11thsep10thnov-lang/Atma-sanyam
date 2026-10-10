@@ -78,7 +78,7 @@ const CATEGORY_KEYS: [RegExp, StringKey][] = [
 
 /** A library collection's name in the current language (the four top collections; others as the library names them). */
 export function categoryLabel(c: { id: string; name: string; parentId?: string | null }): string {
-  if (current === 'en' || c.parentId) return c.name;
+  if (c.parentId) return c.name;
   const hit = CATEGORY_KEYS.find(([re]) => re.test(`${c.id} ${c.name}`));
   return hit ? t(hit[1]) : c.name;
 }

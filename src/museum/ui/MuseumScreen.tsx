@@ -56,8 +56,8 @@ export function MuseumScreen() {
     Animated.timing(fade, { toValue: chrome ? 1 : 0, duration: duration.normal, easing: easing.standard, useNativeDriver: true }).start();
   }, [chrome, fade]);
   useLayoutEffect(() => {
-    navigation.setOptions({ tabBarStyle: { display: chrome && !sheet ? 'flex' : 'none' } } as never);
-  }, [navigation, chrome, sheet]);
+    navigation.setOptions({ tabBarStyle: { display: chrome && !sheet && !info ? 'flex' : 'none' } } as never);
+  }, [navigation, chrome, sheet, info]);
   useEffect(() => {
     if (!isFocused) {
       setSheet(null);
