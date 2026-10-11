@@ -15,6 +15,7 @@ object Routes {
     const val LANGUAGE_SELECT = "languageSelect"
     const val GAMES = "games"
     const val ENTERTAINMENT = "entertainment"
+    const val FRIENDS = "friends"
     const val SETTINGS = "settings"
     const val LOGIN = "login"
     const val MEMBERSHIP = "membership"

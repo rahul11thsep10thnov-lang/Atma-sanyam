@@ -29,6 +29,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.rangepatte.app.ui.theme.ButtonCrimsonBottom
 import com.rangepatte.app.ui.theme.ButtonCrimsonTop
 import com.rangepatte.app.ui.theme.ButtonSteelBottom
@@ -53,7 +54,9 @@ fun RoyalButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     style: RoyalButtonStyle = RoyalButtonStyle.CRIMSON,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    /** Tighter padding and a smaller label, for a row of tabs. */
+    compact: Boolean = false
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
@@ -67,7 +70,7 @@ fun RoyalButton(
         modifier = modifier
             .scale(scale)
             .alpha(if (enabled) 1f else 0.45f)
-            .defaultMinSize(minHeight = 44.dp)
+            .defaultMinSize(minHeight = if (compact) 40.dp else 44.dp)
             .clip(ButtonShape)
             .background(Brush.verticalGradient(if (pressed) listOf(bottom, top) else listOf(top, bottom)))
             .border(1.2.dp, Brush.linearGradient(listOf(GoldBevelLight, GoldBevelDark, GoldBevelLight)), ButtonShape)
@@ -93,12 +96,12 @@ fun RoyalButton(
                 role = Role.Button,
                 onClick = onClick
             )
-            .padding(horizontal = 18.dp, vertical = 10.dp),
+            .padding(horizontal = if (compact) 6.dp else 18.dp, vertical = if (compact) 8.dp else 10.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = text.uppercase(),
-            style = RoyalLabelStyle,
+            style = if (compact) RoyalLabelStyle.copy(fontSize = 12.sp, letterSpacing = 0.2.sp) else RoyalLabelStyle,
             color = ParchmentText,
             textAlign = TextAlign.Center,
             maxLines = 1,

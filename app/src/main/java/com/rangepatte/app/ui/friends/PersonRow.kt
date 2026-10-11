@@ -70,7 +70,7 @@ fun PersonAvatar(avatarId: String?, online: Boolean, size: androidx.compose.ui.u
  * that fits the relationship. [onAction] receives what the button means.
  */
 @Composable
-fun PersonRow(person: PersonUi, onAction: (RelationAction) -> Unit, onOpen: (() -> Unit)? = null, modifier: Modifier = Modifier) {
+fun PersonRow(person: PersonUi, onAction: (RelationAction) -> Unit, onOpen: (() -> Unit)? = null, modifier: Modifier = Modifier, trailing: @Composable () -> Unit = {}) {
     val action = Relations.primaryAction(person.status)
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -90,6 +90,7 @@ fun PersonRow(person: PersonUi, onAction: (RelationAction) -> Unit, onOpen: (() 
                 style = if (action == RelationAction.CANCEL_REQUEST || action == RelationAction.UNBLOCK) RoyalButtonStyle.STEEL else RoyalButtonStyle.CRIMSON
             )
         }
+        trailing()
     }
 }
 

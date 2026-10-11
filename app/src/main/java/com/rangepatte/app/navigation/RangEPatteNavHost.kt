@@ -26,6 +26,7 @@ import com.rangepatte.app.ui.ads.BannerAdSlot
 import com.rangepatte.app.ui.chrome.AppTopBar
 import com.rangepatte.app.ui.components.BottomNavigationBar
 import com.rangepatte.app.ui.entertainment.EntertainmentScreen
+import com.rangepatte.app.ui.friends.FriendsRoute
 import com.rangepatte.app.ui.games.GamesScreen
 import com.rangepatte.app.ui.language.LanguageSelectionScreen
 import com.rangepatte.app.ui.language.findActivity
@@ -38,7 +39,7 @@ import com.rangepatte.app.ui.settings.SettingsScreen
 import com.rangepatte.app.ui.setup.GameSetupScreen
 import com.rangepatte.app.ui.table.GameTableScreen
 
-private val topLevelRoutes = setOf(Routes.GAMES, Routes.ENTERTAINMENT, Routes.SETTINGS)
+private val topLevelRoutes = setOf(Routes.GAMES, Routes.ENTERTAINMENT, Routes.FRIENDS, Routes.SETTINGS)
 
 /** Pages that have their own back header and don't show the "Remove ads? / Login" strip or banner ads. */
 private val routesWithoutAppChrome = setOf(Routes.LANGUAGE_SELECT, Routes.LOGIN, Routes.MEMBERSHIP, Routes.CHECKOUT, Routes.USERNAME, Routes.AVATAR)
@@ -113,6 +114,9 @@ fun RangEPatteNavHost(
             }
             composable(Routes.ENTERTAINMENT) {
                 EntertainmentScreen()
+            }
+            composable(Routes.FRIENDS) {
+                FriendsRoute(onLoginClick = { navController.navigate(Routes.LOGIN) { launchSingleTop = true } })
             }
             composable(Routes.SETTINGS) {
                 SettingsScreen(
