@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.setValue
@@ -67,6 +68,8 @@ fun RangEPatteNavHost(
     val unread by AppServices.notifications.unread.collectAsState()
     // The notification scroll (Element 12): open from the bell on the main pages; it drops from the top bar.
     var centreNewIds by remember { mutableStateOf<Set<String>?>(null) }
+    // The poke shiver (Element 14): the page content is offset by this while a poke arrives.
+    val pokeShake = remember { androidx.compose.animation.core.Animatable(0f) }
 
     Scaffold(
         topBar = {
@@ -101,7 +104,7 @@ fun RangEPatteNavHost(
         NavHost(
             navController = navController,
             startDestination = startDestination,
-            modifier = Modifier
+            modifier = Modifier.offset { com.rangepatte.app.ui.pokes.shakeOffset(pokeShake) }
         ) {
             composable(Routes.LANGUAGE_SELECT) {
                 LanguageSelectionScreen(
@@ -280,6 +283,11 @@ fun RangEPatteNavHost(
             centreNewIds = null
         }
         if (user != null) {
+            com.rangepatte.app.ui.pokes.PokeRoute(
+                shake = pokeShake,
+                atTable = currentRoute == Routes.GAME_TABLE_PATTERN,
+                onOpenPerson = { uid -> navController.navigate(Routes.person(uid)) }
+            )
             PlayRequestOverlay(
                 onJoin = { game, mode, code -> navController.navigate(Routes.lobby(game, mode, host = false, playerCount = 4, difficulty = AiDifficulty.MEDIUM, code = code)) },
                 onHost = { game -> navController.navigate(Routes.lobby(game, PlayMode.ONLINE, host = true, playerCount = 4, difficulty = AiDifficulty.MEDIUM)) }

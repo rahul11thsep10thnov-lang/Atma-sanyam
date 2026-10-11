@@ -410,6 +410,16 @@ match /pokes/{id} {
 }
 ```
 
+**Poke animation (Friends Element 14, approved Design 1).** When a poke arrives while the app is in
+front, the page gives one short shiver (0.4 s, a few pixels side to side), a gold pointing hand taps
+twice in the middle of the screen, and a parchment banner drops from under the top bar: the sender's
+avatar and name, "poked you", and **Poke back** (same cooldown rules; disabled when not allowed).
+Tapping the name opens the profile; the banner leaves after five seconds or on tap. At a game table
+only the banner shows, never over the cards. With the system's animator scale at 0 ("remove
+animations") the banner fades in and nothing moves. One card flick and one haptic tick accompany it
+(Element 15 adds the switches). `ui/pokes/PokeOverlay.kt` + `PokeRoute.kt`, mounted over the NavHost,
+which offsets its content by the shiver.
+
 ### Online play: Firebase setup
 
 On top of the login setup below, in the Firebase console:
