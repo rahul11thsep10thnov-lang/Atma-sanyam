@@ -30,6 +30,8 @@ interface FriendsStore {
     fun people(uids: Collection<String>, onResult: (Result<Map<String, Person>>) -> Unit)
     /** Applies [action] atomically against the current record (see [Relations.apply]). */
     fun act(me: String, other: String, action: RelationAction, onResult: (Result<Unit>) -> Unit)
+    /** Files an abuse report about [other]; the app owner reads these in the console. */
+    fun report(me: String, other: String, reason: String, onResult: (Result<Unit>) -> Unit)
 }
 
 /**
@@ -95,6 +97,16 @@ class FriendsRepository(private val store: FriendsStore) {
 
     fun remember(person: Person) { _people.value = _people.value + (person.uid to person) }
 
+    /** Fetches one player's public profile into [people] (for a profile opened from a notification). */
+    fun loadPerson(uid: String) = store.people(listOf(uid)) { r -> r.onSuccess { _people.value = _people.value + it } }
+
+    fun relationWith(other: String): Relation? = _relations.value.firstOrNull { it.involves(other) }
+
+    fun report(other: String, reason: String, onResult: (Result<Unit>) -> Unit = {}) {
+        val uid = me ?: return
+        store.report(uid, other, reason, onResult)
+    }
+
     class RateLimited : Exception("Too many lookups; wait a minute")
 
     companion object { const val PHONE_LOOKUPS_PER_MINUTE = 5 }
@@ -114,7 +126,7 @@ class LocalFriendsStore(context: Context) : FriendsStore {
     private val listeners = HashMap<String, (List<Relation>) -> Unit>()
 
     private fun all(): List<Relation> = prefs.all.keys.filter { it.startsWith("r:") }.mapNotNull { key ->
-        prefs.getString(key, null)?.split("|")?.takeIf { it.size == 4 }?.let { Relation(it[0], it[1], Relation.Kind.valueOf(it[2]), it[3]) }
+        prefs.getString(key, null)?.split("|")?.takeIf { it.size >= 4 }?.let { Relation(it[0], it[1], Relation.Kind.valueOf(it[2]), it[3], it.getOrNull(4)?.toLongOrNull() ?: 0) }
     }
 
     private fun publish() { val list = all(); listeners.forEach { (uid, cb) -> cb(list.filter { it.involves(uid) }) } }
@@ -138,7 +150,7 @@ class LocalFriendsStore(context: Context) : FriendsStore {
         val id = Relations.pairId(me, other)
         val current = all().firstOrNull { Relations.pairId(it.a, it.b) == id }
         val outcome = Relations.apply(current, me, other, action) ?: return onResult(Result.failure(IllegalStateException("not allowed now")))
-        prefs.edit { val r = outcome.relation; if (r == null) remove("r:$id") else putString("r:$id", "${r.a}|${r.b}|${r.kind}|${r.by}") }
+        prefs.edit { val r = outcome.relation; if (r == null) remove("r:$id") else putString("r:$id", "${r.a}|${r.b}|${r.kind}|${r.by}|${System.currentTimeMillis()}") }
         publish()
         onResult(Result.success(Unit))
         // The pretend player priya_q accepts a request two seconds later, so the whole flow can be seen.
@@ -146,11 +158,13 @@ class LocalFriendsStore(context: Context) : FriendsStore {
             android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
                 val now = all().firstOrNull { Relations.pairId(it.a, it.b) == id }
                 Relations.apply(now, other, me, RelationAction.ACCEPT)?.relation?.let { r ->
-                    prefs.edit { putString("r:$id", "${r.a}|${r.b}|${r.kind}|${r.by}") }; publish()
+                    prefs.edit { putString("r:$id", "${r.a}|${r.b}|${r.kind}|${r.by}|${System.currentTimeMillis()}") }; publish()
                 }
             }, 2000)
         }
     }
+
+    override fun report(me: String, other: String, reason: String, onResult: (Result<Unit>) -> Unit) = onResult(Result.success(Unit))
 }
 
 /**
@@ -168,7 +182,7 @@ class FirestoreFriendsStore : FriendsStore {
     }
 
     private fun relation(doc: com.google.firebase.firestore.DocumentSnapshot): Relation? = runCatching {
-        Relation(doc.getString("a")!!, doc.getString("b")!!, Relation.Kind.valueOf(doc.getString("kind")!!), doc.getString("by")!!)
+        Relation(doc.getString("a")!!, doc.getString("b")!!, Relation.Kind.valueOf(doc.getString("kind")!!), doc.getString("by")!!, doc.getTimestamp("updatedAt")?.toDate()?.time ?: 0)
     }.getOrNull()
 
     override fun watchRelations(uid: String, onChange: (List<Relation>) -> Unit): () -> Unit {
@@ -219,6 +233,11 @@ class FirestoreFriendsStore : FriendsStore {
             else tx.set(ref, mapOf("a" to r.a, "b" to r.b, "kind" to r.kind.name, "by" to r.by, "updatedAt" to FieldValue.serverTimestamp()))
             null
         }.addOnSuccessListener { onResult(Result.success(Unit)) }.addOnFailureListener { onResult(Result.failure(it)) }
+    }
+
+    override fun report(me: String, other: String, reason: String, onResult: (Result<Unit>) -> Unit) {
+        db.collection("reports").add(mapOf("by" to me, "about" to other, "reason" to reason, "createdAt" to FieldValue.serverTimestamp()))
+            .addOnSuccessListener { onResult(Result.success(Unit)) }.addOnFailureListener { onResult(Result.failure(it)) }
     }
 
     companion object {

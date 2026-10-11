@@ -19,7 +19,7 @@ import kotlinx.coroutines.delay
 
 /** The Friends tab wired to the repositories: gate when signed out, otherwise live lists and search. */
 @Composable
-fun FriendsRoute(onLoginClick: () -> Unit) {
+fun FriendsRoute(onLoginClick: () -> Unit, onOpenPerson: (String) -> Unit) {
     val user by AppServices.account.currentUser.collectAsState()
     val me = user?.uid
     if (me == null) { FriendsGate(onLoginClick); return }
@@ -75,6 +75,37 @@ fun FriendsRoute(onLoginClick: () -> Unit) {
         },
         onAction = { person, action -> friends.act(person.uid, action) },
         onMenu = { person, item -> friends.act(person.uid, if (item == FriendMenu.REMOVE) RelationAction.REMOVE_FRIEND else RelationAction.BLOCK) },
-        onOpen = { /* profile sheet arrives with Element 7 */ }
+        onOpen = { onOpenPerson(it.uid) }
+    )
+}
+
+/** The profile of one other player, from the repositories. */
+@Composable
+fun PersonProfileRoute(uid: String, onBackClick: () -> Unit) {
+    val friends = AppServices.friends
+    val relations by friends.relations.collectAsState()
+    val people by friends.people.collectAsState()
+    val person = people[uid]
+    val relation = relations.firstOrNull { it.involves(uid) }
+    val me = AppServices.account.currentUser.collectAsState().value?.uid ?: return
+    if (person == null) { LaunchedEffect(uid) { friends.loadPerson(uid) }; return }
+    val status = relation?.statusFor(me) ?: RelationStatus.NONE
+    val since = stringResource(R.string.profile_friends_since)
+    val facts = buildList {
+        if (status == RelationStatus.FRIENDS && relation != null && relation.since > 0) {
+            add(ProfileFact(since, java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM).format(java.util.Date(relation.since))))
+        }
+    }
+    val reported = stringResource(R.string.profile_reported)
+    val context = androidx.compose.ui.platform.LocalContext.current
+    PersonProfileScreen(
+        person = PersonUi(person.uid, person.username, person.avatarId, status),
+        facts = facts,
+        canPlayRequest = false, // presence and play requests arrive with Elements 8 and 9
+        canPoke = false,
+        onPlayRequest = {}, onPoke = {},
+        onAction = { action -> friends.act(uid, action) { if (action == RelationAction.BLOCK || action == RelationAction.REMOVE_FRIEND) onBackClick() } },
+        onReport = { friends.report(uid, "abuse") { android.widget.Toast.makeText(context, reported, android.widget.Toast.LENGTH_SHORT).show() } },
+        onBackClick = onBackClick
     )
 }

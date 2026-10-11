@@ -27,7 +27,9 @@ data class Relation(
     val b: String,
     val kind: Kind,
     /** For PENDING: who asked. For BLOCKED: who blocked. */
-    val by: String
+    val by: String,
+    /** When the record last changed (ms since epoch); 0 when unknown. */
+    val since: Long = 0
 ) {
     enum class Kind { PENDING, FRIENDS, BLOCKED }
 
