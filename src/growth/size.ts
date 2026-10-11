@@ -28,15 +28,20 @@ export function minutesRange(size: PlantGrowthSize): { from: number; to: number 
 
 export const SIZE_LABEL: Record<PlantGrowthSize, string> = { 1: 'Size 1', 2: 'Size 2', 3: 'Size 3', 4: 'Size 4', 5: 'Size 5', 6: 'Size 6', 7: 'Size 7' };
 
-/** The jigsaw grid of each size: the picture reveals in this many pieces. */
+/** The portrait phone jigsaw (9:16): 75 x 133 = 9,975 pieces, about 10,000. A running
+ * session makes its own grid of about 10,000 pieces for its screen (src/utils/grid.ts). */
+export const PORTRAIT_GRID: GridDims = { rows: 133, cols: 75 };
+
+/** The jigsaw grid of each size. All seven sizes have the same pieces, about 10,000
+ * of them; a size decides how large the framed picture hangs. */
 export const SIZE_GRIDS: Record<PlantGrowthSize, GridDims> = {
-  1: { rows: 3, cols: 3 },
-  2: { rows: 3, cols: 4 },
-  3: { rows: 4, cols: 5 },
-  4: { rows: 5, cols: 6 },
-  5: { rows: 6, cols: 8 },
-  6: { rows: 8, cols: 10 },
-  7: { rows: 9, cols: 12 },
+  1: PORTRAIT_GRID,
+  2: PORTRAIT_GRID,
+  3: PORTRAIT_GRID,
+  4: PORTRAIT_GRID,
+  5: PORTRAIT_GRID,
+  6: PORTRAIT_GRID,
+  7: PORTRAIT_GRID,
 };
 
 /** Continuous growth during a session: how far along the seven stages a

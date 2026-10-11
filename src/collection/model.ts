@@ -4,7 +4,6 @@
 // a space or the museum, wait in the collection, or were thrown away.
 import { ImageSourcePropType } from 'react-native';
 import { GridDims } from '../types';
-import { gridForDuration } from '../utils/grid';
 import { PlantGrowthSize, SIZE_GRIDS, SIZE_LABEL, sizeForMinutes } from '../growth/size';
 
 // Jigsaw sizes are the seven growth sizes (src/growth/size.ts): one table
@@ -21,11 +20,10 @@ export function gridForTier(tier: JigsawTier): GridDims {
   return TIER_GRIDS[tier];
 }
 
-/** The reveal grid for a session: the jigsaw's size when one is earned,
- * otherwise the old seconds-based grid for a short reveal. */
-export function gridForSession(minutes: number): GridDims {
-  const tier = tierForMinutes(minutes);
-  return tier ? TIER_GRIDS[tier] : gridForDuration(minutes);
+/** The reveal grid for a session: about 10,000 pieces whatever its length, and
+ * whether or not it earns a jigsaw. */
+export function gridForSession(_minutes: number): GridDims {
+  return SIZE_GRIDS[1];
 }
 
 export type ArtworkHome = 'collection' | 'balcony' | 'garden' | 'museum' | 'binned';

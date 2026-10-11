@@ -114,7 +114,7 @@ For local development put the same keys in `.env` (see `.env.example`).
 ## 6. Email for password resets (Resend)
 
 1. Create a Resend account, add and verify your domain (DNS records they show you).
-2. Create an API key → set `RESEND_API_KEY` and `EMAIL_FROM` (e.g. `FOCUS <no-reply@your-domain.com>`)
+2. Create an API key → set `RESEND_API_KEY` and `EMAIL_FROM` (e.g. `Tame time <no-reply@your-domain.com>`)
    on the API and redeploy. "Forgot password?" appears in the app automatically.
 
 ## 7. Updating

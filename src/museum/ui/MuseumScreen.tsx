@@ -13,7 +13,8 @@ import { useRewards } from '../../spaces/useSpaces';
 import { AdSheet } from '../../spaces/ui/AdSheet';
 import { GLASS, GLASS_EDGE, GlassChip, CREAM, INK } from '../../spaces/ui/Glass';
 import { useCollection } from '../../collection/repository';
-import { ArtworkRecord, TIER_GRIDS, counts, findArtwork, setHome } from '../../collection/model';
+import { ArtworkRecord, counts, findArtwork, setHome } from '../../collection/model';
+import { JIGSAW_PIECES } from '../../utils/grid';
 import { CollectionSheet } from '../../collection/ui/CollectionSheet';
 import { RootStackParamList } from '../../navigation/types';
 import { AppText } from '../../ui/AppText';
@@ -165,7 +166,7 @@ export function MuseumScreen() {
               {t('museum.info.category', { category: categoryLabel({ id: info.category, name: info.category }) })}
             </AppText>
             <AppText variant="bodySmall" style={styles.infoLine}>
-              {t('museum.info.size', { tier: info.tier, rows: TIER_GRIDS[info.tier].rows, cols: TIER_GRIDS[info.tier].cols })}
+              {t('museum.info.size', { tier: info.tier, pieces: JIGSAW_PIECES.toLocaleString('en-US') })}
             </AppText>
             <AppText variant="bodySmall" style={styles.infoLine}>
               {t('museum.info.focus', { minutes: info.minutes })} · {new Date(info.unlockedAt).toLocaleDateString()}

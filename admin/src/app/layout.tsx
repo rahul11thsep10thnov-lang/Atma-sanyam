@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: { default: 'FOCUS Admin', template: '%s · FOCUS Admin' },
+  title: { default: 'Tame time Admin', template: '%s · Tame time Admin' },
   robots: { index: false, follow: false },
 };
 

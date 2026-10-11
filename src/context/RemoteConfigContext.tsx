@@ -31,8 +31,8 @@ export interface RemoteConfig {
 }
 
 export const DEFAULT_CONFIG: RemoteConfig = {
-  maintenance: { enabled: false, message: "We're making FOCUS even better. Please check back in a little while." },
-  appVersion: { minimumVersion: '1.0.0', latestVersion: '1.0.0', updateMessage: 'A new version of FOCUS is available.', iosStoreUrl: '', androidStoreUrl: '' },
+  maintenance: { enabled: false, message: "We're making Tame time even better. Please check back in a little while." },
+  appVersion: { minimumVersion: '1.0.0', latestVersion: '1.0.0', updateMessage: 'A new version of Tame time is available.', iosStoreUrl: '', androidStoreUrl: '' },
   features: {
     contentLibrary: true,
     quoteTiles: true,

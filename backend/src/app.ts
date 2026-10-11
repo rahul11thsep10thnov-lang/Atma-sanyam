@@ -36,7 +36,7 @@ export function createApp(deps: AppDeps, options: AppOptions = {}) {
   const limits = createRateLimits(options.disableRateLimits);
 
   app.get('/', (_req, res) => {
-    res.json({ name: 'FOCUS API', status: 'ok' });
+    res.json({ name: 'Tame time API', status: 'ok' });
   });
   app.use('/v1', limits.general, publicRouter(deps, auth, limits));
   app.use('/admin/v1', limits.general, (_req, res, next) => {

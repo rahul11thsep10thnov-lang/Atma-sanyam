@@ -40,7 +40,7 @@ export function LoginForm() {
       <div className="brand">
         <img src="/icon.png" alt="" />
         <div>
-          FOCUS
+          Tame time
           <small>Admin console</small>
         </div>
       </div>

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "FOCUS",
+    "name": "Tame time",
     "slug": "puzzlefocus",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -14,7 +14,7 @@
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "FOCUS lets you pick one of your photos to turn into a puzzle. It only uses the photo you choose.",
+        "NSPhotoLibraryUsageDescription": "Tame time lets you pick one of your photos to turn into a puzzle. It only uses the photo you choose.",
         "UIBackgroundModes": [
           "remote-notification"
         ]
@@ -113,7 +113,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "FOCUS lets you pick one of your photos to turn into a puzzle. It only uses the photo you choose.",
+          "photosPermission": "Tame time lets you pick one of your photos to turn into a puzzle. It only uses the photo you choose.",
           "cameraPermission": false,
           "microphonePermission": false
         }
@@ -145,7 +145,7 @@
       [
         "expo-sensors",
         {
-          "motionPermission": "FOCUS uses gentle device motion to give your balcony a sense of depth. Nothing is recorded."
+          "motionPermission": "Tame time uses gentle device motion to give your balcony a sense of depth. Nothing is recorded."
         }
       ]
     ],

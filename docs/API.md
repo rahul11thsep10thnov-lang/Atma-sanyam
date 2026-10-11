@@ -1,4 +1,4 @@
-# FOCUS API reference
+# Tame time API reference
 
 Base URL: your API host, e.g. `https://api.your-domain.com`. All bodies are JSON.
 

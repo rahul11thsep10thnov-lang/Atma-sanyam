@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PuzzleGrid } from '../components/PuzzleGrid';
+import { gridForAspect } from '../utils/grid';
 import { PuzzleContent, attributionFor } from '../components/PuzzleContent';
 import { SessionResultSheet, RewardLine } from '../components/session/SessionResultSheet';
 import { PlacementOption, PlacementSheet } from '../components/session/PlacementSheet';
@@ -47,6 +48,8 @@ import { t } from '../i18n';
 type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>;
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+// the jigsaw of this screen: about 10,000 pieces, as square as the screen allows
+const SESSION_GRID = gridForAspect(SCREEN_WIDTH / SCREEN_HEIGHT);
 
 function formatTime(totalSeconds: number): string {
   const m = Math.floor(totalSeconds / 60);
@@ -80,7 +83,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
   const texts = remote.texts;
   const insets = useSafeAreaInsets();
   const totalSeconds = config.durationMinutes * 60;
-  const totalPieces = config.grid.rows * config.grid.cols;
+  const totalPieces = SESSION_GRID.rows * SESSION_GRID.cols;
   const startedAtRef = useRef(Date.now());
   const sessionIdRef = useRef(`${startedAtRef.current}-${Math.random().toString(36).slice(2, 8)}`);
   const [result, setResult] = useState<Result | null>(null);
@@ -104,7 +107,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
         startedAt: startedAtRef.current,
         endedAt: Date.now(),
         durationMinutes: config.durationMinutes,
-        grid: config.grid,
+        grid: SESSION_GRID,
         image: config.image,
         outcome,
         failureReason,
@@ -300,7 +303,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
       ) : inSpace ? (
         <SpaceSession space="balcony" elapsedMinutes={frozenMinutes} />
       ) : (
-        <PuzzleGrid rows={config.grid.rows} cols={config.grid.cols} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} revealedCount={revealedCount} frozen={status === 'failed'} fullBleed>
+        <PuzzleGrid rows={SESSION_GRID.rows} cols={SESSION_GRID.cols} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} revealedCount={revealedCount} frozen={status === 'failed'} fullBleed>
           <PuzzleContent image={config.image} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} />
         </PuzzleGrid>
       )}

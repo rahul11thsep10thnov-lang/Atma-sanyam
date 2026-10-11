@@ -18,7 +18,7 @@ if (env.RESEND_API_KEY && env.EMAIL_FROM) {
 const app = createApp({ db: database.db, env, push, mailer });
 
 const server = app.listen(env.PORT, () => {
-  console.log(`FOCUS API listening on :${env.PORT} (${env.NODE_ENV})`);
+  console.log(`Tame time API listening on :${env.PORT} (${env.NODE_ENV})`);
 });
 
 async function shutdown(signal: string) {
