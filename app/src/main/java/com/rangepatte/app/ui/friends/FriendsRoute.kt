@@ -7,6 +7,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.rangepatte.app.AppServices
 import com.rangepatte.app.R
@@ -137,12 +140,25 @@ fun PersonProfileRoute(uid: String, onBackClick: () -> Unit) {
     }
     val reported = stringResource(R.string.profile_reported)
     val context = androidx.compose.ui.platform.LocalContext.current
+    var pickGame by remember { mutableStateOf(false) }
+    val sent = stringResource(R.string.invite_sent_format, person.username)
+    val refused = stringResource(R.string.invite_refused)
+    if (pickGame) {
+        val games = com.rangepatte.app.ui.invites.invitableGames().map { id -> id.routeSegment to stringResource(com.rangepatte.app.domain.model.GameCatalog.byId(id).nameRes) }
+        com.rangepatte.app.ui.invites.GamePickerDialog(games, onPick = { seg ->
+            pickGame = false
+            val gameId = com.rangepatte.app.domain.model.GameCatalog.byRouteSegment(seg)?.id ?: return@GamePickerDialog
+            AppServices.playRequests.send(uid, gameId, tableCode = null) { r ->
+                android.widget.Toast.makeText(context, if (r.isSuccess) sent else refused, android.widget.Toast.LENGTH_SHORT).show()
+            }
+        }, onDismiss = { pickGame = false })
+    }
     PersonProfileScreen(
         person = PersonUi(person.uid, person.username, person.avatarId, status, online, detail, state),
         facts = facts,
         canPlayRequest = state == FriendState.AVAILABLE, // sending arrives with Element 9
         canPoke = false,
-        onPlayRequest = {}, onPoke = {},
+        onPlayRequest = { pickGame = true }, onPoke = {},
         onAction = { action -> friends.act(uid, action) { if (action == RelationAction.BLOCK || action == RelationAction.REMOVE_FRIEND) onBackClick() } },
         onReport = { friends.report(uid, "abuse") { android.widget.Toast.makeText(context, reported, android.widget.Toast.LENGTH_SHORT).show() } },
         onBackClick = onBackClick

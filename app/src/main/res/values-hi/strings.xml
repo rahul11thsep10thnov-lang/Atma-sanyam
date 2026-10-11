@@ -361,4 +361,20 @@
     <string name="presence_playing_format">%1$s खेल रहे हैं</string>
     <string name="presence_can_join">एक सीट खाली है</string>
     <string name="presence_table_full">मेज़ भरी है</string>
+
+    <!-- Play requests -->
+    <string name="invite_title">खेलने का अनुरोध</string>
+    <string name="invite_body_format">आपको %1$s खेलने बुला रहे हैं</string>
+    <string name="invite_expires_format">%1$d सेकंड में समाप्त</string>
+    <string name="invite_join">जुड़ें</string>
+    <string name="invite_not_now">अभी नहीं</string>
+    <string name="invite_waiting_format">@%1$s की प्रतीक्षा… %2$d से.</string>
+    <string name="invite_accepted_format">@%1$s जुड़ गए! अपनी मेज़ खोलें।</string>
+    <string name="invite_declined_format">@%1$s ने मना किया।</string>
+    <string name="invite_cancelled">अनुरोध रद्द।</string>
+    <string name="invite_expired_format">@%1$s ने समय पर जवाब नहीं दिया।</string>
+    <string name="invite_offline_format">@%1$s ऑफ़लाइन हो गए।</string>
+    <string name="invite_pick_game">कौन सा खेल?</string>
+    <string name="invite_sent_format">@%1$s को खेलने का अनुरोध भेजा</string>
+    <string name="invite_refused">अभी नहीं भेज सकते — वे व्यस्त या ऑफ़लाइन हो सकते हैं।</string>
 </resources>

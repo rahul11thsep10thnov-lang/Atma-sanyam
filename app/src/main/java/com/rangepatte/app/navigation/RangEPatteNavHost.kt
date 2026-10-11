@@ -1,5 +1,6 @@
 package com.rangepatte.app.navigation
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -29,6 +30,7 @@ import com.rangepatte.app.ui.entertainment.EntertainmentScreen
 import com.rangepatte.app.ui.friends.FriendsRoute
 import com.rangepatte.app.ui.friends.PersonProfileRoute
 import com.rangepatte.app.ui.games.GamesScreen
+import com.rangepatte.app.ui.invites.PlayRequestOverlay
 import com.rangepatte.app.ui.language.LanguageSelectionScreen
 import com.rangepatte.app.ui.language.findActivity
 import com.rangepatte.app.ui.membership.CheckoutScreen
@@ -86,10 +88,11 @@ fun RangEPatteNavHost(
             }
         }
     ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
         NavHost(
             navController = navController,
             startDestination = startDestination,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
         ) {
             composable(Routes.LANGUAGE_SELECT) {
                 LanguageSelectionScreen(
@@ -193,7 +196,8 @@ fun RangEPatteNavHost(
                 route = Routes.LOBBY_PATTERN,
                 arguments = listOf(
                     navArgument(Routes.ARG_PLAYERS) { type = NavType.IntType; defaultValue = 4 },
-                    navArgument(Routes.ARG_DIFFICULTY) { type = NavType.StringType; defaultValue = AiDifficulty.MEDIUM.name }
+                    navArgument(Routes.ARG_DIFFICULTY) { type = NavType.StringType; defaultValue = AiDifficulty.MEDIUM.name },
+                    navArgument(Routes.ARG_CODE) { type = NavType.StringType; defaultValue = "" }
                 )
             ) { backStackEntry ->
                 val args = backStackEntry.arguments
@@ -207,6 +211,7 @@ fun RangEPatteNavHost(
                     LobbyRoute(
                         game = game,
                         isHost = args.getString(Routes.ARG_ROLE) == Routes.ROLE_HOST,
+                        joinCode = args.getString(Routes.ARG_CODE)?.takeIf { it.isNotBlank() },
                         isOnline = mode == PlayMode.ONLINE,
                         playerCount = playerCount,
                         difficulty = difficulty,
@@ -250,6 +255,13 @@ fun RangEPatteNavHost(
                     )
                 }
             }
+        }
+        if (user != null) {
+            PlayRequestOverlay(
+                onJoin = { game, mode, code -> navController.navigate(Routes.lobby(game, mode, host = false, playerCount = 4, difficulty = AiDifficulty.MEDIUM, code = code)) },
+                onHost = { game -> navController.navigate(Routes.lobby(game, PlayMode.ONLINE, host = true, playerCount = 4, difficulty = AiDifficulty.MEDIUM)) }
+            )
+        }
         }
     }
 }

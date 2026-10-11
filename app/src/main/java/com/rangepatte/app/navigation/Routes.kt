@@ -36,10 +36,11 @@ object Routes {
     const val ARG_ROLE = "role"
     const val ROLE_HOST = "host"
     const val ROLE_JOIN = "join"
-    const val LOBBY_PATTERN = "lobby/{$ARG_GAME_ID}/{$ARG_MODE}/{$ARG_ROLE}?$ARG_PLAYERS={$ARG_PLAYERS}&$ARG_DIFFICULTY={$ARG_DIFFICULTY}"
+    const val ARG_CODE = "code"
+    const val LOBBY_PATTERN = "lobby/{$ARG_GAME_ID}/{$ARG_MODE}/{$ARG_ROLE}?$ARG_PLAYERS={$ARG_PLAYERS}&$ARG_DIFFICULTY={$ARG_DIFFICULTY}&$ARG_CODE={$ARG_CODE}"
 
-    fun lobby(gameRouteSegment: String, mode: PlayMode, host: Boolean, playerCount: Int, difficulty: AiDifficulty) =
-        "lobby/$gameRouteSegment/${mode.name}/${if (host) ROLE_HOST else ROLE_JOIN}?$ARG_PLAYERS=$playerCount&$ARG_DIFFICULTY=${difficulty.name}"
+    fun lobby(gameRouteSegment: String, mode: PlayMode, host: Boolean, playerCount: Int, difficulty: AiDifficulty, code: String? = null) =
+        "lobby/$gameRouteSegment/${mode.name}/${if (host) ROLE_HOST else ROLE_JOIN}?$ARG_PLAYERS=$playerCount&$ARG_DIFFICULTY=${difficulty.name}&$ARG_CODE=${code.orEmpty()}"
 
     fun setup(gameRouteSegment: String) = "setup/$gameRouteSegment"
     fun gameTable(gameRouteSegment: String, mode: PlayMode, playerCount: Int, difficulty: AiDifficulty) =

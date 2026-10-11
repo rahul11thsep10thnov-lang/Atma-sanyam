@@ -33,6 +33,8 @@ fun LobbyRoute(
     isHost: Boolean,
     isOnline: Boolean,
     playerCount: Int,
+    /** A room code to join straight away (from an accepted play request). */
+    joinCode: String? = null,
     difficulty: AiDifficulty,
     onTableReady: () -> Unit,
     onBackClick: () -> Unit
@@ -49,6 +51,7 @@ fun LobbyRoute(
         )
     }
     SideEffect { controller.onTableReady = onTableReady }
+
     DisposableEffect(controller) { onDispose { controller.dispose() } }
     // Friends see the host's open table and how many seats are free.
     if (isHost) {
@@ -65,7 +68,10 @@ fun LobbyRoute(
     }
 
     val initialName = remember {
-        PlayerNamePreferences.get(context) ?: AppServices.account.currentUser.value?.displayName.orEmpty()
+        PlayerNamePreferences.get(context) ?: AppServices.profile.profile.value?.username ?: AppServices.account.currentUser.value?.displayName.orEmpty()
+    }
+    if (joinCode != null && !isHost && isOnline) {
+        LaunchedEffect(joinCode) { controller.begin(initialName); controller.joinOnline(joinCode) }
     }
     val gameName = stringResource(game.nameRes)
 

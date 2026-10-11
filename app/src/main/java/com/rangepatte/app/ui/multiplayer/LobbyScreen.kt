@@ -132,7 +132,7 @@ fun LobbyScreen(
                             RoyalButton(
                                 text = stringResource(R.string.net_join),
                                 enabled = code.length >= 4,
-                                onClick = { onNameChange(name); lobby.joinOnline(code) },
+                                onClick = { onNameChange(name); lobby.begin(name); lobby.joinOnline(code) },
                                 modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
                             )
                         } else {

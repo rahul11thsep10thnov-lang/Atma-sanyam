@@ -14,6 +14,9 @@ import com.rangepatte.app.data.payment.PaymentGateway
 import com.rangepatte.app.data.friends.FirestoreFriendsStore
 import com.rangepatte.app.data.friends.FriendsRepository
 import com.rangepatte.app.data.friends.LocalFriendsStore
+import com.rangepatte.app.data.invites.FirestorePlayRequestStore
+import com.rangepatte.app.data.invites.LocalPlayRequestStore
+import com.rangepatte.app.data.invites.PlayRequestRepository
 import com.rangepatte.app.data.presence.FirestorePresenceStore
 import com.rangepatte.app.data.presence.LocalPresenceStore
 import com.rangepatte.app.data.presence.PresenceRepository
@@ -42,6 +45,9 @@ object AppServices {
     /** Who is online, and what this player is doing for friends to see. */
     lateinit var presence: PresenceRepository
         private set
+    /** "Come and play" invitations between friends. */
+    lateinit var playRequests: PlayRequestRepository
+        private set
 
     /** Swap [PlaceholderPaymentGateway] for the real partner's implementation when one is chosen. */
     val paymentGateway: PaymentGateway = PlaceholderPaymentGateway
@@ -66,9 +72,13 @@ object AppServices {
         presence = PresenceRepository(application, if (isFirebaseConnected) FirestorePresenceStore() else LocalPresenceStore())
         presence.attach(application)
         friends.onFriendsChanged = presence::follow
-        account.onSignedInListener = { uid -> profile.onSignedIn(uid); friends.start(uid); presence.onSignedIn(uid) }
-        account.onSignedOutListener = { profile.onSignedOut(); friends.stopWatching(); presence.onSignedOut() }
-        account.currentUser.value?.let { profile.onSignedIn(it.uid); friends.start(it.uid); presence.onSignedIn(it.uid) }
+        playRequests = PlayRequestRepository(
+            if (isFirebaseConnected) FirestorePlayRequestStore() else LocalPlayRequestStore(),
+            friendStateOf = presence::stateOf, relationOf = friends::statusOf
+        )
+        account.onSignedInListener = { uid -> profile.onSignedIn(uid); friends.start(uid); presence.onSignedIn(uid); playRequests.start(uid) }
+        account.onSignedOutListener = { profile.onSignedOut(); friends.stopWatching(); presence.onSignedOut(); playRequests.stopWatching() }
+        account.currentUser.value?.let { profile.onSignedIn(it.uid); friends.start(it.uid); presence.onSignedIn(it.uid); playRequests.start(it.uid) }
         ads = AdsManager(membership)
         GameAudio.init(application)
     }
