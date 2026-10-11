@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { requireAdmin } from "@/lib/auth/session";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { LogoutButton } from "@/components/admin/LogoutButton";
+import { ResponsiveTables } from "@/components/admin/ResponsiveTables";
 import { SITE_NAME } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
@@ -33,7 +34,10 @@ export default async function AdminLayout({
           </span>
           <LogoutButton />
         </header>
-        <main className="min-w-0 flex-1 overflow-x-auto px-3 py-4 sm:px-6 sm:py-6">{children}</main>
+        <main className="admin-cards min-w-0 flex-1 overflow-x-auto px-3 py-4 sm:px-6 sm:py-6">
+          <ResponsiveTables />
+          {children}
+        </main>
       </div>
     </div>
   );

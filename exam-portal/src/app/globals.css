@@ -281,3 +281,42 @@ h6 {
   line-height: 1.4;
   color: #6b3412;
 }
+
+/* Admin tables → cards on phones. Cells get data-label from
+ * ResponsiveTables; blank-labelled cells (checkboxes, action columns) just
+ * show their content. Opt out with <table data-no-cards>. */
+@media (max-width: 767px) {
+  .admin-cards table:not([data-no-cards]),
+  .admin-cards table:not([data-no-cards]) tbody { display: block; width: 100%; }
+  .admin-cards table:not([data-no-cards]) thead {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+  }
+  .admin-cards table:not([data-no-cards]) tbody tr {
+    display: flex; flex-direction: column; gap: 0.15rem;
+    margin: 0 0 0.75rem; padding: 0.6rem 0.8rem;
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 0.75rem;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  .admin-cards table:not([data-no-cards]) tbody td {
+    display: grid; grid-template-columns: 38% 1fr; column-gap: 0.75rem; align-items: start;
+    padding: 0.3rem 0 !important; border: 0 !important; max-width: none !important; text-align: left;
+    word-break: break-word; min-width: 0;
+  }
+  /* Several stacked pieces in one cell keep stacking, to the right of the label. */
+  .admin-cards table:not([data-no-cards]) tbody td > * { grid-column: 2; min-width: 0; }
+  .admin-cards table:not([data-no-cards]) tbody td[data-label]::before {
+    content: attr(data-label); grid-column: 1; grid-row: 1;
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #64748b; padding-top: 0.15rem;
+  }
+  /* Cells with no header (checkbox, action buttons) and card titles use the full width. */
+  .admin-cards table:not([data-no-cards]) tbody td:not([data-label]),
+  .admin-cards table:not([data-no-cards]) tbody td[data-card="title"] { display: block; }
+  .admin-cards table:not([data-no-cards]) tbody td[data-card="title"]::before { display: none; }
+  .admin-cards table:not([data-no-cards]) tbody td[data-card="title"] > * { grid-column: auto; }
+  .admin-cards table:not([data-no-cards]) tbody td:not([data-label]) > form,
+  .admin-cards table:not([data-no-cards]) tbody td:not([data-label]) > a { display: inline-block; margin-right: 0.9rem; }
+  /* Empty / colspan rows ("No sources yet…") */
+  .admin-cards table:not([data-no-cards]) tbody td[colspan] { display: block; text-align: center; }
+  .admin-cards table:not([data-no-cards]) td:empty { display: none; }
+  .admin-cards [class*="overflow-x-auto"]:has(> table:not([data-no-cards])) { overflow: visible; border: 0; background: transparent; }
+}

@@ -197,7 +197,7 @@ export default async function SourcesPage({ searchParams }: { searchParams: Prom
                     <td className="px-3 py-2">
                       <input type="checkbox" form="bulk" name="ids" value={source.id} aria-label={`Select ${source.name}`} />
                     </td>
-                    <td className="max-w-sm px-3 py-2">
+                    <td data-card="title" className="max-w-sm px-3 py-2">
                       <Link href={`/admin/automation/sources/${source.id}/edit`} className="font-medium text-brand-700 hover:underline">
                         {source.name}
                       </Link>
