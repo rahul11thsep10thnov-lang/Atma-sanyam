@@ -35,6 +35,29 @@ const envSchema = z.object({
     .string()
     .optional()
     .transform((v) => v === 'true'),
+  // One-time sign-in codes by SMS. SMS_PROVIDER picks the sender; leave it
+  // empty to disable phone sign-in (the app then hides it).
+  SMS_PROVIDER: z.enum(['msg91', 'twilio', 'console', '']).default(''),
+  MSG91_AUTH_KEY: z.string().optional(),
+  MSG91_TEMPLATE_ID: z.string().optional(),
+  TWILIO_ACCOUNT_SID: z.string().optional(),
+  TWILIO_AUTH_TOKEN: z.string().optional(),
+  TWILIO_FROM: z.string().optional(),
+  // Country code assumed when someone types a number without one (91 = India).
+  DEFAULT_COUNTRY_CODE: z.string().regex(/^[1-9]\d{0,2}$/).default('91'),
+  // Numbers with a fixed code for app-store review and automated tests, as
+  // "+919999900001:123456,+919999900002:654321". No SMS is sent to them.
+  OTP_TEST_NUMBERS: z
+    .string()
+    .optional()
+    .transform((v) => {
+      const out = new Map<string, string>();
+      for (const pair of (v ?? '').split(',')) {
+        const [phone, code] = pair.split(':').map((s) => s.trim());
+        if (phone && code && /^\+\d{8,15}$/.test(phone) && /^\d{6}$/.test(code)) out.set(phone, code);
+      }
+      return out;
+    }),
   // Analytics events older than this are deleted by `npm run cleanup`.
   EVENTS_RETENTION_DAYS: z.coerce.number().int().min(30).default(395),
 });

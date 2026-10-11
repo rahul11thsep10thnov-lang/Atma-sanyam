@@ -40,7 +40,10 @@ secret values.
 | `NODE_ENV` | `production` |
 | `DATABASE_URL` | from Neon |
 | `TRUST_PROXY` | `1` |
-| `RESEND_API_KEY` / `EMAIL_FROM` | from Resend (optional; enables "Forgot password?") |
+| `RESEND_API_KEY` / `EMAIL_FROM` | from Resend (optional; enables "Forgot password?" for email accounts) |
+| `SMS_PROVIDER` + `MSG91_AUTH_KEY`/`MSG91_TEMPLATE_ID` or `TWILIO_*` | SMS sign-in codes (see *SMS for sign-in codes*); without them phone sign-in is hidden |
+| `DEFAULT_COUNTRY_CODE` | `91` unless the app is used mostly elsewhere |
+| `OTP_TEST_NUMBERS` | fixed-code numbers for app-store review, e.g. `+919999900001:123456` (optional) |
 | `EXPO_ACCESS_TOKEN` | optional, see *Push notifications* |
 
 The container runs pending **migrations automatically** on every start, then the server.
@@ -116,6 +119,24 @@ For local development put the same keys in `.env` (see `.env.example`).
 1. Create a Resend account, add and verify your domain (DNS records they show you).
 2. Create an API key → set `RESEND_API_KEY` and `EMAIL_FROM` (e.g. `Tame <no-reply@your-domain.com>`)
    on the API and redeploy. "Forgot password?" appears in the app automatically.
+
+## 6b. SMS for sign-in codes (MSG91 or Twilio)
+
+Sign-in is by a one-time code sent by SMS, so the API needs an SMS provider.
+
+- **MSG91 (India):** sign up at msg91.com, complete DLT registration for your sender ID, create an
+  OTP template that includes `##OTP##`, then set `SMS_PROVIDER=msg91`, `MSG91_AUTH_KEY` (MSG91 →
+  Authkey) and `MSG91_TEMPLATE_ID` on the API.
+- **Twilio:** buy a number with SMS, then set `SMS_PROVIDER=twilio`, `TWILIO_ACCOUNT_SID`,
+  `TWILIO_AUTH_TOKEN` and `TWILIO_FROM` (the number in E.164).
+- **Local development:** `SMS_PROVIDER=console` prints codes to the API log (refused in
+  production).
+- **App-store review:** reviewers cannot receive your SMS, so set `OTP_TEST_NUMBERS` to a number
+  and code you give them in the review notes, e.g. `+919999900001:123456`. No SMS is sent to it.
+
+Codes last 10 minutes, lock after 5 wrong attempts, at most 5 are sent to a number an hour and
+45 s apart. The API never logs codes or numbers (only the provider's error message). Live
+delivery has **not** been verified from this repository: it needs a provider account.
 
 ## 7. Updating
 

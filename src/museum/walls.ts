@@ -9,7 +9,7 @@ export const MIN_EMPTY_WALLS = 10;
 /** The rendered wall plates (tools/balcony-render/render_museum.py). */
 export const WALL_PLATE = { width: 1080, height: 2340 };
 /** The niche the picture hangs in, in plate pixels: left, top, right, bottom. */
-export const NICHE = { left: 285.5, top: 1203.9, right: 794.5, bottom: 1705.7 };
+export const NICHE = { left: 277, top: 883.5, right: 803, bottom: 1851.6 };
 
 export const WALL_IMAGES = [
   require('../../assets/museum/wall_a.webp'),

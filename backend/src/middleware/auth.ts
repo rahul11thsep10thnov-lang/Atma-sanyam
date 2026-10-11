@@ -27,6 +27,7 @@ export function createAuth({ db, env }: AppDeps) {
         lastUsedAt: userSessions.lastUsedAt,
         userId: users.id,
         email: users.email,
+        phone: users.phone,
       })
       .from(userSessions)
       .innerJoin(users, eq(users.id, userSessions.userId))
@@ -40,7 +41,7 @@ export function createAuth({ db, env }: AppDeps) {
       await db.update(userSessions).set({ lastUsedAt: now, expiresAt }).where(eq(userSessions.id, row.sessionId));
       await db.update(users).set({ lastSeenAt: now }).where(eq(users.id, row.userId));
     }
-    req.user = { id: row.userId, email: row.email, sessionId: row.sessionId };
+    req.user = { id: row.userId, email: row.email, phone: row.phone, sessionId: row.sessionId };
   }
 
   const optionalUser: RequestHandler = async (req, _res, next) => {

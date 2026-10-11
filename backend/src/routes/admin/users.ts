@@ -23,6 +23,8 @@ function adminUserView(u: typeof users.$inferSelect) {
   return {
     id: u.id,
     email: u.email,
+    phone: u.phone,
+    username: u.username,
     displayName: u.displayName,
     status: u.status,
     createdAt: u.createdAt,
@@ -39,7 +41,7 @@ export function adminUsersRouter({ db }: AppDeps, auth: Auth) {
     if (q.status) conds.push(eq(users.status, q.status));
     if (q.search) {
       const needle = `%${escapeLike(q.search)}%`;
-      conds.push(or(ilike(users.email, needle), ilike(users.displayName, needle))!);
+      conds.push(or(ilike(users.email, needle), ilike(users.displayName, needle), ilike(users.username, needle), ilike(users.phone, needle))!);
     }
     const where = conds.length ? and(...conds) : undefined;
     const [total] = await db.select({ n: count() }).from(users).where(where);
@@ -99,6 +101,7 @@ export function adminUsersRouter({ db }: AppDeps, auth: Auth) {
     if (body.status === 'deactivated') await revokeAllUserSessions(db, id);
     await audit(db, req.admin!.id, body.status === 'active' ? 'user.activated' : 'user.deactivated', 'user', id, {
       email: user.email,
+      username: user.username,
     });
     res.json(adminUserView(user));
   });
@@ -107,7 +110,7 @@ export function adminUsersRouter({ db }: AppDeps, auth: Auth) {
     const id = parse(idParam, req.params.id);
     const [user] = await db.delete(users).where(eq(users.id, id)).returning();
     if (!user) throw notFound('User not found');
-    await audit(db, req.admin!.id, 'user.deleted', 'user', id, { email: user.email });
+    await audit(db, req.admin!.id, 'user.deleted', 'user', id, { email: user.email, username: user.username });
     res.status(204).end();
   });
 

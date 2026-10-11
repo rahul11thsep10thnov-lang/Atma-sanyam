@@ -21,13 +21,25 @@ const updatedAt = () => timestamp('updated_at', { withTimezone: true }).notNull(
 // App users (people using the mobile app)
 // ---------------------------------------------------------------------------
 
+// Accounts are phone-first: a person signs in with a one-time code sent by
+// SMS, then sets a password, a username and an avatar. Older email accounts
+// keep working (email + password), so both identifiers are optional but at
+// least one is always set. A null password_hash means the person verified
+// their number but has not set a password yet (onboarding).
 export const users = pgTable(
   'users',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    email: text('email').notNull().unique(),
-    passwordHash: text('password_hash').notNull(),
+    email: text('email').unique(),
+    phone: text('phone').unique(), // E.164, e.g. +919876543210
+    phoneVerifiedAt: timestamp('phone_verified_at', { withTimezone: true }),
+    passwordHash: text('password_hash'),
+    username: text('username'), // as typed (case kept for display)
+    usernameNormalized: text('username_normalized').unique(), // lower-case, what uniqueness and search use
+    avatarId: text('avatar_id'),
     displayName: text('display_name'),
+    allowPokes: boolean('allow_pokes').notNull().default(true),
+    discoverableByPhone: boolean('discoverable_by_phone').notNull().default(true),
     status: text('status', { enum: ['active', 'deactivated'] }).notNull().default('active'),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
@@ -35,6 +47,7 @@ export const users = pgTable(
   },
   (t) => [
     check('users_status_check', sql`${t.status} in ('active', 'deactivated')`),
+    check('users_identifier_check', sql`${t.email} is not null or ${t.phone} is not null`),
     index('users_created_at_idx').on(t.createdAt),
   ]
 );
@@ -50,8 +63,28 @@ export const userSessions = pgTable(
     createdAt: createdAt(),
     lastUsedAt: timestamp('last_used_at', { withTimezone: true }).notNull().defaultNow(),
     expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    // Set when the session was opened by a one-time code: for a short while
+    // such a session may set a new password without knowing the old one.
+    otpVerifiedAt: timestamp('otp_verified_at', { withTimezone: true }),
   },
   (t) => [index('user_sessions_user_id_idx').on(t.userId)]
+);
+
+// One-time codes sent by SMS to sign in. Only a hash is stored; a code lasts
+// 10 minutes and is locked after 5 wrong attempts. Rows are kept briefly so
+// sends per number can be counted (cleanup deletes old ones).
+export const otpCodes = pgTable(
+  'otp_codes',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    phone: text('phone').notNull(),
+    codeHash: text('code_hash').notNull(),
+    attempts: integer('attempts').notNull().default(0),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    usedAt: timestamp('used_at', { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index('otp_codes_phone_idx').on(t.phone, t.createdAt)]
 );
 
 // One-time codes for "forgot password". Only a hash is stored; codes expire

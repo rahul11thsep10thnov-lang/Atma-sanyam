@@ -91,13 +91,18 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Android/iOS bundle ex
 - Bilingual: English (UN English) and Hindi, asked in a popup every time the app opens and
   changeable in Settings
   (`src/i18n/`); the plant catalog has its own Hindi names and descriptions.
-- The picture library ships with 106 pictures inside the app (`assets/library/`), so there is
+- The picture library ships with 206 pictures inside the app (`assets/library/`), so there is
   always something to reveal, online or not: under **Nature** (Mountains, Himalayas, Lakes, Rivers,
-  Waterfalls, Valleys, Coast, Forests, Flowers, Vintage prints) and **Wildlife** (Birds, Butterflies,
-  Animals). They lead each collection, ahead of what the online library returns, with titles in
-  English and Hindi. Monuments come from the library's Heritage collection when it is connected.
+  Waterfalls, Valleys, Coast, Forests, Flowers, Vintage prints), **Wildlife** (Birds, Butterflies,
+  Animals) and **Inspirational** (100 quote cards). They lead each collection, ahead of what the
+  online library returns, with titles in English and Hindi.
   `assets/library/README.md` says where each picture came from; `tools/library/build_library.py`
-  rebuilds them from the original zips.
+  and `tools/library/build_quotes.py` rebuild them from the original zips.
+- Accounts are optional and phone-first: a one-time SMS code signs you in (and creates the account
+  the first time), then a password (6–15 characters: capital, small, number, special), a unique
+  username with a live availability check, and an avatar. The small **Sign in** chip sits at the
+  top right of Home. The API needs an SMS provider (`docs/DEPLOYMENT.md`); without one the app
+  hides phone sign-in. Social features (friends, group focus) are planned on top: `docs/SOCIAL.md`.
 - Leaving the app starts a grace period (default 5 s, configurable from the admin console);
   stay away longer and the session fails.
 - The balcony, the Paradise Garden, the museum and preferences stay on the device.

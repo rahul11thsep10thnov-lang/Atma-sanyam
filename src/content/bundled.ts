@@ -1,13 +1,15 @@
 // Pictures that ship inside the app, so the library has something to reveal
 // even with no server: two Himalayan landscapes from Wikimedia Commons, and
-// the 107 landscape, river, waterfall, coast, flower, bird and butterfly
+// the 104 landscape, river, waterfall, coast, flower, bird and butterfly
 // pictures supplied for the app (bundledLibrary.generated.ts, built by
-// tools/library/build_library.py). They lead each collection they belong
+// tools/library/build_library.py), and 100 Inspirational quote cards
+// (bundledQuotes.generated.ts, tools/library/build_quotes.py). They lead each collection they belong
 // to, ahead of whatever the catalog (mock or real) returns.
 import { Asset } from 'expo-asset';
 import { CategoryNode, ContentImage, ContentQuery } from './types';
 import type { ImageVariant } from './cache';
 import { LIBRARY_ITEMS, LibraryItem } from './bundledLibrary.generated';
+import { QUOTE_ITEMS, QuoteItem } from './bundledQuotes.generated';
 import { getLanguage, StringKey, t } from '../i18n';
 
 const HIMALAYA_FILES: Record<string, Record<ImageVariant, number>> = {
@@ -54,7 +56,29 @@ const LIBRARY_BY_ID = new Map<string, LibraryItem>(LIBRARY_ITEMS.map((l) => [l.i
 const FILES: Record<string, Record<ImageVariant, number>> = {
   ...HIMALAYA_FILES,
   ...Object.fromEntries(LIBRARY_ITEMS.map((l) => [l.id, { thumbnail: l.thumb, medium: l.full, full: l.full }])),
+  ...Object.fromEntries(QUOTE_ITEMS.map((q) => [q.id, { thumbnail: q.thumb, medium: q.full, full: q.full }])),
 };
+
+/** An Inspirational card: a quote over a soft background, supplied for the app. */
+function quoteImage(q: QuoteItem): ContentImage {
+  return {
+    imageId: q.id,
+    title: `${t('lib.kind.quote')} ${String(q.n).padStart(2, '0')}`,
+    category: 'inspirational',
+    subcategory: 'inspirational-quotes',
+    tags: ['quote', 'inspirational', 'motivation'],
+    thumbnailUrl: `bundled://${q.id}/thumbnail`,
+    mediumImageUrl: `bundled://${q.id}/full`,
+    fullImageUrl: `bundled://${q.id}/full`,
+    source: 'App library',
+    creator: '',
+    license: 'supplied with the app',
+    attributionRequired: false,
+    attributionText: null,
+    createdAt: new Date(Date.UTC(2026, 9, 12) - q.n * 60000).toISOString(),
+    popularity: 700 - q.n,
+  };
+}
 
 // credits printed on the supplied pictures themselves; the rest came without any
 const LIBRARY_CREDITS: Record<string, { source: string; creator: string; text: string }> = {
@@ -89,7 +113,7 @@ export function bundledImages(): ContentImage[] {
   const lang = getLanguage();
   let list = built.get(lang);
   if (!list) {
-    list = [...HIMALAYA, ...LIBRARY_ITEMS.map(libraryImage)];
+    list = [...HIMALAYA, ...LIBRARY_ITEMS.map(libraryImage), ...QUOTE_ITEMS.map(quoteImage)];
     built.set(lang, list);
   }
   return list;
@@ -98,6 +122,8 @@ export function bundledImages(): ContentImage[] {
 export const BUNDLED_CATEGORIES: CategoryNode[] = [
   { id: 'nature', name: 'Nature', parentId: null },
   { id: 'wildlife', name: 'Wildlife', parentId: null },
+  { id: 'inspirational', name: 'Inspirational', parentId: null },
+  { id: 'inspirational-quotes', name: 'Quotes', parentId: 'inspirational' },
   { id: 'nature-himalayas', name: 'Himalayas', parentId: 'nature' },
   { id: 'nature-mountains', name: 'Mountains', parentId: 'nature' },
   { id: 'nature-lakes', name: 'Lakes', parentId: 'nature' },
@@ -114,7 +140,7 @@ export const BUNDLED_CATEGORIES: CategoryNode[] = [
 ];
 
 /** A catalog root that already holds the same collection keeps the pictures under it. */
-const ROOT_MATCH: Record<string, RegExp> = { nature: /nature|landscape/i, wildlife: /wildlife|animal/i };
+const ROOT_MATCH: Record<string, RegExp> = { nature: /nature|landscape/i, wildlife: /wildlife|animal/i, inspirational: /inspirational|quotes?|motivation/i };
 
 export function isBundled(image: Pick<ContentImage, 'imageId'>): boolean {
   return image.imageId in FILES;

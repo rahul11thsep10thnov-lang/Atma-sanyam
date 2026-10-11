@@ -8,6 +8,7 @@ import { admins } from '../src/database/schema.js';
 import { hashPassword } from '../src/lib/password.js';
 import type { PushMessage, PushSender, PushTicket } from '../src/lib/push.js';
 import type { MailMessage, Mailer } from '../src/lib/mailer.js';
+import type { SmsMessage, SmsSender } from '../src/lib/sms.js';
 
 export const TEST_DATABASE_URL =
   process.env.TEST_DATABASE_URL ?? 'postgres://focus:focus-local-dev@localhost:5432/focus_test';
@@ -38,8 +39,24 @@ export class FakeMailer implements Mailer {
   }
 }
 
-export async function setupTestApp(opts: { disableRateLimits?: boolean; withMailer?: boolean } = { disableRateLimits: true }) {
-  const env = loadEnv({ NODE_ENV: 'test', DATABASE_URL: TEST_DATABASE_URL, CORS_ORIGINS: 'http://localhost:8081' });
+export class FakeSms implements SmsSender {
+  name = 'fake';
+  sent: SmsMessage[] = [];
+  failNext = false;
+  async send(message: SmsMessage) {
+    if (this.failNext) {
+      this.failNext = false;
+      throw new Error('provider down');
+    }
+    this.sent.push(message);
+  }
+  lastCode(to: string): string | undefined {
+    return [...this.sent].reverse().find((m) => m.to === to)?.code;
+  }
+}
+
+export async function setupTestApp(opts: { disableRateLimits?: boolean; withMailer?: boolean; withSms?: boolean; envExtra?: Record<string, string> } = { disableRateLimits: true }) {
+  const env = loadEnv({ NODE_ENV: 'test', DATABASE_URL: TEST_DATABASE_URL, CORS_ORIGINS: 'http://localhost:8081', ...(opts.envExtra ?? {}) });
   const database: Database = createDatabase(TEST_DATABASE_URL, 5);
   // Fresh schema per test file.
   await database.db.execute(sql`drop schema if exists public cascade`);
@@ -48,11 +65,12 @@ export async function setupTestApp(opts: { disableRateLimits?: boolean; withMail
   await runMigrations(database.db);
   const push = new FakePush();
   const mailer = new FakeMailer();
+  const sms = new FakeSms();
   const app = createApp(
-    { db: database.db, env, push, mailer: opts.withMailer === false ? null : mailer },
+    { db: database.db, env, push, mailer: opts.withMailer === false ? null : mailer, sms: opts.withSms === false ? null : sms },
     { disableRateLimits: opts.disableRateLimits ?? true, logRequests: false }
   );
-  return { app, database, push, mailer, db: database.db };
+  return { app, database, push, mailer, sms, db: database.db };
 }
 
 export async function createAdmin(

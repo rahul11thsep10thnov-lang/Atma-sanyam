@@ -29,6 +29,10 @@ in EAS, or in a local `.env` file that git ignores.
 | `RESEND_API_KEY` | Resend → API Keys → Create | optional |
 | `EMAIL_FROM` | an address on your Resend-verified domain, e.g. `Tame <no-reply@your-domain.com>` | with Resend |
 | `EXPO_ACCESS_TOKEN` | expo.dev → Account settings → Access tokens | optional (push hardening) |
+| `SMS_PROVIDER` | `msg91`, `twilio` or `console` (development only) | for phone sign-in |
+| `MSG91_AUTH_KEY` / `MSG91_TEMPLATE_ID` | msg91.com → Authkey; OTP template with `##OTP##` (DLT-approved) | with MSG91 |
+| `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_FROM` | console.twilio.com → Account info; a number with SMS | with Twilio |
+| `OTP_TEST_NUMBERS` | your choice, e.g. `+919999900001:123456`, shared in app-store review notes | optional |
 | `CORS_ORIGINS` | leave empty in production | — |
 | `ADMIN_BOOTSTRAP_EMAIL` / `_PASSWORD` / `_NAME` | you choose; used **once** in the Render Shell to create the first Super Admin, don't store them permanently | once |
 

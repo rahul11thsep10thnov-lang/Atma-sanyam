@@ -37,17 +37,34 @@ Codes: `bad_request` 400, `unauthorized` 401, `forbidden` 403, `not_found` 404, 
 
 ### Accounts
 
+Accounts are phone-first: a one-time code by SMS signs you in and creates the account the first
+time; then a password, a username and an avatar are set. Accounts created earlier with an email
+keep working with email + password.
+
 | Method | Path | Auth | Body → Response |
 |---|---|---|---|
-| POST | `/v1/auth/register` | — | `{ email, password (8–128), displayName? }` → `201 { token, expiresAt, user }`. 409 if email exists. Rate limited. |
-| POST | `/v1/auth/login` | — | `{ email, password }` → `{ token, expiresAt, user }`. Generic 401 for wrong credentials. Rate limited. |
+| POST | `/v1/auth/otp/request` | — | `{ phone }` → `202 { ok, phone (masked), expiresInSeconds, resendAfterSeconds }`. Sends a 6-digit code (10 min). 429 after 5 codes an hour or within 45 s of the last; 503 when no SMS provider is configured; 502 when the provider fails. Rate limited per IP + number. |
+| POST | `/v1/auth/otp/verify` | — | `{ phone, code }` → `201` (account created) or `200` `{ token, expiresAt, user, onboarding }`. 5 wrong codes lock the code. The session may set a password without the old one for 15 minutes. |
+| POST | `/v1/auth/login` | — | `{ phone \| email, password }` → `{ token, expiresAt, user, onboarding }`. Generic 401 for wrong credentials. Rate limited. |
+| POST | `/v1/auth/register` | — | `{ email, password, displayName? }` → `201 { token, expiresAt, user, onboarding }`. Email accounts (kept for compatibility). |
 | POST | `/v1/auth/logout` | user | → 204 (revokes this session). |
-| POST | `/v1/auth/password-reset/request` | — | `{ email }` → `202` always (same answer for unknown emails). Emails a 6-digit code valid 15 min. 503 if email isn't configured. |
-| POST | `/v1/auth/password-reset/confirm` | — | `{ email, code, newPassword }` → `{ token, expiresAt, user }`; revokes all other sessions. 5 wrong codes lock the code. |
-| GET | `/v1/me` | user | → `{ id, email, displayName, createdAt }` |
-| PATCH | `/v1/me` | user | `{ displayName }` → user |
-| POST | `/v1/me/password` | user | `{ currentPassword, newPassword }` → 204 (signs out other devices) |
-| DELETE | `/v1/me` | user | `{ password }` → 204. Deletes the account; analytics are kept but unlinked. |
+| POST | `/v1/auth/password-reset/request` | — | `{ email }` → `202` always. Emails a 6-digit code valid 15 min. 503 if email isn't configured. Phone accounts reset by signing in with a code and calling `/v1/me/password`. |
+| POST | `/v1/auth/password-reset/confirm` | — | `{ email, code, newPassword }` → `{ token, expiresAt, user, onboarding }`; revokes all other sessions. |
+| GET | `/v1/me` | user | → `user` + `onboarding` |
+| GET | `/v1/usernames/availability?username=` | user | → `{ username, available, reason: 'invalid' \| 'reserved' \| 'taken' \| null }`. Advisory; the unique index decides on save. 60/min. |
+| PATCH | `/v1/me` | user | `{ displayName?, username?, avatarId?, allowPokes?, discoverableByPhone? }` → user + onboarding. 409 if the username was just taken. |
+| POST | `/v1/me/password` | user | `{ currentPassword?, newPassword }` → 204 (signs out other devices). `currentPassword` may be left out when the account has no password yet or the session was opened by a code within 15 minutes. |
+| DELETE | `/v1/me` | user | `{ password? }` → 204. Deletes the account; analytics are kept but unlinked. |
+
+`user` (the owner's own view): `id, phone, phoneMasked, email, username, displayName, avatarId,
+allowPokes, discoverableByPhone, hasPassword, createdAt`. Other people only ever get
+`id, username, displayName, avatarId` — never a number or email. `onboarding`:
+`{ needsPassword, needsUsername }`.
+
+**Password rule:** 6–15 characters with at least one capital letter, one small letter, one number
+and one special character, no spaces. **Username rule:** 3–20 characters, letters, numbers, dots
+and underscores, starting with a letter, no two dots/underscores in a row; case is kept for
+display, uniqueness is case-insensitive; some names (admin, support, tame, …) are reserved.
 
 Sessions last 30 days and extend while in use.
 
