@@ -92,8 +92,8 @@ fun PersonProfileScreen(
                     }
                     if (person.status == RelationStatus.FRIENDS) {
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth().padding(top = 14.dp)) {
-                            RoyalButton(stringResource(R.string.profile_play_request), onClick = onPlayRequest, enabled = canPlayRequest, modifier = Modifier.weight(1f))
-                            RoyalButton(stringResource(R.string.profile_poke), onClick = onPoke, enabled = canPoke, style = RoyalButtonStyle.STEEL, modifier = Modifier.weight(1f))
+                            RoyalButton(stringResource(R.string.profile_play_request), onClick = onPlayRequest, enabled = canPlayRequest, compact = true, modifier = Modifier.weight(1f))
+                            RoyalButton(stringResource(R.string.profile_poke), onClick = onPoke, enabled = canPoke, style = RoyalButtonStyle.STEEL, compact = true, modifier = Modifier.weight(1f))
                         }
                     } else {
                         Relations.primaryAction(person.status)?.let { action ->
