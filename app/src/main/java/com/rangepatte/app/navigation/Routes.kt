@@ -19,6 +19,8 @@ object Routes {
     const val LOGIN = "login"
     const val MEMBERSHIP = "membership"
     const val CHECKOUT = "checkout"
+    const val USERNAME = "profile/username"
+    const val AVATAR = "profile/avatar"
 
     const val ARG_GAME_ID = "gameId"
     const val ARG_MODE = "mode"

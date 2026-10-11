@@ -368,6 +368,33 @@ On top of the login setup below, in the Firebase console:
 - Nearby needs both phones within a few metres; online play with a flaky connection can drop a
   table (the guest sees "Connection lost").
 
+## Player profile (username and avatar)
+
+After a first OTP sign-in the player picks a **username** (`ui/profile/UsernameScreen.kt`) and an
+**avatar** (`AvatarScreen.kt`). Rules live in `domain/profile/Username.kt` (3–16 chars, letters/digits/_,
+case-insensitive, reserved list) and are unit-tested. Uniqueness is enforced by the store
+(`data/profile/ProfileRepository.kt`): in Firestore a transaction on `usernames/{lowercase}` reserves
+the name, so two players can never end up with the same one; `profiles/{uid}` holds `username` and
+`avatarId`. Phone numbers never leave the owner-only `users` collection. In demo mode names are
+reserved on the phone only.
+
+**Avatar artwork is not in the repository yet.** The picker shows twenty numbered coloured discs until
+the PNGs are added. Drop the 20 files into `app/src/main/res/drawable/` with exactly these names
+(lowercase, from `domain/profile/AvatarCatalog.kt`): `avatar_01_focused_strategist.png` …
+`avatar_20_mature_mentor_female.png` (square, 512–1024 px; they are shown cropped to a circle). No
+code change is needed; rebuild and they appear.
+
+Firestore rules to add for these collections (signed-in users only; a username doc may only be
+created by the user it names and never changed):
+```
+match /profiles/{uid} { allow read: if request.auth != null; allow write: if request.auth.uid == uid; }
+match /usernames/{name} {
+  allow read: if request.auth != null;
+  allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
+  allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+}
+```
+
 ## Sound and music
 
 All sound goes through one object, `audio/GameAudio.kt`, which owns the settings and is the only code

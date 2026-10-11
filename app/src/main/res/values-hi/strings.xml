@@ -271,4 +271,30 @@
     <string name="audio_off">बंद</string>
     <string name="audio_music_missing">पृष्ठभूमि संगीत की फ़ाइल अभी जोड़ी नहीं गई</string>
     <string name="audio_credit">संगीत: “Surreal Forest”, Meydän · CC BY 4.0 · linktr.ee/meydan</string>
+
+    <!-- Profile: username and avatar -->
+    <string name="username_title">आपकी प्रोफ़ाइल</string>
+    <string name="username_heading">अपना नाम चुनें</string>
+    <string name="username_intro">हर मेज़ पर दोस्त आपको इसी नाम से जानेंगे।</string>
+    <string name="username_placeholder">आपका नाम</string>
+    <string name="username_label">यूज़रनेम</string>
+    <string name="username_checking">जाँच रहे हैं…</string>
+    <string name="username_available">✔ यूज़रनेम उपलब्ध है</string>
+    <string name="username_taken">✕ यूज़रनेम उपलब्ध नहीं है</string>
+    <string name="username_check_failed">जाँच नहीं हो सकी — फिर से कोशिश करें</string>
+    <string name="username_too_short">कम से कम %1$d अक्षर</string>
+    <string name="username_too_long">अधिकतम %1$d अक्षर</string>
+    <string name="username_bad_chars">केवल अक्षर, अंक और _</string>
+    <string name="username_reserved">यह नाम आरक्षित है</string>
+    <string name="username_try">इनमें से कोई आज़माएँ:</string>
+    <string name="username_rules">%1$d–%2$d अक्षर · अक्षर, अंक और _ · बाद में बदला जा सकता है</string>
+    <string name="username_continue">आगे बढ़ें</string>
+    <string name="avatar_title">आपकी तस्वीर</string>
+    <string name="avatar_heading">अपना चेहरा चुनें</string>
+    <string name="avatar_hint">चुनने के लिए तस्वीर पर टैप करें। बाद में प्रोफ़ाइल से बदल सकते हैं।</string>
+    <string name="avatar_save_failed">तस्वीर सहेजी नहीं जा सकी। कनेक्शन जाँचकर फिर कोशिश करें।</string>
+    <string name="profile_edit">तस्वीर बदलें</string>
+    <string name="login_otp_expired">यह OTP समाप्त हो गया है। नया OTP माँगें।</string>
+    <string name="login_too_many_attempts">बहुत बार गलत OTP। नया OTP माँगें।</string>
+    <string name="login_network_error">इंटरनेट कनेक्शन नहीं है। फिर कोशिश करें।</string>
 </resources>

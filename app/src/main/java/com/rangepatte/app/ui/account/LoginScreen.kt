@@ -47,6 +47,15 @@ import com.rangepatte.app.ui.components.royal.RoyalButton
 import com.rangepatte.app.ui.components.royal.RoyalButtonStyle
 import com.rangepatte.app.ui.components.royal.RoyalPanel
 import com.rangepatte.app.ui.components.royal.RoyalTextField
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import com.rangepatte.app.ui.theme.GoldBevelDark
+import com.rangepatte.app.ui.theme.GoldenGlow
 import com.rangepatte.app.ui.language.LocalAppLanguage
 import com.rangepatte.app.ui.language.findActivity
 import com.rangepatte.app.ui.theme.BodyFont
@@ -65,6 +74,7 @@ import com.rangepatte.app.ui.theme.ParchmentTextDim
 fun LoginScreen(
     onBackClick: () -> Unit,
     onSignedIn: () -> Unit,
+    onEditProfile: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = viewModel()
 ) {
@@ -91,15 +101,23 @@ fun LoginScreen(
                         title = stringResource(R.string.account_title),
                         modifier = Modifier.widthIn(max = 520.dp).fillMaxWidth()
                     ) {
+                        val profile by AppServices.profile.profile.collectAsState()
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Filled.AccountCircle, contentDescription = null, tint = GoldBevelLight, modifier = Modifier.size(48.dp))
+                            com.rangepatte.app.ui.profile.MyAvatar(profile?.avatarId, size = 48.dp)
                             Column(modifier = Modifier.padding(start = 12.dp)) {
-                                signedInUser.displayName?.let {
-                                    Text(it, style = MaterialTheme.typography.titleLarge, color = GoldBevelLight)
-                                }
+                                Text(
+                                    text = profile?.username?.let { "@$it" } ?: signedInUser.displayName ?: "",
+                                    style = MaterialTheme.typography.titleLarge, color = GoldBevelLight
+                                )
                                 Text(signedInUser.phoneNumber, style = MaterialTheme.typography.bodyLarge, color = ParchmentText)
                             }
                         }
+                        RoyalButton(
+                            text = stringResource(R.string.profile_edit),
+                            onClick = onEditProfile,
+                            style = RoyalButtonStyle.STEEL,
+                            modifier = Modifier.fillMaxWidth().padding(top = 14.dp)
+                        )
                         RoyalButton(
                             text = stringResource(R.string.account_logout),
                             onClick = viewModel::signOut,
@@ -133,11 +151,12 @@ private fun LoginForm(uiState: LoginUiState, viewModel: LoginViewModel) {
         }
         when (uiState.step) {
             LoginStep.ENTER_PHONE -> {
+                CountryPicker(selected = uiState.country, onSelect = viewModel::onCountryChange)
                 RoyalTextField(
                     value = uiState.phoneDigits,
                     onValueChange = viewModel::onPhoneChange,
                     label = stringResource(R.string.login_phone_label),
-                    prefix = "+91 ",
+                    prefix = uiState.country.dial + " ",
                     isError = uiState.errorRes == R.string.login_invalid_phone,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Next),
                     modifier = Modifier.padding(top = 4.dp)
@@ -154,7 +173,7 @@ private fun LoginForm(uiState: LoginUiState, viewModel: LoginViewModel) {
                 RoyalButton(
                     text = stringResource(R.string.login_send_otp),
                     onClick = sendOtp,
-                    enabled = !uiState.isBusy && uiState.phoneDigits.length == LoginViewModel.PHONE_DIGITS,
+                    enabled = !uiState.isBusy && LoginViewModel.isValidNumber(uiState.country, uiState.phoneDigits),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp)
@@ -171,7 +190,7 @@ private fun LoginForm(uiState: LoginUiState, viewModel: LoginViewModel) {
             }
             LoginStep.ENTER_OTP -> {
                 Text(
-                    text = stringResource(R.string.login_otp_sent_format, LoginViewModel.phoneE164(uiState.phoneDigits)),
+                    text = stringResource(R.string.login_otp_sent_format, LoginViewModel.phoneE164(uiState.country, uiState.phoneDigits)),
                     style = MaterialTheme.typography.bodyLarge,
                     color = ParchmentText,
                     textAlign = TextAlign.Center,
@@ -221,6 +240,29 @@ private fun LoginForm(uiState: LoginUiState, viewModel: LoginViewModel) {
                     )
                 }
             }
+        }
+    }
+}
+
+/** A row of dial-code chips; India is first and the default. */
+@Composable
+private fun CountryPicker(selected: CountryCode, onSelect: (CountryCode) -> Unit) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 12.dp).horizontalScroll(rememberScrollState())
+    ) {
+        COUNTRY_CODES.forEach { country ->
+            val isSelected = country == selected
+            Text(
+                text = "${country.iso} ${country.dial}",
+                style = MaterialTheme.typography.labelLarge,
+                color = if (isSelected) GoldenGlow else ParchmentTextDim,
+                modifier = Modifier
+                    .border(1.dp, if (isSelected) GoldenGlow else GoldBevelDark, RoundedCornerShape(3.dp))
+                    .clickable(role = Role.RadioButton) { onSelect(country) }
+                    .semantics { contentDescription = country.name }
+                    .padding(horizontal = 10.dp, vertical = 6.dp)
+            )
         }
     }
 }

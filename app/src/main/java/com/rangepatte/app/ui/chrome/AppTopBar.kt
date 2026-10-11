@@ -24,6 +24,8 @@ import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -34,6 +36,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rangepatte.app.AppServices
 import com.rangepatte.app.R
 import com.rangepatte.app.data.auth.UserProfile
 import com.rangepatte.app.ui.components.royal.GoldRule
@@ -96,8 +99,9 @@ fun AppTopBar(
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
+            val profile by AppServices.profile.profile.collectAsState()
             TopBarTab(
-                text = user?.let(::shortName) ?: stringResource(R.string.topbar_login),
+                text = profile?.username?.let { "@$it" } ?: user?.let(::shortName) ?: stringResource(R.string.topbar_login),
                 icon = if (user != null) Icons.Filled.AccountCircle else Icons.Filled.Person,
                 colors = listOf(ButtonSteelTop, ButtonSteelBottom),
                 iconTint = GoldBevelLight,

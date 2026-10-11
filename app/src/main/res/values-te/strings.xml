@@ -271,4 +271,30 @@
     <string name="audio_off">ఆఫ్</string>
     <string name="audio_music_missing">నేపథ్య సంగీతం ఫైల్ ఇంకా జోడించలేదు</string>
     <string name="audio_credit">సంగీతం: “Surreal Forest”, Meydän · CC BY 4.0 · linktr.ee/meydan</string>
+
+    <!-- Profile: username and avatar -->
+    <string name="username_title">మీ ప్రొఫైల్</string>
+    <string name="username_heading">మీ పేరును ఎంచుకోండి</string>
+    <string name="username_intro">ప్రతి టేబుల్‌లో స్నేహితులు మిమ్మల్ని ఈ పేరుతో గుర్తిస్తారు.</string>
+    <string name="username_placeholder">మీ పేరు</string>
+    <string name="username_label">యూజర్‌నేమ్</string>
+    <string name="username_checking">తనిఖీ చేస్తోంది…</string>
+    <string name="username_available">✔ యూజర్‌నేమ్ అందుబాటులో ఉంది</string>
+    <string name="username_taken">✕ యూజర్‌నేమ్ అందుబాటులో లేదు</string>
+    <string name="username_check_failed">తనిఖీ చేయలేకపోయాం — మళ్లీ ప్రయత్నించండి</string>
+    <string name="username_too_short">కనీసం %1$d అక్షరాలు</string>
+    <string name="username_too_long">గరిష్ఠంగా %1$d అక్షరాలు</string>
+    <string name="username_bad_chars">అక్షరాలు, అంకెలు మరియు _ మాత్రమే</string>
+    <string name="username_reserved">ఈ పేరు రిజర్వ్ చేయబడింది</string>
+    <string name="username_try">వీటిలో ఒకటి ప్రయత్నించండి:</string>
+    <string name="username_rules">%1$d–%2$d అక్షరాలు · అక్షరాలు, అంకెలు, _ · తర్వాత మార్చవచ్చు</string>
+    <string name="username_continue">కొనసాగించు</string>
+    <string name="avatar_title">మీ చిత్రం</string>
+    <string name="avatar_heading">మీ ముఖాన్ని ఎంచుకోండి</string>
+    <string name="avatar_hint">ఎంచుకోవడానికి చిత్రాన్ని తాకండి. తర్వాత ప్రొఫైల్ నుండి మార్చవచ్చు.</string>
+    <string name="avatar_save_failed">చిత్రాన్ని సేవ్ చేయలేకపోయాం. కనెక్షన్ చూసి మళ్లీ ప్రయత్నించండి.</string>
+    <string name="profile_edit">చిత్రం మార్చు</string>
+    <string name="login_otp_expired">ఈ OTP గడువు ముగిసింది. కొత్త OTP అడగండి.</string>
+    <string name="login_too_many_attempts">చాలాసార్లు తప్పు OTP. కొత్త OTP అడగండి.</string>
+    <string name="login_network_error">ఇంటర్నెట్ కనెక్షన్ లేదు. మళ్లీ ప్రయత్నించండి.</string>
 </resources>

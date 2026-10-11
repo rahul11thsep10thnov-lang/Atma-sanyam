@@ -271,4 +271,30 @@
     <string name="audio_off">நிறுத்து</string>
     <string name="audio_music_missing">பின்னணி இசைக் கோப்பு இன்னும் சேர்க்கப்படவில்லை</string>
     <string name="audio_credit">இசை: “Surreal Forest”, Meydän · CC BY 4.0 · linktr.ee/meydan</string>
+
+    <!-- Profile: username and avatar -->
+    <string name="username_title">உங்கள் சுயவிவரம்</string>
+    <string name="username_heading">உங்கள் பெயரைத் தேர்ந்தெடுங்கள்</string>
+    <string name="username_intro">ஒவ்வொரு மேசையிலும் நண்பர்கள் உங்களை இந்தப் பெயரால் அறிவார்கள்.</string>
+    <string name="username_placeholder">உங்கள் பெயர்</string>
+    <string name="username_label">பயனர்பெயர்</string>
+    <string name="username_checking">சரிபார்க்கிறது…</string>
+    <string name="username_available">✔ பயனர்பெயர் கிடைக்கிறது</string>
+    <string name="username_taken">✕ பயனர்பெயர் கிடைக்கவில்லை</string>
+    <string name="username_check_failed">சரிபார்க்க முடியவில்லை — மீண்டும் முயலவும்</string>
+    <string name="username_too_short">குறைந்தது %1$d எழுத்துகள்</string>
+    <string name="username_too_long">அதிகபட்சம் %1$d எழுத்துகள்</string>
+    <string name="username_bad_chars">எழுத்துகள், எண்கள் மற்றும் _ மட்டும்</string>
+    <string name="username_reserved">இந்தப் பெயர் ஒதுக்கப்பட்டது</string>
+    <string name="username_try">இவற்றில் ஒன்றை முயலவும்:</string>
+    <string name="username_rules">%1$d–%2$d எழுத்துகள் · எழுத்துகள், எண்கள், _ · பின்னர் மாற்றலாம்</string>
+    <string name="username_continue">தொடரவும்</string>
+    <string name="avatar_title">உங்கள் படம்</string>
+    <string name="avatar_heading">உங்கள் முகத்தைத் தேர்ந்தெடுங்கள்</string>
+    <string name="avatar_hint">தேர்வு செய்ய படத்தைத் தொடவும். பின்னர் சுயவிவரத்தில் மாற்றலாம்.</string>
+    <string name="avatar_save_failed">படத்தைச் சேமிக்க முடியவில்லை. இணைப்பைச் சரிபார்த்து மீண்டும் முயலவும்.</string>
+    <string name="profile_edit">படத்தை மாற்று</string>
+    <string name="login_otp_expired">இந்த OTP காலாவதியானது. புதிய OTP கேட்கவும்.</string>
+    <string name="login_too_many_attempts">பல முறை தவறான OTP. புதிய OTP கேட்கவும்.</string>
+    <string name="login_network_error">இணைய இணைப்பு இல்லை. மீண்டும் முயலவும்.</string>
 </resources>

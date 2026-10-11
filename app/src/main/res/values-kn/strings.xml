@@ -271,4 +271,30 @@
     <string name="audio_off">ಆಫ್</string>
     <string name="audio_music_missing">ಹಿನ್ನೆಲೆ ಸಂಗೀತದ ಫೈಲ್ ಇನ್ನೂ ಸೇರಿಸಿಲ್ಲ</string>
     <string name="audio_credit">ಸಂಗೀತ: “Surreal Forest”, Meydän · CC BY 4.0 · linktr.ee/meydan</string>
+
+    <!-- Profile: username and avatar -->
+    <string name="username_title">ನಿಮ್ಮ ಪ್ರೊಫೈಲ್</string>
+    <string name="username_heading">ನಿಮ್ಮ ಹೆಸರನ್ನು ಆರಿಸಿ</string>
+    <string name="username_intro">ಪ್ರತಿ ಟೇಬಲ್‌ನಲ್ಲಿ ಸ್ನೇಹಿತರು ನಿಮ್ಮನ್ನು ಈ ಹೆಸರಿನಿಂದ ಗುರುತಿಸುತ್ತಾರೆ.</string>
+    <string name="username_placeholder">ನಿಮ್ಮ ಹೆಸರು</string>
+    <string name="username_label">ಬಳಕೆದಾರ ಹೆಸರು</string>
+    <string name="username_checking">ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ…</string>
+    <string name="username_available">✔ ಬಳಕೆದಾರ ಹೆಸರು ಲಭ್ಯವಿದೆ</string>
+    <string name="username_taken">✕ ಬಳಕೆದಾರ ಹೆಸರು ಲಭ್ಯವಿಲ್ಲ</string>
+    <string name="username_check_failed">ಪರಿಶೀಲಿಸಲಾಗಲಿಲ್ಲ — ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ</string>
+    <string name="username_too_short">ಕನಿಷ್ಠ %1$d ಅಕ್ಷರಗಳು</string>
+    <string name="username_too_long">ಗರಿಷ್ಠ %1$d ಅಕ್ಷರಗಳು</string>
+    <string name="username_bad_chars">ಅಕ್ಷರಗಳು, ಅಂಕಿಗಳು ಮತ್ತು _ ಮಾತ್ರ</string>
+    <string name="username_reserved">ಈ ಹೆಸರು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ</string>
+    <string name="username_try">ಇವುಗಳಲ್ಲಿ ಒಂದನ್ನು ಪ್ರಯತ್ನಿಸಿ:</string>
+    <string name="username_rules">%1$d–%2$d ಅಕ್ಷರಗಳು · ಅಕ್ಷರಗಳು, ಅಂಕಿಗಳು, _ · ನಂತರ ಬದಲಾಯಿಸಬಹುದು</string>
+    <string name="username_continue">ಮುಂದುವರಿಸಿ</string>
+    <string name="avatar_title">ನಿಮ್ಮ ಚಿತ್ರ</string>
+    <string name="avatar_heading">ನಿಮ್ಮ ಮುಖವನ್ನು ಆರಿಸಿ</string>
+    <string name="avatar_hint">ಆರಿಸಲು ಚಿತ್ರವನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ. ನಂತರ ಪ್ರೊಫೈಲ್‌ನಿಂದ ಬದಲಾಯಿಸಬಹುದು.</string>
+    <string name="avatar_save_failed">ಚಿತ್ರವನ್ನು ಉಳಿಸಲಾಗಲಿಲ್ಲ. ಸಂಪರ್ಕ ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="profile_edit">ಚಿತ್ರ ಬದಲಾಯಿಸಿ</string>
+    <string name="login_otp_expired">ಈ OTP ಅವಧಿ ಮುಗಿದಿದೆ. ಹೊಸ OTP ಕೇಳಿ.</string>
+    <string name="login_too_many_attempts">ಹಲವು ಬಾರಿ ತಪ್ಪು OTP. ಹೊಸ OTP ಕೇಳಿ.</string>
+    <string name="login_network_error">ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕವಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
 </resources>

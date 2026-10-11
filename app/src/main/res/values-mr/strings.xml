@@ -271,4 +271,30 @@
     <string name="audio_off">बंद</string>
     <string name="audio_music_missing">पार्श्वसंगीताची फाइल अजून जोडलेली नाही</string>
     <string name="audio_credit">संगीत: “Surreal Forest”, Meydän · CC BY 4.0 · linktr.ee/meydan</string>
+
+    <!-- Profile: username and avatar -->
+    <string name="username_title">तुमची प्रोफाइल</string>
+    <string name="username_heading">तुमचे नाव निवडा</string>
+    <string name="username_intro">प्रत्येक टेबलवर मित्र तुम्हाला याच नावाने ओळखतील.</string>
+    <string name="username_placeholder">तुमचे नाव</string>
+    <string name="username_label">युजरनेम</string>
+    <string name="username_checking">तपासत आहे…</string>
+    <string name="username_available">✔ युजरनेम उपलब्ध आहे</string>
+    <string name="username_taken">✕ युजरनेम उपलब्ध नाही</string>
+    <string name="username_check_failed">तपासता आले नाही — पुन्हा प्रयत्न करा</string>
+    <string name="username_too_short">किमान %1$d अक्षरे</string>
+    <string name="username_too_long">जास्तीत जास्त %1$d अक्षरे</string>
+    <string name="username_bad_chars">फक्त अक्षरे, अंक आणि _</string>
+    <string name="username_reserved">हे नाव राखीव आहे</string>
+    <string name="username_try">यापैकी एक वापरून पहा:</string>
+    <string name="username_rules">%1$d–%2$d अक्षरे · अक्षरे, अंक आणि _ · नंतर बदलता येईल</string>
+    <string name="username_continue">पुढे जा</string>
+    <string name="avatar_title">तुमचे चित्र</string>
+    <string name="avatar_heading">तुमचा चेहरा निवडा</string>
+    <string name="avatar_hint">निवडण्यासाठी चित्रावर टॅप करा. नंतर प्रोफाइलमधून बदलता येईल.</string>
+    <string name="avatar_save_failed">चित्र जतन करता आले नाही. कनेक्शन तपासून पुन्हा प्रयत्न करा.</string>
+    <string name="profile_edit">चित्र बदला</string>
+    <string name="login_otp_expired">हा OTP कालबाह्य झाला आहे. नवीन OTP मागवा.</string>
+    <string name="login_too_many_attempts">खूप वेळा चुकीचा OTP. नवीन OTP मागवा.</string>
+    <string name="login_network_error">इंटरनेट कनेक्शन नाही. पुन्हा प्रयत्न करा.</string>
 </resources>

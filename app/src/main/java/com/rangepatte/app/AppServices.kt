@@ -11,6 +11,9 @@ import com.rangepatte.app.data.auth.FirestoreUserDirectory
 import com.rangepatte.app.data.auth.LocalOnlyUserDirectory
 import com.rangepatte.app.data.membership.MembershipRepository
 import com.rangepatte.app.data.payment.PaymentGateway
+import com.rangepatte.app.data.profile.FirestoreProfileStore
+import com.rangepatte.app.data.profile.LocalProfileStore
+import com.rangepatte.app.data.profile.ProfileRepository
 import com.rangepatte.app.data.payment.PlaceholderPaymentGateway
 
 /**
@@ -23,6 +26,9 @@ object AppServices {
     lateinit var account: AccountRepository
         private set
     lateinit var ads: AdsManager
+        private set
+    /** Username and avatar — the public identity used by the Friends features. */
+    lateinit var profile: ProfileRepository
         private set
 
     /** Swap [PlaceholderPaymentGateway] for the real partner's implementation when one is chosen. */
@@ -43,6 +49,10 @@ object AppServices {
         } else {
             AccountRepository(application, DemoPhoneAuthService(), LocalOnlyUserDirectory)
         }
+        profile = ProfileRepository(application, if (isFirebaseConnected) FirestoreProfileStore() else LocalProfileStore(application))
+        account.onSignedInListener = profile::onSignedIn
+        account.onSignedOutListener = profile::onSignedOut
+        account.currentUser.value?.let { profile.onSignedIn(it.uid) }
         ads = AdsManager(membership)
         GameAudio.init(application)
     }

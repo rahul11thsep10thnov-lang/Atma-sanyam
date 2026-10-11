@@ -35,7 +35,12 @@ class AccountRepository(
         }
         _currentUser.value = profile
         directory.saveUser(profile, languageTag, adFreeUntilMillis)
+        onSignedInListener?.invoke(uid)
     }
+
+    /** Told the user id after every sign-in (the profile repository loads the username and avatar). */
+    var onSignedInListener: ((uid: String) -> Unit)? = null
+    var onSignedOutListener: (() -> Unit)? = null
 
     /** Re-saves the signed-in user's record, e.g. after a membership payment or a language change. */
     fun syncUser(languageTag: String, adFreeUntilMillis: Long) {
@@ -46,6 +51,7 @@ class AccountRepository(
         authService.signOut()
         prefs.edit { clear() }
         _currentUser.value = null
+        onSignedOutListener?.invoke()
     }
 
     private fun loadProfile(): UserProfile? {

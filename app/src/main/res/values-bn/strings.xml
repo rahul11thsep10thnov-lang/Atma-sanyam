@@ -271,4 +271,30 @@
     <string name="audio_off">বন্ধ</string>
     <string name="audio_music_missing">ব্যাকগ্রাউন্ড মিউজিকের ফাইল এখনও যোগ করা হয়নি</string>
     <string name="audio_credit">সংগীত: “Surreal Forest”, Meydän · CC BY 4.0 · linktr.ee/meydan</string>
+
+    <!-- Profile: username and avatar -->
+    <string name="username_title">আপনার প্রোফাইল</string>
+    <string name="username_heading">আপনার নাম বেছে নিন</string>
+    <string name="username_intro">প্রতিটি টেবিলে বন্ধুরা আপনাকে এই নামে চিনবে।</string>
+    <string name="username_placeholder">আপনার নাম</string>
+    <string name="username_label">ইউজারনেম</string>
+    <string name="username_checking">যাচাই হচ্ছে…</string>
+    <string name="username_available">✔ ইউজারনেম পাওয়া যাচ্ছে</string>
+    <string name="username_taken">✕ ইউজারনেম পাওয়া যাচ্ছে না</string>
+    <string name="username_check_failed">যাচাই করা যায়নি — আবার চেষ্টা করুন</string>
+    <string name="username_too_short">কমপক্ষে %1$d অক্ষর</string>
+    <string name="username_too_long">সর্বোচ্চ %1$d অক্ষর</string>
+    <string name="username_bad_chars">শুধু অক্ষর, সংখ্যা ও _</string>
+    <string name="username_reserved">এই নামটি সংরক্ষিত</string>
+    <string name="username_try">এগুলোর একটি চেষ্টা করুন:</string>
+    <string name="username_rules">%1$d–%2$d অক্ষর · অক্ষর, সংখ্যা ও _ · পরে বদলানো যাবে</string>
+    <string name="username_continue">চালিয়ে যান</string>
+    <string name="avatar_title">আপনার ছবি</string>
+    <string name="avatar_heading">আপনার মুখ বেছে নিন</string>
+    <string name="avatar_hint">বেছে নিতে ছবিতে ট্যাপ করুন। পরে প্রোফাইল থেকে বদলাতে পারবেন।</string>
+    <string name="avatar_save_failed">ছবি সংরক্ষণ করা যায়নি। সংযোগ দেখে আবার চেষ্টা করুন।</string>
+    <string name="profile_edit">ছবি বদলান</string>
+    <string name="login_otp_expired">এই OTP-র মেয়াদ শেষ। নতুন OTP চান।</string>
+    <string name="login_too_many_attempts">অনেকবার ভুল OTP। নতুন OTP চান।</string>
+    <string name="login_network_error">ইন্টারনেট সংযোগ নেই। আবার চেষ্টা করুন।</string>
 </resources>

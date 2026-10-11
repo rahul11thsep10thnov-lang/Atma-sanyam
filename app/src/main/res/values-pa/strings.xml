@@ -271,4 +271,30 @@
     <string name="audio_off">ਬੰਦ</string>
     <string name="audio_music_missing">ਪਿਛੋਕੜ ਸੰਗੀਤ ਦੀ ਫ਼ਾਈਲ ਹਾਲੇ ਜੋੜੀ ਨਹੀਂ ਗਈ</string>
     <string name="audio_credit">ਸੰਗੀਤ: “Surreal Forest”, Meydän · CC BY 4.0 · linktr.ee/meydan</string>
+
+    <!-- Profile: username and avatar -->
+    <string name="username_title">ਤੁਹਾਡੀ ਪ੍ਰੋਫ਼ਾਈਲ</string>
+    <string name="username_heading">ਆਪਣਾ ਨਾਂ ਚੁਣੋ</string>
+    <string name="username_intro">ਹਰ ਮੇਜ਼ \'ਤੇ ਦੋਸਤ ਤੁਹਾਨੂੰ ਇਸੇ ਨਾਂ ਨਾਲ ਜਾਣਨਗੇ।</string>
+    <string name="username_placeholder">ਤੁਹਾਡਾ ਨਾਂ</string>
+    <string name="username_label">ਯੂਜ਼ਰਨੇਮ</string>
+    <string name="username_checking">ਜਾਂਚ ਹੋ ਰਹੀ ਹੈ…</string>
+    <string name="username_available">✔ ਯੂਜ਼ਰਨੇਮ ਉਪਲਬਧ ਹੈ</string>
+    <string name="username_taken">✕ ਯੂਜ਼ਰਨੇਮ ਉਪਲਬਧ ਨਹੀਂ</string>
+    <string name="username_check_failed">ਜਾਂਚ ਨਹੀਂ ਹੋ ਸਕੀ — ਫਿਰ ਕੋਸ਼ਿਸ਼ ਕਰੋ</string>
+    <string name="username_too_short">ਘੱਟੋ-ਘੱਟ %1$d ਅੱਖਰ</string>
+    <string name="username_too_long">ਵੱਧ ਤੋਂ ਵੱਧ %1$d ਅੱਖਰ</string>
+    <string name="username_bad_chars">ਸਿਰਫ਼ ਅੱਖਰ, ਅੰਕ ਅਤੇ _</string>
+    <string name="username_reserved">ਇਹ ਨਾਂ ਰਾਖਵਾਂ ਹੈ</string>
+    <string name="username_try">ਇਨ੍ਹਾਂ ਵਿੱਚੋਂ ਕੋਈ ਅਜ਼ਮਾਓ:</string>
+    <string name="username_rules">%1$d–%2$d ਅੱਖਰ · ਅੱਖਰ, ਅੰਕ ਅਤੇ _ · ਬਾਅਦ ਵਿੱਚ ਬਦਲ ਸਕਦੇ ਹੋ</string>
+    <string name="username_continue">ਅੱਗੇ ਵਧੋ</string>
+    <string name="avatar_title">ਤੁਹਾਡੀ ਤਸਵੀਰ</string>
+    <string name="avatar_heading">ਆਪਣਾ ਚਿਹਰਾ ਚੁਣੋ</string>
+    <string name="avatar_hint">ਚੁਣਨ ਲਈ ਤਸਵੀਰ \'ਤੇ ਟੈਪ ਕਰੋ। ਬਾਅਦ ਵਿੱਚ ਪ੍ਰੋਫ਼ਾਈਲ ਤੋਂ ਬਦਲ ਸਕਦੇ ਹੋ।</string>
+    <string name="avatar_save_failed">ਤਸਵੀਰ ਸੰਭਾਲੀ ਨਹੀਂ ਜਾ ਸਕੀ। ਕਨੈਕਸ਼ਨ ਜਾਂਚ ਕੇ ਫਿਰ ਕੋਸ਼ਿਸ਼ ਕਰੋ।</string>
+    <string name="profile_edit">ਤਸਵੀਰ ਬਦਲੋ</string>
+    <string name="login_otp_expired">ਇਹ OTP ਦੀ ਮਿਆਦ ਖ਼ਤਮ ਹੋ ਗਈ ਹੈ। ਨਵਾਂ OTP ਮੰਗੋ।</string>
+    <string name="login_too_many_attempts">ਬਹੁਤ ਵਾਰ ਗ਼ਲਤ OTP। ਨਵਾਂ OTP ਮੰਗੋ।</string>
+    <string name="login_network_error">ਇੰਟਰਨੈੱਟ ਕਨੈਕਸ਼ਨ ਨਹੀਂ ਹੈ। ਫਿਰ ਕੋਸ਼ਿਸ਼ ਕਰੋ।</string>
 </resources>

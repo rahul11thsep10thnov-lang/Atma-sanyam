@@ -281,4 +281,30 @@
     <string name="audio_off">Off</string>
     <string name="audio_music_missing">Background music file not added yet</string>
     <string name="audio_credit">Music: “Surreal Forest” by Meydän · CC BY 4.0 · linktr.ee/meydan</string>
+
+    <!-- Profile: username and avatar -->
+    <string name="username_title">Your profile</string>
+    <string name="username_heading">Choose your name</string>
+    <string name="username_intro">Friends will know you by this name at every table.</string>
+    <string name="username_placeholder">Your name</string>
+    <string name="username_label">Username</string>
+    <string name="username_checking">Checking…</string>
+    <string name="username_available">✔ Username available</string>
+    <string name="username_taken">✕ Username unavailable</string>
+    <string name="username_check_failed">Couldn\'t check — tap to try again</string>
+    <string name="username_too_short">At least %1$d characters</string>
+    <string name="username_too_long">At most %1$d characters</string>
+    <string name="username_bad_chars">Only letters, numbers and _</string>
+    <string name="username_reserved">That name is reserved</string>
+    <string name="username_try">Try one of these:</string>
+    <string name="username_rules">%1$d–%2$d characters · letters, numbers and _ · can be changed later</string>
+    <string name="username_continue">Continue</string>
+    <string name="avatar_title">Your picture</string>
+    <string name="avatar_heading">Choose your face</string>
+    <string name="avatar_hint">Tap a picture to choose it. You can change it later from your profile.</string>
+    <string name="avatar_save_failed">Couldn\'t save your picture. Check your connection and try again.</string>
+    <string name="profile_edit">Change picture</string>
+    <string name="login_otp_expired">This OTP has expired. Please request a new one.</string>
+    <string name="login_too_many_attempts">Too many wrong attempts. Please request a new OTP.</string>
+    <string name="login_network_error">No internet connection. Please try again.</string>
 </resources>

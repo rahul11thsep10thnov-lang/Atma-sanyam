@@ -32,6 +32,8 @@ import com.rangepatte.app.ui.language.findActivity
 import com.rangepatte.app.ui.membership.CheckoutScreen
 import com.rangepatte.app.ui.membership.MembershipScreen
 import com.rangepatte.app.ui.multiplayer.LobbyRoute
+import com.rangepatte.app.ui.profile.AvatarScreen
+import com.rangepatte.app.ui.profile.UsernameScreen
 import com.rangepatte.app.ui.settings.SettingsScreen
 import com.rangepatte.app.ui.setup.GameSetupScreen
 import com.rangepatte.app.ui.table.GameTableScreen
@@ -39,7 +41,7 @@ import com.rangepatte.app.ui.table.GameTableScreen
 private val topLevelRoutes = setOf(Routes.GAMES, Routes.ENTERTAINMENT, Routes.SETTINGS)
 
 /** Pages that have their own back header and don't show the "Remove ads? / Login" strip or banner ads. */
-private val routesWithoutAppChrome = setOf(Routes.LANGUAGE_SELECT, Routes.LOGIN, Routes.MEMBERSHIP, Routes.CHECKOUT)
+private val routesWithoutAppChrome = setOf(Routes.LANGUAGE_SELECT, Routes.LOGIN, Routes.MEMBERSHIP, Routes.CHECKOUT, Routes.USERNAME, Routes.AVATAR)
 
 @Composable
 fun RangEPatteNavHost(
@@ -121,8 +123,25 @@ fun RangEPatteNavHost(
             composable(Routes.LOGIN) {
                 LoginScreen(
                     onBackClick = { navController.popBackStack() },
-                    onSignedIn = { navController.popBackStack() }
+                    onSignedIn = {
+                        // A first-time player picks a username and avatar before going back.
+                        if (AppServices.profile.profile.value?.isComplete == true) navController.popBackStack()
+                        else navController.navigate(Routes.USERNAME) { popUpTo(Routes.LOGIN) { inclusive = true } }
+                    },
+                    onEditProfile = { navController.navigate(Routes.AVATAR) }
                 )
+            }
+            composable(Routes.USERNAME) {
+                UsernameScreen(
+                    onDone = {
+                        if (AppServices.profile.profile.value?.avatarId == null) navController.navigate(Routes.AVATAR) { popUpTo(Routes.USERNAME) { inclusive = true } }
+                        else navController.popBackStack()
+                    },
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+            composable(Routes.AVATAR) {
+                AvatarScreen(onDone = { navController.popBackStack() }, onBackClick = { navController.popBackStack() })
             }
             composable(Routes.MEMBERSHIP) {
                 MembershipScreen(
