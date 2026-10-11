@@ -45,6 +45,13 @@ fun SettingsScreen(
                     RoyalSectionTitle(stringResource(R.string.settings_section_audio))
                     AudioControlsContent()
 
+                    // Pokes (Friends Element 15, Design 1): shown for a signed-in player, right under the sounds.
+                    val user by com.rangepatte.app.AppServices.account.currentUser.collectAsState()
+                    if (user != null) {
+                        RoyalSectionTitle(stringResource(R.string.settings_section_pokes))
+                        com.rangepatte.app.ui.pokes.PokeSettingsContent()
+                    }
+
                     RoyalSectionTitle(stringResource(R.string.settings_section_gameplay))
                     RoyalOptionRow(label = stringResource(R.string.settings_animations)) {
                         RoyalOrbToggle(checked = uiState.animationsEnabled, onCheckedChange = viewModel::toggleAnimations)

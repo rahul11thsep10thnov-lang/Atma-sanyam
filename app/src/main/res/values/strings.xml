@@ -455,4 +455,23 @@
 
     <!-- Poke animation (Element 14) -->
     <string name="poke_received_format">%1$s poked you</string>
+
+    <!-- Poke settings (Element 15) -->
+    <string name="settings_section_pokes">Pokes</string>
+    <string name="poke_pref_receive">Receive pokes</string>
+    <string name="poke_pref_sound">Sound</string>
+    <string name="poke_pref_vibration">Vibration</string>
+    <string name="poke_pref_audience">Who may poke me</string>
+    <string name="poke_audience_all">All friends</string>
+    <string name="poke_audience_favourites">Favourites</string>
+    <string name="poke_audience_nobody">Nobody</string>
+    <string name="poke_pref_muted">Muted people</string>
+    <string name="poke_pref_muted_none">Nobody is muted.</string>
+    <string name="poke_pref_unmute">Unmute</string>
+    <string name="poke_pref_note">Do Not Disturb silences pokes. A muted person is never told.</string>
+    <string name="poke_mute_person">Mute pokes</string>
+    <string name="poke_unmute_person">Unmute pokes</string>
+    <string name="poke_favourite">Favourite</string>
+    <string name="poke_unfavourite">Remove favourite</string>
+    <string name="poke_not_taking_format">%1$s is not taking pokes right now.</string>
 </resources>

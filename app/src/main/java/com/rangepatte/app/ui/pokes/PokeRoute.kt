@@ -43,9 +43,10 @@ fun BoxScope.PokeRoute(shake: Animatable<Float, *>, atTable: Boolean, onOpenPers
             reduceMotion = reduceMotion,
             canPokeBack = repo.canPoke(poke.from)
         )
-        // One card flick and one haptic tick (Element 15 adds the switches for both).
-        GameAudio.play(Sfx.PRESENT)
-        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+        // One card flick and one haptic tick, each switchable in Settings → Pokes (Element 15).
+        val prefs = AppServices.pokePrefs.value.value
+        if (prefs.sound) GameAudio.play(Sfx.PRESENT)
+        if (prefs.vibration) haptics.performHapticFeedback(HapticFeedbackType.LongPress)
         repo.acknowledge()
     }
     val current = show ?: return

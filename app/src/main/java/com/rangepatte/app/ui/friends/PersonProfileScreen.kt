@@ -74,6 +74,9 @@ fun PersonProfileScreen(
     onBackClick: () -> Unit,
     /** Set when the friend is at a full online table that can be watched: the first button becomes "Watch". */
     onWatch: (() -> Unit)? = null,
+    /** Element 15: star / unstar this friend and mute / unmute their pokes (shown for friends only). */
+    onToggleFavourite: (() -> Unit)? = null,
+    onToggleMute: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     var confirm by remember { mutableStateOf<ProfileConfirm?>(null) }
@@ -132,6 +135,12 @@ fun PersonProfileScreen(
                     } else {
                         Relations.primaryAction(person.status)?.let { action ->
                             RoyalButton(stringResource(actionLabel(action)), onClick = { onAction(action) }, modifier = Modifier.fillMaxWidth().padding(top = 14.dp))
+                        }
+                    }
+                    if (person.status == RelationStatus.FRIENDS && onToggleFavourite != null && onToggleMute != null) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fillMaxWidth().padding(top = 10.dp)) {
+                            RoyalButton((if (person.favourite) "\u2605 " else "\u2606 ") + stringResource(if (person.favourite) R.string.poke_unfavourite else R.string.poke_favourite), onClick = onToggleFavourite, style = RoyalButtonStyle.STEEL, compact = true, modifier = Modifier.weight(1f))
+                            RoyalButton(stringResource(if (person.muted) R.string.poke_unmute_person else R.string.poke_mute_person), onClick = onToggleMute, style = RoyalButtonStyle.STEEL, compact = true, modifier = Modifier.weight(1f))
                         }
                     }
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fillMaxWidth().padding(top = 18.dp)) {

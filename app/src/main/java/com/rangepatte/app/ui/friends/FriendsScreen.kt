@@ -50,7 +50,7 @@ data class FriendsState(
 )
 
 /** What the row's ⋯ menu offers for a friend. */
-enum class FriendMenu { REMOVE, BLOCK }
+enum class FriendMenu { REMOVE, BLOCK, FAVOURITE, MUTE }
 
 /**
  * The Friends tab (approved Design 1): four plaque tabs — Friends · Requests · Find · Online — over
@@ -117,6 +117,8 @@ private fun FriendList(
                     modifier = Modifier.padding(start = 6.dp).clickable { menuOpen = true })
             })
             DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }, modifier = Modifier.background(PanelWoodDark)) {
+                DropdownMenuItem(text = { Text(stringResource(if (person.favourite) R.string.poke_unfavourite else R.string.poke_favourite), color = ParchmentText) }, onClick = { menuOpen = false; onMenu(person, FriendMenu.FAVOURITE) })
+                DropdownMenuItem(text = { Text(stringResource(if (person.muted) R.string.poke_unmute_person else R.string.poke_mute_person), color = ParchmentText) }, onClick = { menuOpen = false; onMenu(person, FriendMenu.MUTE) })
                 DropdownMenuItem(text = { Text(stringResource(R.string.friends_remove), color = ParchmentText) }, onClick = { menuOpen = false; onMenu(person, FriendMenu.REMOVE) })
                 DropdownMenuItem(text = { Text(stringResource(R.string.friends_block), color = ParchmentText) }, onClick = { menuOpen = false; onMenu(person, FriendMenu.BLOCK) })
             }

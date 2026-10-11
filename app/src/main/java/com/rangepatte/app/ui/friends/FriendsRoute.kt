@@ -55,11 +55,12 @@ fun FriendsRoute(onLoginClick: () -> Unit, onOpenPerson: (String) -> Unit) {
     val searchError = stringResource(R.string.friends_search_error)
     val rateLimited = stringResource(R.string.friends_rate_limited)
 
+    val pokePrefs by AppServices.pokePrefs.value.collectAsState()
     fun ui(p: Person, status: RelationStatus): PersonUi {
         // Presence is shown for friends only; strangers in search results get no dot or mark.
         if (status != RelationStatus.FRIENDS) return PersonUi(p.uid, p.username, p.avatarId, status)
         val (online, state, text) = presenceOf(p.uid)
-        return PersonUi(p.uid, p.username, p.avatarId, status, online, text, state)
+        return PersonUi(p.uid, p.username, p.avatarId, status, online, text, state, favourite = p.uid in pokePrefs.favourites, muted = p.uid in pokePrefs.muted)
     }
     fun list(kind: (Relation) -> Boolean) = relations.filter(kind).mapNotNull { r -> people[r.other(me)]?.let { ui(it, r.statusFor(me)) } }
     val state = FriendsState(
@@ -101,7 +102,14 @@ fun FriendsRoute(onLoginClick: () -> Unit, onOpenPerson: (String) -> Unit) {
             }
         },
         onAction = { person, action -> friends.act(person.uid, action) },
-        onMenu = { person, item -> friends.act(person.uid, if (item == FriendMenu.REMOVE) RelationAction.REMOVE_FRIEND else RelationAction.BLOCK) },
+        onMenu = { person, item ->
+            when (item) {
+                FriendMenu.REMOVE -> friends.act(person.uid, RelationAction.REMOVE_FRIEND)
+                FriendMenu.BLOCK -> friends.act(person.uid, RelationAction.BLOCK)
+                FriendMenu.FAVOURITE -> AppServices.pokePrefs.setFavourite(person.uid, !person.favourite)
+                FriendMenu.MUTE -> AppServices.pokePrefs.setMuted(person.uid, !person.muted)
+            }
+        },
         onOpen = { onOpenPerson(it.uid) }
     )
 }
@@ -167,8 +175,12 @@ fun PersonProfileRoute(uid: String, onBackClick: () -> Unit, onWatch: (gameRoute
     val cooldown = pokedAt?.let { com.rangepatte.app.domain.pokes.Pokes.cooldownLeft(it, tick) }?.takeIf { it > 0 }
     val pokedLine = if (pokedAt != null && tick - pokedAt < 60 * 60_000L) stringResource(R.string.poke_sent_format, person.username) else null
     val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
+    val myPokePrefs by AppServices.pokePrefs.value.collectAsState()
+    val notTaking = stringResource(R.string.poke_not_taking_format, person.username)
     PersonProfileScreen(
-        person = PersonUi(person.uid, person.username, person.avatarId, status, online, detail, state),
+        person = PersonUi(person.uid, person.username, person.avatarId, status, online, detail, state, favourite = uid in myPokePrefs.favourites, muted = uid in myPokePrefs.muted),
+        onToggleFavourite = { AppServices.pokePrefs.setFavourite(uid, uid !in myPokePrefs.favourites) },
+        onToggleMute = { AppServices.pokePrefs.setMuted(uid, uid !in myPokePrefs.muted) },
         facts = facts,
         canPlayRequest = state == FriendState.AVAILABLE,
         canPoke = status == RelationStatus.FRIENDS && online && cooldown == null && AppServices.pokes.canPoke(uid, tick),
@@ -178,7 +190,9 @@ fun PersonProfileRoute(uid: String, onBackClick: () -> Unit, onWatch: (gameRoute
         onPoke = {
             haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
             com.rangepatte.app.audio.GameAudio.play(com.rangepatte.app.audio.Sfx.PRESENT)
-            AppServices.pokes.poke(uid)
+            AppServices.pokes.poke(uid) { r ->
+                if (r.exceptionOrNull() is com.rangepatte.app.data.pokes.NotTakingPokes) android.widget.Toast.makeText(context, notTaking, android.widget.Toast.LENGTH_SHORT).show()
+            }
         },
         onWatch = watchable?.let { a -> { onWatch(a.gameId.routeSegment, a.tableCode!!) } },
         onAction = { action -> friends.act(uid, action) { if (action == RelationAction.BLOCK || action == RelationAction.REMOVE_FRIEND) onBackClick() } },

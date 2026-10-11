@@ -420,6 +420,19 @@ animations") the banner fades in and nothing moves. One card flick and one hapti
 (Element 15 adds the switches). `ui/pokes/PokeOverlay.kt` + `PokeRoute.kt`, mounted over the NavHost,
 which offsets its content by the shiver.
 
+**Poke settings (Friends Element 15, approved Design 1).** A **Pokes** plaque on the Settings page,
+right under Sound and music, for a signed-in player: Receive pokes, Sound, Vibration (the app's own
+orb switches), a segmented **Who may poke me** row (All friends / Favourites / Nobody) and the **Muted
+people** chips with × to unmute. Defaults: everything on, all friends. Kept per account on the phone
+(`data/pokes/PokePrefsRepository.kt`); receive and audience are mirrored to `profiles/{uid}.pokePrefs`
+so a sender is told "priya_q is not taking pokes right now" instead of poking a wall (the Firestore
+store reads it before writing). A friend is starred as a **Favourite** or **muted** from the ⋯ menu on
+the Friends list or from the two steel buttons on their page; stars show on the row. On the receiving
+phone `PokePrefs.accepts()` (`PokePrefsTest`) drops anything from a muted person or outside the chosen
+audience before it can animate or notify. Do Not Disturb is respected by Android itself for the sound
+and the vibration. (Muting a person does not yet silence their table talk: table talk is muted by seat
+at the table, and seats are not tied to accounts on Nearby tables.)
+
 ### Online play: Firebase setup
 
 On top of the login setup below, in the Firebase console:

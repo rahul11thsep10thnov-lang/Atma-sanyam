@@ -51,7 +51,10 @@ data class PersonUi(
     /** A short second line: "Online · Teen Patti", "Sent 3 h ago"… already localized. */
     val detail: String? = null,
     /** Available / full / offline (Element 8); OFFLINE also for people whose presence we may not see. */
-    val state: FriendState = FriendState.OFFLINE
+    val state: FriendState = FriendState.OFFLINE,
+    /** Element 15: a starred friend ("Favourites only" may poke) and a friend whose pokes are muted. */
+    val favourite: Boolean = false,
+    val muted: Boolean = false
 )
 
 /**
@@ -105,7 +108,7 @@ fun PersonRow(person: PersonUi, onAction: (RelationAction) -> Unit, onOpen: (() 
         PersonAvatar(person.avatarId, person.online)
         Column(modifier = Modifier.weight(1f).padding(horizontal = 10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("@${person.username}", style = MaterialTheme.typography.titleMedium, color = GoldBevelLight, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
+                Text((if (person.favourite) "\u2605 " else "") + "@${person.username}", style = MaterialTheme.typography.titleMedium, color = GoldBevelLight, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
                 StateMedallion(person.state, modifier = Modifier.padding(start = 6.dp), size = 22.dp)
             }
             person.detail?.let { Text(it, style = MaterialTheme.typography.labelMedium, color = ParchmentTextDim, maxLines = 1, overflow = TextOverflow.Ellipsis) }

@@ -9,10 +9,14 @@ import com.rangepatte.app.domain.friends.RelationStatus
 import com.rangepatte.app.domain.notifications.Notice
 import com.rangepatte.app.domain.notifications.NoticeKind
 import com.rangepatte.app.domain.pokes.Poke
+import com.rangepatte.app.domain.pokes.PokePrefs
 import com.rangepatte.app.domain.pokes.Pokes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+
+/** The other player has switched pokes off (or limited them): the sender is told, nothing is written. */
+class NotTakingPokes : Exception("not taking pokes")
 
 /** Where pokes live: one record per sender→receiver (`pokes/{from_to}` = {from, to, t}). */
 interface PokeStore {
@@ -30,7 +34,9 @@ class PokeRepository(
     private val store: PokeStore,
     private val notifications: NotificationRepository,
     private val relationOf: (String) -> RelationStatus,
-    private val isOnline: (String) -> Boolean
+    private val isOnline: (String) -> Boolean,
+    /** The receiver's own settings (Element 15): who may poke, muted people. */
+    private val prefs: () -> PokePrefs = { PokePrefs() }
 ) {
     private var me: String? = null
     private var stop: (() -> Unit)? = null
@@ -50,6 +56,7 @@ class PokeRepository(
         stop?.invoke()
         stop = store.watch(uid) { poke ->
             if (relationOf(poke.from) != RelationStatus.FRIENDS) return@watch // not from a friend: ignored
+            if (!prefs().accepts(poke.from)) return@watch // switched off, muted, or not a favourite: nothing at all
             notifications.post(Notice("poke:${poke.from}:${poke.at}", NoticeKind.POKE, poke.from, poke.at))
             _incoming.value = poke
         }
@@ -98,10 +105,17 @@ class LocalPokeStore : PokeStore {
 class FirestorePokeStore : PokeStore {
     private val db get() = FirebaseFirestore.getInstance()
     override fun send(poke: Poke, onResult: (Result<Unit>) -> Unit) {
-        db.collection("pokes").document(Pokes.docId(poke.from, poke.to))
-            .set(mapOf("from" to poke.from, "to" to poke.to, "t" to poke.at))
-            .addOnSuccessListener { onResult(Result.success(Unit)) }
-            .addOnFailureListener { onResult(Result.failure(it)) }
+        // The receiver's mirrored settings first: "receive" off or audience NOBODY means a polite refusal.
+        db.collection("profiles").document(poke.to).get().addOnSuccessListener { doc ->
+            val mirrored = doc.get("pokePrefs") as? Map<*, *>
+            val receive = mirrored?.get("receive") as? Boolean ?: true
+            val audience = mirrored?.get("audience") as? String
+            if (!receive || audience == "NOBODY") { onResult(Result.failure(NotTakingPokes())); return@addOnSuccessListener }
+            db.collection("pokes").document(Pokes.docId(poke.from, poke.to))
+                .set(mapOf("from" to poke.from, "to" to poke.to, "t" to poke.at))
+                .addOnSuccessListener { onResult(Result.success(Unit)) }
+                .addOnFailureListener { onResult(Result.failure(it)) }
+        }.addOnFailureListener { onResult(Result.failure(it)) }
     }
     override fun watch(uid: String, onPoke: (Poke) -> Unit): () -> Unit {
         val since = System.currentTimeMillis()
