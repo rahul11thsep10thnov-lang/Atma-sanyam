@@ -44,16 +44,18 @@ fills: common at once, uncommon after 3 plants there, rare after 10.
 timer, the growth animation, the garden, the plant card, coins, jigsaw
 sizes, saved records and the checks all read it.
 
-| Completed minutes | Size | Jigsaw pieces |
+| Completed minutes | Size | Jigsaw (hangs this large in the museum) |
 | --- | --- | --- |
 | under 15 | no plant, no jigsaw | |
-| 15–29 | 1 | 3 × 3 |
-| 30–59 | 2 | 3 × 4 |
-| 60–89 | 3 | 4 × 5 |
-| 90–119 | 4 | 5 × 6 |
-| 120–149 | 5 | 6 × 8 |
-| 150–179 | 6 | 8 × 10 |
-| 180 and more | 7 | 9 × 12 |
+| 15–29 | 1 | smallest frame |
+| 30–59 | 2 | |
+| 60–89 | 3 | |
+| 90–119 | 4 | |
+| 120–149 | 5 | |
+| 150–179 | 6 | |
+| 180 and more | 7 | largest frame |
+
+Every jigsaw, of every size, is made of about 10,000 pieces; the size only decides how large its frame hangs.
 
 Each size is a separately built plant, not a scaled copy: more stems and
 leaves, then buds, then more and more open flowers, fruit from size 5 on

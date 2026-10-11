@@ -1,6 +1,6 @@
 // Checks the single growth-size table against the exact minute rules.
 //   node --experimental-strip-types tools/checks/growth_sizes.mjs
-import { sizeForMinutes, growthProgress, MIN_PLANT_MINUTES } from '../../src/growth/size.ts';
+import { sizeForMinutes, growthProgress, MIN_PLANT_MINUTES, SIZE_GRIDS } from '../../src/growth/size.ts';
 
 const cases = [
   [0, null], [5, null], [14, null], [14.99, null],
@@ -30,5 +30,11 @@ for (const target of [15, 29, 30, 75, 120, 180, 240]) {
     last = g;
   }
 }
+// every jigsaw, of every size, is about 10,000 pieces
+for (const [size, g] of Object.entries(SIZE_GRIDS)) {
+  const pieces = g.rows * g.cols;
+  if (pieces < 9500 || pieces > 10500) { bad++; console.log(`BAD size ${size} jigsaw has ${pieces} pieces`); }
+}
+console.log(`ok  every jigsaw size has ${SIZE_GRIDS[1].rows * SIZE_GRIDS[1].cols} pieces (${SIZE_GRIDS[1].rows} x ${SIZE_GRIDS[1].cols})`);
 console.log(bad ? `FAILED ${bad}` : 'all growth-size checks passed');
 process.exit(bad ? 1 : 0);

@@ -18,7 +18,7 @@ export const SETTING_DEFINITIONS = {
       enabled: z.boolean(),
       message: z.string().trim().min(1).max(500),
     }),
-    defaults: { enabled: false, message: "We're making FOCUS even better. Please check back in a little while." },
+    defaults: { enabled: false, message: "We're making Tame time even better. Please check back in a little while." },
   },
   app_version: {
     label: 'App version & update notices',
@@ -34,7 +34,7 @@ export const SETTING_DEFINITIONS = {
     defaults: {
       minimumVersion: '1.0.0',
       latestVersion: '1.0.0',
-      updateMessage: 'A new version of FOCUS is available.',
+      updateMessage: 'A new version of Tame time is available.',
       iosStoreUrl: '',
       androidStoreUrl: '',
     },

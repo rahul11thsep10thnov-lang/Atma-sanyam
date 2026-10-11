@@ -1,16 +1,21 @@
 import { GridDims } from '../types';
+import { PORTRAIT_GRID } from '../growth/size';
 
-const MIN_SIDE = 3;
-const MAX_SIDE = 12;
+/** Every jigsaw is made of about this many pieces, whatever its size or the
+ * length of the session that reveals it. */
+export const JIGSAW_PIECES = 10000;
 
-// Tile count tracks the number of seconds in the session (one tile flips per
-// second) approximated as a near-square grid, capped so the grid stays
-// renderable and legible on a phone screen for long sessions.
-export function gridForDuration(durationMinutes: number): GridDims {
-  const totalSeconds = durationMinutes * 60;
-  const side = Math.min(MAX_SIDE, Math.max(MIN_SIDE, Math.round(Math.sqrt(totalSeconds))));
-  return { rows: side, cols: side };
+/** The grid of about JIGSAW_PIECES cells whose cells are as square as the
+ * picture allows: `aspect` is the picture's width / height. */
+export function gridForAspect(aspect: number): GridDims {
+  const cols = Math.max(1, Math.round(Math.sqrt(JIGSAW_PIECES * aspect)));
+  const rows = Math.max(1, Math.round(JIGSAW_PIECES / cols));
+  return { rows, cols };
 }
+
+/** The phone-portrait grid (9:16), 75 x 133 = 9,975 pieces: what is recorded before a
+ * screen is known. A session uses the grid of its own screen (gridForAspect). */
+export const JIGSAW_GRID: GridDims = PORTRAIT_GRID;
 
 export const MIN_DURATION_MINUTES = 5;
 export const MAX_DURATION_MINUTES = 180;

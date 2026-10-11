@@ -1,4 +1,4 @@
-# FOCUS
+# Tame time
 
 A calm focus timer where a jigsaw puzzle assembles itself while you stay on task.
 Leave the app mid-session and the puzzle stays unfinished.
@@ -13,8 +13,8 @@ This repository contains the whole product:
 
 ```
  ┌──────────────────────┐        HTTPS (Bearer token)         ┌───────────────────────┐
- │  FOCUS mobile app    │ ──────────────  /v1/*  ───────────▶ │                       │
- │  iOS · Android       │                                      │   FOCUS API           │     ┌──────────────┐
+ │  Tame time mobile app    │ ──────────────  /v1/*  ───────────▶ │                       │
+ │  iOS · Android       │                                      │   Tame time API           │     ┌──────────────┐
  └──────────────────────┘                                      │   Express + Drizzle   │ ──▶ │ PostgreSQL   │
                                                                │   auth · RBAC · rate  │     └──────────────┘
  ┌──────────────────────┐   browser → same-origin proxy        │   limits · audit log  │
@@ -80,7 +80,7 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Android/iOS bundle ex
 
 - Pick a length on the circular dial (5–180 min, 5-min steps) and an image: bundled art,
   a quote tile, your own photo, or the online library managed from the admin console.
-- The picture is covered by tiles that flip away in a spread-out order as time passes
+- The picture is covered by about 10,000 jigsaw pieces. Each second some of them open, spread evenly over the whole picture (about 10,000 ÷ the session's seconds a second: roughly 5 a second in 30 minutes), and flip away as time passes
   (`src/hooks/useFocusTimer.ts`, `src/components/PuzzleGrid.tsx`). A completed session of
   fifteen minutes or more keeps the picture as a framed jigsaw in one of seven sizes, to hang in
   the museum or on the balcony wall (`docs/SPACES.md`).

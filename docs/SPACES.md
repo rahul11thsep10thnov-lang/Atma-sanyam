@@ -1,6 +1,6 @@
 # The spaces: balcony, garden, museum
 
-FOCUS has three places that grow with focused time, each its own tab:
+Tame time has three places that grow with focused time, each its own tab:
 
 | Tab | What it is | How it is drawn |
 | --- | --- | --- |
@@ -17,20 +17,20 @@ like a real, beautiful place?**
 ## Jigsaws and the collection
 
 A picture session (a library photograph or the person's own photo) reveals
-the picture tile by tile. Completed sessions of fifteen minutes or more keep
+the picture piece by piece: about 10,000 pieces, whatever the session's length or size, of which a few open each second, spread evenly over the whole picture (`src/components/PuzzleGrid.tsx`). Completed sessions of fifteen minutes or more keep
 it as a framed jigsaw. Its size is the session's **growth size**, the same
 seven sizes a plant reaches (`src/growth/size.ts`, the single table):
 
-| Completed minutes | Size | Pieces |
+| Completed minutes | Size | Frame in the museum |
 | --- | --- | --- |
 | under 15 | none | the picture still reveals, nothing is kept |
-| 15–29 | 1 | 3 × 3 |
-| 30–59 | 2 | 3 × 4 |
-| 60–89 | 3 | 4 × 5 |
-| 90–119 | 4 | 5 × 6 |
-| 120–149 | 5 | 6 × 8 |
-| 150–179 | 6 | 8 × 10 |
-| 180 and more | 7 | 9 × 12 |
+| 15–29 | 1 | smallest |
+| 30–59 | 2 | |
+| 60–89 | 3 | |
+| 90–119 | 4 | |
+| 120–149 | 5 | |
+| 150–179 | 6 | |
+| 180 and more | 7 | largest |
 
 Every artwork is a permanent record (`ArtworkRecord`: title, category,
 source, size, the session's minutes, date, frame, home). When a session
