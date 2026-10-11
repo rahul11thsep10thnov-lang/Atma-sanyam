@@ -11,6 +11,9 @@ import com.rangepatte.app.data.auth.FirestoreUserDirectory
 import com.rangepatte.app.data.auth.LocalOnlyUserDirectory
 import com.rangepatte.app.data.membership.MembershipRepository
 import com.rangepatte.app.data.payment.PaymentGateway
+import com.rangepatte.app.data.friends.FirestoreFriendsStore
+import com.rangepatte.app.data.friends.FriendsRepository
+import com.rangepatte.app.data.friends.LocalFriendsStore
 import com.rangepatte.app.data.profile.FirestoreProfileStore
 import com.rangepatte.app.data.profile.LocalProfileStore
 import com.rangepatte.app.data.profile.ProfileRepository
@@ -29,6 +32,9 @@ object AppServices {
         private set
     /** Username and avatar — the public identity used by the Friends features. */
     lateinit var profile: ProfileRepository
+        private set
+    /** Friends, requests and blocks of the signed-in player. */
+    lateinit var friends: FriendsRepository
         private set
 
     /** Swap [PlaceholderPaymentGateway] for the real partner's implementation when one is chosen. */
@@ -50,9 +56,10 @@ object AppServices {
             AccountRepository(application, DemoPhoneAuthService(), LocalOnlyUserDirectory)
         }
         profile = ProfileRepository(application, if (isFirebaseConnected) FirestoreProfileStore() else LocalProfileStore(application))
-        account.onSignedInListener = profile::onSignedIn
-        account.onSignedOutListener = profile::onSignedOut
-        account.currentUser.value?.let { profile.onSignedIn(it.uid) }
+        friends = FriendsRepository(if (isFirebaseConnected) FirestoreFriendsStore() else LocalFriendsStore(application))
+        account.onSignedInListener = { uid -> profile.onSignedIn(uid); friends.start(uid) }
+        account.onSignedOutListener = { profile.onSignedOut(); friends.stopWatching() }
+        account.currentUser.value?.let { profile.onSignedIn(it.uid); friends.start(it.uid) }
         ads = AdsManager(membership)
         GameAudio.init(application)
     }

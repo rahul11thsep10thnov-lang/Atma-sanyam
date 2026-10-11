@@ -297,4 +297,28 @@
     <string name="login_otp_expired">यह OTP समाप्त हो गया है। नया OTP माँगें।</string>
     <string name="login_too_many_attempts">बहुत बार गलत OTP। नया OTP माँगें।</string>
     <string name="login_network_error">इंटरनेट कनेक्शन नहीं है। फिर कोशिश करें।</string>
+
+    <!-- Friends: search and requests -->
+    <string name="friends_status_friends">दोस्त</string>
+    <string name="friends_add">दोस्त जोड़ें</string>
+    <string name="friends_request_sent">अनुरोध भेजा</string>
+    <string name="friends_accept">स्वीकारें</string>
+    <string name="friends_decline">अस्वीकारें</string>
+    <string name="friends_remove">दोस्त हटाएँ</string>
+    <string name="friends_block">ब्लॉक करें</string>
+    <string name="friends_unblock">अनब्लॉक करें</string>
+    <string name="friends_search_by_name">नाम</string>
+    <string name="friends_search_by_phone">मोबाइल नंबर</string>
+    <string name="friends_search_hint">यूज़रनेम से खोजें</string>
+    <string name="friends_phone_hint">देश कोड सहित पूरा नंबर</string>
+    <string name="friends_lookup">खोजें</string>
+    <string name="friends_phone_privacy">नंबर से केवल वही मिलेंगे जिन्होंने अनुमति दी है। नंबर कभी नहीं दिखाए जाते।</string>
+    <string name="friends_incoming">आए हुए</string>
+    <string name="friends_outgoing">भेजे गए</string>
+    <string name="friends_no_incoming">कोई नया अनुरोध नहीं</string>
+    <string name="friends_no_outgoing">कोई अनुरोध लंबित नहीं</string>
+    <string name="friends_cancel_request">अनुरोध रद्द करें</string>
+    <string name="friends_none_found">कोई नहीं मिला</string>
+    <string name="friends_search_error">खोज नहीं हो सकी। कनेक्शन जाँचें।</string>
+    <string name="friends_rate_limited">बहुत सारी खोजें। एक मिनट रुककर फिर कोशिश करें।</string>
 </resources>

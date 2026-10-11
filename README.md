@@ -395,6 +395,25 @@ match /usernames/{name} {
 }
 ```
 
+## Friends (in progress — design-approved elements only)
+
+Relations between players are one record per pair, `relations/{lowUid_highUid}` = `{a, b, kind:
+PENDING|FRIENDS|BLOCKED, by}`; every change is computed by the pure state machine in
+`domain/friends/Relation.kt` (`Relations.apply`) inside a Firestore transaction, so simultaneous or
+duplicated taps can never produce a half-state (unit-tested in `RelationsTest`). Search is a prefix
+query on `profiles.usernameLower`; phone discovery matches `profiles.phoneHash` (SHA-256 of the E.164
+number), written only when a player opts in, limited to 5 lookups a minute on the client. Demo mode has
+six pretend players (`LocalFriendsStore`); "priya_q" accepts requests after two seconds. Screens:
+`ui/friends/FindPeopleScreen.kt`, `RequestsPanel.kt`, `PersonRow.kt` (Design 1), to be mounted in the
+Friends tab once its layout is approved. Rules to add:
+```
+match /relations/{id} {
+  allow read: if request.auth != null && (resource.data.a == request.auth.uid || resource.data.b == request.auth.uid);
+  allow write: if request.auth != null && (request.resource.data.a == request.auth.uid || request.resource.data.b == request.auth.uid)
+               && id == (request.resource.data.a < request.resource.data.b ? request.resource.data.a + "_" + request.resource.data.b : request.resource.data.b + "_" + request.resource.data.a);
+}
+```
+
 ## Sound and music
 
 All sound goes through one object, `audio/GameAudio.kt`, which owns the settings and is the only code

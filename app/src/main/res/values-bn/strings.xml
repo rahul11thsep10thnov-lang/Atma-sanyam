@@ -297,4 +297,28 @@
     <string name="login_otp_expired">এই OTP-র মেয়াদ শেষ। নতুন OTP চান।</string>
     <string name="login_too_many_attempts">অনেকবার ভুল OTP। নতুন OTP চান।</string>
     <string name="login_network_error">ইন্টারনেট সংযোগ নেই। আবার চেষ্টা করুন।</string>
+
+    <!-- Friends: search and requests -->
+    <string name="friends_status_friends">বন্ধু</string>
+    <string name="friends_add">বন্ধু যোগ করুন</string>
+    <string name="friends_request_sent">অনুরোধ পাঠানো হয়েছে</string>
+    <string name="friends_accept">গ্রহণ</string>
+    <string name="friends_decline">প্রত্যাখ্যান</string>
+    <string name="friends_remove">বন্ধু সরান</string>
+    <string name="friends_block">ব্লক</string>
+    <string name="friends_unblock">আনব্লক</string>
+    <string name="friends_search_by_name">নাম</string>
+    <string name="friends_search_by_phone">মোবাইল নম্বর</string>
+    <string name="friends_search_hint">ইউজারনেম দিয়ে খুঁজুন</string>
+    <string name="friends_phone_hint">দেশের কোড সহ পুরো নম্বর</string>
+    <string name="friends_lookup">খুঁজুন</string>
+    <string name="friends_phone_privacy">নম্বর দিয়ে শুধু তাদেরই পাওয়া যাবে যারা অনুমতি দিয়েছেন। নম্বর কখনও দেখানো হয় না।</string>
+    <string name="friends_incoming">আগত</string>
+    <string name="friends_outgoing">পাঠানো</string>
+    <string name="friends_no_incoming">নতুন অনুরোধ নেই</string>
+    <string name="friends_no_outgoing">কোনো অনুরোধ অপেক্ষমাণ নেই</string>
+    <string name="friends_cancel_request">অনুরোধ বাতিল</string>
+    <string name="friends_none_found">কাউকে পাওয়া যায়নি</string>
+    <string name="friends_search_error">খোঁজা যায়নি। সংযোগ দেখুন।</string>
+    <string name="friends_rate_limited">অনেক বেশি খোঁজ। এক মিনিট পরে আবার চেষ্টা করুন।</string>
 </resources>

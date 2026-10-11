@@ -307,4 +307,28 @@
     <string name="login_otp_expired">This OTP has expired. Please request a new one.</string>
     <string name="login_too_many_attempts">Too many wrong attempts. Please request a new OTP.</string>
     <string name="login_network_error">No internet connection. Please try again.</string>
+
+    <!-- Friends: search and requests -->
+    <string name="friends_status_friends">Friends</string>
+    <string name="friends_add">Add friend</string>
+    <string name="friends_request_sent">Request sent</string>
+    <string name="friends_accept">Accept</string>
+    <string name="friends_decline">Decline</string>
+    <string name="friends_remove">Remove friend</string>
+    <string name="friends_block">Block</string>
+    <string name="friends_unblock">Unblock</string>
+    <string name="friends_search_by_name">Name</string>
+    <string name="friends_search_by_phone">Mobile number</string>
+    <string name="friends_search_hint">Search by username</string>
+    <string name="friends_phone_hint">Full number with country code</string>
+    <string name="friends_lookup">Look up</string>
+    <string name="friends_phone_privacy">Only people who allow it can be found by number. Numbers are never shown.</string>
+    <string name="friends_incoming">Incoming</string>
+    <string name="friends_outgoing">Sent</string>
+    <string name="friends_no_incoming">No new requests</string>
+    <string name="friends_no_outgoing">No requests waiting</string>
+    <string name="friends_cancel_request">Cancel request</string>
+    <string name="friends_none_found">No one found</string>
+    <string name="friends_search_error">Couldn\'t search. Check your connection.</string>
+    <string name="friends_rate_limited">Too many lookups. Wait a minute and try again.</string>
 </resources>
