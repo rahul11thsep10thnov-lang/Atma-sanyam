@@ -10,12 +10,14 @@ import com.rangepatte.app.AppServices
 import com.rangepatte.app.R
 import com.rangepatte.app.domain.model.AiDifficulty
 import com.rangepatte.app.domain.model.GameId
+import com.rangepatte.app.domain.presence.GameCapabilities
 import com.rangepatte.app.net.GameSession
 import com.rangepatte.app.net.TableSessions
 import com.rangepatte.app.net.Transport
 import com.rangepatte.app.net.core.GameMachines
 import com.rangepatte.app.net.core.LobbyGuest
 import com.rangepatte.app.net.core.LobbyHost
+import com.rangepatte.app.net.core.SessionCore
 import com.rangepatte.app.net.core.Wire
 import com.rangepatte.app.net.nearby.NearbyTransport
 import com.rangepatte.app.net.online.FirestoreTransport
@@ -79,7 +81,8 @@ class LobbyController(
     }
 
     private fun beginNearbyHost() {
-        val link = NearbyTransport(appContext, myName, maxGuests = totalSeats - 1)
+        // Room for the players and for people who arrive later to watch (GameSession seats them between rounds).
+        val link = NearbyTransport(appContext, myName, maxGuests = totalSeats - 1 + GameSession.MAX_SPECTATORS)
         nearby = link
         transport = link
         val lobby = newLobbyHost(link)
@@ -170,7 +173,9 @@ class LobbyController(
                     result.isFailure -> failAndReset(R.string.net_err_generic, result.exceptionOrNull()?.message.orEmpty())
                     room == null -> failAndReset(R.string.net_err_no_room)
                     room.gameId != gameId.name -> failAndReset(R.string.net_err_wrong_game)
-                    room.status != "lobby" -> failAndReset(R.string.net_err_started)
+                    // A table that is already playing can still be watched (Element 10); a closed one cannot.
+                    room.status == "playing" && !GameCapabilities.canSpectate(gameId) -> failAndReset(R.string.net_err_started)
+                    room.status != "lobby" && room.status != "playing" -> failAndReset(R.string.net_err_ended)
                     else -> {
                         val link = FirestoreTransport(room.code, uid, room.hostUid, isHost = false)
                         transport = link
@@ -215,7 +220,10 @@ class LobbyController(
         val start = guest.start ?: return
         val machine = GameMachines.forGame(start.config.gameId) ?: return
         handedOff = true
-        TableSessions.offer(GameSession.guest(machine, start.config, start.yourSeat, link))
+        val session =
+            if (start.yourSeat == SessionCore.SPECTATOR) GameSession.spectator(machine, start.config, link, roomId)
+            else GameSession.guest(machine, start.config, start.yourSeat, link, roomId)
+        TableSessions.offer(session)
         onTableReady?.invoke()
     }
 
@@ -247,9 +255,9 @@ class LobbyController(
         if (handedOff || lobby.guests.isEmpty()) return
         val machine = GameMachines.forGame(gameId) ?: return
         val started = lobby.start()
-        val session = GameSession.host(machine, started.config, link)
+        val session = GameSession.host(machine, started.config, link, roomId)
         started.seatByPeer.forEach { (peer, seat) -> session.assignPeerSeat(peer, seat) }
-        nearby?.stopAdvertising()
+        // The table stays discoverable: anyone who joins now watches, and sits down when a round ends.
         roomId?.let { OnlineRooms.markStatus(it, "playing") }
         handedOff = true
         TableSessions.offer(session)

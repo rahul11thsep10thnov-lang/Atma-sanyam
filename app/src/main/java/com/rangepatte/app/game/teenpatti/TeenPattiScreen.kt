@@ -26,7 +26,10 @@ import com.rangepatte.app.game.common.LocalTableArea
 import com.rangepatte.app.ui.thumbnails.CARD_ASPECT
 import com.rangepatte.app.game.common.SeatPlaque
 import com.rangepatte.app.game.common.StatusLine
+import com.rangepatte.app.game.common.SeatedNotice
 import com.rangepatte.app.game.common.undoControl
+import com.rangepatte.app.net.core.isHidden
+import com.rangepatte.app.game.common.watchingInfo
 import com.rangepatte.app.net.GameSession
 import com.rangepatte.app.ui.components.royal.RoyalButton
 import com.rangepatte.app.ui.components.royal.RoyalButtonStyle
@@ -46,13 +49,14 @@ fun TeenPattiScreen(
     onBackClick: () -> Unit
 ) {
     val state = session.state
-    val me = state.seats[session.mySeat]
     val mySeat = session.mySeat
+    val view = session.viewSeat // the seat the table is drawn from (the host's when watching)
+    val me = state.seats[view]
     val seatCount = state.seats.size
     val youName = stringResource(R.string.player_you)
     val myTurn = state.phase == TpPhase.BETTING && state.turn == mySeat
 
-    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl()) {
+    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl(), watching = session.watchingInfo(onBackClick)) {
         // Pot and stake.
         Row(
             horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally),
@@ -72,7 +76,7 @@ fun TeenPattiScreen(
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
         ) {
-            (1 until seatCount).map { (mySeat + it) % seatCount }.chunked(2).forEach { rowSeats ->
+            (1 until seatCount).map { (view + it) % seatCount }.chunked(2).forEach { rowSeats ->
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     rowSeats.forEach { index ->
                         val seat = state.seats[index]
@@ -117,14 +121,14 @@ fun TeenPattiScreen(
             me.hand.forEach { card ->
                 CardView(
                     card = card,
-                    faceDown = !me.seen && state.phase == TpPhase.BETTING,
+                    faceDown = card.isHidden || (!me.seen && state.phase == TpPhase.BETTING),
                     dimmed = me.packed,
                     modifier = Modifier.width(handCard)
                 )
             }
         }
         SeatPlaque(
-            name = youName,
+            name = if (session.isSpectator) me.name else youName,
             tag = statusOf(me),
             detail = stringResource(R.string.tp_chips_format, me.chips),
             isTurn = myTurn,
@@ -210,6 +214,7 @@ fun TeenPattiScreen(
         )
     }
 
+    SeatedNotice(session)
     if (session.connectionLost) ConnectionLostDialog(onBackClick)
 }
 

@@ -38,7 +38,9 @@ import com.rangepatte.app.game.common.GroupedHand
 import com.rangepatte.app.game.common.LocalTableArea
 import com.rangepatte.app.game.common.SeatPlaque
 import com.rangepatte.app.game.common.StatusLine
+import com.rangepatte.app.game.common.SeatedNotice
 import com.rangepatte.app.game.common.undoControl
+import com.rangepatte.app.game.common.watchingInfo
 import com.rangepatte.app.net.GameSession
 import com.rangepatte.app.ui.components.TurnIndicator
 import com.rangepatte.app.ui.components.royal.RoyalButton
@@ -71,6 +73,7 @@ fun RummyScreen(
 ) {
     val state = session.state
     val me = session.mySeat
+    val view = session.viewSeat // the seat the table is drawn from (the host's when watching)
     val youName = stringResource(R.string.player_you)
     var selectedId by remember { mutableStateOf<Int?>(null) }
     val myTurn = state.phase != RummyPhase.FINISHED && state.turn == me
@@ -81,8 +84,11 @@ fun RummyScreen(
         selectedId = null
     }
 
-    val myHand = state.players[me].hand
+    val myHand = state.players[view].hand
+    // A watcher's copy carries no real cards (all hidden), so there is nothing to arrange.
+    val hidden = myHand.any { it.isHidden }
     val arranged by produceState<Arranged?>(null, myHand, state.wildRank) {
+        if (hidden) return@produceState
         value = withContext(Dispatchers.Default) {
             val solution = MeldSession(myHand, state.wildRank).arrange()
             Arranged(
@@ -92,7 +98,7 @@ fun RummyScreen(
         }
     }
 
-    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl()) {
+    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl(), watching = session.watchingInfo(onBackClick)) {
         // Opponents.
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -101,7 +107,7 @@ fun RummyScreen(
                 .horizontalScroll(rememberScrollState())
                 .padding(horizontal = 10.dp, vertical = 6.dp)
         ) {
-            (1 until seatCount).map { (me + it) % seatCount }.forEach { seat ->
+            (1 until seatCount).map { (view + it) % seatCount }.forEach { seat ->
                 val player = state.players[seat]
                 SeatPlaque(
                     name = player.name,
@@ -188,13 +194,14 @@ fun RummyScreen(
 
         // Your hand, grouped into melds with the loose cards together: as large as the table allows, in one
         // row or two. The card you pick rises.
-        val shown = arranged ?: Arranged(emptyList(), sortedLoose(myHand))
+        val shown = if (hidden) Arranged(emptyList(), myHand) else arranged ?: Arranged(emptyList(), sortedLoose(myHand))
         // Loose cards are single-card groups that continue each other's run, so they can wrap to a second row anywhere.
         val groups = shown.melds + shown.loose.map { listOf(it) }
         val tight = groups.indices.map { it > shown.melds.size }
         GroupedHand(groups = groups, tight = tight, maxCardWidth = 84.dp, modifier = Modifier.padding(bottom = 4.dp)) { card, _, positioned ->
             CardView(
-                card = if (card.isPrintedJoker) null else card.toPlayingCard(),
+                card = if (card.isPrintedJoker || card.isHidden) null else card.toPlayingCard(),
+                faceDown = card.isHidden,
                 isJoker = card.isPrintedJoker,
                 inlineIndex = true,
                 selected = card.id == selectedId,
@@ -226,6 +233,7 @@ fun RummyScreen(
         )
     }
 
+    SeatedNotice(session)
     if (session.connectionLost) ConnectionLostDialog(onBackClick)
 }
 

@@ -50,4 +50,29 @@ interface GameMachine<S, A> {
 
     fun encode(action: A): String
     fun decode(text: String): A?
+
+    /** The whole state as text, for a phone that must pick the game up mid-way (a spectator, a latecomer). */
+    fun encodeState(state: S): String
+    fun decodeState(text: String): S?
+
+    /**
+     * [state] as [seat] may see it: every other hand replaced by hidden cards of the same count. Seat
+     * null is a spectator and sees no hand at all. What is public (played cards, bids, scores) stays.
+     */
+    fun redact(state: S, seat: Int?): S
+
+    /** True between rounds: the moment a spectator may be seated before the next deal. */
+    fun isRoundBoundary(state: S): Boolean
+
+    /**
+     * How many tricks (or turns) are left before the round ends, for the spectator's "4 tricks left"
+     * ribbon — or null when the game has no sensible count (betting, rummy turns).
+     */
+    fun stepsLeftInRound(state: S): Int? = null
+
+    /**
+     * [state] with [seat] now played by a person called [name] — only naming changes, never cards or
+     * scores. Games that keep names in their state override this; others return [state] unchanged.
+     */
+    fun rename(state: S, seat: Int, name: String): S = state
 }

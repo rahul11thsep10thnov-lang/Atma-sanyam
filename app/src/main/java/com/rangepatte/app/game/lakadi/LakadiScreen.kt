@@ -7,7 +7,9 @@ import com.rangepatte.app.domain.model.GameInfo
 import com.rangepatte.app.game.common.ConnectionLostDialog
 import com.rangepatte.app.game.common.GameFrame
 import com.rangepatte.app.game.common.GameResultDialog
+import com.rangepatte.app.game.common.SeatedNotice
 import com.rangepatte.app.game.common.undoControl
+import com.rangepatte.app.game.common.watchingInfo
 import com.rangepatte.app.game.tricks.BidDialog
 import com.rangepatte.app.game.tricks.SeatView
 import com.rangepatte.app.game.tricks.TrickAction
@@ -28,12 +30,13 @@ fun LakadiScreen(
 ) {
     val state = session.state
     val me = session.mySeat
+    val view = session.viewSeat // the seat the table is drawn from (the host's when watching)
     val seatNames = trickSeatNames(session.seatNames, me, partners = false)
     val round = state.round
     val trickDone = TrickEngine.isTrickComplete(round)
     val myTurn = state.phase == LkPhase.PLAYING && !trickDone && round.turn == me
 
-    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl()) {
+    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl(), watching = session.watchingInfo(onBackClick)) {
         val won = TrickEngine.tricksWonBySeat(round)
         TrickTable(
             seats = List(4) { seat ->
@@ -47,7 +50,7 @@ fun LakadiScreen(
                     detail = stringResource(R.string.lk_score_format, LakadiEngine.format(state.scoresTenths[seat]))
                 )
             },
-            mySeat = me,
+            mySeat = view,
             turn = when (state.phase) {
                 LkPhase.BIDDING -> state.bidTurn
                 LkPhase.PLAYING -> if (trickDone) null else round.turn
@@ -55,7 +58,7 @@ fun LakadiScreen(
             },
             plays = round.plays,
             winnerSeat = if (trickDone) TrickEngine.currentWinner(round, LakadiEngine.rules) else null,
-            myHand = round.hands[me],
+            myHand = round.hands[view],
             playable = if (myTurn) TrickEngine.legal(round).map { it.id }.toSet() else emptySet(),
             onPlay = { session.submit(TrickAction.Play(it.id)) },
             info = buildList {
@@ -108,5 +111,6 @@ fun LakadiScreen(
         )
     }
 
+    SeatedNotice(session)
     if (session.connectionLost) ConnectionLostDialog(onBackClick)
 }

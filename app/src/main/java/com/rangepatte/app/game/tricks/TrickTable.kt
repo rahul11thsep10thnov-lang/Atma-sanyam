@@ -19,6 +19,7 @@ import com.rangepatte.app.game.common.FannedHand
 import com.rangepatte.app.ui.thumbnails.CARD_ASPECT
 import com.rangepatte.app.game.common.SeatPlaque
 import com.rangepatte.app.game.common.StatusLine
+import com.rangepatte.app.net.core.isHidden
 
 /** What to print on one seat's nameplate. [tag] is a small line above the name, [detail] below it. */
 data class SeatView(val name: String, val cardsLeft: Int, val tag: String? = null, val detail: String? = null)
@@ -98,6 +99,8 @@ fun TrickTable(
             val canPlay = card.id in playable
             CardView(
                 card = card,
+                // A watcher's copy of the table carries no real cards: every hand is shown as backs.
+                faceDown = card.isHidden,
                 dimmed = playable.isNotEmpty() && !canPlay,
                 inlineIndex = true,
                 modifier = positioned.offset(y = if (canPlay) 0.dp else 12.dp),

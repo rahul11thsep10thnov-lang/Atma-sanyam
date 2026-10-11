@@ -23,6 +23,10 @@ data class RCard(val id: Int, val suit: Suit?, val rank: Rank?) {
     fun toPlayingCard(): PlayingCard = PlayingCard(suit!!, rank!!, "r$id")
 }
 
+/** A card a viewer may not see: a printed-Joker-shaped stand-in with an impossible id. */
+val HIDDEN_RCARD = RCard(-1, null, null)
+val RCard.isHidden: Boolean get() = id == -1
+
 data class RummyPlayer(val name: String, val isHuman: Boolean, val hand: List<RCard>)
 
 enum class RummyPhase { DRAW, DISCARD, FINISHED }

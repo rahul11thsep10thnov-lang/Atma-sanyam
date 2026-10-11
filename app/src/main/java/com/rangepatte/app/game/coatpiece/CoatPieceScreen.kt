@@ -7,7 +7,9 @@ import com.rangepatte.app.domain.model.GameInfo
 import com.rangepatte.app.game.common.ConnectionLostDialog
 import com.rangepatte.app.game.common.GameFrame
 import com.rangepatte.app.game.common.GameResultDialog
+import com.rangepatte.app.game.common.SeatedNotice
 import com.rangepatte.app.game.common.undoControl
+import com.rangepatte.app.game.common.watchingInfo
 import com.rangepatte.app.game.tricks.SeatView
 import com.rangepatte.app.game.tricks.TrickAction
 import com.rangepatte.app.game.tricks.TrickEngine
@@ -30,20 +32,21 @@ fun CoatPieceScreen(
 ) {
     val state = session.state
     val me = session.mySeat
-    val myTeam = TrickEngine.teamOf(me)
+    val view = session.viewSeat // the seat the table is drawn from (the host's when watching)
+    val myTeam = TrickEngine.teamOf(view)
     val seatNames = trickSeatNames(session.seatNames, me, partners = true)
     val round = state.round
     val trickDone = TrickEngine.isTrickComplete(round)
     val myTurn = state.phase == CpPhase.PLAYING && !trickDone && round.turn == me
 
-    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl()) {
+    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl(), watching = session.watchingInfo(onBackClick)) {
         val tricks = TrickEngine.tricksWonByTeam(round)
-        val hand = if (state.phase == CpPhase.TRUMP_CALL) round.hands[me].take(5) else round.hands[me]
+        val hand = if (state.phase == CpPhase.TRUMP_CALL) round.hands[view].take(5) else round.hands[view]
         TrickTable(
             seats = List(4) { seat ->
                 SeatView(seatNames[seat], round.hands[seat].size, tag = if (seat == state.caller) stringResource(R.string.cp_trump_caller) else null)
             },
-            mySeat = me,
+            mySeat = view,
             turn = if (state.phase == CpPhase.PLAYING && !trickDone) round.turn else null,
             plays = round.plays,
             winnerSeat = if (trickDone) TrickEngine.currentWinner(round, CoatPieceEngine.rules) else null,
@@ -90,5 +93,6 @@ fun CoatPieceScreen(
         )
     }
 
+    SeatedNotice(session)
     if (session.connectionLost) ConnectionLostDialog(onBackClick)
 }

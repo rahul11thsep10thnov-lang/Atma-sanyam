@@ -141,6 +141,7 @@ fun BidDialog(
 @Composable
 fun trickSeatNames(names: List<String>, mySeat: Int, partners: Boolean): List<String> {
     val you = stringResource(R.string.player_you)
+    if (mySeat < 0) return names // a watcher: nobody at the table is "you"
     val partnerSeat = TrickEngine.partnerOf(mySeat)
     return names.mapIndexed { seat, name ->
         when {

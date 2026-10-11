@@ -20,7 +20,10 @@ sealed interface Wire {
     /** Host → everyone: who is at the table right now, and how many seats it has (before the game starts). */
     data class Lobby(val names: List<String>, val seats: Int = 0) : Wire
 
-    /** Host → one client: the game begins; you sit at [yourSeat]. */
+    /**
+     * Host → one client: the game begins; you sit at [yourSeat]. A spectator gets seat
+     * [SessionCore.SPECTATOR] and a config with a blank seed (the real seed would reveal every deal).
+     */
     data class Start(val config: MatchConfig, val yourSeat: Int) : Wire
 
     /** Client → host: "I'd like to make this move." */
@@ -31,6 +34,23 @@ sealed interface Wire {
 
     /** Host → everyone: [seat]'s player has left; the computer plays that seat now. */
     data class Bot(val seat: Int) : Wire
+
+    /**
+     * Host → one spectator: the whole game as it stands after move [seq], with every hand hidden
+     * ([GameMachine.redact] for seat null). Sent after every step, because a spectator cannot replay
+     * moves on a view with hidden cards.
+     */
+    data class View(val seq: Int, val state: String) : Wire
+
+    /**
+     * Host → one spectator: you now sit at [seat]. [state] is the full game after move [seq] and [seed]
+     * the match's real seed (spectators were given a blank one), so this phone can follow the lockstep
+     * like any other player from here on.
+     */
+    data class Seat(val seat: Int, val seq: Int, val seed: Long, val state: String) : Wire
+
+    /** Host → everyone: [seat], until now the computer's, is played by a person called [name]. */
+    data class Human(val seat: Int, val name: String) : Wire
 
     /** Anyone: I am leaving / the table is closed. */
     data object Leave : Wire
@@ -44,6 +64,9 @@ sealed interface Wire {
         is Act -> "ACT|${esc(action)}"
         is Do -> "DO|$seq|$seat|${esc(action)}"
         is Bot -> "BOT|$seat"
+        is View -> "VIEW|$seq|${esc(state)}"
+        is Seat -> "SEAT|$seat|$seq|$seed|${esc(state)}"
+        is Human -> "HUMAN|$seat|${esc(name)}"
         Leave -> "LEAVE"
     }
 
@@ -71,6 +94,9 @@ sealed interface Wire {
                 "ACT" -> Act(unesc(p[1]))
                 "DO" -> Do(p[1].toInt(), p[2].toInt(), unesc(p[3]))
                 "BOT" -> Bot(p[1].toInt())
+                "VIEW" -> View(p[1].toInt(), unesc(p[2]))
+                "SEAT" -> Seat(p[1].toInt(), p[2].toInt(), p[3].toLong(), unesc(p[4]))
+                "HUMAN" -> Human(p[1].toInt(), unesc(p[2]))
                 "LEAVE" -> Leave
                 else -> null
             }

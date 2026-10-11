@@ -9,6 +9,9 @@ import com.rangepatte.app.game.tricks.TrickEngine
 import com.rangepatte.app.game.tricks.TrickSfx
 import com.rangepatte.app.game.tricks.cardInHand
 import com.rangepatte.app.net.core.GameMachine
+import com.rangepatte.app.game.tricks.TrickCodec
+import com.rangepatte.app.net.core.Writer
+import com.rangepatte.app.net.core.Reader
 import com.rangepatte.app.net.core.MatchConfig
 import kotlin.random.Random
 
@@ -50,6 +53,18 @@ object LakadiMachine : GameMachine<LkState, TrickAction> {
 
     override fun sfx(before: LkState, after: LkState, action: TrickAction?): List<SfxCue> =
         TrickSfx.cues(action, before.round, after.round, before.phase.over(), after.phase.over(), before.phase == LkPhase.GAME_OVER)
+
+    override fun encodeState(state: LkState): String = Writer().int(state.dealer).int(state.handNumber).int(state.phase.ordinal).ints(state.bids).int(state.bidTurn)
+        .also { TrickCodec.write(it, state.round) }.ints(state.scoresTenths).ints(state.lastDeltaTenths).toString()
+
+    override fun decodeState(text: String): LkState? = runCatching {
+        val r = Reader(text)
+        LkState(r.int(), r.int(), LkPhase.entries[r.int()], r.ints(), r.int(), TrickCodec.read(r), r.ints(), r.ints())
+    }.getOrNull()
+
+    override fun redact(state: LkState, seat: Int?) = state.copy(round = TrickCodec.redact(state.round, seat))
+    override fun isRoundBoundary(state: LkState) = state.phase == LkPhase.HAND_OVER || state.phase == LkPhase.GAME_OVER
+    override fun stepsLeftInRound(state: LkState): Int? = if (isRoundBoundary(state)) 0 else state.round.hands.maxOf { it.size }
 
     override fun encode(action: TrickAction) = TrickActionCodec.encode(action)
     override fun decode(text: String) = TrickActionCodec.decode(text)

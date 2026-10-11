@@ -9,6 +9,9 @@ import com.rangepatte.app.game.tricks.TrickEngine
 import com.rangepatte.app.game.tricks.TrickSfx
 import com.rangepatte.app.game.tricks.cardInHand
 import com.rangepatte.app.net.core.GameMachine
+import com.rangepatte.app.game.tricks.TrickCodec
+import com.rangepatte.app.net.core.Writer
+import com.rangepatte.app.net.core.Reader
 import com.rangepatte.app.net.core.MatchConfig
 import kotlin.random.Random
 
@@ -56,6 +59,37 @@ object TwentyNineMachine : GameMachine<T9State, TrickAction> {
 
     override fun sfx(before: T9State, after: T9State, action: TrickAction?): List<SfxCue> =
         TrickSfx.cues(action, before.round, after.round, before.phase.over(), after.phase.over(), before.phase == T9Phase.MATCH_OVER)
+
+    override fun encodeState(state: T9State): String {
+        val w = Writer().int(state.dealer).int(state.phase.ordinal)
+        w.list(state.firstHands) { cards(it) }; w.list(state.secondHands) { cards(it) }
+        w.ints(state.bids).int(state.bidTurn).int(state.highBid).int(state.highBidder).nullableSuit(state.trump)
+        w.bool(state.round != null); state.round?.let { TrickCodec.write(w, it) }
+        w.ints(state.teamPoints).ints(state.gameScore)
+        w.bool(state.result != null); state.result?.let { w.int(it.bidder).int(it.bid).int(it.bidderTeamPoints).bool(it.made) }
+        return w.toString()
+    }
+
+    override fun decodeState(text: String): T9State? = runCatching {
+        val r = Reader(text)
+        T9State(
+            dealer = r.int(), phase = T9Phase.entries[r.int()],
+            firstHands = r.list { cards() }, secondHands = r.list { cards() },
+            bids = r.ints(), bidTurn = r.int(), highBid = r.int(), highBidder = r.int(), trump = r.nullableSuit(),
+            round = if (r.bool()) TrickCodec.read(r) else null,
+            teamPoints = r.ints(), gameScore = r.ints(),
+            result = if (r.bool()) T9Result(r.int(), r.int(), r.int(), r.bool()) else null
+        )
+    }.getOrNull()
+
+    override fun redact(state: T9State, seat: Int?): T9State {
+        fun hide(hands: List<List<com.rangepatte.app.domain.model.PlayingCard>>) = hands.mapIndexed { s, h -> if (s == seat) h else h.map { com.rangepatte.app.net.core.HIDDEN_CARD } }
+        // The secret trump stays secret until the engine reveals it.
+        val trump = if (state.phase == T9Phase.PLAYING && state.round?.trumpActive != true && seat != state.highBidder) null else state.trump
+        return state.copy(firstHands = hide(state.firstHands), secondHands = hide(state.secondHands), trump = trump, round = state.round?.let { TrickCodec.redact(it, seat) })
+    }
+    override fun isRoundBoundary(state: T9State) = state.phase == T9Phase.ROUND_OVER || state.phase == T9Phase.MATCH_OVER
+    override fun stepsLeftInRound(state: T9State): Int? = if (isRoundBoundary(state)) 0 else state.round?.hands?.maxOf { it.size } ?: 8
 
     override fun encode(action: TrickAction) = TrickActionCodec.encode(action)
     override fun decode(text: String) = TrickActionCodec.decode(text)

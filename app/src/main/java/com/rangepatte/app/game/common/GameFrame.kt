@@ -51,6 +51,18 @@ import com.rangepatte.app.ui.theme.ParchmentText
 class UndoControl(val usesLeft: Int, val enabled: Boolean, val onUndo: () -> Unit)
 
 /**
+ * What a watcher's table shows (Element 10, Design 1): a gold "Watching" pill over the table and a
+ * ribbon under it that promises a seat — or says plainly that every seat is taken.
+ */
+class WatchingInfo(
+    /** A computer seat is free: "you'll take a seat when this round ends". */
+    val seatPromised: Boolean,
+    /** Tricks (or turns) left in the round, for the ribbon, or null when the game has no such count. */
+    val stepsLeft: Int?,
+    val onLeave: () -> Unit
+)
+
+/**
  * The page every game is played on: dark scene, header with back arrow and a Rules button (opens the
  * rules scroll), the game's own [content], and — when [undo] is given — the Undo button at the bottom.
  * System Back goes through [onBackClick] too, so leaving a table always takes the same path.
@@ -61,6 +73,7 @@ fun GameFrame(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     undo: UndoControl? = null,
+    watching: WatchingInfo? = null,
     background: BackgroundType = BackgroundType.VILLAGE_CHAUPAL,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -87,7 +100,8 @@ fun GameFrame(
                             BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
                                 // Games size their hands to the room the table really has.
                                 CompositionLocalProvider(LocalTableArea provides TableArea(maxWidth - 8.dp, maxHeight)) {
-                                    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 4.dp), content = content)
+                                    // A watcher's table starts below the "Watching" pill so no status line hides behind it.
+                                    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 4.dp, vertical = 0.dp).padding(top = if (watching != null) 40.dp else 0.dp), content = content)
                                 }
                             }
                             if (undo != null) {
@@ -103,6 +117,12 @@ fun GameFrame(
                                     )
                                 }
                             }
+                            if (watching != null) WatchingRibbon(watching)
+                        }
+                    }
+                    if (watching != null) {
+                        Box(modifier = Modifier.align(Alignment.TopCenter).padding(top = 6.dp)) {
+                            TurnIndicator(text = stringResource(R.string.spectate_watching))
                         }
                     }
                     // The audio panel floats over the top-right corner of the table, under the speaker button.
@@ -177,6 +197,27 @@ fun GameResultDialog(
 
 private const val BADGE_MAX_CHARS = 22
 
+/** The ribbon under a watcher's table: the promise of a seat (with the tricks left) and a Leave button. */
+@Composable
+private fun WatchingRibbon(info: WatchingInfo) {
+    val promise = if (info.seatPromised) stringResource(R.string.spectate_seat_next_round) else stringResource(R.string.spectate_table_full)
+    val left = info.stepsLeft?.takeIf { info.seatPromised && it > 0 }?.let { stringResource(R.string.spectate_tricks_left_format, it) }
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Text(
+            text = if (left != null) "$promise · $left" else promise,
+            style = MaterialTheme.typography.bodyMedium.copy(shadow = Shadow(Color.Black.copy(alpha = 0.7f), Offset(1f, 1.5f), 3f)),
+            color = if (info.seatPromised) GoldBevelLight else ParchmentText,
+            modifier = Modifier.weight(1f),
+            maxLines = 2
+        )
+        RoyalButton(text = stringResource(R.string.spectate_leave), onClick = info.onLeave, style = RoyalButtonStyle.STEEL, compact = true)
+    }
+}
+
 /**
  * A short status line shown above the playing area (what to do next, scores, trump). When it is the
  * player's own turn ([highlight]) it becomes the gold "Your turn" badge instead of plain text.
@@ -210,6 +251,22 @@ fun ConnectionLostDialog(onBack: () -> Unit) {
         lines = listOf(stringResource(R.string.net_connection_lost_hint)),
         primaryText = stringResource(R.string.game_back_to_khel),
         onPrimary = onBack
+    )
+}
+
+/** The watcher's pill and ribbon; null when this phone has a seat. */
+fun <S, A> com.rangepatte.app.net.GameSession<S, A>.watchingInfo(onLeave: () -> Unit): WatchingInfo? =
+    if (isSpectator) WatchingInfo(seatPromised = seatPromised, stepsLeft = stepsLeftInRound, onLeave = onLeave) else null
+
+/** Shown once when a watcher is given a seat: "You're in!". */
+@Composable
+fun <S, A> SeatedNotice(session: com.rangepatte.app.net.GameSession<S, A>) {
+    if (!session.justSeated) return
+    GameResultDialog(
+        title = stringResource(R.string.spectate_seated_title),
+        lines = listOf(stringResource(R.string.spectate_seated)),
+        primaryText = stringResource(R.string.spectate_ok),
+        onPrimary = session::acknowledgeSeated
     )
 }
 

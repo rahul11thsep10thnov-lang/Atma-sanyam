@@ -64,6 +64,8 @@ fun PersonProfileScreen(
     onAction: (RelationAction) -> Unit,
     onReport: () -> Unit,
     onBackClick: () -> Unit,
+    /** Set when the friend is at a full online table that can be watched: the first button becomes "Watch". */
+    onWatch: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     var confirm by remember { mutableStateOf<ProfileConfirm?>(null) }
@@ -95,7 +97,8 @@ fun PersonProfileScreen(
                     }
                     if (person.status == RelationStatus.FRIENDS) {
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth().padding(top = 14.dp)) {
-                            RoyalButton(stringResource(R.string.profile_play_request), onClick = onPlayRequest, enabled = canPlayRequest, compact = true, modifier = Modifier.weight(1f))
+                            if (onWatch != null) RoyalButton(stringResource(R.string.profile_watch), onClick = onWatch, compact = true, modifier = Modifier.weight(1f))
+                            else RoyalButton(stringResource(R.string.profile_play_request), onClick = onPlayRequest, enabled = canPlayRequest, compact = true, modifier = Modifier.weight(1f))
                             RoyalButton(stringResource(R.string.profile_poke), onClick = onPoke, enabled = canPoke, style = RoyalButtonStyle.STEEL, compact = true, modifier = Modifier.weight(1f))
                         }
                     } else {

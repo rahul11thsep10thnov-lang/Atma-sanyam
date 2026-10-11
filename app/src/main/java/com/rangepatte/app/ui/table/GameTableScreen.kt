@@ -53,9 +53,9 @@ fun GameTableScreen(
             }
             DisposableEffect(session) {
                 session.start()
-                // Friends see "playing X" — and, for a table with other people, whether a seat is free.
+                // Friends see "playing X" — and, for an online table, its code, so they can come and watch.
                 AppServices.presence.setActivity(
-                    Activity(game.id, tableCode = if (session.isSolo) null else "table", seatsFree = 0)
+                    Activity(game.id, tableCode = if (session.isSolo) null else session.roomCode ?: "nearby", seatsFree = 0)
                 )
                 onDispose { session.close(); AppServices.presence.setActivity(null) }
             }

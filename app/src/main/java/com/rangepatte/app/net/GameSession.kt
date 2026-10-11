@@ -32,19 +32,49 @@ import kotlin.random.Random
  */
 class GameSession<S, A>(
     private val core: SessionCore<S, A>,
-    private val transport: Transport?
+    private val transport: Transport?,
+    /** The online room code, so friends can be told where to find (and watch) this table. */
+    val roomCode: String? = null
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val undo = UndoHistory<S>(3)
     private val peerSeats = HashMap<String, Int>()
+    /** Host only: people watching, in the order they arrived (the first is seated first). */
+    private val spectators = LinkedHashMap<String, String>()
     private var started = false
 
     val machine: GameMachine<S, A> get() = core.machine
     val config: MatchConfig get() = core.config
-    val mySeat: Int get() = core.mySeat
     val isHost: Boolean get() = core.isHost
     val isSolo: Boolean get() = transport == null
-    val seatNames: List<String> get() = core.config.seatNames
+
+    /** This phone's seat, or [SessionCore.SPECTATOR] while watching; changes once when a spectator is seated. */
+    var mySeat: Int by mutableStateOf(core.mySeat)
+        private set
+
+    /** True while this phone only watches: no moves, no undo, every hand face-down. */
+    val isSpectator: Boolean get() = mySeat == SessionCore.SPECTATOR
+
+    /** The seat the table is drawn from: your own, or the host's when watching. */
+    val viewSeat: Int get() = if (isSpectator) 0 else mySeat
+
+    /** Who sits where (updated when a spectator takes a computer seat). */
+    var seatNames: List<String> by mutableStateOf(core.config.seatNames)
+        private set
+
+    /** Spectator only: true once a seat is promised (a computer seat is free) — false means "keep watching". */
+    val seatPromised: Boolean get() = isSpectator && botSeats.isNotEmpty()
+
+    /** Spectator only: tricks (or turns) left in the round being watched, or null when the game has no such count. */
+    val stepsLeftInRound: Int? get() = machine.stepsLeftInRound(state)
+
+    /** Spectator only: set when the host has just seated this phone, so the screen can say so once. */
+    var justSeated: Boolean by mutableStateOf(false)
+        private set
+
+    /** Host only: how many people are watching (for a "2 watching" mark). */
+    var spectatorCount: Int by mutableStateOf(0)
+        private set
 
     /** The current game. Compose re-draws whenever it changes. */
     var state: S by mutableStateOf(core.state)
@@ -60,6 +90,9 @@ class GameSession<S, A>(
 
     val undoUsesLeft: Int get() = undo.usesLeft
     val canUndo: Boolean get() = isSolo && undo.canUndo && machine.seatToAct(state) == mySeat
+
+    /** Clears the "you're in" flag after the screen has shown it. */
+    fun acknowledgeSeated() { justSeated = false }
 
     /** Tells the session which phone sits at which seat (host only; called once when the table starts). */
     fun assignPeerSeat(peerId: String, seat: Int) {
@@ -92,8 +125,9 @@ class GameSession<S, A>(
         scope.launch { runLoop() }
     }
 
-    /** Makes a move for this phone's player. */
+    /** Makes a move for this phone's player. Spectators cannot move; the host refuses anything from one anyway. */
     fun submit(action: A) {
+        if (isSpectator) return
         if (core.isHost) {
             val before = core.state
             val move = core.hostAccept(core.mySeat, action) ?: return
@@ -132,10 +166,63 @@ class GameSession<S, A>(
     private fun publish() {
         state = core.state
         botSeats = core.botSeats.toSet()
+        seatNames = core.config.seatNames
+        mySeat = core.mySeat
         if (core.outOfSync) connectionLost = true
+        if (core.isHost) {
+            // Spectators cannot replay moves on a view with hidden cards, so they get a fresh view every step.
+            if (spectators.isNotEmpty()) {
+                val view = core.viewForSpectator().encode()
+                spectators.keys.forEach { transport?.sendToPeer(it, view) }
+            }
+            seatWaitingSpectators()
+        }
+    }
+
+    /** Host only: between rounds, the people watching take the free computer seats, first come first served. */
+    private fun seatWaitingSpectators() {
+        if (spectators.isEmpty() || !machine.isRoundBoundary(core.state)) return
+        var changed = false
+        while (spectators.isNotEmpty()) {
+            val seat = core.freeSeatForSpectator() ?: break
+            val (peer, name) = spectators.entries.first()
+            spectators.remove(peer)
+            core.seatHuman(seat, name)
+            peerSeats[peer] = seat
+            // Everyone renames the seat first, then the newcomer gets the full game to follow from here.
+            transport?.broadcast(Wire.Human(seat, name).encode())
+            transport?.sendToPeer(peer, core.seatMessage(seat).encode())
+            changed = true
+        }
+        spectatorCount = spectators.size
+        if (changed) {
+            state = core.state
+            botSeats = core.botSeats.toSet()
+            seatNames = core.config.seatNames
+        }
+    }
+
+    /** Host only: someone asked to join a table that is already playing — they may watch. */
+    private fun admitSpectator(peerId: String, name: String) {
+        if (peerId in peerSeats || peerId in spectators) return
+        if (spectators.size >= MAX_SPECTATORS) {
+            transport?.sendToPeer(peerId, Wire.Reject("full").encode())
+            return
+        }
+        spectators[peerId] = name.ifBlank { "Player" }.take(20)
+        spectatorCount = spectators.size
+        // A blank seed: the real one would let a watcher work out every deal.
+        transport?.sendToPeer(peerId, Wire.Start(core.config.copy(seed = 0L), SessionCore.SPECTATOR).encode())
+        core.botSeats.forEach { transport?.sendToPeer(peerId, Wire.Bot(it).encode()) }
+        transport?.sendToPeer(peerId, core.viewForSpectator().encode())
+        seatWaitingSpectators()
     }
 
     private suspend fun runLoop() {
+        // A spectator makes no steps of its own: every change arrives as a view from the host.
+        if (isSpectator) {
+            snapshotFlow { mySeat }.first { it != SessionCore.SPECTATOR }
+        }
         while (true) {
             val snapshot = core.state
             if (core.hasAutoStep()) {
@@ -182,6 +269,7 @@ class GameSession<S, A>(
                         publish()
                     }
                 }
+                is Wire.Join -> admitSpectator(peerId, message.name)
                 Wire.Leave -> peerLost(peerId)
                 else -> Unit
             }
@@ -192,6 +280,15 @@ class GameSession<S, A>(
                     core.botSeats.add(message.seat)
                     publish()
                 }
+                is Wire.Human -> {
+                    core.seatHuman(message.seat, message.name)
+                    publish()
+                }
+                is Wire.View -> if (core.adoptView(message)) publish()
+                is Wire.Seat -> if (core.takeSeat(message)) {
+                    justSeated = true
+                    publish()
+                }
                 Wire.Leave -> connectionLost = true
                 else -> Unit
             }
@@ -200,6 +297,10 @@ class GameSession<S, A>(
 
     private fun peerLost(peerId: String) {
         if (core.isHost) {
+            if (spectators.remove(peerId) != null) {
+                spectatorCount = spectators.size
+                return
+            }
             val seat = peerSeats.remove(peerId) ?: return
             core.botSeats.add(seat)
             transport?.broadcast(Wire.Bot(seat).encode())
@@ -211,17 +312,23 @@ class GameSession<S, A>(
 
     companion object {
         private const val AUTO_STEP_DELAY_MS = 1_300L
+        /** How many people may watch one table. */
+        const val MAX_SPECTATORS = 4
 
         /** A table where you play alone against computer players. */
         fun <S, A> solo(machine: GameMachine<S, A>, config: MatchConfig): GameSession<S, A> =
             GameSession(SessionCore(machine, config, mySeat = 0, isHost = true), transport = null)
 
         /** The host's side of a table with other people. */
-        fun <S, A> host(machine: GameMachine<S, A>, config: MatchConfig, transport: Transport): GameSession<S, A> =
-            GameSession(SessionCore(machine, config, mySeat = 0, isHost = true), transport)
+        fun <S, A> host(machine: GameMachine<S, A>, config: MatchConfig, transport: Transport, roomCode: String? = null): GameSession<S, A> =
+            GameSession(SessionCore(machine, config, mySeat = 0, isHost = true), transport, roomCode)
 
         /** A guest's side of a table; [mySeat] was assigned by the host. */
-        fun <S, A> guest(machine: GameMachine<S, A>, config: MatchConfig, mySeat: Int, transport: Transport): GameSession<S, A> =
-            GameSession(SessionCore(machine, config, mySeat, isHost = false), transport)
+        fun <S, A> guest(machine: GameMachine<S, A>, config: MatchConfig, mySeat: Int, transport: Transport, roomCode: String? = null): GameSession<S, A> =
+            GameSession(SessionCore(machine, config, mySeat, isHost = false), transport, roomCode)
+
+        /** A watcher's side of a table that is already playing: views from the host, a seat when a round ends. */
+        fun <S, A> spectator(machine: GameMachine<S, A>, config: MatchConfig, transport: Transport, roomCode: String? = null): GameSession<S, A> =
+            GameSession(SessionCore(machine, config, SessionCore.SPECTATOR, isHost = false), transport, roomCode)
     }
 }

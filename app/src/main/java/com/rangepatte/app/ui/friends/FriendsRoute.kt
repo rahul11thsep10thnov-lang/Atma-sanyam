@@ -111,7 +111,7 @@ fun FriendsRoute(onLoginClick: () -> Unit, onOpenPerson: (String) -> Unit) {
 
 /** The profile of one other player, from the repositories. */
 @Composable
-fun PersonProfileRoute(uid: String, onBackClick: () -> Unit) {
+fun PersonProfileRoute(uid: String, onBackClick: () -> Unit, onWatch: (gameRoute: String, code: String) -> Unit = { _, _ -> }) {
     val friends = AppServices.friends
     val relations by friends.relations.collectAsState()
     val people by friends.people.collectAsState()
@@ -153,12 +153,16 @@ fun PersonProfileRoute(uid: String, onBackClick: () -> Unit) {
             }
         }, onDismiss = { pickGame = false })
     }
+    // A friend at a full online table can be watched (Element 10): their presence carries the room code.
+    val watchable = rec?.activity?.takeIf { state == FriendState.FULL && GameCapabilities.canSpectate(it.gameId) }
+        ?.takeIf { it.tableCode != null && it.tableCode != "nearby" && it.tableCode != "table" }
     PersonProfileScreen(
         person = PersonUi(person.uid, person.username, person.avatarId, status, online, detail, state),
         facts = facts,
-        canPlayRequest = state == FriendState.AVAILABLE, // sending arrives with Element 9
+        canPlayRequest = state == FriendState.AVAILABLE,
         canPoke = false,
         onPlayRequest = { pickGame = true }, onPoke = {},
+        onWatch = watchable?.let { a -> { onWatch(a.gameId.routeSegment, a.tableCode!!) } },
         onAction = { action -> friends.act(uid, action) { if (action == RelationAction.BLOCK || action == RelationAction.REMOVE_FRIEND) onBackClick() } },
         onReport = { friends.report(uid, "abuse") { android.widget.Toast.makeText(context, reported, android.widget.Toast.LENGTH_SHORT).show() } },
         onBackClick = onBackClick

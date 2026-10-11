@@ -47,14 +47,15 @@ object Presence {
 }
 
 /**
- * What each game can do with people who arrive after it started. Today no game seats a latecomer
- * mid-match: the lockstep engine deals full hands up front. Spectating is also not available yet
- * (every phone receives the whole state, including hidden hands, so a spectator path needs a
- * redacted view first). Both will be revisited with Element 10.
+ * What each game can do with people who arrive after it started (Element 10). No game seats a
+ * latecomer mid-round — the lockstep engine deals full hands up front — but every multiplayer game can
+ * be **watched**: the host sends spectators a copy of the game with all hands hidden, and seats them
+ * at the next round boundary if a computer seat is free. So a friend at a full table is still shown as
+ * FULL (nobody can play there now) — the Watch button is what a full table offers.
  */
 object GameCapabilities {
     fun canJoinLate(gameId: GameId): Boolean = false
-    fun canSpectate(gameId: GameId): Boolean = false
+    fun canSpectate(gameId: GameId): Boolean = gameId != GameId.SOLITAIRE && gameId != GameId.SPIDER_SOLITAIRE
     /** Play requests make sense only for games that other people can play at all. */
     fun supportsPlayRequests(gameId: GameId): Boolean = gameId != GameId.SOLITAIRE && gameId != GameId.SPIDER_SOLITAIRE
 }

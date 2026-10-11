@@ -329,7 +329,8 @@ in the same order and so ends up with the same game. Shuffles are seeded, so the
 
 | File | Job |
 |---|---|
-| `net/core/Wire.kt` | the text messages phones send (`JOIN`, `LOBBY`, `START`, `ACT`, `DO`, `BOT`, `LEAVE`, `REJECT`) |
+| `net/core/Wire.kt` | the text messages phones send (`JOIN`, `LOBBY`, `START`, `ACT`, `DO`, `BOT`, `LEAVE`, `REJECT`; for watchers `VIEW`, `SEAT`, `HUMAN`) |
+| `net/core/Codec.kt`, `game/tricks/TrickCodec.kt` | every game state as text (`encodeState`/`decodeState`) and `redact` — the same state with other hands replaced by hidden cards |
 | `net/core/SessionCore.kt`, `GameMachine.kt` | host-authoritative move numbering; a small adapter per game (`game/<name>/*Machine.kt`) |
 | `net/core/Lobby.kt` | who has joined, seat assignment, filling empty seats with computer players |
 | `net/Transport.kt` | "send text to the host / a peer / everyone" — all the game ever sees |
@@ -339,6 +340,28 @@ in the same order and so ends up with the same game. Shuffles are seeded, so the
 | `ui/multiplayer/` | the lobby screen and `LobbyController` (the Android glue) |
 
 If a player leaves mid-game the computer takes over their seat; if the *host* leaves, the table ends.
+
+**Watching a table and joining the next round (Friends Element 10, approved Design 1).** Anyone who
+joins a table that is already playing — by typing its room code, tapping it in the Nearby list, or
+pressing **Watch** on a friend's profile when they are at a full online table — becomes a *spectator*:
+
+- The host sends them `START` with seat `-1` and a **blank seed** (the real seed would reveal every
+  deal), then a `VIEW` after every step: the whole game with every hand replaced by hidden cards
+  (`GameMachine.redact(state, null)`). Played cards, bids, trump (once it is public), scores and whose
+  turn it is are all visible; a watcher's phone never holds a card that a player across the table
+  couldn't see. Spectators cannot move, bid or undo; the host ignores `ACT` from them.
+- The screen is the same antique table with a gold **Watching** pill, every hand face-down, and a
+  ribbon: *"You'll take a seat when this round ends · 4 tricks left"* (or *"Every seat is taken — you
+  can keep watching"*) with a **Leave** button.
+- At the round boundary (`GameMachine.isRoundBoundary`) the host gives each waiting watcher the lowest
+  computer seat, first come first served: everyone gets `HUMAN|seat|name` (only the name changes, via
+  `GameMachine.rename`, so every phone stays in step) and the newcomer gets `SEAT` with the full game
+  and the real seed, and plays from then on like any other guest ("You're in!"). Up to four people can
+  watch one table. A finished match counts as a boundary too, so a watcher is seated before "New match".
+- Nearby hosts keep advertising after the game starts; online rooms with status `playing` can be
+  joined (as a watcher). The Firestore rules above already allow this (a watcher reads `log`).
+  Tested in `SpectatorCoreTest` (every game: watch, seat at the boundary, stay in sync) and
+  `StateCodecTest` (every state round-trips; a redacted view carries no hidden card).
 
 ### Online play: Firebase setup
 
@@ -362,9 +385,9 @@ On top of the login setup below, in the Firebase console:
   four-phone test (`MultiplayerSessionTest`: every game, shuffled/duplicated deliveries, mixed
   people-and-computer tables, players leaving). The Nearby, Firestore and lobby code is
   Android-only, and has been written but not yet run on two devices — expect first-run fixes.
-- **Cards are not hidden from a hacked phone.** In lockstep every phone computes the whole game,
-  including other players' hands. That is fine among friends; a server that deals privately would
-  be needed for strangers or stakes.
+- **Cards are not hidden from a hacked phone.** In lockstep every *seated* phone computes the whole
+  game, including other players' hands (watchers only ever receive a redacted copy). That is fine
+  among friends; a server that deals privately would be needed for strangers or stakes.
 - Nearby needs both phones within a few metres; online play with a flaky connection can drop a
   table (the guest sees "Connection lost").
 

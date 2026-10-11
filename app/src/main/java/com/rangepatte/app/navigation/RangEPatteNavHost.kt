@@ -127,7 +127,11 @@ fun RangEPatteNavHost(
             }
             composable(Routes.PERSON_PATTERN) { backStackEntry ->
                 val uid = backStackEntry.arguments?.getString(Routes.ARG_UID)
-                if (uid != null) PersonProfileRoute(uid = uid, onBackClick = { navController.popBackStack() })
+                if (uid != null) PersonProfileRoute(
+                    uid = uid,
+                    onBackClick = { navController.popBackStack() },
+                    onWatch = { game, code -> navController.navigate(Routes.lobby(game, PlayMode.ONLINE, host = false, playerCount = 4, difficulty = AiDifficulty.MEDIUM, code = code)) }
+                )
             }
             composable(Routes.SETTINGS) {
                 SettingsScreen(

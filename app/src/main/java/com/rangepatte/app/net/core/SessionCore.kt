@@ -10,11 +10,25 @@ package com.rangepatte.app.net.core
  */
 class SessionCore<S, A>(
     val machine: GameMachine<S, A>,
-    val config: MatchConfig,
-    val mySeat: Int,
+    config: MatchConfig,
+    mySeat: Int,
     val isHost: Boolean
 ) {
+    /** The table's settings. Seat names and the human seats change when a spectator is seated. */
+    var config: MatchConfig = config
+        private set
+
+    /** This phone's seat, or [SPECTATOR] while only watching (it changes once when a spectator is seated). */
+    var mySeat: Int = mySeat
+        private set
+
+    val isSpectator: Boolean get() = mySeat == SPECTATOR
+
     var state: S = machine.start(config, randomFor(config.seed, 0))
+        private set
+
+    /** False on a spectator's phone until the first [Wire.View] arrives: before that [state] is a placeholder. */
+    var hasView: Boolean = !isSpectator
         private set
 
     /** Number of moves applied so far. */
@@ -78,7 +92,7 @@ class SessionCore<S, A>(
      * state changed.
      */
     fun receive(move: Wire.Do): Boolean {
-        if (isHost || move.seq <= seq) return false
+        if (isHost || isSpectator || move.seq <= seq) return false
         pending[move.seq] = move
         var changed = false
         while (!outOfSync) {
@@ -103,5 +117,72 @@ class SessionCore<S, A>(
     /** Solo play: step back to an earlier position (used by Undo). */
     fun restore(earlier: S) {
         state = earlier
+    }
+
+    // -- Spectators -----------------------------------------------------------------------------
+
+    /**
+     * Spectator only: takes the host's latest redacted view of the game. Views may arrive out of order;
+     * an older one is ignored. Returns true if the state changed.
+     */
+    fun adoptView(view: Wire.View): Boolean {
+        if (!isSpectator) return false
+        if (hasView && view.seq < seq) return false
+        val next = machine.decodeState(view.state) ?: return false
+        val before = state
+        val first = !hasView
+        hasView = true
+        seq = view.seq
+        state = next
+        if (!first) onTransition?.invoke(before, next, null)
+        return true
+    }
+
+    /**
+     * Every phone: [seat], until now the computer's, is played by a person called [name]. Only names
+     * change — the cards and scores stay as they are, so every phone stays in step.
+     */
+    fun seatHuman(seat: Int, name: String) {
+        if (seat !in 0 until config.seats) return
+        botSeats.remove(seat)
+        config = config.copy(
+            seatNames = config.seatNames.mapIndexed { i, n -> if (i == seat) name else n },
+            humanSeats = config.humanSeats + seat
+        )
+        state = machine.rename(state, seat, name)
+    }
+
+    /**
+     * Spectator only: the host has seated us. From here on this phone follows the lockstep like any
+     * other player, starting from the full [Wire.Seat.state] after move [Wire.Seat.seq].
+     */
+    fun takeSeat(seat: Wire.Seat): Boolean {
+        if (!isSpectator) return false
+        val full = machine.decodeState(seat.state) ?: return false
+        config = config.copy(seed = seat.seed)
+        mySeat = seat.seat
+        botSeats.remove(seat.seat)
+        hasView = true
+        seq = seat.seq
+        state = full
+        pending.clear()
+        return true
+    }
+
+    /**
+     * Host only: the seat a spectator may take right now — the lowest computer seat — or null when
+     * every seat has a person. Seating is only done between rounds ([GameMachine.isRoundBoundary]).
+     */
+    fun freeSeatForSpectator(): Int? = botSeats.minOrNull()
+
+    /** What the host sends a spectator: the current game with every hand hidden. */
+    fun viewForSpectator(): Wire.View = Wire.View(seq, machine.encodeState(machine.redact(state, null)))
+
+    /** What the host sends a player it has just seated at [seat]: the full game as it stands. */
+    fun seatMessage(seat: Int): Wire.Seat = Wire.Seat(seat, seq, config.seed, machine.encodeState(state))
+
+    companion object {
+        /** The "seat" of a phone that only watches. */
+        const val SPECTATOR = -1
     }
 }
