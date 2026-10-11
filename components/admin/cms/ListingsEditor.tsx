@@ -25,20 +25,20 @@ export function HotelsEditor({ hotels, onChange }: { hotels: CmsHotel[]; onChang
   const duplicate = (h: CmsHotel) => { const c = { ...structuredClone(h), id: `HOTEL-${Date.now().toString(36)}`, name: `${h.name} (copy)`, status: "DRAFT" as const }; onChange([...hotels, c]); setOpen(c.id); };
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-charcoal-light">{hotels.length} hotel records. Only PUBLISHED records with a name appear on the page; the rest stay in the console.</p>
         <button type="button" className={btnSecondary} onClick={add}>+ Add hotel</button>
       </div>
       {hotels.map((h) => (
         <div key={h.id} className="rounded-xl border border-forest-100 bg-white">
           <div className="flex flex-wrap items-center gap-2 px-3 py-2">
-            <button type="button" onClick={() => setOpen(open === h.id ? null : h.id)} className="min-w-0 flex-1 text-left font-medium text-charcoal">{h.name || "Unnamed hotel"}</button>
+            <button type="button" onClick={() => setOpen(open === h.id ? null : h.id)} className="min-w-0 flex-1 basis-full text-left font-medium text-charcoal sm:basis-0">{h.name || "Unnamed hotel"}</button>
             <Badge tone={h.status === "PUBLISHED" ? "bg-forest-100 text-forest-700" : "bg-saffron-100 text-saffron-700"}>{h.status}</Badge>
             <Badge tone="bg-charcoal/5 text-charcoal">{h.collaboration_status.replace("_", " ")}</Badge>
-            <button type="button" className={`${btnSecondary} !px-2 !py-0.5`} onClick={() => update(h.id, { status: h.status === "PUBLISHED" ? "DRAFT" : "PUBLISHED" })}>{h.status === "PUBLISHED" ? "Unpublish" : "Publish"}</button>
-            <button type="button" className={`${btnSecondary} !px-2 !py-0.5`} onClick={() => duplicate(h)}>Duplicate</button>
-            <button type="button" className={`${btnSecondary} !px-2 !py-0.5`} onClick={() => setOpen(open === h.id ? null : h.id)}>{open === h.id ? "Close" : "Edit"}</button>
-            <button type="button" className={`${btnSecondary} !px-2 !py-0.5 text-terracotta-700`} onClick={() => confirm("Delete this hotel record?") && onChange(hotels.filter((x) => x.id !== h.id))}>Delete</button>
+            <button type="button" className={`${btnSecondary} !px-3 sm:!px-2 sm:!py-0.5`} onClick={() => update(h.id, { status: h.status === "PUBLISHED" ? "DRAFT" : "PUBLISHED" })}>{h.status === "PUBLISHED" ? "Unpublish" : "Publish"}</button>
+            <button type="button" className={`${btnSecondary} !px-3 sm:!px-2 sm:!py-0.5`} onClick={() => duplicate(h)}>Duplicate</button>
+            <button type="button" className={`${btnSecondary} !px-3 sm:!px-2 sm:!py-0.5`} onClick={() => setOpen(open === h.id ? null : h.id)}>{open === h.id ? "Close" : "Edit"}</button>
+            <button type="button" className={`${btnSecondary} !px-3 sm:!px-2 sm:!py-0.5 text-terracotta-700`} onClick={() => confirm("Delete this hotel record?") && onChange(hotels.filter((x) => x.id !== h.id))}>Delete</button>
           </div>
           {open === h.id && (
             <div className="space-y-4 border-t border-forest-100 p-4">
@@ -90,20 +90,20 @@ export function RestaurantsEditor({ restaurants, onChange }: { restaurants: CmsR
   const duplicate = (r: CmsRestaurant) => { const c = { ...structuredClone(r), id: `REST-${Date.now().toString(36)}`, name: `${r.name} (copy)`, status: "DRAFT" as const }; onChange([...restaurants, c]); setOpen(c.id); };
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-charcoal-light">{restaurants.length} restaurant records. Only PUBLISHED records with a name appear on the page.</p>
         <button type="button" className={btnSecondary} onClick={add}>+ Add restaurant</button>
       </div>
       {restaurants.map((r) => (
         <div key={r.id} className="rounded-xl border border-forest-100 bg-white">
           <div className="flex flex-wrap items-center gap-2 px-3 py-2">
-            <button type="button" onClick={() => setOpen(open === r.id ? null : r.id)} className="min-w-0 flex-1 text-left font-medium text-charcoal">{r.name || "Unnamed restaurant"}</button>
+            <button type="button" onClick={() => setOpen(open === r.id ? null : r.id)} className="min-w-0 flex-1 basis-full text-left font-medium text-charcoal sm:basis-0">{r.name || "Unnamed restaurant"}</button>
             <Badge tone={r.status === "PUBLISHED" ? "bg-forest-100 text-forest-700" : "bg-saffron-100 text-saffron-700"}>{r.status}</Badge>
             <Badge tone="bg-charcoal/5 text-charcoal">{r.collaboration_status.replace("_", " ")}</Badge>
-            <button type="button" className={`${btnSecondary} !px-2 !py-0.5`} onClick={() => update(r.id, { status: r.status === "PUBLISHED" ? "DRAFT" : "PUBLISHED" })}>{r.status === "PUBLISHED" ? "Unpublish" : "Publish"}</button>
-            <button type="button" className={`${btnSecondary} !px-2 !py-0.5`} onClick={() => duplicate(r)}>Duplicate</button>
-            <button type="button" className={`${btnSecondary} !px-2 !py-0.5`} onClick={() => setOpen(open === r.id ? null : r.id)}>{open === r.id ? "Close" : "Edit"}</button>
-            <button type="button" className={`${btnSecondary} !px-2 !py-0.5 text-terracotta-700`} onClick={() => confirm("Delete this restaurant record?") && onChange(restaurants.filter((x) => x.id !== r.id))}>Delete</button>
+            <button type="button" className={`${btnSecondary} !px-3 sm:!px-2 sm:!py-0.5`} onClick={() => update(r.id, { status: r.status === "PUBLISHED" ? "DRAFT" : "PUBLISHED" })}>{r.status === "PUBLISHED" ? "Unpublish" : "Publish"}</button>
+            <button type="button" className={`${btnSecondary} !px-3 sm:!px-2 sm:!py-0.5`} onClick={() => duplicate(r)}>Duplicate</button>
+            <button type="button" className={`${btnSecondary} !px-3 sm:!px-2 sm:!py-0.5`} onClick={() => setOpen(open === r.id ? null : r.id)}>{open === r.id ? "Close" : "Edit"}</button>
+            <button type="button" className={`${btnSecondary} !px-3 sm:!px-2 sm:!py-0.5 text-terracotta-700`} onClick={() => confirm("Delete this restaurant record?") && onChange(restaurants.filter((x) => x.id !== r.id))}>Delete</button>
           </div>
           {open === r.id && (
             <div className="space-y-4 border-t border-forest-100 p-4">

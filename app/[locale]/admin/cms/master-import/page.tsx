@@ -43,9 +43,22 @@ export default function MasterImportPage({ params }: { params: { locale: string 
             </section>
           )}
 
-          <section className="card-surface overflow-x-auto p-5">
+          <section className="card-surface p-5">
             <h2 className="font-display text-lg font-semibold">Coverage by state / UT</h2>
-            <table className="mt-2 w-full text-sm">
+            <ul className="mt-3 space-y-2 md:hidden">
+              {r.states.map((s) => (
+                <li key={s.state} className="rounded-xl bg-white p-3 ring-1 ring-black/5">
+                  <p className="font-semibold text-charcoal">{s.state}</p>
+                  <dl className="mt-2 grid grid-cols-3 gap-2 text-center text-[11px] text-charcoal-light">
+                    {([["Workbook", s.in_workbook], ["Created", s.created], ["Linked", s.linked], ["On site", s.site_total], ["Published", s.published], ["Coordinates", s.with_coordinates]] as const).map(([l, v]) => (
+                      <div key={l} className="rounded-lg bg-forest-50/60 py-1"><dd className="font-display text-base font-bold text-charcoal">{v}</dd><dt>{l}</dt></div>
+                    ))}
+                  </dl>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-2 hidden overflow-x-auto md:block">
+            <table className="w-full text-sm">
               <thead><tr className="text-xs uppercase text-charcoal-light"><th className="px-2 py-1 text-left">State / UT</th><th className={cell}>Workbook rows</th><th className={cell}>Created</th><th className={cell}>Linked</th><th className={cell}>On site</th><th className={cell}>Published</th><th className={cell}>With coordinates</th></tr></thead>
               <tbody>
                 {r.states.map((s) => (
@@ -53,6 +66,7 @@ export default function MasterImportPage({ params }: { params: { locale: string 
                 ))}
               </tbody>
             </table>
+            </div>
           </section>
 
           {r.clusters.unresolved.length > 0 && (

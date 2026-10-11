@@ -27,7 +27,7 @@ export function AttractionsEditor({ attractions, destSlug, onChange }: { attract
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-charcoal-light">{attractions.length} attractions. Order here is the order on the page; moving one pins it (manual override) so the pipeline never re-ranks it.</p>
         <button type="button" className={btnSecondary} onClick={add}>+ Add attraction</button>
       </div>
@@ -40,16 +40,16 @@ export function AttractionsEditor({ attractions, destSlug, onChange }: { attract
             <li key={a.id} className={`rounded-xl border bg-white ${a.status === "HIDDEN" ? "border-charcoal/10 opacity-70" : "border-forest-100"}`}>
               <div className="flex flex-wrap items-center gap-2 px-3 py-2">
                 <span className="flex h-7 w-7 items-center justify-center rounded-full bg-forest-700 text-xs font-bold text-white">{idx + 1}</span>
-                <button type="button" onClick={() => setOpen(isOpen ? null : a.id)} className="min-w-0 flex-1 text-left">
+                <button type="button" onClick={() => setOpen(isOpen ? null : a.id)} className="min-w-0 flex-1 basis-[calc(100%-2.5rem)] text-left sm:basis-0">
                   <span className="font-medium text-charcoal">{a.name || "Untitled"}</span>
                   <span className="ml-2 text-xs text-charcoal-light">{a.rating !== null ? `★ ${a.rating.toFixed(1)}${a.review_count !== null ? ` (${a.review_count})` : ""}` : "Rating unavailable"} · {approved} approved{candidates ? `, ${candidates} candidates` : ""}</span>
                 </button>
                 {a.manual_order && <Badge tone="bg-saffron-100 text-saffron-700">pinned</Badge>}
                 {a.status === "HIDDEN" && <Badge tone="bg-charcoal/10 text-charcoal">hidden</Badge>}
-                <button type="button" className={`${btnSecondary} !px-2 !py-0.5`} onClick={() => move(idx, -1)} aria-label="Move up">↑</button>
-                <button type="button" className={`${btnSecondary} !px-2 !py-0.5`} onClick={() => move(idx, 1)} aria-label="Move down">↓</button>
-                <button type="button" className={`${btnSecondary} !px-2 !py-0.5`} onClick={() => setOpen(isOpen ? null : a.id)}>{isOpen ? "Close" : "Edit"}</button>
-                <button type="button" className={`${btnSecondary} !px-2 !py-0.5 text-terracotta-700`} onClick={() => confirm(`Delete “${a.name}”?`) && onChange(attractions.filter((x) => x.id !== a.id))}>Delete</button>
+                <button type="button" className={`${btnSecondary} !px-3 sm:!px-2 sm:!py-0.5`} onClick={() => move(idx, -1)} aria-label="Move up">↑</button>
+                <button type="button" className={`${btnSecondary} !px-3 sm:!px-2 sm:!py-0.5`} onClick={() => move(idx, 1)} aria-label="Move down">↓</button>
+                <button type="button" className={`${btnSecondary} !px-3 sm:!px-2 sm:!py-0.5`} onClick={() => setOpen(isOpen ? null : a.id)}>{isOpen ? "Close" : "Edit"}</button>
+                <button type="button" className={`${btnSecondary} !px-3 sm:!px-2 sm:!py-0.5 text-terracotta-700`} onClick={() => confirm(`Delete “${a.name}”?`) && onChange(attractions.filter((x) => x.id !== a.id))}>Delete</button>
               </div>
               {isOpen && (
                 <div className="space-y-4 border-t border-forest-100 p-4">

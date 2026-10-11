@@ -107,7 +107,14 @@ export function DestinationEditor({ initial, base, siteBase, states }: { initial
       {d.pipeline.stage === "AWAITING_APPROVAL" && <Notice tone="warn">The pipeline is waiting for image approval on this destination. <Link href={`${base}/destinations/${d.id}/images`} className="font-semibold underline">Open the approval screen</Link>.</Notice>}
       {d.pipeline.stage === "READY_TO_PUBLISH" && <Notice tone="warn">Content and images are final. Review the tabs below, then press <strong>Publish</strong> (or publish from the <Link href={`${base}/pipeline`} className="font-semibold underline">pipeline screen</Link>).</Notice>}
 
-      <div role="tablist" className="flex flex-wrap gap-1 border-b border-forest-100">
+      <div className="md:hidden">
+        <label className="block text-xs font-semibold uppercase tracking-wide text-charcoal-light">Section
+          <select value={tab} onChange={(e) => setTab(e.target.value as Tab)} className={field}>
+            {TABS.map((t) => <option key={t} value={t}>{t}{t === "Attractions" ? ` (${d.attractions.length})` : t === "Hotels" ? ` (${d.hotels.length})` : t === "Restaurants" ? ` (${d.restaurants.length})` : t === "FAQ" ? ` (${d.faq.length})` : ""}</option>)}
+          </select>
+        </label>
+      </div>
+      <div role="tablist" className="hidden flex-wrap gap-1 border-b border-forest-100 md:flex">
         {TABS.map((t) => (
           <button key={t} role="tab" aria-selected={tab === t} type="button" onClick={() => setTab(t)} className={`-mb-px border-b-2 px-3 py-2 text-sm font-medium ${tab === t ? "border-forest-700 text-forest-700" : "border-transparent text-charcoal-light hover:text-charcoal"}`}>
             {t}{t === "Attractions" && ` (${d.attractions.length})`}{t === "Hotels" && ` (${d.hotels.length})`}{t === "Restaurants" && ` (${d.restaurants.length})`}{t === "FAQ" && ` (${d.faq.length})`}

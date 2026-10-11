@@ -29,6 +29,7 @@ export function DestinationsTable({ rows: initial, base, states }: { rows: Admin
   const [busy, setBusy] = useState(false);
   // Only a page of rows is drawn: 800+ destinations with 6 controls each is heavy on a phone.
   const [shown, setShown] = useState(40);
+  const [bulkOpen, setBulkOpen] = useState(false);
 
   const visible = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -129,8 +130,13 @@ export function DestinationsTable({ rows: initial, base, states }: { rows: Admin
         <p className="col-span-2 text-xs text-charcoal-light">{visible.length} of {rows.length}</p>
       </div>
 
-      <div className="card-surface flex flex-wrap items-end gap-3 p-4">
-        <p className="w-full text-xs font-semibold uppercase tracking-wide text-forest-700">Bulk edit · {selected.size} selected</p>
+      {/* Phones: the bulk panel is tall, so it stays folded until something is ticked or the bar is tapped. */}
+      <button type="button" aria-expanded={bulkOpen || selected.size > 0} onClick={() => setBulkOpen((o) => !o)} className="card-surface flex min-h-[44px] w-full items-center justify-between px-4 text-left text-xs font-semibold uppercase tracking-wide text-forest-700 md:hidden">
+        <span>Bulk edit · {selected.size} selected</span>
+        <span aria-hidden="true">{bulkOpen || selected.size > 0 ? "▴" : "▾"}</span>
+      </button>
+      <div className={`card-surface flex-wrap items-end gap-3 p-4 md:flex ${bulkOpen || selected.size > 0 ? "flex" : "hidden"}`}>
+        <p className="hidden w-full text-xs font-semibold uppercase tracking-wide text-forest-700 md:block">Bulk edit · {selected.size} selected</p>
         <label className="text-xs font-medium text-charcoal">Action
           <select value={bulk} onChange={(e) => setBulk(e.target.value as BulkAction)} className={field}>
             <option value="publish">Publish</option>
