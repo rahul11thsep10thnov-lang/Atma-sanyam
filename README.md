@@ -393,6 +393,23 @@ online" is off until the per-friend opt-in arrives with Element 16. Tested in `N
 message to the recipient's device token (stored on `profiles/{uid}.fcmToken`); the app would then show
 the same notice. Nothing in the centre depends on it.
 
+**Poke (Friends Element 13, approved Design 1).** On a friend's page the crimson **👉 Poke** button sits
+next to Play request. It works only for a friend who is online; after a poke it turns steel and counts
+down ("Poked · 9:58") and a parchment line confirms "You poked priya_q". One poke per friend every ten
+minutes and at most 20 an hour, counted on the phone (`domain/pokes/Pokes.kt`, `PokesTest`) and
+enforced by the rule below. A poke is one record per direction, `pokes/{fromUid_toUid}` = `{from, to, t}`
+(`data/pokes/PokeRepository.kt`); the receiver's phone posts it to the notification centre ("rahul29
+poked you · Poke back", which pokes straight back when allowed) and exposes it for the Element 14
+animation. Demo mode: priya_q pokes back after three seconds. Rule to add:
+```
+match /pokes/{id} {
+  allow read: if request.auth != null && resource.data.to == request.auth.uid;
+  allow create, update: if request.auth != null && request.resource.data.from == request.auth.uid
+    && id == request.auth.uid + "_" + request.resource.data.to
+    && (resource == null || request.resource.data.t - resource.data.t >= 600000);
+}
+```
+
 ### Online play: Firebase setup
 
 On top of the login setup below, in the Firebase console:

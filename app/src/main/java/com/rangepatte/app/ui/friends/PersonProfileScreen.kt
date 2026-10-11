@@ -1,6 +1,10 @@
 package com.rangepatte.app.ui.friends
 
 import androidx.compose.foundation.border
+import com.rangepatte.app.ui.theme.GoldBevelDark
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.CircleShape
@@ -59,6 +63,10 @@ fun PersonProfileScreen(
     facts: List<ProfileFact>,
     canPlayRequest: Boolean,
     canPoke: Boolean,
+    /** Element 13: "9:58" while this friend was poked recently (the button turns steel and waits), else null. */
+    pokeCountdown: String? = null,
+    /** Element 13: the parchment confirmation under the row ("You poked priya_q"), or null. */
+    pokedLine: String? = null,
     onPlayRequest: () -> Unit,
     onPoke: () -> Unit,
     onAction: (RelationAction) -> Unit,
@@ -99,7 +107,27 @@ fun PersonProfileScreen(
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth().padding(top = 14.dp)) {
                             if (onWatch != null) RoyalButton(stringResource(R.string.profile_watch), onClick = onWatch, compact = true, modifier = Modifier.weight(1f))
                             else RoyalButton(stringResource(R.string.profile_play_request), onClick = onPlayRequest, enabled = canPlayRequest, compact = true, modifier = Modifier.weight(1f))
-                            RoyalButton(stringResource(R.string.profile_poke), onClick = onPoke, enabled = canPoke, style = RoyalButtonStyle.STEEL, compact = true, modifier = Modifier.weight(1f))
+                            if (pokeCountdown != null) {
+                                RoyalButton(stringResource(R.string.poke_again_format, pokeCountdown), onClick = {}, enabled = false, style = RoyalButtonStyle.STEEL, compact = true, modifier = Modifier.weight(1f))
+                            } else {
+                                RoyalButton("\uD83D\uDC49 " + stringResource(R.string.profile_poke), onClick = onPoke, enabled = canPoke, compact = true, modifier = Modifier.weight(1f))
+                            }
+                        }
+                        if (pokedLine != null) {
+                            Text(
+                                text = pokedLine,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color(0xFF3A2515),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp)
+                                    .background(Color(0xFFF3E7CB), RoundedCornerShape(8.dp))
+                                    .border(1.dp, GoldBevelDark, RoundedCornerShape(8.dp))
+                                    .padding(horizontal = 10.dp, vertical = 6.dp)
+                            )
+                        } else if (!canPoke && pokeCountdown == null && person.status == RelationStatus.FRIENDS && !person.online) {
+                            Text(stringResource(R.string.poke_offline_hint), style = MaterialTheme.typography.bodySmall, color = ParchmentTextDim, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 6.dp))
                         }
                     } else {
                         Relations.primaryAction(person.status)?.let { action ->

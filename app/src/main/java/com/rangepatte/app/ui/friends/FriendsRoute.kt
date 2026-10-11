@@ -7,9 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.rangepatte.app.AppServices
 import com.rangepatte.app.R
@@ -156,12 +153,33 @@ fun PersonProfileRoute(uid: String, onBackClick: () -> Unit, onWatch: (gameRoute
     // A friend at a full online table can be watched (Element 10): their presence carries the room code.
     val watchable = rec?.activity?.takeIf { state == FriendState.FULL && GameCapabilities.canSpectate(it.gameId) }
         ?.takeIf { it.tableCode != null && it.tableCode != "nearby" && it.tableCode != "table" }
+    // Element 13: one poke per friend every ten minutes; the button counts down, a parchment line confirms.
+    val sentTo by AppServices.pokes.sentTo.collectAsState()
+    val pokedAt = sentTo[uid]
+    // A one-second tick while the countdown runs (the presence clock only ticks every 25 s).
+    var tick by remember { mutableStateOf(System.currentTimeMillis()) }
+    LaunchedEffect(pokedAt) {
+        while (pokedAt != null && com.rangepatte.app.domain.pokes.Pokes.cooldownLeft(pokedAt, System.currentTimeMillis()) > 0) {
+            tick = System.currentTimeMillis(); delay(1000)
+        }
+        tick = System.currentTimeMillis()
+    }
+    val cooldown = pokedAt?.let { com.rangepatte.app.domain.pokes.Pokes.cooldownLeft(it, tick) }?.takeIf { it > 0 }
+    val pokedLine = if (pokedAt != null && tick - pokedAt < 60 * 60_000L) stringResource(R.string.poke_sent_format, person.username) else null
+    val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
     PersonProfileScreen(
         person = PersonUi(person.uid, person.username, person.avatarId, status, online, detail, state),
         facts = facts,
         canPlayRequest = state == FriendState.AVAILABLE,
-        canPoke = false,
-        onPlayRequest = { pickGame = true }, onPoke = {},
+        canPoke = status == RelationStatus.FRIENDS && online && cooldown == null && AppServices.pokes.canPoke(uid, tick),
+        pokeCountdown = cooldown?.let(com.rangepatte.app.domain.pokes.Pokes::countdown),
+        pokedLine = pokedLine,
+        onPlayRequest = { pickGame = true },
+        onPoke = {
+            haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+            com.rangepatte.app.audio.GameAudio.play(com.rangepatte.app.audio.Sfx.PRESENT)
+            AppServices.pokes.poke(uid)
+        },
         onWatch = watchable?.let { a -> { onWatch(a.gameId.routeSegment, a.tableCode!!) } },
         onAction = { action -> friends.act(uid, action) { if (action == RelationAction.BLOCK || action == RelationAction.REMOVE_FRIEND) onBackClick() } },
         onReport = { friends.report(uid, "abuse") { android.widget.Toast.makeText(context, reported, android.widget.Toast.LENGTH_SHORT).show() } },

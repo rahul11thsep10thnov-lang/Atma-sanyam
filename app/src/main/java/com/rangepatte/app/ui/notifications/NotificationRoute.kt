@@ -54,7 +54,10 @@ fun BoxScope.NotificationCentre(
                     AppServices.playRequests.answer(q, RequestStatus.ACCEPTED) { r -> r.onSuccess { onClose(); onJoin(q.gameId.routeSegment, q.tableCode) } }
                 }
                 NoticeKind.REQUEST_ACCEPTED -> { onClose(); onOpenPerson(n.uid) } // the profile has "Play request"
-                NoticeKind.POKE -> { onClose(); onOpenPerson(n.uid) } // poke back lives on the profile (Element 13)
+                NoticeKind.POKE -> {
+                    // Poke back right here when allowed (friend online, cooldown over); otherwise show the profile.
+                    if (AppServices.pokes.canPoke(n.uid)) AppServices.pokes.poke(n.uid) else { onClose(); onOpenPerson(n.uid) }
+                }
                 else -> { onClose(); onOpenPerson(n.uid) }
             }
         },

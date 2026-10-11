@@ -19,8 +19,8 @@ court theme: antique wood, gold bevels, parchment text, Cinzel/Marcellus-style h
 | 10 | Spectator mode and joining the next round | Design 1 | Same antique table, gold "Watching" pill, ribbon "You'll take a seat when this round ends · N tricks left" with Leave. Redacted views (no hidden card ever reaches a watcher), seat at the round boundary into the lowest computer seat, first come first served, up to four watchers. |
 | 11 | Predefined messages and emoji reactions | Design 1 (Royal court) | Gold speech button at the table corner, parchment tray (10 phrases, 8 emoji, Mute row), parchment plaque beside the sender's nameplate for 3 s. Ids only, never free text; 1 per 2 s and 5 per 30 s; watchers emoji-only; no button on solo tables. |
 | 12 | Notification bell and centre | Design 1 (Royal court) | Brass bell with crimson count in the top bar of Khel / Entertainment / Friends; parchment scroll drops from it, grouped New / Earlier, one inline action per line (Accept, Play, Poke back), × to dismiss, Clear all. Derived from relations and play requests plus posted notices; 7 days / 50 items; no bell when logged out. |
-| 13 | Poke button | *awaiting approval* | |
-| 14 | Poke animation | pending | |
+| 13 | Poke button | Design 1 (Royal court) | Crimson 👉 Poke in the profile action row; steel "Poked · 9:58" countdown after; parchment confirmation line. Friends only and only while online; 10-minute cooldown per friend, 20 an hour; `pokes/{from_to}` record; Poke back from the notification centre. |
+| 14 | Poke animation | *awaiting approval* | |
 | 15 | Poke settings | pending | |
 | 16 | Profile management | pending | |
 | 17 | States (loading / empty / error) | pending | |

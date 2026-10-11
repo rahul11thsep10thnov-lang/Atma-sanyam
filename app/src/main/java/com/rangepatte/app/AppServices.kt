@@ -50,6 +50,9 @@ object AppServices {
 
     /** The notification centre's list (Element 12): derived from relations and play requests, plus posted notices. */
     lateinit var notifications: com.rangepatte.app.data.notifications.NotificationRepository
+
+    /** Pokes (Element 13): cooldowns on the phone, records in `pokes/`, received pokes posted to the centre. */
+    lateinit var pokes: com.rangepatte.app.data.pokes.PokeRepository
         private set
 
     /** Swap [PlaceholderPaymentGateway] for the real partner's implementation when one is chosen. */
@@ -80,9 +83,13 @@ object AppServices {
             friendStateOf = presence::stateOf, relationOf = friends::statusOf
         )
         notifications = com.rangepatte.app.data.notifications.NotificationRepository(application, friends, playRequests)
-        account.onSignedInListener = { uid -> profile.onSignedIn(uid); friends.start(uid); presence.onSignedIn(uid); playRequests.start(uid); notifications.start(uid) }
-        account.onSignedOutListener = { profile.onSignedOut(); friends.stopWatching(); presence.onSignedOut(); playRequests.stopWatching(); notifications.stopWatching() }
-        account.currentUser.value?.let { profile.onSignedIn(it.uid); friends.start(it.uid); presence.onSignedIn(it.uid); playRequests.start(it.uid); notifications.start(it.uid) }
+        pokes = com.rangepatte.app.data.pokes.PokeRepository(
+            if (isFirebaseConnected) com.rangepatte.app.data.pokes.FirestorePokeStore() else com.rangepatte.app.data.pokes.LocalPokeStore(),
+            notifications, relationOf = friends::statusOf, isOnline = { uid -> presence.stateOf(uid) != com.rangepatte.app.domain.presence.FriendState.OFFLINE }
+        )
+        account.onSignedInListener = { uid -> profile.onSignedIn(uid); friends.start(uid); presence.onSignedIn(uid); playRequests.start(uid); notifications.start(uid); pokes.start(uid) }
+        account.onSignedOutListener = { profile.onSignedOut(); friends.stopWatching(); presence.onSignedOut(); playRequests.stopWatching(); notifications.stopWatching(); pokes.stopWatching() }
+        account.currentUser.value?.let { profile.onSignedIn(it.uid); friends.start(it.uid); presence.onSignedIn(it.uid); playRequests.start(it.uid); notifications.start(it.uid); pokes.start(it.uid) }
         ads = AdsManager(membership)
         GameAudio.init(application)
     }
