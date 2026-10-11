@@ -28,7 +28,7 @@ const TYPE_OPTIONS: SearchContentType[] = [
 ];
 
 const selectClass =
-  "rounded-md border border-slate-300 px-2 py-1.5 text-sm text-slate-900 outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100";
+  "w-full min-w-0 max-w-full truncate rounded-md border border-slate-300 px-2 py-1.5 text-sm text-slate-900 outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100";
 
 export default async function SearchPage({
   searchParams,
@@ -80,9 +80,9 @@ export default async function SearchPage({
 
       <form
         method="GET"
-        className="flex flex-wrap items-end gap-3 rounded-lg border border-slate-200 bg-white p-4"
+        className="grid grid-cols-1 items-end gap-3 rounded-lg border border-slate-200 bg-white p-4 sm:grid-cols-2 lg:flex lg:flex-wrap"
       >
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex min-w-0 flex-col gap-1 text-sm">
           <span className="font-medium text-slate-700">Query</span>
           <input
             type="search"
@@ -92,7 +92,7 @@ export default async function SearchPage({
             placeholder="Search…"
           />
         </label>
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex min-w-0 flex-col gap-1 text-sm">
           <span className="font-medium text-slate-700">Type</span>
           <select name="type" defaultValue={type ?? ""} className={selectClass}>
             <option value="">All types</option>
@@ -103,7 +103,7 @@ export default async function SearchPage({
             ))}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex min-w-0 flex-col gap-1 text-sm">
           <span className="font-medium text-slate-700">Organization</span>
           <select
             name="organizationId"
@@ -118,7 +118,7 @@ export default async function SearchPage({
             ))}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex min-w-0 flex-col gap-1 text-sm">
           <span className="font-medium text-slate-700">Category</span>
           <select
             name="categoryId"
@@ -133,7 +133,7 @@ export default async function SearchPage({
             ))}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex min-w-0 flex-col gap-1 text-sm">
           <span className="font-medium text-slate-700">State</span>
           <select name="stateId" defaultValue={params.stateId ?? ""} className={selectClass}>
             <option value="">Any</option>
@@ -146,7 +146,7 @@ export default async function SearchPage({
         </label>
         <button
           type="submit"
-          className="rounded-md bg-brand-700 px-4 py-2 text-sm font-medium text-white hover:bg-brand-900"
+          className="rounded-md bg-brand-700 px-4 py-2 text-sm font-medium text-white hover:bg-brand-900 sm:col-span-2 lg:col-span-1"
         >
           Apply
         </button>

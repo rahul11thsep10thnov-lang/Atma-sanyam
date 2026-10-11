@@ -6,11 +6,11 @@
  */
 export function MottoBand() {
   return (
-    <section aria-label="Motto" className="w-full border-b border-orange-200/70 bg-white/45">
-      <div className="grid w-full grid-cols-1 gap-4 px-4 py-5 sm:px-8 lg:px-12 md:grid-cols-2 md:items-center md:gap-8">
+    <section aria-label="Motto" className="w-full border-b border-orange-200/70 bg-white/45 max-md:order-1 max-md:border-t">
+      <div className="grid w-full grid-cols-1 gap-2 px-4 py-3 sm:px-8 md:py-5 lg:px-12 md:grid-cols-2 md:items-center md:gap-8">
         <p
           lang="sa"
-          className="font-tillana text-xl leading-relaxed text-slate-900 md:text-2xl"
+          className="font-tillana text-base leading-relaxed text-slate-900 sm:text-xl md:text-2xl"
         >
           उद्यमेन हि सिध्यन्ति कार्याणि न मनोरथैः।
           <br />
@@ -18,7 +18,7 @@ export function MottoBand() {
         </p>
         <p
           lang="hi"
-          className="font-kalam text-base leading-relaxed text-slate-700 md:text-right md:text-lg"
+          className="font-kalam text-sm leading-relaxed text-slate-700 md:text-right md:text-lg"
         >
           जिस प्रकार सोते हुए सिंह के मुँह में मृग स्वयं नहीं प्रवेश करता,
           <br />

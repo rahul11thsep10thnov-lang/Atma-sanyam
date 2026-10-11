@@ -48,8 +48,9 @@ export default async function PublicLayout({
       <MottoBand />
       <BigSearch />
       <CtaTabs />
-      <div className="flex-1">{children}</div>
-      <Footer />
+      <div className="flex-1 max-md:order-2">{children}</div>
+      {/* On phones the motto sits right under the tabs (order-1); content and footer follow. */}
+      <div className="max-md:order-3"><Footer /></div>
     </div>
   );
 }

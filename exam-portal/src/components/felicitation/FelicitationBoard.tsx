@@ -96,7 +96,7 @@ export function FelicitationBoard({ initial }: { initial: BoardState }) {
   const leaving = !single && entry && slot.msLeft < 450 && animate;
 
   const callIn = (
-    <button type="button" onClick={() => setOpen(true)} className="mx-auto -mt-px inline-flex items-center gap-1.5 rounded-b-xl border border-t-0 border-[#f1d3b0] bg-gradient-to-b from-[#fff4e6] to-[#ffe8cc] px-5 py-2 text-2xl font-semibold text-[#9c3d0a] shadow-sm hover:from-[#ffe8cc] hover:to-[#ffd8a8]">
+    <button type="button" onClick={() => setOpen(true)} className="relative z-10 mx-auto mt-2 inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-[#f1d3b0] bg-gradient-to-b from-[#fff4e6] to-[#ffe8cc] px-4 py-2.5 text-lg sm:-mt-px sm:w-auto sm:rounded-b-xl sm:rounded-t-none sm:border-t-0 sm:px-5 sm:py-2 sm:text-2xl font-semibold text-[#9c3d0a] shadow-sm hover:from-[#ffe8cc] hover:to-[#ffd8a8]">
       🎉 Add Your Achievement
     </button>
   );

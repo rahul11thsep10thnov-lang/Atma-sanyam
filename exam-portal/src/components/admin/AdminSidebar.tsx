@@ -66,9 +66,27 @@ const NAV_GROUPS: NavGroup[] = [
   },
 ];
 
+/** Desktop: a fixed left column. Phones: a "Menu" bar that opens the same
+ * list (a native <details>, so it works without JavaScript). */
 export function AdminSidebar({ role }: { role: AdminRole }) {
   return (
-    <nav className="flex w-56 shrink-0 flex-col gap-4 border-r border-slate-200 bg-white px-3 py-6" aria-label="Admin">
+    <>
+      <details className="border-b border-slate-200 bg-white lg:hidden">
+        <summary className="cursor-pointer list-none px-4 py-3 text-sm font-semibold text-slate-800">☰ Admin menu</summary>
+        <div className="max-h-[70vh] overflow-y-auto border-t border-slate-100">
+          <NavList role={role} />
+        </div>
+      </details>
+      <div className="hidden lg:block">
+        <NavList role={role} />
+      </div>
+    </>
+  );
+}
+
+function NavList({ role }: { role: AdminRole }) {
+  return (
+    <nav className="flex w-full shrink-0 flex-col gap-4 bg-white px-3 py-4 lg:min-h-full lg:w-56 lg:border-r lg:border-slate-200 lg:py-6" aria-label="Admin">
       {NAV_GROUPS.map((group) => (
         <div key={group.heading} className="flex flex-col gap-0.5">
           <div className="px-3 pb-1 text-[11px] font-semibold tracking-wider text-slate-400 uppercase">{group.heading}</div>

@@ -237,7 +237,9 @@ h6 {
   transform: translateY(2px);
 }
 @media (max-width: 640px) {
-  .rahul-tab { min-width: 0; flex: 1 1 100%; padding: 1.4rem 1rem; font-size: 1.5rem; }
+  /* Two per row on phones, much shorter than the desktop tabs. */
+  .rahul-tab { min-width: 0; flex: 1 1 calc(50% - 0.5rem); padding: 0.9rem 0.35rem; font-size: 1.05rem; border-radius: 12px; box-shadow: 0 3px 0 #d9783a, 0 5px 10px rgba(176, 90, 30, 0.15); text-align: center; }
+  .rahul-tab-text { letter-spacing: 0.02em; }
 }
 
 /* --- Felicitation Board ------------------------------------------------ */
