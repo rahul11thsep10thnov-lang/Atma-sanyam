@@ -22,8 +22,8 @@ court theme: antique wood, gold bevels, parchment text, Cinzel/Marcellus-style h
 | 13 | Poke button | Design 1 (Royal court) | Crimson 👉 Poke in the profile action row; steel "Poked · 9:58" countdown after; parchment confirmation line. Friends only and only while online; 10-minute cooldown per friend, 20 an hour; `pokes/{from_to}` record; Poke back from the notification centre. |
 | 14 | Poke animation | Design 1 (Royal court) | One 0.4 s page shiver, a gold 👉 taps twice mid-screen, a parchment banner drops under the top bar with avatar, name, "poked you" and Poke back; 5 s or tap to leave; banner only at a table; fade only under reduced motion. |
 | 15 | Poke settings | Design 1 (Royal court) | A Pokes plaque on Settings under Sound and music: Receive / Sound / Vibration orb switches, segmented Who may poke me (All friends / Favourites / Nobody), Muted people chips with ×. Favourite star and mute from the friend row menu and the profile. Receive + audience mirrored to the profile; senders told politely. |
-| 16 | Profile management | *awaiting approval* | |
-| 17 | States (loading / empty / error) | pending | |
+| 16 | Profile management | Design 1 (Royal court) | Own page from the top-bar account tab: nameplate hero with gold pencils (avatar → Element 3 gallery, name → Element 2 screen, 30-day rule, old names released after 30 days), Privacy / Notifications / Account plaques with orb switches, masked phone, Log out and Delete account with confirmations. |
+| 17 | States (loading / empty / error) | *awaiting approval* | |
 
 Galleries are kept outside the repository (they are review material, not product code); the approved
 design is described here and in the README section of each feature.

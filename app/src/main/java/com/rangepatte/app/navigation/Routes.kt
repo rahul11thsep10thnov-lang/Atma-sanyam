@@ -21,6 +21,11 @@ object Routes {
     const val MEMBERSHIP = "membership"
     const val CHECKOUT = "checkout"
     const val USERNAME = "profile/username"
+    const val ARG_EDIT = "edit"
+    const val USERNAME_PATTERN = "profile/username?$ARG_EDIT={$ARG_EDIT}"
+    /** Changing an existing username from My Profile (Element 16). */
+    const val USERNAME_EDIT = "profile/username?edit=true"
+    const val MY_PROFILE = "profile/me"
     const val ARG_UID = "uid"
     const val PERSON_PATTERN = "person/{$ARG_UID}"
     fun person(uid: String) = "person/$uid"

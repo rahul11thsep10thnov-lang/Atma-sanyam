@@ -29,7 +29,11 @@ import kotlinx.coroutines.launch
 class NotificationRepository(
     context: Context,
     private val friends: FriendsRepository,
-    private val playRequests: PlayRequestRepository
+    private val playRequests: PlayRequestRepository,
+    /** Element 16: which kinds the player wants, and which friends' "came online" to post. */
+    private val settings: () -> com.rangepatte.app.data.profile.MyProfileSettings = { com.rangepatte.app.data.profile.MyProfileSettings() },
+    /** Element 16: the friends' presence, for "came online"; null when not wired. */
+    private val presence: com.rangepatte.app.data.presence.PresenceRepository? = null
 ) {
     private val prefs = context.applicationContext.getSharedPreferences("notifications", Context.MODE_PRIVATE)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
@@ -52,10 +56,31 @@ class NotificationRepository(
             combine(friends.relations, playRequests.all) { relations, requests -> derive(uid, relations, requests) }
                 .collect { derived -> fold(derived) }
         }
+        onlineJob?.cancel()
+        onlineJob = presence?.let { p ->
+            scope.launch {
+                var wasOnline: Set<String>? = null
+                combine(p.friends, p.clock) { records, now -> records.filterValues { com.rangepatte.app.domain.presence.Presence.isOnline(it, now) }.keys }
+                    .collect { online ->
+                        val before = wasOnline
+                        if (before != null) {
+                            val watch = settings().onlineWatch
+                            (online - before).filter { it in watch }.forEach { other ->
+                                val t = System.currentTimeMillis()
+                                post(Notice("on:$other:${t / 600_000}", NoticeKind.FRIEND_ONLINE, other, t))
+                            }
+                        }
+                        wasOnline = online
+                    }
+            }
+        }
     }
+
+    private var onlineJob: Job? = null
 
     fun stopWatching() {
         job?.cancel(); job = null
+        onlineJob?.cancel(); onlineJob = null
         me = null
         posted = emptyList(); dismissed = emptySet(); readIds = emptySet()
         _notices.value = emptyList(); _unread.value = 0
@@ -101,7 +126,8 @@ class NotificationRepository(
     }
 
     private fun derive(me: String, relations: List<Relation>, requests: List<com.rangepatte.app.domain.invites.PlayRequest>): List<Notice> = buildList {
-        relations.forEach { r ->
+        val wanted = settings()
+        if (wanted.notifyFriendRequests) relations.forEach { r ->
             val other = r.other(me)
             when (r.statusFor(me)) {
                 RelationStatus.INCOMING -> add(Notice("fr:$other", NoticeKind.FRIEND_REQUEST, other, r.since.takeIf { it > 0 } ?: System.currentTimeMillis()))
@@ -111,7 +137,7 @@ class NotificationRepository(
             }
         }
         val now = System.currentTimeMillis()
-        requests.filter { it.to == me }.forEach { q ->
+        if (wanted.notifyPlayRequests) requests.filter { it.to == me }.forEach { q ->
             add(Notice("pr:${q.id}", NoticeKind.PLAY_REQUEST, q.from, q.createdAt, live = q.isPendingAt(now), ref = q.id))
         }
     }

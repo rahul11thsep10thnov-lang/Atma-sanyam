@@ -464,4 +464,39 @@
     <string name="poke_favourite">ਮਨਪਸੰਦ</string>
     <string name="poke_unfavourite">ਮਨਪਸੰਦ ਤੋਂ ਹਟਾਓ</string>
     <string name="poke_not_taking_format">%1$s ਇਸ ਵੇਲੇ ਪੋਕ ਨਹੀਂ ਲੈ ਰਹੇ।</string>
+
+    <!-- My profile (Element 16) -->
+    <string name="myprofile_title">ਮੇਰੀ ਪ੍ਰੋਫ਼ਾਈਲ</string>
+    <string name="myprofile_change_avatar">ਤਸਵੀਰ ਬਦਲੋ</string>
+    <string name="myprofile_privacy">ਪਰਦੇਦਾਰੀ</string>
+    <string name="myprofile_appear_offline">ਆਫ਼ਲਾਈਨ ਦਿਖੋ</string>
+    <string name="myprofile_appear_offline_hint">ਦੋਸਤ ਤੁਹਾਨੂੰ ਆਫ਼ਲਾਈਨ ਵੇਖਦੇ ਹਨ; ਤੁਸੀਂ ਉਨ੍ਹਾਂ ਨੂੰ ਵੇਖਦੇ ਰਹਿੰਦੇ ਹੋ। ਇਸ ਦੌਰਾਨ ਤੁਹਾਨੂੰ ਭੇਜੇ ਖੇਡਣ ਦੇ ਸੱਦੇ ਠੁਕਰਾ ਦਿੱਤੇ ਜਾਂਦੇ ਹਨ।</string>
+    <string name="myprofile_you_appear_offline">ਆਫ਼ਲਾਈਨ ਦਿਖ ਰਹੇ ਹੋ</string>
+    <string name="myprofile_phone_discovery">ਸੰਪਰਕ ਮੈਨੂੰ ਫ਼ੋਨ ਰਾਹੀਂ ਲੱਭ ਸਕਣ</string>
+    <string name="myprofile_phone_discovery_hint">ਸਿਰਫ਼ ਇੱਕ ਗੁਪਤ (ਹੈਸ਼) ਨੰਬਰ ਰੱਖਿਆ ਜਾਂਦਾ ਹੈ। ਡਿਫ਼ਾਲਟ ਬੰਦ; ਬੰਦ ਕਰਨ \'ਤੇ ਹਟ ਜਾਂਦਾ ਹੈ।</string>
+    <string name="myprofile_accept_play">ਖੇਡਣ ਦੇ ਸੱਦੇ ਮਨਜ਼ੂਰ ਕਰੋ</string>
+    <string name="myprofile_notifications">ਸੂਚਨਾਵਾਂ</string>
+    <string name="myprofile_notify_friend_requests">ਦੋਸਤੀ ਦੀਆਂ ਬੇਨਤੀਆਂ</string>
+    <string name="myprofile_notify_play_requests">ਖੇਡਣ ਦੇ ਸੱਦੇ</string>
+    <string name="myprofile_online_notices">ਜਦੋਂ ਕੋਈ ਦੋਸਤ ਆਨਲਾਈਨ ਆਵੇ</string>
+    <string name="myprofile_online_none">ਕੋਈ ਨਹੀਂ ਚੁਣਿਆ</string>
+    <string name="myprofile_online_pick_hint">ਉਹ ਦੋਸਤ ਚੁਣੋ ਜਿਨ੍ਹਾਂ ਦੇ ਆਉਣ ਦੀ ਖ਼ਬਰ ਤੁਸੀਂ ਚਾਹੁੰਦੇ ਹੋ।</string>
+    <string name="myprofile_choose">ਚੁਣੋ</string>
+    <string name="myprofile_done">ਹੋ ਗਿਆ</string>
+    <string name="myprofile_account">ਖਾਤਾ</string>
+    <string name="myprofile_phone">ਫ਼ੋਨ</string>
+    <string name="myprofile_username_change">ਯੂਜ਼ਰਨੇਮ ਬਦਲੋ</string>
+    <string name="myprofile_username_free">ਤੁਸੀਂ ਹੁਣ ਯੂਜ਼ਰਨੇਮ ਬਦਲ ਸਕਦੇ ਹੋ (30 ਦਿਨਾਂ ਵਿੱਚ ਇੱਕ ਵਾਰ)।</string>
+    <string name="myprofile_username_wait_format">ਅਗਲੀ ਤਬਦੀਲੀ %1$d ਦਿਨਾਂ ਬਾਅਦ ਸੰਭਵ।</string>
+    <string name="myprofile_username_save">ਨਵਾਂ ਨਾਮ ਸੰਭਾਲੋ</string>
+    <string name="myprofile_edit">ਬਦਲੋ</string>
+    <string name="myprofile_member_since">%1$s ਤੋਂ ਮੈਂਬਰ</string>
+    <string name="myprofile_friends_format">%1$d ਦੋਸਤ</string>
+    <string name="myprofile_log_out">ਲੌਗ ਆਊਟ</string>
+    <string name="myprofile_log_out_confirm">ਵਾਪਸ ਲੌਗ ਇਨ ਕਰਨ ਲਈ ਫਿਰ OTP ਚਾਹੀਦਾ ਹੋਵੇਗਾ।</string>
+    <string name="myprofile_delete">ਖਾਤਾ ਮਿਟਾਓ</string>
+    <string name="myprofile_delete_confirm">ਇਸ ਨਾਲ ਤੁਹਾਡੀ ਪ੍ਰੋਫ਼ਾਈਲ, ਯੂਜ਼ਰਨੇਮ, ਤਸਵੀਰ, ਮੌਜੂਦਗੀ ਅਤੇ ਸੈਟਿੰਗਾਂ ਹਟ ਜਾਣਗੀਆਂ। ਦੋਸਤੀਆਂ ਟੁੱਟ ਜਾਣਗੀਆਂ। ਇਹ ਵਾਪਸ ਨਹੀਂ ਹੋ ਸਕਦਾ।</string>
+    <string name="myprofile_delete_yes">ਮਿਟਾਓ</string>
+    <string name="myprofile_delete_failed">ਖਾਤਾ ਮਿਟਾਇਆ ਨਹੀਂ ਜਾ ਸਕਿਆ। ਕਨੈਕਸ਼ਨ ਜਾਂਚੋ ਅਤੇ ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰੋ।</string>
+    <string name="myprofile_cancel">ਰੱਦ ਕਰੋ</string>
 </resources>

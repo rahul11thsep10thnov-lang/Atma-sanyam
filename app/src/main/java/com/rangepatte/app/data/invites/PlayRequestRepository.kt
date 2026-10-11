@@ -55,9 +55,22 @@ class PlayRequestRepository(private val store: PlayRequestStore, private val fri
 
     fun stopWatching() { stop?.invoke(); stop = null; me = null; main.removeCallbacks(tick); _all.value = emptyList(); _incoming.value = null; _outgoing.value = null }
 
+    /** Element 16: when the player has switched play requests off, each one is declined at once. */
+    var acceptIncoming: () -> Boolean = { true }
+    private val autoDeclined = HashSet<String>()
+
     private fun recompute() {
         val uid = me ?: return
         val t = _now.value
+        if (!acceptIncoming()) {
+            _all.value.filter { it.to == uid && it.isPendingAt(t) && it.id !in autoDeclined }.forEach { q ->
+                autoDeclined += q.id
+                answer(q, RequestStatus.DECLINED)
+            }
+            _incoming.value = null
+            _outgoing.value = _all.value.filter { it.from == uid && it.id !in seen }.maxByOrNull { it.createdAt }
+            return
+        }
         _incoming.value = _all.value.filter { it.to == uid && it.isPendingAt(t) && it.id !in seen }.maxByOrNull { it.createdAt }
         // The sender keeps seeing their request until it is resolved and they have read the outcome.
         _outgoing.value = _all.value.filter { it.from == uid && it.id !in seen }.maxByOrNull { it.createdAt }

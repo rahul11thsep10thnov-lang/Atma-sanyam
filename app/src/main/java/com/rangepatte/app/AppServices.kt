@@ -56,6 +56,9 @@ object AppServices {
 
     /** Poke settings (Element 15): receive / sound / vibration / audience, muted and favourite people. */
     lateinit var pokePrefs: com.rangepatte.app.data.pokes.PokePrefsRepository
+
+    /** My Profile switches (Element 16): play requests on/off, which notices, which friends' online. */
+    lateinit var myProfile: com.rangepatte.app.data.profile.MyProfilePrefsRepository
         private set
 
     /** Swap [PlaceholderPaymentGateway] for the real partner's implementation when one is chosen. */
@@ -85,7 +88,9 @@ object AppServices {
             if (isFirebaseConnected) FirestorePlayRequestStore() else LocalPlayRequestStore(),
             friendStateOf = presence::stateOf, relationOf = friends::statusOf
         )
-        notifications = com.rangepatte.app.data.notifications.NotificationRepository(application, friends, playRequests)
+        myProfile = com.rangepatte.app.data.profile.MyProfilePrefsRepository(application)
+        playRequests.acceptIncoming = { myProfile.value.value.acceptPlayRequests }
+        notifications = com.rangepatte.app.data.notifications.NotificationRepository(application, friends, playRequests, settings = { myProfile.value.value }, presence = presence)
         pokePrefs = com.rangepatte.app.data.pokes.PokePrefsRepository(application, mirror = { uid, data ->
             if (isFirebaseConnected) com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("profiles").document(uid)
                 .set(mapOf("pokePrefs" to data), com.google.firebase.firestore.SetOptions.merge())
@@ -95,9 +100,9 @@ object AppServices {
             notifications, relationOf = friends::statusOf, isOnline = { uid -> presence.stateOf(uid) != com.rangepatte.app.domain.presence.FriendState.OFFLINE },
             prefs = { pokePrefs.value.value }
         )
-        account.onSignedInListener = { uid -> profile.onSignedIn(uid); friends.start(uid); presence.onSignedIn(uid); playRequests.start(uid); notifications.start(uid); pokePrefs.start(uid); pokes.start(uid) }
-        account.onSignedOutListener = { profile.onSignedOut(); friends.stopWatching(); presence.onSignedOut(); playRequests.stopWatching(); notifications.stopWatching(); pokes.stopWatching(); pokePrefs.stop() }
-        account.currentUser.value?.let { profile.onSignedIn(it.uid); friends.start(it.uid); presence.onSignedIn(it.uid); playRequests.start(it.uid); notifications.start(it.uid); pokePrefs.start(it.uid); pokes.start(it.uid) }
+        account.onSignedInListener = { uid -> profile.onSignedIn(uid); friends.start(uid); presence.onSignedIn(uid); playRequests.start(uid); myProfile.start(uid); notifications.start(uid); pokePrefs.start(uid); pokes.start(uid) }
+        account.onSignedOutListener = { profile.onSignedOut(); friends.stopWatching(); presence.onSignedOut(); playRequests.stopWatching(); notifications.stopWatching(); pokes.stopWatching(); pokePrefs.stop(); myProfile.stop() }
+        account.currentUser.value?.let { profile.onSignedIn(it.uid); friends.start(it.uid); presence.onSignedIn(it.uid); playRequests.start(it.uid); myProfile.start(it.uid); notifications.start(it.uid); pokePrefs.start(it.uid); pokes.start(it.uid) }
         ads = AdsManager(membership)
         GameAudio.init(application)
     }

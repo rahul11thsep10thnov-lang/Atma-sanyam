@@ -66,7 +66,7 @@ private sealed interface Check {
  * nameplate, checked as you type (debounced) and reserved atomically when you continue.
  */
 @Composable
-fun UsernameScreen(onDone: () -> Unit, onBackClick: () -> Unit, modifier: Modifier = Modifier) {
+fun UsernameScreen(onDone: () -> Unit, onBackClick: () -> Unit, modifier: Modifier = Modifier, editing: Boolean = false) {
     val repository = AppServices.profile
     val profile by repository.profile.collectAsState()
     val loaded by repository.loaded.collectAsState()
@@ -77,8 +77,10 @@ fun UsernameScreen(onDone: () -> Unit, onBackClick: () -> Unit, modifier: Modifi
 
     // Someone who already has a username (same account on a new phone) skips this step.
     LaunchedEffect(loaded, profile?.username) {
-        if (loaded && !profile?.username.isNullOrBlank() && name == profile?.username) onDone()
+        if (!editing && loaded && !profile?.username.isNullOrBlank() && name == profile?.username) onDone()
     }
+    // Element 16: an existing name may change once every 30 days.
+    val daysLeft = if (editing) com.rangepatte.app.domain.profile.ProfileRules.daysUntilUsernameChange(profile?.usernameChangedAt ?: 0, System.currentTimeMillis()) else 0
 
     // Live availability: wait 400 ms after the last keystroke, then ask the store once.
     LaunchedEffect(name) {
@@ -99,7 +101,7 @@ fun UsernameScreen(onDone: () -> Unit, onBackClick: () -> Unit, modifier: Modifi
     }
 
     fun claim() {
-        if (busy || check != Check.Available) return
+        if (busy || check != Check.Available || daysLeft > 0) return
         busy = true
         repository.claimUsername(name) { result ->
             busy = false
@@ -160,10 +162,16 @@ fun UsernameScreen(onDone: () -> Unit, onBackClick: () -> Unit, modifier: Modifi
                         text = stringResource(R.string.username_rules, Username.MIN_LENGTH, Username.MAX_LENGTH),
                         style = MaterialTheme.typography.bodySmall, color = ParchmentTextDim, modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
                     )
+                    if (daysLeft > 0) {
+                        Text(
+                            text = stringResource(R.string.myprofile_username_wait_format, daysLeft),
+                            style = MaterialTheme.typography.bodyMedium, color = GoldenGlow, modifier = Modifier.fillMaxWidth().padding(top = 10.dp)
+                        )
+                    }
                     RoyalButton(
-                        text = stringResource(R.string.username_continue),
+                        text = stringResource(if (editing) R.string.myprofile_username_save else R.string.username_continue),
                         onClick = ::claim,
-                        enabled = check == Check.Available && !busy,
+                        enabled = check == Check.Available && !busy && daysLeft == 0,
                         modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
                     )
                 }

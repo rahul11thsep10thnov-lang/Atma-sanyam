@@ -474,4 +474,39 @@
     <string name="poke_favourite">Favourite</string>
     <string name="poke_unfavourite">Remove favourite</string>
     <string name="poke_not_taking_format">%1$s is not taking pokes right now.</string>
+
+    <!-- My profile (Element 16) -->
+    <string name="myprofile_title">My profile</string>
+    <string name="myprofile_change_avatar">Change picture</string>
+    <string name="myprofile_privacy">Privacy</string>
+    <string name="myprofile_appear_offline">Appear offline</string>
+    <string name="myprofile_appear_offline_hint">Friends see you as offline; you still see them. Play requests to you are refused meanwhile.</string>
+    <string name="myprofile_you_appear_offline">Appearing offline</string>
+    <string name="myprofile_phone_discovery">Let contacts find me by phone</string>
+    <string name="myprofile_phone_discovery_hint">Only a scrambled (hashed) number is stored. Off by default; switching it off removes it.</string>
+    <string name="myprofile_accept_play">Accept play requests</string>
+    <string name="myprofile_notifications">Notifications</string>
+    <string name="myprofile_notify_friend_requests">Friend requests</string>
+    <string name="myprofile_notify_play_requests">Play requests</string>
+    <string name="myprofile_online_notices">When a friend comes online</string>
+    <string name="myprofile_online_none">Nobody chosen</string>
+    <string name="myprofile_online_pick_hint">Choose the friends whose arrival you want to hear about.</string>
+    <string name="myprofile_choose">Choose</string>
+    <string name="myprofile_done">Done</string>
+    <string name="myprofile_account">Account</string>
+    <string name="myprofile_phone">Phone</string>
+    <string name="myprofile_username_change">Change username</string>
+    <string name="myprofile_username_free">You can change your username now (once every 30 days).</string>
+    <string name="myprofile_username_wait_format">Next change allowed in %1$d days.</string>
+    <string name="myprofile_username_save">Save new name</string>
+    <string name="myprofile_edit">Edit</string>
+    <string name="myprofile_member_since">Member since %1$s</string>
+    <string name="myprofile_friends_format">%1$d friends</string>
+    <string name="myprofile_log_out">Log out</string>
+    <string name="myprofile_log_out_confirm">You will need the OTP again to log back in.</string>
+    <string name="myprofile_delete">Delete account</string>
+    <string name="myprofile_delete_confirm">This removes your profile, username, picture, presence and settings. Friendships are dropped. This cannot be undone.</string>
+    <string name="myprofile_delete_yes">Delete</string>
+    <string name="myprofile_delete_failed">Could not delete the account. Check your connection and try again.</string>
+    <string name="myprofile_cancel">Cancel</string>
 </resources>

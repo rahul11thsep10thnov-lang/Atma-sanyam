@@ -50,7 +50,7 @@ import com.rangepatte.app.ui.notifications.NotificationCentre
 private val topLevelRoutes = setOf(Routes.GAMES, Routes.ENTERTAINMENT, Routes.FRIENDS, Routes.SETTINGS)
 
 /** Pages that have their own back header and don't show the "Remove ads? / Login" strip or banner ads. */
-private val routesWithoutAppChrome = setOf(Routes.LANGUAGE_SELECT, Routes.LOGIN, Routes.MEMBERSHIP, Routes.CHECKOUT, Routes.USERNAME, Routes.AVATAR, Routes.PERSON_PATTERN)
+private val routesWithoutAppChrome = setOf(Routes.LANGUAGE_SELECT, Routes.LOGIN, Routes.MEMBERSHIP, Routes.CHECKOUT, Routes.USERNAME_PATTERN, Routes.AVATAR, Routes.PERSON_PATTERN, Routes.MY_PROFILE)
 
 @Composable
 fun RangEPatteNavHost(
@@ -78,7 +78,8 @@ fun RangEPatteNavHost(
                     isAdFree = adFreeUntil > System.currentTimeMillis(),
                     user = user,
                     onRemoveAdsClick = { navController.navigate(Routes.MEMBERSHIP) { launchSingleTop = true } },
-                    onAccountClick = { navController.navigate(Routes.LOGIN) { launchSingleTop = true } },
+                    // Signed in, the account tab opens My Profile (Element 16); signed out, the login page.
+                    onAccountClick = { navController.navigate(if (user != null) Routes.MY_PROFILE else Routes.LOGIN) { launchSingleTop = true } },
                     unreadNotifications = if (user != null && currentRoute in topLevelRoutes) unread else null,
                     onBellClick = { centreNewIds = if (centreNewIds == null) AppServices.notifications.open() else null }
                 )
@@ -162,12 +163,25 @@ fun RangEPatteNavHost(
                     onEditProfile = { navController.navigate(Routes.AVATAR) }
                 )
             }
-            composable(Routes.USERNAME) {
+            composable(
+                route = Routes.USERNAME_PATTERN,
+                arguments = listOf(navArgument(Routes.ARG_EDIT) { type = NavType.StringType; defaultValue = "" })
+            ) { backStackEntry ->
+                val editing = backStackEntry.arguments?.getString(Routes.ARG_EDIT) == "true"
                 UsernameScreen(
+                    editing = editing,
                     onDone = {
-                        if (AppServices.profile.profile.value?.avatarId == null) navController.navigate(Routes.AVATAR) { popUpTo(Routes.USERNAME) { inclusive = true } }
+                        if (!editing && AppServices.profile.profile.value?.avatarId == null) navController.navigate(Routes.AVATAR) { popUpTo(Routes.USERNAME_PATTERN) { inclusive = true } }
                         else navController.popBackStack()
                     },
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+            composable(Routes.MY_PROFILE) {
+                com.rangepatte.app.ui.profile.MyProfileRoute(
+                    onChangeAvatar = { navController.navigate(Routes.AVATAR) },
+                    onChangeUsername = { navController.navigate(Routes.USERNAME_EDIT) },
+                    onSignedOut = { navController.popBackStack(Routes.GAMES, inclusive = false) },
                     onBackClick = { navController.popBackStack() }
                 )
             }

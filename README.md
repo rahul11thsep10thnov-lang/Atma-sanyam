@@ -433,6 +433,26 @@ audience before it can animate or notify. Do Not Disturb is respected by Android
 and the vibration. (Muting a person does not yet silence their table talk: table talk is muted by seat
 at the table, and seats are not tied to accounts on Nearby tables.)
 
+**My Profile (Friends Element 16, approved Design 1).** The account tab in the top bar opens the
+player's own page once signed in (`ui/profile/MyProfileScreen.kt`, `MyProfileRoute.kt`): the nameplate
+hero with gold pencils on the avatar (opens the Element 3 gallery) and on the name (opens the Element 2
+screen in edit mode), then three plaques with the app's orb switches.
+- *Privacy:* **Appear offline** (the Element 8 flag; play requests to you are refused meanwhile),
+  **Let contacts find me by phone** (writes or removes the SHA-256 hash on `profiles/{uid}.phoneHash`;
+  off by default), **Accept play requests** (off: each incoming request is declined at once).
+- *Notifications:* friend requests and play requests on/off (the centre stops deriving them), and
+  **When a friend comes online** with a chooser over your friends; the chosen ones post a notice when
+  their presence turns from offline to online.
+- *Account:* the phone number shown masked (`•••• 4321`) and never editable here; **Change username**
+  with the 30-day rule (`domain/profile/ProfileRules.kt`, `ProfileRulesTest`): the first name is free,
+  every later change waits 30 days, and the page says when the next one is allowed. A name given up is
+  *released*, not deleted: `usernames/{old}` keeps `releasedAt`, and both the availability check and the
+  claim transaction treat it as taken for 30 days. **Log out** asks once. **Delete account** explains
+  what goes (profile, username, picture, presence, settings) and deletes the profile, username and
+  presence documents, then signs out. Relations and play requests that name the deleted account should
+  be swept by a Cloud Function on `profiles/{uid}` delete (not written here); demo mode deletes
+  locally. Switches live on the phone per account (`data/profile/MyProfilePrefs.kt`).
+
 ### Online play: Firebase setup
 
 On top of the login setup below, in the Firebase console:
@@ -481,6 +501,7 @@ Firestore rules to add for these collections (signed-in users only; a username d
 created by the user it names and never changed):
 ```
 match /profiles/{uid} { allow read: if request.auth != null; allow write: if request.auth.uid == uid; }
+match /pokes/{id} { ... }  // see the Friends section
 match /usernames/{name} {
   allow read: if request.auth != null;
   allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
