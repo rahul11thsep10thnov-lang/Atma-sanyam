@@ -1,4 +1,4 @@
-# Tame time — Design system
+# Tame — Design system
 
 The visual system behind every screen. Tokens live in `src/theme/`, the
 component kit in `src/ui/`. A screen never hand-picks a hex colour, a font
@@ -44,7 +44,7 @@ accent, 10% highlight.
 ## Screens
 
 - **Home** — handwritten greeting · Grow plants / Reveal jigsaws chips · dial · one breathing Start. The spaces live in their tabs, not on Home.
-- **Session** — picture reveals piece by piece (about 10,000 pieces for every jigsaw; a few open each second, spread over the whole picture); Tame time chip, hairline progress, one close; Manrope timer with glow; result sheet (bloom + sprout / calm pause), then the placement sheet when something was earned.
+- **Session** — picture reveals piece by piece (about 10,000 pieces for every jigsaw; a few open each second, spread over the whole picture); Tame chip, hairline progress, one close; Manrope timer with glow; result sheet (bloom + sprout / calm pause), then the placement sheet when something was earned.
 - **Balcony · Garden · Museum** — the places (`docs/SPACES.md`): the scene fills the screen; one smoked-glass dock floats above the tab bar (Focus · Customize · Store · Inventory · Gallery; the museum's is Collection · Edit · Store · Settings · Exit); tapping the scene hides every control, the tab bar included. Guides exist only in Customize. The garden has its own chrome: a minimap and a title chip over the whole garden, a back pill, the segment's name and a shuffle button up close, and one Grow button (`docs/PARADISE_GARDEN.md`); the museum carries a section chip with arrows. A focus session shows no controls but the timer and close.
 - **Progress** — stat tiles, seven-day bars (single series, direct labels, no grid), session pictures, planted empty state.
 - **Settings** — grouped iconed cards, appearance control, calm destructive actions.

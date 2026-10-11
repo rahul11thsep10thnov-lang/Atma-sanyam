@@ -1,4 +1,4 @@
-# Production image for the Tame time API.
+# Production image for the Tame API.
 FROM node:22-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./

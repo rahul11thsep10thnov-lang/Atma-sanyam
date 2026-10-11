@@ -1,6 +1,6 @@
 # The spaces: balcony, garden, museum
 
-Tame time has three places that grow with focused time, each its own tab:
+Tame has three places that grow with focused time, each its own tab:
 
 | Tab | What it is | How it is drawn |
 | --- | --- | --- |

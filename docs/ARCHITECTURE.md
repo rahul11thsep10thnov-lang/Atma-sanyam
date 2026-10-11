@@ -8,7 +8,7 @@ Mobile app (Expo)                 Admin console (Next.js)
   │  /v1/*                           │  Next.js server → API with Bearer admin token
   ▼                                  ▼  /admin/v1/*
 ┌─────────────────────────────────────────────────────┐
-│ Tame time API  (backend/, Express 5 + TypeScript)        │
+│ Tame API  (backend/, Express 5 + TypeScript)        │
 │  • validation (zod) • auth (opaque hashed tokens)    │
 │  • RBAC per route • rate limits • audit log         │
 └───────────────┬───────────────────────┬─────────────┘

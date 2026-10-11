@@ -38,7 +38,7 @@ export async function setPushEnabled(enable: boolean): Promise<{ ok: true } | { 
   }
   if (platform === 'web') return { ok: false, reason: 'Push notifications are only available in the mobile app.' };
   if (isRunningInExpoGo()) {
-    return { ok: false, reason: 'Push notifications need the installed Tame time app — they don’t work inside Expo Go.' };
+    return { ok: false, reason: 'Push notifications need the installed Tame app — they don’t work inside Expo Go.' };
   }
   const id = projectId();
   if (!id) return { ok: false, reason: 'This build is missing its EAS project id, so push is unavailable.' };

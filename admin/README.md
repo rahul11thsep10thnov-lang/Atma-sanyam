@@ -1,6 +1,6 @@
-# Tame time admin console
+# Tame admin console
 
-Next.js 16 (App Router). Talks to the Tame time API through a same-origin server-side proxy, so the
+Next.js 16 (App Router). Talks to the Tame API through a same-origin server-side proxy, so the
 admin session token lives only in an httpOnly cookie. Permissions are enforced by the API.
 
 ```bash

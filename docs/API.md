@@ -1,4 +1,4 @@
-# Tame time API reference
+# Tame API reference
 
 Base URL: your API host, e.g. `https://api.your-domain.com`. All bodies are JSON.
 

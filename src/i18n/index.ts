@@ -6,7 +6,7 @@ import { I18nManager } from 'react-native';
 import { en, StringKey } from './strings/en';
 import { hi } from './strings/hi';
 
-/** Tame time is bilingual: English (UN English) and Hindi. */
+/** Tame is bilingual: English (UN English) and Hindi. */
 export type Language = 'en' | 'hi';
 
 export const LANGUAGES: { id: Language; name: string; native: string; rtl?: boolean }[] = [

@@ -153,8 +153,8 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeo
       try {
         await mailer.send({
           to: user.email,
-          subject: 'Your Tame time password reset code',
-          text: `Your Tame time password reset code is ${code}.\n\nIt expires in ${RESET_TTL_MIN} minutes. If you didn't ask for this, you can ignore this email — your password won't change.`,
+          subject: 'Your Tame password reset code',
+          text: `Your Tame password reset code is ${code}.\n\nIt expires in ${RESET_TTL_MIN} minutes. If you didn't ask for this, you can ignore this email — your password won't change.`,
         });
       } catch (err) {
         console.error('[mail] password reset email failed:', err instanceof Error ? err.message : err);

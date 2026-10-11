@@ -54,7 +54,7 @@ export function ConsoleShell({ me, children }: { me: AdminMe; children: React.Re
           <div className="brand">
             <img src="/icon.png" alt="" />
             <div>
-              Tame time
+              Tame
               <small>Admin console</small>
             </div>
           </div>
@@ -81,7 +81,7 @@ export function ConsoleShell({ me, children }: { me: AdminMe; children: React.Re
             <button className="btn btn-sm" onClick={() => setMenuOpen((o) => !o)} aria-expanded={menuOpen} aria-label="Menu">
               Menu
             </button>
-            <strong style={{ letterSpacing: '0.08em' }}>Tame time</strong>
+            <strong style={{ letterSpacing: '0.08em' }}>Tame</strong>
             <span className="small muted">{me.role.name}</span>
           </header>
           <main className="main" onClick={() => menuOpen && setMenuOpen(false)}>

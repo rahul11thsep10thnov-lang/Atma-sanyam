@@ -1,4 +1,4 @@
-# Tame time
+# Tame
 
 A calm focus timer where a jigsaw puzzle assembles itself while you stay on task.
 Leave the app mid-session and the puzzle stays unfinished.
@@ -13,8 +13,8 @@ This repository contains the whole product:
 
 ```
  ┌──────────────────────┐        HTTPS (Bearer token)         ┌───────────────────────┐
- │  Tame time mobile app    │ ──────────────  /v1/*  ───────────▶ │                       │
- │  iOS · Android       │                                      │   Tame time API           │     ┌──────────────┐
+ │  Tame mobile app    │ ──────────────  /v1/*  ───────────▶ │                       │
+ │  iOS · Android       │                                      │   Tame API           │     ┌──────────────┐
  └──────────────────────┘                                      │   Express + Drizzle   │ ──▶ │ PostgreSQL   │
                                                                │   auth · RBAC · rate  │     └──────────────┘
  ┌──────────────────────┐   browser → same-origin proxy        │   limits · audit log  │
