@@ -8,6 +8,8 @@ import com.rangepatte.app.game.common.ConnectionLostDialog
 import com.rangepatte.app.game.common.GameFrame
 import com.rangepatte.app.game.common.GameResultDialog
 import com.rangepatte.app.game.common.SeatedNotice
+import com.rangepatte.app.game.common.TalkLayout
+import com.rangepatte.app.game.common.talkControl
 import com.rangepatte.app.game.common.undoControl
 import com.rangepatte.app.game.common.watchingInfo
 import com.rangepatte.app.game.tricks.BidDialog
@@ -49,7 +51,7 @@ fun TwentyNineScreen(
         }
     }
 
-    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl(), watching = session.watchingInfo(onBackClick)) {
+    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl(), watching = session.watchingInfo(onBackClick), talk = session.talkControl(TalkLayout.TRICK)) {
         val hand = round?.hands?.get(view) ?: state.firstHands[view]
         val trumpKnown = state.trump != null && (state.highBidder == me || round?.trumpActive == true)
         TrickTable(

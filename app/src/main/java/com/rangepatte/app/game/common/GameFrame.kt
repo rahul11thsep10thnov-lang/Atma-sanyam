@@ -74,11 +74,14 @@ fun GameFrame(
     modifier: Modifier = Modifier,
     undo: UndoControl? = null,
     watching: WatchingInfo? = null,
+    /** Table talk (Element 11): the speech button, tray and plaques; null on a solo table. */
+    talk: TalkControl? = null,
     background: BackgroundType = BackgroundType.VILLAGE_CHAUPAL,
     content: @Composable ColumnScope.() -> Unit
 ) {
     var showRules by remember { mutableStateOf(false) }
     var showAudio by remember { mutableStateOf(false) }
+    var showTalk by remember { mutableStateOf(false) }
     val audio by GameAudio.settings.collectAsState()
     BackHandler(onBack = onBackClick)
 
@@ -123,6 +126,15 @@ fun GameFrame(
                     if (watching != null) {
                         Box(modifier = Modifier.align(Alignment.TopCenter).padding(top = 6.dp)) {
                             TurnIndicator(text = stringResource(R.string.spectate_watching))
+                        }
+                    }
+                    if (talk != null) {
+                        // Messages beside the sender's nameplate, the speech button in the top-left corner of the
+                        // table, and the parchment tray over the hand area while it is open.
+                        TalkPlaques(talk)
+                        TalkButton(onClick = { showTalk = !showTalk }, modifier = Modifier.align(Alignment.TopStart).padding(start = 8.dp, top = 8.dp))
+                        if (showTalk) {
+                            TalkTray(talk, onClose = { showTalk = false }, modifier = Modifier.align(Alignment.BottomCenter).padding(8.dp))
                         }
                     }
                     // The audio panel floats over the top-right corner of the table, under the speaker button.

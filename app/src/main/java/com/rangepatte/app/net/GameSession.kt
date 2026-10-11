@@ -5,6 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import com.rangepatte.app.audio.GameAudio
+import com.rangepatte.app.audio.Sfx
+import com.rangepatte.app.domain.talk.TableMessage
+import com.rangepatte.app.domain.talk.TableTalk
 import com.rangepatte.app.game.common.UndoHistory
 import com.rangepatte.app.net.core.GameMachine
 import com.rangepatte.app.net.core.MatchConfig
@@ -75,6 +78,67 @@ class GameSession<S, A>(
     /** Host only: how many people are watching (for a "2 watching" mark). */
     var spectatorCount: Int by mutableStateOf(0)
         private set
+
+    // -- Table talk (Element 11) ------------------------------------------------------------------
+
+    /** Messages currently shown at the table (each stays [TableTalk.SHOW_MS]); newest last. */
+    var messages: List<TableMessage> by mutableStateOf(emptyList())
+        private set
+
+    /** Seats this phone has muted for the rest of the match. */
+    var mutedSeats: Set<Int> by mutableStateOf(emptySet())
+        private set
+
+    private val mySends = ArrayList<Long>()
+    private val sendsByPeer = HashMap<String, ArrayList<Long>>()
+
+    /** True when a message could be sent right now (rate limit, and nobody to talk to on a solo table). */
+    val canTalk: Boolean get() = !isSolo && TableTalk.canSend(mySends, System.currentTimeMillis())
+
+    /** Sends phrase or emoji [id] to everyone at the table (watchers may send emoji only). */
+    fun say(id: Int) {
+        if (isSolo || !TableTalk.allowedFor(isSpectator, id)) return
+        val now = System.currentTimeMillis()
+        if (!TableTalk.canSend(mySends, now)) return
+        mySends += now
+        mySends.removeAll { now - it > TableTalk.BURST_WINDOW_MS }
+        if (core.isHost) relay(TableMessage(0, id, "", now))
+        else transport?.sendToHost(Wire.Say(mySeat, id).encode())
+    }
+
+    fun toggleMute(seat: Int) {
+        mutedSeats = if (seat in mutedSeats) mutedSeats - seat else mutedSeats + seat
+    }
+
+    /** Host only: every message, own or relayed, goes out to all phones and is shown here too. */
+    private fun relay(message: TableMessage) {
+        transport?.broadcast(Wire.Say(message.seat, message.id, message.name).encode())
+        show(message)
+    }
+
+    private fun show(message: TableMessage) {
+        if (message.seat in mutedSeats) return
+        messages = messages + message
+        if (message.seat != mySeat || message.seat == TableMessage.WATCHER) GameAudio.play(Sfx.PRESENT)
+        scope.launch {
+            delay(TableTalk.SHOW_MS)
+            messages = messages - message
+        }
+    }
+
+    /** Host only: a guest's or watcher's message, checked against the same rate limit before it is relayed. */
+    private fun relayFromPeer(peerId: String, id: Int) {
+        val seat = peerSeats[peerId]
+        val watcherName = spectators[peerId]
+        if (seat == null && watcherName == null) return
+        if (!TableTalk.allowedFor(seat == null, id)) return
+        val now = System.currentTimeMillis()
+        val sends = sendsByPeer.getOrPut(peerId) { ArrayList() }
+        if (!TableTalk.canSend(sends, now)) return
+        sends += now
+        sends.removeAll { now - it > TableTalk.BURST_WINDOW_MS }
+        relay(TableMessage(seat ?: TableMessage.WATCHER, id, watcherName.orEmpty(), now))
+    }
 
     /** The current game. Compose re-draws whenever it changes. */
     var state: S by mutableStateOf(core.state)
@@ -270,6 +334,7 @@ class GameSession<S, A>(
                     }
                 }
                 is Wire.Join -> admitSpectator(peerId, message.name)
+                is Wire.Say -> relayFromPeer(peerId, message.id)
                 Wire.Leave -> peerLost(peerId)
                 else -> Unit
             }
@@ -285,6 +350,7 @@ class GameSession<S, A>(
                     publish()
                 }
                 is Wire.View -> if (core.adoptView(message)) publish()
+                is Wire.Say -> if (TableTalk.isValid(message.id)) show(TableMessage(message.seat, message.id, message.name, System.currentTimeMillis()))
                 is Wire.Seat -> if (core.takeSeat(message)) {
                     justSeated = true
                     publish()

@@ -52,6 +52,12 @@ sealed interface Wire {
     /** Host → everyone: [seat], until now the computer's, is played by a person called [name]. */
     data class Human(val seat: Int, val name: String) : Wire
 
+    /**
+     * Table talk (Element 11): a predefined phrase or emoji by id. Client → host with any seat; the host
+     * relays it to everyone with the real [seat] (or -1 and the watcher's [name] for a spectator).
+     */
+    data class Say(val seat: Int, val id: Int, val name: String = "") : Wire
+
     /** Anyone: I am leaving / the table is closed. */
     data object Leave : Wire
 
@@ -67,6 +73,7 @@ sealed interface Wire {
         is View -> "VIEW|$seq|${esc(state)}"
         is Seat -> "SEAT|$seat|$seq|$seed|${esc(state)}"
         is Human -> "HUMAN|$seat|${esc(name)}"
+        is Say -> "SAY|$seat|$id|${esc(name)}"
         Leave -> "LEAVE"
     }
 
@@ -97,6 +104,7 @@ sealed interface Wire {
                 "VIEW" -> View(p[1].toInt(), unesc(p[2]))
                 "SEAT" -> Seat(p[1].toInt(), p[2].toInt(), p[3].toLong(), unesc(p[4]))
                 "HUMAN" -> Human(p[1].toInt(), unesc(p[2]))
+                "SAY" -> Say(p[1].toInt(), p[2].toInt(), p.getOrNull(3)?.let(::unesc).orEmpty())
                 "LEAVE" -> Leave
                 else -> null
             }

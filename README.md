@@ -329,7 +329,7 @@ in the same order and so ends up with the same game. Shuffles are seeded, so the
 
 | File | Job |
 |---|---|
-| `net/core/Wire.kt` | the text messages phones send (`JOIN`, `LOBBY`, `START`, `ACT`, `DO`, `BOT`, `LEAVE`, `REJECT`; for watchers `VIEW`, `SEAT`, `HUMAN`) |
+| `net/core/Wire.kt` | the text messages phones send (`JOIN`, `LOBBY`, `START`, `ACT`, `DO`, `BOT`, `LEAVE`, `REJECT`; for watchers `VIEW`, `SEAT`, `HUMAN`; table talk `SAY`) |
 | `net/core/Codec.kt`, `game/tricks/TrickCodec.kt` | every game state as text (`encodeState`/`decodeState`) and `redact` — the same state with other hands replaced by hidden cards |
 | `net/core/SessionCore.kt`, `GameMachine.kt` | host-authoritative move numbering; a small adapter per game (`game/<name>/*Machine.kt`) |
 | `net/core/Lobby.kt` | who has joined, seat assignment, filling empty seats with computer players |
@@ -362,6 +362,19 @@ pressing **Watch** on a friend's profile when they are at a full online table �
   joined (as a watcher). The Firestore rules above already allow this (a watcher reads `log`).
   Tested in `SpectatorCoreTest` (every game: watch, seat at the boundary, stay in sync) and
   `StateCodecTest` (every state round-trips; a redacted view carries no hidden card).
+
+**Table talk (Friends Element 11, approved Design 1).** At any table with other people, a gold speech
+button in the top-left corner of the table opens a parchment tray: ten fixed phrases ("Hello!",
+"Good luck", "Nice move", "Well played", "Your turn!", "Oops", "Thanks", "Good game", "One more?",
+"Back in a moment") and eight emoji (👍 😂 😮 🙏 🔥 😢 ❤️ 🃏). Nothing is typed, ever: a message is an
+id (`SAY|seat|id`, `domain/talk/TableTalk.kt`), so each phone shows it in its own language and there is
+nothing to moderate. Guests send to the host, the host relays to everyone (watchers included) with the
+real seat; computer players never speak; solo tables have no button. A received message is a small
+parchment plaque in the corner nearest the sender's nameplate for three seconds (never over the
+trick or your hand), with a soft card sound. Limits, applied on the sender's phone *and* again by the
+host: one message every 2 s, at most 5 in 30 s. Watchers may send emoji but not phrases. The tray's
+**Mute** row silences any seat for the rest of the match on your phone only. Every emoji has a spoken
+label for screen readers. Tested in `TableTalkTest`.
 
 ### Online play: Firebase setup
 

@@ -17,8 +17,8 @@ court theme: antique wood, gold bevels, parchment text, Cinzel/Marcellus-style h
 | 8 | Online / available / full / offline indicators | Design 1 | Green dot + gold medallion (👉 available, ✋ full); 25 s heartbeat, 60 s online window; appear-offline flag honoured everywhere. |
 | 9 | Play request flow | Design 1 | Card with 60 s timer bar for the receiver, banner for the sender; answered once, server-validated; accepted → the right lobby opens. |
 | 10 | Spectator mode and joining the next round | Design 1 | Same antique table, gold "Watching" pill, ribbon "You'll take a seat when this round ends · N tricks left" with Leave. Redacted views (no hidden card ever reaches a watcher), seat at the round boundary into the lowest computer seat, first come first served, up to four watchers. |
-| 11 | Predefined messages and reactions | *awaiting approval* | |
-| 12 | Notification bell and centre | pending | |
+| 11 | Predefined messages and emoji reactions | Design 1 (Royal court) | Gold speech button at the table corner, parchment tray (10 phrases, 8 emoji, Mute row), parchment plaque beside the sender's nameplate for 3 s. Ids only, never free text; 1 per 2 s and 5 per 30 s; watchers emoji-only; no button on solo tables. |
+| 12 | Notification bell and centre | *awaiting approval* | |
 | 13 | Poke button | pending | |
 | 14 | Poke animation | pending | |
 | 15 | Poke settings | pending | |

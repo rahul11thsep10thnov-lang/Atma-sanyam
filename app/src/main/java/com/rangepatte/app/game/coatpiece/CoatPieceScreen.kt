@@ -8,6 +8,8 @@ import com.rangepatte.app.game.common.ConnectionLostDialog
 import com.rangepatte.app.game.common.GameFrame
 import com.rangepatte.app.game.common.GameResultDialog
 import com.rangepatte.app.game.common.SeatedNotice
+import com.rangepatte.app.game.common.TalkLayout
+import com.rangepatte.app.game.common.talkControl
 import com.rangepatte.app.game.common.undoControl
 import com.rangepatte.app.game.common.watchingInfo
 import com.rangepatte.app.game.tricks.SeatView
@@ -39,7 +41,7 @@ fun CoatPieceScreen(
     val trickDone = TrickEngine.isTrickComplete(round)
     val myTurn = state.phase == CpPhase.PLAYING && !trickDone && round.turn == me
 
-    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl(), watching = session.watchingInfo(onBackClick)) {
+    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl(), watching = session.watchingInfo(onBackClick), talk = session.talkControl(TalkLayout.TRICK)) {
         val tricks = TrickEngine.tricksWonByTeam(round)
         val hand = if (state.phase == CpPhase.TRUMP_CALL) round.hands[view].take(5) else round.hands[view]
         TrickTable(

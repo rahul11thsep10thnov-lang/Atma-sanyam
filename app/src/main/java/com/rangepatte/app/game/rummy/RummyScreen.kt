@@ -39,6 +39,8 @@ import com.rangepatte.app.game.common.LocalTableArea
 import com.rangepatte.app.game.common.SeatPlaque
 import com.rangepatte.app.game.common.StatusLine
 import com.rangepatte.app.game.common.SeatedNotice
+import com.rangepatte.app.game.common.TalkLayout
+import com.rangepatte.app.game.common.talkControl
 import com.rangepatte.app.game.common.undoControl
 import com.rangepatte.app.game.common.watchingInfo
 import com.rangepatte.app.net.GameSession
@@ -98,7 +100,7 @@ fun RummyScreen(
         }
     }
 
-    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl(), watching = session.watchingInfo(onBackClick)) {
+    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl(), watching = session.watchingInfo(onBackClick), talk = session.talkControl(TalkLayout.ROW)) {
         // Opponents.
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),

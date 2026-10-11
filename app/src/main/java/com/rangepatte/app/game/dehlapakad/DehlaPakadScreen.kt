@@ -8,6 +8,8 @@ import com.rangepatte.app.game.common.ConnectionLostDialog
 import com.rangepatte.app.game.common.GameFrame
 import com.rangepatte.app.game.common.GameResultDialog
 import com.rangepatte.app.game.common.SeatedNotice
+import com.rangepatte.app.game.common.TalkLayout
+import com.rangepatte.app.game.common.talkControl
 import com.rangepatte.app.game.common.undoControl
 import com.rangepatte.app.game.common.watchingInfo
 import com.rangepatte.app.game.tricks.SeatView
@@ -39,7 +41,7 @@ fun DehlaPakadScreen(
     val needsCall = DehlaPakadEngine.needsTrumpCall(state)
     val myTurn = state.phase == DpPhase.PLAYING && !trickDone && round.turn == me && !needsCall
 
-    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl(), watching = session.watchingInfo(onBackClick)) {
+    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl(), watching = session.watchingInfo(onBackClick), talk = session.talkControl(TalkLayout.TRICK)) {
         TrickTable(
             seats = List(4) { SeatView(seatNames[it], round.hands[it].size) },
             mySeat = view,

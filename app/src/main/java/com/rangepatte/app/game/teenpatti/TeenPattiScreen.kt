@@ -27,6 +27,8 @@ import com.rangepatte.app.ui.thumbnails.CARD_ASPECT
 import com.rangepatte.app.game.common.SeatPlaque
 import com.rangepatte.app.game.common.StatusLine
 import com.rangepatte.app.game.common.SeatedNotice
+import com.rangepatte.app.game.common.TalkLayout
+import com.rangepatte.app.game.common.talkControl
 import com.rangepatte.app.game.common.undoControl
 import com.rangepatte.app.net.core.isHidden
 import com.rangepatte.app.game.common.watchingInfo
@@ -56,7 +58,7 @@ fun TeenPattiScreen(
     val youName = stringResource(R.string.player_you)
     val myTurn = state.phase == TpPhase.BETTING && state.turn == mySeat
 
-    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl(), watching = session.watchingInfo(onBackClick)) {
+    GameFrame(game = game, onBackClick = onBackClick, undo = session.undoControl(), watching = session.watchingInfo(onBackClick), talk = session.talkControl(TalkLayout.ROW)) {
         // Pot and stake.
         Row(
             horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally),
