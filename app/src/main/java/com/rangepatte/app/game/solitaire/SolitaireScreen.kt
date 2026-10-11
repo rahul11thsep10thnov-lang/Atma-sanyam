@@ -20,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +35,7 @@ import com.rangepatte.app.domain.model.AiDifficulty
 import com.rangepatte.app.domain.model.GameInfo
 import com.rangepatte.app.domain.model.Suit
 import com.rangepatte.app.game.common.CardSlot
+import com.rangepatte.app.audio.GameAudio
 import com.rangepatte.app.game.common.CardView
 import com.rangepatte.app.game.common.GameFrame
 import com.rangepatte.app.game.common.GameResultDialog
@@ -71,6 +73,8 @@ fun SolitaireScreen(
     fun perform(move: SolitaireMove): Boolean {
         val next = SolitaireEngine.apply(state, move) ?: return false
         undo.record(state)
+        // Sounds go with the move itself (an event), never with drawing the screen.
+        GameAudio.playCues(SolitaireSfx.forMove(move, state, next))
         state = next
         selection = null
         return true
@@ -104,10 +108,14 @@ fun SolitaireScreen(
         }
     }
 
+    // The opening shuffle and deal, once, when the table opens (not on every redraw).
+    LaunchedEffect(Unit) { GameAudio.playCues(SolitaireSfx.forNewGame()) }
+
     fun startNewGame() {
         state = SolitaireEngine.newGame(drawCount)
         selection = null
         undo.reset()
+        GameAudio.playCues(SolitaireSfx.forNewGame())
     }
 
     GameFrame(
@@ -241,7 +249,9 @@ fun SolitaireScreen(
                         text = stringResource(R.string.sol_auto_finish),
                         onClick = {
                             undo.record(state)
-                            state = SolitaireEngine.autoFinish(state)
+                            val finished = SolitaireEngine.autoFinish(state)
+                            GameAudio.playCues(SolitaireSfx.forAutoFinish(state, finished))
+                            state = finished
                             selection = null
                         },
                         modifier = Modifier.fillMaxWidth().padding(top = 16.dp)

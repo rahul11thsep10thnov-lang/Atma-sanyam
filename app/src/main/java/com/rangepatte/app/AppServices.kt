@@ -2,6 +2,7 @@ package com.rangepatte.app
 
 import android.app.Application
 import com.google.firebase.FirebaseApp
+import com.rangepatte.app.audio.GameAudio
 import com.rangepatte.app.data.ads.AdsManager
 import com.rangepatte.app.data.auth.AccountRepository
 import com.rangepatte.app.data.auth.DemoPhoneAuthService
@@ -43,5 +44,6 @@ object AppServices {
             AccountRepository(application, DemoPhoneAuthService(), LocalOnlyUserDirectory)
         }
         ads = AdsManager(membership)
+        GameAudio.init(application)
     }
 }

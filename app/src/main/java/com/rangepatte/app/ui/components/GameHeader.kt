@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.VolumeOff
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -34,7 +36,10 @@ fun GameHeader(
     title: String,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onRulesClick: (() -> Unit)? = null
+    onRulesClick: (() -> Unit)? = null,
+    /** When given, a speaker button opens the audio panel; [audioSilent] shows the muted icon. */
+    onAudioClick: (() -> Unit)? = null,
+    audioSilent: Boolean = false
 ) {
     Column(
         modifier = modifier
@@ -63,6 +68,15 @@ fun GameHeader(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f)
             )
+            if (onAudioClick != null) {
+                IconButton(onClick = onAudioClick) {
+                    Icon(
+                        imageVector = if (audioSilent) Icons.Filled.VolumeOff else Icons.Filled.VolumeUp,
+                        contentDescription = stringResource(R.string.audio_open),
+                        tint = GoldBevelLight
+                    )
+                }
+            }
             if (onRulesClick != null) {
                 IconButton(onClick = onRulesClick) {
                     Icon(

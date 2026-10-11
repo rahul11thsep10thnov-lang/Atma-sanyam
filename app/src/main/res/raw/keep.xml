@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The sounds are looked up by name at run time (GameAudio), so Android's resource shrinker cannot see
+  that they are used. This keeps them in release builds.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@raw/sfx_*,@raw/surreal_forest" />

@@ -1,5 +1,8 @@
 package com.rangepatte.app.game.teenpatti
 
+import com.rangepatte.app.audio.Sfx
+import com.rangepatte.app.audio.SfxCue
+import com.rangepatte.app.audio.SfxSequences
 import com.rangepatte.app.domain.model.AiDifficulty
 import com.rangepatte.app.domain.model.GameId
 import com.rangepatte.app.net.core.GameMachine
@@ -28,6 +31,18 @@ object TeenPattiMachine : GameMachine<TpState, TpAction> {
 
     override fun decideForBot(state: TpState, seat: Int, difficulty: AiDifficulty, random: Random): TpAction? =
         if (state.phase == TpPhase.ENDED) TpAction.NEXT_HAND else TeenPattiAi.decide(state, difficulty, random)
+
+    override fun sfx(before: TpState, after: TpState, action: TpAction?): List<SfxCue> {
+        val showdown = before.phase != TpPhase.ENDED && after.phase == TpPhase.ENDED && after.result?.showdown == true
+        return when {
+            // Hands turned face up for everyone: the climax of the hand.
+            showdown -> listOf(SfxCue(Sfx.HAND_REVEAL))
+            action == TpAction.SEE -> listOf(SfxCue(Sfx.REVEAL))
+            action == TpAction.PACK -> listOf(SfxCue(Sfx.COLLECT))
+            action == TpAction.NEXT_HAND -> SfxSequences.gatherAndDeal()
+            else -> emptyList() // chaal / raise move chips, not cards
+        }
+    }
 
     override fun encode(action: TpAction) = action.name
     override fun decode(text: String): TpAction? = runCatching { TpAction.valueOf(text) }.getOrNull()

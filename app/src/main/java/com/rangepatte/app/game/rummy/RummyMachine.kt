@@ -1,5 +1,8 @@
 package com.rangepatte.app.game.rummy
 
+import com.rangepatte.app.audio.Sfx
+import com.rangepatte.app.audio.SfxCue
+import com.rangepatte.app.audio.SfxSequences
 import com.rangepatte.app.domain.model.AiDifficulty
 import com.rangepatte.app.domain.model.GameId
 import com.rangepatte.app.net.core.GameMachine
@@ -34,6 +37,15 @@ object RummyMachine : GameMachine<RummyState, RummyAction> {
         RummyPhase.DRAW -> RummyAi.decideDraw(state, difficulty, random)
         RummyPhase.DISCARD -> RummyAi.decideAfterDraw(state, difficulty, random)
         RummyPhase.FINISHED -> RummyAction.Next
+    }
+
+    override fun sfx(before: RummyState, after: RummyState, action: RummyAction?): List<SfxCue> = when (action) {
+        RummyAction.DrawStock -> listOf(SfxCue(Sfx.DEAL_ONE))
+        RummyAction.DrawDiscard -> listOf(SfxCue(Sfx.PRESENT))
+        is RummyAction.Discard -> listOf(SfxCue(Sfx.PRESENT))
+        is RummyAction.Declare -> listOf(SfxCue(Sfx.HAND_REVEAL))
+        RummyAction.Next -> SfxSequences.gatherAndDeal()
+        null -> emptyList()
     }
 
     override fun encode(action: RummyAction): String = when (action) {

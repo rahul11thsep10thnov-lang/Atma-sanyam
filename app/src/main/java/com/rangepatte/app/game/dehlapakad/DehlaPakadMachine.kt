@@ -1,10 +1,12 @@
 package com.rangepatte.app.game.dehlapakad
 
+import com.rangepatte.app.audio.SfxCue
 import com.rangepatte.app.domain.model.AiDifficulty
 import com.rangepatte.app.domain.model.GameId
 import com.rangepatte.app.game.tricks.TrickAction
 import com.rangepatte.app.game.tricks.TrickActionCodec
 import com.rangepatte.app.game.tricks.TrickEngine
+import com.rangepatte.app.game.tricks.TrickSfx
 import com.rangepatte.app.game.tricks.cardInHand
 import com.rangepatte.app.net.core.GameMachine
 import com.rangepatte.app.net.core.MatchConfig
@@ -47,6 +49,11 @@ object DehlaPakadMachine : GameMachine<DpState, TrickAction> {
         else -> TrickAction.Play(DehlaPakadAi.chooseCard(state, difficulty, random).id)
     }
 
+    override fun sfx(before: DpState, after: DpState, action: TrickAction?): List<SfxCue> =
+        TrickSfx.cues(action, before.round, after.round, before.phase.over(), after.phase.over(), before.phase == DpPhase.MATCH_OVER)
+
     override fun encode(action: TrickAction) = TrickActionCodec.encode(action)
     override fun decode(text: String) = TrickActionCodec.decode(text)
 }
+
+private fun DpPhase.over() = this == DpPhase.ROUND_OVER || this == DpPhase.MATCH_OVER

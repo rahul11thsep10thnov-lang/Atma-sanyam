@@ -16,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import com.rangepatte.app.domain.model.PlayingCard
 import com.rangepatte.app.domain.model.Rank
 import com.rangepatte.app.domain.model.Suit
 import com.rangepatte.app.game.common.CardSlot
+import com.rangepatte.app.audio.GameAudio
 import com.rangepatte.app.game.common.CardView
 import com.rangepatte.app.game.common.GameFrame
 import com.rangepatte.app.game.common.GameResultDialog
@@ -69,6 +71,7 @@ fun SpiderScreen(
     fun perform(move: SpiderMove): Boolean {
         val next = SpiderEngine.apply(state, move) ?: return false
         undo.record(state)
+        GameAudio.playCues(SpiderSfx.forMove(move, state, next))
         state = next
         picked = null
         emptyColumnWarning = false
@@ -86,11 +89,15 @@ fun SpiderScreen(
         }
     }
 
+    // The opening shuffle and deal, once, when the table opens (not on every redraw).
+    LaunchedEffect(Unit) { GameAudio.playCues(SpiderSfx.forNewGame()) }
+
     fun startNewGame() {
         state = SpiderEngine.newGame(suitCount)
         picked = null
         emptyColumnWarning = false
         undo.reset()
+        GameAudio.playCues(SpiderSfx.forNewGame())
     }
 
     GameFrame(

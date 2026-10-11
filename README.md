@@ -368,6 +368,49 @@ On top of the login setup below, in the Firebase console:
 - Nearby needs both phones within a few metres; online play with a flaky connection can drop a
   table (the guest sees "Connection lost").
 
+## Sound and music
+
+All sound goes through one object, `audio/GameAudio.kt`, which owns the settings and is the only code
+that touches Android's `SoundPool` (card effects) and `MediaPlayer` (music).
+
+- **Card effects** — the eight WAVs in `res/raw` (`sfx_shuffle_cards`, `sfx_riffle_shuffle`,
+  `sfx_deal_single_card`, `sfx_deal_multiple_cards`, `sfx_slide_present_card`, `sfx_flip_reveal_card`,
+  `sfx_collect_cards`, `sfx_hand_reveal`) are the supplied pack, used as provided; they are
+  synthesised placeholders, not recordings. They are not hard-wired into screens: each game's
+  `*Machine` says which effect a step deserves (`GameMachine.sfx(before, after, action)`), and
+  `SessionCore.onTransition` announces every accepted step exactly once on every phone, so there are
+  no duplicate sounds from redraws, repeated messages or reconnects. Solitaire and Spider do the same
+  in `SolitaireSfx` / `SpiderSfx`.
+
+  | Effect | Event |
+  |---|---|
+  | shuffle | next round / hand begins |
+  | riffle shuffle | a new table or a new match opens |
+  | deal one | Rummy draw from the deck; Solitaire stock turn |
+  | deal many | the deal that follows a shuffle; Spider's ten-card deal |
+  | slide / present | a card is played or discarded (after the move is accepted) |
+  | flip / reveal | Teen Patti *See*; a hidden trump revealed; Solitaire/Spider card turned face-up |
+  | collect | a trick is cleared; Teen Patti *Pack*; hands gathered before the next hand; a Spider run removed |
+  | hand reveal | a hand/round is shown: round over, Rummy declaration, Teen Patti showdown, a win |
+
+- **Background music** — *Surreal Forest* by Meydän, one looping track that starts when the app comes
+  to the front, fades in and out, pauses when the app goes to the background, and is never restarted by
+  gameplay. It dips gently (to 60%) while a card effect plays. **The MP3 is not in the repository**:
+  `chosic.com` was unreachable from the environment this was written in, and the `.mht` you saved
+  is only a web page (no audio inside), so nothing was substituted. To add it, download the MP3 from
+  https://www.chosic.com/download-audio/30330/ and save it as
+  **`app/src/main/res/raw/surreal_forest.mp3`** (lowercase, underscores — Android rejects the
+  original file name). Rebuild; nothing else changes. Until then the app runs without music and the
+  panel says so.
+- **Licence** — CC BY 4.0: commercial use is allowed **if the artist is credited**. The credit is shown
+  in the sound panel and in Settings. Re-check the licence on the source page before shipping (see
+  `THIRD_PARTY_NOTICES.md`).
+- **Controls** — the speaker button in every game's header opens a compact panel: master volume, game
+  sounds (switch + volume), background music (switch + volume) and *Hide controls*; the same controls
+  are in Settings. `effective music = master × music volume`, `effective effects = master × effects
+  volume`, each 0 when its switch is off; master 0 silences both without changing a switch. Choices
+  are saved in `SharedPreferences` (`data/local/AudioPreferences.kt`). Hiding the panel changes nothing.
+
 ## Login, ads and payments
 
 ### Login / Sign up (mobile number + OTP) and the users database

@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import com.rangepatte.app.audio.GameAudio
 import com.rangepatte.app.game.common.UndoHistory
 import com.rangepatte.app.net.core.GameMachine
 import com.rangepatte.app.net.core.MatchConfig
@@ -66,6 +67,10 @@ class GameSession<S, A>(
     }
 
     init {
+        // Every step of the game — a move, a computer move, a received move, a cleared trick — is announced
+        // here exactly once, so this is where the card sounds are triggered: nowhere in the screens, where a
+        // re-render could repeat them.
+        core.onTransition = { before, after, action -> GameAudio.playCues(core.machine.sfx(before, after, action)) }
         // Listen from the moment the session exists, so nothing the host sends while this phone is still
         // opening the table screen is lost.
         transport?.listener = object : Transport.Listener {
@@ -83,6 +88,7 @@ class GameSession<S, A>(
     fun start() {
         if (started) return
         started = true
+        GameAudio.playCues(machine.startSfx())
         scope.launch { runLoop() }
     }
 
@@ -116,6 +122,8 @@ class GameSession<S, A>(
     }
 
     private fun finish() {
+        GameAudio.cancelPending()
+        core.onTransition = null
         transport?.listener = null
         transport?.close()
         scope.cancel()

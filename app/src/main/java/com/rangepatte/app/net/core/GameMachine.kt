@@ -1,5 +1,7 @@
 package com.rangepatte.app.net.core
 
+import com.rangepatte.app.audio.SfxCue
+import com.rangepatte.app.audio.SfxSequences
 import com.rangepatte.app.domain.model.AiDifficulty
 import com.rangepatte.app.domain.model.GameId
 import kotlin.random.Random
@@ -32,6 +34,19 @@ interface GameMachine<S, A> {
 
     /** The computer's move for [seat] (which must be the seat to act), or null if it has none. */
     fun decideForBot(state: S, seat: Int, difficulty: AiDifficulty, random: Random): A?
+
+    /**
+     * The sound effects for a table that has just opened (the first shuffle and deal). Pure: it only
+     * names the effects; the app plays them.
+     */
+    fun startSfx(): List<SfxCue> = SfxSequences.freshMatch()
+
+    /**
+     * The sound effects for one accepted step from [before] to [after]: [action] is the move a player
+     * made, or null for an automatic step (clearing a finished trick). Called once per step on every
+     * phone, so a game must only name effects for things that really happened in that step.
+     */
+    fun sfx(before: S, after: S, action: A?): List<SfxCue> = emptyList()
 
     fun encode(action: A): String
     fun decode(text: String): A?

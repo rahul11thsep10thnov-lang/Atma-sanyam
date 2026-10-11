@@ -24,6 +24,14 @@ class SessionCore<S, A>(
     /** Seats played by the computer (never-filled seats, plus seats whose player left). */
     val botSeats: MutableSet<Int> = (0 until config.seats).filter { it !in config.humanSeats }.toMutableSet()
 
+    /**
+     * Told about every step that changes the game — a move accepted by the host, a move received from
+     * the host, or an automatic step — with the state before and after and the move (null if automatic).
+     * Fired exactly once per step, in order, so it is the one place to react to what happened (sounds).
+     * Not fired by [restore] (Undo).
+     */
+    var onTransition: ((before: S, after: S, action: A?) -> Unit)? = null
+
     /** The computer seat whose move is next — meaningful on the host only. */
     fun nextBotSeat(): Int? = machine.seatToAct(state)?.takeIf { it in botSeats }
 
@@ -31,8 +39,10 @@ class SessionCore<S, A>(
     fun hasAutoStep(): Boolean = machine.autoStep(state) != null
 
     fun autoStep(): Boolean {
-        val next = machine.autoStep(state) ?: return false
+        val before = state
+        val next = machine.autoStep(before) ?: return false
         state = next
+        onTransition?.invoke(before, next, null)
         return true
     }
 
@@ -49,8 +59,10 @@ class SessionCore<S, A>(
         settle()
         if (machine.seatToAct(state) != seat) return null
         val next = machine.apply(state, action, seat, randomFor(config.seed, seq + 1)) ?: return null
+        val before = state
         seq += 1
         state = next
+        onTransition?.invoke(before, next, action)
         return Wire.Do(seq, seat, machine.encode(action))
     }
 
@@ -78,9 +90,11 @@ class SessionCore<S, A>(
             if (result == null) {
                 outOfSync = true
             } else {
+                val before = state
                 state = result
                 seq = next.seq
                 changed = true
+                onTransition?.invoke(before, result, action)
             }
         }
         return changed

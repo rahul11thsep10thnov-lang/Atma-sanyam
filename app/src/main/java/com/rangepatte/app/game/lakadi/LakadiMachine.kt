@@ -1,10 +1,12 @@
 package com.rangepatte.app.game.lakadi
 
+import com.rangepatte.app.audio.SfxCue
 import com.rangepatte.app.domain.model.AiDifficulty
 import com.rangepatte.app.domain.model.GameId
 import com.rangepatte.app.game.tricks.TrickAction
 import com.rangepatte.app.game.tricks.TrickActionCodec
 import com.rangepatte.app.game.tricks.TrickEngine
+import com.rangepatte.app.game.tricks.TrickSfx
 import com.rangepatte.app.game.tricks.cardInHand
 import com.rangepatte.app.net.core.GameMachine
 import com.rangepatte.app.net.core.MatchConfig
@@ -46,6 +48,11 @@ object LakadiMachine : GameMachine<LkState, TrickAction> {
         else -> TrickAction.Next
     }
 
+    override fun sfx(before: LkState, after: LkState, action: TrickAction?): List<SfxCue> =
+        TrickSfx.cues(action, before.round, after.round, before.phase.over(), after.phase.over(), before.phase == LkPhase.GAME_OVER)
+
     override fun encode(action: TrickAction) = TrickActionCodec.encode(action)
     override fun decode(text: String) = TrickActionCodec.decode(text)
 }
+
+private fun LkPhase.over() = this == LkPhase.HAND_OVER || this == LkPhase.GAME_OVER

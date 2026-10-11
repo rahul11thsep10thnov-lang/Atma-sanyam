@@ -1,10 +1,12 @@
 package com.rangepatte.app.game.twentynine
 
+import com.rangepatte.app.audio.SfxCue
 import com.rangepatte.app.domain.model.AiDifficulty
 import com.rangepatte.app.domain.model.GameId
 import com.rangepatte.app.game.tricks.TrickAction
 import com.rangepatte.app.game.tricks.TrickActionCodec
 import com.rangepatte.app.game.tricks.TrickEngine
+import com.rangepatte.app.game.tricks.TrickSfx
 import com.rangepatte.app.game.tricks.cardInHand
 import com.rangepatte.app.net.core.GameMachine
 import com.rangepatte.app.net.core.MatchConfig
@@ -52,6 +54,11 @@ object TwentyNineMachine : GameMachine<T9State, TrickAction> {
         else -> TrickAction.Next
     }
 
+    override fun sfx(before: T9State, after: T9State, action: TrickAction?): List<SfxCue> =
+        TrickSfx.cues(action, before.round, after.round, before.phase.over(), after.phase.over(), before.phase == T9Phase.MATCH_OVER)
+
     override fun encode(action: TrickAction) = TrickActionCodec.encode(action)
     override fun decode(text: String) = TrickActionCodec.decode(text)
 }
+
+private fun T9Phase.over() = this == T9Phase.ROUND_OVER || this == T9Phase.MATCH_OVER

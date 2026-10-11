@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,7 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.rangepatte.app.R
+import com.rangepatte.app.audio.GameAudio
 import com.rangepatte.app.domain.model.GameInfo
+import com.rangepatte.app.ui.audio.AudioControlPanel
 import com.rangepatte.app.ui.background.BackgroundType
 import com.rangepatte.app.ui.components.AntiqueWoodTable
 import com.rangepatte.app.ui.components.GameHeader
@@ -62,6 +65,8 @@ fun GameFrame(
     content: @Composable ColumnScope.() -> Unit
 ) {
     var showRules by remember { mutableStateOf(false) }
+    var showAudio by remember { mutableStateOf(false) }
+    val audio by GameAudio.settings.collectAsState()
     BackHandler(onBack = onBackClick)
 
     CompositionLocalProvider(LocalCardTextMeasurer provides rememberTextMeasurer(cacheSize = 256)) {
@@ -70,31 +75,43 @@ fun GameFrame(
                 GameHeader(
                     title = stringResource(game.nameRes),
                     onBackClick = onBackClick,
-                    onRulesClick = { showRules = true }
+                    onRulesClick = { showRules = true },
+                    onAudioClick = { showAudio = !showAudio },
+                    audioSilent = audio.effectiveGameSoundVolume <= 0f && audio.effectiveMusicVolume <= 0f
                 )
                 // The whole play area is one antique table: plaques, piles, hands and the Undo
                 // button all sit on the same waxed wood.
-                AntiqueWoodTable(modifier = Modifier.weight(1f).fillMaxWidth()) {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
-                            // Games size their hands to the room the table really has.
-                            CompositionLocalProvider(LocalTableArea provides TableArea(maxWidth - 8.dp, maxHeight)) {
-                                Column(modifier = Modifier.fillMaxSize().padding(horizontal = 4.dp), content = content)
+                Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                    AntiqueWoodTable(modifier = Modifier.fillMaxSize()) {
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                                // Games size their hands to the room the table really has.
+                                CompositionLocalProvider(LocalTableArea provides TableArea(maxWidth - 8.dp, maxHeight)) {
+                                    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 4.dp), content = content)
+                                }
+                            }
+                            if (undo != null) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    RoyalButton(
+                                        text = "${stringResource(R.string.action_undo)} (${undo.usesLeft})",
+                                        onClick = undo.onUndo,
+                                        enabled = undo.enabled && undo.usesLeft > 0,
+                                        style = RoyalButtonStyle.STEEL
+                                    )
+                                }
                             }
                         }
-                        if (undo != null) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                RoyalButton(
-                                    text = "${stringResource(R.string.action_undo)} (${undo.usesLeft})",
-                                    onClick = undo.onUndo,
-                                    enabled = undo.enabled && undo.usesLeft > 0,
-                                    style = RoyalButtonStyle.STEEL
-                                )
-                            }
-                        }
+                    }
+                    // The audio panel floats over the top-right corner of the table, under the speaker button.
+                    // Closing it only hides it: the audio settings and the music are not affected.
+                    if (showAudio) {
+                        AudioControlPanel(
+                            onHide = { showAudio = false },
+                            modifier = Modifier.align(Alignment.TopEnd).padding(top = 6.dp, end = 6.dp, start = 6.dp)
+                        )
                     }
                 }
             }
