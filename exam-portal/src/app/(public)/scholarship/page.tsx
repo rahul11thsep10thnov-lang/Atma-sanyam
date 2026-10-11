@@ -3,7 +3,6 @@ import Link from "next/link";
 import { listPublishedScholarships } from "@/lib/services/scholarships";
 import { EmptyState } from "@/components/EmptyState";
 import { Pagination } from "@/components/Pagination";
-import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { formatDate } from "@/lib/format";
 
 export const metadata: Metadata = {
@@ -22,8 +21,7 @@ export default async function ScholarshipsIndexPage({
 
   return (
     <main className="flex w-full flex-col gap-6 px-4 py-8 sm:px-8 lg:px-12">
-      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Scholarships" }]} />
-      <h1 className="text-xl font-semibold text-slate-900 sm:text-2xl">Scholarships</h1>
+      <h1 className="rahul-tab-text text-[1.95rem] leading-tight">Scholarships</h1>
 
       {items.length > 0 ? (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">

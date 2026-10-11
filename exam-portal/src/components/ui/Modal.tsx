@@ -1,10 +1,15 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
+
+const subscribeNone = () => () => {};
 
 /** Accessible modal: role=dialog, Esc closes, focus moves in and returns. */
 export function Modal({ open, onClose, title, children, wide = false }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode; wide?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
+  // Portal target exists only in the browser.
+  const mounted = useSyncExternalStore(subscribeNone, () => true, () => false);
   useEffect(() => {
     if (!open) return;
     const prev = document.activeElement as HTMLElement | null;
@@ -20,17 +25,20 @@ export function Modal({ open, onClose, title, children, wide = false }: { open: 
       prev?.focus?.();
     };
   }, [open, onClose]);
-  if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/50 p-0 sm:items-center sm:p-4" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div ref={ref} role="dialog" aria-modal="true" aria-label={title} className={`max-h-[92vh] w-full overflow-y-auto rounded-t-2xl bg-white p-5 shadow-2xl sm:rounded-2xl sm:p-6 ${wide ? "sm:max-w-2xl" : "sm:max-w-md"}`}>
+  if (!open || !mounted) return null;
+  // Rendered into <body> so no ancestor (header, board, clipped or
+  // transformed wrappers) can crop it or sit on top of it.
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-end justify-center bg-slate-900/50 p-0 sm:items-center sm:p-4" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+      <div ref={ref} role="dialog" aria-modal="true" aria-label={title} className={`max-h-[100dvh] w-full overflow-y-auto sm:max-h-[calc(100dvh-2rem)] rounded-t-2xl bg-white p-5 shadow-2xl sm:rounded-2xl sm:p-6 ${wide ? "sm:max-w-3xl" : "sm:max-w-md"}`}>
         <div className="mb-4 flex items-start justify-between gap-3">
           <h2 className="text-lg font-semibold">{title}</h2>
           <button type="button" onClick={onClose} className="rounded-md px-2 text-2xl leading-none text-slate-400 hover:text-slate-700" aria-label="Close">×</button>
         </div>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

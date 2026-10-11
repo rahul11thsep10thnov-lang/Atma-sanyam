@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { listPublishedJobs } from "@/lib/services/jobs";
 import { NoticeList } from "@/components/NoticeList";
 import { Pagination } from "@/components/Pagination";
-import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { qualificationByCode } from "@/lib/qualifications";
 import { prisma } from "@/lib/db/prisma";
 
@@ -23,9 +22,8 @@ export default async function JobsIndexPage({ searchParams }: { searchParams: Pr
   const qs = new URLSearchParams(Object.entries({ state: sp.state, qualification: sp.qualification, q: sp.q }).filter(([, v]) => v) as [string, string][]).toString();
   return (
     <main className="flex w-full flex-col gap-4 px-4 pb-10 sm:px-8 lg:px-12">
-      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Jobs" }]} />
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h1 className="text-2xl font-semibold">{chips.length ? "Job search results" : "Latest Government Jobs"}</h1>
+        <h1 className="rahul-tab-text text-[1.95rem] leading-tight">{chips.length ? "Job search results" : "Latest Government Jobs"}</h1>
         <p className="text-sm text-slate-600">{total} job{total === 1 ? "" : "s"}{chips.length ? ` · ${chips.join(" · ")}` : ""} · newest first</p>
       </div>
       <NoticeList
