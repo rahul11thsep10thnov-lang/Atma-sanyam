@@ -376,6 +376,23 @@ host: one message every 2 s, at most 5 in 30 s. Watchers may send emoji but not 
 **Mute** row silences any seat for the rest of the match on your phone only. Every emoji has a spoken
 label for screen readers. Tested in `TableTalkTest`.
 
+**Notification bell and centre (Friends Element 12, approved Design 1).** A brass bell with a crimson
+unread count sits in the top bar of Khel, Entertainment and Friends for a signed-in player. Tapping it
+drops a parchment scroll under the bar with the items grouped **New** (unread when it was opened) and
+**Earlier**, each with its one action inline: Accept (friend request), Play (an accepted request opens
+the person's page; a live play request accepts it and opens the lobby), Poke back (Element 13). Tapping
+a line opens the person; × removes it; "Clear all" at the foot. The list is *derived*, not stored on a
+server: `data/notifications/NotificationRepository.kt` watches the relations (requests received, requests
+accepted) and play requests the app already follows, plus one-off notices other features post
+(`post()`: a poke, "you have a seat"); the pure rules in `domain/notifications/Notice.kt` keep 7 days and
+50 items, keep an answered request listed without its action, and never list one thing twice. Read and
+dismissed ids are remembered on the phone per account, so the count survives a restart. "A friend came
+online" is off until the per-friend opt-in arrives with Element 16. Tested in `NoticeBookTest`.
+
+*Device push later:* a Cloud Function on `relations` / `playRequests` / `pokes` writes can send an FCM
+message to the recipient's device token (stored on `profiles/{uid}.fcmToken`); the app would then show
+the same notice. Nothing in the centre depends on it.
+
 ### Online play: Firebase setup
 
 On top of the login setup below, in the Firebase console:

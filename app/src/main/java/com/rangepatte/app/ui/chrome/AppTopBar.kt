@@ -63,7 +63,10 @@ fun AppTopBar(
     user: UserProfile?,
     onRemoveAdsClick: () -> Unit,
     onAccountClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    /** Unread notifications; the bell shows only for a signed-in player (null hides it). */
+    unreadNotifications: Int? = null,
+    onBellClick: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -99,6 +102,10 @@ fun AppTopBar(
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
+            if (unreadNotifications != null) {
+                com.rangepatte.app.ui.notifications.NotificationBell(unread = unreadNotifications, onClick = onBellClick)
+                Spacer(modifier = Modifier.width(8.dp))
+            }
             val profile by AppServices.profile.profile.collectAsState()
             TopBarTab(
                 text = profile?.username?.let { "@$it" } ?: user?.let(::shortName) ?: stringResource(R.string.topbar_login),

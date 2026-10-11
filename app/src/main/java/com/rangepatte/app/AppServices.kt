@@ -47,6 +47,9 @@ object AppServices {
         private set
     /** "Come and play" invitations between friends. */
     lateinit var playRequests: PlayRequestRepository
+
+    /** The notification centre's list (Element 12): derived from relations and play requests, plus posted notices. */
+    lateinit var notifications: com.rangepatte.app.data.notifications.NotificationRepository
         private set
 
     /** Swap [PlaceholderPaymentGateway] for the real partner's implementation when one is chosen. */
@@ -76,9 +79,10 @@ object AppServices {
             if (isFirebaseConnected) FirestorePlayRequestStore() else LocalPlayRequestStore(),
             friendStateOf = presence::stateOf, relationOf = friends::statusOf
         )
-        account.onSignedInListener = { uid -> profile.onSignedIn(uid); friends.start(uid); presence.onSignedIn(uid); playRequests.start(uid) }
-        account.onSignedOutListener = { profile.onSignedOut(); friends.stopWatching(); presence.onSignedOut(); playRequests.stopWatching() }
-        account.currentUser.value?.let { profile.onSignedIn(it.uid); friends.start(it.uid); presence.onSignedIn(it.uid); playRequests.start(it.uid) }
+        notifications = com.rangepatte.app.data.notifications.NotificationRepository(application, friends, playRequests)
+        account.onSignedInListener = { uid -> profile.onSignedIn(uid); friends.start(uid); presence.onSignedIn(uid); playRequests.start(uid); notifications.start(uid) }
+        account.onSignedOutListener = { profile.onSignedOut(); friends.stopWatching(); presence.onSignedOut(); playRequests.stopWatching(); notifications.stopWatching() }
+        account.currentUser.value?.let { profile.onSignedIn(it.uid); friends.start(it.uid); presence.onSignedIn(it.uid); playRequests.start(it.uid); notifications.start(it.uid) }
         ads = AdsManager(membership)
         GameAudio.init(application)
     }

@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -41,6 +44,7 @@ import com.rangepatte.app.ui.profile.UsernameScreen
 import com.rangepatte.app.ui.settings.SettingsScreen
 import com.rangepatte.app.ui.setup.GameSetupScreen
 import com.rangepatte.app.ui.table.GameTableScreen
+import com.rangepatte.app.ui.notifications.NotificationCentre
 
 private val topLevelRoutes = setOf(Routes.GAMES, Routes.ENTERTAINMENT, Routes.FRIENDS, Routes.SETTINGS)
 
@@ -60,6 +64,9 @@ fun RangEPatteNavHost(
 
     val adFreeUntil by AppServices.membership.adFreeUntilMillis.collectAsState()
     val user by AppServices.account.currentUser.collectAsState()
+    val unread by AppServices.notifications.unread.collectAsState()
+    // The notification scroll (Element 12): open from the bell on the main pages; it drops from the top bar.
+    var centreNewIds by remember { mutableStateOf<Set<String>?>(null) }
 
     Scaffold(
         topBar = {
@@ -68,7 +75,9 @@ fun RangEPatteNavHost(
                     isAdFree = adFreeUntil > System.currentTimeMillis(),
                     user = user,
                     onRemoveAdsClick = { navController.navigate(Routes.MEMBERSHIP) { launchSingleTop = true } },
-                    onAccountClick = { navController.navigate(Routes.LOGIN) { launchSingleTop = true } }
+                    onAccountClick = { navController.navigate(Routes.LOGIN) { launchSingleTop = true } },
+                    unreadNotifications = if (user != null && currentRoute in topLevelRoutes) unread else null,
+                    onBellClick = { centreNewIds = if (centreNewIds == null) AppServices.notifications.open() else null }
                 )
             }
         },
@@ -259,6 +268,16 @@ fun RangEPatteNavHost(
                     )
                 }
             }
+        }
+        if (user != null && centreNewIds != null && currentRoute in topLevelRoutes) {
+            NotificationCentre(
+                newIds = centreNewIds.orEmpty(),
+                onOpenPerson = { uid -> centreNewIds = null; navController.navigate(Routes.person(uid)) },
+                onJoin = { game, code -> centreNewIds = null; navController.navigate(Routes.lobby(game, PlayMode.ONLINE, host = false, playerCount = 4, difficulty = AiDifficulty.MEDIUM, code = code)) },
+                onClose = { centreNewIds = null }
+            )
+        } else if (centreNewIds != null) {
+            centreNewIds = null
         }
         if (user != null) {
             PlayRequestOverlay(

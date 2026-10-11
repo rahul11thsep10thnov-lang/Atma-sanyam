@@ -34,6 +34,8 @@ class PlayRequestRepository(private val store: PlayRequestStore, private val fri
     private var stop: (() -> Unit)? = null
     private val main = Handler(Looper.getMainLooper())
     private val _all = MutableStateFlow<List<PlayRequest>>(emptyList())
+    /** Every request that involves this player, as the store last reported it. */
+    val all: StateFlow<List<PlayRequest>> = _all.asStateFlow()
     private val _now = MutableStateFlow(System.currentTimeMillis())
     val now: StateFlow<Long> = _now.asStateFlow()
     private val _incoming = MutableStateFlow<PlayRequest?>(null)
