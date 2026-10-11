@@ -5,7 +5,7 @@
 import { CategoryNode, ContentImage, ContentQuery, Page } from './types';
 import { fetchCategories, fetchImageById, fetchImages } from './api';
 import { getCachedImageUri, getCachedImageUriIfPresent, ImageVariant } from './cache';
-import { BUNDLED_IMAGES, bundledFor, bundledUri, bundledUriIfReady, isBundled, withBundledCategories } from './bundled';
+import { bundledById, bundledPage, bundledUri, bundledUriIfReady, isBundled, withBundledCategories } from './bundled';
 
 export type { ImageVariant };
 
@@ -14,21 +14,31 @@ export async function listCategories(): Promise<CategoryNode[]> {
 }
 
 export async function listImages(query: ContentQuery): Promise<Page<ContentImage>> {
-  // the bundled pictures lead the first page of Nature (and of any search they match)
-  const local = bundledFor(query);
-  let page: Page<ContentImage>;
+  // Paging runs through the bundled pictures first (cursor "b:<offset>"), then
+  // the catalog (cursor "r:<its cursor>"). The catalog's first page joins the
+  // page on which the bundled pictures end, so a short collection still shows
+  // what the catalog holds.
+  const limit = query.limit ?? 20;
+  const cur = query.cursor ?? null;
+  const notBundled = (im: ContentImage) => !isBundled(im);
+  if (cur && cur.startsWith('r:')) {
+    const page = await fetchImages({ ...query, cursor: cur.slice(2) || null });
+    return { items: page.items.filter(notBundled), nextCursor: page.nextCursor ? `r:${page.nextCursor}` : null };
+  }
+  const offset = cur && cur.startsWith('b:') ? Number(cur.slice(2)) || 0 : 0;
+  const { items: local, total } = bundledPage(query, offset, limit);
+  if (total > offset + local.length) return { items: local, nextCursor: `b:${offset + local.length}` };
+  let page: Page<ContentImage> = { items: [], nextCursor: null };
   try {
-    page = await fetchImages(query);
+    page = await fetchImages({ ...query, cursor: null });
   } catch (e) {
     if (!local.length) throw e;
-    page = { items: [], nextCursor: null };
   }
-  if (!local.length) return page;
-  return { ...page, items: [...local, ...page.items.filter((im) => !isBundled(im))] };
+  return { items: [...local, ...page.items.filter(notBundled)], nextCursor: page.nextCursor ? `r:${page.nextCursor}` : null };
 }
 
 export async function getImageDetail(imageId: string): Promise<ContentImage | null> {
-  const local = BUNDLED_IMAGES.find((im) => im.imageId === imageId);
+  const local = bundledById(imageId);
   if (local) return local;
   return fetchImageById(imageId);
 }

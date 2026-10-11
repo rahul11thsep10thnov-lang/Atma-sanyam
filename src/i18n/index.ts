@@ -76,9 +76,12 @@ const CATEGORY_KEYS: [RegExp, StringKey][] = [
   [/spiritual|sacred/i, 'home.cat.spirituality'],
 ];
 
-/** A library collection's name in the current language (the four top collections; others as the library names them). */
+/** A library collection's name in the current language: the four top collections and the bundled ones' subcollections; others as the library names them. */
 export function categoryLabel(c: { id: string; name: string; parentId?: string | null }): string {
-  if (c.parentId) return c.name;
+  if (c.parentId) {
+    const key = `cat.sub.${c.id.split('-').pop()}`;
+    return key in en ? t(key as StringKey) : c.name;
+  }
   const hit = CATEGORY_KEYS.find(([re]) => re.test(`${c.id} ${c.name}`));
   return hit ? t(hit[1]) : c.name;
 }
