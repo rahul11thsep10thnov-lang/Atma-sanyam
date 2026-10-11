@@ -22,6 +22,7 @@ import {
 import type { AdminMe } from '@/lib/server';
 import { api } from '@/lib/api';
 import { Brand } from './Brand';
+import { TableLabels } from './TableLabels';
 
 const MeContext = createContext<AdminMe | null>(null);
 
@@ -156,6 +157,7 @@ export function ConsoleShell({ me, children }: { me: AdminMe; children: React.Re
             <span className="small muted">{me.roleName}</span>
           </header>
           <main className="main" onClick={() => menuOpen && setMenuOpen(false)}>
+            <TableLabels />
             {children}
           </main>
         </div>

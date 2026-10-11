@@ -175,7 +175,7 @@ label.field { display: block; margin-bottom: 14px; }
 label.field > span { display: block; font-weight: 600; margin-bottom: 5px; }
 label.field > small { display: block; color: var(--muted); margin-top: 4px; }
 .input, select.input, textarea.input {
-  width: 100%; height: 38px; padding: 0 11px; border-radius: 8px;
+  width: 100%; max-width: 100%; height: 38px; padding: 0 11px; border-radius: 8px;
   border: 1px solid var(--border); background: var(--surface); color: var(--text); font: inherit;
 }
 textarea.input { height: auto; min-height: 84px; padding: 9px 11px; resize: vertical; }
@@ -263,20 +263,21 @@ tr:last-child td { border-bottom: 0; }
 .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--text-2); margin-top: 8px; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
 .option-list { display: grid; gap: 8px; margin: 12px 0; }
-.option { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+.option { overflow-wrap: anywhere; display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
 .option .letter { width: 26px; height: 26px; border-radius: 6px; display: grid; place-items: center; font-weight: 700; background: var(--surface-2); flex-shrink: 0; }
 .option.correct { border-color: color-mix(in srgb, var(--good) 55%, transparent); background: var(--good-soft); }
 .option.correct .letter { background: var(--good); color: #fff; }
-.qtext { font-size: 16px; line-height: 1.6; white-space: pre-wrap; }
+.qtext { font-size: 16px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
 .qbox { border-left: 4px solid var(--brand); background: var(--brand-peach); padding: 12px 14px; border-radius: 0 8px 8px 0; }
-.meta-grid { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; font-size: 13px; }
+.meta-grid { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 14px; font-size: 13px; }
 .meta-grid dt { color: var(--muted); }
-.meta-grid dd { margin: 0; }
+.meta-grid dd { margin: 0; overflow-wrap: anywhere; }
 .issue { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; padding: 6px 0; border-bottom: 1px dashed var(--border); }
 .issue:last-child { border-bottom: 0; }
 .kbd { display: inline-block; min-width: 20px; padding: 0 5px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; font: 600 11px/18px ui-monospace, monospace; text-align: center; background: var(--surface-2); color: var(--text-2); }
 .review-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr); gap: 16px; align-items: start; }
-@media (max-width: 1000px) { .review-grid { grid-template-columns: 1fr; } }
+@media (max-width: 1000px) { .review-grid { grid-template-columns: minmax(0, 1fr); } }
+.review-grid > *, .stack { min-width: 0; }
 .sticky-actions { position: sticky; bottom: 0; z-index: 5; background: var(--surface); border-top: 1px solid var(--border); padding: 12px 16px; margin: 16px -16px -16px; border-radius: 0 0 var(--radius) var(--radius); }
 .btn-good { background: var(--good); border-color: var(--good); color: #fff; }
 .btn-good:hover { background: var(--good); filter: brightness(1.08); }
@@ -343,4 +344,56 @@ tr:last-child td { border-bottom: 0; }
   html, body { background: #fff !important; }
   .paper { border: 0; border-radius: 0; padding: 0; font-size: 11.5pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .paper-break { break-before: page; }
+}
+
+/* ---------- Phones (up to 700px) ---------- */
+.only-mobile { display: none; }
+.q-cards { display: none; }
+@media (max-width: 700px) {
+  .only-mobile { display: initial; }
+  .only-mobile.row { display: flex; }
+  .desktop-only { display: none !important; }
+
+  /* Comfortable tap targets; 16px text stops iOS from zooming into fields. */
+  .btn, .btn-sm { min-height: 44px; height: auto; padding-top: 6px; padding-bottom: 6px; }
+  .input, select.input { height: 44px; font-size: 16px; }
+  textarea.input { font-size: 16px; }
+  .check input { width: 22px; height: 22px; }
+  .kbd { display: none; }
+  .nav a { padding: 12px 10px; }
+  .page-head .btn { flex: 0 0 auto; }
+  .filters .input { min-width: 0; flex: 1 1 100%; }
+  .filters .input[type='search'] { min-width: 0; }
+
+  /* Review: the action bar wraps, every button is a big target. */
+  .sticky-actions { margin: 16px -16px -16px; padding: 10px 12px; gap: 8px; }
+  .sticky-actions .btn { flex: 1 1 calc(50% - 8px); }
+  .sticky-actions .spacer { flex-basis: 100%; height: 0; }
+
+  /* Every table inside a .table-wrap becomes a stack of cards. Cell labels come
+     from the column headings (see TableLabels). */
+  .table-wrap { overflow-x: visible; margin: 0; }
+  .table-wrap > table, .table-wrap > table tbody, .table-wrap > table tr, .table-wrap > table td { display: block; width: 100%; }
+  .table-wrap > table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .table-wrap > table tr { border: 1px solid var(--border); border-radius: 10px; padding: 6px 0; margin-bottom: 10px; background: var(--surface); }
+  .table-wrap > table tr:last-child td { border-bottom: 1px solid var(--border); }
+  .table-wrap > table td { border-bottom: 1px solid var(--border); padding: 8px 12px; display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; text-align: right; max-width: none; overflow-wrap: anywhere; }
+  .table-wrap > table td:last-child { border-bottom: 0; }
+  .table-wrap > table td::before { content: attr(data-label); flex: 0 0 38%; text-align: left; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .table-wrap > table td[data-label='']::before { display: none; }
+  .table-wrap > table td.num { text-align: right; }
+  .table-wrap > table td > * { min-width: 0; }
+  .table-wrap > table td:empty, .table-wrap > table td:has(> :only-child:empty) { display: none; }
+
+  /* Question Bank: filters fold behind a button, rows become cards. */
+  .filter-fold:not([data-open='true']) > *:not(.keep-mobile) { display: none; }
+  .more-filters.filter-fold:not([data-open='true']) { display: none; }
+  .col-chooser .col-menu { right: auto; left: 0; max-width: calc(100vw - 56px); }
+  .q-cards { display: grid; gap: 10px; }
+  .q-card { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); padding: 12px; display: grid; gap: 8px; }
+  .q-card-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .q-card-top input[type='checkbox'] { width: 22px; height: 22px; accent-color: var(--accent); }
+  .q-card-text { color: var(--text); font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+  .q-card .meta-grid { font-size: 12.5px; }
+  .pager .btn { flex: 1; }
 }

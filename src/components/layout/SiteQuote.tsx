@@ -8,7 +8,7 @@ import { useSiteSettings } from "@/lib/site";
 export default function SiteQuote({ className = "" }: { className?: string }) {
   const site = useSiteSettings();
   return (
-    <span className={`brand-quote mt-0.5 block truncate text-[0.82rem] text-[#7a4a2a] sm:text-[1.05rem] ${className}`} title={site.quote}>
+    <span className={`brand-quote mt-0.5 block line-clamp-2 text-[0.74rem] leading-tight text-[#7a4a2a] sm:truncate sm:text-[1.05rem] sm:leading-normal ${className}`} title={site.quote}>
       {site.quote}
     </span>
   );

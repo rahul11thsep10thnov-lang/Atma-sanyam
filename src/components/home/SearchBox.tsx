@@ -15,8 +15,8 @@ export default function SearchBox({ className = "", autoFocus = false, defaultVa
         autoFocus={autoFocus}
         defaultValue={defaultValue}
         autoComplete="off"
-        placeholder="🔍 Search an exam, subject, question or state"
-        className="w-full rounded-2xl border-2 border-[var(--card-border)] bg-white py-4 pl-12 pr-28 text-[17px] text-brand-dark shadow-sm outline-none placeholder:text-slate-400 focus:border-brand-coral focus:shadow-md"
+        placeholder="Search exam, subject or state"
+        className="w-full rounded-2xl border-2 border-[var(--card-border)] bg-white py-3.5 pl-12 pr-28 text-base sm:py-4 sm:text-[17px] text-brand-dark shadow-sm outline-none placeholder:text-slate-400 focus:border-brand-coral focus:shadow-md"
       />
       <button type="submit" className="btn-cta absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 text-[15px]">
         Search

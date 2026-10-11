@@ -33,9 +33,12 @@ export default function Home() {
             <br />
             &amp; PYQ Practice
           </h1>
-          <p className="mt-4 max-w-3xl text-[1.15rem] leading-relaxed text-slate-600">
-            UP, MP, Rajasthan, Bihar, Jharkhand, Uttarakhand, Haryana, Punjab aur Chhattisgarh Police Constable &amp; SI ke liye
-            practice papers, full-length mock tests with real timer, aur detailed solutions — sab Hinglish mein.
+          <p className="mt-3 max-w-3xl text-[1.02rem] leading-relaxed text-slate-600 sm:mt-4 sm:text-[1.15rem]">
+            <span className="sm:hidden">Constable &amp; SI practice papers aur full mock tests with real timer — UP, MP, Rajasthan, Bihar &amp; more. Sab Hinglish mein.</span>
+            <span className="hidden sm:inline">
+              UP, MP, Rajasthan, Bihar, Jharkhand, Uttarakhand, Haryana, Punjab aur Chhattisgarh Police Constable &amp; SI ke liye
+              practice papers, full-length mock tests with real timer, aur detailed solutions — sab Hinglish mein.
+            </span>
           </p>
           <SearchBox className="mt-6 max-w-3xl" />
         </section>

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useEffect, useState, type ReactNode } from 'react';
+import { Fragment, Suspense, useEffect, useState, type ReactNode } from 'react';
 import { useCan } from '@/components/ConsoleShell';
 import { ScopePicker } from '@/components/ScopePicker';
 import { DifficultyBadge, ErrorAlert, OkAlert, PageHead, Pager, StatusBadge } from '@/components/ui';
@@ -148,6 +148,7 @@ function QuestionBank() {
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [shown, setShown] = useColumnChoice();
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [fields, setFields] = useState({ externalId: f.externalId, subtopic: f.subtopic, concept: f.concept });
 
   const query = { ...f, page, pageSize: 50 };
@@ -211,14 +212,41 @@ function QuestionBank() {
         }
       />
       <div className="card">
+        <div className="row only-mobile" style={{ marginBottom: 10 }}>
+          <button type="button" className="btn" aria-expanded={filtersOpen} onClick={() => setFiltersOpen((o) => !o)}>
+            {filtersOpen ? 'Hide filters' : `Filters${activeFilters ? ` (${activeFilters})` : ''}`}
+          </button>
+          <select
+            className="input"
+            style={{ flex: 1, minWidth: 0 }}
+            aria-label="Sort by"
+            value={`${f.sort}|${f.dir}`}
+            onChange={(e) => {
+              const [k, d] = e.target.value.split('|');
+              setFilters({ sort: k ?? '', dir: d ?? '' });
+            }}
+          >
+            <option value="|">Newest first</option>
+            <option value="created|asc">Oldest first</option>
+            {[{ key: 'question', label: 'Question', sort: 'question' }, ...COLUMNS.filter((c) => c.sort && c.key !== 'created')].flatMap((c) => [
+              <option key={`${c.key}-a`} value={`${c.sort}|asc`}>
+                {c.label} ▲
+              </option>,
+              <option key={`${c.key}-d`} value={`${c.sort}|desc`}>
+                {c.label} ▼
+              </option>,
+            ])}
+          </select>
+        </div>
         <form
-          className="filters"
+          className="filters filter-fold"
+          data-open={filtersOpen}
           onSubmit={(e) => {
             e.preventDefault();
             setFilters({ q: search.trim() });
           }}
         >
-          <input className="input" type="search" placeholder="Search question text…" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Search" />
+          <input className="input keep-mobile" type="search" placeholder="Search question text…" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Search" />
           <ScopePicker
             tree={tree}
             labels={false}
@@ -280,7 +308,7 @@ function QuestionBank() {
           )}
         </form>
 
-        <details className="more-filters" open={bankFilterKeys.some((k) => f[k])}>
+        <details className="more-filters filter-fold" data-open={filtersOpen} open={bankFilterKeys.some((k) => f[k])}>
           <summary>More filters (bank columns)</summary>
           <form
             className="filters"
@@ -350,7 +378,7 @@ function QuestionBank() {
         )}
 
         <div className="row" style={{ justifyContent: 'space-between', marginBottom: 8 }}>
-          <span className="small muted">
+          <span className="small muted desktop-only">
             {f.sort ? `Sorted by ${COLUMNS.find((c) => c.sort === f.sort)?.label ?? f.sort} (${f.dir === 'desc' ? 'high to low' : 'low to high'}). Click a heading to change.` : 'Newest first. Click a column heading to sort.'}
           </span>
           <details className="col-chooser">
@@ -378,7 +406,7 @@ function QuestionBank() {
           </details>
         </div>
 
-        <div className={`table-wrap ${loading ? 'loading-dim' : ''}`}>
+        <div className={`table-wrap desktop-only ${loading ? 'loading-dim' : ''}`}>
           <table>
             <thead>
               <tr>
@@ -441,6 +469,50 @@ function QuestionBank() {
               ))}
             </tbody>
           </table>
+          {data && items.length === 0 && <div className="empty">No questions match these filters.</div>}
+        </div>
+        <div className={`q-cards ${loading ? 'loading-dim' : ''}`}>
+          {items.length > 0 && (
+            <label className="check" style={{ margin: 0 }}>
+              <input type="checkbox" checked={allSelected} onChange={(e) => setSelected(e.target.checked ? new Set(items.map((q) => q.id)) : new Set())} />
+              Select all on this page
+            </label>
+          )}
+          {items.map((q) => (
+            <article className="q-card" key={q.id}>
+              <div className="q-card-top">
+                <input
+                  type="checkbox"
+                  aria-label="Select question"
+                  checked={selected.has(q.id)}
+                  onChange={(e) => {
+                    const next = new Set(selected);
+                    if (e.target.checked) next.add(q.id);
+                    else next.delete(q.id);
+                    setSelected(next);
+                  }}
+                />
+                <StatusBadge status={q.status} />
+                <DifficultyBadge difficulty={q.difficulty} />
+              </div>
+              <Link href={`/questions/${q.id}`} className="q-card-text">
+                {q.questionText}
+              </Link>
+              <div className="small muted">
+                {q.examName} · {q.subjectName}
+              </div>
+              <dl className="meta-grid">
+                {columns
+                  .filter((c) => !['status', 'difficulty'].includes(c.key))
+                  .map((c) => (
+                    <Fragment key={c.key}>
+                      <dt>{c.label}</dt>
+                      <dd>{c.render(q)}</dd>
+                    </Fragment>
+                  ))}
+              </dl>
+            </article>
+          ))}
           {data && items.length === 0 && <div className="empty">No questions match these filters.</div>}
         </div>
         {data && <Pager page={page} pageSize={data.pageSize} total={data.total} onPage={(p) => setFilters({ page: String(p) })} />}
