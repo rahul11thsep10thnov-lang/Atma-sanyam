@@ -91,9 +91,13 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Android/iOS bundle ex
 - Bilingual: English (UN English) and Hindi, asked in a popup every time the app opens and
   changeable in Settings
   (`src/i18n/`); the plant catalog has its own Hindi names and descriptions.
-- The picture library's Nature collection always includes two Himalayan landscapes bundled with
-  the app (`assets/library/`, CC BY 4.0, credits in `assets/library/CREDITS.csv`); Monuments come
-  from the library's Heritage collection when it is connected.
+- The picture library ships with 106 pictures inside the app (`assets/library/`), so there is
+  always something to reveal, online or not: under **Nature** (Mountains, Himalayas, Lakes, Rivers,
+  Waterfalls, Valleys, Coast, Forests, Flowers, Vintage prints) and **Wildlife** (Birds, Butterflies,
+  Animals). They lead each collection, ahead of what the online library returns, with titles in
+  English and Hindi. Monuments come from the library's Heritage collection when it is connected.
+  `assets/library/README.md` says where each picture came from; `tools/library/build_library.py`
+  rebuilds them from the original zips.
 - Leaving the app starts a grace period (default 5 s, configurable from the admin console);
   stay away longer and the session fails.
 - The balcony, the Paradise Garden, the museum and preferences stay on the device.
