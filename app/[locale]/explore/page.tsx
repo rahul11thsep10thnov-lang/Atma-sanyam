@@ -25,7 +25,7 @@ export default function ExplorePage({ params, searchParams }: { params: { locale
   list = [...list].sort((a, b) => b.popularity - a.popularity);
 
   const stateOptions = getDb().states.filter((s) => allSummaries().some((d) => d.stateSlug === s.slug));
-  const pill = (active: boolean) => `rounded-full border px-3 py-1 text-xs font-medium ${active ? "border-forest-600 bg-forest-600 text-white" : "border-forest-200 text-charcoal hover:bg-forest-50"}`;
+  const pill = (active: boolean) => `tap justify-center rounded-full border px-3 py-1 text-xs font-medium ${active ? "border-forest-600 bg-forest-600 text-white" : "border-forest-200 text-charcoal hover:bg-forest-50"}`;
 
   return (
     <div className="container-page py-10">

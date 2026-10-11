@@ -21,6 +21,16 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
     { href: `/${locale}/trips`, label: nav.trips }
   ];
 
+  // Phones: the wallpaper has the quote on the right, so language and sign-in live in the menu instead.
+  const phoneExtra = (
+    <>
+      <LanguageSwitcher currentLocale={locale} label={nav.language} variant="list" />
+      <Link href={`/${locale}/profile`} className="mx-3 mb-1 mt-1 flex min-h-[44px] items-center justify-center rounded-full bg-forest-600 px-4 text-sm font-semibold text-white">
+        {nav.signIn}
+      </Link>
+    </>
+  );
+
   const actions = (
     <div className="flex items-center gap-2">
       <LanguageSwitcher currentLocale={locale} label={nav.language} />
@@ -37,8 +47,10 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         Skip to content
       </a>
       <div className="flex h-16 w-full items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-        <NavMenu links={links} label={nav.explore} />
-        {actions}
+        <NavMenu links={links} label={nav.explore} phoneExtra={phoneExtra} />
+        <Link href={`/${locale}`} className="truncate font-display text-base font-semibold text-forest-800 sm:hidden">{siteName}</Link>
+        <div className="hidden sm:block">{actions}</div>
+        <span aria-hidden="true" className="w-11 sm:hidden" />
       </div>
     </header>
   );
@@ -54,7 +66,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
 
       <div className="relative flex aspect-[2172/430] min-h-[96px] w-full px-4 sm:px-6 lg:px-8 items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <NavMenu links={links} label={nav.explore} />
+          <NavMenu links={links} label={nav.explore} phoneExtra={phoneExtra} />
         </div>
 
         {/* Logo between the panda and the quote, half on the wallpaper and half below it. */}
@@ -64,7 +76,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           </span>
         </Link>
 
-        {actions}
+        <div className="hidden sm:block">{actions}</div>
       </div>
     </header>
   );

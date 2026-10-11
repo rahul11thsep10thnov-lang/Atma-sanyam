@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
 /** Hamburger button at the far left of the header with the main navigation in a drop-down. */
-export function NavMenu({ links, label }: { links: Array<{ href: string; label: string }>; label: string }) {
+export function NavMenu({ links, label, phoneExtra }: { links: Array<{ href: string; label: string }>; label: string; /** Shown only on phones, below the links (language list, sign-in). */ phoneExtra?: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -41,15 +41,18 @@ export function NavMenu({ links, label }: { links: Array<{ href: string; label: 
         </svg>
       </button>
       {open && (
-        <ul role="menu" className="absolute left-0 top-full z-50 mt-2 min-w-[200px] overflow-hidden rounded-2xl bg-white py-2 shadow-xl ring-1 ring-black/5">
+        <div className="absolute left-0 top-full z-50 mt-2 w-[min(18rem,calc(100vw-2rem))] overflow-hidden rounded-2xl bg-white py-2 shadow-xl ring-1 ring-black/5 sm:w-auto sm:min-w-[200px]">
+        <ul role="menu">
           {links.map((l) => (
             <li key={l.href} role="none">
-              <Link role="menuitem" href={l.href} className={`block px-5 py-2.5 text-sm font-semibold hover:bg-forest-50 ${pathname === l.href ? "text-saffron-700" : "text-charcoal"}`}>
+              <Link role="menuitem" href={l.href} className={`flex min-h-[44px] items-center px-5 text-sm font-semibold hover:bg-forest-50 ${pathname === l.href ? "text-saffron-700" : "text-charcoal"}`}>
                 {l.label}
               </Link>
             </li>
           ))}
         </ul>
+        {phoneExtra && <div className="mt-1 border-t border-forest-100 pt-1 sm:hidden">{phoneExtra}</div>}
+        </div>
       )}
     </div>
   );

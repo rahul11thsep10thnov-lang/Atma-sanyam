@@ -29,7 +29,7 @@ export default function DestinationsIndex({ params, searchParams }: { params: { 
   const page = Math.max(1, Number(searchParams.page) || 1);
   const pages = Math.max(1, Math.ceil(list.length / PAGE));
   const slice = list.slice((page - 1) * PAGE, page * PAGE);
-  const pill = (active: boolean) => `rounded-full border px-3 py-1 text-xs font-medium ${active ? "border-forest-600 bg-forest-600 text-white" : "border-forest-200 bg-white text-charcoal hover:bg-forest-50"}`;
+  const pill = (active: boolean) => `tap justify-center rounded-full border px-3 py-1 text-xs font-medium ${active ? "border-forest-600 bg-forest-600 text-white" : "border-forest-200 bg-white text-charcoal hover:bg-forest-50"}`;
   const href = (q: Record<string, string | undefined>) => {
     const p = new URLSearchParams();
     for (const [k, v] of Object.entries({ state: searchParams.state, category: searchParams.category, ...q })) if (v) p.set(k, v);
@@ -77,9 +77,9 @@ export default function DestinationsIndex({ params, searchParams }: { params: { 
             {stubStates.map((st) => (
               <div key={st} className="mb-5 break-inside-avoid rounded-2xl bg-peach p-4 ring-1 ring-black/5">
                 <h3 className="text-xs font-semibold uppercase tracking-wide text-saffron-700">{st}</h3>
-                <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm">
+                <ul className="mt-1 flex flex-wrap gap-x-3 gap-y-0 text-sm">
                   {stubs.filter((x) => (x.state ?? "India") === st).map((x) => (
-                    <li key={x.id}><Link href={`/${locale}${x.href}`} className="text-forest-700 hover:underline">{x.name}</Link></li>
+                    <li key={x.id}><Link href={`/${locale}${x.href}`} className="tap text-forest-700 hover:underline">{x.name}</Link></li>
                   ))}
                 </ul>
               </div>

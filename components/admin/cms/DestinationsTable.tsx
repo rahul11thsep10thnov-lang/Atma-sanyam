@@ -27,6 +27,8 @@ export function DestinationsTable({ rows: initial, base, states }: { rows: Admin
   const [payload, setPayload] = useState({ state: "", category: CMS_CATEGORIES[0] as string, companions: [] as CompanionType[], seo_title: "{name} Travel Guide — {state} | budgettourism", seo_description: "Plan a trip to {name}, {state}: attractions, history, budget hotels and restaurants." });
   const [msg, setMsg] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
+  // Only a page of rows is drawn: 800+ destinations with 6 controls each is heavy on a phone.
+  const [shown, setShown] = useState(40);
 
   const visible = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -44,6 +46,7 @@ export function DestinationsTable({ rows: initial, base, states }: { rows: Admin
     });
   }, [rows, q, status, state, flag, sort]);
 
+  const page = visible.slice(0, shown);
   const toggleSort = (key: SortKey) => setSort((s) => ({ key, dir: s.key === key ? (s.dir === 1 ? -1 : 1) : 1 }));
   const allVisibleSelected = visible.length > 0 && visible.every((r) => selected.has(r.id));
 
@@ -98,24 +101,24 @@ export function DestinationsTable({ rows: initial, base, states }: { rows: Admin
 
   return (
     <div className="space-y-4">
-      <div className="card-surface flex flex-wrap items-end gap-3 p-4">
-        <label className="min-w-[220px] flex-1 text-xs font-medium text-charcoal">Search
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Name, slug or state" className={field} />
+      <div className="card-surface grid grid-cols-2 items-end gap-3 p-4 sm:flex sm:flex-wrap">
+        <label className="col-span-2 min-w-[220px] flex-1 text-xs font-medium text-charcoal">Search
+          <input value={q} onChange={(e) => { setQ(e.target.value); setShown(40); }} placeholder="Name, slug or state" className={field} />
         </label>
         <label className="text-xs font-medium text-charcoal">Status
-          <select value={status} onChange={(e) => setStatus(e.target.value)} className={field}>
+          <select value={status} onChange={(e) => { setStatus(e.target.value); setShown(40); }} className={field}>
             <option value="">All</option>
             {["PUBLISHED", "DRAFT", "IN_REVIEW", "ARCHIVED"].map((s) => <option key={s}>{s}</option>)}
           </select>
         </label>
         <label className="text-xs font-medium text-charcoal">State
-          <select value={state} onChange={(e) => setState(e.target.value)} className={field}>
+          <select value={state} onChange={(e) => { setState(e.target.value); setShown(40); }} className={field}>
             <option value="">All</option>
             {states.map((s) => <option key={s}>{s}</option>)}
           </select>
         </label>
         <label className="text-xs font-medium text-charcoal">Show only
-          <select value={flag} onChange={(e) => setFlag(e.target.value)} className={field}>
+          <select value={flag} onChange={(e) => { setFlag(e.target.value); setShown(40); }} className={field}>
             <option value="">Everything</option>
             <option value="incomplete">Incomplete content</option>
             <option value="no_photo">Missing hero photo</option>
@@ -123,7 +126,7 @@ export function DestinationsTable({ rows: initial, base, states }: { rows: Admin
             <option value="in_pipeline">In the pipeline</option>
           </select>
         </label>
-        <p className="text-xs text-charcoal-light">{visible.length} of {rows.length}</p>
+        <p className="col-span-2 text-xs text-charcoal-light">{visible.length} of {rows.length}</p>
       </div>
 
       <div className="card-surface flex flex-wrap items-end gap-3 p-4">
@@ -175,7 +178,7 @@ export function DestinationsTable({ rows: initial, base, states }: { rows: Admin
 
       {msg && <Notice tone={msg.tone}>{msg.text}</Notice>}
 
-      <div className="overflow-x-auto rounded-xl border border-forest-100 bg-white">
+      <div className="hidden overflow-x-auto rounded-xl border border-forest-100 bg-white md:block">
         <table className="min-w-full divide-y divide-forest-100 text-sm">
           <thead className="bg-forest-50">
             <tr>
@@ -193,7 +196,7 @@ export function DestinationsTable({ rows: initial, base, states }: { rows: Admin
             </tr>
           </thead>
           <tbody className="divide-y divide-forest-100">
-            {visible.map((r) => (
+            {page.map((r) => (
               <tr key={r.id} className={selected.has(r.id) ? "bg-saffron-50/50" : undefined}>
                 <td className="px-3 py-2"><input type="checkbox" aria-label={`Select ${r.name}`} checked={selected.has(r.id)} onChange={(e) => setSelected((s) => { const n = new Set(s); if (e.target.checked) n.add(r.id); else n.delete(r.id); return n; })} /></td>
                 <td className="px-3 py-2">
@@ -224,6 +227,58 @@ export function DestinationsTable({ rows: initial, base, states }: { rows: Admin
           </tbody>
         </table>
       </div>
+      {/* Phones: one card per destination instead of an 11-column table. */}
+      <ul className="space-y-3 md:hidden">
+        {page.map((r) => (
+          <li key={r.id} className={`rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5 ${selected.has(r.id) ? "ring-2 ring-saffron-400" : ""}`}>
+            <div className="flex items-start gap-3">
+              <label className="-m-2 flex h-11 w-11 shrink-0 items-center justify-center">
+                <input type="checkbox" className="h-5 w-5" aria-label={`Select ${r.name}`} checked={selected.has(r.id)} onChange={(e) => setSelected((s) => { const n = new Set(s); if (e.target.checked) n.add(r.id); else n.delete(r.id); return n; })} />
+              </label>
+              <div className="min-w-0 flex-1">
+                <Link href={`${base}/destinations/${r.id}`} className="block font-display text-base font-semibold leading-snug text-charcoal">{r.name}</Link>
+                <p className="text-xs text-charcoal-light">{r.state ?? "No state"} · /{r.slug}</p>
+                <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                  <StatusBadge status={r.status} />
+                  <StageBadge stage={r.stage} />
+                  {r.incomplete && <span className="text-xs text-saffron-700">incomplete</span>}
+                  {!r.has_photo && <span className="text-xs text-terracotta-700">no photo</span>}
+                </div>
+              </div>
+            </div>
+            <dl className="mt-3 grid grid-cols-4 gap-2 rounded-xl bg-forest-50/60 p-2 text-center text-[11px] text-charcoal-light">
+              {([["Attractions", r.attractions], ["Images", r.images], ["Hotels", r.hotels], ["Restaurants", r.restaurants]] as const).map(([l, v]) => (
+                <div key={l}><dd className="font-display text-base font-bold text-charcoal">{v}</dd><dt>{l}</dt></div>
+              ))}
+            </dl>
+            {r.pending_images > 0 && <Link href={`${base}/destinations/${r.id}/images`} className="mt-2 flex min-h-[44px] items-center justify-center rounded-lg bg-saffron-50 text-sm font-semibold text-saffron-800">{r.pending_images} images to review →</Link>}
+            <p className="mt-2 text-[11px] text-charcoal-light">Updated {fmtDate(r.updated_at)}</p>
+            <div className="mt-3 grid grid-cols-3 gap-2">
+              <Link href={`${base}/destinations/${r.id}`} className={btnPrimary}>Edit</Link>
+              <a href={`${base.replace(/\/admin$/, "")}/destinations/${r.slug}?preview=1`} target="_blank" rel="noreferrer" className={btnSecondary}>Preview</a>
+              {r.status === "PUBLISHED"
+                ? <button type="button" disabled={busy} onClick={() => rowAction(r.id, "unpublish")} className={btnSecondary}>Unpublish</button>
+                : <button type="button" disabled={busy} onClick={() => rowAction(r.id, "publish")} className={btnSecondary}>Publish</button>}
+            </div>
+            <details className="mt-2">
+              <summary className="flex min-h-[44px] cursor-pointer list-none items-center justify-center rounded-lg text-sm font-medium text-charcoal-light hover:bg-forest-50">More actions ▾</summary>
+              <div className="mt-1 grid grid-cols-3 gap-2">
+                <button type="button" disabled={busy} onClick={() => rowAction(r.id, "duplicate")} className={btnSecondary}>Duplicate</button>
+                <button type="button" disabled={busy} onClick={() => rowAction(r.id, "archive")} className={btnSecondary}>Archive</button>
+                <button type="button" disabled={busy} onClick={() => rowAction(r.id, "delete")} className={btnDanger}>Delete</button>
+              </div>
+            </details>
+          </li>
+        ))}
+        {visible.length === 0 && <li className="rounded-2xl bg-white p-6 text-center text-sm text-charcoal-light">No destinations match.</li>}
+      </ul>
+
+      {visible.length > shown && (
+        <div className="flex flex-col items-center gap-1">
+          <button type="button" onClick={() => setShown((n) => n + 40)} className={btnSecondary}>Show 40 more</button>
+          <p className="text-xs text-charcoal-light">Showing {page.length} of {visible.length}</p>
+        </div>
+      )}
     </div>
   );
 }

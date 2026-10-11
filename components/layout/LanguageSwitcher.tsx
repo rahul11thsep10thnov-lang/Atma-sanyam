@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { locales, localeNames, type Locale } from "@/lib/i18n/config";
 import { replaceLocaleInPath } from "@/lib/i18n/utils";
 
-export function LanguageSwitcher({ currentLocale, label }: { currentLocale: Locale; label: string }) {
+export function LanguageSwitcher({ currentLocale, label, variant = "dropdown" }: { currentLocale: Locale; label: string; variant?: "dropdown" | "list" }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -28,6 +28,29 @@ export function LanguageSwitcher({ currentLocale, label }: { currentLocale: Loca
     router.push(nextPath);
   }
 
+  // Inside the phone menu: all languages visible at once, no second drop-down.
+  if (variant === "list") {
+    return (
+      <div role="group" aria-label={label}>
+        <p className="px-5 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wide text-charcoal-light">🌐 {label}</p>
+        <ul className="grid grid-cols-2 gap-1 px-3 pb-2">
+          {locales.map((loc) => (
+            <li key={loc}>
+              <button
+                type="button"
+                aria-pressed={loc === currentLocale}
+                onClick={() => selectLocale(loc)}
+                className={`flex min-h-[44px] w-full items-center rounded-xl px-3 text-left text-sm ${loc === currentLocale ? "bg-forest-50 font-semibold text-forest-700" : "text-charcoal hover:bg-forest-50"}`}
+              >
+                {localeNames[loc].native}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
   return (
     <div className="relative" ref={containerRef}>
       <button
@@ -36,7 +59,7 @@ export function LanguageSwitcher({ currentLocale, label }: { currentLocale: Loca
         aria-expanded={open}
         aria-label={label}
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 rounded-full border border-forest-200 px-3 py-1.5 text-sm font-medium text-forest-700 hover:bg-forest-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-saffron-500"
+        className="flex min-h-[40px] items-center gap-1.5 rounded-full border border-forest-200 bg-white/70 px-3 py-1.5 text-sm font-medium text-forest-700 hover:bg-forest-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-saffron-500"
       >
         <span aria-hidden="true">🌐</span>
         <span>{localeNames[currentLocale].native}</span>

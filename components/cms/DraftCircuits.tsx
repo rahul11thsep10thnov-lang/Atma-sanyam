@@ -13,12 +13,12 @@ export function DraftCircuits({ circuits, locale, note, typicalDays, highlight }
           <li key={c.id} className="rounded-2xl bg-peach p-4 shadow-sm ring-1 ring-black/5">
             <h3 className="font-display text-base font-semibold text-charcoal">{c.name}</h3>
             <p className="mt-0.5 text-[11px] uppercase tracking-wide text-saffron-700">{c.state}</p>
-            <ol className="mt-2 flex flex-wrap items-center gap-x-1 gap-y-1 text-sm">
+            <ol className="mt-1 flex flex-wrap items-center gap-x-1 gap-y-0 text-sm">
               {c.stops.map((s, i) => (
                 <li key={`${s.part}-${i}`} className="flex items-center gap-1">
                   {i > 0 && <span aria-hidden="true" className="text-charcoal-light">→</span>}
                   {s.href ? (
-                    <Link href={`/${locale}${s.href}`} className={`hover:underline ${s.name === highlight ? "font-semibold text-charcoal" : s.researched ? "font-medium text-forest-700" : "text-forest-600"}`}>
+                    <Link href={`/${locale}${s.href}`} className={`tap hover:underline ${s.name === highlight ? "font-semibold text-charcoal" : s.researched ? "font-medium text-forest-700" : "text-forest-600"}`}>
                       {s.part}
                     </Link>
                   ) : (

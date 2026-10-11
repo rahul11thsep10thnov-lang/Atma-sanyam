@@ -94,13 +94,13 @@ export function CompanionPicker({
   }
 
   return (
-    <div className="mx-auto mt-10 max-w-3xl text-center">
+    <div className="mx-auto mt-7 max-w-3xl text-center sm:mt-10">
       <h2 className={`text-xs font-semibold uppercase tracking-[0.28em] sm:text-sm ${light ? "text-white drop-shadow" : "text-forest-700"}`}>{title}</h2>
-      <ul className="mt-5 flex snap-x justify-start gap-6 overflow-x-auto px-3 pb-3 pt-3 sm:justify-center sm:gap-10" role="radiogroup" aria-label={title}>
+      <ul className="mt-4 flex justify-center gap-3 px-1 pb-1 pt-2 sm:mt-5 sm:gap-10 sm:px-3 sm:pb-3 sm:pt-3" role="radiogroup" aria-label={title}>
         {(["SOLO", "COUPLE", "FRIENDS", "FAMILY"] as CompanionType[]).map((type) => {
           const active = selected === type;
           return (
-            <li key={type} className="snap-center shrink-0">
+            <li key={type} className="min-w-0 shrink-0">
               <button
                 type="button"
                 role="radio"
@@ -109,7 +109,7 @@ export function CompanionPicker({
                 className="group flex flex-col items-center gap-2 outline-none"
               >
                 <span
-                  className={`relative block h-20 w-20 overflow-hidden rounded-full bg-gradient-to-br ring-4 transition sm:h-24 sm:w-24 ${ART[type].bg} ${active ? "ring-saffron-500 scale-105 shadow-lg" : "ring-white shadow-md group-hover:scale-105 group-focus-visible:ring-forest-500"}`}
+                  className={`relative block h-[clamp(64px,19vw,96px)] w-[clamp(64px,19vw,96px)] overflow-hidden rounded-full bg-gradient-to-br ring-4 transition ${ART[type].bg} ${active ? "ring-saffron-500 scale-105 shadow-lg" : "ring-white shadow-md group-hover:scale-105 group-focus-visible:ring-forest-500"}`}
                 >
                   <Image src={`/images/companions/${type.toLowerCase()}.jpg`} alt="" fill sizes="96px" className="scale-110 object-cover" />
                 </span>
@@ -119,7 +119,7 @@ export function CompanionPicker({
           );
         })}
       </ul>
-      <p className={`mt-3 min-h-[1.25rem] text-xs transition ${light ? "text-white/90" : "text-charcoal-light"} ${selected ? "opacity-100" : "opacity-0"}`} aria-live="polite">
+      <p className={`mt-2 min-h-[1rem] text-xs transition ${light ? "text-white/90" : "text-charcoal-light"} ${selected ? "opacity-100" : "opacity-0"}`} aria-live="polite">
         {selected && (
           <>
             {hint.replace("{type}", labels[selected].toLowerCase())}{" "}

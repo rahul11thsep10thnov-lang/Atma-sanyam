@@ -44,20 +44,15 @@ export function placeholderSvgDataUrl(label: string, width = 1200, height = 800)
     </defs>
     <rect width="${width}" height="${height}" fill="url(#g)"/>
     <rect width="${width}" height="${height}" fill="url(#p)"/>
-    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-      font-family="Georgia, serif" font-size="${Math.round(width / 22)}" fill="rgba(255,255,255,0.92)">
-      ${escapeXml(label)}
-    </text>
+    <g transform="translate(${width / 2} ${Math.round(height * 0.4)})" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="${Math.max(2, Math.round(width / 300))}" stroke-linecap="round" stroke-linejoin="round">
+      <g transform="scale(${Math.max(1, width / 400)}) translate(-12 -14)">
+        <path d="M12 2c-4 0-7 3-7 7 0 5 7 12 7 12s7-7 7-12c0-4-3-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
+      </g>
+    </g>
+    <text x="50%" y="${Math.round(height * 0.58)}" text-anchor="middle" font-family="Arial, sans-serif" letter-spacing="1.5"
+      font-size="${Math.max(11, Math.round(width / 38))}" fill="rgba(255,255,255,0.8)">PHOTO COMING SOON</text>
   </svg>`;
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-}
-
-function escapeXml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
 
 export function placeholderImage(label: string, width = 1200, height = 800): ImageAsset {

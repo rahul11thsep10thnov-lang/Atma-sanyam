@@ -14,7 +14,7 @@ export function CmsRail({ title, subtitle, cards, locale, bestTimeLabel, seeAllH
             {subtitle && <p className="mt-1 text-sm text-charcoal-light">{subtitle}</p>}
           </div>
           {seeAllHref && seeAllLabel && (
-            <Link href={seeAllHref} className="shrink-0 text-sm font-semibold text-forest-600 hover:underline">{seeAllLabel} →</Link>
+            <Link href={seeAllHref} className="tap shrink-0 text-sm font-semibold text-forest-600 hover:underline">{seeAllLabel} →</Link>
           )}
         </div>
         <div className="-mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">

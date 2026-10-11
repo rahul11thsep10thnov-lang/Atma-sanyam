@@ -72,7 +72,7 @@ export function PipelineDashboard({ initial, base }: { initial: Overview; base: 
             <p className="font-display text-3xl font-bold text-forest-700">{o.completed} / {o.total} <span className="text-base font-normal text-charcoal-light">destinations finalised</span></p>
             <p className="text-xs text-charcoal-light">Reviewed strictly one at a time, in PDF order. Progress is saved after every stage; you can close this tab and resume later.{o.preparing && <span className="ml-1 font-medium text-sky-700">Preparing the next destinations in the background…</span>}</p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap">
             {cur?.stage === "AWAITING_APPROVAL" && <Link href={`${base}/destinations/${cur.id}/images`} className={btnSaffron}>Review {cur.name} →</Link>}
             <button type="button" disabled={Boolean(busy) || !cur || cur.stage === "AWAITING_APPROVAL" || cur.stage === "READY_TO_PUBLISH"} onClick={() => act("run")} className={btnPrimary}>{busy === "run" ? "Running…" : cur?.stage === "FAILED" ? "Retry current" : "Run next destination"}</button>
             <button type="button" disabled={Boolean(busy) || !cur} onClick={() => act("prepare")} className={btnSecondary}>{busy === "prepare" ? "Preparing…" : "Prepare next destinations now"}</button>
@@ -90,9 +90,9 @@ export function PipelineDashboard({ initial, base }: { initial: Overview; base: 
       {cur ? (
         <section className="card-surface p-5">
           <div className="flex flex-wrap items-center gap-2">
-            <h2 className="font-display text-lg font-semibold text-forest-700">Current: #{cur.position} {cur.name}</h2>
+            <h2 className="w-full font-display text-lg font-semibold text-forest-700 sm:w-auto">Current: #{cur.position} {cur.name}</h2>
             <StageBadge stage={cur.stage} />
-            <span className="ml-auto flex flex-wrap gap-2">
+            <span className="flex w-full flex-col gap-2 sm:ml-auto sm:w-auto sm:flex-row sm:flex-wrap">
               <Link href={`${base}/destinations/${cur.id}`} className={btnSecondary}>Open editor</Link>
               {cur.stage === "AWAITING_APPROVAL" && <Link href={`${base}/destinations/${cur.id}/images`} className={btnSaffron}>Review images & finalise</Link>}
               {cur.stage === "AWAITING_APPROVAL" && <button type="button" disabled={Boolean(busy)} onClick={() => act("search_images", cur.id)} className={btnSecondary}>{busy === "search_images" ? "Searching…" : "Re-run image search"}</button>}
@@ -109,7 +109,26 @@ export function PipelineDashboard({ initial, base }: { initial: Overview; base: 
             {cur.log.length === 0 && <li className="text-charcoal-light">Not started yet — press “Run next destination”.</li>}
           </ol>
           {cur.searches.some((x) => x.search) && (
-            <div className="mt-3 overflow-x-auto rounded-lg border border-forest-100">
+            <ul className="mt-3 space-y-2 sm:hidden">
+              {cur.searches.map((x) => (
+                <li key={x.id} className="rounded-xl bg-white p-3 ring-1 ring-forest-100">
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="min-w-0 font-medium text-charcoal">{x.name}</p>
+                    <Badge tone={x.search?.status === "COMPLETED" ? "bg-forest-100 text-forest-700" : x.search?.status === "PARTIAL" ? "bg-saffron-100 text-saffron-700" : x.search?.status === "FAILED" ? "bg-terracotta-100 text-terracotta-700" : "bg-charcoal/10 text-charcoal"}>{(x.search?.status ?? "NOT_RUN").replace("_", " ")}</Badge>
+                  </div>
+                  <p className="mt-1 text-xs text-charcoal-light">{x.search?.final_candidates ?? "—"} candidates</p>
+                  <p className="mt-1 text-[11px] text-charcoal-light">
+                    {(["wikimedia", "pixabay", "unsplash", "pexels"] as const).map((p) => {
+                      const r = x.search?.providers.find((y) => y.provider === p);
+                      return r ? `${PROVIDER_LABEL[p]}: ${r.status === "OK" ? `${r.found} (${r.kept} kept)` : r.status.replace(/_/g, " ").toLowerCase()}` : null;
+                    }).filter(Boolean).join(" · ") || "No provider ran"}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+          {cur.searches.some((x) => x.search) && (
+            <div className="mt-3 hidden overflow-x-auto rounded-lg border border-forest-100 sm:block">
               <table className="min-w-full divide-y divide-forest-100 text-xs">
                 <thead className="bg-forest-50 text-left font-semibold uppercase tracking-wide text-forest-700">
                   <tr><th className="px-2 py-1.5">Attraction</th><th className="px-2 py-1.5">Image search</th><th className="px-2 py-1.5">Wikimedia</th><th className="px-2 py-1.5">Pixabay</th><th className="px-2 py-1.5">Unsplash</th><th className="px-2 py-1.5">Pexels</th><th className="px-2 py-1.5">Final candidates</th></tr>
@@ -150,12 +169,12 @@ export function PipelineDashboard({ initial, base }: { initial: Overview; base: 
         return (
         <div className="space-y-2">
         <div className="flex flex-wrap items-center gap-2 text-sm">
-          {(["all", "waiting", "done", "failed"] as const).map((f) => <button key={f} type="button" onClick={() => { setFilter(f); setPage(0); }} className={`rounded-full px-3 py-1 text-xs ${filter === f ? "bg-forest-700 text-white" : "bg-white text-charcoal ring-1 ring-forest-100"}`}>{f === "all" ? `All (${o.items.length})` : f === "waiting" ? "Not finished" : f === "done" ? "Finished" : "Failed / provider problems"}</button>)}
+          {(["all", "waiting", "done", "failed"] as const).map((f) => <button key={f} type="button" onClick={() => { setFilter(f); setPage(0); }} className={`tap justify-center rounded-full px-3 py-1 text-xs ${filter === f ? "bg-forest-700 text-white" : "bg-white text-charcoal ring-1 ring-forest-100"}`}>{f === "all" ? `All (${o.items.length})` : f === "waiting" ? "Not finished" : f === "done" ? "Finished" : "Failed / provider problems"}</button>)}
           <span className="ml-auto text-xs text-charcoal-light">Page {p + 1} of {pages}</span>
-          <button type="button" disabled={p === 0} onClick={() => setPage(p - 1)} className={`${btnSecondary} !px-2 !py-0.5`}>←</button>
-          <button type="button" disabled={p >= pages - 1} onClick={() => setPage(p + 1)} className={`${btnSecondary} !px-2 !py-0.5`}>→</button>
+          <button type="button" aria-label="Previous page" disabled={p === 0} onClick={() => setPage(p - 1)} className={`${btnSecondary} !px-3 sm:!px-2 sm:!py-0.5`}>←</button>
+          <button type="button" aria-label="Next page" disabled={p >= pages - 1} onClick={() => setPage(p + 1)} className={`${btnSecondary} !px-3 sm:!px-2 sm:!py-0.5`}>→</button>
         </div>
-        <div className="overflow-x-auto rounded-xl border border-forest-100 bg-white">
+        <div className="hidden overflow-x-auto rounded-xl border border-forest-100 bg-white md:block">
           <table className="min-w-full divide-y divide-forest-100 text-sm">
             <thead className="bg-forest-50 text-left text-xs font-semibold uppercase tracking-wide text-forest-700">
               <tr><th className="px-3 py-2">#</th><th className="px-3 py-2">Destination</th><th className="px-3 py-2">Stage</th><th className="px-3 py-2">Status</th><th className="px-3 py-2">Attractions</th><th className="px-3 py-2">Candidates</th><th className="px-3 py-2">Approved</th><th className="px-3 py-2">Error</th><th className="px-3 py-2">Actions</th></tr>
@@ -183,6 +202,35 @@ export function PipelineDashboard({ initial, base }: { initial: Overview; base: 
             </tbody>
           </table>
         </div>
+        <ul className="space-y-3 md:hidden">
+          {rows.map((it) => (
+            <li key={it.id} className={`rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5 ${cur?.id === it.id ? "ring-2 ring-saffron-400" : ""}`}>
+              <div className="flex items-start gap-3">
+                <span className="flex h-8 min-w-[2rem] items-center justify-center rounded-full bg-forest-50 px-2 text-xs font-semibold text-forest-700">{it.position}</span>
+                <div className="min-w-0 flex-1">
+                  <Link href={`${base}/destinations/${it.id}`} className="block font-display text-base font-semibold leading-snug text-charcoal">{it.name}</Link>
+                  <p className="text-xs text-charcoal-light">{it.state ?? "No state"}</p>
+                  <div className="mt-2 flex flex-wrap items-center gap-1.5"><StageBadge stage={it.stage} /><StatusBadge status={it.status} /></div>
+                </div>
+              </div>
+              <dl className="mt-3 grid grid-cols-3 gap-2 rounded-xl bg-forest-50/60 p-2 text-center text-[11px] text-charcoal-light">
+                {([["Attractions", it.attractions], ["Candidates", it.candidates], ["Approved", it.approved]] as const).map(([l, v]) => (
+                  <div key={l}><dd className="font-display text-base font-bold text-charcoal">{v}</dd><dt>{l}</dt></div>
+                ))}
+              </dl>
+              {it.last_error && <p className="mt-2 line-clamp-3 text-xs text-terracotta-700">{it.last_error}</p>}
+              {(it.stage === "AWAITING_APPROVAL" || it.stage === "READY_TO_PUBLISH" || it.stage === "FAILED" || it.stage === "SKIPPED" || (!["COMPLETED", "SKIPPED"].includes(it.stage) && it.id !== cur?.id)) && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {it.stage === "AWAITING_APPROVAL" && <Link href={`${base}/destinations/${it.id}/images`} className={`${btnSaffron} flex-1`}>Review images</Link>}
+                  {it.stage === "READY_TO_PUBLISH" && <button type="button" disabled={Boolean(busy)} onClick={() => act("publish", it.id)} className={`${btnPrimary} flex-1`}>Publish</button>}
+                  {it.stage === "FAILED" && <button type="button" disabled={Boolean(busy)} onClick={() => act("retry", it.id)} className={`${btnPrimary} flex-1`}>Retry</button>}
+                  {(it.stage === "SKIPPED" || it.stage === "FAILED") && <button type="button" disabled={Boolean(busy)} onClick={() => act("reset", it.id)} className={`${btnSecondary} flex-1`}>Reset</button>}
+                  {!["COMPLETED", "SKIPPED"].includes(it.stage) && it.id !== cur?.id && <button type="button" disabled={Boolean(busy)} onClick={() => act("skip", it.id)} className={`${btnSecondary} flex-1`}>Skip</button>}
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
         </div>
         );
       })()}

@@ -47,6 +47,18 @@ body {
   .card-surface {
     @apply rounded-2xl bg-peach shadow-sm ring-1 ring-black/5;
   }
+
+  /* Touch-sized links and chips: 44px tall on touch screens, unchanged with a mouse. */
+  .tap {
+    @apply inline-flex items-center;
+  }
+}
+
+@media (pointer: coarse) {
+  .tap {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
 
 /* Watermark crossfade layers — see components/watermark/DestinationWatermarkCarousel */

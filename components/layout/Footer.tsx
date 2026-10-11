@@ -25,17 +25,17 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           {settings.social_links.length > 0 && (
             <ul className="mt-3 flex flex-wrap gap-3 text-xs">
               {settings.social_links.map((l) => (
-                <li key={l.url}><a href={l.url} target="_blank" rel="noreferrer" className="hover:text-saffron-300">{l.label}</a></li>
+                <li key={l.url}><a href={l.url} target="_blank" rel="noreferrer" className="tap hover:text-saffron-300">{l.label}</a></li>
               ))}
             </ul>
           )}
         </div>
         <div>
           <h3 className="text-sm font-semibold uppercase tracking-wide text-saffron-300">{footer.explore}</h3>
-          <ul className="mt-3 space-y-2 text-sm">
+          <ul className="mt-2 space-y-0 text-sm">
             {featured.map((d) => (
               <li key={d.slug}>
-                <Link href={`/${locale}/india/${d.stateSlug}/${d.slug}`} className="hover:text-saffron-300">
+                <Link href={`/${locale}/india/${d.stateSlug}/${d.slug}`} className="tap hover:text-saffron-300">
                   {d.name}
                 </Link>
               </li>
@@ -44,19 +44,19 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         </div>
         <div>
           <h3 className="text-sm font-semibold uppercase tracking-wide text-saffron-300">{footer.company}</h3>
-          <ul className="mt-3 space-y-2 text-sm">
+          <ul className="mt-2 space-y-0 text-sm">
             <li>
-              <Link href={`/${locale}/trips`} className="hover:text-saffron-300">
+              <Link href={`/${locale}/trips`} className="tap hover:text-saffron-300">
                 {nav.trips}
               </Link>
             </li>
             <li>
-              <Link href={`/${locale}/admin`} className="hover:text-saffron-300">
+              <Link href={`/${locale}/admin`} className="tap hover:text-saffron-300">
                 {nav.admin}
               </Link>
             </li>
             <li>
-              <a href="#" className="hover:text-saffron-300">
+              <a href="#" className="tap hover:text-saffron-300">
                 {footer.contact}
               </a>
             </li>
@@ -64,14 +64,14 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         </div>
         <div>
           <h3 className="text-sm font-semibold uppercase tracking-wide text-saffron-300">{footer.legal}</h3>
-          <ul className="mt-3 space-y-2 text-sm">
+          <ul className="mt-2 space-y-0 text-sm">
             <li>
-              <a href="#" className="hover:text-saffron-300">
+              <a href="#" className="tap hover:text-saffron-300">
                 {footer.privacy}
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-saffron-300">
+              <a href="#" className="tap hover:text-saffron-300">
                 {footer.terms}
               </a>
             </li>

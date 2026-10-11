@@ -122,7 +122,7 @@ export default function StatePage({ params }: { params: PageParams }) {
           <ul className="mt-4 flex flex-wrap gap-2">
             {stubs.map((x) => (
               <li key={x.id}>
-                <Link href={`/${locale}${x.href}`} className="inline-block rounded-full bg-peach px-3 py-1 text-sm text-forest-700 ring-1 ring-black/5 hover:bg-white">{x.name}</Link>
+                <Link href={`/${locale}${x.href}`} className="tap rounded-full bg-peach px-3 py-1 text-sm text-forest-700 ring-1 ring-black/5 hover:bg-white">{x.name}</Link>
               </li>
             ))}
           </ul>

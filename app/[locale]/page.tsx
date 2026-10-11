@@ -69,7 +69,7 @@ export default function HomePage({ params }: { params: { locale: string } }) {
                 <h2 className="section-heading">{h.exploreIndia}</h2>
                 <p className="mt-1 text-sm text-charcoal-light">{h.exploreIndiaSub.replace("{n}", String(home.total)).replace("{s}", String(home.byState.length))}</p>
               </div>
-              <Link href={`/${locale}/destinations`} className="shrink-0 text-sm font-semibold text-forest-600 hover:underline">{h.seeAll} →</Link>
+              <Link href={`/${locale}/destinations`} className="tap shrink-0 text-sm font-semibold text-forest-600 hover:underline">{h.seeAll} →</Link>
             </div>
             <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
               {home.byState.slice(0, 12).map((s) => (
@@ -79,7 +79,7 @@ export default function HomePage({ params }: { params: { locale: string } }) {
                     <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 to-transparent" />
                     <span className="absolute inset-x-3 bottom-3 text-white">
                       <span className="block font-display text-base font-semibold leading-tight">{s.state}</span>
-                      <span className="text-[11px] text-white/80">{s.count} {h.places}</span>
+                      <span className="text-[11px] text-white/80">{s.count} {s.count === 1 ? h.place : h.places}</span>
                     </span>
                   </Link>
                 </li>

@@ -36,10 +36,10 @@ export function Hero({
         <Image src={backgroundUrl} alt="" fill priority sizes="100vw" className="object-cover object-[center_45%]" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/35 to-black/60" />
       </div>
-      <div className="container-page relative pb-14 pt-24 sm:pb-20 sm:pt-32">
+      <div className="container-page relative pb-8 pt-16 sm:pb-20 sm:pt-32">
         <div className="mx-auto max-w-3xl text-center">
-          <h1 className="font-display text-4xl font-bold leading-[1.05] text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)] sm:text-6xl md:text-7xl">{headline}</h1>
-          <p className="mx-auto mt-5 max-w-xl text-base text-white/90 drop-shadow sm:text-lg">{subheading}</p>
+          <h1 className="font-display text-[2.1rem] font-bold leading-[1.1] text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)] sm:text-6xl md:text-7xl">{headline}</h1>
+          <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-white/90 drop-shadow sm:mt-5 sm:text-lg">{subheading}</p>
           <HeroSearch locale={locale} placeholder={placeholder} suggestions={suggestions} buttonLabel={searchLabel} />
         </div>
         <CompanionPicker initial={companion} title={who.title} labels={who.labels} hint={who.hint} clearLabel={who.clear} tone="light" />
