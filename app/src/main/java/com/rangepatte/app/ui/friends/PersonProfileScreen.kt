@@ -76,7 +76,10 @@ fun PersonProfileScreen(
                         Box(modifier = Modifier.border(3.dp, GoldenGlow, CircleShape).padding(3.dp)) {
                             PersonAvatar(person.avatarId, person.online, size = 76.dp)
                         }
-                        Text("@${person.username}", style = RoyalTitleStyle, color = GoldBevelLight, modifier = Modifier.padding(top = 8.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 8.dp)) {
+                            Text("@${person.username}", style = RoyalTitleStyle, color = GoldBevelLight)
+                            StateMedallion(person.state, modifier = Modifier.padding(start = 8.dp))
+                        }
                         Text(
                             person.detail ?: stringResource(if (person.online) R.string.profile_online else R.string.profile_offline),
                             style = MaterialTheme.typography.bodyMedium, color = ParchmentTextDim

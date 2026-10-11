@@ -4,7 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
+import com.rangepatte.app.AppServices
 import com.rangepatte.app.R
+import com.rangepatte.app.domain.presence.Activity
 import com.rangepatte.app.domain.model.AiDifficulty
 import com.rangepatte.app.domain.model.GameId
 import com.rangepatte.app.domain.model.GameInfo
@@ -51,7 +53,11 @@ fun GameTableScreen(
             }
             DisposableEffect(session) {
                 session.start()
-                onDispose { session.close() }
+                // Friends see "playing X" — and, for a table with other people, whether a seat is free.
+                AppServices.presence.setActivity(
+                    Activity(game.id, tableCode = if (session.isSolo) null else "table", seatsFree = 0)
+                )
+                onDispose { session.close(); AppServices.presence.setActivity(null) }
             }
             @Suppress("UNCHECKED_CAST")
             when (game.id) {

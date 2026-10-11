@@ -24,7 +24,12 @@ import com.rangepatte.app.R
 import com.rangepatte.app.domain.friends.RelationAction
 import com.rangepatte.app.domain.friends.RelationStatus
 import com.rangepatte.app.domain.friends.Relations
+import com.rangepatte.app.domain.presence.FriendState
 import com.rangepatte.app.domain.profile.AvatarCatalog
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.sp
 import com.rangepatte.app.ui.components.royal.RoyalButton
 import com.rangepatte.app.ui.components.royal.RoyalButtonStyle
 import com.rangepatte.app.ui.components.royal.antiquePlaque
@@ -44,8 +49,28 @@ data class PersonUi(
     val status: RelationStatus,
     val online: Boolean = false,
     /** A short second line: "Online · Teen Patti", "Sent 3 h ago"… already localized. */
-    val detail: String? = null
+    val detail: String? = null,
+    /** Available / full / offline (Element 8); OFFLINE also for people whose presence we may not see. */
+    val state: FriendState = FriendState.OFFLINE
 )
+
+/**
+ * The approved Element 8 mark: a gold medallion with a pointing finger (a seat can be joined) or an
+ * open palm (their table is full). Nothing for offline. Always labelled for screen readers.
+ */
+@Composable
+fun StateMedallion(state: FriendState, modifier: Modifier = Modifier, size: androidx.compose.ui.unit.Dp = 26.dp) {
+    if (state == FriendState.OFFLINE) return
+    val label = stringResource(if (state == FriendState.AVAILABLE) R.string.presence_available else R.string.presence_full)
+    Box(
+        modifier = modifier.size(size).semantics { contentDescription = label }
+            .background(Brush.verticalGradient(listOf(Color(0xFFF2D58A), Color(0xFFB08A3A))), CircleShape)
+            .border(1.dp, GoldBevelDark, CircleShape),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(if (state == FriendState.AVAILABLE) "\uD83D\uDC49" else "\u270B", fontSize = (size.value * 0.55f).sp, modifier = Modifier.clearAndSetSemantics {})
+    }
+}
 
 /** A small avatar disc with the online dot; the real artwork once it is in `res/drawable`. */
 @Composable
@@ -79,7 +104,10 @@ fun PersonRow(person: PersonUi, onAction: (RelationAction) -> Unit, onOpen: (() 
     ) {
         PersonAvatar(person.avatarId, person.online)
         Column(modifier = Modifier.weight(1f).padding(horizontal = 10.dp)) {
-            Text("@${person.username}", style = MaterialTheme.typography.titleMedium, color = GoldBevelLight, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("@${person.username}", style = MaterialTheme.typography.titleMedium, color = GoldBevelLight, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
+                StateMedallion(person.state, modifier = Modifier.padding(start = 6.dp), size = 22.dp)
+            }
             person.detail?.let { Text(it, style = MaterialTheme.typography.labelMedium, color = ParchmentTextDim, maxLines = 1, overflow = TextOverflow.Ellipsis) }
         }
         when {

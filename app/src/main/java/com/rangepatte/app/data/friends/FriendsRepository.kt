@@ -40,6 +40,9 @@ interface FriendsStore {
  * a late tap or a duplicate message can never create a half-state.
  */
 class FriendsRepository(private val store: FriendsStore) {
+    /** Told the current friends' ids whenever they change (presence follows them). */
+    var onFriendsChanged: ((List<String>) -> Unit)? = null
+
     private val _relations = MutableStateFlow<List<Relation>>(emptyList())
     val relations: StateFlow<List<Relation>> = _relations.asStateFlow()
 
@@ -56,6 +59,7 @@ class FriendsRepository(private val store: FriendsStore) {
         me = uid
         stop = store.watchRelations(uid) { list ->
             _relations.value = list
+            onFriendsChanged?.invoke(list.filter { it.kind == Relation.Kind.FRIENDS }.map { it.other(uid) })
             val missing = list.map { it.other(uid) }.filter { it !in _people.value }
             if (missing.isNotEmpty()) store.people(missing) { r -> r.onSuccess { _people.value = _people.value + it } }
         }

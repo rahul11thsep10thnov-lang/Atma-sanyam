@@ -15,6 +15,9 @@ import com.rangepatte.app.data.friends.Person
 import com.rangepatte.app.domain.friends.Relation
 import com.rangepatte.app.domain.friends.RelationAction
 import com.rangepatte.app.domain.friends.RelationStatus
+import com.rangepatte.app.domain.presence.FriendState
+import com.rangepatte.app.domain.presence.GameCapabilities
+import com.rangepatte.app.domain.presence.Presence
 import kotlinx.coroutines.delay
 
 /** The Friends tab wired to the repositories: gate when signed out, otherwise live lists and search. */
@@ -29,11 +32,35 @@ fun FriendsRoute(onLoginClick: () -> Unit, onOpenPerson: (String) -> Unit) {
     val people by friends.people.collectAsState()
     var tab by remember { mutableStateOf(FriendsTab.FRIENDS) }
     var find by remember { mutableStateOf(FindPeopleState()) }
+    val presenceMap by AppServices.presence.friends.collectAsState()
+    val clock by AppServices.presence.clock.collectAsState()
+    val gameNames = com.rangepatte.app.domain.model.GameCatalog.all.associate { it.id to stringResource(it.nameRes) }
+    val sOnline = stringResource(R.string.profile_online); val sOffline = stringResource(R.string.profile_offline)
+    val sPlaying = stringResource(R.string.presence_playing_format); val sCanJoin = stringResource(R.string.presence_can_join); val sFull = stringResource(R.string.presence_table_full)
+    fun presenceOf(uid: String): Triple<Boolean, FriendState, String> {
+        val rec = presenceMap[uid]
+        val state = Presence.stateOf(rec, clock, GameCapabilities::canJoinLate)
+        val online = Presence.isOnline(rec, clock)
+        val game = rec?.activity?.gameId?.let { gameNames[it] }
+        val text = when {
+            !online -> sOffline
+            game == null -> sOnline
+            state == FriendState.FULL -> sPlaying.format(game) + " · " + sFull
+            rec.activity?.tableCode != null -> sPlaying.format(game) + " · " + sCanJoin
+            else -> sPlaying.format(game)
+        }
+        return Triple(online, state, text)
+    }
     val noneFound = stringResource(R.string.friends_none_found)
     val searchError = stringResource(R.string.friends_search_error)
     val rateLimited = stringResource(R.string.friends_rate_limited)
 
-    fun ui(p: Person, status: RelationStatus) = PersonUi(p.uid, p.username, p.avatarId, status)
+    fun ui(p: Person, status: RelationStatus): PersonUi {
+        // Presence is shown for friends only; strangers in search results get no dot or mark.
+        if (status != RelationStatus.FRIENDS) return PersonUi(p.uid, p.username, p.avatarId, status)
+        val (online, state, text) = presenceOf(p.uid)
+        return PersonUi(p.uid, p.username, p.avatarId, status, online, text, state)
+    }
     fun list(kind: (Relation) -> Boolean) = relations.filter(kind).mapNotNull { r -> people[r.other(me)]?.let { ui(it, r.statusFor(me)) } }
     val state = FriendsState(
         friends = list { it.kind == Relation.Kind.FRIENDS },
@@ -90,6 +117,18 @@ fun PersonProfileRoute(uid: String, onBackClick: () -> Unit) {
     val me = AppServices.account.currentUser.collectAsState().value?.uid ?: return
     if (person == null) { LaunchedEffect(uid) { friends.loadPerson(uid) }; return }
     val status = relation?.statusFor(me) ?: RelationStatus.NONE
+    val presenceMap by AppServices.presence.friends.collectAsState()
+    val clock by AppServices.presence.clock.collectAsState()
+    val rec = if (status == RelationStatus.FRIENDS) presenceMap[uid] else null
+    val state = Presence.stateOf(rec, clock, GameCapabilities::canJoinLate)
+    val online = Presence.isOnline(rec, clock)
+    val gameName = rec?.activity?.gameId?.let { id -> com.rangepatte.app.domain.model.GameCatalog.all.firstOrNull { it.id == id }?.let { stringResource(it.nameRes) } }
+    val detail = when {
+        !online -> null
+        gameName == null -> stringResource(R.string.profile_online)
+        state == FriendState.FULL -> stringResource(R.string.presence_playing_format, gameName) + " · " + stringResource(R.string.presence_table_full)
+        else -> stringResource(R.string.presence_playing_format, gameName)
+    }
     val since = stringResource(R.string.profile_friends_since)
     val facts = buildList {
         if (status == RelationStatus.FRIENDS && relation != null && relation.since > 0) {
@@ -99,9 +138,9 @@ fun PersonProfileRoute(uid: String, onBackClick: () -> Unit) {
     val reported = stringResource(R.string.profile_reported)
     val context = androidx.compose.ui.platform.LocalContext.current
     PersonProfileScreen(
-        person = PersonUi(person.uid, person.username, person.avatarId, status),
+        person = PersonUi(person.uid, person.username, person.avatarId, status, online, detail, state),
         facts = facts,
-        canPlayRequest = false, // presence and play requests arrive with Elements 8 and 9
+        canPlayRequest = state == FriendState.AVAILABLE, // sending arrives with Element 9
         canPoke = false,
         onPlayRequest = {}, onPoke = {},
         onAction = { action -> friends.act(uid, action) { if (action == RelationAction.BLOCK || action == RelationAction.REMOVE_FRIEND) onBackClick() } },

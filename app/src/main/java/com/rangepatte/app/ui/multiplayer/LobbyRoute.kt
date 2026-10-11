@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,6 +18,7 @@ import com.rangepatte.app.R
 import com.rangepatte.app.data.local.PlayerNamePreferences
 import com.rangepatte.app.domain.model.AiDifficulty
 import com.rangepatte.app.domain.model.GameInfo
+import com.rangepatte.app.domain.presence.Activity
 import com.rangepatte.app.net.TableSessions
 import com.rangepatte.app.net.nearby.NearbyPermissions
 
@@ -48,6 +50,14 @@ fun LobbyRoute(
     }
     SideEffect { controller.onTableReady = onTableReady }
     DisposableEffect(controller) { onDispose { controller.dispose() } }
+    // Friends see the host's open table and how many seats are free.
+    if (isHost) {
+        val seatsFree = (controller.totalSeats - controller.names.size).coerceAtLeast(0)
+        LaunchedEffect(seatsFree, controller.stage) {
+            AppServices.presence.setActivity(Activity(game.id, tableCode = controller.roomCode ?: "nearby", seatsFree = seatsFree))
+        }
+        DisposableEffect(Unit) { onDispose { AppServices.presence.setActivity(null) } }
+    }
 
     var permissionsGranted by remember { mutableStateOf(NearbyPermissions.allGranted(context)) }
     val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
