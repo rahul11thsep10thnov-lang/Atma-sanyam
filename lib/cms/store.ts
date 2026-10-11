@@ -202,7 +202,7 @@ export function saveSettings(patch: Partial<SiteSettings>): SiteSettings {
 export function listImports(): ImportRecord[] {
   ensureDirs();
   return readdirSync(IMPORT_DIR)
-    .filter((f) => f.endsWith(".json"))
+    .filter((f) => f.startsWith("IMP-") && f.endsWith(".json")) // other files here (master-import report, checkpoint) are not PDF imports
     .map((f) => readJson<ImportRecord>(join(IMPORT_DIR, f)))
     .filter((x): x is ImportRecord => Boolean(x))
     .sort((a, b) => b.uploaded_at.localeCompare(a.uploaded_at));
