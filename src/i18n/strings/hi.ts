@@ -108,7 +108,7 @@ export const hi: Partial<Record<StringKey, string>> = {
   'ads.rulePenalty': 'अधूरा छोड़ा सत्र एक मुरझाया पौधा और एक टूटी तस्वीर छोड़ जाता है। हर एक {coins} सिक्कों में साफ़ होता है।',
   'ads.ruleMilestones': 'पड़ावों पर अतिरिक्त सिक्के मिलते हैं।',
   'ads.memberTitle': 'आप सदस्य हैं — कोई विज्ञापन नहीं',
-  'ads.memberBody': 'आपके लिए Tame time विज्ञापन-मुक्त है। सिक्के केवल फ़ोकस से आते हैं।',
+  'ads.memberBody': 'आपके लिए Tame विज्ञापन-मुक्त है। सिक्के केवल फ़ोकस से आते हैं।',
   'ads.watchTitle': '{seconds} सेकंड का विज्ञापन देखें',
   'ads.watchFresh': '{coins} सिक्के मिलेंगे।',
   'ads.watchDecayed': '{coins} सिक्के मिलेंगे — आपने पिछले {hours} घंटों में {count} देखे हैं, और हर एक कम देता है।',
@@ -120,7 +120,7 @@ export const hi: Partial<Record<StringKey, string>> = {
   'ads.earned': '+{coins} सिक्के',
 
   // session
-  'session.focus': 'Tame time',
+  'session.focus': 'Tame',
   'session.end': 'यह सत्र समाप्त करें',
   'session.endTitle': 'यह सत्र समाप्त करें?',
   'session.endBody': 'तस्वीर अधूरी रहेगी, आपका पौधा मुरझाएगा, और एक मुरझाया पौधा व एक टूटी तस्वीर पीछे रह जाएगी।',
@@ -175,7 +175,7 @@ export const hi: Partial<Record<StringKey, string>> = {
 
   // membership
   'membership.section': 'सदस्यता',
-  'membership.title': 'Tame time सदस्यता',
+  'membership.title': 'Tame सदस्यता',
   'membership.body': 'कभी कोई विज्ञापन नहीं। बाक़ी सब मुफ़्त रहता है।',
   'membership.perMonth': '/महीना',
   'membership.subscribe': 'सदस्य बनें',
@@ -223,7 +223,7 @@ export const hi: Partial<Record<StringKey, string>> = {
   'settings.clear': 'मिटाएँ',
   'settings.historyCleared': 'इतिहास मिट गया',
   'settings.permissionNeeded': 'अनुमति चाहिए',
-  'settings.permissionBody': 'ऐप से बाहर जाने पर याद दिलाने के लिए डिवाइस की सेटिंग्स में Tame time को सूचनाओं की अनुमति दें।',
+  'settings.permissionBody': 'ऐप से बाहर जाने पर याद दिलाने के लिए डिवाइस की सेटिंग्स में Tame को सूचनाओं की अनुमति दें।',
   'progress.title': 'प्रगति',
   'progress.focusTime': 'फ़ोकस समय',
   'progress.streak': 'लगातार दिन',
@@ -436,7 +436,7 @@ export const hi: Partial<Record<StringKey, string>> = {
   'home.focusOnA11y': 'किस पर फ़ोकस करें',
   'settings.announcements': 'घोषणाएँ',
   'settings.deleteTitle': 'अपना खाता हटाएँ?',
-  'settings.deleteBody': 'यह आपका Tame time खाता स्थायी रूप से हटा देगा। इस डिवाइस पर आपका फ़ोकस इतिहास बना रहेगा। यह वापस नहीं होगा।',
+  'settings.deleteBody': 'यह आपका Tame खाता स्थायी रूप से हटा देगा। इस डिवाइस पर आपका फ़ोकस इतिहास बना रहेगा। यह वापस नहीं होगा।',
   'settings.delete': 'हटाएँ',
   'settings.deleted': 'खाता हटा दिया गया',
   'settings.deletedBody': 'आपका खाता और उसका डेटा हटा दिया गया है।',
@@ -447,7 +447,7 @@ export const hi: Partial<Record<StringKey, string>> = {
   'auth.signInTitle': 'फिर से स्वागत है',
   'auth.signInBody': 'अपनी पसंद सहेजने और घोषणाएँ पाने के लिए साइन इन करें।',
   'auth.signUpTitle': 'अपना खाता बनाएँ',
-  'auth.signUpBody': 'वैकल्पिक — Tame time बिना खाते के भी चलता है।',
+  'auth.signUpBody': 'वैकल्पिक — Tame बिना खाते के भी चलता है।',
   'auth.resetTitle': 'अपना पासवर्ड रीसेट करें',
   'auth.resetBody': 'हम आपको 6 अंकों का कोड ईमेल करेंगे।',
   'auth.checkTitle': 'अपना ईमेल देखें',

@@ -218,7 +218,7 @@ export function SettingsScreen() {
         {env.termsUrl ? <SettingLink icon="info" label={t('settings.terms')} onPress={() => openUrl(env.termsUrl!)} /> : null}
         {env.supportEmail ? <SettingLink icon="mail" label={t('settings.support')} onPress={() => openUrl(`mailto:${env.supportEmail}`)} /> : null}
         <View style={styles.version}>
-          <AppText variant="bodySmall" tone="muted">Tame time {appVersion}</AppText>
+          <AppText variant="bodySmall" tone="muted">Tame {appVersion}</AppText>
         </View>
       </Section>
 

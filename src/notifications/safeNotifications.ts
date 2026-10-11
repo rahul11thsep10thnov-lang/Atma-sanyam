@@ -73,7 +73,7 @@ export async function getExpoPushTokenAsync(projectId: string): Promise<{ token:
     const Notifications = await loadNotifications();
     if (!Notifications) return { error: 'Notifications are unavailable on this device.' };
     const perm = await Notifications.requestPermissionsAsync();
-    if (!perm.granted) return { error: 'Notifications are turned off for Tame time in your device settings.' };
+    if (!perm.granted) return { error: 'Notifications are turned off for Tame in your device settings.' };
     const { Platform } = await import('react-native');
     if (Platform.OS === 'android') {
       await Notifications.setNotificationChannelAsync('default', {

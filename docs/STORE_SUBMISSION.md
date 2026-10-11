@@ -7,7 +7,7 @@ Nothing here has been published yet — these are the steps you perform with you
 | | Android | iOS |
 |---|---|---|
 | App ID | `com.atmasanyam.focus` (package) | `com.atmasanyam.focus` (bundle ID) |
-| Name / version | Tame time / `1.0.0` (`app.json` → `version`) | same |
+| Name / version | Tame / `1.0.0` (`app.json` → `version`) | same |
 | Build numbers | `versionCode` auto-incremented by EAS (`appVersionSource: remote`) | `buildNumber` auto-incremented by EAS |
 | Icon | Adaptive icon (photo background + themed monochrome layer) | `assets/icon.png` 1024×1024 |
 | Splash | `assets/splash-icon.png` on `#FFF3E8` | same |
@@ -16,8 +16,8 @@ Nothing here has been published yet — these are the steps you perform with you
 | Devices | Phones | iPhone only (`supportsTablet: false` — no iPad screenshots needed) |
 | Account deletion | In-app: Settings → Account → Delete account | same |
 
-> **App name:** store names must be unique. If "Tame time" is taken, change `expo.name` in
-> `app.json` (e.g. "Tame time – Puzzle Timer") — the bundle IDs don't need to change.
+> **App name:** store names must be unique. If "Tame" is taken, change `expo.name` in
+> `app.json` (e.g. "Tame – Puzzle Timer") — the bundle IDs don't need to change.
 >
 > **Bundle IDs are permanent** once published. If you want a different one (e.g. your own
 > domain reversed), change `ios.bundleIdentifier` and `android.package` in `app.json` **before**
@@ -76,7 +76,7 @@ DEPLOYMENT.md §4) — at minimum `EXPO_PUBLIC_API_URL` and `EXPO_PUBLIC_PRIVACY
      **Yes**. Users can request deletion: **Yes**.
    - *Account deletion* — Google also requires a **web link** where people can request
      deletion without the app. Publish a short page (e.g. `your-domain.com/delete-account`)
-     explaining: open Tame time → Settings → Delete account, or email support from the account's
+     explaining: open Tame → Settings → Delete account, or email support from the account's
      address. Enter that URL here.
    - *Ads*: No. *Target audience*: 13+ (don't select children). *Content rating*: complete the
      questionnaire (no violence/UGC → "Everyone").

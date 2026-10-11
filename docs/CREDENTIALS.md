@@ -27,7 +27,7 @@ in EAS, or in a local `.env` file that git ignores.
 | `NODE_ENV` | literally `production` | ✅ |
 | `TRUST_PROXY` | `1` on Render/Railway/Fly | ✅ |
 | `RESEND_API_KEY` | Resend → API Keys → Create | optional |
-| `EMAIL_FROM` | an address on your Resend-verified domain, e.g. `Tame time <no-reply@your-domain.com>` | with Resend |
+| `EMAIL_FROM` | an address on your Resend-verified domain, e.g. `Tame <no-reply@your-domain.com>` | with Resend |
 | `EXPO_ACCESS_TOKEN` | expo.dev → Account settings → Access tokens | optional (push hardening) |
 | `CORS_ORIGINS` | leave empty in production | — |
 | `ADMIN_BOOTSTRAP_EMAIL` / `_PASSWORD` / `_NAME` | you choose; used **once** in the Render Shell to create the first Super Admin, don't store them permanently | once |

@@ -1,4 +1,4 @@
-# Tame time API
+# Tame API
 
 Express 5 + TypeScript + Drizzle ORM on PostgreSQL. Serves the mobile app (`/v1`) and the
 admin console (`/admin/v1`). Full endpoint list: [../docs/API.md](../docs/API.md).

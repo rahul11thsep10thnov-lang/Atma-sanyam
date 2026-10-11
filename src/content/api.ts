@@ -24,7 +24,7 @@ import { MOCK_CATEGORIES, MOCK_IMAGES } from './mockCatalog';
 import { isBackendConfigured } from '../config/env';
 import { apiRequest } from '../services/apiClient';
 
-// With EXPO_PUBLIC_API_URL set, every call below goes to the real Tame time API
+// With EXPO_PUBLIC_API_URL set, every call below goes to the real Tame API
 // (backend/src/routes/public). Without it, the bundled mock catalog is used so
 // the app still works offline / in Expo Go with no server.
 
