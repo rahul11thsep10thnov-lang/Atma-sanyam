@@ -1,120 +1,108 @@
-# WHOLESOUL
+# Tame
 
-**Fast. Fresh. Frugal.**
-घर बैठे ताजा फल, फूल, माला और सब्जी खरीदें
+A calm focus timer where a jigsaw puzzle assembles itself while you stay on task.
+Leave the app mid-session and the puzzle stays unfinished.
 
-A native Android quick-commerce app for fruits, vegetables, flowers, garlands, puja items,
-grocery and daily essentials — sourced directly to cut out middlemen and keep prices honest.
+This repository contains the whole product:
 
-Inspired by the *convenience* of modern quick-commerce apps (fast search, category discovery,
-one-tap add-to-cart, simple checkout, offers, reorder) but with its own brand, visual identity
-and market focus: fresh produce, flowers/garlands and puja essentials, sold at frugal prices.
-
-## Important: no location/GPS anywhere
-
-WHOLESOUL never requests location permissions, never links a maps SDK, and never reads device
-GPS. Delivery area is decided entirely manually: **Country → State → City → Area → PIN code**,
-checked against a configurable list of serviceable PIN codes
-(`data/mock/MockLocationData.kt`). Order tracking is a simple status list (Placed → Confirmed →
-Packed → Out for delivery → Delivered) — never a live map.
-
-## Tech stack
-
-- Kotlin, Jetpack Compose, Material 3
-- MVVM + Clean Architecture (`presentation` → `domain` → `data`)
-- Kotlin Coroutines + Flow, `StateFlow`-driven UI state, sealed `UiState` for
-  loading/empty/error/success
-- Navigation Compose, single-Activity
-- Hilt for dependency injection
-- Room for local persistence (cart, addresses, wishlist, orders)
-- Retrofit/OkHttp included and wired for a future backend, but unused while
-  `BuildConfig.DEVELOPMENT_MODE == true`
-- Coil for image loading/caching
-- DataStore Preferences for session + onboarding + recent-search state
-- kotlinx.serialization for local JSON persistence (order line items, addresses)
-
-## Development Mode
-
-The whole app runs end-to-end with **zero backend** via `core/util/DevModeConfig.kt` and the
-`DEVELOPMENT_MODE` build config flag (on by default in both `debug` and `release`, since there
-is no real backend yet):
-
-- **Auth**: mocked OTP flow — any 10-digit mobile number, OTP is always `1234`. "Continue as
-  Guest" also works.
-- **Catalog**: 360+ generated products across 12 categories (`data/mock/MockProductData.kt`),
-  meeting every minimum count in the spec (50 fruits, 50 vegetables, 30 flowers, 20 garlands,
-  30 puja items, 50 grocery, 30 household, 30 personal care, plus dairy/snacks/beverages/other).
-- **Images**: resolved through the `ImageProvider` interface
-  (`core/image/PlaceholderImageProvider.kt`) — swap one class to point at a CDN, Firebase
-  Storage or local assets later; no screen ever builds an image URL itself.
-- **Payments**: `MockPaymentRepository` always succeeds after a short simulated delay.
-- **Serviceability**: a fixed, easily-extended list of serviceable PIN codes.
-- **Notifications**: a seeded local list; architecture allows swapping in FCM later
-  (`domain/repository/NotificationRepository.kt`).
-
-Every repository is defined as an interface in `domain/repository/` and bound to its
-Development Mode implementation in `di/RepositoryModule.kt`. Connecting a real backend means
-writing a new implementation class and changing one `@Binds` line per repository — no
-ViewModel or screen changes.
-
-## Project structure
+| Part | Folder | Stack | Runs on |
+|---|---|---|---|
+| **Mobile app** (Android + iOS) | `/` (repo root) | Expo SDK 57, React Native 0.86, TypeScript | Phones (EAS Build → Play Store / App Store) |
+| **API** | [`/backend`](backend) | Node 22, Express 5, Drizzle ORM, PostgreSQL | Any container host (Render, Railway, Fly…) |
+| **Admin console** | [`/admin`](admin) | Next.js 16, React 19, TypeScript | Vercel (or any Node host) |
 
 ```
-app/src/main/java/com/wholesoul/app/
-├── core/
-│   ├── designsystem/       Colors, typography, shapes, theme, reusable Compose components
-│   ├── analytics/          Provider-agnostic analytics event + logger interface
-│   ├── image/              ImageProvider abstraction + CompositionLocal
-│   └── util/               UiState, DevModeConfig, formatting helpers
-├── domain/
-│   ├── model/              Plain domain models (User, Address, Product, Order, ...)
-│   └── repository/         Repository interfaces (the contract every screen depends on)
-├── data/
-│   ├── local/              Room database, entities, DAOs
-│   ├── mock/                In-memory catalog/category/offer/notification/location data
-│   └── repository/         Development Mode repository implementations
-├── di/                     Hilt modules
-├── navigation/             Routes, NavHost, bottom navigation
-└── presentation/           One package per screen: splash, onboarding, auth, home,
-                             categories, productlisting, productdetails, search, cart,
-                             address, checkout, orderconfirmation, orders, orderdetails,
-                             wishlist, profile, offers, notifications, help, legal
+ ┌──────────────────────┐        HTTPS (Bearer token)         ┌───────────────────────┐
+ │  Tame mobile app    │ ──────────────  /v1/*  ───────────▶ │                       │
+ │  iOS · Android       │                                      │   Tame API           │     ┌──────────────┐
+ └──────────────────────┘                                      │   Express + Drizzle   │ ──▶ │ PostgreSQL   │
+                                                               │   auth · RBAC · rate  │     └──────────────┘
+ ┌──────────────────────┐   browser → same-origin proxy        │   limits · audit log  │
+ │  Admin console       │   (httpOnly cookie) → /admin/v1/* ─▶ │                       │ ──▶ Expo Push → APNs/FCM
+ │  Next.js on Vercel   │                                      │                       │ ──▶ Resend (reset emails)
+ └──────────────────────┘                                      └───────────────────────┘
 ```
 
-## Brand
+The mobile app still works **fully offline with no server** (bundled art, quotes, own
+photos, demo library) — exactly as before — so Expo Go testing keeps working.
 
-- Primary color: `#FFD8B1` (warm apricot) — deliberately distinct from other quick-commerce
-  apps' yellow branding.
-- Secondary: a fresh leaf green (`#3A7D44`) for sourcing/freshness cues, and a deep soil brown
-  (`#4A3728`) for earthy market texture.
-- Logo: an original sun-disc mark holding a leaf and a fruit dot
-  (`res/drawable/ic_wholesoul_logo.xml`) — not derived from any third-party logo.
+## Quick start (local development)
 
-## Building
+Prerequisites: Node 22+, PostgreSQL 16 (or a free Neon database), the Expo Go app on your phone.
 
-Standard Android Gradle project, no extra setup required:
+```bash
+# 1. API
+cd backend
+cp .env.example .env            # set DATABASE_URL
+npm install
+npm run db:migrate
+ADMIN_BOOTSTRAP_EMAIL=you@example.com ADMIN_BOOTSTRAP_PASSWORD='Choose-A-Long-Pass1' npm run seed:admin
+npm run seed:content            # category tree (add --with-samples for placeholder drafts)
+npm run dev                     # http://localhost:4000
 
+# 2. Admin console (new terminal)
+cd admin
+cp .env.example .env.local      # API_URL=http://localhost:4000
+npm install
+npm run dev                     # http://localhost:3000 → sign in with the admin above
+
+# 3. Mobile app (new terminal, repo root)
+cp .env.example .env            # EXPO_PUBLIC_API_URL=http://<your-computer-LAN-IP>:4000
+npm install
+npm start                       # scan the QR code with Expo Go
 ```
-./gradlew assembleDebug
-./gradlew test              # unit tests (ViewModels, repositories, domain logic)
-./gradlew connectedAndroidTest  # Compose UI tests (needs a device/emulator)
+
+Leave `EXPO_PUBLIC_API_URL` empty to run the app without any server.
+
+## Documentation
+
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — structure, database schema, security model
+- [docs/API.md](docs/API.md) — every endpoint
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) — putting the API, database and admin console online
+- [docs/STORE_SUBMISSION.md](docs/STORE_SUBMISSION.md) — building and submitting to Google Play and the App Store
+- [docs/CREDENTIALS.md](docs/CREDENTIALS.md) — every account/key you need, where to get it, where it goes
+- [docs/SPACES.md](docs/SPACES.md) — the balcony, the garden, the museum, jigsaws, coins
+- [docs/PARADISE_GARDEN.md](docs/PARADISE_GARDEN.md) — the Paradise Garden: views, segments, growth sizes, placement, rendering
+
+## Tests
+
+```bash
+cd backend && npm test          # 63 integration tests against a real PostgreSQL database
+cd admin && npm run build       # type-checked production build
+npx tsc --noEmit                # mobile app (repo root)
+node --experimental-strip-types tools/checks/growth_sizes.mjs     # minutes → the seven growth sizes
+node --experimental-strip-types tools/checks/paradise_layout.mjs  # garden capacity and placement
 ```
 
-Minimum SDK 24, target/compile SDK 34.
+CI (`.github/workflows/ci.yml`) runs all of the above plus Android/iOS bundle exports on every push.
 
-## Testing
+## Core mechanic (mobile)
 
-- `app/src/test`: pure-JVM unit tests — domain logic (coupon math, order status transitions),
-  the Development Mode product/serviceability repositories, and ViewModel tests (login, search,
-  add/remove/update cart quantity, address creation + PIN serviceability, checkout/order
-  creation, order cancellation, wishlist) built against lightweight fakes of each repository
-  interface (`app/src/test/.../fakes`).
-- `app/src/androidTest`: a Compose UI test for the shared ADD/quantity-stepper component.
-
-## What's stubbed for later
-
-- Firebase Analytics/Cloud Messaging dependencies are present but inert; `AnalyticsLogger` and
-  `NotificationRepository` are the seams to wire them in.
-- Retrofit/OkHttp are present but unused; any `*Repository` interface is the seam for a real
-  API-backed implementation.
-- Razorpay (or another gateway) plugs into `PaymentRepository`.
+- Pick a length on the circular dial (5–180 min, 5-min steps) and an image: bundled art,
+  a quote tile, your own photo, or the online library managed from the admin console.
+- The picture is covered by about 10,000 jigsaw pieces. Each second some of them open, spread evenly over the whole picture (about 10,000 ÷ the session's seconds a second: roughly 5 a second in 30 minutes), and flip away as time passes
+  (`src/hooks/useFocusTimer.ts`, `src/components/PuzzleGrid.tsx`). A completed session of
+  fifteen minutes or more keeps the picture as a framed jigsaw in one of seven sizes, to hang in
+  the museum or on the balcony wall (`docs/SPACES.md`).
+- Or pick a plant: the session shows only soil and a seed that grows second by second as the
+  minutes pass, to one of seven sizes (15, 30, 60, 90, 120, 150, 180 minutes), and it keeps
+  its place in the garden, or on the balcony (room for 26 plants), until the person removes it
+  (`docs/PARADISE_GARDEN.md`).
+- Bilingual: English (UN English) and Hindi, asked in a popup every time the app opens and
+  changeable in Settings
+  (`src/i18n/`); the plant catalog has its own Hindi names and descriptions.
+- The picture library ships with 206 pictures inside the app (`assets/library/`), so there is
+  always something to reveal, online or not: under **Nature** (Mountains, Himalayas, Lakes, Rivers,
+  Waterfalls, Valleys, Coast, Forests, Flowers, Vintage prints), **Wildlife** (Birds, Butterflies,
+  Animals) and **Inspirational** (100 quote cards). They lead each collection, ahead of what the
+  online library returns, with titles in English and Hindi.
+  `assets/library/README.md` says where each picture came from; `tools/library/build_library.py`
+  and `tools/library/build_quotes.py` rebuild them from the original zips.
+- Accounts are optional and phone-first: a one-time SMS code signs you in (and creates the account
+  the first time), then a password (6–15 characters: capital, small, number, special), a unique
+  username with a live availability check, and an avatar. The small **Sign in** chip sits at the
+  top right of Home. The API needs an SMS provider (`docs/DEPLOYMENT.md`); without one the app
+  hides phone sign-in. Social features (friends, group focus) are planned on top: `docs/SOCIAL.md`.
+- Leaving the app starts a grace period (default 5 s, configurable from the admin console);
+  stay away longer and the session fails.
+- The balcony, the Paradise Garden, the museum and preferences stay on the device.

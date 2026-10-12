@@ -1,0 +1,116 @@
+export type DurationMinutes = 5 | 15 | 25 | 45 | 60 | number;
+
+export type ImageSourceKind = 'art' | 'quote' | 'custom';
+
+export interface Quote {
+  id: string;
+  text: string;
+  author: string;
+}
+
+export interface ArtImageRef {
+  kind: 'art';
+  id: string;
+  uri: number;
+}
+
+export interface QuoteImageRef {
+  kind: 'quote';
+  quote: Quote;
+  background: string;
+  textColor: string;
+}
+
+export interface CustomImageRef {
+  kind: 'custom';
+  uri: string;
+}
+
+// An image chosen from the remote content library (src/content/). `uri` is
+// always a local file:// path already resolved from the disk cache — nothing
+// downstream needs to know the image came from a network catalog.
+export interface RemoteImageRef {
+  kind: 'remote';
+  uri: string;
+  imageId: string;
+  title: string;
+  attributionText: string | null;
+  /** The library category it came from (for the museum's collection). */
+  category?: string;
+}
+
+// Focus on the balcony itself: the session shows the person's balcony and
+// its focus plant grows while they focus (src/photoBalcony).
+export interface BalconyImageRef {
+  kind: 'balcony';
+}
+
+// Focus inside one of the person's spaces (src/spaces): the space shows
+// and its focus plant grows while they focus.
+export interface SpaceImageRef {
+  kind: 'space';
+  space: 'balcony' | 'garden';
+}
+
+// Focus to grow one plant of a species in the paradise garden (src/paradise):
+// the seed goes into the soil when the session starts, and the plant is
+// placed in the garden when it completes.
+export interface PlantImageRef {
+  kind: 'plant';
+  speciesId: string;
+  /** Where the grown plant goes: the paradise garden (default) or the balcony. */
+  place?: 'garden' | 'balcony';
+}
+
+export type ImageRef = ArtImageRef | QuoteImageRef | CustomImageRef | RemoteImageRef | BalconyImageRef | SpaceImageRef | PlantImageRef;
+
+export interface GridDims {
+  rows: number;
+  cols: number;
+}
+
+export interface SessionConfig {
+  durationMinutes: number;
+  image: ImageRef;
+  grid: GridDims;
+  /** Set when this session is part of a group focus: the server's clock decides the end. */
+  group?: {
+    sessionId: string;
+    startedAt: string;
+    endsAt: string;
+    /** When this person's own time began (a late joiner starts later than the group). */
+    myStartedAt: string;
+  };
+}
+
+export type SessionOutcome = 'completed' | 'failed';
+
+export type FailureReason = 'left_app' | 'gave_up' | null;
+
+export interface SessionRecord {
+  id: string;
+  startedAt: number;
+  endedAt: number;
+  durationMinutes: number;
+  grid: GridDims;
+  image: ImageRef;
+  outcome: SessionOutcome;
+  failureReason: FailureReason;
+  revealedFraction: number;
+}
+
+export interface AppSettings {
+  notificationsEnabled: boolean;
+  soundEnabled: boolean;
+  // Anonymous usage analytics sent to the Tame server (on by default,
+  // disclosed in Settings and the privacy policy; can be turned off).
+  analyticsEnabled: boolean;
+  // "News & announcements" push notifications from the admin console.
+  pushEnabled: boolean;
+  // Colour scheme: follow the OS, or force Golden Morning / Night Balcony.
+  appearance?: 'system' | 'light' | 'dark';
+  // Chosen on first launch; undefined until then (the language screen shows).
+  language?: 'en' | 'hi';
+  // How alive the garden is: everything, a calm few things, or still.
+  gardenMotion?: 'full' | 'calm' | 'off';
+}
