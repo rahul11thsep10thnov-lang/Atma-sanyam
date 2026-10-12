@@ -1,6 +1,6 @@
 # Bundled picture library
 
-106 pictures ship inside the app. `src/content/bundled.ts` lists them; the two
+206 pictures ship inside the app. `src/content/bundled.ts` lists them; the two
 Himalayan photos are written by hand there, the rest come from
 `src/content/bundledLibrary.generated.ts`, which `tools/library/build_library.py`
 writes.
@@ -27,3 +27,13 @@ publishing the app.
 - Kinds (mountain, lake, river, waterfall, valley, coast, forest, flowers, vintage
   print, bird, butterfly, animal) were set by hand in `build_library.py`; titles
   are built from them ("Lake 03", "झील 03").
+
+## Inspirational quote cards (100)
+
+`qt_NNN.webp` (1080 x 1920, WebP) and `qt_NNN_t.webp` (360 x 360 thumbnail of the
+quote panel), under **Inspirational > Quotes**. They were supplied as a zip of 100
+JPEG cards (`100_motivational_quotes_with_backgrounds_Cinderella.zip`); each had a
+caption strip from a concept sheet baked into its bottom, which
+`tools/library/build_quotes.py` crops away (top 2 %, bottom 14 %, sides to keep
+9:16). The zip's note says the quote attributions were not verified, so check them
+before publishing the app. No credits or licences came with the zip.

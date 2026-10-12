@@ -18,6 +18,7 @@ import { Screen } from '../ui/Screen';
 import { AppText } from '../ui/AppText';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
+import { Avatar } from '../ui/Avatar';
 import { SegmentedControl } from '../ui/SegmentedControl';
 import { SettingBlock, SettingLink, SettingToggle } from '../ui/SettingRow';
 import { useTabBarInset } from '../ui/TabBar';
@@ -46,7 +47,7 @@ export function SettingsScreen() {
   const { colors } = useTheme();
   const tabInset = useTabBarInset();
   const { settings, updateSettings } = useSettings();
-  const { status, user, signOut, deleteAccount } = useAuth();
+  const { status, user, onboarding, signOut, deleteAccount } = useAuth();
   const { config } = useRemoteConfig();
   const [pushBusy, setPushBusy] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -94,7 +95,7 @@ export function SettingsScreen() {
           onPress: async () => {
             setDeleteBusy(true);
             try {
-              await deleteAccount(deletePassword);
+              await deleteAccount(user?.hasPassword ? deletePassword : undefined);
               setDeleting(false);
               setDeletePassword('');
               Alert.alert(t('settings.deleted'), t('settings.deletedBody'));
@@ -133,30 +134,40 @@ export function SettingsScreen() {
           {status === 'signedIn' && user ? (
             <View style={styles.accountBox}>
               <View style={styles.rowBetween}>
+                <Avatar avatarId={user.avatarId} name={user.username ?? user.displayName ?? user.phoneMasked} size={44} />
                 <View style={{ flex: 1 }}>
-                  <AppText variant="bodyStrong">{user.displayName || t('settings.signedIn')}</AppText>
-                  <AppText variant="bodySmall" tone="secondary">{user.email}</AppText>
+                  <AppText variant="bodyStrong">{user.username ? `@${user.username}` : user.displayName || t('settings.signedIn')}</AppText>
+                  <AppText variant="bodySmall" tone="secondary">{[user.displayName, user.phone ?? user.email].filter(Boolean).join(' · ')}</AppText>
                 </View>
                 <Button label={t('settings.signOut')} variant="secondary" size="sm" icon="logOut" onPress={() => void signOut()} />
+              </View>
+              {onboarding && (onboarding.needsPassword || onboarding.needsUsername) && (
+                <Button label={t('settings.finishSetup')} icon="user" size="sm" onPress={() => navigation.navigate('Auth')} style={styles.accountAction} />
+              )}
+              <View style={styles.accountLinks}>
+                <SettingLink icon="user" label={t('settings.editProfile')} hint={t('settings.editProfileHint')} onPress={() => navigation.navigate('Auth', { mode: 'profile' })} />
+                <SettingLink icon="lock" label={user.hasPassword ? t('settings.changePassword') : t('settings.setPassword')} onPress={() => navigation.navigate('Auth', { mode: 'password' })} last />
               </View>
               {!deleting ? (
                 <Button label={t('settings.deleteAccount')} variant="tertiary" size="sm" onPress={() => setDeleting(true)} style={styles.deleteLink} />
               ) : (
                 <View style={[styles.deleteBox, { borderTopColor: colors.divider }]}>
-                  <AppText variant="bodySmall" tone="secondary">{t('settings.deleteHint')}</AppText>
-                  <TextInput
-                    style={[styles.input, typography.body, { borderColor: colors.border, backgroundColor: colors.background, color: colors.text }]}
-                    secureTextEntry
-                    value={deletePassword}
-                    onChangeText={setDeletePassword}
-                    placeholder={t('auth.password')}
-                    placeholderTextColor={colors.textMuted}
-                    autoComplete="current-password"
-                    accessibilityLabel={t('settings.passwordA11y')}
-                  />
+                  <AppText variant="bodySmall" tone="secondary">{user.hasPassword ? t('settings.deleteHint') : t('settings.deleteHintNoPassword')}</AppText>
+                  {user.hasPassword && (
+                    <TextInput
+                      style={[styles.input, typography.body, { borderColor: colors.border, backgroundColor: colors.background, color: colors.text }]}
+                      secureTextEntry
+                      value={deletePassword}
+                      onChangeText={setDeletePassword}
+                      placeholder={t('auth.password')}
+                      placeholderTextColor={colors.textMuted}
+                      autoComplete="current-password"
+                      accessibilityLabel={t('settings.passwordA11y')}
+                    />
+                  )}
                   <View style={styles.rowBetween}>
                     <Button label={t('cancel')} variant="tertiary" size="sm" onPress={() => { setDeleting(false); setDeletePassword(''); }} />
-                    <Button label={t('settings.deleteForever')} variant="destructive" size="sm" loading={deleteBusy} disabled={!deletePassword} onPress={confirmDelete} />
+                    <Button label={t('settings.deleteForever')} variant="destructive" size="sm" loading={deleteBusy} disabled={user.hasPassword && !deletePassword} onPress={confirmDelete} />
                   </View>
                 </View>
               )}
@@ -233,6 +244,8 @@ const styles = StyleSheet.create({
   section: { marginTop: space.xxl },
   sectionTitle: { marginBottom: space.sm, marginLeft: space.xs },
   accountBox: { paddingVertical: space.lg },
+  accountAction: { marginTop: space.md, alignSelf: 'flex-start' },
+  accountLinks: { marginTop: space.sm, marginHorizontal: -space.lg },
   rowBetween: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.md },
   deleteLink: { marginTop: space.sm, marginLeft: -space.md },
   deleteBox: { marginTop: space.lg, paddingTop: space.lg, borderTopWidth: StyleSheet.hairlineWidth, gap: space.md },

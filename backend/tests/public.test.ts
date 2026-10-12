@@ -51,19 +51,19 @@ describe('user accounts', () => {
   it('registers, normalizes email, and never returns the password hash', async () => {
     const res = await request(ctx.app)
       .post('/v1/auth/register')
-      .send({ email: '  Asha@Example.com ', password: 'focus-time-123', displayName: 'Asha' });
+      .send({ email: '  Asha@Example.com ', password: 'Focus-time1', displayName: 'Asha' });
     expect(res.status).toBe(201);
     expect(res.body.user.email).toBe('asha@example.com');
     expect(JSON.stringify(res.body)).not.toContain('scrypt');
     token = res.body.token;
     const [row] = await ctx.db.select().from(users).where(eq(users.email, 'asha@example.com'));
-    expect(row!.passwordHash.startsWith('scrypt$')).toBe(true);
+    expect(row!.passwordHash!.startsWith('scrypt$')).toBe(true);
   });
 
   it('rejects duplicate emails, weak passwords and bad emails', async () => {
-    expect((await request(ctx.app).post('/v1/auth/register').send({ email: 'asha@example.com', password: 'another-pass-1' })).status).toBe(409);
+    expect((await request(ctx.app).post('/v1/auth/register').send({ email: 'asha@example.com', password: 'Another-pass1' })).status).toBe(409);
     expect((await request(ctx.app).post('/v1/auth/register').send({ email: 'b@example.com', password: 'short' })).status).toBe(400);
-    expect((await request(ctx.app).post('/v1/auth/register').send({ email: 'not-an-email', password: 'long-enough-1' })).status).toBe(400);
+    expect((await request(ctx.app).post('/v1/auth/register').send({ email: 'not-an-email', password: 'Long-enough1' })).status).toBe(400);
   });
 
   it('logs in with correct credentials only, with a generic error', async () => {
@@ -72,7 +72,7 @@ describe('user accounts', () => {
     expect(wrong.status).toBe(401);
     expect(missing.status).toBe(401);
     expect(wrong.body.error.message).toBe(missing.body.error.message);
-    const ok = await request(ctx.app).post('/v1/auth/login').send({ email: 'ASHA@example.com', password: 'focus-time-123' });
+    const ok = await request(ctx.app).post('/v1/auth/login').send({ email: 'ASHA@example.com', password: 'Focus-time1' });
     expect(ok.status).toBe(200);
     expect(ok.body.token).toMatch(/^[A-Za-z0-9_-]{43}$/);
   });
@@ -94,15 +94,15 @@ describe('user accounts', () => {
   });
 
   it('changes password and deletes the account only with the right password', async () => {
-    const login = await request(ctx.app).post('/v1/auth/login').send({ email: 'asha@example.com', password: 'focus-time-123' });
+    const login = await request(ctx.app).post('/v1/auth/login').send({ email: 'asha@example.com', password: 'Focus-time1' });
     const t = login.body.token;
     const auth = { Authorization: `Bearer ${t}` };
-    expect((await request(ctx.app).post('/v1/me/password').set(auth).send({ currentPassword: 'wrong', newPassword: 'new-password-9' })).status).toBe(400);
-    expect((await request(ctx.app).post('/v1/me/password').set(auth).send({ currentPassword: 'focus-time-123', newPassword: 'new-password-9' })).status).toBe(204);
+    expect((await request(ctx.app).post('/v1/me/password').set(auth).send({ currentPassword: 'wrong', newPassword: 'New-password9' })).status).toBe(400);
+    expect((await request(ctx.app).post('/v1/me/password').set(auth).send({ currentPassword: 'Focus-time1', newPassword: 'New-password9' })).status).toBe(204);
 
     await request(ctx.app).post('/v1/events').set(auth).send({ installId: INSTALL, platform: 'ios', events: [{ name: 'app_open' }] });
-    expect((await request(ctx.app).delete('/v1/me').set(auth).send({ password: 'focus-time-123' })).status).toBe(400);
-    expect((await request(ctx.app).delete('/v1/me').set(auth).send({ password: 'new-password-9' })).status).toBe(204);
+    expect((await request(ctx.app).delete('/v1/me').set(auth).send({ password: 'Focus-time1' })).status).toBe(400);
+    expect((await request(ctx.app).delete('/v1/me').set(auth).send({ password: 'New-password9' })).status).toBe(204);
     expect(await ctx.db.select().from(users).where(eq(users.email, 'asha@example.com'))).toHaveLength(0);
     // Analytics survive but are no longer linked to the deleted person.
     const evs = await ctx.db.select().from(events).where(eq(events.installId, INSTALL));

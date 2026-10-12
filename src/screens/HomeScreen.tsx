@@ -4,16 +4,18 @@
 // tactile Start.
 import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Animated, ScrollView, StyleSheet, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRemoteConfig } from '../context/RemoteConfigContext';
+import { isBackendConfigured } from '../config/env';
 import { useAuth } from '../context/AuthContext';
 import { track } from '../services/analytics';
 import { gridForSession } from '../collection/model';
 import { DialTimerPicker } from '../components/DialTimerPicker';
 import { AnimatedWallpaper } from '../components/AnimatedWallpaper';
 import { Greeting } from '../components/home/Greeting';
+import { SignInChip } from '../components/home/SignInChip';
 import { GrowPlantsTab, PlantPick } from '../components/home/GrowPlantsTab';
 import { JigsawPicturesTab, JigsawPick } from '../components/home/JigsawPicturesTab';
 import { Button } from '../ui/Button';
@@ -24,7 +26,7 @@ import { useTabBarInset } from '../ui/TabBar';
 import { space } from '../theme/spacing';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { ImageRef, SessionConfig } from '../types';
-import { RootStackParamList } from '../navigation/types';
+import { RootStackParamList, RootTabParamList } from '../navigation/types';
 import { t, useLanguage } from '../i18n';
 
 type Mode = 'plants' | 'jigsaw';
@@ -35,12 +37,21 @@ export function HomeScreen() {
   const tabInset = useTabBarInset();
   const reduced = useReducedMotion();
   const { config } = useRemoteConfig();
-  const { user } = useAuth();
+  const { user, status } = useAuth();
   useLanguage();
+  const showAccounts = isBackendConfigured && config.features.accounts;
   const [duration, setDuration] = useState(30);
   const [mode, setMode] = useState<Mode>('plants');
   const [plant, setPlant] = useState<PlantPick | null>({ kind: 'balcony' });
   const [picture, setPicture] = useState<JigsawPick | null>(null);
+
+  // another tab (the museum's "Reveal a jigsaw") can ask for a mode
+  const route = useRoute<RouteProp<RootTabParamList, 'Home'>>();
+  const askedMode = route.params?.mode;
+  const arrival = route.params?.arrival;
+  useEffect(() => {
+    if (askedMode) setMode(askedMode);
+  }, [askedMode, arrival]);
 
   // The Start button breathes, very slowly, so it reads as alive — not as a
   // notification. Still under reduced motion.
@@ -95,7 +106,12 @@ export function HomeScreen() {
           </Card>
         )}
 
-        <Greeting name={user?.displayName} />
+        <View style={styles.headerRow}>
+          <View style={styles.greeting}>
+            <Greeting name={user?.displayName ?? user?.username} />
+          </View>
+          {showAccounts && <SignInChip onPress={() => (status === 'signedIn' ? navigation.navigate('Tabs', { screen: 'Settings' }) : navigation.navigate('Auth'))} />}
+        </View>
 
         <View style={styles.modeSection}>
           <ModeChips<Mode>
@@ -133,6 +149,8 @@ export function HomeScreen() {
 const styles = StyleSheet.create({
   screen: { flex: 1 },
   announcement: { marginBottom: space.lg },
+  headerRow: { flexDirection: 'row', alignItems: 'flex-start', gap: space.md },
+  greeting: { flex: 1 },
   modeSection: { marginTop: space.xl },
   modeBody: { marginTop: space.lg },
   timerSection: { alignItems: 'center', marginTop: space.xxl },

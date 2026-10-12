@@ -5,7 +5,7 @@
 import { lt, sql } from 'drizzle-orm';
 import { loadEnv } from '../config/env.js';
 import { createDatabase } from './client.js';
-import { adminSessions, events, passwordResetCodes, userSessions } from './schema.js';
+import { adminSessions, events, otpCodes, passwordResetCodes, userSessions } from './schema.js';
 
 async function main() {
   const env = loadEnv();
@@ -20,9 +20,11 @@ async function main() {
       .delete(passwordResetCodes)
       .where(sql`${passwordResetCodes.expiresAt} < ${now} or ${passwordResetCodes.usedAt} is not null`)
       .returning({ id: passwordResetCodes.id });
+    // Sign-in codes are kept a day so sends per number can be counted.
+    const o = await db.delete(otpCodes).where(lt(otpCodes.createdAt, new Date(now.getTime() - 86_400_000))).returning({ id: otpCodes.id });
     const e = await db.delete(events).where(lt(events.occurredAt, cutoff)).returning({ id: events.id });
     console.log(
-      `Removed ${u.length} user sessions, ${a.length} admin sessions, ${r.length} reset codes, ${e.length} events older than ${env.EVENTS_RETENTION_DAYS} days.`
+      `Removed ${u.length} user sessions, ${a.length} admin sessions, ${r.length} reset codes, ${o.length} sign-in codes, ${e.length} events older than ${env.EVENTS_RETENTION_DAYS} days.`
     );
   } finally {
     await database.close();

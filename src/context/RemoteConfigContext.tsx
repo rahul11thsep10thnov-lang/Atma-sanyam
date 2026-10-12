@@ -16,8 +16,9 @@ export interface RemoteConfig {
     customPhotos: boolean;
     accounts: boolean;
     pushNotifications: boolean;
-    // Server capability: true only when the API can send reset emails.
+    // Server capabilities: true only when the API can send reset emails / sign-in SMS.
     passwordReset: boolean;
+    phoneSignIn: boolean;
   };
   texts: {
     announcement: string;
@@ -41,6 +42,7 @@ export const DEFAULT_CONFIG: RemoteConfig = {
     accounts: isBackendConfigured,
     pushNotifications: isBackendConfigured,
     passwordReset: false,
+    phoneSignIn: false,
   },
   texts: {
     announcement: '',

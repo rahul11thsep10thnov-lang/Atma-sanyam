@@ -9,7 +9,7 @@ import { ConfirmButton, ErrorAlert, Forbidden, OkAlert, PageHead, StatusBadge } 
 import { useCan } from '@/components/ConsoleShell';
 
 interface Detail {
-  user: { id: string; email: string; displayName: string | null; status: string; createdAt: string; lastSeenAt: string | null };
+  user: { id: string; email: string | null; phone: string | null; username: string | null; displayName: string | null; status: string; createdAt: string; lastSeenAt: string | null };
   devices: { id: string; platform: string; appVersion: string | null; pushEnabled: boolean; lastSeenAt: string }[];
   activeSessions: number;
   recentEvents: { name: string; screen: string | null; contentId: string | null; properties: Record<string, unknown> | null; platform: string | null; occurredAt: string }[];
@@ -49,19 +49,19 @@ export default function UserDetailPage() {
     <div>
       <p className="small"><Link href="/users">← Users</Link></p>
       <PageHead
-        title={u ? u.displayName || u.email : 'User'}
-        subtitle={u?.email}
+        title={u ? (u.username ? `@${u.username}` : u.displayName || u.email || u.phone || 'User') : 'User'}
+        subtitle={u ? [u.displayName, u.phone, u.email].filter(Boolean).join(' · ') : undefined}
         actions={
           u && (
             <>
               {can('users:write') &&
                 (u.status === 'active' ? (
-                  <ConfirmButton label="Deactivate" confirm={`Deactivate ${u.email}? They will be signed out immediately.`} onConfirm={() => setStatus('deactivated')} />
+                  <ConfirmButton label="Deactivate" confirm={`Deactivate ${u.username ?? u.email ?? u.phone}? They will be signed out immediately.`} onConfirm={() => setStatus('deactivated')} />
                 ) : (
                   <button className="btn btn-sm" onClick={() => setStatus('active')}>Re-activate</button>
                 ))}
               {can('users:delete') && (
-                <ConfirmButton label="Delete permanently" confirm={`Permanently delete ${u.email}? This cannot be undone.`} onConfirm={remove} />
+                <ConfirmButton label="Delete permanently" confirm={`Permanently delete ${u.username ?? u.email ?? u.phone}? This cannot be undone.`} onConfirm={remove} />
               )}
             </>
           )

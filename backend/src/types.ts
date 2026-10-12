@@ -3,6 +3,7 @@ import type { Db } from './database/client.js';
 import type { Permission } from './database/rbac.js';
 import type { PushSender } from './lib/push.js';
 import type { Mailer } from './lib/mailer.js';
+import type { SmsSender } from './lib/sms.js';
 
 export interface AppDeps {
   db: Db;
@@ -10,11 +11,14 @@ export interface AppDeps {
   push: PushSender;
   // null when email isn't configured (password reset is then unavailable).
   mailer: Mailer | null;
+  // null when no SMS provider is configured (phone sign-in is then unavailable).
+  sms: SmsSender | null;
 }
 
 export interface AuthUser {
   id: string;
-  email: string;
+  email: string | null;
+  phone: string | null;
   sessionId: string;
 }
 

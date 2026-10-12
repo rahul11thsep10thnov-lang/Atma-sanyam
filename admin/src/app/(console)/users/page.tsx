@@ -9,7 +9,9 @@ import { useCan } from '@/components/ConsoleShell';
 
 interface UserRow {
   id: string;
-  email: string;
+  email: string | null;
+  phone: string | null;
+  username: string | null;
   displayName: string | null;
   status: string;
   createdAt: string;
@@ -41,7 +43,7 @@ export default function UsersPage() {
     <div>
       <PageHead title="Users" subtitle="People who created an account in the app." />
       <div className="filters">
-        <input className="input" type="search" placeholder="Search email or name" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Search users" />
+        <input className="input" type="search" placeholder="Search username, phone, email or name" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Search users" />
         <select className="input" value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} aria-label="Status">
           <option value="">All statuses</option>
           <option value="active">Active</option>
@@ -67,8 +69,8 @@ export default function UsersPage() {
                 {data?.items.map((u) => (
                   <tr key={u.id}>
                     <td>
-                      <Link href={`/users/${u.id}`}>{u.displayName || u.email}</Link>
-                      {u.displayName && <div className="small muted">{u.email}</div>}
+                      <Link href={`/users/${u.id}`}>{u.username ? `@${u.username}` : u.displayName || u.email || u.phone}</Link>
+                      <div className="small muted">{[u.displayName, u.phone, u.email].filter(Boolean).join(' · ')}</div>
                     </td>
                     <td><StatusBadge status={u.status} /></td>
                     <td className="small">{fmtDate(u.createdAt)}</td>

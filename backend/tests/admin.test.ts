@@ -32,7 +32,7 @@ describe('admin authentication', () => {
   });
 
   it('does not accept a mobile user token on admin routes', async () => {
-    const reg = await request(ctx.app).post('/v1/auth/register').send({ email: 'u@example.com', password: 'user-password-1' });
+    const reg = await request(ctx.app).post('/v1/auth/register').send({ email: 'u@example.com', password: 'User-pass1' });
     expect((await request(ctx.app).get('/admin/v1/dashboard').set(as(reg.body.token))).status).toBe(401);
   });
 
@@ -168,7 +168,7 @@ describe('user management', () => {
   let userToken = '';
 
   beforeAll(async () => {
-    const reg = await request(ctx.app).post('/v1/auth/register').send({ email: 'maya@example.com', password: 'maya-password-1', displayName: 'Maya' });
+    const reg = await request(ctx.app).post('/v1/auth/register').send({ email: 'maya@example.com', password: 'Maya-pass1', displayName: 'Maya' });
     userId = reg.body.user.id;
     userToken = reg.body.token;
     await request(ctx.app)
@@ -193,11 +193,11 @@ describe('user management', () => {
   it('deactivation signs the user out and blocks login immediately', async () => {
     await request(ctx.app).patch(`/admin/v1/users/${userId}`).set(as(adminTok)).send({ status: 'deactivated' }).expect(200);
     expect((await request(ctx.app).get('/v1/me').set(as(userToken))).status).toBe(401);
-    const login = await request(ctx.app).post('/v1/auth/login').send({ email: 'maya@example.com', password: 'maya-password-1' });
+    const login = await request(ctx.app).post('/v1/auth/login').send({ email: 'maya@example.com', password: 'Maya-pass1' });
     expect(login.status).toBe(401);
     expect(login.body.error.message).toMatch(/deactivated/);
     await request(ctx.app).patch(`/admin/v1/users/${userId}`).set(as(adminTok)).send({ status: 'active' }).expect(200);
-    await request(ctx.app).post('/v1/auth/login').send({ email: 'maya@example.com', password: 'maya-password-1' }).expect(200);
+    await request(ctx.app).post('/v1/auth/login').send({ email: 'maya@example.com', password: 'Maya-pass1' }).expect(200);
   });
 
   it('deletes a user', async () => {
@@ -236,7 +236,7 @@ describe('app configuration', () => {
 
 describe('push notifications', () => {
   beforeAll(async () => {
-    const reg = await request(ctx.app).post('/v1/auth/register').send({ email: 'push@example.com', password: 'push-password-1' });
+    const reg = await request(ctx.app).post('/v1/auth/register').send({ email: 'push@example.com', password: 'Push-pass1' });
     await request(ctx.app)
       .post('/v1/devices')
       .set(as(reg.body.token))

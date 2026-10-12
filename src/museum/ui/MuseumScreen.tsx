@@ -149,6 +149,7 @@ export function MuseumScreen() {
 
       {/* the dock */}
       <Animated.View style={[styles.dockWrap, { bottom: tabSpace, opacity: fade }]} pointerEvents={chrome ? 'box-none' : 'none'}>
+        <Button label={t('museum.revealJigsaw')} icon="puzzle" size="lg" onPress={() => navigation.navigate('Tabs', { screen: 'Home', params: { mode: 'jigsaw', arrival: String(Date.now()) } })} style={styles.reveal} />
         <View style={styles.dock}>
           <DockItem icon="images" label={t('museum.collection')} emphasis onPress={() => setSheet('collection')} badge={c.stored > 0} />
         </View>
@@ -239,7 +240,8 @@ const styles = StyleSheet.create({
   wallNav: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   chipBtn: { borderRadius: radii.pill },
   hintWrap: { position: 'absolute', left: sp.lg, right: sp.lg, alignItems: 'center' },
-  dockWrap: { position: 'absolute', left: sp.sm, right: sp.sm, alignItems: 'center' },
+  dockWrap: { position: 'absolute', left: sp.sm, right: sp.sm, alignItems: 'center', gap: sp.sm },
+  reveal: { alignSelf: 'stretch', marginHorizontal: sp.sm },
   dock: { flexDirection: 'row', gap: 2, padding: 5, borderRadius: radii.xl, backgroundColor: GLASS, borderColor: GLASS_EDGE, borderWidth: StyleSheet.hairlineWidth },
   dockItem: { width: 66, height: 56, borderRadius: radii.lg, alignItems: 'center', justifyContent: 'center', gap: 3 },
   dockEmphasis: { backgroundColor: CREAM },

@@ -3,10 +3,10 @@ import type { Db } from '../database/client.js';
 import { adminSessions, userSessions } from '../database/schema.js';
 import { generateToken, hashToken } from '../lib/tokens.js';
 
-export async function createUserSession(db: Db, userId: string, ttlDays: number) {
+export async function createUserSession(db: Db, userId: string, ttlDays: number, extra: { otpVerifiedAt?: Date } = {}) {
   const token = generateToken();
   const expiresAt = new Date(Date.now() + ttlDays * 86_400_000);
-  await db.insert(userSessions).values({ userId, tokenHash: hashToken(token), expiresAt });
+  await db.insert(userSessions).values({ userId, tokenHash: hashToken(token), expiresAt, ...extra });
   return { token, expiresAt };
 }
 

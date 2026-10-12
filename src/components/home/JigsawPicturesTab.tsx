@@ -1,7 +1,7 @@
 // "Reveal jigsaws": the person's own photo, then the library's collections
-// — Nature, Monuments, Wildlife, Spirituality — each a row of photographs.
-// Nature always has the pictures bundled with the app; Monuments are the
-// library's heritage collection and appear once the library is connected. Pick one and it reveals itself tile by tile during the
+// — Nature, Wildlife, Inspirational — each a row of pictures. All three
+// always have the pictures bundled with the app; an online library adds
+// to them. Pick one and it reveals itself tile by tile during the
 // session; a session of 30 minutes or more keeps it as a framed jigsaw.
 import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
@@ -19,11 +19,10 @@ import { space } from '../../theme/spacing';
 import { useTheme } from '../../theme/ThemeContext';
 import { t } from '../../i18n';
 
-const SECTIONS: { key: 'nature' | 'monuments' | 'wildlife' | 'spirituality'; match: RegExp }[] = [
-  { key: 'nature', match: /nature|landscape/i },
-  { key: 'monuments', match: /monument|heritage/i },
-  { key: 'wildlife', match: /wildlife/i },
-  { key: 'spirituality', match: /spiritual/i },
+const SECTIONS: { key: 'nature' | 'wildlife' | 'inspirational'; match: RegExp }[] = [
+  { key: 'nature', match: /^nature$|landscape/i },
+  { key: 'wildlife', match: /^wildlife$|animal/i },
+  { key: 'inspirational', match: /^inspirational$|quotes?|motivation/i },
 ];
 
 export type JigsawPick = RemoteImageRef | CustomImageRef;
@@ -107,19 +106,7 @@ export function JigsawPicturesTab({ selected, onPick, onSeeAll }: { selected: Ji
         </Tactile>
       )}
       {sections.map((s) => {
-        if (!s.category) {
-          if (s.key !== 'monuments' || !any) return null;
-          return (
-            <View key={s.key} style={styles.section}>
-              <View style={styles.sectionHead}>
-                <AppText variant="subheading">{t('home.cat.monuments')}</AppText>
-              </View>
-              <AppText variant="bodySmall" tone="secondary">
-                {t('home.monumentsSoon')}
-              </AppText>
-            </View>
-          );
-        }
+        if (!s.category) return null;
         const images = rows[s.key] ?? [];
         return (
           <View key={s.key} style={styles.section}>

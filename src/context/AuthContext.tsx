@@ -1,5 +1,7 @@
-// Optional accounts. The app is fully usable signed-out; an account links
-// devices (for targeted announcements) and enables in-app account deletion.
+// Accounts. The app is fully usable signed-out; an account is phone-first: a
+// one-time code by SMS signs you in (and creates the account the first
+// time), then a password, a username and an avatar are set. Accounts made
+// with an email keep working with email + password.
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { isBackendConfigured } from '../config/env';
@@ -9,49 +11,92 @@ import { syncDevice } from '../services/device';
 
 export interface User {
   id: string;
-  email: string;
+  phone: string | null;
+  phoneMasked: string | null;
+  email: string | null;
+  username: string | null;
   displayName: string | null;
+  avatarId: string | null;
+  allowPokes: boolean;
+  discoverableByPhone: boolean;
+  hasPassword: boolean;
   createdAt: string;
 }
 
+/** What a new account still has to do before it is complete. */
+export interface Onboarding {
+  needsPassword: boolean;
+  needsUsername: boolean;
+}
+
+export interface ProfilePatch {
+  displayName?: string | null;
+  username?: string;
+  avatarId?: string | null;
+  allowPokes?: boolean;
+  discoverableByPhone?: boolean;
+}
+
 type Status = 'loading' | 'signedOut' | 'signedIn';
+type SessionResponse = { token: string; user: User; onboarding: Onboarding };
 
 interface AuthCtx {
   status: Status;
   user: User | null;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, displayName?: string) => Promise<void>;
+  onboarding: Onboarding | null;
+  /** Sends a one-time code; resolves with how long to wait before asking again. */
+  requestOtp: (phone: string) => Promise<{ phoneMasked: string; resendAfterSeconds: number }>;
+  verifyOtp: (phone: string, code: string) => Promise<Onboarding>;
+  /** `identifier` is a mobile number or, for older accounts, an email. */
+  signInWithPassword: (identifier: string, password: string) => Promise<Onboarding>;
+  /** No current password is needed on first set-up or right after a code sign-in. */
+  setPassword: (newPassword: string, currentPassword?: string) => Promise<void>;
+  checkUsername: (username: string) => Promise<{ available: boolean; reason: 'invalid' | 'reserved' | 'taken' | null }>;
+  updateProfile: (patch: ProfilePatch) => Promise<User>;
   signOut: () => Promise<void>;
-  deleteAccount: (password: string) => Promise<void>;
-  requestPasswordReset: (email: string) => Promise<void>;
-  confirmPasswordReset: (email: string, code: string, newPassword: string) => Promise<void>;
+  deleteAccount: (password?: string) => Promise<void>;
+  requestEmailReset: (email: string) => Promise<void>;
+  confirmEmailReset: (email: string, code: string, newPassword: string) => Promise<void>;
 }
 
 const TOKEN_KEY = 'focus.sessionToken';
-const USER_KEY = 'focus.user.v1';
+const USER_KEY = 'focus.user.v2';
 
 const AuthContext = createContext<AuthCtx | null>(null);
+
+const onboardingOf = (u: User): Onboarding => ({ needsPassword: !u.hasPassword, needsUsername: !u.username });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<Status>(isBackendConfigured ? 'loading' : 'signedOut');
   const [user, setUser] = useState<User | null>(null);
+  const [onboarding, setOnboarding] = useState<Onboarding | null>(null);
 
   const clearLocal = useCallback(async () => {
     setAuthToken(null);
     setUser(null);
+    setOnboarding(null);
     setStatus('signedOut');
     await secureDelete(TOKEN_KEY);
     await AsyncStorage.removeItem(USER_KEY).catch(() => undefined);
   }, []);
 
-  const applySession = useCallback(async (token: string, u: User) => {
-    setAuthToken(token);
-    await secureSet(TOKEN_KEY, token);
-    await AsyncStorage.setItem(USER_KEY, JSON.stringify(u)).catch(() => undefined);
+  const rememberUser = useCallback(async (u: User) => {
     setUser(u);
-    setStatus('signedIn');
-    void syncDevice();
+    setOnboarding(onboardingOf(u));
+    await AsyncStorage.setItem(USER_KEY, JSON.stringify(u)).catch(() => undefined);
   }, []);
+
+  const applySession = useCallback(
+    async (res: SessionResponse) => {
+      setAuthToken(res.token);
+      await secureSet(TOKEN_KEY, res.token);
+      await rememberUser(res.user);
+      setStatus('signedIn');
+      void syncDevice();
+      return res.onboarding;
+    },
+    [rememberUser]
+  );
 
   useEffect(() => {
     if (!isBackendConfigured) return;
@@ -68,14 +113,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setAuthToken(token);
       const cached = await AsyncStorage.getItem(USER_KEY).catch(() => null);
       if (cached) {
-        setUser(JSON.parse(cached) as User);
+        const u = JSON.parse(cached) as User;
+        setUser(u);
+        setOnboarding(onboardingOf(u));
         setStatus('signedIn');
       }
       try {
-        const me = await apiRequest<User>('/v1/me');
-        setUser(me);
+        const me = await apiRequest<User & { onboarding: Onboarding }>('/v1/me');
+        await rememberUser(me);
         setStatus('signedIn');
-        await AsyncStorage.setItem(USER_KEY, JSON.stringify(me)).catch(() => undefined);
         void syncDevice();
       } catch (e) {
         // Offline: stay signed in with the cached profile. Revoked: sign out.
@@ -84,26 +130,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     })();
     return () => setUnauthorizedHandler(null);
-  }, [clearLocal]);
+  }, [clearLocal, rememberUser]);
 
-  const signIn = useCallback(
-    async (email: string, password: string) => {
-      const res = await apiRequest<{ token: string; user: User }>('/v1/auth/login', { method: 'POST', body: { email, password }, auth: false });
-      await applySession(res.token, res.user);
+  const requestOtp = useCallback(async (phone: string) => {
+    const res = await apiRequest<{ phone: string; resendAfterSeconds: number }>('/v1/auth/otp/request', { method: 'POST', body: { phone }, auth: false });
+    return { phoneMasked: res.phone, resendAfterSeconds: res.resendAfterSeconds };
+  }, []);
+
+  const verifyOtp = useCallback(
+    async (phone: string, code: string) => applySession(await apiRequest<SessionResponse>('/v1/auth/otp/verify', { method: 'POST', body: { phone, code }, auth: false })),
+    [applySession]
+  );
+
+  const signInWithPassword = useCallback(
+    async (identifier: string, password: string) => {
+      const body = identifier.includes('@') ? { email: identifier, password } : { phone: identifier, password };
+      return applySession(await apiRequest<SessionResponse>('/v1/auth/login', { method: 'POST', body, auth: false }));
     },
     [applySession]
   );
 
-  const signUp = useCallback(
-    async (email: string, password: string, displayName?: string) => {
-      const res = await apiRequest<{ token: string; user: User }>('/v1/auth/register', {
-        method: 'POST',
-        body: { email, password, ...(displayName ? { displayName } : {}) },
-        auth: false,
-      });
-      await applySession(res.token, res.user);
+  const setPassword = useCallback(
+    async (newPassword: string, currentPassword?: string) => {
+      await apiRequest('/v1/me/password', { method: 'POST', body: { newPassword, ...(currentPassword ? { currentPassword } : {}) } });
+      if (user) await rememberUser({ ...user, hasPassword: true });
     },
-    [applySession]
+    [user, rememberUser]
+  );
+
+  const checkUsername = useCallback(
+    (username: string) => apiRequest<{ available: boolean; reason: 'invalid' | 'reserved' | 'taken' | null }>('/v1/usernames/availability', { query: { username } }),
+    []
+  );
+
+  const updateProfile = useCallback(
+    async (patch: ProfilePatch) => {
+      const u = await apiRequest<User & { onboarding: Onboarding }>('/v1/me', { method: 'PATCH', body: patch });
+      await rememberUser(u);
+      return u;
+    },
+    [rememberUser]
   );
 
   const signOut = useCallback(async () => {
@@ -113,32 +179,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [clearLocal]);
 
   const deleteAccount = useCallback(
-    async (password: string) => {
-      await apiRequest('/v1/me', { method: 'DELETE', body: { password } });
+    async (password?: string) => {
+      await apiRequest('/v1/me', { method: 'DELETE', body: password ? { password } : {} });
       await clearLocal();
       void syncDevice();
     },
     [clearLocal]
   );
 
-  const requestPasswordReset = useCallback(async (email: string) => {
+  const requestEmailReset = useCallback(async (email: string) => {
     await apiRequest('/v1/auth/password-reset/request', { method: 'POST', body: { email }, auth: false });
   }, []);
 
-  const confirmPasswordReset = useCallback(
+  const confirmEmailReset = useCallback(
     async (email: string, code: string, newPassword: string) => {
-      const res = await apiRequest<{ token: string; user: User }>('/v1/auth/password-reset/confirm', {
-        method: 'POST',
-        body: { email, code, newPassword },
-        auth: false,
-      });
-      await applySession(res.token, res.user);
+      await applySession(await apiRequest<SessionResponse>('/v1/auth/password-reset/confirm', { method: 'POST', body: { email, code, newPassword }, auth: false }));
     },
     [applySession]
   );
 
   return (
-    <AuthContext.Provider value={{ status, user, signIn, signUp, signOut, deleteAccount, requestPasswordReset, confirmPasswordReset }}>
+    <AuthContext.Provider
+      value={{ status, user, onboarding, requestOtp, verifyOtp, signInWithPassword, setPassword, checkUsername, updateProfile, signOut, deleteAccount, requestEmailReset, confirmEmailReset }}
+    >
       {children}
     </AuthContext.Provider>
   );

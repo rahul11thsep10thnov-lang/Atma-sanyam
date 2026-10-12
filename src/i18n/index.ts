@@ -71,7 +71,7 @@ export type { StringKey };
 
 const CATEGORY_KEYS: [RegExp, StringKey][] = [
   [/nature|landscape/i, 'home.cat.nature'],
-  [/monument|heritage/i, 'home.cat.monuments'],
+  [/inspirational|quotes?|motivation/i, 'home.cat.inspirational'],
   [/wildlife|animal/i, 'home.cat.wildlife'],
   [/spiritual|sacred/i, 'home.cat.spirituality'],
 ];

@@ -39,7 +39,8 @@ OUT.mkdir(parents=True, exist_ok=True)
 
 W, H = 1080, 2340
 R = 5.0              # radius of the gallery wall (metres)
-NICHE = (0.70, 1.15, 2.55)   # half width, bottom, top
+NICHE = (0.75, 1.05, 3.85)   # half width, bottom, top (2.8 m tall: twice the first version)
+WALL_H = 6.3
 COL_X = 1.10
 VIT_X, VIT_Y = 1.13, -0.85
 
@@ -513,10 +514,10 @@ def build(variant):
     nx, nz0, nz1 = NICHE
     # the wall, around the niche opening
     T = 0.4
-    box("wall_l", (3.2 - nx, T, 5.2), (-(3.2 + nx) / 2, T / 2, 2.6), plaster, col)
-    box("wall_r", (3.2 - nx, T, 5.2), ((3.2 + nx) / 2, T / 2, 2.6), plaster, col)
+    box("wall_l", (3.2 - nx, T, WALL_H), (-(3.2 + nx) / 2, T / 2, WALL_H / 2), plaster, col)
+    box("wall_r", (3.2 - nx, T, WALL_H), ((3.2 + nx) / 2, T / 2, WALL_H / 2), plaster, col)
     box("wall_b", (2 * nx, T, nz0), (0, T / 2, nz0 / 2), plaster, col)
-    box("wall_t", (2 * nx, T, 5.2 - nz1), (0, T / 2, (5.2 + nz1) / 2), plaster, col)
+    box("wall_t", (2 * nx, T, WALL_H - nz1), (0, T / 2, (WALL_H + nz1) / 2), plaster, col)
     # the niche: reveals and a smooth back where the picture hangs
     D = 0.10
     box("niche_back", (2 * nx, 0.02, nz1 - nz0), (0, D + 0.01, (nz0 + nz1) / 2), niche_mat, col)
@@ -552,10 +553,10 @@ def build(variant):
 
     # the cartouche above
     cz0 = zc1 + band + 0.06
-    relief("cartouche", cartouche_map(), -0.80, 0.80, cz0, cz0 + 0.86, -0.006, 0.10, carve, col, res=0.003)
+    relief("cartouche", cartouche_map(), -0.72, 0.72, cz0, cz0 + 0.62, -0.006, 0.10, carve, col, res=0.003)
 
     # entablature: architrave, acanthus frieze, dentil cornice
-    ez = 3.78
+    ez = 4.78
     box("architrave", (6.4, 0.07, 0.12), (0, -0.035, ez + 0.06), white, col, bevel=0.01)
     box("architrave2", (6.4, 0.05, 0.05), (0, -0.07, ez + 0.145), white, col, bevel=0.008)
     relief("frieze", frieze_map(), -3.2, 3.2, ez + 0.17, ez + 0.62, -0.03, 0.07, carve, col, res=0.004)
@@ -570,7 +571,7 @@ def build(variant):
     box("attic", (6.4, 0.05, 0.6), (0, 0.0, cz + 0.6), plaster, col)
 
     # coffered ceiling, curved with the wall
-    cei = 5.05
+    cei = 6.05
     box("ceiling", (7, 2.6, 0.1), (0, -1.1, cei + 0.12), plaster, col)
     for i in range(-4, 5):
         box(f"beam_x{i}", (0.12, 2.4, 0.16), (i * 0.85, -1.1, cei - 0.01), white, col, bevel=0.01)
@@ -586,11 +587,11 @@ def build(variant):
         box(f"plinth{sx}", (0.42, 0.42, 0.22), (cx, cy, 0.11), white, col, bevel=0.01)
         cylinder(f"torus{sx}", 0.19, 0.06, (cx, cy, 0.25), white, col, verts=48, bevel=0.025)
         cylinder(f"torus2{sx}", 0.165, 0.05, (cx, cy, 0.31), white, col, verts=48, bevel=0.02)
-        fluted_shaft(f"shaft{sx}", cx, cy, 0.145, 0.33, 3.27, 20, white, col)
-        cylinder(f"astragal{sx}", 0.158, 0.035, (cx, cy, 3.29), white, col, verts=48, bevel=0.015)
-        box(f"cap_core{sx}", (0.30, 0.30, 0.36), (cx, cy, 3.49), white, col)
-        relief(f"cap_f{sx}", cap, cx - 0.21, cx + 0.21, 3.31, 3.68, cy - 0.15, 0.06, carve, col, res=0.003)
-        box(f"abacus{sx}", (0.48, 0.48, 0.07), (cx, cy, 3.715), white, col, bevel=0.01)
+        fluted_shaft(f"shaft{sx}", cx, cy, 0.145, 0.33, 4.27, 20, white, col)
+        cylinder(f"astragal{sx}", 0.158, 0.035, (cx, cy, 4.29), white, col, verts=48, bevel=0.015)
+        box(f"cap_core{sx}", (0.30, 0.30, 0.36), (cx, cy, 4.49), white, col)
+        relief(f"cap_f{sx}", cap, cx - 0.21, cx + 0.21, 4.31, 4.68, cy - 0.15, 0.06, carve, col, res=0.003)
+        box(f"abacus{sx}", (0.48, 0.48, 0.07), (cx, cy, 4.715), white, col, bevel=0.01)
 
     # dado: skirting, carved panels, rail
     box("skirting", (6.4, 0.05, 0.18), (0, -0.025, 0.09), marble("marble_skirt", base=(0.66, 0.65, 0.62), vein=(0.85, 0.84, 0.82), rough=0.25, veins=0.4, scale=1.8), col, bevel=0.006)
@@ -609,8 +610,8 @@ def build(variant):
     cylinder("alarm_grille", 0.03, 0.006, (0.86, -0.042, 0.585), matte((0.08, 0.08, 0.08), 0.6, "grille"), col, verts=24).rotation_euler = (90 * DEG, 0, 0)
     cylinder("alarm_led", 0.008, 0.008, (0.86, -0.043, 0.525), red, col, verts=16).rotation_euler = (90 * DEG, 0, 0)
     # a small sensor high in the corner
-    box("sensor", (0.09, 0.06, 0.07), (-0.95, -0.04, 3.55), abody, col, bevel=0.01)
-    cylinder("sensor_led", 0.006, 0.006, (-0.95, -0.071, 3.54), red, col, verts=12).rotation_euler = (90 * DEG, 0, 0)
+    box("sensor", (0.09, 0.06, 0.07), (-0.95, -0.04, 4.55), abody, col, bevel=0.01)
+    cylinder("sensor_led", 0.006, 0.006, (-0.95, -0.071, 4.54), red, col, verts=12).rotation_euler = (90 * DEG, 0, 0)
 
     # pedestals and vitrines with artefacts
     gl, br = glass(), brass()
@@ -691,25 +692,25 @@ def build(variant):
         bpy.context.scene.collection.objects.link(ob)
 
     niche_c = bend((0, 0.08, (nz0 + nz1) / 2))
-    spot("spot_niche", (0, -2.0, 4.95), niche_c, 1300, 32, 0.45)
+    spot("spot_niche", (0, -2.2, 5.95), niche_c, 1700, 40, 0.5)
     for sx in (-1, 1):
         tgt = bend((sx * VIT_X, VIT_Y, 1.2))
-        spot(f"spot_vit{sx}", (sx * 0.9, -2.6, 4.95), tgt, 220, 18, 0.5)
+        spot(f"spot_vit{sx}", (sx * 0.9, -2.6, 5.95), tgt, 220, 18, 0.5)
         p = bend((sx * VIT_X, VIT_Y, 1.43))
         area(f"case_light{sx}", p, (0, 0, 0), 6, 0.3)
-        spot(f"spot_col{sx}", (sx * 0.4, -2.2, 4.95), bend((sx * COL_X, -0.1, 2.6)), 260, 26, 0.7)
-    area("sky_fill", (0, -2.6, 4.9), (0, 0, 0), 110, 2.6, size_y=3.0, shape="RECTANGLE")
-    area("front_fill", (0, -6.4, 2.2), (90 * DEG, 0, 0), 55, 6.0, size_y=3.0)
-    area("cornice_wash", (0, -0.9, 4.75), (-20 * DEG, 0, 0), 160, 5.0, size_y=0.2)
-    spot("spot_cartouche", (0, -1.0, 4.95), bend((0, 0, 3.15)), 420, 36, 0.6)
+        spot(f"spot_col{sx}", (sx * 0.4, -2.2, 5.95), bend((sx * COL_X, -0.1, 3.0)), 320, 30, 0.7)
+    area("sky_fill", (0, -2.6, 5.9), (0, 0, 0), 130, 2.6, size_y=3.0, shape="RECTANGLE")
+    area("front_fill", (0, -6.4, 2.6), (90 * DEG, 0, 0), 60, 6.0, size_y=3.6)
+    area("cornice_wash", (0, -0.9, 5.75), (-20 * DEG, 0, 0), 160, 5.0, size_y=0.2)
+    spot("spot_cartouche", (0, -1.0, 5.95), bend((0, 0, 4.35)), 420, 36, 0.6)
 
     # ---- camera -------------------------------------------------------------
     sc = bpy.context.scene
     cd = bpy.data.cameras.new("cam")
     cd.lens_unit = "FOV"
     cd.sensor_fit = "VERTICAL"
-    cd.angle_y = 68 * DEG
-    cd.shift_y = 0.16
+    cd.angle_y = 70 * DEG
+    cd.shift_y = 0.21
     cd.clip_start = 0.05
     cam = bpy.data.objects.new("cam", cd)
     cam.location = (0, -4.8, 1.6)
