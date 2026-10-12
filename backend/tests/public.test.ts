@@ -11,7 +11,7 @@ beforeAll(async () => {
   ctx = await setupTestApp();
 });
 afterAll(async () => {
-  await ctx.database.close();
+  await ctx.close();
 });
 
 describe('health & config', () => {

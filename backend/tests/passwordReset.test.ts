@@ -10,7 +10,7 @@ beforeAll(async () => {
   await request(ctx.app).post('/v1/auth/register').send({ email: EMAIL, password: 'Original-pass1' }).expect(201);
 });
 afterAll(async () => {
-  await ctx.database.close();
+  await ctx.close();
 });
 
 describe('forgot password', () => {

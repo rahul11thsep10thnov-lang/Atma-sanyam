@@ -15,6 +15,10 @@ import { LanguagePopup } from '../components/LanguagePopup';
 import { useEffect } from 'react';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { ProgressScreen } from '../screens/ProgressScreen';
+import { FriendsScreen } from '../screens/FriendsScreen';
+import { NotificationsScreen } from '../screens/NotificationsScreen';
+import { useRemoteConfig } from '../context/RemoteConfigContext';
+import { isBackendConfigured } from '../config/env';
 import { ActiveSessionScreen } from '../screens/ActiveSessionScreen';
 import { ContentBrowserScreen } from '../screens/ContentBrowserScreen';
 import { AuthScreen } from '../screens/AuthScreen';
@@ -30,11 +34,15 @@ const GardenTab = () => <ParadiseScreen />;
 
 function Tabs() {
   useLanguage();
+  // The Friends tab needs an account server; it sits next to Progress.
+  const { config } = useRemoteConfig();
+  const showFriends = isBackendConfigured && config.features.accounts;
   const TABS: Record<keyof RootTabParamList, TabSpec> = {
     Home: { icon: 'home', label: t('tabs.home') },
     History: { icon: 'sprout', label: t('tabs.balcony') },
     Garden: { icon: 'trees', label: t('tabs.garden') },
     Museum: { icon: 'images', label: t('tabs.museum') },
+    Friends: { icon: 'users', label: t('tabs.friends') },
     Progress: { icon: 'chart', label: t('tabs.progress') },
     Settings: { icon: 'settings', label: t('tabs.settings') },
   };
@@ -47,6 +55,7 @@ function Tabs() {
       <Tab.Screen name="History" component={BalconyTab} options={{ title: 'Balcony' }} />
       <Tab.Screen name="Garden" component={GardenTab} />
       <Tab.Screen name="Museum" component={MuseumScreen} />
+      {showFriends && <Tab.Screen name="Friends" component={FriendsScreen} />}
       <Tab.Screen name="Progress" component={ProgressScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
@@ -120,6 +129,7 @@ export function RootNavigator() {
         />
         <Stack.Screen name="ContentBrowser" component={ContentBrowserScreen} options={{ animation: 'slide_from_bottom' }} />
         <Stack.Screen name="Auth" component={AuthScreen} options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
       </Stack.Navigator>
     </NavigationContainer>
     {askLanguage && <LanguagePopup current={normaliseLanguage(settings.language) ?? getLanguage()} onChoose={chooseLanguage} />}

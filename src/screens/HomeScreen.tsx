@@ -16,12 +16,16 @@ import { DialTimerPicker } from '../components/DialTimerPicker';
 import { AnimatedWallpaper } from '../components/AnimatedWallpaper';
 import { Greeting } from '../components/home/Greeting';
 import { SignInChip } from '../components/home/SignInChip';
+import { BellChip } from '../components/home/BellChip';
+import { useSocial } from '../social/SocialContext';
 import { GrowPlantsTab, PlantPick } from '../components/home/GrowPlantsTab';
 import { JigsawPicturesTab, JigsawPick } from '../components/home/JigsawPicturesTab';
 import { Button } from '../ui/Button';
 import { AppText } from '../ui/AppText';
 import { Card } from '../ui/Card';
 import { ModeChips } from '../ui/ModeChips';
+import { Icon } from '../ui/Icon';
+import { useTheme } from '../theme/ThemeContext';
 import { useTabBarInset } from '../ui/TabBar';
 import { space } from '../theme/spacing';
 import { useReducedMotion } from '../hooks/useReducedMotion';
@@ -40,6 +44,8 @@ export function HomeScreen() {
   const { user, status } = useAuth();
   useLanguage();
   const showAccounts = isBackendConfigured && config.features.accounts;
+  const { friendsData } = useSocial();
+  const { colors } = useTheme();
   const [duration, setDuration] = useState(30);
   const [mode, setMode] = useState<Mode>('plants');
   const [plant, setPlant] = useState<PlantPick | null>({ kind: 'balcony' });
@@ -110,8 +116,22 @@ export function HomeScreen() {
           <View style={styles.greeting}>
             <Greeting name={user?.displayName ?? user?.username} />
           </View>
-          {showAccounts && <SignInChip onPress={() => (status === 'signedIn' ? navigation.navigate('Tabs', { screen: 'Settings' }) : navigation.navigate('Auth'))} />}
+          {showAccounts && (
+            <View style={styles.chips}>
+              {status === 'signedIn' && <BellChip onPress={() => navigation.navigate('Notifications')} />}
+              <SignInChip onPress={() => (status === 'signedIn' ? navigation.navigate('Tabs', { screen: 'Settings' }) : navigation.navigate('Auth'))} />
+            </View>
+          )}
         </View>
+        {friendsData && friendsData.focusingCount > 0 && (
+          <Card variant="tinted" padding="md" onPress={() => navigation.navigate('Tabs', { screen: 'Friends' })} accessibilityLabel={t('friends.focusingCount', { count: friendsData.focusingCount })} style={styles.focusingLine}>
+            <View style={styles.focusingRow}>
+              <View style={[styles.focusingDot, { backgroundColor: colors.success }]} />
+              <AppText variant="bodySmallStrong" style={{ flex: 1 }}>{t('friends.focusingCount', { count: friendsData.focusingCount })}</AppText>
+              <Icon name="chevronRight" size="sm" color="secondary" />
+            </View>
+          </Card>
+        )}
 
         <View style={styles.modeSection}>
           <ModeChips<Mode>
@@ -150,6 +170,10 @@ const styles = StyleSheet.create({
   screen: { flex: 1 },
   announcement: { marginBottom: space.lg },
   headerRow: { flexDirection: 'row', alignItems: 'flex-start', gap: space.md },
+  chips: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  focusingLine: { marginBottom: space.lg },
+  focusingRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  focusingDot: { width: 8, height: 8, borderRadius: 4 },
   greeting: { flex: 1 },
   modeSection: { marginTop: space.xl },
   modeBody: { marginTop: space.lg },

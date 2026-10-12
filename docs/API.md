@@ -68,6 +68,35 @@ display, uniqueness is case-insensitive; some names (admin, support, tame, …) 
 
 Sessions last 30 days and extend while in use.
 
+### Friends, pokes, notifications, focus sessions
+
+All need a signed-in person. Other people are only ever `{ id, username, displayName, avatarId }`
+(never a number or email). Live updates come over the WebSocket below.
+
+| Method | Path | Body → Response |
+|---|---|---|
+| GET | `/v1/people/search?q=` | part of a username (2+ chars) or a full mobile number (exact; only people who allow it) → `{ items: [profile + relation ('none'|'friends'|'requested'|'incoming'|'blocked'), requestId] }`. Never oneself or anyone blocked either way. 40/min. |
+| GET | `/v1/friends` | → `{ friends: [profile + presence { online, focusing, inGroup, lastSeenAt } + weekMinutes + leadsMe], incoming, sent, myWeekMinutes, focusingCount }` |
+| POST | `/v1/friends/requests` | `{ userId }` → `201 { requestId, status: 'pending' }`; `200 … 'accepted'` when they had already asked you. 400 self, 403 blocked, 409 duplicate / already friends. 30/hour. |
+| POST | `/v1/friends/requests/:id/accept` · `/decline` | addressee only. Declining is quiet. |
+| DELETE | `/v1/friends/requests/:id` | cancel a request you sent |
+| DELETE | `/v1/friends/:userId` | unfriend |
+| POST / DELETE | `/v1/people/:userId/block` | block (ends the friendship and any request) / unblock; `GET /v1/people/blocked` |
+| POST | `/v1/pokes` | `{ userId, key }` → `201 { pokeId, delivered: 'live'|'notification', repeated }`. Friends only, 403 when they turned pokes off, 429 within 2 min of the last poke to them; the same `key` again is a no-op (`200`, `repeated: true`). |
+| GET | `/v1/notifications?limit&before` | → `{ items, nextCursor, unread }` |
+| POST | `/v1/notifications/read` | `{ ids } \| { all: true }` → `{ unread }` |
+| POST | `/v1/focus/sessions` | `{ clientSessionId, plannedMinutes }` → `201 { sessionId, startedAt }` (the same client id again returns the same session). Ends any other running session. |
+| POST | `/v1/focus/sessions/:id/heartbeat` | every minute while running; without one for 2 min the person no longer shows as focusing |
+| POST | `/v1/focus/sessions/:id/finish` | `{ outcome }` → `{ outcome, verifiedMinutes, rejected }`. A completion reported before the planned length has passed on the server's clock is recorded as failed and credits nothing. |
+| POST | `/v1/focus/sessions/:id/abandon` | the app left without finishing |
+| GET | `/v1/focus/stats` | → `{ weekMinutes, totalMinutes, completedSessions }` (verified minutes only) |
+
+**WebSocket** `GET /v1/ws?token=<bearer token>` (same token as the API; 4401 closes a bad one).
+Server → app events, as JSON: `hello`, `presence { userId, state }` (a friend connected,
+disconnected, started or finished focusing), `notification { notification, unread }`,
+`poke { from, pokeId }`, `friends_changed`, `group { event, sessionId, data }`. The app sends
+`ping`; the server answers `pong`. Presence is per API instance (in memory).
+
 ### Devices & analytics
 
 | Method | Path | Auth | Description |

@@ -32,6 +32,7 @@ import { useFocusTimer } from '../hooks/useFocusTimer';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { RootStackParamList } from '../navigation/types';
 import { saveSessionRecord } from '../storage/history';
+import { FocusReport, reportFocusSession } from '../social/focusReporter';
 import { SessionRecord } from '../types';
 import { useSettings } from '../context/SettingsContext';
 import { useRemoteConfig } from '../context/RemoteConfigContext';
@@ -94,6 +95,8 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
   const [placing, setPlacing] = useState(false);
   const [placeOptions, setPlaceOptions] = useState<PlacementOption[]>([]);
   const leftFreeRef = useRef(false);
+  // friends see "focusing now"; a completed session's minutes are verified by the server
+  const reportRef = useRef<FocusReport | null>(null);
 
   const isPlant = config.image.kind === 'plant';
   const inSpace = config.image.kind === 'space' || config.image.kind === 'balcony';
@@ -114,6 +117,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
         revealedFraction,
       };
       await saveSessionRecord(record);
+      reportRef.current?.finish(outcome === 'completed' ? 'completed' : 'failed');
       track(outcome === 'completed' ? 'session_complete' : 'session_fail', {
         properties: {
           durationMinutes: config.durationMinutes,
@@ -129,6 +133,8 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
 
   useEffect(() => {
     track('session_start', { properties: { durationMinutes: config.durationMinutes, imageKind: config.image.kind } });
+    reportRef.current = reportFocusSession(sessionIdRef.current, config.durationMinutes);
+    return () => reportRef.current?.stop();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -254,6 +260,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
   const leaveFree = () => {
     // within the grace period: no record, no penalty, no droop
     leftFreeRef.current = true;
+    reportRef.current?.finish('failed');
     track('session_withdrawn', { properties: { durationMinutes: config.durationMinutes, imageKind: config.image.kind } });
     navigation.replace('Tabs', { screen: isPlant ? 'Garden' : inSpace ? 'History' : 'Home' });
   };

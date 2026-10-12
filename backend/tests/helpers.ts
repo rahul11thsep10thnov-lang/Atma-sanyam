@@ -1,4 +1,5 @@
 import request from 'supertest';
+import { createServer } from 'node:http';
 import { sql } from 'drizzle-orm';
 import { createApp } from '../src/app.js';
 import { loadEnv } from '../src/config/env.js';
@@ -6,6 +7,8 @@ import { createDatabase, type Database } from '../src/database/client.js';
 import { runMigrations } from '../src/database/migrate.js';
 import { admins } from '../src/database/schema.js';
 import { hashPassword } from '../src/lib/password.js';
+import { createRealtimeHub } from '../src/realtime/hub.js';
+import { broadcastPresence } from '../src/services/socialService.js';
 import type { PushMessage, PushSender, PushTicket } from '../src/lib/push.js';
 import type { MailMessage, Mailer } from '../src/lib/mailer.js';
 import type { SmsMessage, SmsSender } from '../src/lib/sms.js';
@@ -66,11 +69,24 @@ export async function setupTestApp(opts: { disableRateLimits?: boolean; withMail
   const push = new FakePush();
   const mailer = new FakeMailer();
   const sms = new FakeSms();
+  const realtime = createRealtimeHub(database.db);
+  realtime.onPresenceChange = (userId) => broadcastPresence(database.db, realtime, userId);
   const app = createApp(
-    { db: database.db, env, push, mailer: opts.withMailer === false ? null : mailer, sms: opts.withSms === false ? null : sms },
+    { db: database.db, env, push, mailer: opts.withMailer === false ? null : mailer, sms: opts.withSms === false ? null : sms, realtime },
     { disableRateLimits: opts.disableRateLimits ?? true, logRequests: false }
   );
-  return { app, database, push, mailer, sms, db: database.db };
+  // The WebSocket hub needs a real listening server (supertest's own is per request).
+  const server = createServer(app);
+  realtime.attach(server);
+  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const address = server.address();
+  const port = typeof address === 'object' && address ? address.port : 0;
+  const close = async () => {
+    await realtime.close();
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+    await database.close();
+  };
+  return { app, database, push, mailer, sms, realtime, db: database.db, port, wsUrl: `ws://127.0.0.1:${port}/v1/ws`, close };
 }
 
 export async function createAdmin(

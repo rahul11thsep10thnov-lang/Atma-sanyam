@@ -6,6 +6,13 @@ import React from 'react';
 import type { LucideIcon, LucideProps } from 'lucide-react-native';
 import Armchair from 'lucide-react-native/icons/armchair';
 import Bell from 'lucide-react-native/icons/bell';
+import BellRing from 'lucide-react-native/icons/bell-ring';
+import Hand from 'lucide-react-native/icons/hand';
+import Send from 'lucide-react-native/icons/send';
+import UserCheck from 'lucide-react-native/icons/user-check';
+import UserPlus from 'lucide-react-native/icons/user-plus';
+import UserX from 'lucide-react-native/icons/user-x';
+import Users from 'lucide-react-native/icons/users';
 import Bird from 'lucide-react-native/icons/bird';
 import Camera from 'lucide-react-native/icons/camera';
 import ChartColumn from 'lucide-react-native/icons/chart-column';
@@ -67,6 +74,13 @@ import { useTheme } from '../theme/ThemeContext';
 export const ICONS = {
   armchair: Armchair,
   bell: Bell,
+  bellRing: BellRing,
+  hand: Hand,
+  send: Send,
+  userCheck: UserCheck,
+  userPlus: UserPlus,
+  userX: UserX,
+  users: Users,
   bird: Bird,
   camera: Camera,
   chart: ChartColumn,

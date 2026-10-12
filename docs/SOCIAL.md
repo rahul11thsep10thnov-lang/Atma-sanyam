@@ -28,8 +28,8 @@ token, with Postgres as the source of truth and push notifications for offline p
 
 | Phase | Scope | Status |
 |---|---|---|
-| 1 | Phone OTP sign-in, password rule, unique username with live check, avatar field, profile privacy fields; Sign-in chip on Home | **this PR** |
-| 2 | People search, friend requests (statuses, blocks), Friends tab, notification centre + bell, presence over WebSocket, pokes | next |
+| 1 | Phone OTP sign-in, password rule, unique username with live check, avatar field, profile privacy fields; Sign-in chip on Home | merged (#23) |
+| 2 | People search, friend requests (statuses, blocks), Friends tab, notification centre + bell, presence over WebSocket, pokes, verified focus time | **this PR** |
 | 3 | Group focus: invitations with host proposal, lobby and synced start, late join, participant monitor, early-exit consequences, predefined-message chat | after 2 |
 | 4 | Multi-device acceptance tests, hardening, deployment notes | with 2 and 3 |
 
@@ -100,3 +100,84 @@ account deletion, and the no-provider case. Whole backend suite: 80 tests agains
   phones before launch.
 - The avatar gallery is empty pending approval of the supplied collection.
 - Rate limits are in-memory (one API instance); use a shared store when scaling out.
+
+## 4. Phase 2 — friends, presence, pokes, notifications
+
+### Data model (migration `backend/drizzle/0003_social.sql`)
+
+- `friendships` (requester, addressee, status pending/accepted/declined, unique per direction, a
+  check against self-requests), `blocks` (blocker, blocked), `user_notifications` (per person:
+  type, title, body, data, read_at), `pokes` (from, to, idempotency key unique per sender,
+  delivered_live), `focus_sessions` (per person: client session id unique, planned minutes,
+  server `started_at`, `last_heartbeat_at`, `ended_at`, outcome running/completed/failed,
+  `verified_minutes`, and `group_session_id` for phase 3).
+
+### Real-time
+
+`backend/src/realtime/hub.ts`: a `ws` server on the API's HTTP server at `/v1/ws`, authenticated
+with the bearer token. It keeps who is connected (in memory, per instance), sends events to a
+person's open sockets, pings every 30 s, and announces presence to friends on connect and — after
+an 8 s grace for reconnects — on disconnect. The app (`src/social/realtime.ts`) holds one socket
+while signed in and in the foreground, reconnects with backoff, and the `SocialProvider`
+(`src/social/SocialContext.tsx`) turns events into state: friends list with presence patched in
+place, unread count, the notification list, the latest live poke.
+
+### Rules enforced on the server
+
+- Requests: no self, no duplicates, none across a block in either direction; a request to someone
+  who already asked you accepts; declined requests may be asked again; at most 500 friends;
+  30 requests an hour.
+- Search: usernames by substring (2+ characters), numbers only by exact match and only for people
+  with *Findable by mobile number* on; never oneself or anyone blocked either way; the result never
+  contains a number.
+- Pokes: friends only; refused when the friend turned *Allow pokes* off; idempotent per client key
+  (a repeat returns the first result); one poke per friend per 2 minutes; delivered live when the
+  friend's app is open, otherwise stored in their notification centre and pushed.
+- Notifications: stored first, then shown live if connected, else pushed to the person's devices
+  that opted in; push failures never fail the request; dead tokens are pruned.
+- Verified focus time: the server stamps the start, expects a heartbeat every minute, and credits a
+  completed session only if its own clock saw the planned length pass (5 s tolerance) with fresh
+  heartbeats; an early "completed" is recorded as failed and credits nothing (tested). The
+  weekly comparison (the ✌️ "they lead me" mark) and `focusingCount` use these minutes only.
+- Presence: "focusing" = a running session with a heartbeat in the last 2 minutes; "online" = a
+  live socket; "in a group" = a running session attached to a group (phase 3).
+
+### App
+
+- **Friends tab** (`src/screens/FriendsScreen.tsx`), between Museum and Progress, with three
+  segments: *Friends* (who is focusing now, then each friend with the presence dot — green =
+  focusing, neutral = online, none = offline — their status line, ✌️ when they lead this week, a
+  raised hand when they are in a group focus, and a Poke button; tap a row to unfriend or block),
+  *Requests* (received with accept/decline, sent with cancel), *Find* (username or number, live
+  results with Add / Requested / Accept / Friends). Signed out it explains and offers sign-in.
+- **Bell** beside the sign-in chip on Home with the unread badge; the **notification centre**
+  (`src/screens/NotificationsScreen.tsx`) lists everything newest first, marks what is on screen
+  read, loads older pages, and opens the right place on tap.
+- **Poke** (`src/components/social/PokeOverlay.tsx`): a large hand taps exactly three times with
+  haptics, then fades with the friend's name. Only shown to a signed-in person with the app open;
+  otherwise it is a notification (and a push).
+- **Home** shows "N focusing now" above the mode chips when friends are focusing.
+- **Session reporting** (`src/social/focusReporter.ts`): the session screen tells the server when a
+  session starts, heartbeats every minute and reports the outcome; all best effort.
+- Tab bar labels sit on one line at 11 px so seven tabs fit.
+
+### Tests
+
+`backend/tests/social.test.ts` (12 tests, four real accounts): search rules, request lifecycle
+(self, duplicate, accept by addressee only, reverse request accepts, quiet decline, cancel,
+block/unblock, unfriend), notification centre read states, WebSocket auth refusal, presence events
+on connect and on focus start/finish, early-completion rejection and verified minutes, the weekly
+lead, live poke delivery with idempotency and cooldown, pokes to friends who turned them off, and
+the offline path (notification + push to a registered device). Whole backend suite: 92 tests.
+
+Web walkthrough with two browsers against the real API: request → badge → accept → friend list
+with presence → poke overlay → "1 focusing now" on the friend's Home → notification centre.
+
+### Limitations (phase 2)
+
+- Presence and the socket registry are per API instance; several instances need a shared bus
+  (e.g. Redis pub/sub) before scaling out.
+- Push delivery on real phones was not exercised from this repository (no provider credentials
+  here); the push path is tested with a fake sender.
+- Tapping a push notification opens the app; routing from a push payload to the right screen is
+  not yet wired (the notification centre shows it).

@@ -20,6 +20,10 @@ export function setAuthToken(token: string | null) {
   authToken = token;
 }
 
+export function getAuthToken(): string | null {
+  return authToken;
+}
+
 // Lets the auth layer sign the user out if the server revokes the session
 // (e.g. account deactivated by an admin).
 export function setUnauthorizedHandler(handler: (() => void) | null) {

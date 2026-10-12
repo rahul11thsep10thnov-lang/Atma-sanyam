@@ -26,7 +26,7 @@ beforeAll(async () => {
   ctx = await setupTestApp({ disableRateLimits: true, envExtra: { OTP_TEST_NUMBERS: '+919999900001:123456' } });
 });
 afterAll(async () => {
-  await ctx.database.close();
+  await ctx.close();
 });
 
 describe('sign in with a one-time code', () => {
@@ -208,7 +208,7 @@ describe('without an SMS provider', () => {
       expect((await request(bare.app).get('/v1/config')).body.features.phoneSignIn).toBe(false);
       expect((await request(bare.app).post('/v1/auth/otp/request').send({ phone: PHONE })).status).toBe(503);
     } finally {
-      await bare.database.close();
+      await bare.close();
     }
   });
 });

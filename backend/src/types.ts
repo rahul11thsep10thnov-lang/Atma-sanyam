@@ -4,6 +4,7 @@ import type { Permission } from './database/rbac.js';
 import type { PushSender } from './lib/push.js';
 import type { Mailer } from './lib/mailer.js';
 import type { SmsSender } from './lib/sms.js';
+import type { RealtimeHub } from './realtime/hub.js';
 
 export interface AppDeps {
   db: Db;
@@ -13,6 +14,8 @@ export interface AppDeps {
   mailer: Mailer | null;
   // null when no SMS provider is configured (phone sign-in is then unavailable).
   sms: SmsSender | null;
+  // Live delivery over WebSocket (presence, pokes, notifications).
+  realtime: RealtimeHub;
 }
 
 export interface AuthUser {
