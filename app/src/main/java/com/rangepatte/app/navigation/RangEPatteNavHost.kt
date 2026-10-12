@@ -50,7 +50,7 @@ import com.rangepatte.app.ui.notifications.NotificationCentre
 private val topLevelRoutes = setOf(Routes.GAMES, Routes.ENTERTAINMENT, Routes.FRIENDS, Routes.SETTINGS)
 
 /** Pages that have their own back header and don't show the "Remove ads? / Login" strip or banner ads. */
-private val routesWithoutAppChrome = setOf(Routes.LANGUAGE_SELECT, Routes.LOGIN, Routes.MEMBERSHIP, Routes.CHECKOUT, Routes.USERNAME_PATTERN, Routes.AVATAR, Routes.PERSON_PATTERN, Routes.MY_PROFILE, Routes.BOARD_INTRO_PATTERN)
+private val routesWithoutAppChrome = setOf(Routes.LANGUAGE_SELECT, Routes.LOGIN, Routes.MEMBERSHIP, Routes.CHECKOUT, Routes.USERNAME_PATTERN, Routes.AVATAR, Routes.PERSON_PATTERN, Routes.MY_PROFILE, Routes.BOARD_INTRO_PATTERN, Routes.BOARD_TABLE_PATTERN)
 
 @Composable
 fun RangEPatteNavHost(
@@ -133,6 +133,18 @@ fun RangEPatteNavHost(
                 EntertainmentScreen(onPlayGame = { game -> navController.navigate(Routes.boardIntro(game.id.routeSegment)) })
             }
             composable(Routes.BOARD_INTRO_PATTERN) { backStackEntry ->
+                val game = backStackEntry.arguments?.getString(Routes.ARG_BOARD)?.let(com.rangepatte.app.domain.board.BoardCatalog::byRouteSegment)
+                if (game != null) when (game.id) {
+                    com.rangepatte.app.domain.board.BoardGameId.LUDO -> com.rangepatte.app.ui.board.LudoSetupScreen(
+                        game = game,
+                        onBackClick = { navController.popBackStack() },
+                        onStart = { setup, mode -> com.rangepatte.app.domain.ludo.LudoSetupStore.pending = setup; navController.navigate(Routes.boardTable(game.id.routeSegment, mode)) },
+                        // The lobby for board games is stage 6; until then Host / Join lead to the same note as Start.
+                        onOpenLobby = { setup, mode, _ -> com.rangepatte.app.domain.ludo.LudoSetupStore.pending = setup; navController.navigate(Routes.boardTable(game.id.routeSegment, mode)) }
+                    )
+                }
+            }
+            composable(Routes.BOARD_TABLE_PATTERN) { backStackEntry ->
                 val game = backStackEntry.arguments?.getString(Routes.ARG_BOARD)?.let(com.rangepatte.app.domain.board.BoardCatalog::byRouteSegment)
                 if (game != null) com.rangepatte.app.ui.board.BoardIntroPlaceholder(game = game, onBackClick = { navController.popBackStack() })
             }

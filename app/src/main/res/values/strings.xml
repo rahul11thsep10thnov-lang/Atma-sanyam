@@ -532,4 +532,28 @@
     <string name="game_ludo_name">Ludo</string>
     <string name="game_ludo_desc">Race four tokens home; captures send them back.</string>
     <string name="board_intro_pending">The introduction and mode selection page is the next design stage.</string>
+
+    <!-- Ludo setup (stage 2) -->
+    <string name="ludo_intro">Race your four tokens around the board and home. A six lets a token out; landing on a rival sends it back to its yard.</string>
+    <string name="ludo_house_rules">House rules</string>
+    <string name="ludo_rule_six_to_enter">Six to enter</string>
+    <string name="ludo_rule_six_to_enter_hint">A token leaves its yard only on a six.</string>
+    <string name="ludo_rule_extra_six">Extra roll on six</string>
+    <string name="ludo_rule_extra_six_hint">A six rolls again; three sixes in a row forfeit the turn.</string>
+    <string name="ludo_rule_extra_capture">Extra roll on capture</string>
+    <string name="ludo_rule_extra_capture_hint">Sending a rival home earns one more roll.</string>
+    <string name="ludo_rule_exact_finish">Exact roll to finish</string>
+    <string name="ludo_rule_exact_finish_hint">The last square needs the exact number.</string>
+    <string name="ludo_rule_play_on">Play on for places</string>
+    <string name="ludo_rule_play_on_hint">After the first winner the others play for 2nd and 3rd.</string>
+    <string name="ludo_rules_safe_note">The eight star squares are always safe: no captures there.</string>
+    <string name="ludo_players_two_hint">Two players sit opposite each other.</string>
+    <string name="ludo_players_three_hint">One yard stays empty.</string>
+    <string name="ludo_players_four_hint">All four yards are taken; empty seats are played by the computer.</string>
+    <string name="ludo_rules_1">Each player has four tokens in a yard of their colour. Roll a six to bring a token onto the board at your start square.</string>
+    <string name="ludo_rules_2">Move a token clockwise by the number rolled. Any token may be moved; a token that cannot move is skipped.</string>
+    <string name="ludo_rules_3">Landing on a rival\'s token on an ordinary square sends it back to its yard. The eight star squares are safe.</string>
+    <string name="ludo_rules_4">After a full lap a token turns into its home column and must reach the centre with an exact roll.</string>
+    <string name="ludo_rules_5">The first to bring all four tokens home wins; the others play on for second and third place.</string>
+    <string name="board_table_pending">The board is the next design stage. Your settings have been kept.</string>
 </resources>

@@ -522,4 +522,28 @@
     <string name="game_ludo_name">ਲੂਡੋ</string>
     <string name="game_ludo_desc">ਚਾਰ ਗੋਟੀਆਂ ਘਰ ਪਹੁੰਚਾਓ; ਫੜੇ ਜਾਣ ਤੇ ਵਾਪਸ।</string>
     <string name="board_intro_pending">ਜਾਣ-ਪਛਾਣ ਅਤੇ ਮੋਡ ਚੋਣ ਪੰਨਾ ਅਗਲਾ ਡਿਜ਼ਾਈਨ ਪੜਾਅ ਹੈ।</string>
+
+    <!-- Ludo setup (stage 2) -->
+    <string name="ludo_intro">ਆਪਣੀਆਂ ਚਾਰ ਗੋਟੀਆਂ ਬੋਰਡ ਦੇ ਦੁਆਲੇ ਘੁਮਾ ਕੇ ਘਰ ਪਹੁੰਚਾਓ। ਛੱਕਾ ਗੋਟੀ ਬਾਹਰ ਕੱਢਦਾ ਹੈ; ਵਿਰੋਧੀ ਦੀ ਗੋਟੀ \'ਤੇ ਉਤਰਨ ਨਾਲ ਉਹ ਆਪਣੇ ਘਰ ਵਾਪਸ ਚਲੀ ਜਾਂਦੀ ਹੈ।</string>
+    <string name="ludo_house_rules">ਘਰ ਦੇ ਨਿਯਮ</string>
+    <string name="ludo_rule_six_to_enter">ਨਿਕਲਣ ਲਈ ਛੱਕਾ</string>
+    <string name="ludo_rule_six_to_enter_hint">ਗੋਟੀ ਸਿਰਫ਼ ਛੱਕੇ \'ਤੇ ਘਰੋਂ ਨਿਕਲਦੀ ਹੈ।</string>
+    <string name="ludo_rule_extra_six">ਛੱਕੇ \'ਤੇ ਵਾਧੂ ਚਾਲ</string>
+    <string name="ludo_rule_extra_six_hint">ਛੱਕੇ \'ਤੇ ਮੁੜ ਪਾਸਾ; ਲਗਾਤਾਰ ਤਿੰਨ ਛੱਕਿਆਂ \'ਤੇ ਵਾਰੀ ਜਾਂਦੀ ਹੈ।</string>
+    <string name="ludo_rule_extra_capture">ਕੱਟਣ \'ਤੇ ਵਾਧੂ ਚਾਲ</string>
+    <string name="ludo_rule_extra_capture_hint">ਵਿਰੋਧੀ ਨੂੰ ਘਰ ਭੇਜਣ \'ਤੇ ਇੱਕ ਹੋਰ ਪਾਸਾ ਮਿਲਦਾ ਹੈ।</string>
+    <string name="ludo_rule_exact_finish">ਮੁਕਾਉਣ ਲਈ ਸਹੀ ਅੰਕ</string>
+    <string name="ludo_rule_exact_finish_hint">ਆਖ਼ਰੀ ਖਾਨੇ ਲਈ ਠੀਕ ਓਨਾ ਹੀ ਅੰਕ ਚਾਹੀਦਾ ਹੈ।</string>
+    <string name="ludo_rule_play_on">ਸਥਾਨ ਲਈ ਖੇਡਦੇ ਰਹੋ</string>
+    <string name="ludo_rule_play_on_hint">ਪਹਿਲੇ ਜੇਤੂ ਤੋਂ ਬਾਅਦ ਬਾਕੀ ਦੂਜੇ ਤੇ ਤੀਜੇ ਸਥਾਨ ਲਈ ਖੇਡਦੇ ਹਨ।</string>
+    <string name="ludo_rules_safe_note">ਅੱਠ ਤਾਰੇ ਵਾਲੇ ਖਾਨੇ ਹਮੇਸ਼ਾ ਸੁਰੱਖਿਅਤ: ਉੱਥੇ ਕਟਾਈ ਨਹੀਂ।</string>
+    <string name="ludo_players_two_hint">ਦੋ ਖਿਡਾਰੀ ਆਹਮੋ-ਸਾਹਮਣੇ ਬੈਠਦੇ ਹਨ।</string>
+    <string name="ludo_players_three_hint">ਇੱਕ ਘਰ ਖਾਲੀ ਰਹਿੰਦਾ ਹੈ।</string>
+    <string name="ludo_players_four_hint">ਚਾਰੇ ਘਰ ਭਰੇ; ਖਾਲੀ ਸੀਟਾਂ ਕੰਪਿਊਟਰ ਖੇਡਦਾ ਹੈ।</string>
+    <string name="ludo_rules_1">ਹਰ ਖਿਡਾਰੀ ਕੋਲ ਆਪਣੇ ਰੰਗ ਦੇ ਘਰ ਵਿੱਚ ਚਾਰ ਗੋਟੀਆਂ ਹਨ। ਛੱਕਾ ਸੁੱਟ ਕੇ ਗੋਟੀ ਆਪਣੇ ਸ਼ੁਰੂਆਤੀ ਖਾਨੇ \'ਤੇ ਲਿਆਓ।</string>
+    <string name="ludo_rules_2">ਸੁੱਟੇ ਅੰਕ ਜਿੰਨਾ ਗੋਟੀ ਘੜੀ ਦੀ ਦਿਸ਼ਾ ਵਿੱਚ ਚਲਾਓ। ਕੋਈ ਵੀ ਗੋਟੀ ਚੱਲ ਸਕਦੀ ਹੈ; ਜੋ ਨਹੀਂ ਚੱਲ ਸਕਦੀ ਉਹ ਛੱਡੀ ਜਾਂਦੀ ਹੈ।</string>
+    <string name="ludo_rules_3">ਸਾਧਾਰਨ ਖਾਨੇ \'ਤੇ ਵਿਰੋਧੀ ਦੀ ਗੋਟੀ \'ਤੇ ਉਤਰਨ ਨਾਲ ਉਹ ਘਰ ਮੁੜ ਜਾਂਦੀ ਹੈ। ਅੱਠ ਤਾਰੇ ਵਾਲੇ ਖਾਨੇ ਸੁਰੱਖਿਅਤ ਹਨ।</string>
+    <string name="ludo_rules_4">ਪੂਰਾ ਚੱਕਰ ਲਾਉਣ ਮਗਰੋਂ ਗੋਟੀ ਆਪਣੇ ਘਰ ਦੀ ਪੱਟੀ ਵਿੱਚ ਮੁੜਦੀ ਹੈ ਤੇ ਸਹੀ ਅੰਕ ਨਾਲ ਵਿਚਕਾਰ ਪਹੁੰਚਣੀ ਚਾਹੀਦੀ ਹੈ।</string>
+    <string name="ludo_rules_5">ਜੋ ਪਹਿਲਾਂ ਚਾਰੇ ਗੋਟੀਆਂ ਘਰ ਪਹੁੰਚਾਵੇ ਉਹ ਜਿੱਤਦਾ ਹੈ; ਬਾਕੀ ਦੂਜੇ-ਤੀਜੇ ਸਥਾਨ ਲਈ ਖੇਡਦੇ ਹਨ।</string>
+    <string name="board_table_pending">ਬੋਰਡ ਅਗਲਾ ਡਿਜ਼ਾਈਨ ਪੜਾਅ ਹੈ। ਤੁਹਾਡੀਆਂ ਸੈਟਿੰਗਾਂ ਰੱਖ ਲਈਆਂ ਗਈਆਂ ਹਨ।</string>
 </resources>

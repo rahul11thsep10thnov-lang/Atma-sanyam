@@ -522,4 +522,28 @@
     <string name="game_ludo_name">लूडो</string>
     <string name="game_ludo_desc">चार गोटियाँ घर पहुँचाएँ; पकड़े जाने पर गोटी वापस।</string>
     <string name="board_intro_pending">परिचय और मोड चयन पेज अगला डिज़ाइन चरण है।</string>
+
+    <!-- Ludo setup (stage 2) -->
+    <string name="ludo_intro">अपनी चार गोटियाँ बोर्ड का चक्कर लगाकर घर पहुँचाएँ। छक्का गोटी बाहर निकालता है; विरोधी की गोटी पर उतरने से वह वापस अपने घर चली जाती है।</string>
+    <string name="ludo_house_rules">घर के नियम</string>
+    <string name="ludo_rule_six_to_enter">निकलने के लिए छक्का</string>
+    <string name="ludo_rule_six_to_enter_hint">गोटी केवल छक्के पर घर से निकलती है।</string>
+    <string name="ludo_rule_extra_six">छक्के पर अतिरिक्त चाल</string>
+    <string name="ludo_rule_extra_six_hint">छक्के पर फिर पासा; लगातार तीन छक्कों पर बारी जाती है।</string>
+    <string name="ludo_rule_extra_capture">काटने पर अतिरिक्त चाल</string>
+    <string name="ludo_rule_extra_capture_hint">विरोधी को घर भेजने पर एक और पासा मिलता है।</string>
+    <string name="ludo_rule_exact_finish">पूरा होने के लिए सटीक अंक</string>
+    <string name="ludo_rule_exact_finish_hint">आख़िरी खाने के लिए ठीक उतना ही अंक चाहिए।</string>
+    <string name="ludo_rule_play_on">स्थान के लिए खेलते रहें</string>
+    <string name="ludo_rule_play_on_hint">पहले विजेता के बाद बाक़ी दूसरे और तीसरे स्थान के लिए खेलते हैं।</string>
+    <string name="ludo_rules_safe_note">आठ तारे वाले खाने हमेशा सुरक्षित हैं: वहाँ कटाई नहीं होती।</string>
+    <string name="ludo_players_two_hint">दो खिलाड़ी आमने-सामने बैठते हैं।</string>
+    <string name="ludo_players_three_hint">एक घर खाली रहता है।</string>
+    <string name="ludo_players_four_hint">चारों घर भरे हैं; खाली सीटें कंप्यूटर खेलता है।</string>
+    <string name="ludo_rules_1">हर खिलाड़ी के पास अपने रंग के घर में चार गोटियाँ हैं। छक्का फेंककर गोटी अपने शुरुआती खाने पर लाएँ।</string>
+    <string name="ludo_rules_2">गोटी को फेंके गए अंक जितना घड़ी की दिशा में चलाएँ। कोई भी गोटी चल सकती है; जो नहीं चल सकती वह छूट जाती है।</string>
+    <string name="ludo_rules_3">साधारण खाने पर विरोधी की गोटी पर उतरने से वह घर लौट जाती है। आठ तारे वाले खाने सुरक्षित हैं।</string>
+    <string name="ludo_rules_4">पूरा चक्कर लगाने के बाद गोटी अपने घर की पट्टी में मुड़ती है और सटीक अंक से बीच तक पहुँचनी चाहिए।</string>
+    <string name="ludo_rules_5">जो पहले चारों गोटियाँ घर पहुँचाए वह जीतता है; बाक़ी दूसरे-तीसरे स्थान के लिए खेलते हैं।</string>
+    <string name="board_table_pending">बोर्ड अगला डिज़ाइन चरण है। आपकी सेटिंग रख ली गई हैं।</string>
 </resources>

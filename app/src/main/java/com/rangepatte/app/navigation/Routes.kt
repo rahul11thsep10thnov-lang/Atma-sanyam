@@ -55,4 +55,8 @@ object Routes {
     fun setup(gameRouteSegment: String) = "setup/$gameRouteSegment"
     fun gameTable(gameRouteSegment: String, mode: PlayMode, playerCount: Int, difficulty: AiDifficulty) =
         "table/$gameRouteSegment/${mode.name}?$ARG_PLAYERS=$playerCount&$ARG_DIFFICULTY=${difficulty.name}"
+
+    /** The board itself (Ludo stage 3+), with the chosen mode. */
+    const val BOARD_TABLE_PATTERN = "boardTable/{$ARG_BOARD}/{$ARG_MODE}"
+    fun boardTable(segment: String, mode: PlayMode) = "boardTable/$segment/${mode.name}"
 }

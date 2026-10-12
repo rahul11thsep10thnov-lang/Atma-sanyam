@@ -33,8 +33,8 @@ design is described here and in the README section of each feature.
 | # | Stage | Approved | Notes that bind later work |
 |---|-------|----------|----------------------------|
 | 1 | Ludo tile in the Entertainment tab | Design 1 (Royal court, the Khel tile) | Gold-framed portrait (cross board on ivory, two tokens, a die), crimson plaque, one-clause summary, 2–4 players; tapping opens Ludo's own introduction page. Entertainment uses Khel's two-column grid. |
-| 2 | Introduction and mode selection | *awaiting approval* | |
-| 3 | Board | pending | |
+| 2 | Introduction and mode selection | Design 1 (the card games' setup page) | Portrait + two-line intro + Rules; mode slots; Players 2–4; AI difficulty; House rules plaque with orb switches preset to the recommended ruleset (six to enter, extra roll on six with three-six forfeit, extra roll on capture, exact finish, play on for places; star squares safe). The engine implements exactly these switches. |
+| 3 | Board | *awaiting approval* | |
 | 4 | Tokens, dice, safe squares, homes, movement | pending | |
 | 5 | Avatars, usernames, turn indicators, scores | pending | |
 | 6 | Lobby and room creation | pending | |

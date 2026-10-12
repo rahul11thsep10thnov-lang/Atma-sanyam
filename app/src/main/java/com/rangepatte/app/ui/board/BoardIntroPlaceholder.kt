@@ -30,7 +30,7 @@ fun BoardIntroPlaceholder(game: BoardGameInfo, onBackClick: () -> Unit) {
             GameHeader(title = stringResource(game.nameRes), onBackClick = onBackClick)
             RoyalPanel(title = stringResource(game.nameRes), modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                 Text(
-                    text = stringResource(R.string.board_intro_pending),
+                    text = stringResource(R.string.board_table_pending),
                     style = MaterialTheme.typography.bodyLarge,
                     color = ParchmentTextDim,
                     textAlign = TextAlign.Center,

@@ -551,7 +551,17 @@ one-clause summary and player count. Ludo's portrait (`ui/thumbnails/LudoThumbna
 like the card thumbnails: the four-colour cross board on ivory with a gold rim, two tokens on the
 track and an ivory die showing a six. The catalogue is `domain/board/BoardGame.kt` (kept apart from
 the card games' `GameId`). Tapping the tile opens the game's own introduction route (`board/{game}`),
-which shows a plain placeholder until stage 2 (introduction and mode selection) is approved.
+which opens the setup page below.
+
+**Ludo stage 2 — introduction and mode selection (approved Design 1).** The card games' setup page,
+built for Ludo (`ui/board/LudoSetupScreen.kt`): the portrait and a two-line introduction with a Rules
+button (five short rules in a dialog), the mode slots (Vs Computer, Nearby, Online; Pass & Play
+locked as everywhere else), Players 2–4 with a hint about seating, AI difficulty, and a **House rules**
+plaque of orb switches preset to the recommended ruleset (`domain/ludo/LudoRules.kt`): *Six to enter*,
+*Extra roll on six* (three sixes forfeit), *Extra roll on capture*, *Exact roll to finish*, *Play on
+for places*; the eight star squares are always safe. Start (or Host / Join) stores the choice in
+`LudoSetupStore` for the board; until the board (stage 3) and the lobby (stage 6) are approved, all
+three lead to a plain note that the settings were kept.
 
 ## Sound and music
 

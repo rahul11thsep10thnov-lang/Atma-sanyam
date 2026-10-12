@@ -522,4 +522,28 @@
     <string name="game_ludo_name">লুডো</string>
     <string name="game_ludo_desc">চারটি গুটি ঘরে পৌঁছে দিন; ধরা পড়লে ফেরত।</string>
     <string name="board_intro_pending">পরিচিতি ও মোড বাছাই পাতা পরের ডিজাইন ধাপ।</string>
+
+    <!-- Ludo setup (stage 2) -->
+    <string name="ludo_intro">আপনার চারটি গুটি বোর্ড ঘুরে ঘরে পৌঁছে দিন। ছয় পড়লে গুটি বের হয়; প্রতিপক্ষের গুটির ওপর নামলে সেটি তার ঘরে ফিরে যায়।</string>
+    <string name="ludo_house_rules">ঘরের নিয়ম</string>
+    <string name="ludo_rule_six_to_enter">বের হতে ছয়</string>
+    <string name="ludo_rule_six_to_enter_hint">গুটি কেবল ছয় পড়লেই ঘর থেকে বের হয়।</string>
+    <string name="ludo_rule_extra_six">ছয়ে বাড়তি চাল</string>
+    <string name="ludo_rule_extra_six_hint">ছয় পড়লে আবার ছক্কা; পরপর তিন ছয়ে দান যায়।</string>
+    <string name="ludo_rule_extra_capture">কাটলে বাড়তি চাল</string>
+    <string name="ludo_rule_extra_capture_hint">প্রতিপক্ষকে ঘরে পাঠালে আরেকটি ছক্কা মেলে।</string>
+    <string name="ludo_rule_exact_finish">শেষে সঠিক সংখ্যা</string>
+    <string name="ludo_rule_exact_finish_hint">শেষ ঘরে পৌঁছতে ঠিক ততটাই সংখ্যা লাগে।</string>
+    <string name="ludo_rule_play_on">স্থানের জন্য খেলা চলুক</string>
+    <string name="ludo_rule_play_on_hint">প্রথম বিজয়ীর পর বাকিরা দ্বিতীয়-তৃতীয় স্থানের জন্য খেলে।</string>
+    <string name="ludo_rules_safe_note">আটটি তারা ঘর সবসময় নিরাপদ: সেখানে কাটা যায় না।</string>
+    <string name="ludo_players_two_hint">দুই খেলোয়াড় মুখোমুখি বসেন।</string>
+    <string name="ludo_players_three_hint">একটি ঘর খালি থাকে।</string>
+    <string name="ludo_players_four_hint">চারটি ঘরই ভরা; খালি আসনে কম্পিউটার খেলে।</string>
+    <string name="ludo_rules_1">প্রত্যেক খেলোয়াড়ের নিজের রঙের ঘরে চারটি গুটি থাকে। ছয় ফেলে গুটিকে আপনার শুরুর ঘরে আনুন।</string>
+    <string name="ludo_rules_2">পড়া সংখ্যা অনুযায়ী গুটিকে ঘড়ির কাঁটার দিকে চালান। যেকোনো গুটি চালানো যায়; যেটি চলতে পারে না তা বাদ পড়ে।</string>
+    <string name="ludo_rules_3">সাধারণ ঘরে প্রতিপক্ষের গুটির ওপর নামলে সেটি ঘরে ফিরে যায়। আটটি তারা ঘর নিরাপদ।</string>
+    <string name="ludo_rules_4">পুরো চক্কর শেষে গুটি নিজের ঘরের সারিতে ঢোকে এবং সঠিক সংখ্যায় মাঝখানে পৌঁছতে হয়।</string>
+    <string name="ludo_rules_5">যে প্রথমে চারটি গুটিই ঘরে আনে সে জেতে; বাকিরা দ্বিতীয়-তৃতীয় স্থানের জন্য খেলে।</string>
+    <string name="board_table_pending">বোর্ড পরের ডিজাইন ধাপ। আপনার সেটিংস রাখা হয়েছে।</string>
 </resources>
