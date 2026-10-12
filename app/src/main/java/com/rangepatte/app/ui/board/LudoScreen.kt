@@ -30,7 +30,6 @@ import com.rangepatte.app.domain.board.BoardGameInfo
 import com.rangepatte.app.domain.ludo.LudoEvent
 import com.rangepatte.app.domain.ludo.LudoPhase
 import com.rangepatte.app.domain.ludo.LudoState
-import com.rangepatte.app.game.common.SeatPlaque
 import com.rangepatte.app.game.common.StatusLine
 import com.rangepatte.app.ui.components.royal.RoyalButton
 import com.rangepatte.app.ui.components.royal.RoyalButtonStyle
@@ -42,20 +41,7 @@ import com.rangepatte.app.ui.theme.ParchmentText
 @Composable
 fun LudoTable(state: LudoState, isMyTurn: Boolean, shownDice: Int?, pulse: Float, onRoll: () -> Unit, onMove: (Int) -> Unit, motion: MotionFrame = MotionFrame(), die: DieFrame = DieFrame(shownDice, 0f, false, 0f)) {
     val youName = stringResource(R.string.player_you)
-    // Nameplates: two per row, in seat order; each shows tokens home and glows on its turn.
-    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fillMaxWidth().padding(top = 6.dp, bottom = 4.dp)) {
-        state.players.forEachIndexed { i, p ->
-            SeatPlaque(
-                name = if (i == 0) youName else p.name,
-                tag = p.color.suit,
-                detail = "${p.finished}/4",
-                isTurn = state.turn == i && state.phase != LudoPhase.OVER,
-                dimmed = i in state.places,
-                compact = true,
-                modifier = Modifier.weight(1f)
-            )
-        }
-    }
+    Spacer(modifier = Modifier.height(6.dp))
     val event = state.lastEvent
     val status = when {
         state.phase == LudoPhase.OVER -> ""
@@ -68,7 +54,11 @@ fun LudoTable(state: LudoState, isMyTurn: Boolean, shownDice: Int?, pulse: Float
     }
     StatusLine(text = status, highlight = isMyTurn, compact = true)
 
-    LudoBoardView(state = state, highlight = if (isMyTurn) state.movable else emptyList(), onTokenTap = onMove, pulse = pulse, motion = motion, modifier = Modifier.padding(horizontal = 2.dp))
+    // The board, with each player's plaque laid over their own yard (stage 5).
+    Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 2.dp)) {
+        LudoBoardView(state = state, highlight = if (isMyTurn) state.movable else emptyList(), onTokenTap = onMove, pulse = pulse, motion = motion)
+        LudoYardPlaques(state = state, youName = youName, mySeat = 0)
+    }
 
     // The die and the Roll button sit below the board, never on it.
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp, Alignment.CenterHorizontally), modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {

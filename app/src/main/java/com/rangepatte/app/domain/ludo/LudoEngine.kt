@@ -4,7 +4,15 @@ import com.rangepatte.app.domain.model.AiDifficulty
 import kotlin.random.Random
 
 /** One player's four tokens (relative positions, see [LudoBoard]) and their colour. */
-data class LudoPlayer(val color: LudoColor, val name: String, val tokens: List<Int> = List(4) { LudoBoard.YARD }) {
+data class LudoPlayer(
+    val color: LudoColor,
+    val name: String,
+    val tokens: List<Int> = List(4) { LudoBoard.YARD },
+    /** The Friends avatar to show on the yard plaque (stage 5); null for the numbered disc. */
+    val avatarId: String? = null,
+    /** A computer player (shown with the robot disc). */
+    val isBot: Boolean = false
+) {
     val finished: Int get() = tokens.count { it == LudoBoard.HOME }
     val inYard: Int get() = tokens.count { it == LudoBoard.YARD }
     val onBoard: Int get() = 4 - finished - inYard
@@ -54,14 +62,14 @@ sealed interface LudoAction {
  */
 object LudoEngine {
     /** A fresh game for [names] in seat order; 2 players sit opposite (red and yellow), 3 leave blue empty. */
-    fun newGame(names: List<String>, rules: LudoRules = LudoRules.DEFAULT): LudoState {
+    fun newGame(names: List<String>, rules: LudoRules = LudoRules.DEFAULT, avatars: List<String?> = emptyList(), bots: Set<Int> = emptySet()): LudoState {
         val colors = when (names.size) {
             2 -> listOf(LudoColor.RED, LudoColor.YELLOW)
             3 -> listOf(LudoColor.RED, LudoColor.GREEN, LudoColor.YELLOW)
             else -> LudoColor.values().toList()
         }
         require(names.size in 2..4) { "2 to 4 players" }
-        return LudoState(players = names.zip(colors) { n, c -> LudoPlayer(c, n) }, rules = rules)
+        return LudoState(players = names.zip(colors) { n, c -> LudoPlayer(c, n) }.mapIndexed { i, p -> p.copy(avatarId = avatars.getOrNull(i), isBot = i in bots) }, rules = rules)
     }
 
     /** The token indices of [player] that can legally move [dice] squares. */

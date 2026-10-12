@@ -22,14 +22,14 @@ import kotlin.random.asKotlinRandom
  * secure random source; the engine decides everything else. The multiplayer session arrives with the
  * lobby stage, built on the same engine the way the card tables are.
  */
-class LudoSession(setup: LudoSetup, youName: String, botNames: List<String>) {
+class LudoSession(setup: LudoSetup, youName: String, botNames: List<String>, youAvatar: String? = null) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val dice = SecureRandom().asKotlinRandom()
     private val random = Random(dice.nextLong())
     val difficulty = setup.difficulty
     val mySeat = 0
 
-    var state: LudoState by mutableStateOf(LudoEngine.newGame(listOf(youName) + botNames.take(setup.players - 1), setup.rules))
+    var state: LudoState by mutableStateOf(LudoEngine.newGame(listOf(youName) + botNames.take(setup.players - 1), setup.rules, avatars = listOf(youAvatar), bots = (1 until setup.players).toSet()))
         private set
 
     /** The last dice value shown on the die (kept while the player chooses a token). */

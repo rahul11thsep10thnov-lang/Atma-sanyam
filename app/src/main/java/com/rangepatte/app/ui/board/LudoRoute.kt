@@ -25,7 +25,8 @@ import com.rangepatte.app.game.common.GameResultDialog
 @Composable
 fun LudoScreen(game: BoardGameInfo, setup: LudoSetup, onBackClick: () -> Unit) {
     val youName = stringResource(R.string.player_you)
-    val session = remember { LudoSession(setup, youName, listOf("Ravi", "Meera", "Gopal")) }
+    val youAvatar = com.rangepatte.app.AppServices.profile.profile.value?.avatarId
+    val session = remember { LudoSession(setup, youName, listOf("Ravi", "Meera", "Gopal"), youAvatar) }
     DisposableEffect(session) { session.start(); onDispose { session.close() } }
     val state = session.state
     val pulse by rememberInfiniteTransition(label = "ludoPulse").animateFloat(0f, 1f, infiniteRepeatable(tween(900), RepeatMode.Reverse), label = "pulse")

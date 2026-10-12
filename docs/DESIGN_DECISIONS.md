@@ -36,8 +36,8 @@ design is described here and in the README section of each feature.
 | 2 | Introduction and mode selection | Design 1 (the card games' setup page) | Portrait + two-line intro + Rules; mode slots; Players 2–4; AI difficulty; House rules plaque with orb switches preset to the recommended ruleset (six to enter, extra roll on six with three-six forfeit, extra roll on capture, exact finish, play on for places; star squares safe). The engine implements exactly these switches. |
 | 3 | Board | Design 10 (Royal court, the card room's board) | Ivory on waxed walnut with a gold rim; suit-coloured yards with ivory nests; gold safe stars; coloured home columns; four-colour star under a gold medallion. Tokens carry suit symbols; stacks show counts; die and Roll below the board. Geometry shared by renderer and engine. |
 | 4 | Tokens, dice, safe squares, homes, movement | Design 3 (Glide) | Die spins through faces and settles (gold flash on a six); tokens glide along an arc with a fading trail; captured tokens fly home shrinking; safe squares shine on landing; engine decides first, taps ignored and bots wait while moving; reduced motion snaps. |
-| 5 | Avatars, usernames, turn indicators, scores | *awaiting approval* | |
-| 6 | Lobby and room creation | pending | |
+| 5 | Avatars, usernames, turn indicators, scores | Design 1, modified: each plaque in its own yard | Avatar with colour ring and suit badge, username, four gold token pips, glow on the current player, place when finished; plaque centred in the player's yard between the nests; no row above the board. |
+| 6 | Lobby and room creation | *awaiting approval* | |
 | 7 | Friends invitation and play requests | pending | |
 | 8 | Waiting, reconnecting, game-full states | pending | |
 | 9 | Quick messages, reactions, sound controls | pending | |

@@ -590,6 +590,14 @@ draws the moving pieces from a `MotionFrame` instead of their resting squares, s
 state can never disagree. While anything moves the table is busy: taps are ignored and the computer
 waits. With the system's animator scale at 0 the die shows its face, tokens jump and captures fade.
 
+**Ludo stage 5 — players (approved: Design 1's plaque, placed in each player's own yard).** Over the
+board, one antique plaque per player sits in the middle of their yard between the four nests
+(`ui/board/LudoYardPlaques.kt`): the Friends avatar with a colour ring and suit badge (the robot disc
+for the computer), the username, and four token pips that fill gold as tokens get home. The current
+player's plaque glows, matching the status line; a finished player's plaque shows their place. Empty
+yards (2- or 3-player games) carry no plaque. The engine's `LudoPlayer` carries `avatarId` and `isBot`
+for this; nothing else in the rules changes.
+
 ## Sound and music
 
 All sound goes through one object, `audio/GameAudio.kt`, which owns the settings and is the only code
