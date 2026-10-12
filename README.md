@@ -660,6 +660,24 @@ too, so a card player who drops out gets the same window. Tested in `ReconnectTe
 window and matching, a seated guest brought back in step, the new messages, and the watch flow
 through a full lobby. Not yet run on two real phones.
 
+**Ludo stage 9 — quick messages, reactions and sound controls (approved: Design 1, the talk button
+by the die and bubbles at the yard).** With other people at the table the Element 11 talk button sits
+in the row with the die and Roll; its tray (ten phrases, eight emoji, mute per seat) opens under
+that row. A message appears as a parchment bubble under the speaker's yard plaque (above it in the
+two bottom yards, so it stays on the board), a watcher's over the centre star; the newest message per
+seat shows for the usual few seconds (`TalkLayout.BOARD`, `TalkBubble`). The header speaker opens
+the same sound panel as everywhere else. Twenty files of the supplied board-game pack are in
+`res/raw` as `sfx_*` (the Snakes & Ladders ones follow with that game); `game/ludo/LudoSfx.kt` names
+the sounds for one engine step, timed to the stage 4 animations — die spin, land, the bonus on a six;
+a token entering, setting off, a tick a square on short glides, a capture, turning into the home
+column, reaching home; "your turn"; a forfeit and a refused tap; match complete, then the victory
+fanfare on the winner's phone and the defeat sting on the others — and the Roll button and tray
+carry the pack's UI taps. It runs through the same once-per-step hook as the card games
+(`GameMachine.sfxFor` adds which seat is listening, so "your turn" and the fanfare are personal), and
+the solo table feeds every step through the same mapping. Table-talk arrival now uses the pack's
+soft notification at every table. Tested in `LudoSfxTest`; the asset test now reads each WAV's
+header for its length.
+
 ## Sound and music
 
 All sound goes through one object, `audio/GameAudio.kt`, which owns the settings and is the only code
@@ -676,6 +694,7 @@ that touches Android's `SoundPool` (card effects) and `MediaPlayer` (music).
 
   | Effect | Event |
   |---|---|
+  | (Ludo, stage 9) | the board-game pack, mapped in `LudoSfx` — see the Ludo stage 9 note |
   | shuffle | next round / hand begins |
   | riffle shuffle | a new table or a new match opens |
   | deal one | Rummy draw from the deck; Solitaire stock turn |

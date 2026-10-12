@@ -3,7 +3,10 @@ package com.rangepatte.app.ui.board
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.rangepatte.app.audio.GameAudio
+import com.rangepatte.app.audio.Sfx
 import com.rangepatte.app.domain.ludo.LudoEngine
+import com.rangepatte.app.game.ludo.LudoSfx
 import com.rangepatte.app.domain.ludo.LudoPhase
 import com.rangepatte.app.domain.ludo.LudoSetup
 import com.rangepatte.app.domain.ludo.LudoState
@@ -41,17 +44,25 @@ class LudoSession(setup: LudoSetup, youName: String, botNames: List<String>, you
     /** Stage 4: true while the board animates; the computer waits and the player's taps are ignored. */
     override var busy: Boolean by mutableStateOf(false)
 
-    override fun start() { scope.launch { runBots() } }
+    override fun start() { GameAudio.playCues(LudoSfx.start()); scope.launch { runBots() } }
+
+    /** Every step goes through here, so each engine event is sounded exactly once (stage 9). */
+    private fun step(next: LudoState) {
+        val before = state
+        state = next
+        GameAudio.playCues(LudoSfx.cues(before, next, mySeat))
+    }
 
     override fun roll() {
         if (!isMyTurn || state.phase != LudoPhase.ROLL || busy) return
         val value = dice.nextInt(1, 7)
-        LudoEngine.roll(state, value)?.let { state = it; shownDice = value }
+        LudoEngine.roll(state, value)?.let { step(it); shownDice = value }
     }
 
     override fun move(token: Int) {
         if (!isMyTurn || state.phase != LudoPhase.MOVE || busy) return
-        LudoEngine.move(state, token)?.let { state = it }
+        if (token !in state.movable) { GameAudio.play(Sfx.INVALID_MOVE); return }
+        LudoEngine.move(state, token)?.let { step(it) }
     }
 
     private suspend fun runBots() {
@@ -61,8 +72,8 @@ class LudoSession(setup: LudoSetup, youName: String, botNames: List<String>, you
                 delay(500)
                 if (busy) continue
                 when (state.phase) {
-                    LudoPhase.ROLL -> { val v = dice.nextInt(1, 7); LudoEngine.roll(state, v)?.let { state = it; shownDice = v } }
-                    LudoPhase.MOVE -> { delay(500); LudoEngine.chooseToken(state, difficulty, random)?.let { t -> LudoEngine.move(state, t)?.let { state = it } } }
+                    LudoPhase.ROLL -> { val v = dice.nextInt(1, 7); LudoEngine.roll(state, v)?.let { step(it); shownDice = v } }
+                    LudoPhase.MOVE -> { delay(500); LudoEngine.chooseToken(state, difficulty, random)?.let { t -> LudoEngine.move(state, t)?.let { step(it) } } }
                     LudoPhase.OVER -> Unit
                 }
             } else delay(150)

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,6 +34,8 @@ import com.rangepatte.app.R
 import com.rangepatte.app.domain.ludo.LudoBoard
 import com.rangepatte.app.domain.ludo.LudoPhase
 import com.rangepatte.app.domain.ludo.LudoState
+import com.rangepatte.app.domain.talk.TableMessage
+import com.rangepatte.app.game.common.TalkBubble
 import com.rangepatte.app.ui.components.royal.antiquePlaque
 import com.rangepatte.app.ui.friends.PersonAvatar
 import com.rangepatte.app.ui.theme.GoldBevelDark
@@ -51,7 +54,7 @@ import com.rangepatte.app.ui.theme.PanelWoodDark
  * taken over by the computer and says so.
  */
 @Composable
-fun LudoYardPlaques(state: LudoState, youName: String, mySeat: Int, modifier: Modifier = Modifier, away: Map<Int, Long> = emptyMap(), botSeats: Set<Int> = emptySet(), now: Long = 0L) {
+fun LudoYardPlaques(state: LudoState, youName: String, mySeat: Int, modifier: Modifier = Modifier, away: Map<Int, Long> = emptyMap(), botSeats: Set<Int> = emptySet(), now: Long = 0L, messages: List<TableMessage> = emptyList()) {
     BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
         val s = maxWidth
         val cell = s / (LudoBoard.SIZE + 1.2f)
@@ -80,6 +83,27 @@ fun LudoYardPlaques(state: LudoState, youName: String, mySeat: Int, modifier: Mo
                 width = width,
                 modifier = Modifier.offset(x = x, y = y)
             )
+        }
+        // Stage 9: the newest table-talk message per seat as a parchment bubble just under the speaker's plaque;
+        // a watcher's message sits over the centre star.
+        messages.groupBy { it.seat }.forEach { (seat, list) ->
+            val m = list.last()
+            val speaker = state.players.getOrNull(seat)
+            val name = if (seat == TableMessage.WATCHER) m.name else speaker?.name.orEmpty()
+            val bx: Dp; val by: Dp
+            if (speaker != null) {
+                // Under the plaque in the top yards, above it in the bottom yards, so the bubble stays on the board.
+                val o = LudoBoard.yardOrigin(speaker.color)
+                val top = o.row < LudoBoard.SIZE / 2
+                bx = margin + cell * (o.col + 3) - cell * 1.9f
+                by = if (top) margin + cell * (o.row + 3) + height / 2 + 2.dp else margin + cell * (o.row + 3) - height / 2 - cell * 3.4f - 2.dp
+            } else {
+                bx = s / 2 - cell * 1.9f
+                by = s / 2 + cell * 1.5f
+            }
+            Box(modifier = Modifier.offset(x = bx, y = by).width(cell * 3.8f).height(cell * 3.4f), contentAlignment = Alignment.BottomCenter) {
+                TalkBubble(name = name, id = m.id)
+            }
         }
     }
 }

@@ -44,7 +44,9 @@ enum class TalkLayout {
     /** Four seats around the table: you at the bottom, then right, top, left (the trick games). */
     TRICK,
     /** You at the bottom, everyone else in a row along the top (Rummy, Teen Patti). */
-    ROW
+    ROW,
+    /** A board with a yard per player (Ludo, stage 9): the board draws the bubbles itself, beside the yard plaques. */
+    BOARD
 }
 
 /**
@@ -197,6 +199,7 @@ private fun Chip(text: String, enabled: Boolean, ink: Color, filled: Boolean = f
  */
 @Composable
 fun BoxScope.TalkPlaques(control: TalkControl) {
+    if (control.layout == TalkLayout.BOARD) return
     val n = control.seatNames.size.coerceAtLeast(1)
     fun relative(seat: Int) = ((seat - control.viewSeat) % n + n) % n
     // Each message goes to a corner of the table that its sender's nameplate is nearest to, and that the
@@ -233,11 +236,18 @@ fun BoxScope.TalkPlaques(control: TalkControl) {
 @Composable
 private fun TalkPlaque(message: TableMessage, control: TalkControl) {
     val name = if (message.seat == TableMessage.WATCHER) message.name else control.seatNames.getOrNull(message.seat).orEmpty()
+    TalkBubble(name = name, id = message.id)
+}
+
+/** One parchment bubble: the speaker's name over a phrase or an emoji. The board games place it themselves. */
+@Composable
+fun TalkBubble(name: String, id: Int, modifier: Modifier = Modifier) {
+    val message = TableMessage(0, id, name, 0L)
     val body = messageText(message.id)
     val spoken = if (TableTalk.isEmoji(message.id)) emojiLabel(message.id) else body
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = modifier
             .widthIn(max = 118.dp)
             .antiquePlaque(active = false, cornerRadius = 9.dp)
             .background(Brush.verticalGradient(listOf(Color(0xFFFFF4D6), Color(0xFFF0DFB8))), RoundedCornerShape(9.dp))

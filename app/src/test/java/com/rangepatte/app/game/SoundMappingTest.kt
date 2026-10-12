@@ -83,18 +83,21 @@ class SoundMappingTest {
         listOf("src/main/res/raw", "app/src/main/res/raw").map(::File).firstOrNull { it.isDirectory }
             ?: error("res/raw not found from ${File(".").absolutePath}")
 
-    @Test fun allEightEffectFilesArePresentValidWavsWithLegalResourceNames() {
-        assertEquals(8, Sfx.entries.size)
+    @Test fun allEffectFilesArePresentValidWavsWithLegalResourceNames() {
+        assertEquals(28, Sfx.entries.size) // 8 card effects + 20 from the board-game pack (Ludo stage 9)
         assertEquals("names are unique", Sfx.entries.size, Sfx.entries.map { it.resName }.toSet().size)
         for (sfx in Sfx.entries) {
             assertTrue("${sfx.resName} is not a legal Android resource name", Regex("[a-z][a-z0-9_]*").matches(sfx.resName))
             val file = File(rawDir(), sfx.resName + ".wav")
             assertTrue("missing ${file.path}", file.isFile)
-            val head = file.inputStream().use { it.readNBytes(12) }
+            val head = file.inputStream().use { it.readNBytes(44) }
             assertEquals("RIFF", String(head, 0, 4))
             assertEquals("WAVE", String(head, 8, 4))
-            // The recorded length matches what the ducking and sequencing assume (within 60 ms).
-            val bytesPerSecond = 44100 * 2
+            // The recorded length matches what the ducking and sequencing assume (within 60 ms); the
+            // sample rate, channels and bit depth come from the canonical 44-byte header.
+            val bb = java.nio.ByteBuffer.wrap(head).order(java.nio.ByteOrder.LITTLE_ENDIAN)
+            val channels = bb.getShort(22).toInt(); val rate = bb.getInt(24); val bits = bb.getShort(34).toInt()
+            val bytesPerSecond = rate * channels * bits / 8
             val seconds = (file.length() - 44).toDouble() / bytesPerSecond
             assertEquals("${sfx.resName} duration", sfx.durationMs / 1000.0, seconds, 0.06)
         }

@@ -142,7 +142,7 @@ class GameSession<S, A>(
     private fun show(message: TableMessage) {
         if (message.seat in mutedSeats) return
         messages = messages + message
-        if (message.seat != mySeat || message.seat == TableMessage.WATCHER) GameAudio.play(Sfx.PRESENT)
+        if (message.seat != mySeat || message.seat == TableMessage.WATCHER) GameAudio.play(Sfx.SOFT_NOTIFICATION)
         scope.launch {
             delay(TableTalk.SHOW_MS)
             messages = messages - message
@@ -190,7 +190,9 @@ class GameSession<S, A>(
         // Every step of the game — a move, a computer move, a received move, a cleared trick — is announced
         // here exactly once, so this is where the card sounds are triggered: nowhere in the screens, where a
         // re-render could repeat them.
-        core.onTransition = { before, after, action -> GameAudio.playCues(core.machine.sfx(before, after, action)) }
+        core.onTransition = { before, after, action ->
+            GameAudio.playCues(core.machine.sfxFor(before, after, action, core.mySeat.takeIf { it != SessionCore.SPECTATOR }))
+        }
         // Listen from the moment the session exists, so nothing the host sends while this phone is still
         // opening the table screen is lost.
         transport?.listener = object : Transport.Listener {

@@ -48,6 +48,12 @@ interface GameMachine<S, A> {
      */
     fun sfx(before: S, after: S, action: A?): List<SfxCue> = emptyList()
 
+    /**
+     * Like [sfx], but told which seat this phone plays ([mySeat]; null for a watcher), for games whose
+     * sounds differ by listener — "your turn", your own victory (Ludo stage 9). Defaults to [sfx].
+     */
+    fun sfxFor(before: S, after: S, action: A?, mySeat: Int?): List<SfxCue> = sfx(before, after, action)
+
     fun encode(action: A): String
     fun decode(text: String): A?
 

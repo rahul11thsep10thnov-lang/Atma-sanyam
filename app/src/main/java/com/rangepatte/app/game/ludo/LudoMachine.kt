@@ -54,8 +54,9 @@ object LudoMachine : GameMachine<LudoState, LudoAction> {
         LudoPhase.OVER -> null
     }
 
-    /** The card games' shuffle and deal do not belong at a Ludo board; its own sounds arrive with stage 9. */
-    override fun startSfx(): List<SfxCue> = emptyList()
+    override fun startSfx(): List<SfxCue> = LudoSfx.start()
+
+    override fun sfxFor(before: LudoState, after: LudoState, action: LudoAction?, mySeat: Int?): List<SfxCue> = LudoSfx.cues(before, after, mySeat)
 
     override fun encode(action: LudoAction): String = when (action) {
         LudoAction.Roll -> "R"

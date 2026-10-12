@@ -78,7 +78,7 @@ fun LudoScreen(game: BoardGameInfo, setup: LudoSetup, onBackClick: () -> Unit) {
         LudoTable(
             state = state, isMyTurn = table.isMyTurn && !motion.busy, shownDice = motion.die.face ?: table.shownDice, pulse = pulse,
             onRoll = table::roll, onMove = table::move, motion = motion.frame, die = motion.die, mySeat = table.mySeat,
-            away = table.awaySeats, botSeats = table.botSeats, now = now
+            away = table.awaySeats, botSeats = table.botSeats, now = now, talk = table.talk
         )
     }
 

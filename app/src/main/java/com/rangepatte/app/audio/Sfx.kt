@@ -24,7 +24,49 @@ enum class Sfx(val resName: String, val durationMs: Long) {
     /** Cards gathered up and cleared from the table. */
     COLLECT("sfx_collect_cards", 720),
     /** A finished hand shown. */
-    HAND_REVEAL("sfx_hand_reveal", 950)
+    HAND_REVEAL("sfx_hand_reveal", 950),
+
+    // -- The board-game pack (Ludo stage 9; the Snakes & Ladders files follow with that game) --------
+    /** A match opens. */
+    GAME_START("sfx_game_start", 464),
+    /** The die starts spinning. */
+    DICE_ROLL("sfx_dice_roll", 950),
+    /** The die settles on its value. */
+    DICE_LAND("sfx_dice_land", 134),
+    /** A six: one more roll. */
+    BONUS_ROLL("sfx_bonus_roll", 240),
+    /** A token leaves its yard. */
+    TOKEN_ENTERS("sfx_token_enters_board", 240),
+    /** A token sets off along the track. */
+    TOKEN_MOVE("sfx_token_move", 104),
+    /** One square of a short glide. */
+    TOKEN_STEP("sfx_token_step", 94),
+    /** An opponent's token sent home. */
+    TOKEN_CAPTURE("sfx_token_capture", 324),
+    /** A token turns into its home column. */
+    NEAR_FINISH("sfx_near_finish", 260),
+    /** A token reaches the centre. */
+    TOKEN_HOME("sfx_token_reaches_home", 464),
+    /** Another player brought all four home. */
+    FINISH_SQUARE("sfx_finish_square", 464),
+    /** This phone's player won. */
+    LUDO_VICTORY("sfx_ludo_victory", 1539),
+    /** This phone's player did not win. */
+    LUDO_DEFEAT("sfx_ludo_defeat", 749),
+    /** The match is over. */
+    MATCH_COMPLETE("sfx_match_complete", 699),
+    /** It is this phone's turn. */
+    YOUR_TURN("sfx_your_turn", 269),
+    /** A forfeit, or a tap the engine refused. */
+    INVALID_MOVE("sfx_invalid_move", 324),
+    /** A table-talk message arrived. */
+    SOFT_NOTIFICATION("sfx_soft_notification", 249),
+    /** The Roll button. */
+    UI_TAP("sfx_ui_button_tap", 50),
+    /** The talk tray opens. */
+    UI_OPEN("sfx_ui_panel_open", 220),
+    /** The talk tray closes. */
+    UI_CLOSE("sfx_ui_panel_close", 200)
 }
 
 /** One effect to play [delayMs] after the event that caused it, so a sequence follows the action. */

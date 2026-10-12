@@ -6,7 +6,12 @@ import androidx.compose.runtime.setValue
 import com.rangepatte.app.domain.ludo.LudoAction
 import com.rangepatte.app.domain.ludo.LudoEvent
 import com.rangepatte.app.domain.ludo.LudoPhase
+import com.rangepatte.app.audio.GameAudio
+import com.rangepatte.app.audio.Sfx
 import com.rangepatte.app.domain.ludo.LudoState
+import com.rangepatte.app.game.common.TalkControl
+import com.rangepatte.app.game.common.TalkLayout
+import com.rangepatte.app.game.common.talkControl
 import com.rangepatte.app.net.GameSession
 
 /**
@@ -34,6 +39,8 @@ interface LudoTableController {
     /** Set once after the host seated us again; [acknowledgeRejoined] clears it. */
     val rejoined: Boolean get() = false
     fun acknowledgeRejoined() {}
+    /** Table talk (stage 9); null on a solo table. */
+    val talk: TalkControl? get() = null
     fun start()
     fun roll()
     fun move(token: Int)
@@ -56,6 +63,7 @@ class LudoOnlineTable(private val session: GameSession<LudoState, LudoAction>) :
     override val reconnectDeadline: Long get() = session.reconnectDeadline
     override val rejoined: Boolean get() = session.rejoined
     override fun acknowledgeRejoined() = session.acknowledgeRejoined()
+    override val talk: TalkControl? get() = session.talkControl(TalkLayout.BOARD)
     override var busy: Boolean by mutableStateOf(false)
 
     /** Where friends can find this table: the online room code, or "nearby" for a Bluetooth/Wi-Fi table. */
@@ -87,6 +95,7 @@ class LudoOnlineTable(private val session: GameSession<LudoState, LudoAction>) :
 
     override fun move(token: Int) {
         if (!isMyTurn || state.phase != LudoPhase.MOVE || busy) return
+        if (token !in state.movable) { GameAudio.play(Sfx.INVALID_MOVE); return }
         session.submit(LudoAction.Move(token))
     }
 
