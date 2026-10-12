@@ -29,8 +29,8 @@ token, with Postgres as the source of truth and push notifications for offline p
 | Phase | Scope | Status |
 |---|---|---|
 | 1 | Phone OTP sign-in, password rule, unique username with live check, avatar field, profile privacy fields; Sign-in chip on Home | merged (#23) |
-| 2 | People search, friend requests (statuses, blocks), Friends tab, notification centre + bell, presence over WebSocket, pokes, verified focus time | **this PR** |
-| 3 | Group focus: invitations with host proposal, lobby and synced start, late join, participant monitor, early-exit consequences, predefined-message chat | after 2 |
+| 2 | People search, friend requests (statuses, blocks), Friends tab, notification centre + bell, presence over WebSocket, pokes, verified focus time | merged (#24) |
+| 3 | Group focus: invitations with host proposal, lobby and synced start, late join, participant monitor, early-exit consequences, predefined-message chat | **this PR** |
 | 4 | Multi-device acceptance tests, hardening, deployment notes | with 2 and 3 |
 
 ## 3. Phase 1 — what was built
@@ -181,3 +181,74 @@ with presence → poke overlay → "1 focusing now" on the friend's Home → not
   here); the push path is tested with a fake sender.
 - Tapping a push notification opens the app; routing from a push payload to the right screen is
   not yet wired (the notification centre shows it).
+
+## 5. Phase 3 — group focus
+
+### Data model (migration `backend/drizzle/0004_group_focus.sql`)
+
+`group_sessions` (host, status lobby/running/ended/cancelled, proposal JSON, planned minutes,
+revision, server `started_at`/`ends_at`/`ended_at`, members at start), `group_participants`
+(status invited/rejected/approved/ready/join_requested/active/left_early/completed/disconnected,
+host flag, decline note, own `started_at`, last heartbeat, reward minutes, penalty count and when
+it was applied, the verified `focus_sessions` row), `group_messages` (message key only).
+
+### Rules enforced on the server (`backend/src/routes/public/group.ts`)
+
+- Invitations go to friends only; one open session per host; at most 12 people.
+- An invitee accepts or declines with a note; the host revises the proposal and everyone's
+  earlier yes is reset (revision counter); invitees who never answered are dropped at start.
+- Start: every approved member (at least two) must press Start. The last press runs one
+  `UPDATE … WHERE status = 'lobby'`: exactly one caller starts the clock, a concurrent press
+  finds it already running (tested with two simultaneous requests). `started_at`/`ends_at` are
+  the server's; each participant gets a verified focus session so friends see "in a group".
+- Late join: a friend of the host asks; the host approves; the joiner's own `started_at` is
+  now and their reward is the minutes they were in (rounded to the nearest minute), with the
+  usual 7 tiers applied in the app; refused with less than a minute left.
+- Early exit: `penalty_count` = members in the session at that moment, written once; the app
+  applies that many wilted saplings and broken pictures and then reports `penalty-applied`,
+  which succeeds exactly once. The host leaving hands the host role to the longest-standing
+  member; a session nobody is left in ends.
+- Disconnection: a participant without a heartbeat for 2 minutes shows as disconnected (a
+  heartbeat brings them back); at the end, anyone silent for 5 minutes is `left_early` with no
+  penalty, everyone else is `completed` with their minutes credited.
+- Chat: only the predefined keys; 15 messages a minute; members only; closed sessions refuse.
+
+### App
+
+- **Friends tab**: *Focus together* (`src/screens/GroupSetupScreen.tsx`: pick friends, a
+  plant or a picture, the dial) → the **lobby** (`src/screens/GroupLobbyScreen.tsx`: the plan,
+  everyone's answer, accept/decline with a note, the host's *Change the plan*, join requests,
+  "n of m ready", *I'm ready — start*). Cards on the Friends tab show my open sessions and
+  invitations, and friends' running sessions with *Ask to join*.
+- When the server starts the clock, every lobby opens the session screen at once; the timer
+  is the time left from this person's own start, so a late joiner's clock is shorter.
+- **Participant monitor** (`src/components/session/GroupPanel.tsx`) on the session screen:
+  avatars with a ring — active, completed (green tick), disconnected (dashed amber), left
+  early (faded, red cross) — the host's join requests, and the **chat** sheet (smileys and
+  fixed phrases, the same palette as the rest of the app).
+- Early exit: the end dialog says the group cost; the server's count of wilted saplings and
+  broken pictures is applied to the garden (plant sessions) or the balcony (pictures) once.
+- Completion: the server settles the session and tells each person their credited minutes;
+  the usual rewards (coins, plant growth, jigsaw tier) follow from that number.
+
+### Tests
+
+`backend/tests/group.test.ts` (8 tests, five real accounts): friends-only invitations and
+proposal validation, decline with a note and the host's revision resetting answers, the
+atomic start under two simultaneous presses with server timestamps and presence "in a
+group", predefined-only chat delivered live, late join with the host's approval and the
+joiner's own clock, early exit cost and the host handover with the once-only penalty
+acknowledgement, settling (full credit, partial credit for the late joiner, forfeit for the
+long-disconnected, idempotent), cancel and leave-lobby. Whole backend suite: 100 tests.
+
+Web walkthrough with two browsers against the real API: set-up → lobby → invitation card →
+accept → both press Start → both session screens open with the monitor strip → chat → one
+leaves early → the other sees them faded.
+
+### Limitations (phase 3)
+
+- The chat phrases are a sensible fixed set (`backend/src/lib/groupMessages.ts`); swap the
+  list if a different one is wanted — keys are all the server stores.
+- Settling happens on a heartbeat or a finish call after the end time; a session whose every
+  member vanished stays `running` until someone calls in (a periodic sweep is a small addition).
+- As in phase 2: single API instance for presence; push not exercised on real phones.

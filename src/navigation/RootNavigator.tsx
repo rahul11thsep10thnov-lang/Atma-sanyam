@@ -17,6 +17,8 @@ import { SettingsScreen } from '../screens/SettingsScreen';
 import { ProgressScreen } from '../screens/ProgressScreen';
 import { FriendsScreen } from '../screens/FriendsScreen';
 import { NotificationsScreen } from '../screens/NotificationsScreen';
+import { GroupSetupScreen } from '../screens/GroupSetupScreen';
+import { GroupLobbyScreen } from '../screens/GroupLobbyScreen';
 import { useRemoteConfig } from '../context/RemoteConfigContext';
 import { isBackendConfigured } from '../config/env';
 import { ActiveSessionScreen } from '../screens/ActiveSessionScreen';
@@ -130,6 +132,8 @@ export function RootNavigator() {
         <Stack.Screen name="ContentBrowser" component={ContentBrowserScreen} options={{ animation: 'slide_from_bottom' }} />
         <Stack.Screen name="Auth" component={AuthScreen} options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="GroupSetup" component={GroupSetupScreen} options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="GroupLobby" component={GroupLobbyScreen} options={{ animation: 'slide_from_right' }} />
       </Stack.Navigator>
     </NavigationContainer>
     {askLanguage && <LanguagePopup current={normaliseLanguage(settings.language) ?? getLanguage()} onChoose={chooseLanguage} />}
