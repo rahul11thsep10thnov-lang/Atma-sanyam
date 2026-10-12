@@ -1,0 +1,177 @@
+package com.rangepatte.app.ui.board
+
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.geometry.Offset
+import com.rangepatte.app.domain.ludo.Cell
+import com.rangepatte.app.domain.ludo.LudoBoard
+import com.rangepatte.app.domain.ludo.LudoEvent
+import com.rangepatte.app.domain.ludo.LudoState
+import kotlin.math.PI
+import kotlin.math.sin
+import kotlin.random.Random
+
+/**
+ * One frame of motion for the board renderer (stage 4, Design 3 "Glide"). Positions are in board
+ * cells (fractional); the renderer draws the moving token here instead of at its resting square,
+ * the captured tokens on their way home instead of in the yard, and a shine on a safe square.
+ */
+data class MotionFrame(
+    /** The token on the move: its owner, index, and where to draw it (fractional cell), with lift 0..1. */
+    val mover: Mover? = null,
+    /** Captured tokens flying home: owner, index, fractional cell, scale 0..1. */
+    val flying: List<Flyer> = emptyList(),
+    /** A safe square that was just landed on, with its fading alpha. */
+    val shine: Pair<Cell, Float>? = null
+) {
+    data class Mover(val player: Int, val token: Int, val at: Offset, val lift: Float, val trail: List<Offset>)
+    data class Flyer(val player: Int, val token: Int, val at: Offset, val scale: Float)
+    val busy: Boolean get() = mover != null || flying.isNotEmpty()
+}
+
+/** The die as the screen draws it: the face to show and its spin while rolling. */
+data class DieFrame(val face: Int?, val rotation: Float, val rolling: Boolean, val sixFlash: Float)
+
+/**
+ * Runs the animations the engine's events call for and exposes the current [frame] and [die].
+ * [reduceMotion] snaps everything (the die shows its face, tokens jump, captures fade).
+ */
+class LudoMotion(private val reduceMotion: Boolean) {
+    var frame: MotionFrame by mutableStateOf(MotionFrame())
+        private set
+    var die: DieFrame by mutableStateOf(DieFrame(null, 0f, false, 0f))
+        private set
+
+    /** True while something moves; the screen ignores taps and the bots wait. */
+    val busy: Boolean get() = frame.busy || die.rolling
+
+    private val spin = Animatable(0f)
+    private val progress = Animatable(0f)
+    private val flash = Animatable(0f)
+    private val shineAlpha = Animatable(0f)
+
+    /** The die spins through random faces for 600 ms and settles on [value]. */
+    suspend fun roll(value: Int) {
+        if (reduceMotion) { die = DieFrame(value, 0f, false, 0f); if (value == 6) flashSix(); return }
+        die = DieFrame(value, 0f, true, 0f)
+        spin.snapTo(0f)
+        val faces = Random(value.toLong())
+        spin.animateTo(720f, tween(600, easing = FastOutSlowInEasing)) {
+            val settled = this.value > 600f
+            die = DieFrame(if (settled) value else 1 + faces.nextInt(6), this.value, !settled || this.value < 720f, 0f)
+        }
+        die = DieFrame(value, 0f, false, 0f)
+        if (value == 6) flashSix()
+    }
+
+    private suspend fun flashSix() {
+        flash.snapTo(1f)
+        flash.animateTo(0f, tween(500)) { die = die.copy(sixFlash = this.value) }
+    }
+
+    /**
+     * Glides the moved token along its path with an arc and a trail (90 ms a square, at least 350 ms),
+     * then flies any captured tokens home and shines a safe square. [before] is the state the move was
+     * made from (for the captured tokens' squares).
+     */
+    suspend fun move(before: LudoState, event: LudoEvent.Moved) {
+        val player = before.players[event.player]
+        val color = player.color
+        val path: List<Cell> = buildList {
+            if (event.from == LudoBoard.YARD) {
+                add(LudoBoard.yardNests(color)[event.token]); add(LudoBoard.cellOf(color, event.to)!!)
+            } else {
+                for (p in event.from..event.to) add(LudoBoard.cellOf(color, p)!!)
+            }
+        }
+        // Where the captured tokens were standing before they went home.
+        val capturedFrom = event.captured.map { (pi, ti) ->
+            val p = before.players[pi]
+            Triple(pi, ti, LudoBoard.cellOf(p.color, p.tokens[ti])!!)
+        }
+        val landing = path.last()
+        val landedSafe = event.to <= LudoBoard.LAST_TRACK && LudoBoard.isSafe(LudoBoard.trackIndex(color, event.to))
+
+        if (reduceMotion) {
+            if (capturedFrom.isNotEmpty()) {
+                frame = MotionFrame(flying = capturedFrom.map { (pi, ti, c) -> MotionFrame.Flyer(pi, ti, c.toOffset(), 1f) })
+                progress.snapTo(0f)
+                progress.animateTo(1f, tween(300)) { frame = frame.copy(flying = frame.flying.map { it.copy(scale = 1f - this.value) }) }
+            }
+            frame = MotionFrame()
+            return
+        }
+
+        val duration = maxOf(350, 90 * (path.size - 1))
+        progress.snapTo(0f)
+        progress.animateTo(1f, tween(duration, easing = LinearEasing)) {
+            val t = this.value * (path.size - 1)
+            val i = t.toInt().coerceAtMost(path.size - 2)
+            val f = t - i
+            val a = path[i].toOffset(); val b = path[i + 1].toOffset()
+            val at = Offset(a.x + (b.x - a.x) * f, a.y + (b.y - a.y) * f)
+            val lift = sin(this.value * PI).toFloat() * 0.6f
+            val trail = (1..4).mapNotNull { k ->
+                val tt = (t - k * 0.6f); if (tt < 0) null else {
+                    val j = tt.toInt().coerceAtMost(path.size - 2); val g = tt - j
+                    val pa = path[j].toOffset(); val pb = path[j + 1].toOffset()
+                    Offset(pa.x + (pb.x - pa.x) * g, pa.y + (pb.y - pa.y) * g)
+                }
+            }
+            frame = MotionFrame(mover = MotionFrame.Mover(event.player, event.token, at, lift, trail))
+        }
+        if (capturedFrom.isNotEmpty()) {
+            progress.snapTo(0f)
+            progress.animateTo(1f, tween(550, easing = FastOutSlowInEasing)) {
+                val v = this.value
+                frame = MotionFrame(flying = capturedFrom.map { (pi, ti, c) ->
+                    val nest = LudoBoard.yardNests(before.players[pi].color)[ti].toOffset()
+                    val from = c.toOffset()
+                    val arc = sin(v * PI).toFloat() * 1.5f
+                    MotionFrame.Flyer(pi, ti, Offset(from.x + (nest.x - from.x) * v, from.y + (nest.y - from.y) * v - arc), 1.25f - 0.75f * v)
+                })
+            }
+        }
+        if (landedSafe) {
+            shineAlpha.snapTo(1f)
+            shineAlpha.animateTo(0f, tween(600)) { frame = MotionFrame(shine = landing to this.value) }
+        }
+        frame = MotionFrame()
+    }
+}
+
+private fun Cell.toOffset() = Offset(col.toFloat(), row.toFloat())
+
+/**
+ * Watches the session's events and drives [LudoMotion]; the die and the board read its frames.
+ * The session is told when motion is busy so the computer waits and taps are ignored.
+ */
+@Composable
+fun rememberLudoMotion(state: LudoState, shownDice: Int?, reduceMotion: Boolean, onBusy: (Boolean) -> Unit): LudoMotion {
+    val motion = remember { LudoMotion(reduceMotion) }
+    var previous by remember { mutableStateOf(state) }
+    LaunchedEffect(state.moveCount) {
+        val before = previous
+        previous = state
+        if (state.moveCount == 0) return@LaunchedEffect
+        val event = state.lastEvent
+        onBusy(true)
+        try {
+            when (event) {
+                is LudoEvent.Rolled -> motion.roll(event.value)
+                is LudoEvent.Forfeit -> motion.roll(6)
+                is LudoEvent.Moved -> motion.move(before, event)
+                else -> Unit
+            }
+        } finally { onBusy(false) }
+    }
+    return motion
+}

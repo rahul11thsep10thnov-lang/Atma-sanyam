@@ -38,23 +38,28 @@ class LudoSession(setup: LudoSetup, youName: String, botNames: List<String>) {
 
     val isMyTurn: Boolean get() = state.turn == mySeat && state.phase != LudoPhase.OVER
 
+    /** Stage 4: true while the board animates; the computer waits and the player's taps are ignored. */
+    var busy: Boolean by mutableStateOf(false)
+
     fun start() { scope.launch { runBots() } }
 
     fun roll() {
-        if (!isMyTurn || state.phase != LudoPhase.ROLL) return
+        if (!isMyTurn || state.phase != LudoPhase.ROLL || busy) return
         val value = dice.nextInt(1, 7)
         LudoEngine.roll(state, value)?.let { state = it; shownDice = value }
     }
 
     fun move(token: Int) {
-        if (!isMyTurn || state.phase != LudoPhase.MOVE) return
+        if (!isMyTurn || state.phase != LudoPhase.MOVE || busy) return
         LudoEngine.move(state, token)?.let { state = it }
     }
 
     private suspend fun runBots() {
         while (state.phase != LudoPhase.OVER) {
+            if (busy) { delay(60); continue }
             if (state.turn != mySeat) {
-                delay(700)
+                delay(500)
+                if (busy) continue
                 when (state.phase) {
                     LudoPhase.ROLL -> { val v = dice.nextInt(1, 7); LudoEngine.roll(state, v)?.let { state = it; shownDice = v } }
                     LudoPhase.MOVE -> { delay(500); LudoEngine.chooseToken(state, difficulty, random)?.let { t -> LudoEngine.move(state, t)?.let { state = it } } }

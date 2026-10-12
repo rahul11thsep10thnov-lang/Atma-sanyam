@@ -57,15 +57,18 @@ fun LudoBoardView(
     highlight: List<Int>,
     onTokenTap: (token: Int) -> Unit,
     modifier: Modifier = Modifier,
-    pulse: Float = 1f
+    pulse: Float = 1f,
+    /** Stage 4: the token in motion, captured tokens flying home, a shining safe square. */
+    motion: MotionFrame = MotionFrame()
 ) {
     val measurer = rememberTextMeasurer()
     Canvas(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(1f)
-            .pointerInput(state.turn, state.phase, highlight) {
+            .pointerInput(state.turn, state.phase, highlight, motion.busy) {
                 detectTapGestures { offset ->
+                    if (motion.busy) return@detectTapGestures
                     val cell = cellAt(offset, size.width.toFloat())
                     val me = state.current
                     // The tapped cell's movable token (the first of a stack).
@@ -78,7 +81,7 @@ fun LudoBoardView(
                 }
             }
     ) {
-        drawBoard(measurer, state, highlight.toSet(), pulse)
+        drawBoard(measurer, state, highlight.toSet(), pulse, motion)
     }
 }
 
@@ -88,7 +91,7 @@ private fun cellAt(offset: Offset, widthPx: Float): Cell {
     return Cell(((offset.x - margin) / cell).toInt(), ((offset.y - margin) / cell).toInt())
 }
 
-private fun DrawScope.drawBoard(measurer: TextMeasurer, state: LudoState, highlight: Set<Int>, pulse: Float) {
+private fun DrawScope.drawBoard(measurer: TextMeasurer, state: LudoState, highlight: Set<Int>, pulse: Float, motion: MotionFrame) {
     val s = min(size.width, size.height)
     val cell = s / (LudoBoard.SIZE + 1.2f)
     val margin = cell * 0.6f
@@ -143,20 +146,38 @@ private fun DrawScope.drawBoard(measurer: TextMeasurer, state: LudoState, highli
     drawCircle(LudoPalette.Ivory, radius = cell * 0.75f, center = Offset(cx, cy))
     drawCircle(LudoPalette.Gold, radius = cell * 0.75f, center = Offset(cx, cy), style = Stroke(width = cell * 0.08f))
     drawStar(Offset(cx, cy), cell * 0.42f, LudoPalette.GoldDark)
-    // Safe stars.
+    // Safe stars, and the shine on one just landed on.
     LudoBoard.SAFE_INDICES.forEach { i -> drawStar(centre(LudoBoard.TRACK[i]), cell * 0.3f, LudoPalette.GoldDark.copy(alpha = 0.7f)) }
+    motion.shine?.let { (c, alpha) ->
+        drawCircle(Color(0xFFF5C542).copy(alpha = 0.6f * alpha), radius = cell * (0.5f + 0.4f * (1f - alpha)), center = centre(c))
+        drawStar(centre(c), cell * 0.3f, Color(0xFFF5C542).copy(alpha = alpha))
+    }
 
     // Tokens: grouped per cell so stacks show a count; the current player's movable ones get a glow.
     data class Piece(val player: Int, val token: Int, val color: LudoColor)
+    val suitStyle = TextStyle(fontSize = (cell * 0.45f / density).sp, fontWeight = FontWeight.Bold, color = LudoPalette.Ivory)
     val byCell = LinkedHashMap<Cell, MutableList<Piece>>()
+    val inMotion = buildSet {
+        motion.mover?.let { add(it.player to it.token) }
+        motion.flying.forEach { add(it.player to it.token) }
+    }
     state.players.forEachIndexed { pi, p ->
         p.tokens.forEachIndexed { ti, pos ->
-            if (pos == LudoBoard.HOME) return@forEachIndexed
+            if (pos == LudoBoard.HOME || (pi to ti) in inMotion) return@forEachIndexed
             val c = LudoBoard.cellOf(p.color, pos) ?: LudoBoard.yardNests(p.color)[ti]
             byCell.getOrPut(c) { ArrayList() }.add(Piece(pi, ti, p.color))
         }
     }
-    val suitStyle = TextStyle(fontSize = (cell * 0.45f / density).sp, fontWeight = FontWeight.Bold, color = LudoPalette.Ivory)
+    fun fractional(o: Offset) = Offset(margin + (o.x + 0.5f) * cell, margin + (o.y + 0.5f) * cell)
+    fun drawPiece(at: Offset, color: LudoColor, radius: Float, alpha: Float = 1f) {
+        drawCircle(Color.Black.copy(alpha = 0.35f * alpha), radius = radius, center = at + Offset(radius * 0.12f, radius * 0.22f))
+        drawCircle(LudoPalette.of(color).copy(alpha = alpha), radius = radius, center = at)
+        drawCircle(LudoPalette.Ivory.copy(alpha = alpha), radius = radius, center = at, style = Stroke(width = radius * 0.2f))
+        if (alpha > 0.5f) {
+            val text = measurer.measure(color.suit, suitStyle)
+            drawText(text, topLeft = Offset(at.x - text.size.width / 2f, at.y - text.size.height / 2f))
+        }
+    }
     byCell.forEach { (c, pieces) ->
         val base = centre(c)
         val radius = cell * 0.36f
@@ -176,6 +197,18 @@ private fun DrawScope.drawBoard(measurer: TextMeasurer, state: LudoState, highli
             drawCircle(LudoPalette.Ivory, radius = cell * 0.2f, center = base + Offset(cell * 0.3f, -cell * 0.3f))
             drawText(label, topLeft = Offset(base.x + cell * 0.3f - label.size.width / 2f, base.y - cell * 0.3f - label.size.height / 2f))
         }
+    }
+    // Stage 4 (Glide): the fading trail, the gliding token lifted on its arc, and captured tokens flying home.
+    motion.mover?.let { m ->
+        val color = state.players[m.player].color
+        val radius = cell * 0.36f
+        m.trail.forEachIndexed { i, o -> drawCircle(LudoPalette.of(color).copy(alpha = 0.28f - i * 0.06f), radius = radius * (0.8f - i * 0.12f), center = fractional(o)) }
+        val at = fractional(m.at) - Offset(0f, cell * 0.35f * m.lift)
+        drawCircle(Color.Black.copy(alpha = 0.3f), radius = radius * (1f + 0.3f * m.lift), center = fractional(m.at) + Offset(0f, radius * 0.3f))
+        drawPiece(at, color, radius * (1f + 0.15f * m.lift))
+    }
+    motion.flying.forEach { f ->
+        drawPiece(fractional(f.at), state.players[f.player].color, cell * 0.36f * f.scale, alpha = (0.4f + 0.6f * f.scale).coerceIn(0f, 1f))
     }
     // Finished tokens: small discs around the medallion.
     state.players.forEach { p ->

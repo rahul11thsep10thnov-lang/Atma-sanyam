@@ -580,7 +580,15 @@ prefers finishing, capturing, leaving the yard; Hard also weighs threats). A ful
 the end for twenty seeds in the tests with the invariant that two colours never share an unsafe
 square. `ui/board/LudoSession.kt` is the solo table: dice from `SecureRandom`, bots on a short delay;
 the multiplayer table comes with the lobby stage on the same lockstep engine as the card games.
-Dice and token animations are stage 4.
+
+**Ludo stage 4 — motion (approved Design 3, "Glide").** `ui/board/LudoMotion.kt` runs the animations
+the engine's events call for, and only after the engine has decided: the die spins through random
+faces for 600 ms and settles on the engine's value (a six adds a gold flash); a moved token glides
+along its path with a small arc and a fading trail (90 ms a square, at least 350 ms); captured tokens
+then fly home along a curve, shrinking; a safe square shines when a token lands on it. The renderer
+draws the moving pieces from a `MotionFrame` instead of their resting squares, so the picture and the
+state can never disagree. While anything moves the table is busy: taps are ignored and the computer
+waits. With the system's animator scale at 0 the die shows its face, tokens jump and captures fade.
 
 ## Sound and music
 
