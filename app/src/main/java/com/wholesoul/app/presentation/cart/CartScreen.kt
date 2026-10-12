@@ -147,7 +147,13 @@ private fun CartItemRow(
                 }
             }
         }
-        AddOrQuantitySelector(quantity = item.quantity, onAdd = onIncrement, onIncrement = onIncrement, onDecrement = onDecrement)
+        AddOrQuantitySelector(
+            quantity = item.quantity,
+            onAdd = onIncrement,
+            onIncrement = onIncrement,
+            onDecrement = onDecrement,
+            canIncrement = item.quantity < item.product.stock,
+        )
         IconButton(onClick = onRemove) {
             Icon(Icons.Filled.Close, contentDescription = "Remove", tint = WholesoulColors.TextTertiary)
         }

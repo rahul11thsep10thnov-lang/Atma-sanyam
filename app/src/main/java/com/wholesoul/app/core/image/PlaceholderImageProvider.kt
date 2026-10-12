@@ -15,6 +15,7 @@ class PlaceholderImageProvider @Inject constructor() : ImageProvider {
     private val palette = listOf("FFD8B1", "E3F1E5", "FFF8F0", "F0B685", "D9EFE0")
 
     override fun resolve(imageKey: String): Any {
+        if (imageKey.isImportedPhoto()) return imageKey
         val label = imageKey.substringAfterLast('/').replace('-', ' ').take(24)
         val color = palette[imageKey.hashCode().mod(palette.size)]
         val encodedLabel = label.replace(" ", "+")

@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.ExitToApp
@@ -56,6 +57,7 @@ private sealed interface ProfileAction {
     data object Coupons : ProfileAction
     data object Notifications : ProfileAction
     data object Help : ProfileAction
+    data object Admin : ProfileAction
     data class Legal(val docType: LegalDocType) : ProfileAction
 }
 
@@ -67,6 +69,7 @@ fun ProfileScreen(
     onNavigateOffers: () -> Unit,
     onNavigateNotifications: () -> Unit,
     onNavigateHelp: () -> Unit,
+    onNavigateAdmin: () -> Unit,
     onNavigateLegal: (LegalDocType) -> Unit,
     onLoggedOut: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel(),
@@ -81,6 +84,7 @@ fun ProfileScreen(
         ProfileMenuItem(Icons.Filled.LocalOffer, "Coupons & Offers", ProfileAction.Coupons),
         ProfileMenuItem(Icons.Filled.Notifications, "Notifications", ProfileAction.Notifications),
         ProfileMenuItem(Icons.Filled.Help, "Help & Support", ProfileAction.Help),
+        ProfileMenuItem(Icons.Filled.AdminPanelSettings, "Admin Console", ProfileAction.Admin),
         ProfileMenuItem(Icons.Filled.Info, "About WHOLESOUL", ProfileAction.Legal(LegalDocType.ABOUT)),
         ProfileMenuItem(Icons.Filled.Description, "Terms & Conditions", ProfileAction.Legal(LegalDocType.TERMS)),
         ProfileMenuItem(Icons.Filled.Description, "Privacy Policy", ProfileAction.Legal(LegalDocType.PRIVACY_POLICY)),
@@ -119,6 +123,7 @@ fun ProfileScreen(
                         ProfileAction.Coupons -> onNavigateOffers()
                         ProfileAction.Notifications -> onNavigateNotifications()
                         ProfileAction.Help -> onNavigateHelp()
+                        ProfileAction.Admin -> onNavigateAdmin()
                         is ProfileAction.Legal -> onNavigateLegal(item.action.docType)
                     }
                 }

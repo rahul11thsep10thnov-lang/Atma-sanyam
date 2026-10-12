@@ -8,6 +8,7 @@ import com.wholesoul.app.core.analytics.AnalyticsLogger
 import com.wholesoul.app.core.util.UiState
 import com.wholesoul.app.domain.model.Product
 import com.wholesoul.app.domain.repository.CartRepository
+import com.wholesoul.app.domain.repository.CatalogChanges
 import com.wholesoul.app.domain.repository.ProductRepository
 import com.wholesoul.app.domain.repository.WishlistRepository
 import com.wholesoul.app.domain.repository.observeQuantityMap
@@ -33,6 +34,7 @@ class ProductDetailsViewModel @Inject constructor(
     private val cartRepository: CartRepository,
     private val wishlistRepository: WishlistRepository,
     private val analyticsLogger: AnalyticsLogger,
+    private val catalogChanges: CatalogChanges,
 ) : ViewModel() {
 
     private val productId: String = checkNotNull(savedStateHandle["productId"])
@@ -43,14 +45,18 @@ class ProductDetailsViewModel @Inject constructor(
     val cartQuantities: StateFlow<Map<String, Int>> = cartRepository.observeQuantityMap()
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
-    init { load() }
+    init {
+        load()
+        // Price, photo or stock edits (and the item being hidden) show up while the page is open.
+        viewModelScope.launch { catalogChanges.events.collect { load(showLoading = false, logView = false) } }
+    }
 
-    fun load() {
+    fun load(showLoading: Boolean = true, logView: Boolean = true) {
         viewModelScope.launch {
-            _uiState.value = UiState.Loading
+            if (showLoading) _uiState.value = UiState.Loading
             productRepository.getProductById(productId)
                 .onSuccess { product ->
-                    analyticsLogger.log(AnalyticsEvent.ProductViewed(product.id))
+                    if (logView) analyticsLogger.log(AnalyticsEvent.ProductViewed(product.id))
                     val related = productRepository.getRelatedProducts(product).getOrDefault(emptyList())
                     val wishlisted = wishlistRepository.isWishlisted(product.id)
                     _uiState.value = UiState.Success(ProductDetailsContent(product, related, wishlisted))

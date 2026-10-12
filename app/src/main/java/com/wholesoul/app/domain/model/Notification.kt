@@ -17,7 +17,7 @@ data class Offer(
     val description: String,
     val imageKey: String,
     val couponCode: String? = null,
-    val category: ProductCategory? = null,
+    val categoryId: String? = null,
 )
 
 data class WishlistItem(

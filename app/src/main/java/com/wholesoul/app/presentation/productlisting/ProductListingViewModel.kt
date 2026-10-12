@@ -5,8 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wholesoul.app.core.util.UiState
 import com.wholesoul.app.domain.model.Product
-import com.wholesoul.app.domain.model.ProductCategory
 import com.wholesoul.app.domain.repository.CartRepository
+import com.wholesoul.app.domain.repository.CatalogChanges
+import com.wholesoul.app.domain.repository.CategoryRepository
 import com.wholesoul.app.domain.repository.ProductFilter
 import com.wholesoul.app.domain.repository.ProductRepository
 import com.wholesoul.app.domain.repository.SortOption
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class ProductListingUiState(
-    val category: ProductCategory,
+    val categoryName: String = "",
     val isGridView: Boolean = true,
     val filter: ProductFilter = ProductFilter(),
     val products: UiState<List<Product>> = UiState.Loading,
@@ -32,24 +33,31 @@ class ProductListingViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val productRepository: ProductRepository,
     private val cartRepository: CartRepository,
+    private val categoryRepository: CategoryRepository,
+    private val catalogChanges: CatalogChanges,
 ) : ViewModel() {
 
-    private val category = ProductCategory.valueOf(
-        savedStateHandle.get<String>("categoryName") ?: ProductCategory.FRUITS.name,
-    )
+    private val categoryId: String = savedStateHandle.get<String>("categoryId").orEmpty()
 
-    private val _uiState = MutableStateFlow(ProductListingUiState(category = category))
+    private val _uiState = MutableStateFlow(ProductListingUiState())
     val uiState: StateFlow<ProductListingUiState> = _uiState.asStateFlow()
 
     val cartQuantities: StateFlow<Map<String, Int>> = cartRepository.observeQuantityMap()
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
-    init { load() }
+    init {
+        load()
+        // Pick up Admin Console edits without flashing the loading skeleton.
+        viewModelScope.launch { catalogChanges.events.collect { load(showLoading = false) } }
+    }
 
-    fun load() {
+    fun load(showLoading: Boolean = true) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(products = UiState.Loading)
-            productRepository.getProductsByCategory(category, _uiState.value.filter)
+            if (showLoading) _uiState.value = _uiState.value.copy(products = UiState.Loading)
+            categoryRepository.getCategory(categoryId).onSuccess { category ->
+                _uiState.value = _uiState.value.copy(categoryName = category.displayName)
+            }
+            productRepository.getProductsByCategory(categoryId, _uiState.value.filter)
                 .onSuccess { list ->
                     _uiState.value = _uiState.value.copy(
                         products = if (list.isEmpty()) UiState.Empty("No products match your filters") else UiState.Success(list),

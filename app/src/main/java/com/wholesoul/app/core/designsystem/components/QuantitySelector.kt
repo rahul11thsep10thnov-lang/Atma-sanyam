@@ -32,6 +32,8 @@ fun AddOrQuantitySelector(
     onIncrement: () -> Unit,
     onDecrement: () -> Unit,
     modifier: Modifier = Modifier,
+    /** False once the quantity reaches the stock the shop has; the [+] then does nothing. */
+    canIncrement: Boolean = true,
 ) {
     if (quantity <= 0) {
         Box(
@@ -62,20 +64,25 @@ fun AddOrQuantitySelector(
                     color = Color.White,
                 )
             }
-            StepperIcon(Icons.Filled.Add, "Increase quantity", onIncrement)
+            StepperIcon(Icons.Filled.Add, "Increase quantity", onIncrement, enabled = canIncrement)
         }
     }
 }
 
 @Composable
-private fun StepperIcon(icon: androidx.compose.ui.graphics.vector.ImageVector, description: String, onClick: () -> Unit) {
+private fun StepperIcon(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    description: String,
+    onClick: () -> Unit,
+    enabled: Boolean = true,
+) {
     Box(
         modifier = Modifier
             .size(34.dp)
-            .clickable(onClickLabel = description, onClick = onClick)
+            .clickable(enabled = enabled, onClickLabel = description, onClick = onClick)
             .semantics { contentDescription = description },
         contentAlignment = Alignment.Center,
     ) {
-        Icon(icon, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
+        Icon(icon, contentDescription = null, tint = if (enabled) Color.White else Color.White.copy(alpha = 0.4f), modifier = Modifier.size(16.dp))
     }
 }

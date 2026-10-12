@@ -81,7 +81,13 @@ class MockAuthRepository @Inject constructor(
 
     override suspend fun logout() {
         currentUser.value = null
-        dataStore.edit { it.clear() }
+        // Only the sign-in keys: the shop's admin PIN and "catalog already seeded" flag must survive.
+        dataStore.edit { prefs ->
+            prefs.remove(AuthKeys.USER_ID)
+            prefs.remove(AuthKeys.NAME)
+            prefs.remove(AuthKeys.MOBILE)
+            prefs.remove(AuthKeys.IS_GUEST)
+        }
     }
 
     private suspend fun persist(user: User, isGuest: Boolean) {

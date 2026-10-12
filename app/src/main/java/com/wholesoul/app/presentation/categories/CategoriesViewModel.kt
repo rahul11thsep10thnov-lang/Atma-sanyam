@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wholesoul.app.core.util.UiState
 import com.wholesoul.app.domain.model.Category
+import com.wholesoul.app.domain.repository.CatalogChanges
 import com.wholesoul.app.domain.repository.CategoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,16 +16,21 @@ import javax.inject.Inject
 @HiltViewModel
 class CategoriesViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
+    private val catalogChanges: CatalogChanges,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState<List<Category>>>(UiState.Loading)
     val uiState: StateFlow<UiState<List<Category>>> = _uiState.asStateFlow()
 
-    init { load() }
+    init {
+        load()
+        // Pick up Admin Console edits without flashing the loading skeleton.
+        viewModelScope.launch { catalogChanges.events.collect { load(showLoading = false) } }
+    }
 
-    fun load() {
+    fun load(showLoading: Boolean = true) {
         viewModelScope.launch {
-            _uiState.value = UiState.Loading
+            if (showLoading) _uiState.value = UiState.Loading
             categoryRepository.getCategories()
                 .onSuccess { _uiState.value = if (it.isEmpty()) UiState.Empty("No categories available") else UiState.Success(it) }
                 .onFailure { _uiState.value = UiState.Error(it.message ?: "Something went wrong") }

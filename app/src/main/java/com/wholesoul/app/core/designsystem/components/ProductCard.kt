@@ -111,6 +111,7 @@ fun ProductCard(
                     onIncrement = onIncrement,
                     onDecrement = onDecrement,
                     modifier = Modifier.fillMaxWidth(),
+                    canIncrement = cartQuantity < product.stock,
                 )
             }
         }

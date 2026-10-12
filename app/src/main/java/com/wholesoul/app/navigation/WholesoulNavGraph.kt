@@ -17,6 +17,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.wholesoul.app.presentation.address.AddEditAddressScreen
+import com.wholesoul.app.presentation.admin.AdminCategoryEditScreen
+import com.wholesoul.app.presentation.admin.AdminGate
+import com.wholesoul.app.presentation.admin.AdminHomeScreen
+import com.wholesoul.app.presentation.admin.AdminProductEditScreen
 import com.wholesoul.app.presentation.address.AddressListScreen
 import com.wholesoul.app.presentation.auth.LoginScreen
 import com.wholesoul.app.presentation.auth.OtpScreen
@@ -117,20 +121,20 @@ private fun WholesoulNavHost(navController: NavHostController) {
                 onAddressClick = { navController.navigate(Routes.addressList(selectMode = true)) },
                 onSearchClick = { navController.navigate(Routes.SEARCH) },
                 onNotificationsClick = { navController.navigate(Routes.NOTIFICATIONS) },
-                onCategoryClick = { category -> navController.navigate(Routes.productListing(category.name)) },
+                onCategoryClick = { categoryId -> navController.navigate(Routes.productListing(categoryId)) },
                 onProductClick = { product -> navController.navigate(Routes.productDetails(product.id)) },
             )
         }
 
         composable(Routes.CATEGORIES) {
             CategoriesScreen(
-                onCategoryClick = { category -> navController.navigate(Routes.productListing(category.name)) },
+                onCategoryClick = { category -> navController.navigate(Routes.productListing(category.id)) },
             )
         }
 
         composable(
             Routes.PRODUCT_LISTING,
-            arguments = listOf(navArgument("categoryName") { type = NavType.StringType }),
+            arguments = listOf(navArgument("categoryId") { type = NavType.StringType }),
         ) {
             ProductListingScreen(
                 onBack = { navController.popBackStack() },
@@ -249,6 +253,7 @@ private fun WholesoulNavHost(navController: NavHostController) {
                 onNavigateOffers = { navController.navigate(Routes.OFFERS) },
                 onNavigateNotifications = { navController.navigate(Routes.NOTIFICATIONS) },
                 onNavigateHelp = { navController.navigate(Routes.HELP) },
+                onNavigateAdmin = { navController.navigate(Routes.ADMIN) },
                 onNavigateLegal = { docType -> navController.navigate(Routes.legal(docType.name)) },
                 onLoggedOut = {
                     navController.navigate(Routes.LOGIN) { popUpTo(0) { inclusive = true } }
@@ -274,6 +279,41 @@ private fun WholesoulNavHost(navController: NavHostController) {
         ) { backStackEntry ->
             val docType = LegalDocType.valueOf(backStackEntry.arguments?.getString("docType") ?: LegalDocType.ABOUT.name)
             LegalScreen(docType = docType, onBack = { navController.popBackStack() })
+        }
+
+        // Admin Console. Every page sits behind the PIN gate, including the deep ones, so a
+        // restored back stack can never reveal an editor without the PIN.
+        composable(Routes.ADMIN) {
+            AdminGate(onBack = { navController.popBackStack() }) {
+                AdminHomeScreen(
+                    onBack = { navController.popBackStack() },
+                    onAddItem = { categoryId -> navController.navigate(Routes.adminProduct(null, categoryId)) },
+                    onEditItem = { productId -> navController.navigate(Routes.adminProduct(productId)) },
+                    onAddCategory = { navController.navigate(Routes.adminCategory(null)) },
+                    onEditCategory = { categoryId -> navController.navigate(Routes.adminCategory(categoryId)) },
+                )
+            }
+        }
+
+        composable(
+            Routes.ADMIN_PRODUCT,
+            arguments = listOf(
+                navArgument("productId") { type = NavType.StringType },
+                navArgument("categoryId") { type = NavType.StringType; nullable = true; defaultValue = null },
+            ),
+        ) {
+            AdminGate(onBack = { navController.popBackStack() }) {
+                AdminProductEditScreen(onBack = { navController.popBackStack() })
+            }
+        }
+
+        composable(
+            Routes.ADMIN_CATEGORY,
+            arguments = listOf(navArgument("categoryId") { type = NavType.StringType }),
+        ) {
+            AdminGate(onBack = { navController.popBackStack() }) {
+                AdminCategoryEditScreen(onBack = { navController.popBackStack() })
+            }
         }
     }
 }

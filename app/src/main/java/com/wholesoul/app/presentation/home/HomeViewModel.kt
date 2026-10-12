@@ -11,6 +11,7 @@ import com.wholesoul.app.domain.model.Category
 import com.wholesoul.app.domain.model.Product
 import com.wholesoul.app.domain.repository.AddressRepository
 import com.wholesoul.app.domain.repository.CartRepository
+import com.wholesoul.app.domain.repository.CatalogChanges
 import com.wholesoul.app.domain.repository.CategoryRepository
 import com.wholesoul.app.domain.repository.ProductRepository
 import com.wholesoul.app.domain.repository.observeQuantityMap
@@ -42,6 +43,7 @@ class HomeViewModel @Inject constructor(
     private val cartRepository: CartRepository,
     private val addressRepository: AddressRepository,
     private val analyticsLogger: AnalyticsLogger,
+    private val catalogChanges: CatalogChanges,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState<HomeContent>>(UiState.Loading)
@@ -57,11 +59,13 @@ class HomeViewModel @Inject constructor(
 
     init {
         load()
+        // Pick up Admin Console edits without flashing the loading skeleton.
+        viewModelScope.launch { catalogChanges.events.collect { load(showLoading = false) } }
     }
 
-    fun load() {
+    fun load(showLoading: Boolean = true) {
         viewModelScope.launch {
-            _uiState.value = UiState.Loading
+            if (showLoading) _uiState.value = UiState.Loading
             val categoriesDeferred = async { categoryRepository.getCategories() }
             val bannersDeferred = async { categoryRepository.getBanners() }
             val freshDeferred = async { productRepository.getFreshToday() }

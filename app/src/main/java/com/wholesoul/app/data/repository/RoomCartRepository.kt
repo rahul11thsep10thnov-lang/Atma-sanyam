@@ -2,49 +2,80 @@ package com.wholesoul.app.data.repository
 
 import com.wholesoul.app.core.util.Constants
 import com.wholesoul.app.data.local.dao.CartDao
+import com.wholesoul.app.data.local.dao.ProductDao
 import com.wholesoul.app.data.local.entity.CartItemEntity
 import com.wholesoul.app.data.local.entity.CartMetaEntity
+import com.wholesoul.app.data.local.entity.toDomain
 import com.wholesoul.app.data.mock.MockOfferData
-import com.wholesoul.app.data.mock.MockProductData
 import com.wholesoul.app.domain.model.Cart
 import com.wholesoul.app.domain.model.CartItem
 import com.wholesoul.app.domain.model.CartTotals
 import com.wholesoul.app.domain.model.Coupon
 import com.wholesoul.app.domain.model.CouponType
 import com.wholesoul.app.domain.repository.CartRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * The cart holds product ids and quantities; the products themselves come from the editable
+ * catalog, so a price change, a hidden item or a stock change made in the Admin Console shows up
+ * here immediately. Quantities never exceed the stock the shop has set.
+ */
 @Singleton
 class RoomCartRepository @Inject constructor(
     private val cartDao: CartDao,
+    private val productDao: ProductDao,
 ) : CartRepository {
 
-    private val productsById by lazy { MockProductData.allProducts.associateBy { it.id } }
     private val couponsByCode by lazy { MockOfferData.coupons.associateBy { it.code } }
 
-    override val cart: Flow<Cart> = combine(cartDao.observeItems(), cartDao.observeMeta()) { items, meta ->
-        val cartItems = items.mapNotNull { entity ->
-            productsById[entity.productId]?.let { product -> CartItem(product, entity.quantity) }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val cartItems = cartDao.observeItems().flatMapLatest { items ->
+        if (items.isEmpty()) {
+            flowOf(emptyList<CartItem>())
+        } else {
+            productDao.observeVisibleByIds(items.map { it.productId }).map { entities ->
+                val byId = entities.associateBy { it.id }
+                items.mapNotNull { item -> byId[item.productId]?.let { CartItem(it.toDomain(), item.quantity) } }
+            }
         }
-        val coupon = meta?.appliedCouponCode?.let { couponsByCode[it] }
-        Cart(items = cartItems, appliedCoupon = coupon)
+    }
+
+    override val cart: Flow<Cart> = combine(cartItems, cartDao.observeMeta()) { items, meta ->
+        Cart(items = items, appliedCoupon = meta?.appliedCouponCode?.let { couponsByCode[it] })
     }
 
     override suspend fun addToCart(productId: String, quantity: Int) {
         val existing = cartDao.getItem(productId)
-        val newQuantity = (existing?.quantity ?: 0) + quantity
-        cartDao.upsert(CartItemEntity(productId, newQuantity.coerceAtLeast(1), System.currentTimeMillis()))
+        setQuantity(productId, (existing?.quantity ?: 0) + quantity, existing?.addedAtEpochMillis)
     }
 
     override suspend fun updateQuantity(productId: String, quantity: Int) {
         if (quantity <= 0) {
             cartDao.delete(productId)
         } else {
-            val existing = cartDao.getItem(productId)
-            cartDao.upsert(CartItemEntity(productId, quantity, existing?.addedAtEpochMillis ?: System.currentTimeMillis()))
+            setQuantity(productId, quantity, cartDao.getItem(productId)?.addedAtEpochMillis)
+        }
+    }
+
+    /** Stores [wanted] capped to the shop's stock; an unavailable or sold-out product is not added. */
+    private suspend fun setQuantity(productId: String, wanted: Int, addedAt: Long?) {
+        val product = productDao.getById(productId)
+        if (product == null || !product.isActive) {
+            cartDao.delete(productId)
+            return
+        }
+        val quantity = wanted.coerceAtMost(product.stock)
+        if (quantity <= 0) {
+            cartDao.delete(productId)
+        } else {
+            cartDao.upsert(CartItemEntity(productId, quantity, addedAt ?: System.currentTimeMillis()))
         }
     }
 

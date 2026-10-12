@@ -1,17 +1,33 @@
 package com.wholesoul.app.di
 
+import com.wholesoul.app.data.admin.AdminPinStore
+import com.wholesoul.app.data.admin.DataStoreAdminPinStore
+import com.wholesoul.app.data.admin.PinAdminAccess
+import com.wholesoul.app.data.catalog.CatalogChangeBus
+import com.wholesoul.app.data.catalog.CatalogSeedFlag
+import com.wholesoul.app.data.catalog.CatalogSeeder
+import com.wholesoul.app.data.catalog.DataStoreCatalogSeedFlag
+import com.wholesoul.app.data.catalog.CatalogSeeding
+import com.wholesoul.app.data.local.RoomTransactionRunner
+import com.wholesoul.app.data.local.TransactionRunner
+import com.wholesoul.app.data.media.LocalImageStore
 import com.wholesoul.app.data.repository.MockAuthRepository
-import com.wholesoul.app.data.repository.MockCategoryRepository
+import com.wholesoul.app.data.repository.RoomAdminCatalogRepository
+import com.wholesoul.app.data.repository.RoomCategoryRepository
+import com.wholesoul.app.data.repository.RoomProductRepository
 import com.wholesoul.app.data.repository.MockCouponRepository
 import com.wholesoul.app.data.repository.MockNotificationRepository
 import com.wholesoul.app.data.repository.MockPaymentRepository
-import com.wholesoul.app.data.repository.MockProductRepository
 import com.wholesoul.app.data.repository.MockServiceabilityRepository
 import com.wholesoul.app.data.repository.RoomAddressRepository
 import com.wholesoul.app.data.repository.RoomCartRepository
 import com.wholesoul.app.data.repository.RoomOrderRepository
 import com.wholesoul.app.data.repository.RoomWishlistRepository
 import com.wholesoul.app.domain.repository.AddressRepository
+import com.wholesoul.app.domain.repository.AdminAccess
+import com.wholesoul.app.domain.repository.AdminCatalogRepository
+import com.wholesoul.app.domain.repository.CatalogChanges
+import com.wholesoul.app.domain.repository.ImageStore
 import com.wholesoul.app.domain.repository.AuthRepository
 import com.wholesoul.app.domain.repository.CartRepository
 import com.wholesoul.app.domain.repository.CategoryRepository
@@ -44,11 +60,11 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindProductRepository(impl: MockProductRepository): ProductRepository
+    abstract fun bindProductRepository(impl: RoomProductRepository): ProductRepository
 
     @Binds
     @Singleton
-    abstract fun bindCategoryRepository(impl: MockCategoryRepository): CategoryRepository
+    abstract fun bindCategoryRepository(impl: RoomCategoryRepository): CategoryRepository
 
     @Binds
     @Singleton
@@ -81,4 +97,38 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindServiceabilityRepository(impl: MockServiceabilityRepository): ServiceabilityRepository
+
+    // --- Admin Console / editable catalog ---
+
+    @Binds
+    @Singleton
+    abstract fun bindAdminCatalogRepository(impl: RoomAdminCatalogRepository): AdminCatalogRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCatalogChanges(impl: CatalogChangeBus): CatalogChanges
+
+    @Binds
+    @Singleton
+    abstract fun bindCatalogSeeding(impl: CatalogSeeder): CatalogSeeding
+
+    @Binds
+    @Singleton
+    abstract fun bindCatalogSeedFlag(impl: DataStoreCatalogSeedFlag): CatalogSeedFlag
+
+    @Binds
+    @Singleton
+    abstract fun bindTransactionRunner(impl: RoomTransactionRunner): TransactionRunner
+
+    @Binds
+    @Singleton
+    abstract fun bindImageStore(impl: LocalImageStore): ImageStore
+
+    @Binds
+    @Singleton
+    abstract fun bindAdminAccess(impl: PinAdminAccess): AdminAccess
+
+    @Binds
+    @Singleton
+    abstract fun bindAdminPinStore(impl: DataStoreAdminPinStore): AdminPinStore
 }

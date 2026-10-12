@@ -1,6 +1,9 @@
 package com.wholesoul.app.presentation.productdetails
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,6 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,7 +32,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wholesoul.app.core.designsystem.WholesoulColors
@@ -72,7 +81,7 @@ fun ProductDetailsScreen(
         )
 
         when (val state = uiState) {
-            is UiState.Loading -> androidx.compose.foundation.layout.Box(Modifier.fillMaxSize())
+            is UiState.Loading -> Box(Modifier.fillMaxSize())
             is UiState.Error -> GenericErrorView(onRetry = viewModel::load)
             is UiState.Empty -> GenericErrorView(onRetry = viewModel::load)
             is UiState.Success -> ProductDetailsContentView(
@@ -112,23 +121,21 @@ private fun ProductDetailsContentView(
     onRelatedDecrement: (Product) -> Unit,
 ) {
     val product = content.product
-    val imageProvider = LocalImageProvider.current
     val scrollState = rememberScrollState()
 
     Column(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.weight(1f).verticalScroll(scrollState)) {
-            WholesoulImage(
-                model = imageProvider.resolve(product.imageKey),
-                contentDescription = product.name,
-                modifier = Modifier.fillMaxWidth().height(280.dp),
-            )
+            ProductPhotos(product)
 
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(product.name, style = MaterialTheme.typography.headlineSmall)
                 Text(product.weightLabel, style = MaterialTheme.typography.bodyMedium, color = WholesoulColors.TextSecondary)
                 Spacer(Modifier.height(6.dp))
-                RatingBadge(product.rating, product.reviewCount)
-                Spacer(Modifier.height(10.dp))
+                // A product the shop has just added has no reviews yet; don't show a made-up rating.
+                if (product.reviewCount > 0) {
+                    RatingBadge(product.rating, product.reviewCount)
+                    Spacer(Modifier.height(10.dp))
+                }
                 Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                     PriceTag(price = product.price, mrp = product.mrp)
                     Spacer(Modifier.width(10.dp))
@@ -212,8 +219,48 @@ private fun ProductDetailsContentView(
                     onIncrement = onIncrement,
                     onDecrement = onDecrement,
                     modifier = Modifier.weight(1f),
+                    canIncrement = cartQuantity < product.stock,
                 )
                 PrimaryButton(text = "BUY NOW", onClick = onBuyNow, modifier = Modifier.weight(1f))
+            }
+        }
+    }
+}
+
+/** The primary photo, swipeable through any extra photos the shop added. */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun ProductPhotos(product: Product) {
+    val imageProvider = LocalImageProvider.current
+    val keys = product.allImageKeys
+    if (keys.size == 1) {
+        WholesoulImage(
+            model = imageProvider.resolve(keys.first()),
+            contentDescription = product.name,
+            modifier = Modifier.fillMaxWidth().height(280.dp),
+        )
+        return
+    }
+    val pagerState = rememberPagerState(pageCount = { keys.size })
+    Box(modifier = Modifier.fillMaxWidth().height(280.dp)) {
+        HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
+            WholesoulImage(
+                model = imageProvider.resolve(keys[page]),
+                contentDescription = "${product.name}, photo ${page + 1} of ${keys.size}",
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
+        Row(
+            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 10.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            repeat(keys.size) { index ->
+                val selected = index == pagerState.currentPage
+                Box(
+                    modifier = Modifier
+                        .size(if (selected) 9.dp else 7.dp)
+                        .background(if (selected) WholesoulColors.Leaf else Color.White.copy(alpha = 0.8f), CircleShape),
+                )
             }
         }
     }

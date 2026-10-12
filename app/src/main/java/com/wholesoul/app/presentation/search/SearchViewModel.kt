@@ -11,6 +11,7 @@ import com.wholesoul.app.core.util.UiState
 import com.wholesoul.app.data.local.SessionPreferenceKeys
 import com.wholesoul.app.domain.model.Product
 import com.wholesoul.app.domain.repository.CartRepository
+import com.wholesoul.app.domain.repository.CatalogChanges
 import com.wholesoul.app.domain.repository.ProductRepository
 import com.wholesoul.app.domain.repository.observeQuantityMap
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,6 +42,7 @@ class SearchViewModel @Inject constructor(
     private val cartRepository: CartRepository,
     private val dataStore: DataStore<Preferences>,
     private val analyticsLogger: AnalyticsLogger,
+    private val catalogChanges: CatalogChanges,
 ) : ViewModel() {
 
     private val json = Json { ignoreUnknownKeys = true }
@@ -58,6 +60,13 @@ class SearchViewModel @Inject constructor(
             val recents = stored?.let { runCatching { json.decodeFromString<List<String>>(it) }.getOrNull() } ?: emptyList()
             _uiState.value = _uiState.value.copy(recentSearches = recents)
         }
+        // Re-run the visible search when the shop edits its catalog.
+        viewModelScope.launch {
+            catalogChanges.events.collect {
+                val query = _uiState.value.query
+                if (query.isNotBlank() && _uiState.value.results != null) runSearch(query, showLoading = false)
+            }
+        }
     }
 
     fun onQueryChange(query: String) {
@@ -69,15 +78,19 @@ class SearchViewModel @Inject constructor(
         }
         searchJob = viewModelScope.launch {
             delay(300L)
-            _uiState.value = _uiState.value.copy(results = UiState.Loading)
-            productRepository.searchProducts(query)
-                .onSuccess { list ->
-                    _uiState.value = _uiState.value.copy(
-                        results = if (list.isEmpty()) UiState.Empty("Oops! We couldn't find that.") else UiState.Success(list),
-                    )
-                }
-                .onFailure { _uiState.value = _uiState.value.copy(results = UiState.Error(it.message ?: "Something went wrong")) }
+            runSearch(query, showLoading = true)
         }
+    }
+
+    private suspend fun runSearch(query: String, showLoading: Boolean) {
+        if (showLoading) _uiState.value = _uiState.value.copy(results = UiState.Loading)
+        productRepository.searchProducts(query)
+            .onSuccess { list ->
+                _uiState.value = _uiState.value.copy(
+                    results = if (list.isEmpty()) UiState.Empty("Oops! We couldn't find that.") else UiState.Success(list),
+                )
+            }
+            .onFailure { _uiState.value = _uiState.value.copy(results = UiState.Error(it.message ?: "Something went wrong")) }
     }
 
     fun onSearchSubmitted(query: String) {

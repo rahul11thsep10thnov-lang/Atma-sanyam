@@ -31,11 +31,10 @@ import com.wholesoul.app.core.designsystem.components.WholesoulTopBar
 import com.wholesoul.app.core.image.LocalImageProvider
 import com.wholesoul.app.core.util.UiState
 import com.wholesoul.app.domain.model.Category
-import com.wholesoul.app.domain.model.ProductCategory
 
 @Composable
 fun CategoriesScreen(
-    onCategoryClick: (ProductCategory) -> Unit,
+    onCategoryClick: (Category) -> Unit,
     viewModel: CategoriesViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -59,7 +58,7 @@ fun CategoriesScreen(
 }
 
 @Composable
-private fun CategoryGrid(categories: List<Category>, onCategoryClick: (ProductCategory) -> Unit) {
+private fun CategoryGrid(categories: List<Category>, onCategoryClick: (Category) -> Unit) {
     val imageProvider = LocalImageProvider.current
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -70,7 +69,7 @@ private fun CategoryGrid(categories: List<Category>, onCategoryClick: (ProductCa
     ) {
         items(categories, key = { it.id }) { category ->
             Card(
-                modifier = Modifier.aspectRatio(1.1f).clickable { onCategoryClick(category.category) },
+                modifier = Modifier.aspectRatio(1.1f).clickable { onCategoryClick(category) },
                 shape = RoundedCornerShape(14.dp),
                 colors = CardDefaults.cardColors(containerColor = WholesoulColors.SurfaceAlt),
             ) {

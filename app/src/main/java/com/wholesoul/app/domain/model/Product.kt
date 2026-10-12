@@ -1,20 +1,6 @@
 package com.wholesoul.app.domain.model
 
-/** Top-level catalog grouping. Kept as a plain enum so an admin panel can later map DB rows 1:1. */
-enum class ProductCategory(val displayName: String) {
-    FRUITS("Fruits"),
-    VEGETABLES("Vegetables"),
-    FLOWERS("Flowers"),
-    GARLANDS("Garlands"),
-    PUJA_ITEMS("Puja Items"),
-    GROCERY("Grocery"),
-    DAIRY("Dairy"),
-    SNACKS("Snacks"),
-    BEVERAGES("Beverages"),
-    HOUSEHOLD("Household"),
-    PERSONAL_CARE("Personal Care"),
-    OTHER("Other"),
-}
+import kotlinx.serialization.Serializable
 
 data class Review(
     val id: String,
@@ -29,6 +15,7 @@ data class Review(
  * Extra context shown on the product details page for fresh produce, per spec section 12.
  * Null for non-perishable categories.
  */
+@Serializable
 data class FreshnessInfo(
     val harvestedDaysAgo: Int,
     val sourceFarm: String,
@@ -36,6 +23,7 @@ data class FreshnessInfo(
 )
 
 /** Extra context shown for flowers/garlands per spec section 12. */
+@Serializable
 data class FlowerInfo(
     val flowerType: String,
     val weightPerBunchGrams: Int,
@@ -46,7 +34,7 @@ data class FlowerInfo(
 data class Product(
     val id: String,
     val name: String,
-    val category: ProductCategory,
+    val categoryId: String,
     val subCategory: String,
     val description: String,
     val imageKey: String,
@@ -64,7 +52,17 @@ data class Product(
     val flowerInfo: FlowerInfo? = null,
     val availableQuantities: List<String> = listOf(),
     val benefits: List<String> = listOf(),
+    /** Extra photos after [imageKey] (the primary photo), in display order. */
+    val galleryImageKeys: List<String> = listOf(),
+    /** Position inside its category; lower comes first. Managed from the Admin Console. */
+    val sortOrder: Int = 0,
+    /** Hidden products stay in the catalog but are invisible to customers. */
+    val isActive: Boolean = true,
+    val createdAtEpochMillis: Long = 0L,
 ) {
+    /** Primary photo first, then the gallery. */
+    val allImageKeys: List<String> get() = listOf(imageKey) + galleryImageKeys
+
     val discountPercent: Int
         get() = if (mrp <= 0) 0 else (((mrp - price) / mrp) * 100).toInt()
 

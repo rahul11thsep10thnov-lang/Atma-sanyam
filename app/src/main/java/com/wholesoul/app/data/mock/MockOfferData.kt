@@ -1,9 +1,9 @@
 package com.wholesoul.app.data.mock
 
+import com.wholesoul.app.data.catalog.DefaultCategory
 import com.wholesoul.app.domain.model.CouponType
 import com.wholesoul.app.domain.model.Coupon
 import com.wholesoul.app.domain.model.Offer
-import com.wholesoul.app.domain.model.ProductCategory
 
 object MockOfferData {
 
@@ -19,13 +19,13 @@ object MockOfferData {
 
     val offers: List<Offer> by lazy {
         listOf(
-            Offer("o1", "20% OFF fruits", "On all fresh fruits this week", "offers/fruits-20-off", "FRESH20", ProductCategory.FRUITS),
+            Offer("o1", "20% OFF fruits", "On all fresh fruits this week", "offers/fruits-20-off", "FRESH20", DefaultCategory.FRUITS.id),
             Offer("o2", "Rs 50 OFF on first order", "New to WHOLESOUL? This one's on us", "offers/first-order-50", "FIRST50", null),
             Offer("o3", "Free delivery above Rs 299", "No delivery fee on your basket", "offers/free-delivery", "FREEDEL", null),
             Offer("o4", "Combo offers", "Save more when you shop across categories", "offers/combo", "COMBO30", null),
-            Offer("o5", "Festival offers", "Special prices on puja essentials this season", "offers/festival", "FLOWER15", ProductCategory.PUJA_ITEMS),
-            Offer("o6", "Flower offers", "Fresh garlands and blooms at better prices", "offers/flowers", "FLOWER15", ProductCategory.FLOWERS),
-            Offer("o7", "Puja offers", "Everything for your puja thali, discounted", "offers/puja", "FLOWER15", ProductCategory.PUJA_ITEMS),
+            Offer("o5", "Festival offers", "Special prices on puja essentials this season", "offers/festival", "FLOWER15", DefaultCategory.PUJA_ITEMS.id),
+            Offer("o6", "Flower offers", "Fresh garlands and blooms at better prices", "offers/flowers", "FLOWER15", DefaultCategory.FLOWERS.id),
+            Offer("o7", "Puja offers", "Everything for your puja thali, discounted", "offers/puja", "FLOWER15", DefaultCategory.PUJA_ITEMS.id),
         )
     }
 }

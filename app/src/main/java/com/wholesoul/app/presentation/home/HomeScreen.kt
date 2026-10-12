@@ -50,14 +50,13 @@ import com.wholesoul.app.core.image.LocalImageProvider
 import com.wholesoul.app.core.util.UiState
 import com.wholesoul.app.domain.model.Category
 import com.wholesoul.app.domain.model.Product
-import com.wholesoul.app.domain.model.ProductCategory
 
 @Composable
 fun HomeScreen(
     onAddressClick: () -> Unit,
     onSearchClick: () -> Unit,
     onNotificationsClick: () -> Unit,
-    onCategoryClick: (ProductCategory) -> Unit,
+    onCategoryClick: (String) -> Unit,
     onProductClick: (Product) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -154,7 +153,7 @@ private fun HomeTopBar(
 private fun HomeContentList(
     content: HomeContent,
     cartQuantities: Map<String, Int>,
-    onCategoryClick: (ProductCategory) -> Unit,
+    onCategoryClick: (String) -> Unit,
     onProductClick: (Product) -> Unit,
     onAdd: (Product) -> Unit,
     onIncrement: (Product) -> Unit,
@@ -217,7 +216,7 @@ private fun BannerCarousel(banners: List<Pair<String, String>>) {
 }
 
 @Composable
-private fun CategoryRow(categories: List<Category>, onCategoryClick: (ProductCategory) -> Unit) {
+private fun CategoryRow(categories: List<Category>, onCategoryClick: (String) -> Unit) {
     val imageProvider = LocalImageProvider.current
     LazyRow(
         contentPadding = PaddingValues(horizontal = 16.dp),
@@ -227,7 +226,7 @@ private fun CategoryRow(categories: List<Category>, onCategoryClick: (ProductCat
         items(categories, key = { it.id }) { category ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.width(64.dp).clickable { onCategoryClick(category.category) },
+                modifier = Modifier.width(64.dp).clickable { onCategoryClick(category.id) },
             ) {
                 Box(
                     modifier = Modifier

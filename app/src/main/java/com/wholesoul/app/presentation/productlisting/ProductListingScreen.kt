@@ -67,7 +67,7 @@ fun ProductListingScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
         WholesoulTopBar(
-            title = uiState.category.displayName,
+            title = uiState.categoryName,
             onBack = onBack,
             actions = {
                 IconButton(onClick = { showFilterSheet = true }) {

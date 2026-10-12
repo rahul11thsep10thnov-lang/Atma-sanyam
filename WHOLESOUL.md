@@ -44,6 +44,8 @@ is no real backend yet):
 - **Catalog**: 360+ generated products across 12 categories (`data/mock/MockProductData.kt`),
   meeting every minimum count in the spec (50 fruits, 50 vegetables, 30 flowers, 20 garlands,
   30 puja items, 50 grocery, 30 household, 30 personal care, plus dairy/snacks/beverages/other).
+  On first launch this starter data is copied into an editable on-device catalog database
+  (see **Admin Console** below); from then on the app reads the catalog from there.
 - **Images**: resolved through the `ImageProvider` interface
   (`core/image/PlaceholderImageProvider.kt`) — swap one class to point at a CDN, Firebase
   Storage or local assets later; no screen ever builds an image URL itself.
@@ -56,6 +58,41 @@ Every repository is defined as an interface in `domain/repository/` and bound to
 Development Mode implementation in `di/RepositoryModule.kt`. Connecting a real backend means
 writing a new implementation class and changing one `@Binds` line per repository — no
 ViewModel or screen changes.
+
+## Admin Console
+
+The shop owner can run the catalog from inside the app: **Profile → Admin Console**. The first
+time, the app asks you to create a 4-8 digit PIN; after that it asks for the PIN each time.
+
+- **Categories** tab: add, rename, add a photo, show/hide, delete (only once empty), and set
+  the order customers see with the ▲▼ arrows.
+- **Items** tab: add and edit items — name, category, description, listed price (MRP), selling
+  price, quantity available, pack size, brand, up to 6 photos (the first is the main photo; tap
+  one to make it the main photo), show/hide. Pick a category chip and use ▲▼ to set the order of
+  items inside it. Search and filter by category.
+- **Select all / bulk actions**: long-press an item (or tap *Select all*) to select several, then
+  show, hide, move to another category, or delete them together.
+- Quantity available is live: customers can't put more in the cart than is in stock, sold-out
+  items show *Out of stock*, placing an order reduces stock and cancelling puts it back.
+- Customer screens (Home, Categories, listings, details, search, cart) refresh as soon as an
+  edit is saved.
+
+How it is built: a second Room database (`wholesoul_catalog.db`, `data/local/CatalogDatabase.kt`)
+holds categories and products; `AdminCatalogRepository` is the only way to edit it;
+`ProductRepository`/`CategoryRepository` expose only visible items to customers. Photos are
+copied into the app's private storage, shrunk to 1600 px, rotated upright and re-saved as JPEG
+(which also strips any location data a phone embeds in photos); picking uses the system photo
+picker, so no storage or camera permission is requested.
+
+Limits worth knowing:
+
+- Edits live **on this phone only**. Other customers' phones keep their own copy until a real
+  backend exists — that is the next step, and `AdminCatalogRepository` / `ProductRepository` /
+  `ImageStore` / `AdminAccess` are the four seams to implement against a server.
+- The PIN is a convenience lock (stored as a salted SHA-256 hash), not strong security. A real
+  release should use a separate admin app or web console with proper accounts.
+- The *Admin Console* row appears in every install's Profile. Before a public release, hide it
+  behind a build flag or move the console into its own app.
 
 ## Project structure
 
@@ -105,11 +142,13 @@ Minimum SDK 24, target/compile SDK 34.
 ## Testing
 
 - `app/src/test`: pure-JVM unit tests — domain logic (coupon math, order status transitions),
-  the Development Mode product/serviceability repositories, and ViewModel tests (login, search,
+  the catalog/product/admin repositories (on in-memory stand-ins for the Room DAOs), stock
+  handling in cart and orders, the admin PIN, the admin ViewModels, and ViewModel tests (login, search,
   add/remove/update cart quantity, address creation + PIN serviceability, checkout/order
   creation, order cancellation, wishlist) built against lightweight fakes of each repository
   interface (`app/src/test/.../fakes`).
-- `app/src/androidTest`: a Compose UI test for the shared ADD/quantity-stepper component.
+- `app/src/androidTest`: a Compose UI test for the shared ADD/quantity-stepper component, and
+  `CatalogDaoTest`, which runs the catalog SQL against a real in-memory Room database.
 
 ## What's stubbed for later
 

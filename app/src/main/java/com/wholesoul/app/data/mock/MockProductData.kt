@@ -3,14 +3,14 @@ package com.wholesoul.app.data.mock
 import com.wholesoul.app.domain.model.FlowerInfo
 import com.wholesoul.app.domain.model.FreshnessInfo
 import com.wholesoul.app.domain.model.Product
-import com.wholesoul.app.domain.model.ProductCategory
+import com.wholesoul.app.data.catalog.DefaultCategory
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
 /**
  * Deterministic, in-memory product catalog used by every mock repository (spec section 27).
- * Nothing here is fetched from a network; swapping to a real backend only means replacing
- * [MockProductRepository] — this object and the [Product] shape stay the same.
+ * Nothing here is fetched from a network; this is only the starter catalog that
+ * `CatalogSeeder` copies into the editable catalog database on first launch.
  */
 object MockProductData {
 
@@ -38,49 +38,49 @@ object MockProductData {
         useCase = listOf("Daily puja", "Home decor", "Festive occasions", "Temple offering", "Gifting").random(random),
     )
 
-    private fun benefitsFor(category: ProductCategory, random: Random): List<String> = when (category) {
-        ProductCategory.FRUITS -> listOf("Rich in vitamins", "No artificial ripening", "Hand-picked at source")
-        ProductCategory.VEGETABLES -> listOf("Pesticide-checked", "Sourced within 24-48 hrs", "High fiber content")
-        ProductCategory.FLOWERS, ProductCategory.GARLANDS -> listOf("Freshly strung", "Long lasting fragrance", "Sourced from local flower markets")
-        ProductCategory.PUJA_ITEMS -> listOf("Traditionally sourced", "Pure and unadulterated")
-        ProductCategory.DAIRY -> listOf("Chilled supply chain", "No preservatives added")
+    private fun benefitsFor(category: DefaultCategory, random: Random): List<String> = when (category) {
+        DefaultCategory.FRUITS -> listOf("Rich in vitamins", "No artificial ripening", "Hand-picked at source")
+        DefaultCategory.VEGETABLES -> listOf("Pesticide-checked", "Sourced within 24-48 hrs", "High fiber content")
+        DefaultCategory.FLOWERS, DefaultCategory.GARLANDS -> listOf("Freshly strung", "Long lasting fragrance", "Sourced from local flower markets")
+        DefaultCategory.PUJA_ITEMS -> listOf("Traditionally sourced", "Pure and unadulterated")
+        DefaultCategory.DAIRY -> listOf("Chilled supply chain", "No preservatives added")
         else -> listOf("Quality checked", "Great value for money")
     }.shuffled(random).take(2)
 
     private data class WeightPlan(val unit: String, val labels: List<String>)
 
     private val weightPlans = mapOf(
-        ProductCategory.FRUITS to WeightPlan("kg", listOf("500 g", "1 kg", "250 g", "1 kg (6-8 pcs)")),
-        ProductCategory.VEGETABLES to WeightPlan("kg", listOf("500 g", "1 kg", "250 g")),
-        ProductCategory.FLOWERS to WeightPlan("bunch", listOf("1 bunch (100 g)", "1 bunch (250 g)", "1 bunch (50 g)")),
-        ProductCategory.GARLANDS to WeightPlan("piece", listOf("1 piece", "2 pieces", "1 piece (36 inch)")),
-        ProductCategory.PUJA_ITEMS to WeightPlan("pack", listOf("1 pack", "100 g", "1 set", "250 g")),
-        ProductCategory.GROCERY to WeightPlan("kg", listOf("1 kg", "500 g", "200 g", "5 kg")),
-        ProductCategory.DAIRY to WeightPlan("l", listOf("500 ml", "1 L", "200 g", "250 g")),
-        ProductCategory.SNACKS to WeightPlan("pack", listOf("150 g", "200 g", "100 g")),
-        ProductCategory.BEVERAGES to WeightPlan("l", listOf("1 L", "500 ml", "200 ml", "2 L")),
-        ProductCategory.HOUSEHOLD to WeightPlan("unit", listOf("500 ml", "1 L", "1 unit", "200 g")),
-        ProductCategory.PERSONAL_CARE to WeightPlan("unit", listOf("100 ml", "200 g", "1 unit", "50 g")),
-        ProductCategory.OTHER to WeightPlan("pack", listOf("1 pack", "1 unit")),
+        DefaultCategory.FRUITS to WeightPlan("kg", listOf("500 g", "1 kg", "250 g", "1 kg (6-8 pcs)")),
+        DefaultCategory.VEGETABLES to WeightPlan("kg", listOf("500 g", "1 kg", "250 g")),
+        DefaultCategory.FLOWERS to WeightPlan("bunch", listOf("1 bunch (100 g)", "1 bunch (250 g)", "1 bunch (50 g)")),
+        DefaultCategory.GARLANDS to WeightPlan("piece", listOf("1 piece", "2 pieces", "1 piece (36 inch)")),
+        DefaultCategory.PUJA_ITEMS to WeightPlan("pack", listOf("1 pack", "100 g", "1 set", "250 g")),
+        DefaultCategory.GROCERY to WeightPlan("kg", listOf("1 kg", "500 g", "200 g", "5 kg")),
+        DefaultCategory.DAIRY to WeightPlan("l", listOf("500 ml", "1 L", "200 g", "250 g")),
+        DefaultCategory.SNACKS to WeightPlan("pack", listOf("150 g", "200 g", "100 g")),
+        DefaultCategory.BEVERAGES to WeightPlan("l", listOf("1 L", "500 ml", "200 ml", "2 L")),
+        DefaultCategory.HOUSEHOLD to WeightPlan("unit", listOf("500 ml", "1 L", "1 unit", "200 g")),
+        DefaultCategory.PERSONAL_CARE to WeightPlan("unit", listOf("100 ml", "200 g", "1 unit", "50 g")),
+        DefaultCategory.OTHER to WeightPlan("pack", listOf("1 pack", "1 unit")),
     )
 
     private val priceRanges = mapOf(
-        ProductCategory.FRUITS to (30.0 to 220.0),
-        ProductCategory.VEGETABLES to (15.0 to 90.0),
-        ProductCategory.FLOWERS to (20.0 to 150.0),
-        ProductCategory.GARLANDS to (40.0 to 300.0),
-        ProductCategory.PUJA_ITEMS to (10.0 to 250.0),
-        ProductCategory.GROCERY to (25.0 to 450.0),
-        ProductCategory.DAIRY to (20.0 to 280.0),
-        ProductCategory.SNACKS to (10.0 to 120.0),
-        ProductCategory.BEVERAGES to (15.0 to 150.0),
-        ProductCategory.HOUSEHOLD to (30.0 to 350.0),
-        ProductCategory.PERSONAL_CARE to (40.0 to 450.0),
-        ProductCategory.OTHER to (25.0 to 200.0),
+        DefaultCategory.FRUITS to (30.0 to 220.0),
+        DefaultCategory.VEGETABLES to (15.0 to 90.0),
+        DefaultCategory.FLOWERS to (20.0 to 150.0),
+        DefaultCategory.GARLANDS to (40.0 to 300.0),
+        DefaultCategory.PUJA_ITEMS to (10.0 to 250.0),
+        DefaultCategory.GROCERY to (25.0 to 450.0),
+        DefaultCategory.DAIRY to (20.0 to 280.0),
+        DefaultCategory.SNACKS to (10.0 to 120.0),
+        DefaultCategory.BEVERAGES to (15.0 to 150.0),
+        DefaultCategory.HOUSEHOLD to (30.0 to 350.0),
+        DefaultCategory.PERSONAL_CARE to (40.0 to 450.0),
+        DefaultCategory.OTHER to (25.0 to 200.0),
     )
 
     private fun buildCategory(
-        category: ProductCategory,
+        category: DefaultCategory,
         subCategory: String,
         names: List<String>,
         originLabel: String,
@@ -97,12 +97,12 @@ object MockProductData {
             val weightLabel = plan.labels[index % plan.labels.size]
 
             Product(
-                id = "${category.name.lowercase()}-${slug(name)}-$index",
+                id = "${category.id}-${slug(name)}-$index",
                 name = name,
-                category = category,
+                categoryId = category.id,
                 subCategory = subCategory,
                 description = "Fresh $name sourced directly from $originLabel, delivered to your doorstep with minimal handling for maximum freshness.",
-                imageKey = "${category.name.lowercase()}/${slug(name)}",
+                imageKey = "${category.id}/${slug(name)}",
                 mrp = mrp,
                 price = price,
                 unit = plan.unit,
@@ -113,12 +113,12 @@ object MockProductData {
                 brand = brands[random.nextInt(brands.size)],
                 tags = listOfNotNull(
                     subCategory.takeIf { it.isNotBlank() },
-                    "fresh".takeIf { category == ProductCategory.FRUITS || category == ProductCategory.VEGETABLES },
+                    "fresh".takeIf { category == DefaultCategory.FRUITS || category == DefaultCategory.VEGETABLES },
                     name.split(" ").first().lowercase(),
                 ),
                 origin = originLabel,
-                freshnessInfo = if (category == ProductCategory.FRUITS || category == ProductCategory.VEGETABLES) freshness(random) else null,
-                flowerInfo = if (category == ProductCategory.FLOWERS || category == ProductCategory.GARLANDS) flowerInfo(random, name) else null,
+                freshnessInfo = if (category == DefaultCategory.FRUITS || category == DefaultCategory.VEGETABLES) freshness(random) else null,
+                flowerInfo = if (category == DefaultCategory.FLOWERS || category == DefaultCategory.GARLANDS) flowerInfo(random, name) else null,
                 availableQuantities = plan.labels.distinct(),
                 benefits = benefitsFor(category, random),
             )
@@ -234,17 +234,17 @@ object MockProductData {
     )
 
     val allProducts: List<Product> by lazy {
-        buildCategory(ProductCategory.FRUITS, "Fresh Fruits", fruitNames, "local orchards") +
-            buildCategory(ProductCategory.VEGETABLES, "Fresh Vegetables", vegetableNames, "nearby farms") +
-            buildCategory(ProductCategory.FLOWERS, "Fresh Flowers", flowerNames, "local flower markets") +
-            buildCategory(ProductCategory.GARLANDS, "Garlands & Malas", garlandNames, "local flower artisans") +
-            buildCategory(ProductCategory.PUJA_ITEMS, "Puja Essentials", pujaNames, "trusted puja suppliers") +
-            buildCategory(ProductCategory.GROCERY, "Grocery & Staples", groceryNames, "regional mandis") +
-            buildCategory(ProductCategory.DAIRY, "Dairy", dairyNames, "local dairies") +
-            buildCategory(ProductCategory.SNACKS, "Snacks", snackNames, "trusted snack makers") +
-            buildCategory(ProductCategory.BEVERAGES, "Beverages", beverageNames, "regional bottlers") +
-            buildCategory(ProductCategory.HOUSEHOLD, "Household Essentials", householdNames, "trusted household brands") +
-            buildCategory(ProductCategory.PERSONAL_CARE, "Personal Care", personalCareNames, "trusted personal-care brands") +
-            buildCategory(ProductCategory.OTHER, "Local Specialties", otherNames, "local artisans")
+        buildCategory(DefaultCategory.FRUITS, "Fresh Fruits", fruitNames, "local orchards") +
+            buildCategory(DefaultCategory.VEGETABLES, "Fresh Vegetables", vegetableNames, "nearby farms") +
+            buildCategory(DefaultCategory.FLOWERS, "Fresh Flowers", flowerNames, "local flower markets") +
+            buildCategory(DefaultCategory.GARLANDS, "Garlands & Malas", garlandNames, "local flower artisans") +
+            buildCategory(DefaultCategory.PUJA_ITEMS, "Puja Essentials", pujaNames, "trusted puja suppliers") +
+            buildCategory(DefaultCategory.GROCERY, "Grocery & Staples", groceryNames, "regional mandis") +
+            buildCategory(DefaultCategory.DAIRY, "Dairy", dairyNames, "local dairies") +
+            buildCategory(DefaultCategory.SNACKS, "Snacks", snackNames, "trusted snack makers") +
+            buildCategory(DefaultCategory.BEVERAGES, "Beverages", beverageNames, "regional bottlers") +
+            buildCategory(DefaultCategory.HOUSEHOLD, "Household Essentials", householdNames, "trusted household brands") +
+            buildCategory(DefaultCategory.PERSONAL_CARE, "Personal Care", personalCareNames, "trusted personal-care brands") +
+            buildCategory(DefaultCategory.OTHER, "Local Specialties", otherNames, "local artisans")
     }
 }

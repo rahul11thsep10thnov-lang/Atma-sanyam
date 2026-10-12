@@ -6,4 +6,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 object SessionPreferenceKeys {
     val HAS_SEEN_ONBOARDING = booleanPreferencesKey("has_seen_onboarding")
     val RECENT_SEARCHES = stringPreferencesKey("recent_searches")
+    val CATALOG_SEEDED = booleanPreferencesKey("catalog_seeded")
+    val ADMIN_PIN_SALT = stringPreferencesKey("admin_pin_salt")
+    val ADMIN_PIN_HASH = stringPreferencesKey("admin_pin_hash")
 }

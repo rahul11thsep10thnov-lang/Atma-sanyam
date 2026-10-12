@@ -2,6 +2,7 @@ package com.wholesoul.app.data.repository
 
 import com.wholesoul.app.data.local.dao.CartDao
 import com.wholesoul.app.data.local.dao.OrderDao
+import com.wholesoul.app.data.local.dao.ProductDao
 import com.wholesoul.app.data.local.entity.CartItemEntity
 import com.wholesoul.app.data.local.entity.toDomain
 import com.wholesoul.app.data.local.entity.toEntity
@@ -12,6 +13,7 @@ import com.wholesoul.app.domain.model.DeliveryStatus
 import com.wholesoul.app.domain.model.Order
 import com.wholesoul.app.domain.model.OrderItem
 import com.wholesoul.app.domain.model.PaymentMethod
+import com.wholesoul.app.domain.repository.CatalogChanges
 import com.wholesoul.app.domain.repository.OrderRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +35,8 @@ import javax.inject.Singleton
 class RoomOrderRepository @Inject constructor(
     private val orderDao: OrderDao,
     private val cartDao: CartDao,
+    private val productDao: ProductDao,
+    private val changes: CatalogChanges,
 ) : OrderRepository {
 
     private val backgroundScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -47,6 +51,18 @@ class RoomOrderRepository @Inject constructor(
         deliveryInstructions: String,
     ): Result<Order> {
         if (cart.isEmpty) return Result.failure(IllegalStateException("Your cart is empty"))
+        // The shop may have changed stock or hidden an item since the cart was last shown.
+        for (item in cart.items) {
+            val product = productDao.getById(item.product.id)
+            val name = item.product.name
+            if (product == null || !product.isActive) {
+                return Result.failure(IllegalStateException("$name is no longer available. Please remove it from your cart."))
+            }
+            if (item.quantity > product.stock) {
+                val message = if (product.stock <= 0) "$name is out of stock" else "Only ${product.stock} of $name left"
+                return Result.failure(IllegalStateException(message))
+            }
+        }
         val orderId = UUID.randomUUID().toString()
         val orderNumber = "WS" + (10000 + (System.currentTimeMillis() % 89999)).toString()
         val order = Order(
@@ -76,6 +92,8 @@ class RoomOrderRepository @Inject constructor(
             deliveryInstructions = deliveryInstructions,
         )
         orderDao.insert(order.toEntity())
+        cart.items.forEach { productDao.decreaseStock(it.product.id, it.quantity) }
+        changes.notifyChanged()
         cartDao.clear()
         progressStatusInBackground(orderId)
         return Result.success(order)
@@ -91,22 +109,25 @@ class RoomOrderRepository @Inject constructor(
         val order = entity.toDomain()
         if (!order.isCancellable) return Result.failure(IllegalStateException("This order can no longer be cancelled"))
         orderDao.update(order.copy(status = DeliveryStatus.CANCELLED).toEntity())
+        order.items.forEach { productDao.increaseStock(it.productId, it.quantity) }
+        changes.notifyChanged()
         return Result.success(Unit)
     }
 
     override suspend fun reorder(orderId: String): Result<Unit> {
         val entity = orderDao.getById(orderId) ?: return Result.failure(NoSuchElementException("Order not found"))
         val order = entity.toDomain()
+        var added = 0
         order.items.forEach { item ->
+            val product = productDao.getById(item.productId)
+            if (product == null || !product.isActive) return@forEach
             val existing = cartDao.getItem(item.productId)
-            cartDao.upsert(
-                CartItemEntity(
-                    productId = item.productId,
-                    quantity = (existing?.quantity ?: 0) + item.quantity,
-                    addedAtEpochMillis = System.currentTimeMillis(),
-                ),
-            )
+            val quantity = ((existing?.quantity ?: 0) + item.quantity).coerceAtMost(product.stock)
+            if (quantity <= 0) return@forEach
+            cartDao.upsert(CartItemEntity(item.productId, quantity, System.currentTimeMillis()))
+            added++
         }
+        if (added == 0) return Result.failure(IllegalStateException("None of these items are available right now"))
         return Result.success(Unit)
     }
 
