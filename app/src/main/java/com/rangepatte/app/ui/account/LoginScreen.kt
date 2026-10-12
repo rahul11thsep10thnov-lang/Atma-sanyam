@@ -47,10 +47,8 @@ import com.rangepatte.app.ui.components.royal.RoyalButton
 import com.rangepatte.app.ui.components.royal.RoyalButtonStyle
 import com.rangepatte.app.ui.components.royal.RoyalPanel
 import com.rangepatte.app.ui.components.royal.RoyalTextField
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -59,9 +57,7 @@ import com.rangepatte.app.ui.theme.GoldenGlow
 import com.rangepatte.app.ui.language.LocalAppLanguage
 import com.rangepatte.app.ui.language.findActivity
 import com.rangepatte.app.ui.theme.BodyFont
-import com.rangepatte.app.ui.theme.GoldBevelDark
 import com.rangepatte.app.ui.theme.GoldBevelLight
-import com.rangepatte.app.ui.theme.GoldenGlow
 import com.rangepatte.app.ui.theme.PanelWoodDark
 import com.rangepatte.app.ui.theme.ParchmentText
 import com.rangepatte.app.ui.theme.ParchmentTextDim

@@ -13,6 +13,7 @@ import com.rangepatte.app.R
 import com.rangepatte.app.domain.invites.PlayRequests
 import com.rangepatte.app.domain.invites.RequestStatus
 import com.rangepatte.app.domain.model.PlayMode
+import com.rangepatte.app.domain.presence.Presence
 
 /**
  * App-wide: shows the incoming invitation card and the sender's waiting banner wherever the player
@@ -66,7 +67,6 @@ fun BoxScope.PlayRequestOverlay(onJoin: (gameRoute: String, mode: PlayMode, code
     }
 }
 
-private typealias Presence = com.rangepatte.app.domain.presence.Presence
 
 /** The games a friend can be invited to: the card games with a multiplayer machine, and the board games (Ludo, stage 7). */
 fun invitableGames(): List<com.rangepatte.app.domain.model.GameId> = com.rangepatte.app.domain.model.GameNames.invitable()
