@@ -97,6 +97,33 @@ disconnected, started or finished focusing), `notification { notification, unrea
 `poke { from, pokeId }`, `friends_changed`, `group { event, sessionId, data }`. The app sends
 `ping`; the server answers `pong`. Presence is per API instance (in memory).
 
+### Group focus
+
+A host proposes a plant or a picture and a length, invites friends, everyone approved presses
+Start, and the server starts one clock. Its timestamps decide the end, each late joiner's own
+start, what a completed participant is credited (the usual tiers apply to that) and what an
+early exit costs. All need a signed-in person; the `group` WebSocket events carry live changes
+(`updated`, `participant`, `started`, `join_request`, `joined`, `join_declined`, `host_changed`,
+`message`, `ended`).
+
+| Method | Path | Body → Response |
+|---|---|---|
+| POST | `/v1/group/sessions` | `{ proposal: { kind: 'plant', speciesId, place? } \| { kind: 'remote', imageId, uri, title?, category? }, plannedMinutes (5–240), inviteeIds (friends, ≤ 11) }` → `201 session`. One open session per host. Invitees get a `group_invite` notification. |
+| GET | `/v1/group/sessions/mine` | my open sessions (lobby or running) |
+| GET | `/v1/group/sessions/joinable` | running sessions of my friends I could ask to join (more than a minute left) |
+| GET | `/v1/group/sessions/:id` | the session: status, proposal, plannedMinutes, revision, startedAt, endsAt, membersAtStart, serverTime, `me`, `participants` (profile + status + isHost + note + startedAt + rewardMinutes + penaltyCount). Members and the host's friends only. |
+| PATCH | `/v1/group/sessions/:id` | host, lobby only: `{ proposal?, plannedMinutes? }` → everyone is asked again (`revision` + 1) |
+| POST | `/v1/group/sessions/:id/respond` | invitee: `{ accept, note? }`; a decline with its note goes to the host (`group_rejected`) |
+| POST | `/v1/group/sessions/:id/ready` | approved member presses Start. When every approved member is ready (at least two), one atomic update turns `lobby` into `running` with `startedAt`/`endsAt`; participants become `active` and each gets a verified focus session. |
+| POST | `/v1/group/sessions/:id/cancel` · `/leave-lobby` | host cancels in the lobby / an invitee backs out |
+| POST | `/v1/group/sessions/:id/join` | a friend of the host asks to join a running session → `202`; the host is told |
+| POST | `/v1/group/sessions/:id/join-requests/:userId` | host: `{ approve }`. Approved, the joiner is `active` from now with their own `startedAt`; refused when less than a minute is left |
+| POST | `/v1/group/sessions/:id/heartbeat` | every ≤ 2 min while in the session (else shown as disconnected); settles the session once the clock has run out |
+| POST | `/v1/group/sessions/:id/leave` | leave early → `{ status: 'left_early', penaltyCount }` where `penaltyCount` = members in the session at that moment, decided once; the host's role passes to the longest-standing member |
+| POST | `/v1/group/sessions/:id/penalty-applied` | the app applied its penalty objects → `{ applied }` (true once) |
+| POST | `/v1/group/sessions/:id/finish` | once the clock has run out (idempotent): `active` → `completed` with `rewardMinutes` = min(planned, minutes since their own start); anyone without a heartbeat for 5 min at the end is `left_early` with no penalty |
+| GET / POST | `/v1/group/sessions/:id/messages` | the chat: `{ key }` from the predefined list only (`backend/src/lib/groupMessages.ts`); 15/min |
+
 ### Devices & analytics
 
 | Method | Path | Auth | Description |

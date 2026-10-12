@@ -146,6 +146,26 @@ export async function recordPausedSession(image: ImageRef, elapsedSeconds = GRAC
   };
 }
 
+/** Leaving a group focus early: as many wilted saplings and broken pictures
+ * as the server decided (one per member), in the garden segment of the
+ * plant that was being grown or on the balcony for a picture. */
+export async function applyGroupPenalties(image: ImageRef, count: number): Promise<void> {
+  if (count <= 0) return;
+  const rewards = await loadRewards();
+  await saveRewards({ ...rewards, pausedSessions: rewards.pausedSessions + 1 });
+  if (image.kind === 'plant') {
+    const segment = SPECIES_BY_ID[image.speciesId]?.segment ?? 'flowers';
+    let paradise = await loadParadise();
+    for (let i = 0; i < count; i++) paradise = addParadisePenalty(paradise, segment);
+    await saveParadise(paradise);
+    return;
+  }
+  let state = await loadSpace('balcony');
+  state = wiltNewestPlant({ ...state, focus: wiltFocusPlant(state.focus) });
+  for (let i = 0; i < count; i++) state = addPenalties(state);
+  await saveSpace(state);
+}
+
 /** Pay coins to remove a penalty object from the balcony. */
 export async function payToClearPenalty(space: SpaceId, itemUid: string): Promise<{ ok: boolean; coins: number }> {
   const rewards = await loadRewards();

@@ -73,6 +73,14 @@ export interface SessionConfig {
   durationMinutes: number;
   image: ImageRef;
   grid: GridDims;
+  /** Set when this session is part of a group focus: the server's clock decides the end. */
+  group?: {
+    sessionId: string;
+    startedAt: string;
+    endsAt: string;
+    /** When this person's own time began (a late joiner starts later than the group). */
+    myStartedAt: string;
+  };
 }
 
 export type SessionOutcome = 'completed' | 'failed';

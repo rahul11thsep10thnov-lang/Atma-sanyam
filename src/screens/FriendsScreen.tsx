@@ -9,6 +9,8 @@ import { useAuth } from '../context/AuthContext';
 import { useSocial } from '../social/SocialContext';
 import { Friend, PendingRequest, Presence, Profile, SearchResult, social } from '../social/api';
 import { friendlyError } from '../services/apiClient';
+import { group, GroupSessionView } from '../social/groupApi';
+import { plantName } from '../paradise/catalog';
 import { RootStackParamList, RootTabParamList } from '../navigation/types';
 import { Screen } from '../ui/Screen';
 import { AppText } from '../ui/AppText';
@@ -84,7 +86,18 @@ export function FriendsScreen() {
   const { colors } = useTheme();
   useLanguage();
   const { status } = useAuth();
-  const { enabled, connected, friendsData, refreshFriends } = useSocial();
+  const { enabled, connected, friendsData, refreshFriends, onGroupEvent } = useSocial();
+  const [groups, setGroups] = useState<{ mine: GroupSessionView[]; joinable: GroupSessionView[] }>({ mine: [], joinable: [] });
+  const refreshGroups = useCallback(async () => {
+    if (!enabled) return;
+    try {
+      const [mine, joinable] = await Promise.all([group.mine(), group.joinable()]);
+      setGroups({ mine: mine.items, joinable: joinable.items });
+    } catch {
+      // keep what we have
+    }
+  }, [enabled]);
+  useEffect(() => onGroupEvent(() => void refreshGroups()), [onGroupEvent, refreshGroups]);
   const [tab, setTab] = useState<Tab>(route.params?.tab ?? 'friends');
   const [refreshing, setRefreshing] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -101,7 +114,8 @@ export function FriendsScreen() {
   useFocusEffect(
     useCallback(() => {
       void refreshFriends();
-    }, [refreshFriends])
+      void refreshGroups();
+    }, [refreshFriends, refreshGroups])
   );
 
   // find people as they type
@@ -216,6 +230,42 @@ export function FriendsScreen() {
 
       {tab === 'friends' && (
         <View style={styles.section}>
+          <Button label={t('group.focusTogether')} icon="users" size="lg" fullWidth onPress={() => navigation.navigate('GroupSetup')} disabled={(data?.friends.length ?? 0) === 0} />
+          {groups.mine.map((g) => {
+            const host = g.participants.find((p) => p.isHost);
+            const what = g.proposal.kind === 'plant' ? plantName(g.proposal.speciesId) : g.proposal.title || t('home.revealJigsaws');
+            const mineStatus = g.me?.status;
+            return (
+              <Card key={g.id} variant="tinted" padding="md" onPress={() => navigation.navigate('GroupLobby', { sessionId: g.id })} accessibilityLabel={t('group.open')} style={styles.groupCard}>
+                <View style={styles.nameRow}>
+                  <Icon name="users" size="sm" color="primary" />
+                  <View style={{ flex: 1 }}>
+                    <AppText variant="bodyStrong" numberOfLines={1}>
+                      {g.status === 'running' ? t('group.runningCard', { what }) : mineStatus === 'invited' ? t('group.invitedCard', { host: host?.username ? `@${host.username}` : host?.displayName ?? '' , what }) : t('group.lobbyCard', { what })}
+                    </AppText>
+                    <AppText variant="bodySmall" tone="secondary">{t('group.minutesTogether', { minutes: g.plannedMinutes, count: g.participants.filter((p) => ['approved', 'ready', 'active', 'completed'].includes(p.status)).length })}</AppText>
+                  </View>
+                  <Icon name="chevronRight" size="sm" color="secondary" />
+                </View>
+              </Card>
+            );
+          })}
+          {groups.joinable.map((g) => {
+            const host = g.participants.find((p) => p.isHost);
+            const left = Math.max(0, Math.round((new Date(g.endsAt!).getTime() - Date.now()) / 60_000));
+            return (
+              <Card key={g.id} padding="md" style={styles.groupCard}>
+                <View style={styles.nameRow}>
+                  <Icon name="hand" size="sm" color="primary" />
+                  <View style={{ flex: 1 }}>
+                    <AppText variant="bodyStrong" numberOfLines={1}>{t('group.joinableCard', { host: host?.username ? `@${host.username}` : host?.displayName ?? '' })}</AppText>
+                    <AppText variant="bodySmall" tone="secondary">{t('group.minutesLeft', { minutes: left })}</AppText>
+                  </View>
+                  <Button label={t('group.askToJoin')} size="sm" disabled={busyId === g.id} onPress={() => void act(g.id, () => group.askToJoin(g.id), () => { Alert.alert(t('group.asked'), t('group.askedBody')); void refreshGroups(); })} />
+                </View>
+              </Card>
+            );
+          })}
           {focusing.length > 0 && (
             <Card variant="tinted" padding="md" style={styles.focusingCard}>
               <View style={styles.nameRow}>
@@ -341,6 +391,7 @@ const styles = StyleSheet.create({
   presenceInline: { width: 8, height: 8, borderRadius: 4 },
   actions: { flexDirection: 'row', gap: space.xs },
   focusingCard: { borderRadius: radii.lg },
+  groupCard: { borderRadius: radii.lg },
   focusingRow: { flexDirection: 'row', gap: space.md, paddingTop: space.sm },
   focusingItem: { alignItems: 'center', gap: 4 },
   emptyCard: { alignItems: 'center', marginTop: space.lg, borderRadius: radii.lg },

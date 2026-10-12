@@ -217,6 +217,94 @@ export const focusSessions = pgTable(
 );
 
 // ---------------------------------------------------------------------------
+// Group focus sessions
+// ---------------------------------------------------------------------------
+
+// A host proposes what to focus on (a plant or a picture) and for how long,
+// invites friends, everyone approved presses Start, and the server starts
+// the clock for all of them at once. The server's timestamps are the truth:
+// started_at, ends_at and each participant's own start (late joiners).
+export const groupSessions = pgTable(
+  'group_sessions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    hostId: uuid('host_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    status: text('status', { enum: ['lobby', 'running', 'ended', 'cancelled'] }).notNull().default('lobby'),
+    // { kind: 'plant', speciesId, place? } | { kind: 'remote', imageId, uri, title, ... }
+    proposal: jsonb('proposal').$type<Record<string, unknown>>().notNull(),
+    plannedMinutes: integer('planned_minutes').notNull(),
+    revision: integer('revision').notNull().default(1),
+    createdAt: createdAt(),
+    startedAt: timestamp('started_at', { withTimezone: true }),
+    endsAt: timestamp('ends_at', { withTimezone: true }),
+    endedAt: timestamp('ended_at', { withTimezone: true }),
+    membersAtStart: integer('members_at_start').notNull().default(0),
+  },
+  (t) => [
+    check('group_sessions_status_check', sql`${t.status} in ('lobby', 'running', 'ended', 'cancelled')`),
+    index('group_sessions_host_idx').on(t.hostId, t.status),
+    index('group_sessions_status_idx').on(t.status, t.endsAt),
+  ]
+);
+
+export const groupParticipants = pgTable(
+  'group_participants',
+  {
+    sessionId: uuid('session_id')
+      .notNull()
+      .references(() => groupSessions.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    status: text('status', {
+      enum: ['invited', 'rejected', 'approved', 'ready', 'join_requested', 'active', 'left_early', 'completed', 'disconnected'],
+    })
+      .notNull()
+      .default('invited'),
+    isHost: boolean('is_host').notNull().default(false),
+    // what they said when rejecting the proposal, for the host to revise
+    note: text('note'),
+    joinedAt: createdAt(),
+    startedAt: timestamp('started_at', { withTimezone: true }),
+    lastHeartbeatAt: timestamp('last_heartbeat_at', { withTimezone: true }),
+    leftAt: timestamp('left_at', { withTimezone: true }),
+    // credited minutes when completed (late joiners get the time they were actually in)
+    rewardMinutes: integer('reward_minutes').notNull().default(0),
+    // how many wilted trees / broken frames an early exit costs; applied once
+    penaltyCount: integer('penalty_count').notNull().default(0),
+    penaltyAppliedAt: timestamp('penalty_applied_at', { withTimezone: true }),
+    focusSessionId: uuid('focus_session_id'),
+  },
+  (t) => [
+    primaryKey({ columns: [t.sessionId, t.userId] }),
+    check(
+      'group_participants_status_check',
+      sql`${t.status} in ('invited', 'rejected', 'approved', 'ready', 'join_requested', 'active', 'left_early', 'completed', 'disconnected')`
+    ),
+    index('group_participants_user_idx').on(t.userId, t.status),
+  ]
+);
+
+// Chat in a group session is a fixed set of messages and smileys (no free text).
+export const groupMessages = pgTable(
+  'group_messages',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    sessionId: uuid('session_id')
+      .notNull()
+      .references(() => groupSessions.id, { onDelete: 'cascade' }),
+    fromUserId: uuid('from_user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    messageKey: text('message_key').notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index('group_messages_session_idx').on(t.sessionId, t.createdAt)]
+);
+
+// ---------------------------------------------------------------------------
 // Admin console users + role-based access control
 // ---------------------------------------------------------------------------
 

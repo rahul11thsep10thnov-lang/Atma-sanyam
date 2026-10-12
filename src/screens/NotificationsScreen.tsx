@@ -18,7 +18,7 @@ import { space } from '../theme/spacing';
 import { useTheme } from '../theme/ThemeContext';
 import { t, useLanguage } from '../i18n';
 
-const ICON: Record<string, IconName> = { friend_request: 'userPlus', friend_accepted: 'userCheck', poke: 'hand', group_invite: 'users', group: 'users' };
+const ICON: Record<string, IconName> = { friend_request: 'userPlus', friend_accepted: 'userCheck', poke: 'hand', group_invite: 'users', group_rejected: 'users', group_join_request: 'userPlus', group_joined: 'users' };
 
 function relative(iso: string): string {
   const diff = Math.max(0, Date.now() - new Date(iso).getTime());
@@ -80,8 +80,11 @@ export function NotificationsScreen() {
     const data = (n.data ?? {}) as { type?: string; requestId?: string; sessionId?: string };
     if (n.type === 'friend_request') navigation.navigate('Tabs', { screen: 'Friends', params: { tab: 'requests' } });
     else if (n.type === 'friend_accepted' || n.type === 'poke') navigation.navigate('Tabs', { screen: 'Friends', params: { tab: 'friends' } });
-    else if (n.type.startsWith('group') && data.sessionId) navigation.navigate('Tabs', { screen: 'Friends', params: { tab: 'friends' } });
-    else return;
+    else if (n.type.startsWith('group') && data.sessionId) {
+      navigation.goBack();
+      navigation.navigate('GroupLobby', { sessionId: data.sessionId });
+      return;
+    } else return;
     navigation.goBack();
   };
 

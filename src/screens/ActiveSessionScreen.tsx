@@ -17,7 +17,7 @@ import { gridForAspect } from '../utils/grid';
 import { PuzzleContent, attributionFor } from '../components/PuzzleContent';
 import { SessionResultSheet, RewardLine } from '../components/session/SessionResultSheet';
 import { PlacementOption, PlacementSheet } from '../components/session/PlacementSheet';
-import { NewPlant, creditCompletedSession, recordPausedSession } from '../spaces/focusEngine';
+import { NewPlant, applyGroupPenalties, creditCompletedSession, recordPausedSession } from '../spaces/focusEngine';
 import { STAGE_WORDS, hangArtwork as hangInSpace } from '../spaces/model';
 import { GRACE_SECONDS } from '../spaces/catalog';
 import { packFor } from '../spaces/packs';
@@ -33,6 +33,8 @@ import { useReducedMotion } from '../hooks/useReducedMotion';
 import { RootStackParamList } from '../navigation/types';
 import { saveSessionRecord } from '../storage/history';
 import { FocusReport, reportFocusSession } from '../social/focusReporter';
+import { group as groupApi, GroupSessionView } from '../social/groupApi';
+import { GroupPanel } from '../components/session/GroupPanel';
 import { SessionRecord } from '../types';
 import { useSettings } from '../context/SettingsContext';
 import { useRemoteConfig } from '../context/RemoteConfigContext';
@@ -83,7 +85,9 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
   const reduced = useReducedMotion();
   const texts = remote.texts;
   const insets = useSafeAreaInsets();
-  const totalSeconds = config.durationMinutes * 60;
+  const groupCfg = config.group;
+  // In a group the server's clock is the truth: the time left from this person's own start.
+  const totalSeconds = groupCfg ? Math.max(1, Math.round((new Date(groupCfg.endsAt).getTime() - Math.max(Date.now(), new Date(groupCfg.myStartedAt).getTime())) / 1000)) : config.durationMinutes * 60;
   const totalPieces = SESSION_GRID.rows * SESSION_GRID.cols;
   const startedAtRef = useRef(Date.now());
   const sessionIdRef = useRef(`${startedAtRef.current}-${Math.random().toString(36).slice(2, 8)}`);
@@ -133,6 +137,12 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
 
   useEffect(() => {
     track('session_start', { properties: { durationMinutes: config.durationMinutes, imageKind: config.image.kind } });
+    if (groupCfg) {
+      const beat = () => void groupApi.heartbeat(groupCfg.sessionId).catch(() => undefined);
+      beat();
+      const timer = setInterval(beat, 45_000);
+      return () => clearInterval(timer);
+    }
     reportRef.current = reportFocusSession(sessionIdRef.current, config.durationMinutes);
     return () => reportRef.current?.stop();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -150,8 +160,16 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
     show({ outcome: 'completed' });
     const img = config.image;
     const uri = img.kind === 'remote' || img.kind === 'custom' ? img.uri : img.kind === 'art' ? img.uri : undefined;
-    imageAspect(uri)
-      .then((aspect) => creditCompletedSession(config.durationMinutes, img, sessionIdRef.current, aspect))
+    // In a group the server settles the session and says what this person earned
+    // (a late joiner gets the minutes they were in); the usual tiers apply to that.
+    const minutesPromise: Promise<number> = groupCfg
+      ? groupApi
+          .finish(groupCfg.sessionId)
+          .then((s) => s.me?.rewardMinutes ?? 0)
+          .catch(() => config.durationMinutes)
+      : Promise.resolve(config.durationMinutes);
+    Promise.all([imageAspect(uri), minutesPromise])
+      .then(([aspect, minutes]) => creditCompletedSession(minutes, img, groupCfg ? `group:${groupCfg.sessionId}` : sessionIdRef.current, aspect))
       .then((summary) => {
         const lines: RewardLine[] = [{ icon: 'coins', text: t('session.coinsLine', { coins: summary.coinsEarned + summary.bonusCoins }) }];
         if (summary.newPlant) {
@@ -175,7 +193,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
         setRewardLines(lines);
       })
       .catch(() => undefined);
-  }, [finalizeSession, settings.soundEnabled, config.durationMinutes, config.image]);
+  }, [finalizeSession, settings.soundEnabled, config.durationMinutes, config.image, groupCfg]);
 
   const handleFail = useCallback(
     (reason: 'left_app' | 'gave_up', revealedFraction: number) => {
@@ -184,6 +202,22 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
       finalizeSession('failed', reason, revealedFraction);
       if (settings.soundEnabled) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => undefined);
       show({ outcome: 'failed', reason });
+      if (groupCfg) {
+        // Leaving a group early: the server decides the cost (one per member) and it is applied once.
+        groupApi
+          .leave(groupCfg.sessionId)
+          .then(async (r) => {
+            if (r.status !== 'left_early' || r.penaltyCount <= 0) return;
+            await applyGroupPenalties(config.image, r.penaltyCount);
+            await groupApi.penaltyApplied(groupCfg.sessionId).catch(() => undefined);
+            setRewardLines([
+              { icon: 'alert', text: t('group.leftEarlyLine', { count: r.penaltyCount }) },
+              { icon: 'users', text: t('group.leftEarlyWhere', { where: config.image.kind === 'plant' ? t('tabs.garden').toLowerCase() : t('space.balcony').toLowerCase() }) },
+            ]);
+          })
+          .catch(() => undefined);
+        return;
+      }
       if (!isPlant && !inSpace) return;
       recordPausedSession(config.image, elapsed)
         .then((summary) => {
@@ -202,7 +236,18 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
         })
         .catch(() => undefined);
     },
-    [finalizeSession, settings.soundEnabled, config.image, isPlant, inSpace]
+    [finalizeSession, settings.soundEnabled, config.image, isPlant, inSpace, groupCfg]
+  );
+
+  // The server ended the group session (the clock ran out on its side, or
+  // everyone else left): finish on this side too.
+  const onGroupEnded = useCallback(
+    (sv: GroupSessionView) => {
+      if (resultRef.current) return;
+      const mine = sv.me;
+      if (mine?.status === 'completed') handleComplete();
+    },
+    [handleComplete]
   );
 
   // ---- hanging the framed picture ----
@@ -261,6 +306,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
     // within the grace period: no record, no penalty, no droop
     leftFreeRef.current = true;
     reportRef.current?.finish('failed');
+    if (groupCfg) void groupApi.leave(groupCfg.sessionId).catch(() => undefined);
     track('session_withdrawn', { properties: { durationMinutes: config.durationMinutes, imageKind: config.image.kind } });
     navigation.replace('Tabs', { screen: isPlant ? 'Garden' : inSpace ? 'History' : 'Home' });
   };
@@ -271,7 +317,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
       leaveFree();
       return;
     }
-    Alert.alert(t('session.endTitle'), t('session.endBody'), [
+    Alert.alert(t('session.endTitle'), groupCfg ? t('group.endBody') : t('session.endBody'), [
       { text: t('session.keepGoing'), style: 'cancel' },
       { text: t('session.endSession'), style: 'destructive', onPress: giveUp },
     ]);
@@ -332,8 +378,10 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
         {!result && <IconButton icon="close" label={t('session.end')} variant="onImage" size={40} onPress={confirmGiveUp} haptic={false} />}
       </View>
 
+      {groupCfg && <GroupPanel sessionId={groupCfg.sessionId} top={insets.top + 52} onEnded={onGroupEnded} />}
+
       {!result && (
-        <View style={[styles.center, timerAtTop && { justifyContent: 'flex-start', paddingTop: insets.top + 64 }]} pointerEvents="none">
+        <View style={[styles.center, timerAtTop && { justifyContent: 'flex-start', paddingTop: insets.top + (groupCfg ? 128 : 64) }]} pointerEvents="none">
           <AppText style={[styles.timer, typography.timer, isPlant && styles.timerPlant, isPlant && { color: colors.text }]} accessibilityRole="timer" accessibilityLabel={`${Math.ceil(remainingSeconds / 60)} minutes remaining`}>
             {formatTime(remainingSeconds)}
           </AppText>

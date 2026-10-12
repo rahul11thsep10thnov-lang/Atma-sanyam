@@ -17,5 +17,7 @@ export type RootStackParamList = {
   ContentBrowser: { onSelect: (image: RemoteImageRef) => void; initialCategoryId?: string };
   Auth: { mode?: 'signIn' | 'profile' | 'password' } | undefined;
   Notifications: undefined;
+  GroupSetup: { editSessionId?: string } | undefined;
+  GroupLobby: { sessionId: string };
   Language: undefined;
 };
