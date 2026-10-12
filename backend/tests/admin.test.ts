@@ -22,7 +22,7 @@ beforeAll(async () => {
   editorToken = await adminToken(ctx.app, 'editor@example.com');
 });
 afterAll(async () => {
-  await ctx.database.close();
+  await ctx.close();
 });
 
 describe('admin authentication', () => {

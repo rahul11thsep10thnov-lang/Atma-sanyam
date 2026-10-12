@@ -17,6 +17,7 @@ import { listPublishedContent, toPublicImage } from '../../services/contentServi
 import { createUserSession, revokeAllUserSessions } from '../../services/sessionService.js';
 import { publicConfig } from '../../services/settingsService.js';
 import type { AppDeps } from '../../types.js';
+import { socialRouter } from './social.js';
 
 const email = z.string().trim().email().max(254);
 const installId = z.string().regex(/^[A-Za-z0-9-]{16,64}$/, 'Invalid install id');
@@ -393,6 +394,9 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeo
     await db.delete(users).where(eq(users.id, user.id));
     res.status(204).end();
   });
+
+  // ---- friends, pokes, notifications, focus sessions -----------------------
+  r.use(socialRouter(deps, auth, limits));
 
   // ---- devices / push ---------------------------------------------------
   r.post('/devices', auth.optionalUser, async (req, res) => {

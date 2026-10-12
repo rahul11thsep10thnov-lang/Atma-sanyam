@@ -5,6 +5,8 @@ import { createConsoleMailer, createResendMailer, type Mailer } from './lib/mail
 import { createConsoleSmsSender, createMsg91SmsSender, createTwilioSmsSender, type SmsSender } from './lib/sms.js';
 import { pendingDeliveries } from './routes/admin/notifications.js';
 import { createApp } from './app.js';
+import { createRealtimeHub } from './realtime/hub.js';
+import { broadcastPresence } from './services/socialService.js';
 
 const env = loadEnv();
 const database = createDatabase(env.DATABASE_URL, env.DATABASE_POOL_MAX);
@@ -28,15 +30,19 @@ if (env.SMS_PROVIDER === 'msg91' && env.MSG91_AUTH_KEY && env.MSG91_TEMPLATE_ID)
   console.warn(`SMS_PROVIDER=${env.SMS_PROVIDER} is missing its credentials; phone sign-in is disabled.`);
 }
 if (env.OTP_TEST_NUMBERS.size > 0) console.warn(`${env.OTP_TEST_NUMBERS.size} test number(s) accept a fixed sign-in code.`);
-const app = createApp({ db: database.db, env, push, mailer, sms });
+const realtime = createRealtimeHub(database.db);
+realtime.onPresenceChange = (userId) => broadcastPresence(database.db, realtime, userId);
+const app = createApp({ db: database.db, env, push, mailer, sms, realtime });
 
 const server = app.listen(env.PORT, () => {
   console.log(`Tame API listening on :${env.PORT} (${env.NODE_ENV})`);
 });
+realtime.attach(server);
 
 async function shutdown(signal: string) {
   console.log(`${signal} received, shutting down`);
   server.close();
+  await realtime.close();
   await Promise.allSettled([...pendingDeliveries]);
   await database.close();
   process.exit(0);

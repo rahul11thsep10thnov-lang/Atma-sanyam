@@ -11,6 +11,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
 } from 'drizzle-orm/pg-core';
 
@@ -103,6 +104,116 @@ export const passwordResetCodes = pgTable(
     createdAt: createdAt(),
   },
   (t) => [index('password_reset_codes_user_idx').on(t.userId)]
+);
+
+// ---------------------------------------------------------------------------
+// Friends, notifications, pokes, verified focus time
+// ---------------------------------------------------------------------------
+
+// One row per request, from requester to addressee. "accepted" is the
+// friendship; "declined" lets the requester ask again later. Blocks live in
+// their own table so they survive unfriending.
+export const friendships = pgTable(
+  'friendships',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    requesterId: uuid('requester_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    addresseeId: uuid('addressee_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    status: text('status', { enum: ['pending', 'accepted', 'declined'] }).notNull().default('pending'),
+    createdAt: createdAt(),
+    respondedAt: timestamp('responded_at', { withTimezone: true }),
+  },
+  (t) => [
+    check('friendships_status_check', sql`${t.status} in ('pending', 'accepted', 'declined')`),
+    check('friendships_not_self_check', sql`${t.requesterId} <> ${t.addresseeId}`),
+    uniqueIndex('friendships_pair_idx').on(t.requesterId, t.addresseeId),
+    index('friendships_addressee_idx').on(t.addresseeId, t.status),
+  ]
+);
+
+export const blocks = pgTable(
+  'blocks',
+  {
+    blockerId: uuid('blocker_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    blockedId: uuid('blocked_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    createdAt: createdAt(),
+  },
+  (t) => [primaryKey({ columns: [t.blockerId, t.blockedId] }), index('blocks_blocked_idx').on(t.blockedId)]
+);
+
+// A person's own notification centre (the admin broadcasts above are a
+// different thing). `data` carries what the app needs to open the right
+// screen, e.g. { type: 'friend_request', requestId }.
+export const userNotifications = pgTable(
+  'user_notifications',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    type: text('type').notNull(),
+    title: text('title').notNull(),
+    body: text('body').notNull(),
+    data: jsonb('data').$type<Record<string, unknown>>(),
+    readAt: timestamp('read_at', { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index('user_notifications_user_idx').on(t.userId, t.createdAt), index('user_notifications_unread_idx').on(t.userId, t.readAt)]
+);
+
+// Pokes are idempotent: the app sends a key per tap, a repeat is a no-op.
+export const pokes = pgTable(
+  'pokes',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    fromUserId: uuid('from_user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    toUserId: uuid('to_user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    idempotencyKey: text('idempotency_key').notNull(),
+    deliveredLive: boolean('delivered_live').notNull().default(false),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex('pokes_key_idx').on(t.fromUserId, t.idempotencyKey), index('pokes_to_idx').on(t.toUserId, t.createdAt)]
+);
+
+// Focus sessions as the server saw them: it stamps the start and the end, so
+// the minutes it credits ("verified") cannot be typed in by the app. A
+// session still running with a recent heartbeat is what "focusing now" means.
+export const focusSessions = pgTable(
+  'focus_sessions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    clientSessionId: text('client_session_id').notNull(),
+    kind: text('kind', { enum: ['solo', 'group'] }).notNull().default('solo'),
+    groupSessionId: uuid('group_session_id'),
+    plannedMinutes: integer('planned_minutes').notNull(),
+    startedAt: timestamp('started_at', { withTimezone: true }).notNull().defaultNow(),
+    lastHeartbeatAt: timestamp('last_heartbeat_at', { withTimezone: true }).notNull().defaultNow(),
+    endedAt: timestamp('ended_at', { withTimezone: true }),
+    outcome: text('outcome', { enum: ['running', 'completed', 'failed'] }).notNull().default('running'),
+    // Minutes credited by the server from its own clock; 0 unless completed.
+    verifiedMinutes: integer('verified_minutes').notNull().default(0),
+  },
+  (t) => [
+    check('focus_sessions_outcome_check', sql`${t.outcome} in ('running', 'completed', 'failed')`),
+    uniqueIndex('focus_sessions_client_idx').on(t.userId, t.clientSessionId),
+    index('focus_sessions_user_started_idx').on(t.userId, t.startedAt),
+    index('focus_sessions_running_idx').on(t.outcome, t.lastHeartbeatAt),
+  ]
 );
 
 // ---------------------------------------------------------------------------

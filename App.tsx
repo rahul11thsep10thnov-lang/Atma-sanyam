@@ -10,6 +10,8 @@ import { RootNavigator } from './src/navigation/RootNavigator';
 import { SettingsProvider, useSettings } from './src/context/SettingsContext';
 import { RemoteConfigProvider } from './src/context/RemoteConfigContext';
 import { AuthProvider } from './src/context/AuthContext';
+import { SocialProvider } from './src/social/SocialContext';
+import { PokeOverlay } from './src/components/social/PokeOverlay';
 import { AppGate } from './src/components/AppGate';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
 import { ThemeProvider, useTheme } from './src/theme/ThemeContext';
@@ -64,11 +66,14 @@ export default function App() {
             <ThemeProvider>
               <RemoteConfigProvider>
                 <AuthProvider>
-                  <AnalyticsConsent />
-                  <AppGate>
-                    <RootNavigator />
-                  </AppGate>
-                  <ThemedStatusBar />
+                  <SocialProvider>
+                    <AnalyticsConsent />
+                    <AppGate>
+                      <RootNavigator />
+                    </AppGate>
+                    <PokeOverlay />
+                    <ThemedStatusBar />
+                  </SocialProvider>
                 </AuthProvider>
               </RemoteConfigProvider>
             </ThemeProvider>

@@ -10,6 +10,10 @@ const json = (message: string): Partial<Options> => ({
   },
 });
 
+import type { Request } from 'express';
+
+const userKey = (req: Request) => req.user?.id ?? ipKeyGenerator(req.ip ?? 'unknown');
+
 function identifierOf(body: unknown): string {
   const b = (body ?? {}) as Record<string, unknown>;
   const v = typeof b.phone === 'string' ? b.phone : typeof b.email === 'string' ? b.email : '';
@@ -48,6 +52,10 @@ export function createRateLimits(disabled = false) {
       keyGenerator: (req) => `${ipKeyGenerator(req.ip ?? 'unknown')}|${identifierOf(req.body)}`,
       ...json('Too many code requests. Try again later.'),
     }),
+    // People search while typing, friend requests, pokes: per person (the token), else per IP.
+    search: rateLimit({ windowMs: 60_000, limit: 40, skip, keyGenerator: userKey, ...json('Too many searches. Slow down.') }),
+    friendRequest: rateLimit({ windowMs: 60 * 60_000, limit: 30, skip, keyGenerator: userKey, ...json('Too many friend requests this hour.') }),
+    poke: rateLimit({ windowMs: 60_000, limit: 20, skip, keyGenerator: userKey, ...json('Too many pokes. Give your friends a minute.') }),
     // Live username checks while typing.
     usernameCheck: rateLimit({ windowMs: 60_000, limit: 60, skip, ...json('Too many username checks. Slow down.') }),
     events: rateLimit({ windowMs: 60_000, limit: 60, skip, ...json('Too many analytics requests.') }),

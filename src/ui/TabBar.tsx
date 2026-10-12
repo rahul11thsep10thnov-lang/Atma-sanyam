@@ -43,7 +43,7 @@ function TabItem({ spec, focused, onPress, onLongPress }: { spec: TabSpec; focus
       <Animated.View style={{ transform: [{ scale }, { translateY: lift }] }}>
         <Icon name={spec.icon} size="md" color={focused ? 'active' : 'icon'} strokeWidth={focused ? 2.1 : 1.75} />
       </Animated.View>
-      <AppText variant="caption" style={{ color: focused ? colors.primary : colors.textMuted, marginTop: 4 }}>
+      <AppText variant="caption" numberOfLines={1} maxFontSizeMultiplier={1.1} style={[styles.label, { color: focused ? colors.primary : colors.textMuted }]}>
         {spec.label}
       </AppText>
       <Animated.View style={[styles.dot, { backgroundColor: colors.primary, opacity: t, transform: [{ scale: t }] }]} />
@@ -86,7 +86,9 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     paddingHorizontal: space.sm,
   },
-  item: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 6 },
+  item: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 6, minWidth: 0 },
+  // seven tabs share the bar: the label stays on one line and a hair smaller
+  label: { marginTop: 4, fontSize: 11, lineHeight: 14, paddingHorizontal: 1 },
   dot: { width: 4, height: 4, borderRadius: 2, marginTop: 3 },
 });
 

@@ -8,7 +8,7 @@ beforeAll(async () => {
   ctx = await setupTestApp({ disableRateLimits: false });
 });
 afterAll(async () => {
-  await ctx.database.close();
+  await ctx.close();
 });
 
 describe('rate limiting', () => {
