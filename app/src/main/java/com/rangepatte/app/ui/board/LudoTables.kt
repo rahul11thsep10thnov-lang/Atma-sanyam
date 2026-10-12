@@ -24,6 +24,16 @@ interface LudoTableController {
     var busy: Boolean
     /** Set when the table cannot continue (the host left or the connection broke); never on a solo table. */
     val connectionLost: Boolean get() = false
+    /** Stage 8: seats whose player dropped out → when their window closes (ms). */
+    val awaySeats: Map<Int, Long> get() = emptyMap()
+    /** Seats the computer plays now (grows when a player leaves). */
+    val botSeats: Set<Int> get() = emptySet()
+    /** This phone lost the host and is getting its seat back; [reconnectDeadline] is when the host gives up on it. */
+    val reconnecting: Boolean get() = false
+    val reconnectDeadline: Long get() = 0L
+    /** Set once after the host seated us again; [acknowledgeRejoined] clears it. */
+    val rejoined: Boolean get() = false
+    fun acknowledgeRejoined() {}
     fun start()
     fun roll()
     fun move(token: Int)
@@ -40,6 +50,12 @@ class LudoOnlineTable(private val session: GameSession<LudoState, LudoAction>) :
     override val state: LudoState get() = session.state
     override val mySeat: Int get() = session.mySeat
     override val connectionLost: Boolean get() = session.connectionLost
+    override val awaySeats: Map<Int, Long> get() = session.awaySeats
+    override val botSeats: Set<Int> get() = session.botSeats
+    override val reconnecting: Boolean get() = session.reconnecting
+    override val reconnectDeadline: Long get() = session.reconnectDeadline
+    override val rejoined: Boolean get() = session.rejoined
+    override fun acknowledgeRejoined() = session.acknowledgeRejoined()
     override var busy: Boolean by mutableStateOf(false)
 
     /** Where friends can find this table: the online room code, or "nearby" for a Bluetooth/Wi-Fi table. */
@@ -60,7 +76,7 @@ class LudoOnlineTable(private val session: GameSession<LudoState, LudoAction>) :
             return shown
         }
 
-    override val isMyTurn: Boolean get() = !session.isSpectator && state.turn == mySeat && state.phase != LudoPhase.OVER
+    override val isMyTurn: Boolean get() = !session.isSpectator && !session.reconnecting && state.turn == mySeat && state.phase != LudoPhase.OVER
 
     override fun start() = session.start()
 

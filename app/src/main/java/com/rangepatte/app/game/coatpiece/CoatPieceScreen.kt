@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.rangepatte.app.R
 import com.rangepatte.app.domain.model.GameInfo
-import com.rangepatte.app.game.common.ConnectionLostDialog
+import com.rangepatte.app.game.common.SessionNotices
 import com.rangepatte.app.game.common.GameFrame
 import com.rangepatte.app.game.common.GameResultDialog
 import com.rangepatte.app.game.common.SeatedNotice
@@ -96,5 +96,5 @@ fun CoatPieceScreen(
     }
 
     SeatedNotice(session)
-    if (session.connectionLost) ConnectionLostDialog(onBackClick)
+    SessionNotices(session, onBackClick)
 }

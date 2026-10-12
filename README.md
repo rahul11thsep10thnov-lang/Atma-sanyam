@@ -639,6 +639,27 @@ only, both free, one pending request per pair, 60 seconds to answer); the sender
 newest request and the sheet marks every pending one as Sent. Pokes at a Ludo table are reduced to
 the banner like at a card table. Tested in `InviteListTest`.
 
+**Ludo stage 8 — waiting, reconnecting and game-full states (approved: Design 1, states on the yard
+plaques and parchment bands over the board).** When a player's phone drops out the host keeps their
+seat for 60 seconds (`net/core/SeatKeeper.kt`): the computer plays it at once (the existing BOT
+message) and everyone is told with a new AWAY message, so on every phone the player's yard plaque
+dims, shows an hourglass and counts down "back in 48 s", and the status line says the computer is
+playing for them; when the window closes the plaque shows the robot disc and "Computer". The dropped
+phone shows a parchment band over the frozen board — "Reconnecting… your seat is kept for 48 s" —
+and asks the host for its seat every three seconds (a plain JOIN); the host matches the same uid (an
+online room) or the same name over a fresh link (Nearby, through the lobby's Find tables) and sends
+the full position (SEAT, which a seated guest may now take as well as a watcher), so the phone is
+back in step whatever it missed; "You're back!" shows for a moment. Online rooms rejoin by
+themselves because Firestore keeps the move log and the uid; Nearby can rejoin only while the host is
+still in range and advertising. A full lobby no longer turns a late arrival away: beside "This table
+is full" there is **Watch** (JOIN with a watch flag), they see the table fill, and the host admits
+them as a watcher when the game starts (Element 10 seats them when a computer seat frees up). The
+host leaving still ends the table (no host migration), and there is no turn timer. The band and
+dialog logic lives in `GameFrame.kt` (`ReconnectBand`, `SessionNotices`) and serves the card tables
+too, so a card player who drops out gets the same window. Tested in `ReconnectTest`: the seat book's
+window and matching, a seated guest brought back in step, the new messages, and the watch flow
+through a full lobby. Not yet run on two real phones.
+
 ## Sound and music
 
 All sound goes through one object, `audio/GameAudio.kt`, which owns the settings and is the only code

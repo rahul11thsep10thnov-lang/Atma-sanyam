@@ -11,6 +11,7 @@ import com.rangepatte.app.domain.talk.TableTalk
 import com.rangepatte.app.game.common.UndoHistory
 import com.rangepatte.app.net.core.GameMachine
 import com.rangepatte.app.net.core.MatchConfig
+import com.rangepatte.app.net.core.SeatKeeper
 import com.rangepatte.app.net.core.SessionCore
 import com.rangepatte.app.net.core.Wire
 import kotlinx.coroutines.CoroutineScope
@@ -78,6 +79,28 @@ class GameSession<S, A>(
     /** Host only: how many people are watching (for a "2 watching" mark). */
     var spectatorCount: Int by mutableStateOf(0)
         private set
+
+    // -- Dropped players and reconnecting (stage 8) --------------------------------------------------
+
+    private val keeper = SeatKeeper()
+
+    /** Seats whose player dropped out, with the moment their window closes (ms); the computer plays them meanwhile. */
+    var awaySeats: Map<Int, Long> by mutableStateOf(emptyMap())
+        private set
+
+    /** Guest only: this phone lost the host and is trying to get its seat back. */
+    var reconnecting: Boolean by mutableStateOf(false)
+        private set
+
+    /** Guest only: when the host stops keeping our seat (ms); meaningful while [reconnecting]. */
+    var reconnectDeadline: Long by mutableStateOf(0L)
+        private set
+
+    /** Guest only: set once when the host has seated us again after a drop, so the screen can say so. */
+    var rejoined: Boolean by mutableStateOf(false)
+        private set
+
+    fun acknowledgeRejoined() { rejoined = false }
 
     // -- Table talk (Element 11) ------------------------------------------------------------------
 
@@ -266,8 +289,8 @@ class GameSession<S, A>(
         }
     }
 
-    /** Host only: someone asked to join a table that is already playing — they may watch. */
-    private fun admitSpectator(peerId: String, name: String) {
+    /** Host only: someone asked to join a table that is already playing (or waited in a full lobby) — they may watch. */
+    fun admitSpectator(peerId: String, name: String) {
         if (peerId in peerSeats || peerId in spectators) return
         if (spectators.size >= MAX_SPECTATORS) {
             transport?.sendToPeer(peerId, Wire.Reject("full").encode())
@@ -333,7 +356,11 @@ class GameSession<S, A>(
                         publish()
                     }
                 }
-                is Wire.Join -> admitSpectator(peerId, message.name)
+                is Wire.Join -> {
+                    val seat = keeper.match(peerId, message.name, System.currentTimeMillis())
+                    if (seat != null && seat in core.botSeats) reseat(peerId, seat, keeper.seats.getValue(seat).name)
+                    else admitSpectator(peerId, message.name)
+                }
                 is Wire.Say -> relayFromPeer(peerId, message.id)
                 Wire.Leave -> peerLost(peerId)
                 else -> Unit
@@ -347,13 +374,19 @@ class GameSession<S, A>(
                 }
                 is Wire.Human -> {
                     core.seatHuman(message.seat, message.name)
+                    awaySeats = awaySeats - message.seat
                     publish()
                 }
+                is Wire.Away -> awaySeats = if (message.windowMs > 0) awaySeats + (message.seat to System.currentTimeMillis() + message.windowMs) else awaySeats - message.seat
                 is Wire.View -> if (core.adoptView(message)) publish()
                 is Wire.Say -> if (TableTalk.isValid(message.id)) show(TableMessage(message.seat, message.id, message.name, System.currentTimeMillis()))
-                is Wire.Seat -> if (core.takeSeat(message)) {
-                    justSeated = true
-                    publish()
+                is Wire.Seat -> {
+                    val wasWatching = isSpectator
+                    if (core.takeSeat(message)) {
+                        if (wasWatching) justSeated = true else rejoined = true
+                        reconnecting = false
+                        publish()
+                    }
                 }
                 Wire.Leave -> connectionLost = true
                 else -> Unit
@@ -368,16 +401,61 @@ class GameSession<S, A>(
                 return
             }
             val seat = peerSeats.remove(peerId) ?: return
+            // The computer plays the seat at once; the seat itself is kept for a while in case they return.
             core.botSeats.add(seat)
             transport?.broadcast(Wire.Bot(seat).encode())
+            val now = System.currentTimeMillis()
+            val away = keeper.drop(seat, core.config.seatNames[seat], peerId, now)
+            transport?.broadcast(Wire.Away(seat, keeper.windowMs).encode())
+            awaySeats = awaySeats + (seat to away.deadline)
+            scope.launch {
+                delay(keeper.windowMs + 50)
+                keeper.expire(System.currentTimeMillis()).forEach { gone ->
+                    transport?.broadcast(Wire.Away(gone, 0).encode())
+                    awaySeats = awaySeats - gone
+                }
+            }
             publish()
-        } else {
+        } else if (isSpectator) {
             connectionLost = true
+        } else {
+            startReconnecting()
         }
+    }
+
+    /** Guest only: the host went quiet. Keep asking for our seat until it is given back or the window closes. */
+    private fun startReconnecting() {
+        if (reconnecting || connectionLost) return
+        reconnecting = true
+        reconnectDeadline = System.currentTimeMillis() + keeper.windowMs
+        scope.launch {
+            while (reconnecting && System.currentTimeMillis() < reconnectDeadline) {
+                transport?.sendToHost(Wire.Join(core.config.seatNames.getOrElse(mySeat) { "Player" }).encode())
+                delay(RECONNECT_RETRY_MS)
+            }
+            if (reconnecting) {
+                reconnecting = false
+                connectionLost = true
+            }
+        }
+    }
+
+    /** Host only: a dropped player is back — the same uid, or the same name over a fresh link. */
+    private fun reseat(peerId: String, seat: Int, name: String) {
+        keeper.reclaim(seat)
+        core.seatHuman(seat, name)
+        peerSeats[peerId] = seat
+        awaySeats = awaySeats - seat
+        transport?.broadcast(Wire.Human(seat, name).encode())
+        // A phone that came back through the lobby needs the start first; one that stayed in the game ignores it.
+        transport?.sendToPeer(peerId, Wire.Start(core.config, seat).encode())
+        transport?.sendToPeer(peerId, core.seatMessage(seat).encode())
+        publish()
     }
 
     companion object {
         private const val AUTO_STEP_DELAY_MS = 1_300L
+        private const val RECONNECT_RETRY_MS = 3_000L
         /** How many people may watch one table. */
         const val MAX_SPECTATORS = 4
 

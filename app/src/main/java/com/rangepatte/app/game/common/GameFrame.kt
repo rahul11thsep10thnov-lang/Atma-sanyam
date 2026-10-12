@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import kotlinx.coroutines.delay
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -306,3 +308,37 @@ fun <S, A> SeatedNotice(session: com.rangepatte.app.net.GameSession<S, A>) {
 /** The Undo button for a solo table; null (no button) when other people are playing. */
 fun <S, A> com.rangepatte.app.net.GameSession<S, A>.undoControl(): UndoControl? =
     if (isSolo) UndoControl(usesLeft = undoUsesLeft, enabled = canUndo, onUndo = ::undo) else null
+
+/**
+ * Stage 8: a parchment band floating over the bottom of the table — "Reconnecting… your seat is kept
+ * for 48 s" while this phone gets the room back, "You're back!" for a moment after. Pure UI; the
+ * card tables and the Ludo board both use it.
+ */
+@Composable
+fun ReconnectBand(text: String, warning: Boolean) {
+    androidx.compose.ui.window.Popup(alignment = Alignment.BottomCenter) {
+        Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 28.dp)) {
+            StatusLine(text = text, highlight = !warning, compact = true, modifier = Modifier.fillMaxWidth())
+        }
+    }
+}
+
+/**
+ * Everything a table with other people may need to say about the link: the Connection lost dialog,
+ * the reconnecting band with its countdown, and "You're back!" once the host has seated us again.
+ */
+@Composable
+fun <S, A> SessionNotices(session: com.rangepatte.app.net.GameSession<S, A>, onBack: () -> Unit) {
+    if (session.connectionLost) {
+        ConnectionLostDialog(onBack)
+        return
+    }
+    if (session.reconnecting) {
+        var now by remember { mutableStateOf(System.currentTimeMillis()) }
+        LaunchedEffect(session.reconnectDeadline) { while (true) { now = System.currentTimeMillis(); delay(1000) } }
+        ReconnectBand(stringResource(R.string.net_reconnecting_format, ((session.reconnectDeadline - now) / 1000).toInt().coerceAtLeast(0)), warning = true)
+    } else if (session.rejoined) {
+        LaunchedEffect(Unit) { delay(2_500); session.acknowledgeRejoined() }
+        ReconnectBand(stringResource(R.string.net_back_again), warning = false)
+    }
+}

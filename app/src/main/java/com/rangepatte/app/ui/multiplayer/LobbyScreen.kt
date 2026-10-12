@@ -167,6 +167,15 @@ fun LobbyScreen(
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
                         )
+                        // Stage 8: a full table can still be watched once it starts.
+                        if (lobby.canWatch) {
+                            RoyalButton(
+                                text = stringResource(R.string.net_watch_table),
+                                onClick = lobby::watch,
+                                style = RoyalButtonStyle.STEEL,
+                                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -245,7 +254,7 @@ private fun GuestSection(lobby: LobbyUi, decor: LobbyDecor?) {
         RoyalSectionTitle(stringResource(R.string.net_players_format, lobby.names.size, lobby.totalSeats))
         PeopleList(lobby.names, lobby.totalSeats, decor)
         Text(
-            text = stringResource(R.string.net_joined_waiting),
+            text = stringResource(if (lobby.watching) R.string.net_watch_waiting else R.string.net_joined_waiting),
             style = MaterialTheme.typography.bodyLarge,
             color = GoldenGlow,
             textAlign = TextAlign.Center,

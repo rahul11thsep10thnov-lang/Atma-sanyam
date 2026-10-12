@@ -31,7 +31,7 @@ import com.rangepatte.app.domain.model.GameInfo
 import com.rangepatte.app.domain.model.Rank
 import com.rangepatte.app.game.common.CardSlot
 import com.rangepatte.app.game.common.CardView
-import com.rangepatte.app.game.common.ConnectionLostDialog
+import com.rangepatte.app.game.common.SessionNotices
 import com.rangepatte.app.game.common.GameFrame
 import com.rangepatte.app.game.common.GameResultDialog
 import com.rangepatte.app.game.common.GroupedHand
@@ -236,7 +236,7 @@ fun RummyScreen(
     }
 
     SeatedNotice(session)
-    if (session.connectionLost) ConnectionLostDialog(onBackClick)
+    SessionNotices(session, onBackClick)
 }
 
 @Composable

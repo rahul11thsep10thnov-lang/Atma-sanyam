@@ -153,11 +153,12 @@ class SessionCore<S, A>(
     }
 
     /**
-     * Spectator only: the host has seated us. From here on this phone follows the lockstep like any
-     * other player, starting from the full [Wire.Seat.state] after move [Wire.Seat.seq].
+     * The host has seated us (a spectator), or seated us again after we dropped out (stage 8: the
+     * seat must be our own). From here on this phone follows the lockstep like any other player,
+     * starting from the full [Wire.Seat.state] after move [Wire.Seat.seq].
      */
     fun takeSeat(seat: Wire.Seat): Boolean {
-        if (!isSpectator) return false
+        if (isHost || (!isSpectator && seat.seat != mySeat)) return false
         val full = machine.decodeState(seat.state) ?: return false
         config = config.copy(seed = seat.seed)
         mySeat = seat.seat

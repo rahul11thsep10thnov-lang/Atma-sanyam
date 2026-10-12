@@ -26,6 +26,9 @@ class LobbyHost(
 ) {
     /** Guests in the order they joined: peer id → name. */
     val guests = LinkedHashMap<String, String>()
+
+    /** People the table had no seat for who chose to watch once it starts (stage 8): peer id → name. */
+    val watchers = LinkedHashMap<String, String>()
     var started = false
         private set
 
@@ -43,7 +46,13 @@ class LobbyHost(
                     if (started) sendToPeer(peerId, Wire.Reject("started").encode())
                     false
                 } else if (isFull) {
-                    sendToPeer(peerId, Wire.Reject("full").encode())
+                    if (message.watch) {
+                        // No seat, but they may watch: they see the table fill and get a watcher's start.
+                        watchers[peerId] = message.name.ifBlank { "Player" }
+                        sendToPeer(peerId, Wire.Lobby(names(), totalSeats, options).encode())
+                    } else {
+                        sendToPeer(peerId, Wire.Reject("full").encode())
+                    }
                     false
                 } else {
                     guests[peerId] = message.name.ifBlank { "Player" }
@@ -57,13 +66,15 @@ class LobbyHost(
     }
 
     fun onPeerLost(peerId: String): Boolean {
-        if (started || guests.remove(peerId) == null) return false
+        if (started) return false
+        watchers.remove(peerId)
+        if (guests.remove(peerId) == null) return false
         broadcast(Wire.Lobby(names(), totalSeats, options).encode())
         return true
     }
 
-    /** What the host's own session needs, plus where each guest sits. */
-    class Started(val config: MatchConfig, val seatByPeer: Map<String, Int>)
+    /** What the host's own session needs, where each guest sits, and who is waiting to watch. */
+    class Started(val config: MatchConfig, val seatByPeer: Map<String, Int>, val watchers: Map<String, String> = emptyMap())
 
     /**
      * Closes the lobby and tells every guest its seat. With four seats the first guest sits opposite
@@ -85,7 +96,7 @@ class LobbyHost(
         }
         val config = MatchConfig(gameId, seatNames, humanSeats, difficulty, seed, options)
         for ((peer, seat) in seatByPeer) sendToPeer(peer, Wire.Start(config, seat).encode())
-        return Started(config, seatByPeer)
+        return Started(config, seatByPeer, LinkedHashMap(watchers))
     }
 
     companion object {
@@ -125,7 +136,19 @@ class LobbyGuest(private val name: String, private val sendToHost: (text: String
     var start: Wire.Start? = null
         private set
 
+    /** True after [watch]: the table was full and we asked to watch once it starts. */
+    var watching = false
+        private set
+
     fun onConnected() = sendToHost(Wire.Join(name).encode())
+
+    /** The table was full: ask to watch instead (stage 8). Clears the refusal. */
+    fun watch() {
+        if (rejectedReason != "full") return
+        rejectedReason = null
+        watching = true
+        sendToHost(Wire.Join(name, watch = true).encode())
+    }
 
     /** Returns true if something visible changed. */
     fun onMessage(text: String): Boolean = when (val message = Wire.decode(text)) {

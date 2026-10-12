@@ -60,4 +60,10 @@ interface LobbyUi {
 
     /** Host: close the lobby and begin the game. */
     fun startGame()
+
+    /** Guest: the table was full; true while watching it instead is on offer (stage 8). */
+    val canWatch: Boolean get() = false
+    /** Guest: we asked to watch a full table once it starts. */
+    val watching: Boolean get() = false
+    fun watch() {}
 }

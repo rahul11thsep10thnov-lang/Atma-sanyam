@@ -39,7 +39,7 @@ import com.rangepatte.app.ui.theme.ParchmentText
 
 /** The board with its nameplates and die; stateless so the harness can draw any position. */
 @Composable
-fun LudoTable(state: LudoState, isMyTurn: Boolean, shownDice: Int?, pulse: Float, onRoll: () -> Unit, onMove: (Int) -> Unit, motion: MotionFrame = MotionFrame(), die: DieFrame = DieFrame(shownDice, 0f, false, 0f), mySeat: Int = 0) {
+fun LudoTable(state: LudoState, isMyTurn: Boolean, shownDice: Int?, pulse: Float, onRoll: () -> Unit, onMove: (Int) -> Unit, motion: MotionFrame = MotionFrame(), die: DieFrame = DieFrame(shownDice, 0f, false, 0f), mySeat: Int = 0, away: Map<Int, Long> = emptyMap(), botSeats: Set<Int> = emptySet(), now: Long = 0L) {
     val youName = stringResource(R.string.player_you)
     Spacer(modifier = Modifier.height(6.dp))
     val event = state.lastEvent
@@ -52,12 +52,14 @@ fun LudoTable(state: LudoState, isMyTurn: Boolean, shownDice: Int?, pulse: Float
         event is LudoEvent.Forfeit -> stringResource(R.string.ludo_forfeit_format, state.players[event.player].name)
         else -> stringResource(R.string.turn_indicator_format, state.current.name)
     }
-    StatusLine(text = status, highlight = isMyTurn, compact = true)
+    // Stage 8: while someone is away the line also says that the computer is playing for them.
+    val awayNote = away.keys.firstOrNull()?.let { seat -> stringResource(R.string.ludo_status_away_format, state.players.getOrNull(seat)?.name.orEmpty()) }
+    StatusLine(text = if (awayNote != null && status.isNotEmpty()) "$status · $awayNote" else awayNote ?: status, highlight = isMyTurn, compact = true)
 
     // The board, with each player's plaque laid over their own yard (stage 5).
     Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 2.dp)) {
         LudoBoardView(state = state, highlight = if (isMyTurn) state.movable else emptyList(), onTokenTap = onMove, pulse = pulse, motion = motion)
-        LudoYardPlaques(state = state, youName = youName, mySeat = mySeat)
+        LudoYardPlaques(state = state, youName = youName, mySeat = mySeat, away = away, botSeats = botSeats, now = now)
     }
 
     // The die and the Roll button sit below the board, never on it.

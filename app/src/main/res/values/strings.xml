@@ -593,4 +593,13 @@
     <string name="invite_pill_sent">Sent</string>
     <string name="invite_pill_playing">In a game</string>
     <string name="invite_pill_offline">Offline</string>
+
+    <!-- Ludo waiting and reconnecting (stage 8) -->
+    <string name="ludo_away_format">back in %1$d s</string>
+    <string name="ludo_plaque_computer">Computer</string>
+    <string name="ludo_status_away_format">%1$s lost connection — the computer plays for them</string>
+    <string name="net_reconnecting_format">Reconnecting… your seat is kept for %1$d s</string>
+    <string name="net_back_again">You\'re back! Your seat is yours again.</string>
+    <string name="net_watch_table">Watch</string>
+    <string name="net_watch_waiting">Table full — you\'ll watch once the game starts…</string>
 </resources>

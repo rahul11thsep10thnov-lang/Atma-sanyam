@@ -7,8 +7,12 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 import androidx.compose.ui.res.stringResource
 import com.rangepatte.app.AppServices
 import com.rangepatte.app.R
@@ -22,6 +26,7 @@ import com.rangepatte.app.domain.presence.Activity
 import com.rangepatte.app.game.common.ConnectionLostDialog
 import com.rangepatte.app.game.common.GameFrameChrome
 import com.rangepatte.app.game.common.GameResultDialog
+import com.rangepatte.app.game.common.ReconnectBand
 import com.rangepatte.app.net.GameSession
 import com.rangepatte.app.net.TableSessions
 
@@ -54,6 +59,10 @@ fun LudoScreen(game: BoardGameInfo, setup: LudoSetup, onBackClick: () -> Unit) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val reduceMotion = remember { runCatching { android.provider.Settings.Global.getFloat(context.contentResolver, android.provider.Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f }.getOrDefault(false) }
     val motion = rememberLudoMotion(state, table.shownDice, reduceMotion, onBusy = { table.busy = it })
+    // Stage 8: a one-second clock while a seat is kept or this phone is reconnecting, for the countdowns.
+    var now by remember { mutableStateOf(System.currentTimeMillis()) }
+    val counting = table.awaySeats.isNotEmpty() || table.reconnecting
+    LaunchedEffect(counting) { while (counting) { now = System.currentTimeMillis(); delay(1000) } }
 
     GameFrameChrome(
         title = stringResource(game.nameRes),
@@ -68,13 +77,20 @@ fun LudoScreen(game: BoardGameInfo, setup: LudoSetup, onBackClick: () -> Unit) {
     ) {
         LudoTable(
             state = state, isMyTurn = table.isMyTurn && !motion.busy, shownDice = motion.die.face ?: table.shownDice, pulse = pulse,
-            onRoll = table::roll, onMove = table::move, motion = motion.frame, die = motion.die, mySeat = table.mySeat
+            onRoll = table::roll, onMove = table::move, motion = motion.frame, die = motion.die, mySeat = table.mySeat,
+            away = table.awaySeats, botSeats = table.botSeats, now = now
         )
     }
 
     if (table.connectionLost) {
         ConnectionLostDialog(onBackClick)
-    } else if (state.phase == LudoPhase.OVER) {
+    } else if (table.reconnecting) {
+        ReconnectBand(stringResource(R.string.net_reconnecting_format, ((table.reconnectDeadline - now) / 1000).toInt().coerceAtLeast(0)), warning = true)
+    } else if (table.rejoined) {
+        LaunchedEffect(Unit) { delay(2_500); table.acknowledgeRejoined() }
+        ReconnectBand(stringResource(R.string.net_back_again), warning = false)
+    }
+    if (!table.connectionLost && state.phase == LudoPhase.OVER) {
         val ordinals = listOf(R.string.ludo_place_1, R.string.ludo_place_2, R.string.ludo_place_3, R.string.ludo_place_4).map { stringResource(it) }
         GameResultDialog(
             title = if (state.places.firstOrNull() == table.mySeat) stringResource(R.string.game_you_won) else stringResource(R.string.ludo_match_over),

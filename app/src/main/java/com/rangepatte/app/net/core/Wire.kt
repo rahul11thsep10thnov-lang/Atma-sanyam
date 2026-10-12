@@ -11,8 +11,11 @@ import java.net.URLEncoder
  * (Nearby) and over the internet (Firestore).
  */
 sealed interface Wire {
-    /** Client → host: "I'd like to sit at your table." */
-    data class Join(val name: String) : Wire
+    /**
+     * Client → host: "I'd like to sit at your table" — or, with [watch], "the table is full; let me
+     * watch once it starts" (stage 8). A player who dropped out sends a plain Join to get their seat back.
+     */
+    data class Join(val name: String, val watch: Boolean = false) : Wire
 
     /** Host → client: the table is full or already started. */
     data class Reject(val reason: String) : Wire
@@ -61,11 +64,17 @@ sealed interface Wire {
      */
     data class Say(val seat: Int, val id: Int, val name: String = "") : Wire
 
+    /**
+     * Host → everyone: [seat]'s player dropped out and the seat is kept for [windowMs] more milliseconds
+     * while the computer plays it (stage 8); 0 means the window has closed and the computer keeps the seat.
+     */
+    data class Away(val seat: Int, val windowMs: Long) : Wire
+
     /** Anyone: I am leaving / the table is closed. */
     data object Leave : Wire
 
     fun encode(): String = when (this) {
-        is Join -> "JOIN|${esc(name)}"
+        is Join -> "JOIN|${esc(name)}|${if (watch) 1 else 0}"
         is Reject -> "REJECT|${esc(reason)}"
         is Lobby -> "LOBBY|" + names.joinToString(",") { esc(it) } + "|$seats|${esc(options)}"
         is Start -> "START|${config.gameId.name}|${config.difficulty.name}|${config.seed}|$yourSeat|" +
@@ -77,6 +86,7 @@ sealed interface Wire {
         is Seat -> "SEAT|$seat|$seq|$seed|${esc(state)}"
         is Human -> "HUMAN|$seat|${esc(name)}"
         is Say -> "SAY|$seat|$id|${esc(name)}"
+        is Away -> "AWAY|$seat|$windowMs"
         Leave -> "LEAVE"
     }
 
@@ -88,7 +98,7 @@ sealed interface Wire {
         fun decode(text: String): Wire? = runCatching {
             val p = text.split("|")
             when (p[0]) {
-                "JOIN" -> Join(unesc(p[1]))
+                "JOIN" -> Join(unesc(p[1]), p.getOrNull(2) == "1")
                 "REJECT" -> Reject(unesc(p[1]))
                 "LOBBY" -> Lobby(if (p[1].isEmpty()) emptyList() else p[1].split(",").map(::unesc), p.getOrNull(2)?.toIntOrNull() ?: 0, p.getOrNull(3)?.let(::unesc).orEmpty())
                 "START" -> Start(
@@ -110,6 +120,7 @@ sealed interface Wire {
                 "SEAT" -> Seat(p[1].toInt(), p[2].toInt(), p[3].toLong(), unesc(p[4]))
                 "HUMAN" -> Human(p[1].toInt(), unesc(p[2]))
                 "SAY" -> Say(p[1].toInt(), p[2].toInt(), p.getOrNull(3)?.let(::unesc).orEmpty())
+                "AWAY" -> Away(p[1].toInt(), p[2].toLong())
                 "LEAVE" -> Leave
                 else -> null
             }

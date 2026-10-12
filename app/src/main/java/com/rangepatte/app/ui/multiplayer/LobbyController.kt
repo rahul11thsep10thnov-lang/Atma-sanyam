@@ -58,6 +58,10 @@ class LobbyController(
     /** The host's settings for the match; a guest's copy follows what the host announces. */
     override var options by mutableStateOf(hostOptions)
         private set
+    override var canWatch by mutableStateOf(false)
+        private set
+    override var watching by mutableStateOf(false)
+        private set
 
     /** Called once the session is ready and the table screen should open. */
     var onTableReady: (() -> Unit)? = null
@@ -210,6 +214,15 @@ class LobbyController(
         guest.onConnected()
     }
 
+    override fun watch() {
+        val guest = lobbyGuest ?: return
+        if (!canWatch) return
+        guest.watch()
+        canWatch = false
+        watching = true
+        error = null
+    }
+
     private fun guestMessage(guest: LobbyGuest, link: Transport, text: String) {
         if (!guest.onMessage(text)) return
         if (guest.hostLeft) {
@@ -220,7 +233,13 @@ class LobbyController(
         if (guest.seats > 0) totalSeats = guest.seats
         options = guest.options
         guest.rejectedReason?.let { reason ->
-            failAndReset(if (reason == "started") R.string.net_err_started else R.string.net_err_full)
+            if (reason == "full") {
+                // Stage 8: no seat, but the table can be watched once it starts — stay connected and offer that.
+                fail(R.string.net_err_full)
+                canWatch = true
+            } else {
+                failAndReset(R.string.net_err_started)
+            }
             return
         }
         val start = guest.start ?: return
@@ -264,6 +283,7 @@ class LobbyController(
         val started = lobby.start()
         val session = GameSession.host(machine, started.config, link, roomId)
         started.seatByPeer.forEach { (peer, seat) -> session.assignPeerSeat(peer, seat) }
+        started.watchers.forEach { (peer, name) -> session.admitSpectator(peer, name) }
         // The table stays discoverable: anyone who joins now watches, and sits down when a round ends.
         roomId?.let { OnlineRooms.markStatus(it, "playing") }
         handedOff = true
@@ -292,6 +312,8 @@ class LobbyController(
         releaseTransport()
         names = emptyList()
         foundTables = emptyList()
+        canWatch = false
+        watching = false
         stage = LobbyStage.IDLE
         fail(messageRes, detail)
     }
