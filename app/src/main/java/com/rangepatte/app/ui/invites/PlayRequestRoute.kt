@@ -27,7 +27,7 @@ fun BoxScope.PlayRequestOverlay(onJoin: (gameRoute: String, mode: PlayMode, code
     val now by repo.now.collectAsState()
     val people by AppServices.friends.people.collectAsState()
     val presence by AppServices.presence.friends.collectAsState()
-    fun gameName(id: com.rangepatte.app.domain.model.GameId) = com.rangepatte.app.domain.model.GameNames.nameRes(id)?.let { stringResource(it) } ?: id.name
+    @Composable fun gameName(id: com.rangepatte.app.domain.model.GameId) = com.rangepatte.app.domain.model.GameNames.nameRes(id)?.let { stringResource(it) } ?: id.name
 
     incoming?.let { req ->
         val from = people[req.from]
