@@ -26,6 +26,11 @@ object Routes {
     /** Changing an existing username from My Profile (Element 16). */
     const val USERNAME_EDIT = "profile/username?edit=true"
     const val MY_PROFILE = "profile/me"
+
+    /** Board games (Entertainment tab): each game's introduction page, by its route segment. */
+    const val ARG_BOARD = "board"
+    const val BOARD_INTRO_PATTERN = "board/{$ARG_BOARD}"
+    fun boardIntro(segment: String) = "board/$segment"
     const val ARG_UID = "uid"
     const val PERSON_PATTERN = "person/{$ARG_UID}"
     fun person(uid: String) = "person/$uid"

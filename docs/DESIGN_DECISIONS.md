@@ -27,3 +27,18 @@ court theme: antique wood, gold bevels, parchment text, Cinzel/Marcellus-style h
 
 All seventeen Friends elements are built and pushed. Galleries are kept outside the repository (they are review material, not product code); the approved
 design is described here and in the README section of each feature.
+
+## Ludo
+
+| # | Stage | Approved | Notes that bind later work |
+|---|-------|----------|----------------------------|
+| 1 | Ludo tile in the Entertainment tab | Design 1 (Royal court, the Khel tile) | Gold-framed portrait (cross board on ivory, two tokens, a die), crimson plaque, one-clause summary, 2–4 players; tapping opens Ludo's own introduction page. Entertainment uses Khel's two-column grid. |
+| 2 | Introduction and mode selection | *awaiting approval* | |
+| 3 | Board | pending | |
+| 4 | Tokens, dice, safe squares, homes, movement | pending | |
+| 5 | Avatars, usernames, turn indicators, scores | pending | |
+| 6 | Lobby and room creation | pending | |
+| 7 | Friends invitation and play requests | pending | |
+| 8 | Waiting, reconnecting, game-full states | pending | |
+| 9 | Quick messages, reactions, sound controls | pending | |
+| 10 | Results, statistics, rematch, return to lobby | pending | |

@@ -542,6 +542,17 @@ match /relations/{id} {
 }
 ```
 
+## Board games (Entertainment tab)
+
+**Ludo stage 1 — the tile (approved Design 1).** The Entertainment tab now holds the board games in
+the same two-column grid of tiles as Khel (`ui/entertainment/EntertainmentScreen.kt`,
+`BoardGameTile` in `ui/components/GameTile.kt`): the gold-framed portrait, crimson name plaque,
+one-clause summary and player count. Ludo's portrait (`ui/thumbnails/LudoThumbnail.kt`) is painted
+like the card thumbnails: the four-colour cross board on ivory with a gold rim, two tokens on the
+track and an ivory die showing a six. The catalogue is `domain/board/BoardGame.kt` (kept apart from
+the card games' `GameId`). Tapping the tile opens the game's own introduction route (`board/{game}`),
+which shows a plain placeholder until stage 2 (introduction and mode selection) is approved.
+
 ## Sound and music
 
 All sound goes through one object, `audio/GameAudio.kt`, which owns the settings and is the only code

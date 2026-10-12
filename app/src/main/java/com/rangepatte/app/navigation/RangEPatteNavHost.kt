@@ -50,7 +50,7 @@ import com.rangepatte.app.ui.notifications.NotificationCentre
 private val topLevelRoutes = setOf(Routes.GAMES, Routes.ENTERTAINMENT, Routes.FRIENDS, Routes.SETTINGS)
 
 /** Pages that have their own back header and don't show the "Remove ads? / Login" strip or banner ads. */
-private val routesWithoutAppChrome = setOf(Routes.LANGUAGE_SELECT, Routes.LOGIN, Routes.MEMBERSHIP, Routes.CHECKOUT, Routes.USERNAME_PATTERN, Routes.AVATAR, Routes.PERSON_PATTERN, Routes.MY_PROFILE)
+private val routesWithoutAppChrome = setOf(Routes.LANGUAGE_SELECT, Routes.LOGIN, Routes.MEMBERSHIP, Routes.CHECKOUT, Routes.USERNAME_PATTERN, Routes.AVATAR, Routes.PERSON_PATTERN, Routes.MY_PROFILE, Routes.BOARD_INTRO_PATTERN)
 
 @Composable
 fun RangEPatteNavHost(
@@ -130,7 +130,11 @@ fun RangEPatteNavHost(
                 })
             }
             composable(Routes.ENTERTAINMENT) {
-                EntertainmentScreen()
+                EntertainmentScreen(onPlayGame = { game -> navController.navigate(Routes.boardIntro(game.id.routeSegment)) })
+            }
+            composable(Routes.BOARD_INTRO_PATTERN) { backStackEntry ->
+                val game = backStackEntry.arguments?.getString(Routes.ARG_BOARD)?.let(com.rangepatte.app.domain.board.BoardCatalog::byRouteSegment)
+                if (game != null) com.rangepatte.app.ui.board.BoardIntroPlaceholder(game = game, onBackClick = { navController.popBackStack() })
             }
             composable(Routes.FRIENDS) {
                 FriendsRoute(

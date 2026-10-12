@@ -133,6 +133,55 @@ private fun NamePlaque(text: String) {
     }
 }
 
+/**
+ * The same tile for a board game (Ludo stage 1, Design 1): the gold-framed portrait is painted by
+ * [portrait] instead of a card thumbnail; plaque, summary and player count are identical to Khel's.
+ */
+@Composable
+fun BoardGameTile(
+    game: com.rangepatte.app.domain.board.BoardGameInfo,
+    onPlayClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    portrait: @Composable () -> Unit
+) {
+    val playLabel = stringResource(R.string.action_play)
+    val (light, dark) = portraitPalettes[(game.id.ordinal + 3) % portraitPalettes.size]
+    val shape = RoundedCornerShape(3.dp)
+    Column(
+        modifier = modifier.clickable(role = Role.Button, onClickLabel = playLabel, onClick = onPlayClick),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth().aspectRatio(1f)
+                .background(Brush.radialGradient(listOf(light, dark)), shape)
+                .border(2.dp, GoldBevelDark, shape)
+                .padding(3.dp)
+                .border(1.dp, GoldBevelLight.copy(alpha = 0.6f), shape),
+            contentAlignment = Alignment.Center
+        ) {
+            Box(modifier = Modifier.fillMaxSize().padding(4.dp)) { portrait() }
+        }
+        NamePlaque(text = stringResource(game.nameRes))
+        Text(
+            text = stringResource(game.descriptionRes),
+            style = TextStyle(fontFamily = BodyFont, fontSize = 14.sp, lineHeight = 18.sp),
+            color = ParchmentTextDim,
+            textAlign = TextAlign.Center,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(top = 6.dp)
+        )
+        Text(
+            text = playerCountLabel(game.minPlayers, game.maxPlayers, stringResource(R.string.players_suffix)),
+            style = RoyalLabelStyle.copy(fontSize = 12.sp),
+            color = GoldBevelDark,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 2.dp)
+        )
+    }
+}
+
 private fun playerCountLabel(min: Int, max: Int, suffix: String): String =
     if (min == max) "$min $suffix" else "$min–$max $suffix"
 
