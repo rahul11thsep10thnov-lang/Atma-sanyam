@@ -27,7 +27,11 @@ import { radii } from '../theme/radii';
 import { typography } from '../theme/typography';
 import { Appearance, useTheme } from '../theme/ThemeContext';
 import { MembershipCard } from '../components/settings/MembershipCard';
-import { LANGUAGES, t, useLanguage } from '../i18n';
+import { LANGUAGES, StringKey, t, useLanguage } from '../i18n';
+import { LEGAL_ORDER, LegalDocId } from '../legal/documents';
+import { IconName } from '../ui/Icon';
+
+const LEGAL_ICON: Record<LegalDocId, IconName> = { terms: 'fileText', privacy: 'lock', deletion: 'trash', subscription: 'star', community: 'users' };
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -225,12 +229,16 @@ export function SettingsScreen() {
       )}
 
       <Section title={t('settings.about')}>
-        {env.privacyPolicyUrl ? <SettingLink icon="lock" label={t('settings.privacyPolicy')} onPress={() => openUrl(env.privacyPolicyUrl!)} /> : null}
-        {env.termsUrl ? <SettingLink icon="info" label={t('settings.terms')} onPress={() => openUrl(env.termsUrl!)} /> : null}
         {env.supportEmail ? <SettingLink icon="mail" label={t('settings.support')} onPress={() => openUrl(`mailto:${env.supportEmail}`)} /> : null}
         <View style={styles.version}>
           <AppText variant="bodySmall" tone="muted">Tame {appVersion}</AppText>
         </View>
+      </Section>
+
+      <Section title={t('settings.legal')}>
+        {LEGAL_ORDER.map((id, i) => (
+          <SettingLink key={id} icon={LEGAL_ICON[id]} label={t(`legal.${id}` as StringKey)} onPress={() => navigation.navigate('Legal', { doc: id })} last={i === LEGAL_ORDER.length - 1} />
+        ))}
       </Section>
 
       <Section title={t('settings.yourData')}>

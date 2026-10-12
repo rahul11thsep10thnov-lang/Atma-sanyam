@@ -1,9 +1,10 @@
-import React, { useMemo, useRef } from 'react';
-import { PanResponder, StyleSheet, Text, View } from 'react-native';
+import React, { useMemo, useRef, useState } from 'react';
+import { PanResponder, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import { typography } from '../theme/colors';
 import { useTheme } from '../theme/ThemeContext';
 import { MAX_DURATION_MINUTES, MIN_DURATION_MINUTES, DURATION_STEP_MINUTES } from '../utils/grid';
+import { Icon } from '../ui/Icon';
 import { t } from '../i18n';
 
 interface DialTimerPickerProps {
@@ -28,12 +29,31 @@ function valueForAngle(deg: number): number {
   return MIN_DURATION_MINUTES + step * DURATION_STEP_MINUTES;
 }
 
+/** What typed minutes become: the nearest multiple of 5 inside the dial's range. */
+export function snapMinutes(raw: number): number {
+  const stepped = Math.round(raw / DURATION_STEP_MINUTES) * DURATION_STEP_MINUTES;
+  return Math.min(MAX_DURATION_MINUTES, Math.max(MIN_DURATION_MINUTES, stepped));
+}
+
 export function DialTimerPicker({ value, onChange, size = 260 }: DialTimerPickerProps) {
   const { colors } = useTheme();
   const center = size / 2;
   const radius = center - HANDLE_RADIUS;
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
+
+  // Tap the number to type the minutes instead of turning the dial.
+  const [draft, setDraft] = useState<string | null>(null);
+  const inputRef = useRef<TextInput>(null);
+  const editing = draft !== null;
+  const typed = draft ? parseInt(draft, 10) : NaN;
+  const willUse = Number.isFinite(typed) ? snapMinutes(typed) : null;
+  const exact = willUse !== null && willUse === typed;
+  const commit = () => {
+    if (draft === null) return;
+    if (willUse !== null) onChange(willUse);
+    setDraft(null);
+  };
 
   const panResponder = useMemo(
     () =>
@@ -102,9 +122,43 @@ export function DialTimerPicker({ value, onChange, size = 260 }: DialTimerPicker
         <Circle cx={handleX} cy={handleY} r={HANDLE_RADIUS} fill={colors.surfaceRaised} />
         <Circle cx={handleX} cy={handleY} r={HANDLE_RADIUS - 4} fill={colors.primary} />
       </Svg>
-      <View style={styles.centerLabel} pointerEvents="none">
-        <Text style={[styles.valueText, { color: colors.text }]}>{value}</Text>
-        <Text style={[styles.unitText, { color: colors.textSecondary }]}>{t('dial.minutes')}</Text>
+      <View style={styles.centerLabel} pointerEvents="box-none">
+        {editing ? (
+          <View style={styles.editBox}>
+            <TextInput
+              ref={inputRef}
+              value={draft ?? ''}
+              onChangeText={(v) => setDraft(v.replace(/\D/g, '').slice(0, 3))}
+              onBlur={commit}
+              onSubmitEditing={commit}
+              autoFocus
+              selectTextOnFocus
+              // iOS's plain number pad has no Done key; this one does.
+              keyboardType={Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'number-pad'}
+              returnKeyType="done"
+              maxLength={3}
+              accessibilityLabel={t('dial.editA11y')}
+              style={[styles.valueText, styles.input, { color: colors.text, borderBottomColor: colors.primary }]}
+            />
+            <Text style={[styles.hint, { color: exact || willUse === null ? colors.textSecondary : colors.primary }]} numberOfLines={1}>
+              {willUse !== null && !exact ? t('dial.willUse', { n: willUse }) : t('dial.snap', { min: MIN_DURATION_MINUTES, max: MAX_DURATION_MINUTES })}
+            </Text>
+          </View>
+        ) : (
+          <Pressable
+            onPress={() => setDraft(String(value))}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={`${value} ${t('dial.minutes')}. ${t('dial.edit')}`}
+            style={styles.tapArea}
+          >
+            <Text style={[styles.valueText, { color: colors.text }]}>{value}</Text>
+            <View style={styles.unitRow}>
+              <Text style={[styles.unitText, { color: colors.textSecondary }]}>{t('dial.minutes')}</Text>
+              <Icon name="pencil" size={11} color="secondary" />
+            </View>
+          </Pressable>
+        )}
       </View>
     </View>
   );
@@ -121,5 +175,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   valueText: { ...typography.heading, fontSize: 44, lineHeight: 52 },
-  unitText: { ...typography.caption, marginTop: 2 },
+  unitText: { ...typography.caption },
+  unitRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
+  tapArea: { alignItems: 'center', paddingHorizontal: 12 },
+  editBox: { alignItems: 'center' },
+  input: { width: 96, textAlign: 'center', borderBottomWidth: 2, paddingVertical: 0, paddingHorizontal: 6 },
+  hint: { ...typography.caption, marginTop: 4, maxWidth: 140, textAlign: 'center' },
 });
