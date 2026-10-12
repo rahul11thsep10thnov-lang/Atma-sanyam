@@ -70,16 +70,30 @@ DEPLOYMENT.md §4) — at minimum `EXPO_PUBLIC_API_URL` and `EXPO_PUBLIC_PRIVACY
    from `assets/icon.png`), feature graphic 1024×500, 2–8 phone screenshots.
 6. **App content** (Policy → App content):
    - *Privacy policy URL* — required (same page as `EXPO_PUBLIC_PRIVACY_POLICY_URL`).
-   - *Data safety* — Collected: **Email address** (account management; optional), **User IDs**
-     (account management), **App interactions** (analytics), **Crash logs / diagnostics**
-     (app functionality). Not shared with third parties, not used for ads. Encrypted in transit:
-     **Yes**. Users can request deletion: **Yes**.
+   - *Data safety* — Collected (all optional: the app works without an account):
+     **Phone number** and **Email address** (account management; email only for older accounts),
+     **Name** (optional display name), **User IDs** (username, account id), **Other in-app
+     messages** (the fixed group-chat phrases), **App interactions** and **Crash logs /
+     diagnostics** (analytics, which people can switch off in Settings → Privacy), **Device or
+     other IDs** (random install id, push token). *Not* collected: location, photos, contacts,
+     camera/microphone (the photo picker hands over only the photo someone chooses, and it stays
+     on the device). Not shared with third parties for their own use, not used for ads.
+     Encrypted in transit: **Yes**. Users can request deletion: **Yes**.
+   - *Policies* — the five documents in the app (Settings → Legal) come from
+     `src/legal/documents.ts`. For the public links Google asks for, run
+     `LEGAL_EMAIL=you@your-domain.com node --experimental-strip-types tools/legal/build_legal_html.mjs`,
+     host `docs/legal/index.html` over HTTPS, and use `<url>#privacy` as the *Privacy policy URL*
+     and `<url>#deletion` as the account-deletion link below. Also set `EXPO_PUBLIC_SUPPORT_EMAIL`
+     (it is the contact address shown in the documents). The documents say the app is for people
+     aged 18+, that membership and ads are not live yet, and that reports go by email: keep the
+     store listing, Data safety form and app in line with that, or change the text.
    - *Account deletion* — Google also requires a **web link** where people can request
      deletion without the app. Publish a short page (e.g. `your-domain.com/delete-account`)
      explaining: open Tame → Settings → Delete account, or email support from the account's
      address. Enter that URL here.
-   - *Ads*: No. *Target audience*: 13+ (don't select children). *Content rating*: complete the
-     questionnaire (no violence/UGC → "Everyone").
+   - *Ads*: No. *Target audience*: 18+ only (don't select children). *Content rating*: complete the
+     questionnaire and say users can interact (friends, pokes, preset chat), which raises the
+     rating a little.
    - *Sensitive permissions*: none are requested.
 7. **Release** — Internal → Closed testing (12 testers × 14 days if required) → Production.
 

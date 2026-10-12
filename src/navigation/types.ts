@@ -1,5 +1,6 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { RemoteImageRef, SessionConfig } from '../types';
+import type { LegalDocId } from '../legal/documents';
 
 export type RootTabParamList = {
   Home: { mode?: 'plants' | 'jigsaw'; arrival?: string } | undefined; // arrival: a nonce so the same mode can be asked again
@@ -17,6 +18,7 @@ export type RootStackParamList = {
   ContentBrowser: { onSelect: (image: RemoteImageRef) => void; initialCategoryId?: string };
   Auth: { mode?: 'signIn' | 'profile' | 'password' } | undefined;
   Notifications: undefined;
+  Legal: { doc: LegalDocId };
   GroupSetup: { editSessionId?: string } | undefined;
   GroupLobby: { sessionId: string };
   Language: undefined;

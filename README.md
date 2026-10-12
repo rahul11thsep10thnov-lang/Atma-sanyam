@@ -103,6 +103,10 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Android/iOS bundle ex
   username with a live availability check, and an avatar. The small **Sign in** chip sits at the
   top right of Home. The API needs an SMS provider (`docs/DEPLOYMENT.md`); without one the app
   hides phone sign-in. Social features (friends, group focus) are planned on top: `docs/SOCIAL.md`.
+- Settings → Legal holds the five policies (Terms, Privacy, Account deletion, Subscription & refund,
+  Community guidelines): `src/legal/documents.ts`. `tools/legal/build_legal_html.mjs` turns the same
+  text into the public web page Google Play needs. The session dial can also be typed into: tap its
+  number and enter minutes in multiples of 5.
 - Leaving the app starts a grace period (default 5 s, configurable from the admin console);
   stay away longer and the session fails.
 - The balcony, the Paradise Garden, the museum and preferences stay on the device.

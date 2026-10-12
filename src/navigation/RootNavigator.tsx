@@ -18,6 +18,7 @@ import { ProgressScreen } from '../screens/ProgressScreen';
 import { FriendsScreen } from '../screens/FriendsScreen';
 import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { GroupSetupScreen } from '../screens/GroupSetupScreen';
+import { LegalScreen } from '../screens/LegalScreen';
 import { GroupLobbyScreen } from '../screens/GroupLobbyScreen';
 import { useRemoteConfig } from '../context/RemoteConfigContext';
 import { isBackendConfigured } from '../config/env';
@@ -132,6 +133,7 @@ export function RootNavigator() {
         <Stack.Screen name="ContentBrowser" component={ContentBrowserScreen} options={{ animation: 'slide_from_bottom' }} />
         <Stack.Screen name="Auth" component={AuthScreen} options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="Legal" component={LegalScreen} options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="GroupSetup" component={GroupSetupScreen} options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="GroupLobby" component={GroupLobbyScreen} options={{ animation: 'slide_from_right' }} />
       </Stack.Navigator>

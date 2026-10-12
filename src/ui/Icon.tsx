@@ -45,6 +45,9 @@ import Mountain from 'lucide-react-native/icons/mountain';
 import Move from 'lucide-react-native/icons/move';
 import Music from 'lucide-react-native/icons/music';
 import Palette from 'lucide-react-native/icons/palette';
+import Pencil from 'lucide-react-native/icons/pencil';
+import FileText from 'lucide-react-native/icons/file-text';
+import ScrollText from 'lucide-react-native/icons/scroll-text';
 import Pause from 'lucide-react-native/icons/pause';
 import Play from 'lucide-react-native/icons/play';
 import Plus from 'lucide-react-native/icons/plus';
@@ -117,6 +120,9 @@ export const ICONS = {
   play: Play,
   plus: Plus,
   puzzle: Puzzle,
+  pencil: Pencil,
+  fileText: FileText,
+  scrollText: ScrollText,
   quote: Quote,
   reset: RotateCcw,
   search: Search,

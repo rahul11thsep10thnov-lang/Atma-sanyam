@@ -4,12 +4,12 @@
 // which a new password can be set. The same screen edits the profile and
 // changes the password from Settings.
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { KeyboardAvoidingView, Linking, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, View } from 'react-native';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Onboarding, useAuth } from '../context/AuthContext';
 import { friendlyError } from '../services/apiClient';
 import { track } from '../services/analytics';
-import { env } from '../config/env';
 import { useRemoteConfig } from '../context/RemoteConfigContext';
 import { PASSWORD_MAX, PASSWORD_RULES, PasswordRule, passwordRuleMet, passwordValid, USERNAME_RE } from '../auth/passwordPolicy';
 import { AVATARS } from '../profile/avatars';
@@ -51,7 +51,7 @@ const RULE_KEY: Record<PasswordRule, StringKey> = {
 };
 
 export function AuthScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'Auth'>>();
   const { colors } = useTheme();
   useLanguage();
@@ -469,20 +469,20 @@ export function AuthScreen() {
         )}
         {step === 'avatar' && <Button label={t('auth.skip')} variant="tertiary" onPress={finish} style={styles.switch} />}
 
-        {step === 'phone' && env.privacyPolicyUrl && (
+        {(step === 'phone' || step === 'passwordSignIn') && (
           <AppText variant="caption" tone="muted" align="center" style={styles.legal}>
             {t('auth.agree')}{' '}
-            <AppText variant="caption" tone="primary" onPress={() => void Linking.openURL(env.privacyPolicyUrl!)} accessibilityRole="link" style={styles.link}>
-              {t('auth.privacy')}
+            <AppText variant="caption" tone="primary" onPress={() => navigation.navigate('Legal', { doc: 'terms' })} accessibilityRole="link" style={styles.link}>
+              {t('legal.terms')}
             </AppText>
-            {env.termsUrl && (
-              <>
-                {' '}{t('auth.and')}{' '}
-                <AppText variant="caption" tone="primary" onPress={() => void Linking.openURL(env.termsUrl!)} accessibilityRole="link" style={styles.link}>
-                  {t('auth.terms')}
-                </AppText>
-              </>
-            )}
+            {', '}
+            <AppText variant="caption" tone="primary" onPress={() => navigation.navigate('Legal', { doc: 'privacy' })} accessibilityRole="link" style={styles.link}>
+              {t('legal.privacy')}
+            </AppText>
+            {` ${t('auth.and')} `}
+            <AppText variant="caption" tone="primary" onPress={() => navigation.navigate('Legal', { doc: 'community' })} accessibilityRole="link" style={styles.link}>
+              {t('legal.community')}
+            </AppText>
             .
           </AppText>
         )}
