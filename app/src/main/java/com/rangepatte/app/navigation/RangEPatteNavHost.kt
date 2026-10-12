@@ -139,19 +139,56 @@ fun RangEPatteNavHost(
                         game = game,
                         onBackClick = { navController.popBackStack() },
                         onStart = { setup, mode -> com.rangepatte.app.domain.ludo.LudoSetupStore.pending = setup; navController.navigate(Routes.boardTable(game.id.routeSegment, mode)) },
-                        // The lobby for board games is stage 6; until then Host / Join lead to the same note as Start.
-                        onOpenLobby = { setup, mode, _ -> com.rangepatte.app.domain.ludo.LudoSetupStore.pending = setup; navController.navigate(Routes.boardTable(game.id.routeSegment, mode)) }
+                        onOpenLobby = { setup, mode, host ->
+                            com.rangepatte.app.domain.ludo.LudoSetupStore.pending = setup
+                            navController.navigate(Routes.boardLobby(game.id.routeSegment, mode, host, setup.players, setup.difficulty, setup.rules.encode()))
+                        }
+                    )
+                }
+            }
+            composable(
+                route = Routes.BOARD_LOBBY_PATTERN,
+                arguments = listOf(
+                    navArgument(Routes.ARG_PLAYERS) { type = NavType.IntType; defaultValue = 4 },
+                    navArgument(Routes.ARG_DIFFICULTY) { type = NavType.StringType; defaultValue = AiDifficulty.MEDIUM.name },
+                    navArgument(Routes.ARG_OPTIONS) { type = NavType.StringType; defaultValue = "" },
+                    navArgument(Routes.ARG_CODE) { type = NavType.StringType; defaultValue = "" }
+                )
+            ) { backStackEntry ->
+                val args = backStackEntry.arguments
+                val game = args?.getString(Routes.ARG_BOARD)?.let(com.rangepatte.app.domain.board.BoardCatalog::byRouteSegment)
+                val mode = args?.getString(Routes.ARG_MODE)?.let { runCatching { PlayMode.valueOf(it) }.getOrNull() }
+                if (game != null && mode != null && game.id == com.rangepatte.app.domain.board.BoardGameId.LUDO) {
+                    val playerCount = (args?.getInt(Routes.ARG_PLAYERS) ?: game.maxPlayers).coerceIn(game.minPlayers, game.maxPlayers)
+                    val difficulty = args?.getString(Routes.ARG_DIFFICULTY)?.let { runCatching { AiDifficulty.valueOf(it) }.getOrNull() } ?: AiDifficulty.MEDIUM
+                    val rules = com.rangepatte.app.domain.ludo.LudoRules.decode(args?.getString(Routes.ARG_OPTIONS).orEmpty())
+                    // The shared lobby page (Ludo stage 6, Design 1) with the yard colours per seat and the house-rules line.
+                    LobbyRoute(
+                        game = game.asGameInfo(),
+                        isHost = args?.getString(Routes.ARG_ROLE) == Routes.ROLE_HOST,
+                        joinCode = args?.getString(Routes.ARG_CODE)?.takeIf { it.isNotBlank() },
+                        isOnline = mode == PlayMode.ONLINE,
+                        playerCount = playerCount,
+                        difficulty = difficulty,
+                        options = rules.encode(),
+                        decor = com.rangepatte.app.ui.board.ludoLobbyDecor(),
+                        onTableReady = {
+                            // The table takes everything from the session the lobby offered; the setup only matters for a solo game.
+                            com.rangepatte.app.domain.ludo.LudoSetupStore.pending = com.rangepatte.app.domain.ludo.LudoSetup(playerCount, rules, difficulty)
+                            navController.navigate(Routes.boardTable(game.id.routeSegment, mode)) {
+                                popUpTo(Routes.BOARD_LOBBY_PATTERN) { inclusive = true }
+                            }
+                        },
+                        onBackClick = { navController.popBackStack() }
                     )
                 }
             }
             composable(Routes.BOARD_TABLE_PATTERN) { backStackEntry ->
                 val game = backStackEntry.arguments?.getString(Routes.ARG_BOARD)?.let(com.rangepatte.app.domain.board.BoardCatalog::byRouteSegment)
-                val mode = backStackEntry.arguments?.getString(Routes.ARG_MODE)?.let { runCatching { PlayMode.valueOf(it) }.getOrNull() } ?: PlayMode.VS_COMPUTER
-                if (game != null) when {
-                    // The multiplayer table arrives with the lobby stage; until then every mode plays the solo board.
-                    game.id == com.rangepatte.app.domain.board.BoardGameId.LUDO && mode == PlayMode.VS_COMPUTER ->
+                if (game != null) when (game.id) {
+                    // Solo, or the table the lobby handed over (stage 6): LudoScreen picks whichever is waiting.
+                    com.rangepatte.app.domain.board.BoardGameId.LUDO ->
                         com.rangepatte.app.ui.board.LudoScreen(game = game, setup = com.rangepatte.app.domain.ludo.LudoSetupStore.pending, onBackClick = { navController.popBackStack() })
-                    else -> com.rangepatte.app.ui.board.BoardIntroPlaceholder(game = game, onBackClick = { navController.popBackStack() })
                 }
             }
             composable(Routes.FRIENDS) {

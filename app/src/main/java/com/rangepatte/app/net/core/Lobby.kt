@@ -20,7 +20,9 @@ class LobbyHost(
     private val hostName: String,
     private val difficulty: AiDifficulty,
     private val sendToPeer: (peerId: String, text: String) -> Unit,
-    private val broadcast: (text: String) -> Unit
+    private val broadcast: (text: String) -> Unit,
+    /** Game-specific settings for [MatchConfig.options] (Ludo's house rules); empty for the card games. */
+    private val options: String = ""
 ) {
     /** Guests in the order they joined: peer id → name. */
     val guests = LinkedHashMap<String, String>()
@@ -45,7 +47,7 @@ class LobbyHost(
                     false
                 } else {
                     guests[peerId] = message.name.ifBlank { "Player" }
-                    broadcast(Wire.Lobby(names(), totalSeats).encode())
+                    broadcast(Wire.Lobby(names(), totalSeats, options).encode())
                     true
                 }
             }
@@ -56,7 +58,7 @@ class LobbyHost(
 
     fun onPeerLost(peerId: String): Boolean {
         if (started || guests.remove(peerId) == null) return false
-        broadcast(Wire.Lobby(names(), totalSeats).encode())
+        broadcast(Wire.Lobby(names(), totalSeats, options).encode())
         return true
     }
 
@@ -70,7 +72,7 @@ class LobbyHost(
     fun start(seed: Long = Random.nextLong()): Started {
         check(!started) { "already started" }
         started = true
-        val order = if (totalSeats == 4) listOf(2, 1, 3) else (1 until totalSeats).toList()
+        val order = guestSeatOrder(totalSeats)
         val seatByPeer = guests.keys.withIndex().associate { (i, peer) -> peer to order[i] }
         val humanSeats = setOf(0) + seatByPeer.values
         val botNames = BOT_NAMES.iterator()
@@ -81,9 +83,19 @@ class LobbyHost(
                 else -> botNames.next()
             }
         }
-        val config = MatchConfig(gameId, seatNames, humanSeats, difficulty, seed)
+        val config = MatchConfig(gameId, seatNames, humanSeats, difficulty, seed, options)
         for ((peer, seat) in seatByPeer) sendToPeer(peer, Wire.Start(config, seat).encode())
         return Started(config, seatByPeer)
+    }
+
+    companion object {
+        /**
+         * The seats guests take, in the order they joined: at a four-seat table the first guest sits
+         * opposite the host (as partner in team games, as the yellow yard in Ludo), then the other two;
+         * otherwise guests fill seats in order. The lobby page uses this to colour the rows (Ludo stage 6).
+         */
+        fun guestSeatOrder(totalSeats: Int): List<Int> =
+            if (totalSeats == 4) listOf(2, 1, 3) else (1 until totalSeats).toList()
     }
 }
 
@@ -95,6 +107,10 @@ class LobbyGuest(private val name: String, private val sendToHost: (text: String
 
     /** How many seats the table has, as last announced (0 until the first announcement). */
     var seats: Int = 0
+        private set
+
+    /** The game's settings as last announced (Ludo's house rules); empty for the card games. */
+    var options: String = ""
         private set
 
     /** Why the host turned us away ("full" / "started"), if it did. */
@@ -113,7 +129,7 @@ class LobbyGuest(private val name: String, private val sendToHost: (text: String
 
     /** Returns true if something visible changed. */
     fun onMessage(text: String): Boolean = when (val message = Wire.decode(text)) {
-        is Wire.Lobby -> { names = message.names; seats = message.seats; true }
+        is Wire.Lobby -> { names = message.names; seats = message.seats; options = message.options; true }
         is Wire.Reject -> { rejectedReason = message.reason; true }
         is Wire.Start -> { start = message; true }
         Wire.Leave -> { hostLeft = true; true }

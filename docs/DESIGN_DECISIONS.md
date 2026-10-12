@@ -37,8 +37,8 @@ design is described here and in the README section of each feature.
 | 3 | Board | Design 10 (Royal court, the card room's board) | Ivory on waxed walnut with a gold rim; suit-coloured yards with ivory nests; gold safe stars; coloured home columns; four-colour star under a gold medallion. Tokens carry suit symbols; stacks show counts; die and Roll below the board. Geometry shared by renderer and engine. |
 | 4 | Tokens, dice, safe squares, homes, movement | Design 3 (Glide) | Die spins through faces and settles (gold flash on a six); tokens glide along an arc with a fading trail; captured tokens fly home shrinking; safe squares shine on landing; engine decides first, taps ignored and bots wait while moving; reduced motion snaps. |
 | 5 | Avatars, usernames, turn indicators, scores | Design 1, modified: each plaque in its own yard | Avatar with colour ring and suit badge, username, four gold token pips, glow on the current player, place when finished; plaque centred in the player's yard between the nests; no row above the board. |
-| 6 | Lobby and room creation | *awaiting approval* | |
-| 7 | Friends invitation and play requests | pending | |
+| 6 | Lobby and room creation | Design 1 (the card games' lobby, coloured per seat) | The same lobby page, controller and transports as the card games; one row per seat tinted in its yard colour (host red, first guest opposite in yellow), open seats listed as the computer's; a house-rules line under the room code, rebuilt from what the host announces. House rules travel as five flags in `MatchConfig.options` / the LOBBY and START messages; the room document records `seats` and `options`. Ludo joins `GameId` (not the card catalog) so rooms, presence and play requests can carry it. The table runs `LudoMachine` on the lockstep session; the host rolls from the step's shared random. |
+| 7 | Friends invitation and play requests | *awaiting approval* | |
 | 8 | Waiting, reconnecting, game-full states | pending | |
 | 9 | Quick messages, reactions, sound controls | pending | |
 | 10 | Results, statistics, rematch, return to lobby | pending | |

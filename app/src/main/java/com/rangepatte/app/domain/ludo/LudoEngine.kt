@@ -63,13 +63,16 @@ sealed interface LudoAction {
 object LudoEngine {
     /** A fresh game for [names] in seat order; 2 players sit opposite (red and yellow), 3 leave blue empty. */
     fun newGame(names: List<String>, rules: LudoRules = LudoRules.DEFAULT, avatars: List<String?> = emptyList(), bots: Set<Int> = emptySet()): LudoState {
-        val colors = when (names.size) {
-            2 -> listOf(LudoColor.RED, LudoColor.YELLOW)
-            3 -> listOf(LudoColor.RED, LudoColor.GREEN, LudoColor.YELLOW)
-            else -> LudoColor.values().toList()
-        }
         require(names.size in 2..4) { "2 to 4 players" }
+        val colors = colorsFor(names.size)
         return LudoState(players = names.zip(colors) { n, c -> LudoPlayer(c, n) }.mapIndexed { i, p -> p.copy(avatarId = avatars.getOrNull(i), isBot = i in bots) }, rules = rules)
+    }
+
+    /** The colour of each seat at a table of [players]: 2 sit opposite (red, yellow), 3 leave blue empty. */
+    fun colorsFor(players: Int): List<LudoColor> = when (players) {
+        2 -> listOf(LudoColor.RED, LudoColor.YELLOW)
+        3 -> listOf(LudoColor.RED, LudoColor.GREEN, LudoColor.YELLOW)
+        else -> LudoColor.values().toList()
     }
 
     /** The token indices of [player] that can legally move [dice] squares. */

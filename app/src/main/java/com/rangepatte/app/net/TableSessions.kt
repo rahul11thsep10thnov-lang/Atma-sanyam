@@ -21,9 +21,9 @@ object TableSessions {
 
     fun take(): GameSession<*, *>? = pending.also { pending = null }
 
-    /** Rummy and Teen Patti seat 2–6 (the chosen count); the trick-taking games always seat four. */
+    /** Rummy and Teen Patti seat 2–6 and Ludo 2–4 (the chosen count); the trick-taking games always seat four. */
     fun seatsFor(gameId: GameId, playerCount: Int): Int =
-        if (gameId == GameId.RUMMY || gameId == GameId.TEEN_PATTI) playerCount else 4
+        if (gameId == GameId.RUMMY || gameId == GameId.TEEN_PATTI || gameId == GameId.LUDO) playerCount else 4
 
     /** A solo table: you at seat 0 ([youName]) and computer players in the other seats. */
     fun solo(gameId: GameId, playerCount: Int, difficulty: AiDifficulty, youName: String): GameSession<*, *> {

@@ -10,5 +10,12 @@ enum class GameId(val routeSegment: String) {
     DEHLA_PAKAD("dehlaPakad"),
     LAKADI("lakadi"),
     SOLITAIRE("solitaire"),
-    SPIDER_SOLITAIRE("spiderSolitaire")
+    SPIDER_SOLITAIRE("spiderSolitaire"),
+
+    /**
+     * Ludo (Entertainment tab, stage 6). A board game, listed in
+     * [com.rangepatte.app.domain.board.BoardCatalog] rather than [GameCatalog], but it needs an id here so
+     * the lobby, the online rooms and friends' presence can carry it exactly like a card game.
+     */
+    LUDO("ludo")
 }

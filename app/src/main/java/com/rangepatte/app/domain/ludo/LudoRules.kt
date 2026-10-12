@@ -17,8 +17,21 @@ data class LudoRules(
     /** After the first winner the others keep playing for 2nd and 3rd place (off: the match ends). */
     val playOnForPlaces: Boolean = true
 ) {
+    /** The five switches as a line of 1s and 0s, for the lobby's [com.rangepatte.app.net.core.MatchConfig.options]. */
+    fun encode(): String = listOf(sixToEnter, extraRollOnSix, extraRollOnCapture, exactFinish, playOnForPlaces).joinToString("") { if (it) "1" else "0" }
+
+    /** True when every switch is at its recommended setting. */
+    val isDefault: Boolean get() = this == DEFAULT
+
     companion object {
         val DEFAULT = LudoRules()
+
+        /** The inverse of [encode]; anything malformed (an old phone, an empty field) means the defaults. */
+        fun decode(text: String): LudoRules {
+            if (text.length != 5 || text.any { it != '0' && it != '1' }) return DEFAULT
+            fun on(i: Int) = text[i] == '1'
+            return LudoRules(on(0), on(1), on(2), on(3), on(4))
+        }
         /** The eight star squares are always safe; captures never happen on them. */
         const val SAFE_SQUARES_NOTE = "star squares are safe"
     }

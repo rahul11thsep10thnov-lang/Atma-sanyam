@@ -24,13 +24,17 @@ object OnlineRooms {
 
     private fun newCode(): String = buildString { repeat(CODE_LENGTH) { append(CODE_ALPHABET[Random.nextInt(CODE_ALPHABET.length)]) } }
 
-    /** Creates a room for [gameId] hosted by [hostUid] and returns its code. */
-    fun createRoom(gameId: GameId, hostUid: String, onResult: (Result<String>) -> Unit, attemptsLeft: Int = 5) {
+    /**
+     * Creates a room for [gameId] hosted by [hostUid] and returns its code. [seats] and [options] (Ludo's
+     * house rules, stage 6) are recorded so friends can be told what table they are joining; the
+     * authoritative settings still travel in the host's start message.
+     */
+    fun createRoom(gameId: GameId, hostUid: String, onResult: (Result<String>) -> Unit, seats: Int = 0, options: String = "", attemptsLeft: Int = 5) {
         val code = newCode()
         val ref = db.collection(COLLECTION).document(code)
         ref.get().addOnSuccessListener { existing ->
             if (existing.exists()) {
-                if (attemptsLeft > 0) createRoom(gameId, hostUid, onResult, attemptsLeft - 1)
+                if (attemptsLeft > 0) createRoom(gameId, hostUid, onResult, seats, options, attemptsLeft - 1)
                 else onResult(Result.failure(IllegalStateException("No free room code")))
             } else {
                 val now = System.currentTimeMillis()
@@ -39,6 +43,8 @@ object OnlineRooms {
                         "host" to hostUid,
                         "game" to gameId.name,
                         "status" to "lobby",
+                        "seats" to seats,
+                        "options" to options,
                         "createdAt" to now,
                         // Lets Firestore's TTL policy delete finished rooms (see README).
                         "expireAt" to Timestamp((now + ROOM_LIFETIME_MS) / 1000, 0)

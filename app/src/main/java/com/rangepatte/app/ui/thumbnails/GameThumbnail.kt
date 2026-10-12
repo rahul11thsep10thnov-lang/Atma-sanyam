@@ -64,6 +64,8 @@ fun GameThumbnail(gameId: GameId, modifier: Modifier = Modifier) {
             GameId.DEHLA_PAKAD -> drawPlacements(fan(Suit.entries.map { Rank.TEN of it }, spread = 100f, pivotDrop = 0f), textMeasurer, palette)
             GameId.LAKADI -> drawLakadiScoreSheet(textMeasurer)
             GameId.SPIDER_SOLITAIRE -> drawSpiderCascade(textMeasurer, palette)
+            // Board games draw their own tile (ui/thumbnails/LudoThumbnail.kt); they never reach this canvas.
+            GameId.LUDO -> Unit
         }
     }
 }

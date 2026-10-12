@@ -4,11 +4,16 @@ import com.rangepatte.app.domain.model.GameId
 import com.rangepatte.app.game.coatpiece.CoatPieceMachine
 import com.rangepatte.app.game.dehlapakad.DehlaPakadMachine
 import com.rangepatte.app.game.lakadi.LakadiMachine
+import com.rangepatte.app.game.ludo.LudoMachine
 import com.rangepatte.app.game.rummy.RummyMachine
 import com.rangepatte.app.game.teenpatti.TeenPattiMachine
 import com.rangepatte.app.game.twentynine.TwentyNineMachine
 
-/** The games that can be played with other people (and, in solo play, run through the same machinery). */
+/**
+ * The games that can be played with other people (and, in solo play, run through the same machinery).
+ * [multiplayerGames] lists the card games the Khel setup page offers online; the board games reach their
+ * machine through [forGame] from their own setup page.
+ */
 object GameMachines {
     val multiplayerGames: Set<GameId> = setOf(
         GameId.RUMMY, GameId.TEEN_PATTI, GameId.TWENTY_NINE, GameId.COAT_PIECE, GameId.DEHLA_PAKAD, GameId.LAKADI
@@ -22,6 +27,7 @@ object GameMachines {
         GameId.COAT_PIECE -> CoatPieceMachine
         GameId.DEHLA_PAKAD -> DehlaPakadMachine
         GameId.LAKADI -> LakadiMachine
+        GameId.LUDO -> LudoMachine
         else -> null
     } as GameMachine<Any, Any>?
 }

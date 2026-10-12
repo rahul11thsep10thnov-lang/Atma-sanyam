@@ -36,7 +36,9 @@ class LobbyController(
     override val isHost: Boolean,
     override val isOnline: Boolean,
     seatsToOffer: Int,
-    private val difficulty: AiDifficulty
+    private val difficulty: AiDifficulty,
+    /** Game-specific settings every phone must agree on (Ludo's house rules, stage 6); empty for the card games. */
+    hostOptions: String = ""
 ) : LobbyUi {
     private val appContext = context.applicationContext
     private val main = Handler(Looper.getMainLooper())
@@ -52,6 +54,9 @@ class LobbyController(
     override var roomCode by mutableStateOf<String?>(null)
         private set
     override var error by mutableStateOf<LobbyError?>(null)
+        private set
+    /** The host's settings for the match; a guest's copy follows what the host announces. */
+    override var options by mutableStateOf(hostOptions)
         private set
 
     /** Called once the session is ready and the table screen should open. */
@@ -103,7 +108,7 @@ class LobbyController(
     private fun beginOnlineHost() {
         val uid = signedInUid() ?: return
         stage = LobbyStage.WORKING
-        OnlineRooms.createRoom(gameId, uid, { result ->
+        OnlineRooms.createRoom(gameId, uid, seats = totalSeats, options = options, onResult = { result ->
             main.post {
                 if (disposed) return@post
                 result.onSuccess { code ->
@@ -213,6 +218,7 @@ class LobbyController(
         }
         names = guest.names
         if (guest.seats > 0) totalSeats = guest.seats
+        options = guest.options
         guest.rejectedReason?.let { reason ->
             failAndReset(if (reason == "started") R.string.net_err_started else R.string.net_err_full)
             return
@@ -236,7 +242,8 @@ class LobbyController(
             hostName = myName,
             difficulty = difficulty,
             sendToPeer = link::sendToPeer,
-            broadcast = link::broadcast
+            broadcast = link::broadcast,
+            options = options
         ).also { lobbyHost = it }
 
     private fun hostListener(lobby: LobbyHost) = object : Transport.Listener {

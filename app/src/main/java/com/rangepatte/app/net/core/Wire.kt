@@ -17,8 +17,11 @@ sealed interface Wire {
     /** Host → client: the table is full or already started. */
     data class Reject(val reason: String) : Wire
 
-    /** Host → everyone: who is at the table right now, and how many seats it has (before the game starts). */
-    data class Lobby(val names: List<String>, val seats: Int = 0) : Wire
+    /**
+     * Host → everyone: who is at the table right now, how many seats it has, and the game's settings
+     * ([MatchConfig.options], so a Ludo guest sees the house rules before the start).
+     */
+    data class Lobby(val names: List<String>, val seats: Int = 0, val options: String = "") : Wire
 
     /**
      * Host → one client: the game begins; you sit at [yourSeat]. A spectator gets seat
@@ -64,9 +67,9 @@ sealed interface Wire {
     fun encode(): String = when (this) {
         is Join -> "JOIN|${esc(name)}"
         is Reject -> "REJECT|${esc(reason)}"
-        is Lobby -> "LOBBY|" + names.joinToString(",") { esc(it) } + "|$seats"
+        is Lobby -> "LOBBY|" + names.joinToString(",") { esc(it) } + "|$seats|${esc(options)}"
         is Start -> "START|${config.gameId.name}|${config.difficulty.name}|${config.seed}|$yourSeat|" +
-            config.seatNames.joinToString(",") { esc(it) } + "|" + config.humanSeats.sorted().joinToString(",")
+            config.seatNames.joinToString(",") { esc(it) } + "|" + config.humanSeats.sorted().joinToString(",") + "|" + esc(config.options)
         is Act -> "ACT|${esc(action)}"
         is Do -> "DO|$seq|$seat|${esc(action)}"
         is Bot -> "BOT|$seat"
@@ -87,14 +90,16 @@ sealed interface Wire {
             when (p[0]) {
                 "JOIN" -> Join(unesc(p[1]))
                 "REJECT" -> Reject(unesc(p[1]))
-                "LOBBY" -> Lobby(if (p[1].isEmpty()) emptyList() else p[1].split(",").map(::unesc), p.getOrNull(2)?.toIntOrNull() ?: 0)
+                "LOBBY" -> Lobby(if (p[1].isEmpty()) emptyList() else p[1].split(",").map(::unesc), p.getOrNull(2)?.toIntOrNull() ?: 0, p.getOrNull(3)?.let(::unesc).orEmpty())
                 "START" -> Start(
                     MatchConfig(
                         gameId = GameId.valueOf(p[1]),
                         difficulty = AiDifficulty.valueOf(p[2]),
                         seed = p[3].toLong(),
                         seatNames = p[5].split(",").map(::unesc),
-                        humanSeats = if (p[6].isEmpty()) emptySet() else p[6].split(",").map { it.toInt() }.toSet()
+                        humanSeats = if (p[6].isEmpty()) emptySet() else p[6].split(",").map { it.toInt() }.toSet(),
+                        // Older phones send no options field; an empty one means the game's defaults.
+                        options = p.getOrNull(7)?.let(::unesc).orEmpty()
                     ),
                     yourSeat = p[4].toInt()
                 )

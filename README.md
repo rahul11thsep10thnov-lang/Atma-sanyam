@@ -561,7 +561,7 @@ plaque of orb switches preset to the recommended ruleset (`domain/ludo/LudoRules
 *Extra roll on six* (three sixes forfeit), *Extra roll on capture*, *Exact roll to finish*, *Play on
 for places*; the eight star squares are always safe. Start (or Host / Join) stores the choice in
 `LudoSetupStore` for the board; until the board (stage 3) and the lobby (stage 6) are approved, all
-Start opens the board; Host / Join lead to a plain note until the lobby (stage 6) is approved.
+Start opens the board; Host / Join open the shared lobby (stage 6).
 
 **Ludo stage 3 — the board (approved Design 10) and the rules engine.** The board is drawn with
 Canvas inside the shared game frame (`ui/board/LudoBoardCanvas.kt`): ivory playing surface with a
@@ -597,6 +597,31 @@ for the computer), the username, and four token pips that fill gold as tokens ge
 player's plaque glows, matching the status line; a finished player's plaque shows their place. Empty
 yards (2- or 3-player games) carry no plaque. The engine's `LudoPlayer` carries `avatarId` and `isBot`
 for this; nothing else in the rules changes.
+
+**Ludo stage 6 — lobby and room creation (approved: Design 1, the card games' lobby coloured per
+seat).** Host and Join on the Ludo page open the same lobby page, controller and transports the card
+games use (`ui/multiplayer/`, Nearby and Firestore), so hosting, joining by code, sharing the code and
+watching a table that already started work for Ludo without a second lobby. What Ludo adds
+(`ui/board/LudoLobby.kt`, `LobbyDecor`): one row per seat tinted in its yard colour — the host plays
+red and the first guest sits opposite in yellow, as `LobbyHost.guestSeatOrder` decides — with open
+seats listed as the computer's, and a house-rules line under the room code. The rules travel as five
+flags (`LudoRules.encode`) in `MatchConfig.options`, announced in every LOBBY message and fixed by
+the START message, so a guest sees the host's rules before the match and every phone starts the same
+game; the room document records `seats` and `options` for the friends features to come. The table
+itself runs `game/ludo/LudoMachine.kt` on the lockstep session every card game uses: the host's phone
+rolls (the die value comes from the step's shared random, so every phone that replays the step gets
+the same number) and checks every move; guests send their taps to the host and apply what comes back;
+computer seats are played by the host at a pace that leaves room for the die spin and token glide.
+`LudoScreen` takes whichever table is waiting — the lobby's session (`LudoOnlineTable`) or the solo
+`LudoSession` — through one small `LudoTableController` face, so the board, animations and results
+dialog are shared. Ludo hides nothing, so a watcher sees the whole board; there are no rounds, so a
+watcher is never seated mid-match. Ludo has an entry in `GameId` (it stays out of the card catalog)
+so rooms, presence ("playing Ludo") and later play requests carry it like any other game.
+Not yet: avatars at a multiplayer table (names only until the friends stage ties seats to profiles),
+Ludo's own sounds (stage 9), and a rematch (stage 10). Tested in `LudoMachineTest`: four phones stay
+in step through whole matches with scrambled and duplicated delivery, states and actions round-trip
+as text, the lobby carries the rules to every guest, and old START messages without the options field
+still decode.
 
 ## Sound and music
 

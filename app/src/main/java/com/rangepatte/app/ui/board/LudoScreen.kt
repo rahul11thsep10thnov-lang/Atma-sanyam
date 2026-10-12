@@ -39,7 +39,7 @@ import com.rangepatte.app.ui.theme.ParchmentText
 
 /** The board with its nameplates and die; stateless so the harness can draw any position. */
 @Composable
-fun LudoTable(state: LudoState, isMyTurn: Boolean, shownDice: Int?, pulse: Float, onRoll: () -> Unit, onMove: (Int) -> Unit, motion: MotionFrame = MotionFrame(), die: DieFrame = DieFrame(shownDice, 0f, false, 0f)) {
+fun LudoTable(state: LudoState, isMyTurn: Boolean, shownDice: Int?, pulse: Float, onRoll: () -> Unit, onMove: (Int) -> Unit, motion: MotionFrame = MotionFrame(), die: DieFrame = DieFrame(shownDice, 0f, false, 0f), mySeat: Int = 0) {
     val youName = stringResource(R.string.player_you)
     Spacer(modifier = Modifier.height(6.dp))
     val event = state.lastEvent
@@ -57,7 +57,7 @@ fun LudoTable(state: LudoState, isMyTurn: Boolean, shownDice: Int?, pulse: Float
     // The board, with each player's plaque laid over their own yard (stage 5).
     Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 2.dp)) {
         LudoBoardView(state = state, highlight = if (isMyTurn) state.movable else emptyList(), onTokenTap = onMove, pulse = pulse, motion = motion)
-        LudoYardPlaques(state = state, youName = youName, mySeat = 0)
+        LudoYardPlaques(state = state, youName = youName, mySeat = mySeat)
     }
 
     // The die and the Roll button sit below the board, never on it.

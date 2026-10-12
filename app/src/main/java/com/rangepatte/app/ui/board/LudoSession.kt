@@ -19,37 +19,37 @@ import kotlin.random.asKotlinRandom
 
 /**
  * A solo Ludo table (stage 3): you at seat 0, the computer in the other seats. Dice come from a
- * secure random source; the engine decides everything else. The multiplayer session arrives with the
- * lobby stage, built on the same engine the way the card tables are.
+ * secure random source; the engine decides everything else. A table with other people is
+ * [LudoOnlineTable] (stage 6), the same engine over the card games' lockstep session.
  */
-class LudoSession(setup: LudoSetup, youName: String, botNames: List<String>, youAvatar: String? = null) {
+class LudoSession(setup: LudoSetup, youName: String, botNames: List<String>, youAvatar: String? = null) : LudoTableController {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val dice = SecureRandom().asKotlinRandom()
     private val random = Random(dice.nextLong())
     val difficulty = setup.difficulty
-    val mySeat = 0
+    override val mySeat = 0
 
-    var state: LudoState by mutableStateOf(LudoEngine.newGame(listOf(youName) + botNames.take(setup.players - 1), setup.rules, avatars = listOf(youAvatar), bots = (1 until setup.players).toSet()))
+    override var state: LudoState by mutableStateOf(LudoEngine.newGame(listOf(youName) + botNames.take(setup.players - 1), setup.rules, avatars = listOf(youAvatar), bots = (1 until setup.players).toSet()))
         private set
 
     /** The last dice value shown on the die (kept while the player chooses a token). */
-    var shownDice: Int? by mutableStateOf(null)
+    override var shownDice: Int? by mutableStateOf(null)
         private set
 
-    val isMyTurn: Boolean get() = state.turn == mySeat && state.phase != LudoPhase.OVER
+    override val isMyTurn: Boolean get() = state.turn == mySeat && state.phase != LudoPhase.OVER
 
     /** Stage 4: true while the board animates; the computer waits and the player's taps are ignored. */
-    var busy: Boolean by mutableStateOf(false)
+    override var busy: Boolean by mutableStateOf(false)
 
-    fun start() { scope.launch { runBots() } }
+    override fun start() { scope.launch { runBots() } }
 
-    fun roll() {
+    override fun roll() {
         if (!isMyTurn || state.phase != LudoPhase.ROLL || busy) return
         val value = dice.nextInt(1, 7)
         LudoEngine.roll(state, value)?.let { state = it; shownDice = value }
     }
 
-    fun move(token: Int) {
+    override fun move(token: Int) {
         if (!isMyTurn || state.phase != LudoPhase.MOVE || busy) return
         LudoEngine.move(state, token)?.let { state = it }
     }
@@ -69,5 +69,5 @@ class LudoSession(setup: LudoSetup, youName: String, botNames: List<String>, you
         }
     }
 
-    fun close() { scope.cancel() }
+    override fun close() { scope.cancel() }
 }

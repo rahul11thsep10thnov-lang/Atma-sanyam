@@ -4,11 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -27,7 +30,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
@@ -35,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rangepatte.app.R
 import com.rangepatte.app.domain.model.GameInfo
+import com.rangepatte.app.net.core.LobbyHost
 import com.rangepatte.app.ui.background.BackgroundType
 import com.rangepatte.app.ui.components.GameHeader
 import com.rangepatte.app.ui.components.WatermarkBackground
@@ -55,6 +62,9 @@ import com.rangepatte.app.ui.theme.ParchmentTextDim
  * Where a table with other people comes together. The host sees who has joined (and, online, the room
  * code to share); a guest sees tables nearby to tap, or types a room code. The host presses Start when
  * everyone is in; empty seats are played by the computer.
+ *
+ * A board game passes [decor] (Ludo stage 6, Design 1): every seat row is then tinted in its colour,
+ * open seats are listed too, and a line under the room code sums up the house rules.
  */
 @Composable
 fun LobbyScreen(
@@ -66,7 +76,8 @@ fun LobbyScreen(
     onNameChange: (String) -> Unit,
     onShareCode: (String) -> Unit,
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    decor: LobbyDecor? = null
 ) {
     var name by remember { mutableStateOf(initialName) }
     var code by remember { mutableStateOf("") }
@@ -143,7 +154,7 @@ fun LobbyScreen(
                             )
                         }
                     } else {
-                        if (lobby.isHost) HostSection(lobby, onShareCode) else GuestSection(lobby)
+                        if (lobby.isHost) HostSection(lobby, onShareCode, decor) else GuestSection(lobby, decor)
                     }
 
                     lobby.error?.let { error ->
@@ -162,7 +173,7 @@ fun LobbyScreen(
 }
 
 @Composable
-private fun HostSection(lobby: LobbyUi, onShareCode: (String) -> Unit) {
+private fun HostSection(lobby: LobbyUi, onShareCode: (String) -> Unit, decor: LobbyDecor?) {
     lobby.roomCode?.let { roomCode ->
         RoyalSectionTitle(stringResource(R.string.net_room_code))
         Text(
@@ -178,6 +189,7 @@ private fun HostSection(lobby: LobbyUi, onShareCode: (String) -> Unit) {
             modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
         )
     }
+    decor?.let { RulesLine(it.rulesLine(lobby.options)) }
     if (lobby.stage == LobbyStage.WORKING && lobby.roomCode == null && lobby.names.isEmpty()) {
         Text(
             text = stringResource(R.string.net_waiting_players),
@@ -188,7 +200,7 @@ private fun HostSection(lobby: LobbyUi, onShareCode: (String) -> Unit) {
         )
     }
     RoyalSectionTitle(stringResource(R.string.net_players_format, lobby.names.size, lobby.totalSeats))
-    PeopleList(lobby.names)
+    PeopleList(lobby.names, lobby.totalSeats, decor)
     Text(
         text = stringResource(R.string.net_empty_seats_note),
         style = MaterialTheme.typography.bodyMedium,
@@ -214,10 +226,11 @@ private fun HostSection(lobby: LobbyUi, onShareCode: (String) -> Unit) {
 }
 
 @Composable
-private fun GuestSection(lobby: LobbyUi) {
+private fun GuestSection(lobby: LobbyUi, decor: LobbyDecor?) {
     if (lobby.stage == LobbyStage.AT_TABLE) {
+        decor?.let { RulesLine(it.rulesLine(lobby.options)) }
         RoyalSectionTitle(stringResource(R.string.net_players_format, lobby.names.size, lobby.totalSeats))
-        PeopleList(lobby.names)
+        PeopleList(lobby.names, lobby.totalSeats, decor)
         Text(
             text = stringResource(R.string.net_joined_waiting),
             style = MaterialTheme.typography.bodyLarge,
@@ -265,8 +278,24 @@ private fun GuestSection(lobby: LobbyUi) {
     }
 }
 
+/** The house-rules summary under the room code (board games only). */
 @Composable
-private fun PeopleList(names: List<String>) {
+private fun RulesLine(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        color = GoldBevelLight,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.fillMaxWidth().padding(top = 10.dp)
+    )
+}
+
+@Composable
+private fun PeopleList(names: List<String>, totalSeats: Int, decor: LobbyDecor?) {
+    if (decor != null && totalSeats > 0) {
+        ColouredSeats(names, totalSeats, decor)
+        return
+    }
     names.forEachIndexed { index, person ->
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(vertical = 3.dp)) {
             Icon(Icons.Filled.Person, contentDescription = null, tint = if (index == 0) GoldenGlow else GoldBevelLight)
@@ -276,6 +305,50 @@ private fun PeopleList(names: List<String>) {
                 color = ParchmentText,
                 modifier = Modifier.padding(start = 10.dp)
             )
+        }
+    }
+}
+
+/**
+ * Design 1 for board games: one row per seat in its colour — the host first, guests in the seats
+ * they will get ([LobbyHost.guestSeatOrder]), then the seats still open, which the computer takes.
+ */
+@Composable
+private fun ColouredSeats(names: List<String>, totalSeats: Int, decor: LobbyDecor) {
+    val order = LobbyHost.guestSeatOrder(totalSeats)
+    val seatOf = { index: Int -> if (index == 0) 0 else order.getOrElse(index - 1) { index } }
+    val taken = names.indices.map(seatOf).toSet()
+    val rows = names.mapIndexed { i, n -> seatOf(i) to n } + (0 until totalSeats).filter { it !in taken }.map { it to null }
+    val shape = RoundedCornerShape(3.dp)
+    val seats = decor.seats(totalSeats)
+    rows.forEach { (seat, person) ->
+        val colour = seats.getOrNull(seat)?.color ?: GoldBevelDark
+        val colourName = seats.getOrNull(seat)?.name.orEmpty()
+        val seatLabel = stringResource(R.string.ludo_lobby_seat_format, colourName)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 3.dp)
+                .background(colour.copy(alpha = if (person != null) 0.28f else 0.12f), shape)
+                .border(1.dp, colour.copy(alpha = if (person != null) 0.9f else 0.45f), shape)
+                .padding(horizontal = 12.dp, vertical = 9.dp)
+                .semantics { contentDescription = "$seatLabel: ${person ?: ""}" }
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(18.dp)
+                    .clip(CircleShape)
+                    .background(if (person != null) colour else PanelWoodDark)
+                    .border(1.5.dp, if (person != null) GoldBevelLight else colour, CircleShape)
+            )
+            Text(
+                text = person ?: stringResource(R.string.ludo_lobby_seat_open),
+                style = MaterialTheme.typography.bodyLarge,
+                color = if (person != null) ParchmentText else ParchmentTextDim,
+                modifier = Modifier.weight(1f).padding(start = 10.dp)
+            )
+            Text(text = seatLabel, style = MaterialTheme.typography.bodySmall, color = GoldBevelLight)
         }
     }
 }

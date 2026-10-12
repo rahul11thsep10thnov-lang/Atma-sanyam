@@ -10,29 +10,50 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
+import com.rangepatte.app.AppServices
 import com.rangepatte.app.R
 import com.rangepatte.app.domain.board.BoardGameInfo
+import com.rangepatte.app.domain.ludo.LudoAction
 import com.rangepatte.app.domain.ludo.LudoPhase
 import com.rangepatte.app.domain.ludo.LudoSetup
+import com.rangepatte.app.domain.ludo.LudoState
+import com.rangepatte.app.domain.model.GameId
+import com.rangepatte.app.domain.presence.Activity
+import com.rangepatte.app.game.common.ConnectionLostDialog
 import com.rangepatte.app.game.common.GameFrameChrome
 import com.rangepatte.app.game.common.GameResultDialog
+import com.rangepatte.app.net.GameSession
+import com.rangepatte.app.net.TableSessions
 
 /**
- * The Ludo table (stage 3, Design 10): the approved board in the shared game frame, the players'
- * nameplates above it, the die and the Roll button below it. Dice and token animations are stage 4;
- * for now the die shows its face and a movable token glows.
+ * The Ludo table (stage 3, Design 10): the approved board in the shared game frame, each player's
+ * plaque in their yard, the die and the Roll button below. Alone it runs on [LudoSession]; when the
+ * lobby (stage 6) handed over a table with other people it runs on [LudoOnlineTable], the same engine
+ * over the lockstep session — the host's phone rolls and checks every move, and the animations only
+ * show what the engine already decided.
  */
 @Composable
 fun LudoScreen(game: BoardGameInfo, setup: LudoSetup, onBackClick: () -> Unit) {
     val youName = stringResource(R.string.player_you)
-    val youAvatar = com.rangepatte.app.AppServices.profile.profile.value?.avatarId
-    val session = remember { LudoSession(setup, youName, listOf("Ravi", "Meera", "Gopal"), youAvatar) }
-    DisposableEffect(session) { session.start(); onDispose { session.close() } }
-    val state = session.state
+    val youAvatar = AppServices.profile.profile.value?.avatarId
+    val table: LudoTableController = remember {
+        @Suppress("UNCHECKED_CAST")
+        val offered = TableSessions.take()?.takeIf { it.machine.gameId == GameId.LUDO } as GameSession<LudoState, LudoAction>?
+        if (offered != null) LudoOnlineTable(offered)
+        else LudoSession(setup, youName, listOf("Ravi", "Meera", "Gopal"), youAvatar)
+    }
+    DisposableEffect(table) {
+        table.start()
+        // Friends see "playing Ludo" — and, for an online table, its code, so they can come and watch.
+        val online = table as? LudoOnlineTable
+        AppServices.presence.setActivity(Activity(GameId.LUDO, tableCode = online?.tableCode, seatsFree = 0))
+        onDispose { table.close(); AppServices.presence.setActivity(null) }
+    }
+    val state = table.state
     val pulse by rememberInfiniteTransition(label = "ludoPulse").animateFloat(0f, 1f, infiniteRepeatable(tween(900), RepeatMode.Reverse), label = "pulse")
     val context = androidx.compose.ui.platform.LocalContext.current
     val reduceMotion = remember { runCatching { android.provider.Settings.Global.getFloat(context.contentResolver, android.provider.Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f }.getOrDefault(false) }
-    val motion = rememberLudoMotion(state, session.shownDice, reduceMotion, onBusy = { session.busy = it })
+    val motion = rememberLudoMotion(state, table.shownDice, reduceMotion, onBusy = { table.busy = it })
 
     GameFrameChrome(
         title = stringResource(game.nameRes),
@@ -45,17 +66,21 @@ fun LudoScreen(game: BoardGameInfo, setup: LudoSetup, onBackClick: () -> Unit) {
         },
         onBackClick = onBackClick
     ) {
-        LudoTable(state = state, isMyTurn = session.isMyTurn && !motion.busy, shownDice = motion.die.face ?: session.shownDice, pulse = pulse, onRoll = session::roll, onMove = session::move, motion = motion.frame, die = motion.die)
+        LudoTable(
+            state = state, isMyTurn = table.isMyTurn && !motion.busy, shownDice = motion.die.face ?: table.shownDice, pulse = pulse,
+            onRoll = table::roll, onMove = table::move, motion = motion.frame, die = motion.die, mySeat = table.mySeat
+        )
     }
 
-    if (state.phase == LudoPhase.OVER) {
+    if (table.connectionLost) {
+        ConnectionLostDialog(onBackClick)
+    } else if (state.phase == LudoPhase.OVER) {
         val ordinals = listOf(R.string.ludo_place_1, R.string.ludo_place_2, R.string.ludo_place_3, R.string.ludo_place_4).map { stringResource(it) }
         GameResultDialog(
-            title = if (state.places.firstOrNull() == session.mySeat) stringResource(R.string.game_you_won) else stringResource(R.string.ludo_match_over),
+            title = if (state.places.firstOrNull() == table.mySeat) stringResource(R.string.game_you_won) else stringResource(R.string.ludo_match_over),
             lines = state.places.mapIndexed { i, p -> "${ordinals[i]} · ${state.players[p].name}" },
             primaryText = stringResource(R.string.game_back_to_khel),
             onPrimary = onBackClick
         )
     }
 }
-

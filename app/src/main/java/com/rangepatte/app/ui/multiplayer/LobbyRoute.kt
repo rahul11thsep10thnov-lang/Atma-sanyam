@@ -37,7 +37,11 @@ fun LobbyRoute(
     joinCode: String? = null,
     difficulty: AiDifficulty,
     onTableReady: () -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    /** Game-specific settings for the match (Ludo's house rules); empty for the card games. */
+    options: String = "",
+    /** Seat colours and the house-rules line for a board game's lobby (Ludo stage 6, Design 1); null for the card games. */
+    decor: LobbyDecor? = null
 ) {
     val context = LocalContext.current
     val controller = remember(game.id, isHost, isOnline) {
@@ -47,7 +51,8 @@ fun LobbyRoute(
             isHost = isHost,
             isOnline = isOnline,
             seatsToOffer = TableSessions.seatsFor(game.id, playerCount),
-            difficulty = difficulty
+            difficulty = difficulty,
+            hostOptions = options
         )
     }
     SideEffect { controller.onTableReady = onTableReady }
@@ -92,6 +97,7 @@ fun LobbyRoute(
         onBackClick = {
             controller.dispose()
             onBackClick()
-        }
+        },
+        decor = decor
     )
 }

@@ -59,4 +59,10 @@ object Routes {
     /** The board itself (Ludo stage 3+), with the chosen mode. */
     const val BOARD_TABLE_PATTERN = "boardTable/{$ARG_BOARD}/{$ARG_MODE}"
     fun boardTable(segment: String, mode: PlayMode) = "boardTable/$segment/${mode.name}"
+
+    /** A board game's lobby (Ludo stage 6): the shared lobby page with the game's seat count and house rules. */
+    const val ARG_OPTIONS = "options"
+    const val BOARD_LOBBY_PATTERN = "boardLobby/{$ARG_BOARD}/{$ARG_MODE}/{$ARG_ROLE}?$ARG_PLAYERS={$ARG_PLAYERS}&$ARG_DIFFICULTY={$ARG_DIFFICULTY}&$ARG_OPTIONS={$ARG_OPTIONS}&$ARG_CODE={$ARG_CODE}"
+    fun boardLobby(segment: String, mode: PlayMode, host: Boolean, playerCount: Int, difficulty: AiDifficulty, options: String, code: String? = null) =
+        "boardLobby/$segment/${mode.name}/${if (host) ROLE_HOST else ROLE_JOIN}?$ARG_PLAYERS=$playerCount&$ARG_DIFFICULTY=${difficulty.name}&$ARG_OPTIONS=$options&$ARG_CODE=${code.orEmpty()}"
 }

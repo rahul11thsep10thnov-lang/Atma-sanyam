@@ -16,7 +16,12 @@ data class MatchConfig(
     val seatNames: List<String>,
     val humanSeats: Set<Int>,
     val difficulty: AiDifficulty,
-    val seed: Long
+    val seed: Long,
+    /**
+     * Game-specific settings as a short text, agreed in the lobby like everything else: Ludo's house
+     * rules ([com.rangepatte.app.domain.ludo.LudoRules.encode]); empty for the card games.
+     */
+    val options: String = ""
 ) {
     val seats: Int get() = seatNames.size
 }
