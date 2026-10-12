@@ -623,6 +623,22 @@ in step through whole matches with scrambled and duplicated delivery, states and
 as text, the lobby carries the rules to every guest, and old START messages without the options field
 still decode.
 
+**Ludo stage 7 — friends invitation and play requests (approved: Design 1, the Friends play request
+with an Invite friends button in the lobby).** The play-request pieces built for the card games
+(Elements 7 and 12: the card with its 60-second ring, the sender's waiting banner, the bell entry,
+the game picker on a friend's profile) now know Ludo: `domain/model/GameNames.kt` names any game from
+either catalog, so "playing Ludo" and "invites you to Ludo" read right, the picker lists Ludo, and
+accepting (from the card or the bell) opens the Ludo lobby at the host's room through the board lobby
+route; a profile request with no table makes the sender host a Ludo table with their last setup
+once the friend says yes. In the Ludo lobby the host of an online room sees **Invite friends** next
+to Share while seats are open (`ui/invites/InviteFriendsSheet.kt`): the Friends list ranked
+online-and-free first (`domain/invites/InviteList.kt`), then already invited, then at a full table,
+then offline, with an Invite pill per friend; each tap sends a play request that carries the room
+code, so the friend lands in the next free seat. The request rules are the card games' (friends
+only, both free, one pending request per pair, 60 seconds to answer); the sender's banner shows the
+newest request and the sheet marks every pending one as Sent. Pokes at a Ludo table are reduced to
+the banner like at a card table. Tested in `InviteListTest`.
+
 ## Sound and music
 
 All sound goes through one object, `audio/GameAudio.kt`, which owns the settings and is the only code

@@ -12,7 +12,6 @@ import com.rangepatte.app.AppServices
 import com.rangepatte.app.R
 import com.rangepatte.app.domain.invites.PlayRequests
 import com.rangepatte.app.domain.invites.RequestStatus
-import com.rangepatte.app.domain.model.GameCatalog
 import com.rangepatte.app.domain.model.PlayMode
 
 /**
@@ -27,7 +26,7 @@ fun BoxScope.PlayRequestOverlay(onJoin: (gameRoute: String, mode: PlayMode, code
     val now by repo.now.collectAsState()
     val people by AppServices.friends.people.collectAsState()
     val presence by AppServices.presence.friends.collectAsState()
-    fun gameName(id: com.rangepatte.app.domain.model.GameId) = GameCatalog.all.firstOrNull { it.id == id }?.let { stringResource(it.nameRes) } ?: id.name
+    fun gameName(id: com.rangepatte.app.domain.model.GameId) = com.rangepatte.app.domain.model.GameNames.nameRes(id)?.let { stringResource(it) } ?: id.name
 
     incoming?.let { req ->
         val from = people[req.from]
@@ -69,7 +68,6 @@ fun BoxScope.PlayRequestOverlay(onJoin: (gameRoute: String, mode: PlayMode, code
 
 private typealias Presence = com.rangepatte.app.domain.presence.Presence
 
-/** The games a friend can be invited to (those with a multiplayer machine). */
-fun invitableGames(): List<com.rangepatte.app.domain.model.GameId> =
-    GameCatalog.all.map { it.id }.filter { com.rangepatte.app.domain.presence.GameCapabilities.supportsPlayRequests(it) }
+/** The games a friend can be invited to: the card games with a multiplayer machine, and the board games (Ludo, stage 7). */
+fun invitableGames(): List<com.rangepatte.app.domain.model.GameId> = com.rangepatte.app.domain.model.GameNames.invitable()
 

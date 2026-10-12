@@ -77,7 +77,9 @@ fun LobbyScreen(
     onShareCode: (String) -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    decor: LobbyDecor? = null
+    decor: LobbyDecor? = null,
+    /** Host, online: opens the Invite friends sheet (Ludo stage 7); null hides the button. */
+    onInviteFriends: (() -> Unit)? = null
 ) {
     var name by remember { mutableStateOf(initialName) }
     var code by remember { mutableStateOf("") }
@@ -154,7 +156,7 @@ fun LobbyScreen(
                             )
                         }
                     } else {
-                        if (lobby.isHost) HostSection(lobby, onShareCode, decor) else GuestSection(lobby, decor)
+                        if (lobby.isHost) HostSection(lobby, onShareCode, decor, onInviteFriends) else GuestSection(lobby, decor)
                     }
 
                     lobby.error?.let { error ->
@@ -173,7 +175,7 @@ fun LobbyScreen(
 }
 
 @Composable
-private fun HostSection(lobby: LobbyUi, onShareCode: (String) -> Unit, decor: LobbyDecor?) {
+private fun HostSection(lobby: LobbyUi, onShareCode: (String) -> Unit, decor: LobbyDecor?, onInviteFriends: (() -> Unit)?) {
     lobby.roomCode?.let { roomCode ->
         RoyalSectionTitle(stringResource(R.string.net_room_code))
         Text(
@@ -182,12 +184,23 @@ private fun HostSection(lobby: LobbyUi, onShareCode: (String) -> Unit, decor: Lo
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
-        RoyalButton(
-            text = stringResource(R.string.net_share_code),
-            onClick = { onShareCode(roomCode) },
-            style = RoyalButtonStyle.STEEL,
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-        )
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+            RoyalButton(
+                text = stringResource(R.string.net_share_code),
+                onClick = { onShareCode(roomCode) },
+                style = RoyalButtonStyle.STEEL,
+                modifier = Modifier.weight(1f)
+            )
+            // Friends who are online and free get a play request carrying this room code (stage 7).
+            if (onInviteFriends != null && lobby.names.size < lobby.totalSeats) {
+                RoyalButton(
+                    text = stringResource(R.string.net_invite_friends),
+                    onClick = onInviteFriends,
+                    style = RoyalButtonStyle.STEEL,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
     }
     decor?.let { RulesLine(it.rulesLine(lobby.options)) }
     if (lobby.stage == LobbyStage.WORKING && lobby.roomCode == null && lobby.names.isEmpty()) {

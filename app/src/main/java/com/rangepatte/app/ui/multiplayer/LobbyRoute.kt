@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -17,8 +18,14 @@ import com.rangepatte.app.AppServices
 import com.rangepatte.app.R
 import com.rangepatte.app.data.local.PlayerNamePreferences
 import com.rangepatte.app.domain.model.AiDifficulty
+import com.rangepatte.app.domain.friends.Relation
+import com.rangepatte.app.domain.invites.InviteCandidate
+import com.rangepatte.app.domain.invites.InviteList
 import com.rangepatte.app.domain.model.GameInfo
 import com.rangepatte.app.domain.presence.Activity
+import com.rangepatte.app.domain.presence.GameCapabilities
+import com.rangepatte.app.domain.presence.Presence
+import com.rangepatte.app.ui.invites.InviteFriendsSheet
 import com.rangepatte.app.net.TableSessions
 import com.rangepatte.app.net.nearby.NearbyPermissions
 
@@ -41,7 +48,9 @@ fun LobbyRoute(
     /** Game-specific settings for the match (Ludo's house rules); empty for the card games. */
     options: String = "",
     /** Seat colours and the house-rules line for a board game's lobby (Ludo stage 6, Design 1); null for the card games. */
-    decor: LobbyDecor? = null
+    decor: LobbyDecor? = null,
+    /** Offers the host an Invite friends button (Ludo stage 7): play requests that carry the room code. */
+    canInvite: Boolean = false
 ) {
     val context = LocalContext.current
     val controller = remember(game.id, isHost, isOnline) {
@@ -80,6 +89,41 @@ fun LobbyRoute(
     }
     val gameName = stringResource(game.nameRes)
 
+    // Stage 7: the Invite friends sheet — friends online and free first; each Invite sends a play request with the room code.
+    var inviting by remember { mutableStateOf(false) }
+    val roomCode = controller.roomCode
+    if (inviting && roomCode != null) {
+        val me = AppServices.account.currentUser.collectAsState().value?.uid
+        val relations by AppServices.friends.relations.collectAsState()
+        val people by AppServices.friends.people.collectAsState()
+        val presenceMap by AppServices.presence.friends.collectAsState()
+        val clock by AppServices.presence.clock.collectAsState()
+        val requests by AppServices.playRequests.all.collectAsState()
+        val now by AppServices.playRequests.now.collectAsState()
+        val candidates = if (me == null) emptyList() else InviteList.rank(
+            relations.filter { it.kind == Relation.Kind.FRIENDS && it.involves(me) }.mapNotNull { r ->
+                val uid = r.other(me)
+                val person = people[uid] ?: return@mapNotNull null
+                InviteCandidate(
+                    uid = uid, username = person.username, avatarId = person.avatarId,
+                    state = Presence.stateOf(presenceMap[uid], clock, GameCapabilities::canJoinLate),
+                    sent = requests.any { it.from == me && it.to == uid && it.isPendingAt(now) }
+                )
+            }
+        )
+        val refused = stringResource(R.string.invite_refused)
+        InviteFriendsSheet(
+            candidates = candidates,
+            onInvite = { uid ->
+                AppServices.playRequests.send(uid, game.id, tableCode = roomCode) { r ->
+                    val text = if (r.isSuccess) context.getString(R.string.invite_sent_format, people[uid]?.username.orEmpty()) else refused
+                    android.widget.Toast.makeText(context, text, android.widget.Toast.LENGTH_SHORT).show()
+                }
+            },
+            onDismiss = { inviting = false }
+        )
+    }
+
     LobbyScreen(
         game = game,
         lobby = controller,
@@ -98,6 +142,7 @@ fun LobbyRoute(
             controller.dispose()
             onBackClick()
         },
-        decor = decor
+        decor = decor,
+        onInviteFriends = if (canInvite && isHost && isOnline) ({ inviting = true }) else null
     )
 }

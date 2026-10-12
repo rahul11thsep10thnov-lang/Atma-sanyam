@@ -34,7 +34,7 @@ fun FriendsRoute(onLoginClick: () -> Unit, onOpenPerson: (String) -> Unit) {
     var find by remember { mutableStateOf(FindPeopleState()) }
     val presenceMap by AppServices.presence.friends.collectAsState()
     val clock by AppServices.presence.clock.collectAsState()
-    val gameNames = com.rangepatte.app.domain.model.GameCatalog.all.associate { it.id to stringResource(it.nameRes) }
+    val gameNames = com.rangepatte.app.domain.model.GameId.entries.mapNotNull { id -> com.rangepatte.app.domain.model.GameNames.nameRes(id)?.let { id to stringResource(it) } }.toMap()
     val sOnline = stringResource(R.string.profile_online); val sOffline = stringResource(R.string.profile_offline)
     val sPlaying = stringResource(R.string.presence_playing_format); val sCanJoin = stringResource(R.string.presence_can_join); val sFull = stringResource(R.string.presence_table_full)
     fun presenceOf(uid: String): Triple<Boolean, FriendState, String> {
@@ -154,7 +154,7 @@ fun PersonProfileRoute(uid: String, onBackClick: () -> Unit, onWatch: (gameRoute
     val rec = if (status == RelationStatus.FRIENDS) presenceMap[uid] else null
     val state = Presence.stateOf(rec, clock, GameCapabilities::canJoinLate)
     val online = Presence.isOnline(rec, clock)
-    val gameName = rec?.activity?.gameId?.let { id -> com.rangepatte.app.domain.model.GameCatalog.all.firstOrNull { it.id == id }?.let { stringResource(it.nameRes) } }
+    val gameName = rec?.activity?.gameId?.let { id -> com.rangepatte.app.domain.model.GameNames.nameRes(id)?.let { stringResource(it) } }
     val detail = when {
         !online -> null
         gameName == null -> stringResource(R.string.profile_online)
@@ -173,10 +173,10 @@ fun PersonProfileRoute(uid: String, onBackClick: () -> Unit, onWatch: (gameRoute
     val sent = stringResource(R.string.invite_sent_format, person.username)
     val refused = stringResource(R.string.invite_refused)
     if (pickGame) {
-        val games = com.rangepatte.app.ui.invites.invitableGames().map { id -> id.routeSegment to stringResource(com.rangepatte.app.domain.model.GameCatalog.byId(id).nameRes) }
+        val games = com.rangepatte.app.ui.invites.invitableGames().mapNotNull { id -> com.rangepatte.app.domain.model.GameNames.nameRes(id)?.let { id.routeSegment to stringResource(it) } }
         com.rangepatte.app.ui.invites.GamePickerDialog(games, onPick = { seg ->
             pickGame = false
-            val gameId = com.rangepatte.app.domain.model.GameCatalog.byRouteSegment(seg)?.id ?: return@GamePickerDialog
+            val gameId = com.rangepatte.app.domain.model.GameId.entries.firstOrNull { it.routeSegment == seg } ?: return@GamePickerDialog
             AppServices.playRequests.send(uid, gameId, tableCode = null) { r ->
                 android.widget.Toast.makeText(context, if (r.isSuccess) sent else refused, android.widget.Toast.LENGTH_SHORT).show()
             }

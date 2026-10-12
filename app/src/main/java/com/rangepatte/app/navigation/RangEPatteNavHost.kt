@@ -172,6 +172,7 @@ fun RangEPatteNavHost(
                         difficulty = difficulty,
                         options = rules.encode(),
                         decor = com.rangepatte.app.ui.board.ludoLobbyDecor(),
+                        canInvite = true,
                         onTableReady = {
                             // The table takes everything from the session the lobby offered; the setup only matters for a solo game.
                             com.rangepatte.app.domain.ludo.LudoSetupStore.pending = com.rangepatte.app.domain.ludo.LudoSetup(playerCount, rules, difficulty)
@@ -202,7 +203,7 @@ fun RangEPatteNavHost(
                 if (uid != null) PersonProfileRoute(
                     uid = uid,
                     onBackClick = { navController.popBackStack() },
-                    onWatch = { game, code -> navController.navigate(Routes.lobby(game, PlayMode.ONLINE, host = false, playerCount = 4, difficulty = AiDifficulty.MEDIUM, code = code)) }
+                    onWatch = { game, code -> navController.navigate(joinLobbyRoute(game, PlayMode.ONLINE, code)) }
                 )
             }
             composable(Routes.SETTINGS) {
@@ -349,7 +350,7 @@ fun RangEPatteNavHost(
             NotificationCentre(
                 newIds = centreNewIds.orEmpty(),
                 onOpenPerson = { uid -> centreNewIds = null; navController.navigate(Routes.person(uid)) },
-                onJoin = { game, code -> centreNewIds = null; navController.navigate(Routes.lobby(game, PlayMode.ONLINE, host = false, playerCount = 4, difficulty = AiDifficulty.MEDIUM, code = code)) },
+                onJoin = { game, code -> centreNewIds = null; navController.navigate(joinLobbyRoute(game, PlayMode.ONLINE, code)) },
                 onClose = { centreNewIds = null }
             )
         } else if (centreNewIds != null) {
@@ -358,12 +359,12 @@ fun RangEPatteNavHost(
         if (user != null) {
             com.rangepatte.app.ui.pokes.PokeRoute(
                 shake = pokeShake,
-                atTable = currentRoute == Routes.GAME_TABLE_PATTERN,
+                atTable = currentRoute == Routes.GAME_TABLE_PATTERN || currentRoute == Routes.BOARD_TABLE_PATTERN,
                 onOpenPerson = { uid -> navController.navigate(Routes.person(uid)) }
             )
             PlayRequestOverlay(
-                onJoin = { game, mode, code -> navController.navigate(Routes.lobby(game, mode, host = false, playerCount = 4, difficulty = AiDifficulty.MEDIUM, code = code)) },
-                onHost = { game -> navController.navigate(Routes.lobby(game, PlayMode.ONLINE, host = true, playerCount = 4, difficulty = AiDifficulty.MEDIUM)) }
+                onJoin = { game, mode, code -> navController.navigate(joinLobbyRoute(game, mode, code)) },
+                onHost = { game -> navController.navigate(hostLobbyRoute(game)) }
             )
         }
         }
@@ -378,3 +379,24 @@ private fun NavHostController.navigateToTab(route: String) {
         restoreState = true
     }
 }
+
+/**
+ * Where an accepted play request, a notification or a Watch button leads: the card games' lobby, or
+ * the board lobby for a board game (Ludo stage 7). A guest's seat count and difficulty do not matter;
+ * the host's settings arrive with the table.
+ */
+private fun joinLobbyRoute(gameRoute: String, mode: PlayMode, code: String?): String =
+    if (com.rangepatte.app.domain.model.GameNames.isBoardGame(gameRoute)) {
+        Routes.boardLobby(gameRoute, mode, host = false, playerCount = 4, difficulty = AiDifficulty.MEDIUM, options = "", code = code)
+    } else {
+        Routes.lobby(gameRoute, mode, host = false, playerCount = 4, difficulty = AiDifficulty.MEDIUM, code = code)
+    }
+
+/** The sender of a profile play request hosts a table once the friend says yes: Ludo opens with the sender's last setup. */
+private fun hostLobbyRoute(gameRoute: String): String =
+    if (com.rangepatte.app.domain.model.GameNames.isBoardGame(gameRoute)) {
+        val setup = com.rangepatte.app.domain.ludo.LudoSetupStore.pending
+        Routes.boardLobby(gameRoute, PlayMode.ONLINE, host = true, playerCount = setup.players, difficulty = setup.difficulty, options = setup.rules.encode())
+    } else {
+        Routes.lobby(gameRoute, PlayMode.ONLINE, host = true, playerCount = 4, difficulty = AiDifficulty.MEDIUM)
+    }
