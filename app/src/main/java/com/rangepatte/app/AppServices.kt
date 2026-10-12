@@ -59,6 +59,9 @@ object AppServices {
 
     /** My Profile switches (Element 16): play requests on/off, which notices, which friends' online. */
     lateinit var myProfile: com.rangepatte.app.data.profile.MyProfilePrefsRepository
+
+    /** Element 17: whether the phone is online (the Friends pages show a band and park sends when not). */
+    lateinit var connectivity: com.rangepatte.app.data.net.ConnectivityMonitor
         private set
 
     /** Swap [PlaceholderPaymentGateway] for the real partner's implementation when one is chosen. */
@@ -74,6 +77,7 @@ object AppServices {
         }.getOrDefault(false)
 
         membership = MembershipRepository(application)
+        connectivity = com.rangepatte.app.data.net.ConnectivityMonitor(application)
         account = if (isFirebaseConnected) {
             AccountRepository(application, FirebasePhoneAuthService(), FirestoreUserDirectory())
         } else {

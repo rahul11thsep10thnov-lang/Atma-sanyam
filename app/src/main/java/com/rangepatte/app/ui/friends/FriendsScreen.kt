@@ -46,7 +46,11 @@ data class FriendsState(
     val outgoing: List<PersonUi> = emptyList(),
     val find: FindPeopleState = FindPeopleState(),
     val offline: Boolean = false,
-    val loading: Boolean = false
+    val loading: Boolean = false,
+    /** Element 17: the plain cause of a failed load, already localized; null when all is well. */
+    val error: String? = null,
+    /** Element 17: still rows while the system asks for less motion. */
+    val shimmer: Boolean = true
 )
 
 /** What the row's ⋯ menu offers for a friend. */
@@ -65,6 +69,7 @@ fun FriendsScreen(
     onFindQuery: (String) -> Unit,
     onFindPhone: () -> Unit,
     onAction: (PersonUi, RelationAction) -> Unit,
+    onRetry: () -> Unit = {},
     onMenu: (PersonUi, FriendMenu) -> Unit,
     onOpen: (PersonUi) -> Unit,
     modifier: Modifier = Modifier
@@ -88,13 +93,23 @@ fun FriendsScreen(
                         )
                     }
                 }
-                if (state.offline) Note(stringResource(R.string.friends_offline_note), GoldenGlow)
+                if (state.offline) com.rangepatte.app.ui.components.royal.OfflineBand(stringResource(R.string.state_offline_title), stringResource(R.string.state_offline_body), modifier = Modifier.padding(top = 10.dp))
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth().padding(top = 12.dp)) {
-                    when (tab) {
-                        FriendsTab.FRIENDS -> FriendList(state.friends, state.loading, stringResource(R.string.friends_empty), onAction, onMenu, onOpen)
-                        FriendsTab.ONLINE -> FriendList(state.friends.filter { it.online }, state.loading, stringResource(R.string.friends_none_online), onAction, onMenu, onOpen)
-                        FriendsTab.REQUESTS -> RequestsPanel(state.incoming, state.outgoing, onAction)
-                        FriendsTab.FIND -> FindPeoplePanel(state.find, onFindMode, onFindQuery, onFindPhone, onAction, onOpen)
+                    val error = state.error
+                    when {
+                        error != null && tab != FriendsTab.FIND -> com.rangepatte.app.ui.components.royal.ErrorPlaque(stringResource(R.string.state_error_title), error, stringResource(R.string.state_retry), onRetry)
+                        tab == FriendsTab.FRIENDS -> FriendList(state.friends, state.loading, state.shimmer, onAction, onMenu, onOpen) {
+                            com.rangepatte.app.ui.components.royal.EmptyState("\uD83E\uDD1D", stringResource(R.string.state_friends_empty_title), stringResource(R.string.state_friends_empty_body), stringResource(R.string.friends_tab_find), onButton = { onTab(FriendsTab.FIND) })
+                        }
+                        tab == FriendsTab.ONLINE -> FriendList(state.friends.filter { it.online }, state.loading, state.shimmer, onAction, onMenu, onOpen) {
+                            if (state.friends.isEmpty()) com.rangepatte.app.ui.components.royal.EmptyState("\uD83E\uDD1D", stringResource(R.string.state_friends_empty_title), stringResource(R.string.state_friends_empty_body), stringResource(R.string.friends_tab_find), onButton = { onTab(FriendsTab.FIND) })
+                            else com.rangepatte.app.ui.components.royal.EmptyState("\uD83C\uDF19", stringResource(R.string.state_online_empty_title), stringResource(R.string.state_online_empty_body, state.friends.size))
+                        }
+                        tab == FriendsTab.REQUESTS -> {
+                            if (state.incoming.isEmpty() && state.outgoing.isEmpty()) com.rangepatte.app.ui.components.royal.EmptyState("\uD83D\uDCEC", stringResource(R.string.state_requests_empty_title), stringResource(R.string.state_requests_empty_body))
+                            else RequestsPanel(state.incoming, state.outgoing, onAction)
+                        }
+                        else -> FindPeoplePanel(state.find, onFindMode, onFindQuery, onFindPhone, onAction, onOpen)
                     }
                 }
             }
@@ -104,11 +119,12 @@ fun FriendsScreen(
 
 @Composable
 private fun FriendList(
-    friends: List<PersonUi>, loading: Boolean, empty: String,
-    onAction: (PersonUi, RelationAction) -> Unit, onMenu: (PersonUi, FriendMenu) -> Unit, onOpen: (PersonUi) -> Unit
+    friends: List<PersonUi>, loading: Boolean, shimmer: Boolean,
+    onAction: (PersonUi, RelationAction) -> Unit, onMenu: (PersonUi, FriendMenu) -> Unit, onOpen: (PersonUi) -> Unit,
+    empty: @Composable () -> Unit
 ) {
-    if (loading && friends.isEmpty()) { Note(stringResource(R.string.friends_loading), ParchmentTextDim); return }
-    if (friends.isEmpty()) { Note(empty, ParchmentTextDim); return }
+    if (loading && friends.isEmpty()) { com.rangepatte.app.ui.components.royal.SkeletonRows(count = 3, shimmer = shimmer, loadingLabel = stringResource(R.string.friends_loading)); return }
+    if (friends.isEmpty()) { empty(); return }
     friends.forEach { person ->
         var menuOpen by remember(person.uid) { mutableStateOf(false) }
         Box {

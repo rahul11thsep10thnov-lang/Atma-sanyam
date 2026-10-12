@@ -499,4 +499,22 @@
     <string name="myprofile_delete_yes">हटवा</string>
     <string name="myprofile_delete_failed">खाते हटवता आले नाही. कनेक्शन तपासा आणि पुन्हा प्रयत्न करा.</string>
     <string name="myprofile_cancel">रद्द</string>
+
+    <!-- States (Element 17) -->
+    <string name="state_offline_title">कनेक्शन नाही · जे होते तेच दाखवत आहोत</string>
+    <string name="state_offline_body">ऑनलाइन परतल्यावर विनंत्या आणि पोक पुन्हा पाठवता येतील.</string>
+    <string name="state_offline_action">कनेक्शन नाही. ऑनलाइन झाल्यावर पुन्हा प्रयत्न करा.</string>
+    <string name="state_action_failed">हे झाले नाही. कृपया पुन्हा प्रयत्न करा.</string>
+    <string name="state_error_title">मित्रांची यादी लोड होऊ शकली नाही</string>
+    <string name="state_error_server">सर्व्हरने उत्तर दिले नाही. तुमची यादी या फोनवर आहे.</string>
+    <string name="state_error_network">इंटरनेट कनेक्शन नाही.</string>
+    <string name="state_error_permission">सर्व्हरने विनंती नाकारली. पुन्हा लॉग इन करून पाहा.</string>
+    <string name="state_retry">पुन्हा प्रयत्न</string>
+    <string name="state_friends_empty_title">अजून मित्र नाहीत</string>
+    <string name="state_friends_empty_body">वापरकर्तानावाने लोक शोधा, किंवा संपर्कांना फोनने तुम्हाला शोधू द्या.</string>
+    <string name="state_online_empty_title">सध्या कोणी ऑनलाइन नाही</string>
+    <string name="state_online_empty_body">%1$d मित्र; सध्या कोणीही नाही.</string>
+    <string name="state_requests_empty_title">कोणतीही विनंती प्रतीक्षेत नाही</string>
+    <string name="state_requests_empty_body">तुम्ही पाठवलेल्या किंवा आलेल्या विनंत्या इथे दिसतील.</string>
+    <string name="state_search_empty_body">स्पेलिंग तपासा, किंवा त्यांचे अचूक वापरकर्तानाव विचारा.</string>
 </resources>

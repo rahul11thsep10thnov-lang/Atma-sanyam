@@ -499,4 +499,22 @@
     <string name="myprofile_delete_yes">মুছুন</string>
     <string name="myprofile_delete_failed">অ্যাকাউন্ট মোছা গেল না। সংযোগ দেখে আবার চেষ্টা করুন।</string>
     <string name="myprofile_cancel">বাতিল</string>
+
+    <!-- States (Element 17) -->
+    <string name="state_offline_title">সংযোগ নেই · যা ছিল তাই দেখানো হচ্ছে</string>
+    <string name="state_offline_body">অনলাইনে ফিরলে অনুরোধ ও পোক আবার পাঠানো যাবে।</string>
+    <string name="state_offline_action">সংযোগ নেই। অনলাইনে ফিরে আবার চেষ্টা করুন।</string>
+    <string name="state_action_failed">এটি হয়নি। আবার চেষ্টা করুন।</string>
+    <string name="state_error_title">বন্ধুদের তালিকা লোড হয়নি</string>
+    <string name="state_error_server">সার্ভার সাড়া দেয়নি। আপনার তালিকা এই ফোনে রাখা আছে।</string>
+    <string name="state_error_network">ইন্টারনেট সংযোগ নেই।</string>
+    <string name="state_error_permission">সার্ভার অনুরোধ প্রত্যাখ্যান করেছে। আবার লগ ইন করে দেখুন।</string>
+    <string name="state_retry">আবার চেষ্টা</string>
+    <string name="state_friends_empty_title">এখনও কোনো বন্ধু নেই</string>
+    <string name="state_friends_empty_body">ইউজারনেম দিয়ে মানুষ খুঁজুন, বা পরিচিতরা ফোন দিয়ে আপনাকে খুঁজুক।</string>
+    <string name="state_online_empty_title">এখন কেউ অনলাইনে নেই</string>
+    <string name="state_online_empty_body">%1$d জন বন্ধু; এই মুহূর্তে কেউ নেই।</string>
+    <string name="state_requests_empty_title">কোনো অনুরোধ অপেক্ষায় নেই</string>
+    <string name="state_requests_empty_body">আপনার পাঠানো বা পাওয়া অনুরোধ এখানে দেখা যাবে।</string>
+    <string name="state_search_empty_body">বানান দেখুন, বা তাদের সঠিক ইউজারনেম জেনে নিন।</string>
 </resources>

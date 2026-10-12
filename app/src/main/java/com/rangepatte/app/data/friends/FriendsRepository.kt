@@ -23,7 +23,7 @@ data class Person(val uid: String, val username: String, val avatarId: String?)
 /** Where relations and public profiles live. */
 interface FriendsStore {
     /** Streams every relation that involves [uid]. Returns a function that stops listening. */
-    fun watchRelations(uid: String, onChange: (List<Relation>) -> Unit): () -> Unit
+    fun watchRelations(uid: String, onChange: (List<Relation>) -> Unit, onError: (Throwable) -> Unit = {}): () -> Unit
     fun searchByUsername(prefix: String, limit: Int, onResult: (Result<List<Person>>) -> Unit)
     /** Exact match on a full E.164 number, only for players who allow it. */
     fun lookupByPhone(phoneE164: String, onResult: (Result<Person?>) -> Unit)
@@ -49,6 +49,14 @@ class FriendsRepository(private val store: FriendsStore) {
     private val _people = MutableStateFlow<Map<String, Person>>(emptyMap())
     val people: StateFlow<Map<String, Person>> = _people.asStateFlow()
 
+    /** Element 17: true once the store has answered at least once for this account. */
+    private val _loaded = MutableStateFlow(false)
+    val loaded: StateFlow<Boolean> = _loaded.asStateFlow()
+
+    /** Element 17: the last failure of the relations listener, cleared on the next answer or [retry]. */
+    private val _error = MutableStateFlow<Throwable?>(null)
+    val error: StateFlow<Throwable?> = _error.asStateFlow()
+
     private var me: String? = null
     private var stop: (() -> Unit)? = null
     private val lookupTimes = ArrayDeque<Long>()
@@ -57,17 +65,30 @@ class FriendsRepository(private val store: FriendsStore) {
         if (me == uid) return
         stopWatching()
         me = uid
-        stop = store.watchRelations(uid) { list ->
+        stop = store.watchRelations(uid, { list ->
             _relations.value = list
+            _loaded.value = true
+            _error.value = null
             onFriendsChanged?.invoke(list.filter { it.kind == Relation.Kind.FRIENDS }.map { it.other(uid) })
             val missing = list.map { it.other(uid) }.filter { it !in _people.value }
             if (missing.isNotEmpty()) store.people(missing) { r -> r.onSuccess { _people.value = _people.value + it } }
-        }
+        }, onError = { _error.value = it; _loaded.value = true })
+    }
+
+    /** Element 17: Retry after an error — the listener is opened again. */
+    fun retry() {
+        val uid = me ?: return
+        _error.value = null
+        _loaded.value = false
+        me = null
+        start(uid)
     }
 
     fun stopWatching() {
         stop?.invoke(); stop = null; me = null
         _relations.value = emptyList()
+        _loaded.value = false
+        _error.value = null
     }
 
     fun statusOf(other: String): RelationStatus {
@@ -135,7 +156,7 @@ class LocalFriendsStore(context: Context) : FriendsStore {
 
     private fun publish() { val list = all(); listeners.forEach { (uid, cb) -> cb(list.filter { it.involves(uid) }) } }
 
-    override fun watchRelations(uid: String, onChange: (List<Relation>) -> Unit): () -> Unit {
+    override fun watchRelations(uid: String, onChange: (List<Relation>) -> Unit, onError: (Throwable) -> Unit): () -> Unit {
         listeners[uid] = onChange
         onChange(all().filter { it.involves(uid) })
         return { listeners.remove(uid) }
@@ -189,13 +210,13 @@ class FirestoreFriendsStore : FriendsStore {
         Relation(doc.getString("a")!!, doc.getString("b")!!, Relation.Kind.valueOf(doc.getString("kind")!!), doc.getString("by")!!, doc.getTimestamp("updatedAt")?.toDate()?.time ?: 0)
     }.getOrNull()
 
-    override fun watchRelations(uid: String, onChange: (List<Relation>) -> Unit): () -> Unit {
+    override fun watchRelations(uid: String, onChange: (List<Relation>) -> Unit, onError: (Throwable) -> Unit): () -> Unit {
         val asA = HashMap<String, Relation>(); val asB = HashMap<String, Relation>()
         fun emit() = onChange((asA.values + asB.values).distinctBy { Relations.pairId(it.a, it.b) })
         val regs = ArrayList<ListenerRegistration>()
         for ((field, bucket) in listOf("a" to asA, "b" to asB)) {
             regs += db.collection("relations").whereEqualTo(field, uid).addSnapshotListener { snap, e ->
-                if (e != null) { Log.w("Friends", "relations listener", e); return@addSnapshotListener }
+                if (e != null) { Log.w("Friends", "relations listener", e); onError(e); return@addSnapshotListener }
                 bucket.clear(); snap?.documents?.mapNotNull(::relation)?.forEach { bucket[Relations.pairId(it.a, it.b)] = it }
                 emit()
             }

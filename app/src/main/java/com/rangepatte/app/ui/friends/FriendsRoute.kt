@@ -53,6 +53,25 @@ fun FriendsRoute(onLoginClick: () -> Unit, onOpenPerson: (String) -> Unit) {
     }
     val noneFound = stringResource(R.string.friends_none_found)
     val searchError = stringResource(R.string.friends_search_error)
+    // Element 17: loading, error and offline states, action failures as toasts, sends parked when offline.
+    val loaded by friends.loaded.collectAsState()
+    val loadError by friends.error.collectAsState()
+    val online by AppServices.connectivity.online.collectAsState()
+    val offline = AppServices.isFirebaseConnected && !online
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val shimmer = remember { runCatching { android.provider.Settings.Global.getFloat(context.contentResolver, android.provider.Settings.Global.ANIMATOR_DURATION_SCALE, 1f) != 0f }.getOrDefault(true) }
+    val sNoConnection = stringResource(R.string.state_offline_action); val sFailed = stringResource(R.string.state_action_failed)
+    val sPermission = stringResource(R.string.state_error_permission); val sServer = stringResource(R.string.state_error_server); val sNet = stringResource(R.string.state_error_network)
+    fun describe(t: Throwable?): String = when {
+        t == null -> sServer
+        !online -> sNet
+        t.message?.contains("PERMISSION", ignoreCase = true) == true -> sPermission
+        else -> sServer
+    }
+    fun guarded(block: ((Result<Unit>) -> Unit) -> Unit) {
+        if (offline) { android.widget.Toast.makeText(context, sNoConnection, android.widget.Toast.LENGTH_SHORT).show(); return }
+        block { r -> if (r.isFailure) android.widget.Toast.makeText(context, sFailed, android.widget.Toast.LENGTH_SHORT).show() }
+    }
     val rateLimited = stringResource(R.string.friends_rate_limited)
 
     val pokePrefs by AppServices.pokePrefs.value.collectAsState()
@@ -67,7 +86,11 @@ fun FriendsRoute(onLoginClick: () -> Unit, onOpenPerson: (String) -> Unit) {
         friends = list { it.kind == Relation.Kind.FRIENDS },
         incoming = list { it.statusFor(me) == RelationStatus.INCOMING },
         outgoing = list { it.statusFor(me) == RelationStatus.OUTGOING },
-        find = find
+        find = find,
+        offline = offline,
+        loading = !loaded,
+        error = loadError?.let(::describe),
+        shimmer = shimmer
     )
 
     // Username search: wait 400 ms after the last keystroke.
@@ -81,7 +104,7 @@ fun FriendsRoute(onLoginClick: () -> Unit, onOpenPerson: (String) -> Unit) {
             if (q != find.query) return@search
             find = r.fold(
                 onSuccess = { list -> list.forEach(friends::remember); find.copy(searching = false, results = list.map { ui(it, friends.statusOf(it.uid)) }, message = if (list.isEmpty()) noneFound else null) },
-                onFailure = { find.copy(searching = false, results = emptyList(), message = searchError) }
+                onFailure = { find.copy(searching = false, results = emptyList(), message = describe(it), isError = true, onRetry = { find = find.copy(query = find.query + "") }) }
             )
         }
     }
@@ -101,11 +124,12 @@ fun FriendsRoute(onLoginClick: () -> Unit, onOpenPerson: (String) -> Unit) {
                 )
             }
         },
-        onAction = { person, action -> friends.act(person.uid, action) },
+        onAction = { person, action -> guarded { cb -> friends.act(person.uid, action, cb) } },
+        onRetry = friends::retry,
         onMenu = { person, item ->
             when (item) {
-                FriendMenu.REMOVE -> friends.act(person.uid, RelationAction.REMOVE_FRIEND)
-                FriendMenu.BLOCK -> friends.act(person.uid, RelationAction.BLOCK)
+                FriendMenu.REMOVE -> guarded { cb -> friends.act(person.uid, RelationAction.REMOVE_FRIEND, cb) }
+                FriendMenu.BLOCK -> guarded { cb -> friends.act(person.uid, RelationAction.BLOCK, cb) }
                 FriendMenu.FAVOURITE -> AppServices.pokePrefs.setFavourite(person.uid, !person.favourite)
                 FriendMenu.MUTE -> AppServices.pokePrefs.setMuted(person.uid, !person.muted)
             }

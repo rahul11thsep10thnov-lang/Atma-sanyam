@@ -453,6 +453,20 @@ screen in edit mode), then three plaques with the app's orb switches.
   be swept by a Cloud Function on `profiles/{uid}` delete (not written here); demo mode deletes
   locally. Switches live on the phone per account (`data/profile/MyProfilePrefs.kt`).
 
+**Loading, empty, error and offline states (Friends Element 17, approved Design 1).** Every Friends
+list has all four (`ui/components/royal/RoyalStates.kt`): **loading** shows the page's shape — skeleton
+rows with a slow gold shimmer (still rows when the system's animator scale is 0); **empty** is an
+invitation with the one button that fixes it (Friends and Online → *Find*; Online with friends →
+"nobody online right now · N friends"; Requests → "none waiting"; search → "no one called @…" with a
+spelling hint); **error** is a plaque naming the plain cause (no connection, server did not answer,
+server refused the request) with **Retry**, which reopens the relations listener
+(`FriendsRepository.error/loaded/retry`); **offline** (`data/net/ConnectivityMonitor`) is a hairline
+gold band at the top of the page: cached friends, requests and notices stay visible, and every send
+or accept is parked — the button shows "No connection. Try again when you're back online." instead
+of failing silently. A failed action (request, accept, remove, block) shows a short toast and leaves
+the button pressable. Every state is announced to screen readers (live regions). Demo mode never
+shows the band.
+
 ### Online play: Firebase setup
 
 On top of the login setup below, in the Firebase console:
@@ -509,7 +523,7 @@ match /usernames/{name} {
 }
 ```
 
-## Friends (in progress — design-approved elements only)
+## Friends (all 17 design-approved elements built)
 
 Relations between players are one record per pair, `relations/{lowUid_highUid}` = `{a, b, kind:
 PENDING|FRIENDS|BLOCKED, by}`; every change is computed by the pure state machine in

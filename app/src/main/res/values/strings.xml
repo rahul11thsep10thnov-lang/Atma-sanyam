@@ -509,4 +509,22 @@
     <string name="myprofile_delete_yes">Delete</string>
     <string name="myprofile_delete_failed">Could not delete the account. Check your connection and try again.</string>
     <string name="myprofile_cancel">Cancel</string>
+
+    <!-- States (Element 17) -->
+    <string name="state_offline_title">No connection · showing what you had</string>
+    <string name="state_offline_body">Requests and pokes can be sent again once you\'re back online.</string>
+    <string name="state_offline_action">No connection. Try again when you\'re back online.</string>
+    <string name="state_action_failed">That didn\'t go through. Please try again.</string>
+    <string name="state_error_title">Couldn\'t load your friends</string>
+    <string name="state_error_server">The server did not answer. Your list is kept on this phone.</string>
+    <string name="state_error_network">No internet connection.</string>
+    <string name="state_error_permission">The server refused the request. Try logging in again.</string>
+    <string name="state_retry">Retry</string>
+    <string name="state_friends_empty_title">No friends yet</string>
+    <string name="state_friends_empty_body">Find people by username, or let contacts find you by phone.</string>
+    <string name="state_online_empty_title">Nobody online right now</string>
+    <string name="state_online_empty_body">%1$d friends; none are here at the moment.</string>
+    <string name="state_requests_empty_title">No requests waiting</string>
+    <string name="state_requests_empty_body">Requests you send or receive will appear here.</string>
+    <string name="state_search_empty_body">Check the spelling, or ask them for their exact username.</string>
 </resources>

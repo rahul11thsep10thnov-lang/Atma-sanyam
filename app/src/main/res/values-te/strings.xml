@@ -499,4 +499,22 @@
     <string name="myprofile_delete_yes">తొలగించు</string>
     <string name="myprofile_delete_failed">ఖాతాను తొలగించలేకపోయాం. కనెక్షన్ చూసి మళ్ళీ ప్రయత్నించండి.</string>
     <string name="myprofile_cancel">రద్దు</string>
+
+    <!-- States (Element 17) -->
+    <string name="state_offline_title">కనెక్షన్ లేదు · ఉన్నదే చూపిస్తున్నాం</string>
+    <string name="state_offline_body">మళ్ళీ ఆన్‌లైన్ అయ్యాక అభ్యర్థనలు, పోక్‌లు పంపవచ్చు.</string>
+    <string name="state_offline_action">కనెక్షన్ లేదు. ఆన్‌లైన్ అయ్యాక మళ్ళీ ప్రయత్నించండి.</string>
+    <string name="state_action_failed">అది జరగలేదు. దయచేసి మళ్ళీ ప్రయత్నించండి.</string>
+    <string name="state_error_title">స్నేహితుల జాబితా లోడ్ కాలేదు</string>
+    <string name="state_error_server">సర్వర్ స్పందించలేదు. మీ జాబితా ఈ ఫోన్‌లో ఉంది.</string>
+    <string name="state_error_network">ఇంటర్నెట్ కనెక్షన్ లేదు.</string>
+    <string name="state_error_permission">సర్వర్ అభ్యర్థనను తిరస్కరించింది. మళ్ళీ లాగిన్ అయి చూడండి.</string>
+    <string name="state_retry">మళ్ళీ ప్రయత్నించు</string>
+    <string name="state_friends_empty_title">ఇంకా స్నేహితులు లేరు</string>
+    <string name="state_friends_empty_body">యూజర్‌నేమ్‌తో వెతకండి, లేదా పరిచయస్థులు ఫోన్ ద్వారా మిమ్మల్ని కనుగొననివ్వండి.</string>
+    <string name="state_online_empty_title">ఇప్పుడు ఎవరూ ఆన్‌లైన్‌లో లేరు</string>
+    <string name="state_online_empty_body">%1$d స్నేహితులు; ప్రస్తుతం ఎవరూ లేరు.</string>
+    <string name="state_requests_empty_title">వేచి ఉన్న అభ్యర్థనలు లేవు</string>
+    <string name="state_requests_empty_body">మీరు పంపిన లేదా అందుకున్న అభ్యర్థనలు ఇక్కడ కనిపిస్తాయి.</string>
+    <string name="state_search_empty_body">స్పెల్లింగ్ చూడండి, లేదా వారి సరైన యూజర్‌నేమ్ అడగండి.</string>
 </resources>

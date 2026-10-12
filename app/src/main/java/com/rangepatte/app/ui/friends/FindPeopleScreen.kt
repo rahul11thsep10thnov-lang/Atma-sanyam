@@ -33,7 +33,10 @@ data class FindPeopleState(
     val results: List<PersonUi> = emptyList(),
     val searching: Boolean = false,
     /** A message to show instead of results (empty / error / rate-limited), already localized. */
-    val message: String? = null
+    val message: String? = null,
+    /** Element 17: the message is an error (shows the plaque with Retry) rather than "nobody found". */
+    val isError: Boolean = false,
+    val onRetry: () -> Unit = {}
 )
 
 /**
@@ -71,9 +74,11 @@ fun FindPeoplePanel(
             RoyalButton(text = stringResource(R.string.friends_lookup), onClick = onSearchPhone, enabled = state.query.length >= 8 && !state.searching, modifier = Modifier.fillMaxWidth())
             Text(stringResource(R.string.friends_phone_privacy), style = MaterialTheme.typography.bodySmall, color = ParchmentTextDim, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
         }
-        if (state.searching) CircularProgressIndicator(color = GoldBevelLight, strokeWidth = 2.dp, modifier = Modifier.align(Alignment.CenterHorizontally).padding(8.dp))
+        // Element 17: the page's shape while searching, an invitation when nobody matches, a plaque with Retry on failure.
+        if (state.searching) com.rangepatte.app.ui.components.royal.SkeletonRows(count = 2, loadingLabel = stringResource(R.string.friends_loading))
         state.message?.let {
-            Text(it, style = MaterialTheme.typography.bodyLarge, color = ParchmentTextDim, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp))
+            if (state.isError) com.rangepatte.app.ui.components.royal.ErrorPlaque(stringResource(R.string.state_error_title), it, stringResource(R.string.state_retry), state.onRetry)
+            else com.rangepatte.app.ui.components.royal.EmptyState("\uD83D\uDD0D", it, stringResource(R.string.state_search_empty_body))
         }
         state.results.forEach { person -> PersonRow(person, onAction = { onAction(person, it) }, onOpen = { onOpen(person) }) }
     }

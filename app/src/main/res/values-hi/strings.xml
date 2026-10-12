@@ -499,4 +499,22 @@
     <string name="myprofile_delete_yes">हटाएँ</string>
     <string name="myprofile_delete_failed">खाता नहीं हटाया जा सका। कनेक्शन जाँचें और फिर कोशिश करें।</string>
     <string name="myprofile_cancel">रद्द करें</string>
+
+    <!-- States (Element 17) -->
+    <string name="state_offline_title">कनेक्शन नहीं · जो था वही दिखा रहे हैं</string>
+    <string name="state_offline_body">ऑनलाइन लौटने पर अनुरोध और पोक फिर भेजे जा सकेंगे।</string>
+    <string name="state_offline_action">कनेक्शन नहीं है। ऑनलाइन होने पर फिर कोशिश करें।</string>
+    <string name="state_action_failed">यह नहीं हो पाया। कृपया फिर कोशिश करें।</string>
+    <string name="state_error_title">दोस्तों की सूची लोड नहीं हो सकी</string>
+    <string name="state_error_server">सर्वर ने जवाब नहीं दिया। आपकी सूची इस फ़ोन पर सुरक्षित है।</string>
+    <string name="state_error_network">इंटरनेट कनेक्शन नहीं है।</string>
+    <string name="state_error_permission">सर्वर ने अनुरोध ठुकरा दिया। फिर से लॉग इन करके देखें।</string>
+    <string name="state_retry">फिर कोशिश करें</string>
+    <string name="state_friends_empty_title">अभी कोई दोस्त नहीं</string>
+    <string name="state_friends_empty_body">यूज़रनेम से लोगों को ढूँढें, या संपर्कों को फ़ोन से आपको ढूँढने दें।</string>
+    <string name="state_online_empty_title">अभी कोई ऑनलाइन नहीं</string>
+    <string name="state_online_empty_body">%1$d दोस्त; फ़िलहाल कोई मौजूद नहीं।</string>
+    <string name="state_requests_empty_title">कोई अनुरोध प्रतीक्षा में नहीं</string>
+    <string name="state_requests_empty_body">आपके भेजे या मिले अनुरोध यहाँ दिखेंगे।</string>
+    <string name="state_search_empty_body">स्पेलिंग जाँचें, या उनसे सही यूज़रनेम पूछें।</string>
 </resources>
