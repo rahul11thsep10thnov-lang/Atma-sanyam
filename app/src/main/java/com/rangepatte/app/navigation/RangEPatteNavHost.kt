@@ -35,6 +35,7 @@ import com.rangepatte.app.ui.friends.FriendsRoute
 import com.rangepatte.app.ui.friends.PersonProfileRoute
 import com.rangepatte.app.ui.games.GamesScreen
 import com.rangepatte.app.ui.invites.PlayRequestOverlay
+import com.rangepatte.app.ui.pokes.PokeRoute
 import com.rangepatte.app.ui.language.LanguageSelectionScreen
 import com.rangepatte.app.ui.language.findActivity
 import com.rangepatte.app.ui.membership.CheckoutScreen
@@ -371,7 +372,7 @@ fun RangEPatteNavHost(
             centreNewIds = null
         }
         if (user != null) {
-            com.rangepatte.app.ui.pokes.PokeRoute(
+            PokeRoute(
                 shake = pokeShake,
                 atTable = currentRoute == Routes.GAME_TABLE_PATTERN || currentRoute == Routes.BOARD_TABLE_PATTERN,
                 onOpenPerson = { uid -> navController.navigate(Routes.person(uid)) }
