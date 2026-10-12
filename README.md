@@ -561,7 +561,26 @@ plaque of orb switches preset to the recommended ruleset (`domain/ludo/LudoRules
 *Extra roll on six* (three sixes forfeit), *Extra roll on capture*, *Exact roll to finish*, *Play on
 for places*; the eight star squares are always safe. Start (or Host / Join) stores the choice in
 `LudoSetupStore` for the board; until the board (stage 3) and the lobby (stage 6) are approved, all
-three lead to a plain note that the settings were kept.
+Start opens the board; Host / Join lead to a plain note until the lobby (stage 6) is approved.
+
+**Ludo stage 3 — the board (approved Design 10) and the rules engine.** The board is drawn with
+Canvas inside the shared game frame (`ui/board/LudoBoardCanvas.kt`): ivory playing surface with a
+gold rim on waxed walnut, yards in the suits' deep red, emerald, saffron and indigo with ivory nests,
+faint ruling on the track, gold stars on the eight safe squares, home columns in the yard colour and
+a four-colour star under a gold medallion at the centre. Tokens carry their colour's suit symbol
+(♥ ♣ ♦ ♠, so colour is never the only cue), stacks show a count, finished tokens gather around the
+medallion, and the die and the Roll button sit below the board. The geometry (`domain/ludo/LudoBoard.kt`:
+52-square track clockwise from red's start, five-cell home columns, eight safe stars, 2 players
+opposite, 3 leave blue empty) is shared by the renderer and the engine, so a token is never drawn
+where the rules say it is not. The engine (`domain/ludo/LudoEngine.kt`, `LudoEngineTest`) is pure:
+`roll` and `move` return the next state or null for an illegal action, honour every house-rule switch
+(six to enter, extra roll on six with the three-six forfeit, extra roll on capture, safe squares,
+exact finish, play on for places), and `chooseToken` is the computer's choice (Easy random; Medium
+prefers finishing, capturing, leaving the yard; Hard also weighs threats). A full bot game is run to
+the end for twenty seeds in the tests with the invariant that two colours never share an unsafe
+square. `ui/board/LudoSession.kt` is the solo table: dice from `SecureRandom`, bots on a short delay;
+the multiplayer table comes with the lobby stage on the same lockstep engine as the card games.
+Dice and token animations are stage 4.
 
 ## Sound and music
 

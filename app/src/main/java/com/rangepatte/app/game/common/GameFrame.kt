@@ -78,6 +78,27 @@ fun GameFrame(
     talk: TalkControl? = null,
     background: BackgroundType = BackgroundType.VILLAGE_CHAUPAL,
     content: @Composable ColumnScope.() -> Unit
+) = GameFrameChrome(
+    title = stringResource(game.nameRes),
+    rules = { onDismiss -> RulesDialog(game = game, onDismiss = onDismiss) },
+    onBackClick = onBackClick, modifier = modifier, undo = undo, watching = watching, talk = talk, background = background, content = content
+)
+
+/**
+ * The frame itself, for games that are not in the card catalogue (the board games): a title and a
+ * rules dialog of their own; everything else — header, audio, table, talk, watching — is shared.
+ */
+@Composable
+fun GameFrameChrome(
+    title: String,
+    rules: @Composable (onDismiss: () -> Unit) -> Unit,
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    undo: UndoControl? = null,
+    watching: WatchingInfo? = null,
+    talk: TalkControl? = null,
+    background: BackgroundType = BackgroundType.VILLAGE_CHAUPAL,
+    content: @Composable ColumnScope.() -> Unit
 ) {
     var showRules by remember { mutableStateOf(false) }
     var showAudio by remember { mutableStateOf(false) }
@@ -89,7 +110,7 @@ fun GameFrame(
         WatermarkBackground(backgroundType = background, modifier = modifier) {
             Column(modifier = Modifier.fillMaxSize()) {
                 GameHeader(
-                    title = stringResource(game.nameRes),
+                    title = title,
                     onBackClick = onBackClick,
                     onRulesClick = { showRules = true },
                     onAudioClick = { showAudio = !showAudio },
@@ -150,7 +171,7 @@ fun GameFrame(
         }
     }
 
-    if (showRules) RulesDialog(game = game, onDismiss = { showRules = false })
+    if (showRules) rules { showRules = false }
 }
 
 /** A modal panel for "you won / round over" and similar moments; stays up until a button is pressed. */

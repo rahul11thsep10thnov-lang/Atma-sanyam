@@ -146,7 +146,13 @@ fun RangEPatteNavHost(
             }
             composable(Routes.BOARD_TABLE_PATTERN) { backStackEntry ->
                 val game = backStackEntry.arguments?.getString(Routes.ARG_BOARD)?.let(com.rangepatte.app.domain.board.BoardCatalog::byRouteSegment)
-                if (game != null) com.rangepatte.app.ui.board.BoardIntroPlaceholder(game = game, onBackClick = { navController.popBackStack() })
+                val mode = backStackEntry.arguments?.getString(Routes.ARG_MODE)?.let { runCatching { PlayMode.valueOf(it) }.getOrNull() } ?: PlayMode.VS_COMPUTER
+                if (game != null) when {
+                    // The multiplayer table arrives with the lobby stage; until then every mode plays the solo board.
+                    game.id == com.rangepatte.app.domain.board.BoardGameId.LUDO && mode == PlayMode.VS_COMPUTER ->
+                        com.rangepatte.app.ui.board.LudoScreen(game = game, setup = com.rangepatte.app.domain.ludo.LudoSetupStore.pending, onBackClick = { navController.popBackStack() })
+                    else -> com.rangepatte.app.ui.board.BoardIntroPlaceholder(game = game, onBackClick = { navController.popBackStack() })
+                }
             }
             composable(Routes.FRIENDS) {
                 FriendsRoute(

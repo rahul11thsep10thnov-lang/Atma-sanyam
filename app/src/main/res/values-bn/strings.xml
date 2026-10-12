@@ -545,5 +545,18 @@
     <string name="ludo_rules_3">সাধারণ ঘরে প্রতিপক্ষের গুটির ওপর নামলে সেটি ঘরে ফিরে যায়। আটটি তারা ঘর নিরাপদ।</string>
     <string name="ludo_rules_4">পুরো চক্কর শেষে গুটি নিজের ঘরের সারিতে ঢোকে এবং সঠিক সংখ্যায় মাঝখানে পৌঁছতে হয়।</string>
     <string name="ludo_rules_5">যে প্রথমে চারটি গুটিই ঘরে আনে সে জেতে; বাকিরা দ্বিতীয়-তৃতীয় স্থানের জন্য খেলে।</string>
-    <string name="board_table_pending">বোর্ড পরের ডিজাইন ধাপ। আপনার সেটিংস রাখা হয়েছে।</string>
+    <string name="board_table_pending">অন্যদের সঙ্গে খেলা লবি ধাপের সঙ্গে আসবে। আপনার সেটিংস রাখা হয়েছে।</string>
+
+    <!-- Ludo board (stage 3) -->
+    <string name="ludo_roll">ছক্কা ফেলুন</string>
+    <string name="ludo_pick_token">চালানোর গুটি বাছুন</string>
+    <string name="ludo_no_move_format">%1$s %2$d ফেললেন — চাল নেই</string>
+    <string name="ludo_capture_format">%1$s একটি গুটি কাটলেন!</string>
+    <string name="ludo_forfeit_format">%1$s-এর তিন ছয় — দান গেল</string>
+    <string name="ludo_tokens_home_format">%1$d ঘরে</string>
+    <string name="ludo_place_1">প্রথম</string>
+    <string name="ludo_place_2">দ্বিতীয়</string>
+    <string name="ludo_place_3">তৃতীয়</string>
+    <string name="ludo_place_4">চতুর্থ</string>
+    <string name="ludo_match_over">খেলা শেষ</string>
 </resources>

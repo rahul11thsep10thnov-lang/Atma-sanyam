@@ -555,5 +555,18 @@
     <string name="ludo_rules_3">Landing on a rival\'s token on an ordinary square sends it back to its yard. The eight star squares are safe.</string>
     <string name="ludo_rules_4">After a full lap a token turns into its home column and must reach the centre with an exact roll.</string>
     <string name="ludo_rules_5">The first to bring all four tokens home wins; the others play on for second and third place.</string>
-    <string name="board_table_pending">The board is the next design stage. Your settings have been kept.</string>
+    <string name="board_table_pending">Playing with others arrives with the lobby stage. Your settings have been kept.</string>
+
+    <!-- Ludo board (stage 3) -->
+    <string name="ludo_roll">Roll</string>
+    <string name="ludo_pick_token">Pick a token to move</string>
+    <string name="ludo_no_move_format">%1$s rolled %2$d — no move</string>
+    <string name="ludo_capture_format">%1$s captured a token!</string>
+    <string name="ludo_forfeit_format">%1$s rolled three sixes — turn lost</string>
+    <string name="ludo_tokens_home_format">%1$d home</string>
+    <string name="ludo_place_1">1st</string>
+    <string name="ludo_place_2">2nd</string>
+    <string name="ludo_place_3">3rd</string>
+    <string name="ludo_place_4">4th</string>
+    <string name="ludo_match_over">Match over</string>
 </resources>
