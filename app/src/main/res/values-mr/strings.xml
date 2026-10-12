@@ -611,4 +611,40 @@
     <string name="game_snakes_alt">साप-शिडी</string>
     <string name="game_snakes_desc">पुण्याच्या शिड्या चढा; साप चावतात.</string>
     <string name="board_intro_next">या खेळाचे परिचय आणि मोड निवड पान पुढचा डिझाइन टप्पा आहे.</string>
+
+    <!-- Moksha Patam setup, board and results (stages 2-10) -->
+    <string name="snakes_intro">फासा टाका आणि एक सोंगटी घर 1 पासून 100 पर्यंत पळवा. शिड्या वर नेतात, साप खाली ओढतात; कमळापर्यंत प्रथम पोहोचणारा जिंकतो.</string>
+    <string name="snakes_players_hint">सगळे पटाबाहेरून सुरुवात करतात; रिकाम्या जागा संगणक खेळतो.</string>
+    <string name="snakes_rule_six_to_start">सुरुवातीसाठी सहा</string>
+    <string name="snakes_rule_six_to_start_hint">सोंगटी पटावर आणण्यासाठी सहा लागतो.</string>
+    <string name="snakes_rule_six_again">सहावर पुन्हा चाल</string>
+    <string name="snakes_rule_six_again_hint">सहा आल्यावर आणखी एक चाल मिळते.</string>
+    <string name="snakes_rule_exact_finish">शेवटासाठी नेमका अंक</string>
+    <string name="snakes_rule_exact_finish_hint">शंभराव्या घरासाठी नेमका अंक लागतो; पुढे जाणारी चाल वाया जाते.</string>
+    <string name="snakes_rule_bounce">मागे उसळी</string>
+    <string name="snakes_rule_bounce_hint">नेमक्या शेवटासह: 100 च्या पुढे जाणारी चाल सोंगटीला तितकी मागे आणते.</string>
+    <string name="snakes_rule_captures">सोंगटी मारणे</string>
+    <string name="snakes_rule_captures_hint">प्रतिस्पर्ध्यावर उतरल्यास तो सुरुवातीला परत जातो.</string>
+    <string name="snakes_rule_play_on">स्थानांसाठी खेळत राहा</string>
+    <string name="snakes_rule_play_on_hint">पहिल्या विजेत्यानंतर बाकीचे दुसऱ्या-तिसऱ्या स्थानासाठी खेळतात.</string>
+    <string name="snakes_rules_note">क्लासिक पट: नऊ साप आणि आठ शिड्या, प्रत्येक सामन्यात तेच.</string>
+    <string name="snakes_rules_1">प्रत्येक खेळाडूकडे एक सोंगटी असते, जी पटाबाहेरून सुरू होते. फासा टाका आणि तिला 1 पासून 100 कडे क्रमांकित घरांवर पुढे न्या.</string>
+    <string name="snakes_rules_2">शिडीच्या पायथ्यावर उतरल्यास लगेच तिच्या टोकावर चढा; सापाच्या डोक्यावर उतरल्यास त्याच्या शेपटीपर्यंत घसरा.</string>
+    <string name="snakes_rules_3">सहा आल्यावर आणखी एक चाल मिळते.</string>
+    <string name="snakes_rules_4">शंभराव्या घरासाठी नेमका अंक लागतो; पुढे जाणारी चाल वाया जाते आणि सोंगटी तिथेच राहते.</string>
+    <string name="snakes_rules_5">100 वर प्रथम पोहोचणारा जिंकतो; बाकीचे दुसऱ्या व तिसऱ्या स्थानासाठी खेळतात.</string>
+    <string name="snakes_rolled_format">%1$s ने %2$d टाकले</string>
+    <string name="snakes_ladder_format">%1$s शिडी चढून %2$d वर पोहोचले!</string>
+    <string name="snakes_snake_format">%1$s सापावरून घसरून %2$d वर आले</string>
+    <string name="snakes_capture_format">%1$s ने %2$s ला सुरुवातीला पाठवले</string>
+    <string name="snakes_stay_format">%1$s ला नेमका अंक हवा — %2$d वरच राहिले</string>
+    <string name="snakes_bounce_format">%1$s उसळून %2$d वर परतले</string>
+    <string name="snakes_no_entry_format">%1$s ला सुरू करण्यासाठी सहा हवा</string>
+    <string name="snakes_plaque_format">%1$s, घर %2$s</string>
+    <string name="snakes_square_start">सुरुवात</string>
+    <string name="snakes_stats_ladders">शिड्या</string>
+    <string name="snakes_stats_snakes">साप</string>
+    <string name="snakes_stats_square">घर</string>
+    <string name="snakes_record_format">तुमचा मोक्ष पटम विक्रम: %1$d खेळले · %2$d जिंकले · %3$d दुसरे · %4$d तिसरे</string>
+    <string name="myprofile_snakes_format">मोक्ष पटम: %1$d खेळले · %2$d जिंकले</string>
 </resources>

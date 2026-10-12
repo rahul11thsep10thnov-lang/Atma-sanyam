@@ -32,7 +32,7 @@ data class BoardGameInfo(
 object BoardCatalog {
     val all: List<BoardGameInfo> = listOf(
         BoardGameInfo(BoardGameId.LUDO, R.string.game_ludo_name, R.string.game_ludo_desc, 2, 4),
-        BoardGameInfo(BoardGameId.SNAKES_LADDERS, R.string.game_snakes_name, R.string.game_snakes_desc, 2, 4, altNameRes = R.string.game_snakes_alt, isPlayable = false)
+        BoardGameInfo(BoardGameId.SNAKES_LADDERS, R.string.game_snakes_name, R.string.game_snakes_desc, 2, 4, altNameRes = R.string.game_snakes_alt)
     )
 
     fun byRouteSegment(segment: String): BoardGameInfo? = all.firstOrNull { it.id.routeSegment == segment }

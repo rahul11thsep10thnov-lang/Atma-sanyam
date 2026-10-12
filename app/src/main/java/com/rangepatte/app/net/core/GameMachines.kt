@@ -28,6 +28,7 @@ object GameMachines {
         GameId.DEHLA_PAKAD -> DehlaPakadMachine
         GameId.LAKADI -> LakadiMachine
         GameId.LUDO -> LudoMachine
+        GameId.SNAKES_LADDERS -> com.rangepatte.app.game.snakes.SnakesMachine
         else -> null
     } as GameMachine<Any, Any>?
 }

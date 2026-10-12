@@ -707,6 +707,44 @@ the introduction is the next design stage. The catalog entry is marked not yet p
 friends' game picker does not offer it before its table exists; `GameId.SNAKES_LADDERS` is there for
 the rooms, presence and lobby to use when they do.
 
+**Stages 2–10 (Design 1, Royal court, by the owner's standing approval; the recommended rules as
+the default).** Moksha Patam reuses Ludo's work wherever the two games are alike, so each stage is
+the Ludo stage with the game's own board and words:
+
+- *Setup page (2):* the board games now share one page (`ui/board/BoardSetupScreen.kt`; Ludo's
+  screen is a thin wrapper). Moksha Patam's House rules plaque has six switches — Six to start (off),
+  Six rolls again (on), Exact roll to finish (on), Bounce back (off), Captures (off), Play on for
+  places (on) — every one honoured by the engine and tested (`SnakesEngineTest`).
+- *Board and engine (3):* `domain/snakes/` holds the board (100 squares numbered back and forth, the
+  classic nine serpents and eight ladders in two tables the renderer draws from), the rules and the
+  pure engine: one token per player, a roll moves it at once; a six rolls again; the hundredth square
+  needs the exact number (a roll that would pass it is lost, or bounces back with that switch);
+  captures and play-on are switches; the first to 100 wins. `ui/snakes/SnakesBoardCanvas.kt` paints
+  the ivory board on walnut with creeper ladders and lotus-headed serpents; square 0 waits left of
+  square 1.
+- *Animation (4):* `SnakesMotion` spins the die, glides the token square by square with a trail,
+  then climbs the ladder in a straight line or slides down the serpent's own curve; reduced motion
+  snaps. The engine decides first; the Roll button waits while anything moves.
+- *Players (5):* one antique plaque per player in a row above the board (`SnakesPlaqueRow`): avatar
+  with colour ring and suit badge, name, the square (or Start, or the place), a glow on the current
+  player, the stage 8 away and Computer states, and the stage 9 bubbles beneath.
+- *Lobby, invitations, waiting states (6–8):* the same board lobby route, decor (`snakesLobbyDecor`),
+  Invite friends, seat window and Watch as Ludo; `game/snakes/SnakesMachine.kt` runs the match on the
+  lockstep session (the host rolls from the step's shared random, four phones stay in step through
+  whole matches in the tests, states and actions round-trip as text, rematch is a host-only move).
+- *Messages and sounds (9):* the talk button in the die row with bubbles under the speaker's plaque;
+  the pack's remaining seven files (`sfx_ladder_climb`, `sfx_snake_hiss`, `sfx_snake_slide_down`,
+  `sfx_snakes_ladders_victory` / `_defeat`, `sfx_player_eliminated`, `sfx_victory_fanfare`) join
+  `res/raw` and `game/snakes/SnakesSfx.kt` maps each step once: die spin and land, enter or move with
+  a tick a square, the ladder climb, the serpent's hiss then slide, a capture, near finish, the
+  finish square with the Moksha Patam victory on the winner's phone and its defeat sting on the
+  others, your turn, and a lost roll as a refusal. All 35 pack and card effects are in the app.
+- *Results (10):* the statistics table — place, turns, sixes, ladders, serpents, square — with the
+  lifetime record (kept per account in `snakes_record`, shown on My Profile as "Moksha Patam: N
+  played · M won"), Rematch / Play again / waiting line, and Back to Khel.
+
+With this both board games are complete. Nothing has yet run on two real phones.
+
 ## Sound and music
 
 All sound goes through one object, `audio/GameAudio.kt`, which owns the settings and is the only code

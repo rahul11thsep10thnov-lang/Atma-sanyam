@@ -611,4 +611,40 @@
     <string name="game_snakes_alt">பரமபத விளையாட்டு</string>
     <string name="game_snakes_desc">புண்ணிய ஏணிகளில் ஏறுங்கள்; பாம்புகள் கடிக்கும்.</string>
     <string name="board_intro_next">இந்த விளையாட்டின் அறிமுகம் மற்றும் முறை தேர்வு பக்கம் அடுத்த வடிவமைப்பு நிலை.</string>
+
+    <!-- Moksha Patam setup, board and results (stages 2-10) -->
+    <string name="snakes_intro">பகடை உருட்டி ஒரு காயை கட்டம் 1 முதல் 100 வரை ஓட்டுங்கள். ஏணிகள் மேலே ஏற்றும், பாம்புகள் கீழே இழுக்கும்; தாமரையை முதலில் அடைபவர் வெற்றி.</string>
+    <string name="snakes_players_hint">அனைவரும் பலகைக்கு வெளியே தொடங்குகிறார்கள்; காலி இடங்களை கணினி விளையாடும்.</string>
+    <string name="snakes_rule_six_to_start">தொடங்க ஆறு</string>
+    <string name="snakes_rule_six_to_start_hint">காயை பலகைக்குள் கொண்டுவர ஆறு தேவை.</string>
+    <string name="snakes_rule_six_again">ஆறுக்கு மீண்டும் உருட்டல்</string>
+    <string name="snakes_rule_six_again_hint">ஆறு வந்தால் இன்னொரு உருட்டல்.</string>
+    <string name="snakes_rule_exact_finish">முடிக்க சரியான எண்</string>
+    <string name="snakes_rule_exact_finish_hint">நூறாவது கட்டத்திற்கு சரியான எண் தேவை; அதைத் தாண்டும் உருட்டல் வீண்.</string>
+    <string name="snakes_rule_bounce">பின் எகிறல்</string>
+    <string name="snakes_rule_bounce_hint">சரியான முடிவுடன்: 100-ஐ தாண்டும் உருட்டல் காயை அதே அளவு பின்னுக்குக் கொண்டுவரும்.</string>
+    <string name="snakes_rule_captures">வெட்டுதல்</string>
+    <string name="snakes_rule_captures_hint">எதிரியின் மீது இறங்கினால் அவர் தொடக்கத்திற்குத் திரும்புவார்.</string>
+    <string name="snakes_rule_play_on">இடங்களுக்காகத் தொடரவும்</string>
+    <string name="snakes_rule_play_on_hint">முதல் வெற்றியாளருக்குப் பிறகு மற்றவர்கள் 2 மற்றும் 3-ஆம் இடத்திற்கு விளையாடுவர்.</string>
+    <string name="snakes_rules_note">பாரம்பரிய பலகை: ஒன்பது பாம்புகள், எட்டு ஏணிகள், ஒவ்வொரு ஆட்டத்திலும் ஒன்றே.</string>
+    <string name="snakes_rules_1">ஒவ்வொரு வீரருக்கும் ஒரு காய், பலகைக்கு வெளியே தொடங்கும். பகடை உருட்டி எண்ணிடப்பட்ட கட்டங்களில் 1-லிருந்து 100-ஐ நோக்கி நகர்த்துங்கள்.</string>
+    <string name="snakes_rules_2">ஏணியின் அடியில் இறங்கினால் உடனே அதன் உச்சிக்கு ஏறுங்கள்; பாம்பின் தலையில் இறங்கினால் அதன் வால் வரை சறுக்குங்கள்.</string>
+    <string name="snakes_rules_3">ஆறு வந்தால் இன்னொரு உருட்டல்.</string>
+    <string name="snakes_rules_4">நூறாவது கட்டத்திற்கு சரியான எண் தேவை; தாண்டும் உருட்டல் வீண், காய் அங்கேயே இருக்கும்.</string>
+    <string name="snakes_rules_5">100-ஐ முதலில் அடைபவர் வெற்றி; மற்றவர்கள் இரண்டாம், மூன்றாம் இடத்திற்கு விளையாடுவர்.</string>
+    <string name="snakes_rolled_format">%1$s %2$d உருட்டினார்</string>
+    <string name="snakes_ladder_format">%1$s ஏணி ஏறி %2$d-க்கு வந்தார்!</string>
+    <string name="snakes_snake_format">%1$s பாம்பில் சறுக்கி %2$d-க்கு வந்தார்</string>
+    <string name="snakes_capture_format">%1$s %2$s-ஐ தொடக்கத்திற்கு அனுப்பினார்</string>
+    <string name="snakes_stay_format">%1$s-க்கு சரியான எண் தேவை — %2$d-லேயே இருக்கிறார்</string>
+    <string name="snakes_bounce_format">%1$s எகிறி %2$d-க்கு திரும்பினார்</string>
+    <string name="snakes_no_entry_format">%1$s தொடங்க ஆறு தேவை</string>
+    <string name="snakes_plaque_format">%1$s, கட்டம் %2$s</string>
+    <string name="snakes_square_start">தொடக்கம்</string>
+    <string name="snakes_stats_ladders">ஏணிகள்</string>
+    <string name="snakes_stats_snakes">பாம்புகள்</string>
+    <string name="snakes_stats_square">கட்டம்</string>
+    <string name="snakes_record_format">உங்கள் மோட்ச பட்டம் சாதனை: %1$d ஆடியது · %2$d வென்றது · %3$d இரண்டாம் · %4$d மூன்றாம்</string>
+    <string name="myprofile_snakes_format">மோட்ச பட்டம்: %1$d ஆடியது · %2$d வென்றது</string>
 </resources>

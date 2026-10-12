@@ -144,9 +144,15 @@ fun RangEPatteNavHost(
                             navController.navigate(Routes.boardLobby(game.id.routeSegment, mode, host, setup.players, setup.difficulty, setup.rules.encode()))
                         }
                     )
-                    // Snakes & Ladders: its own introduction page is stage 2.
-                    com.rangepatte.app.domain.board.BoardGameId.SNAKES_LADDERS ->
-                        com.rangepatte.app.ui.board.BoardIntroPlaceholder(game = game, onBackClick = { navController.popBackStack() }, textRes = R.string.board_intro_next)
+                    com.rangepatte.app.domain.board.BoardGameId.SNAKES_LADDERS -> com.rangepatte.app.ui.snakes.SnakesSetupScreen(
+                        game = game,
+                        onBackClick = { navController.popBackStack() },
+                        onStart = { setup, mode -> com.rangepatte.app.domain.snakes.SnakesSetupStore.pending = setup; navController.navigate(Routes.boardTable(game.id.routeSegment, mode)) },
+                        onOpenLobby = { setup, mode, host ->
+                            com.rangepatte.app.domain.snakes.SnakesSetupStore.pending = setup
+                            navController.navigate(Routes.boardLobby(game.id.routeSegment, mode, host, setup.players, setup.difficulty, setup.rules.encode()))
+                        }
+                    )
                 }
             }
             composable(
@@ -161,11 +167,13 @@ fun RangEPatteNavHost(
                 val args = backStackEntry.arguments
                 val game = args?.getString(Routes.ARG_BOARD)?.let(com.rangepatte.app.domain.board.BoardCatalog::byRouteSegment)
                 val mode = args?.getString(Routes.ARG_MODE)?.let { runCatching { PlayMode.valueOf(it) }.getOrNull() }
-                if (game != null && mode != null && game.id == com.rangepatte.app.domain.board.BoardGameId.LUDO) {
+                if (game != null && mode != null) {
                     val playerCount = (args?.getInt(Routes.ARG_PLAYERS) ?: game.maxPlayers).coerceIn(game.minPlayers, game.maxPlayers)
                     val difficulty = args?.getString(Routes.ARG_DIFFICULTY)?.let { runCatching { AiDifficulty.valueOf(it) }.getOrNull() } ?: AiDifficulty.MEDIUM
-                    val rules = com.rangepatte.app.domain.ludo.LudoRules.decode(args?.getString(Routes.ARG_OPTIONS).orEmpty())
-                    // The shared lobby page (Ludo stage 6, Design 1) with the yard colours per seat and the house-rules line.
+                    val optionsText = args?.getString(Routes.ARG_OPTIONS).orEmpty()
+                    val isLudo = game.id == com.rangepatte.app.domain.board.BoardGameId.LUDO
+                    val options = if (isLudo) com.rangepatte.app.domain.ludo.LudoRules.decode(optionsText).encode() else com.rangepatte.app.domain.snakes.SnakesRules.decode(optionsText).encode()
+                    // The shared lobby page (Ludo stage 6, Design 1) with the token colours per seat and the house-rules line.
                     LobbyRoute(
                         game = game.asGameInfo(),
                         isHost = args?.getString(Routes.ARG_ROLE) == Routes.ROLE_HOST,
@@ -173,12 +181,13 @@ fun RangEPatteNavHost(
                         isOnline = mode == PlayMode.ONLINE,
                         playerCount = playerCount,
                         difficulty = difficulty,
-                        options = rules.encode(),
-                        decor = com.rangepatte.app.ui.board.ludoLobbyDecor(),
+                        options = options,
+                        decor = if (isLudo) com.rangepatte.app.ui.board.ludoLobbyDecor() else com.rangepatte.app.ui.snakes.snakesLobbyDecor(),
                         canInvite = true,
                         onTableReady = {
                             // The table takes everything from the session the lobby offered; the setup only matters for a solo game.
-                            com.rangepatte.app.domain.ludo.LudoSetupStore.pending = com.rangepatte.app.domain.ludo.LudoSetup(playerCount, rules, difficulty)
+                            if (isLudo) com.rangepatte.app.domain.ludo.LudoSetupStore.pending = com.rangepatte.app.domain.ludo.LudoSetup(playerCount, com.rangepatte.app.domain.ludo.LudoRules.decode(options), difficulty)
+                            else com.rangepatte.app.domain.snakes.SnakesSetupStore.pending = com.rangepatte.app.domain.snakes.SnakesSetup(playerCount, com.rangepatte.app.domain.snakes.SnakesRules.decode(options), difficulty)
                             navController.navigate(Routes.boardTable(game.id.routeSegment, mode)) {
                                 popUpTo(Routes.BOARD_LOBBY_PATTERN) { inclusive = true }
                             }
@@ -194,7 +203,7 @@ fun RangEPatteNavHost(
                     com.rangepatte.app.domain.board.BoardGameId.LUDO ->
                         com.rangepatte.app.ui.board.LudoScreen(game = game, setup = com.rangepatte.app.domain.ludo.LudoSetupStore.pending, onBackClick = { navController.popBackStack() })
                     com.rangepatte.app.domain.board.BoardGameId.SNAKES_LADDERS ->
-                        com.rangepatte.app.ui.board.BoardIntroPlaceholder(game = game, onBackClick = { navController.popBackStack() }, textRes = R.string.board_intro_next)
+                        com.rangepatte.app.ui.snakes.SnakesScreen(game = game, setup = com.rangepatte.app.domain.snakes.SnakesSetupStore.pending, onBackClick = { navController.popBackStack() })
                 }
             }
             composable(Routes.FRIENDS) {
@@ -399,7 +408,10 @@ private fun joinLobbyRoute(gameRoute: String, mode: PlayMode, code: String?): St
 
 /** The sender of a profile play request hosts a table once the friend says yes: Ludo opens with the sender's last setup. */
 private fun hostLobbyRoute(gameRoute: String): String =
-    if (com.rangepatte.app.domain.model.GameNames.isBoardGame(gameRoute)) {
+    if (gameRoute == com.rangepatte.app.domain.board.BoardGameId.SNAKES_LADDERS.routeSegment) {
+        val setup = com.rangepatte.app.domain.snakes.SnakesSetupStore.pending
+        Routes.boardLobby(gameRoute, PlayMode.ONLINE, host = true, playerCount = setup.players, difficulty = setup.difficulty, options = setup.rules.encode())
+    } else if (com.rangepatte.app.domain.model.GameNames.isBoardGame(gameRoute)) {
         val setup = com.rangepatte.app.domain.ludo.LudoSetupStore.pending
         Routes.boardLobby(gameRoute, PlayMode.ONLINE, host = true, playerCount = setup.players, difficulty = setup.difficulty, options = setup.rules.encode())
     } else {

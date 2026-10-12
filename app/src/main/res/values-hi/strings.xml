@@ -611,4 +611,40 @@
     <string name="game_snakes_alt">साँप-सीढ़ी</string>
     <string name="game_snakes_desc">पुण्य की सीढ़ियाँ चढ़ें; साँप डसते हैं।</string>
     <string name="board_intro_next">इस खेल का परिचय और मोड चयन पृष्ठ अगला डिज़ाइन चरण है।</string>
+
+    <!-- Moksha Patam setup, board and results (stages 2-10) -->
+    <string name="snakes_intro">पासा फेंकें और एक गोटी को खाने 1 से 100 तक दौड़ाएँ। सीढ़ियाँ ऊपर ले जाती हैं, साँप नीचे खींचते हैं; कमल तक पहले पहुँचने वाला जीतता है।</string>
+    <string name="snakes_players_hint">सब बोर्ड के बाहर से शुरू करते हैं; खाली सीटें कंप्यूटर खेलता है।</string>
+    <string name="snakes_rule_six_to_start">शुरू के लिए छक्का</string>
+    <string name="snakes_rule_six_to_start_hint">गोटी बोर्ड पर लाने के लिए छक्का चाहिए।</string>
+    <string name="snakes_rule_six_again">छक्के पर फिर चाल</string>
+    <string name="snakes_rule_six_again_hint">छक्का आने पर एक और चाल मिलती है।</string>
+    <string name="snakes_rule_exact_finish">अंत के लिए सटीक अंक</string>
+    <string name="snakes_rule_exact_finish_hint">सौवें खाने के लिए सटीक अंक चाहिए; उससे आगे जाने वाली चाल बेकार जाती है।</string>
+    <string name="snakes_rule_bounce">वापस उछाल</string>
+    <string name="snakes_rule_bounce_hint">सटीक अंत के साथ: 100 से आगे जाने वाली चाल गोटी को उतना पीछे ले आती है।</string>
+    <string name="snakes_rule_captures">गोटी काटना</string>
+    <string name="snakes_rule_captures_hint">विरोधी की गोटी पर उतरने से वह शुरुआत में लौट जाती है।</string>
+    <string name="snakes_rule_play_on">स्थानों के लिए खेलते रहें</string>
+    <string name="snakes_rule_play_on_hint">पहले विजेता के बाद बाकी दूसरे और तीसरे स्थान के लिए खेलते हैं।</string>
+    <string name="snakes_rules_note">क्लासिक बोर्ड: नौ साँप और आठ सीढ़ियाँ, हर मैच में वही।</string>
+    <string name="snakes_rules_1">हर खिलाड़ी की एक गोटी होती है, जो बोर्ड के बाहर से शुरू होती है। पासा फेंकें और उसे 1 से 100 की ओर गिने हुए खानों पर बढ़ाएँ।</string>
+    <string name="snakes_rules_2">सीढ़ी के पैर पर उतरें तो तुरंत उसके ऊपर चढ़ जाएँ; साँप के सिर पर उतरें तो उसकी पूँछ तक फिसल जाएँ।</string>
+    <string name="snakes_rules_3">छक्का आने पर एक और चाल मिलती है।</string>
+    <string name="snakes_rules_4">सौवें खाने के लिए सटीक अंक चाहिए; उससे आगे जाने वाली चाल बेकार जाती है और गोटी वहीं रहती है।</string>
+    <string name="snakes_rules_5">100 पर पहले पहुँचने वाला जीतता है; बाकी दूसरे और तीसरे स्थान के लिए खेलते हैं।</string>
+    <string name="snakes_rolled_format">%1$s ने %2$d फेंका</string>
+    <string name="snakes_ladder_format">%1$s सीढ़ी चढ़कर %2$d पर पहुँचे!</string>
+    <string name="snakes_snake_format">%1$s साँप से फिसलकर %2$d पर आए</string>
+    <string name="snakes_capture_format">%1$s ने %2$s को शुरुआत में भेज दिया</string>
+    <string name="snakes_stay_format">%1$s को सटीक अंक चाहिए — %2$d पर ही रहे</string>
+    <string name="snakes_bounce_format">%1$s उछलकर %2$d पर लौटे</string>
+    <string name="snakes_no_entry_format">%1$s को शुरू करने के लिए छक्का चाहिए</string>
+    <string name="snakes_plaque_format">%1$s, खाना %2$s</string>
+    <string name="snakes_square_start">शुरू</string>
+    <string name="snakes_stats_ladders">सीढ़ियाँ</string>
+    <string name="snakes_stats_snakes">साँप</string>
+    <string name="snakes_stats_square">खाना</string>
+    <string name="snakes_record_format">आपका मोक्ष पटम रिकॉर्ड: %1$d खेले · %2$d जीते · %3$d दूसरे · %4$d तीसरे</string>
+    <string name="myprofile_snakes_format">मोक्ष पटम: %1$d खेले · %2$d जीते</string>
 </resources>

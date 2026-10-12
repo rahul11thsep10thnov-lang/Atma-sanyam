@@ -611,4 +611,40 @@
     <string name="game_snakes_alt">সাপ-লুডু</string>
     <string name="game_snakes_desc">পুণ্যের মই বেয়ে ওঠো; সাপ কামড়ায়।</string>
     <string name="board_intro_next">এই খেলার পরিচয় ও মোড বাছাই পাতা পরের ডিজাইন ধাপ।</string>
+
+    <!-- Moksha Patam setup, board and results (stages 2-10) -->
+    <string name="snakes_intro">ছক্কা চেলে একটি গুটি ঘর 1 থেকে 100 পর্যন্ত দৌড় করান। মই ওপরে তোলে, সাপ নিচে টানে; পদ্মে প্রথম পৌঁছালে জয়।</string>
+    <string name="snakes_players_hint">সবাই বোর্ডের বাইরে থেকে শুরু করে; খালি আসনে কম্পিউটার খেলে।</string>
+    <string name="snakes_rule_six_to_start">শুরুতে ছক্কা</string>
+    <string name="snakes_rule_six_to_start_hint">গুটি বোর্ডে আনতে ছক্কা লাগে।</string>
+    <string name="snakes_rule_six_again">ছক্কায় আবার দান</string>
+    <string name="snakes_rule_six_again_hint">ছক্কা পড়লে আরেকটি দান।</string>
+    <string name="snakes_rule_exact_finish">শেষে সঠিক দান</string>
+    <string name="snakes_rule_exact_finish_hint">শততম ঘরে সঠিক সংখ্যা লাগে; তা ছাড়িয়ে যাওয়া দান নষ্ট হয়।</string>
+    <string name="snakes_rule_bounce">ফিরে আসা</string>
+    <string name="snakes_rule_bounce_hint">সঠিক শেষের সাথে: 100 ছাড়ানো দান গুটিকে ততটা পিছিয়ে আনে।</string>
+    <string name="snakes_rule_captures">গুটি কাটা</string>
+    <string name="snakes_rule_captures_hint">প্রতিপক্ষের ওপর পড়লে সে শুরুতে ফিরে যায়।</string>
+    <string name="snakes_rule_play_on">স্থানের জন্য খেলা চলুক</string>
+    <string name="snakes_rule_play_on_hint">প্রথম বিজয়ীর পরে বাকিরা দ্বিতীয়-তৃতীয়র জন্য খেলে।</string>
+    <string name="snakes_rules_note">ক্লাসিক বোর্ড: নয়টি সাপ ও আটটি মই, প্রতি ম্যাচে একই।</string>
+    <string name="snakes_rules_1">প্রত্যেক খেলোয়াড়ের একটি গুটি, বোর্ডের বাইরে থেকে শুরু। ছক্কা চেলে সংখ্যাযুক্ত ঘর ধরে 1 থেকে 100-এর দিকে এগোন।</string>
+    <string name="snakes_rules_2">মইয়ের গোড়ায় পড়লে সঙ্গে সঙ্গে তার মাথায় উঠুন; সাপের মাথায় পড়লে লেজ পর্যন্ত নেমে যান।</string>
+    <string name="snakes_rules_3">ছক্কা পড়লে আরেকটি দান।</string>
+    <string name="snakes_rules_4">শততম ঘরে সঠিক সংখ্যা লাগে; ছাড়িয়ে যাওয়া দান নষ্ট হয় এবং গুটি যেখানে ছিল থাকে।</string>
+    <string name="snakes_rules_5">100-এ প্রথম পৌঁছালে জয়; বাকিরা দ্বিতীয় ও তৃতীয় স্থানের জন্য খেলে।</string>
+    <string name="snakes_rolled_format">%1$s %2$d ফেলেছে</string>
+    <string name="snakes_ladder_format">%1$s মই বেয়ে %2$d-এ উঠেছে!</string>
+    <string name="snakes_snake_format">%1$s সাপে নেমে %2$d-এ এসেছে</string>
+    <string name="snakes_capture_format">%1$s %2$s-কে শুরুতে পাঠিয়েছে</string>
+    <string name="snakes_stay_format">%1$s-এর সঠিক দান দরকার — %2$d-এই রইল</string>
+    <string name="snakes_bounce_format">%1$s ফিরে %2$d-এ এসেছে</string>
+    <string name="snakes_no_entry_format">%1$s-এর শুরু করতে ছক্কা দরকার</string>
+    <string name="snakes_plaque_format">%1$s, ঘর %2$s</string>
+    <string name="snakes_square_start">শুরু</string>
+    <string name="snakes_stats_ladders">মই</string>
+    <string name="snakes_stats_snakes">সাপ</string>
+    <string name="snakes_stats_square">ঘর</string>
+    <string name="snakes_record_format">আপনার মোক্ষ পটম রেকর্ড: %1$d খেলা · %2$d জয় · %3$d দ্বিতীয় · %4$d তৃতীয়</string>
+    <string name="myprofile_snakes_format">মোক্ষ পটম: %1$d খেলা · %2$d জয়</string>
 </resources>

@@ -611,4 +611,40 @@
     <string name="game_snakes_alt">వైకుంఠపాళి</string>
     <string name="game_snakes_desc">పుణ్య నిచ్చెనలు ఎక్కండి; పాములు కాటేస్తాయి.</string>
     <string name="board_intro_next">ఈ ఆట పరిచయం మరియు మోడ్ ఎంపిక పేజీ తదుపరి డిజైన్ దశ.</string>
+
+    <!-- Moksha Patam setup, board and results (stages 2-10) -->
+    <string name="snakes_intro">పాచిక వేసి ఒక పావును గడి 1 నుండి 100 వరకు పరుగెత్తించండి. నిచ్చెనలు పైకి తీసుకెళ్తాయి, పాములు కిందకు లాగుతాయి; కమలాన్ని మొదట చేరినవారు గెలుస్తారు.</string>
+    <string name="snakes_players_hint">అందరూ బోర్డు బయట నుండి మొదలుపెడతారు; ఖాళీ సీట్లను కంప్యూటర్ ఆడుతుంది.</string>
+    <string name="snakes_rule_six_to_start">మొదలుకు ఆరు</string>
+    <string name="snakes_rule_six_to_start_hint">పావును బోర్డుపైకి తేవడానికి ఆరు కావాలి.</string>
+    <string name="snakes_rule_six_again">ఆరుకు మళ్ళీ వేత</string>
+    <string name="snakes_rule_six_again_hint">ఆరు వస్తే మరో వేత.</string>
+    <string name="snakes_rule_exact_finish">ముగింపుకు సరైన అంకె</string>
+    <string name="snakes_rule_exact_finish_hint">వందవ గడికి సరైన అంకె కావాలి; దాటే వేత వృథా.</string>
+    <string name="snakes_rule_bounce">వెనక్కి ఎగరడం</string>
+    <string name="snakes_rule_bounce_hint">సరైన ముగింపుతో: 100 దాటే వేత పావును అంతే వెనక్కి తెస్తుంది.</string>
+    <string name="snakes_rule_captures">పావు కొట్టడం</string>
+    <string name="snakes_rule_captures_hint">ప్రత్యర్థిపై దిగితే అతను మొదటికి వెళ్తాడు.</string>
+    <string name="snakes_rule_play_on">స్థానాల కోసం కొనసాగించు</string>
+    <string name="snakes_rule_play_on_hint">మొదటి విజేత తర్వాత మిగతావారు 2, 3 స్థానాలకు ఆడతారు.</string>
+    <string name="snakes_rules_note">క్లాసిక్ బోర్డు: తొమ్మిది పాములు, ఎనిమిది నిచ్చెనలు, ప్రతి ఆటలో అవే.</string>
+    <string name="snakes_rules_1">ప్రతి ఆటగాడికి ఒక పావు, బోర్డు బయట మొదలవుతుంది. పాచిక వేసి సంఖ్యల గడుల్లో 1 నుండి 100 వైపు నడిపించండి.</string>
+    <string name="snakes_rules_2">నిచ్చెన అడుగున దిగితే వెంటనే దాని పైకి ఎక్కండి; పాము తలపై దిగితే దాని తోక వరకు జారండి.</string>
+    <string name="snakes_rules_3">ఆరు వస్తే మరో వేత.</string>
+    <string name="snakes_rules_4">వందవ గడికి సరైన అంకె కావాలి; దాటే వేత వృథా, పావు అక్కడే ఉంటుంది.</string>
+    <string name="snakes_rules_5">100ను మొదట చేరినవారు గెలుస్తారు; మిగతావారు రెండు, మూడు స్థానాలకు ఆడతారు.</string>
+    <string name="snakes_rolled_format">%1$s %2$d వేశారు</string>
+    <string name="snakes_ladder_format">%1$s నిచ్చెన ఎక్కి %2$dకి చేరారు!</string>
+    <string name="snakes_snake_format">%1$s పాముపై జారి %2$dకి వచ్చారు</string>
+    <string name="snakes_capture_format">%1$s %2$sను మొదటికి పంపారు</string>
+    <string name="snakes_stay_format">%1$sకు సరైన అంకె కావాలి — %2$d లోనే ఉన్నారు</string>
+    <string name="snakes_bounce_format">%1$s ఎగిరి %2$dకి తిరిగి వచ్చారు</string>
+    <string name="snakes_no_entry_format">%1$s మొదలుపెట్టడానికి ఆరు కావాలి</string>
+    <string name="snakes_plaque_format">%1$s, గడి %2$s</string>
+    <string name="snakes_square_start">మొదలు</string>
+    <string name="snakes_stats_ladders">నిచ్చెనలు</string>
+    <string name="snakes_stats_snakes">పాములు</string>
+    <string name="snakes_stats_square">గడి</string>
+    <string name="snakes_record_format">మీ మోక్ష పటం రికార్డు: %1$d ఆడారు · %2$d గెలిచారు · %3$d రెండవ · %4$d మూడవ</string>
+    <string name="myprofile_snakes_format">మోక్ష పటం: %1$d ఆడారు · %2$d గెలిచారు</string>
 </resources>

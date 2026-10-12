@@ -66,7 +66,23 @@ enum class Sfx(val resName: String, val durationMs: Long) {
     /** The talk tray opens. */
     UI_OPEN("sfx_ui_panel_open", 220),
     /** The talk tray closes. */
-    UI_CLOSE("sfx_ui_panel_close", 200)
+    UI_CLOSE("sfx_ui_panel_close", 200),
+
+    // -- Moksha Patam (Snakes & Ladders, stage 9) ---------------------------------------------------
+    /** A token climbs a ladder. */
+    LADDER_CLIMB("sfx_ladder_climb", 720),
+    /** A serpent's head is reached. */
+    SNAKE_HISS("sfx_snake_hiss", 650),
+    /** The slide down its body. */
+    SNAKE_SLIDE("sfx_snake_slide_down", 750),
+    /** This phone's player reached the lotus first. */
+    SNAKES_VICTORY("sfx_snakes_ladders_victory", 1539),
+    /** This phone's player did not win. */
+    SNAKES_DEFEAT("sfx_snakes_ladders_defeat", 749),
+    /** A player is out (a capture rule, kept for later variants). */
+    PLAYER_ELIMINATED("sfx_player_eliminated", 349),
+    /** A general fanfare (kept for later use). */
+    VICTORY_FANFARE("sfx_victory_fanfare", 1539)
 }
 
 /** One effect to play [delayMs] after the event that caused it, so a sequence follows the action. */

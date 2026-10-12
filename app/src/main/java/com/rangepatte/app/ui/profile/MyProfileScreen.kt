@@ -68,7 +68,9 @@ data class MyProfileUi(
     /** 0 when the username may change now; otherwise the days to wait. */
     val usernameDaysLeft: Int,
     /** "Ludo: 13 played · 6 won" (stage 10), or null before the first match. */
-    val ludoRecord: String? = null
+    val ludoRecord: String? = null,
+    /** The same for Moksha Patam. */
+    val snakesRecord: String? = null
 )
 
 /** What the page can do; each is wired by the route. */
@@ -189,7 +191,7 @@ private fun Hero(ui: MyProfileUi, actions: MyProfileActions) {
             text = (if (ui.appearOffline) stringResource(R.string.myprofile_you_appear_offline) else stringResource(R.string.profile_online)) + " · " + ui.maskedPhone,
             style = MaterialTheme.typography.bodyMedium, color = ParchmentText, modifier = Modifier.padding(top = 4.dp)
         )
-        val facts = listOfNotNull(ui.memberSince, stringResource(R.string.myprofile_friends_format, ui.friendCount), ui.ludoRecord)
+        val facts = listOfNotNull(ui.memberSince, stringResource(R.string.myprofile_friends_format, ui.friendCount), ui.ludoRecord, ui.snakesRecord)
         Text(facts.joinToString(" · "), style = MaterialTheme.typography.bodySmall, color = ParchmentTextDim, modifier = Modifier.padding(top = 2.dp))
     }
 }

@@ -84,7 +84,7 @@ class SoundMappingTest {
             ?: error("res/raw not found from ${File(".").absolutePath}")
 
     @Test fun allEffectFilesArePresentValidWavsWithLegalResourceNames() {
-        assertEquals(28, Sfx.entries.size) // 8 card effects + 20 from the board-game pack (Ludo stage 9)
+        assertEquals(35, Sfx.entries.size) // 8 card effects + 27 from the board-game pack (Ludo and Moksha Patam)
         assertEquals("names are unique", Sfx.entries.size, Sfx.entries.map { it.resName }.toSet().size)
         for (sfx in Sfx.entries) {
             assertTrue("${sfx.resName} is not a legal Android resource name", Regex("[a-z][a-z0-9_]*").matches(sfx.resName))

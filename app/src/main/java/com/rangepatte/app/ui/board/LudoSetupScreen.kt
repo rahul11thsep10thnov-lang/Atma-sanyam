@@ -67,33 +67,38 @@ import com.rangepatte.app.ui.theme.RoyalTitleStyle
 import com.rangepatte.app.ui.thumbnails.LudoThumbnail
 
 /**
- * Ludo's introduction and mode selection (stage 2, approved Design 1): the card games' setup page —
- * portrait and two-line introduction, the mode slots, Players, AI difficulty — plus a House rules
- * plaque whose orb switches are preset to the recommended ruleset, then Start (or Host / Join).
+ * The board games' introduction and mode selection page (Ludo stage 2, approved Design 1; Moksha
+ * Patam uses the same page): the card games' setup page — portrait and two-line introduction, the
+ * mode slots, Players, AI difficulty — plus a House rules plaque whose orb switches are preset to
+ * the recommended ruleset, then Start (or Host / Join). The rules state belongs to the caller.
  */
 @Composable
-fun LudoSetupScreen(
+fun BoardSetupScreen(
     game: BoardGameInfo,
+    portrait: @Composable () -> Unit,
+    introRes: Int,
+    rulesLines: List<Int>,
+    playersHint: @Composable (players: Int) -> String,
+    initialPlayers: Int,
+    initialDifficulty: AiDifficulty,
+    houseRules: @Composable () -> Unit,
     onBackClick: () -> Unit,
-    onStart: (LudoSetup, PlayMode) -> Unit,
-    onOpenLobby: (LudoSetup, PlayMode, host: Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-    initial: LudoSetup = LudoSetup()
+    onStart: (players: Int, difficulty: AiDifficulty, mode: PlayMode) -> Unit,
+    onOpenLobby: (players: Int, difficulty: AiDifficulty, mode: PlayMode, host: Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    var players by remember { mutableIntStateOf(initial.players) }
-    var difficulty by remember { mutableStateOf(initial.difficulty) }
+    var players by remember { mutableIntStateOf(initialPlayers) }
+    var difficulty by remember { mutableStateOf(initialDifficulty) }
     var mode by remember { mutableStateOf(PlayMode.VS_COMPUTER) }
-    var rules by remember { mutableStateOf(initial.rules) }
     var showRules by remember { mutableStateOf(false) }
     val withOthers = mode == PlayMode.NEARBY || mode == PlayMode.ONLINE
-    fun setup() = LudoSetup(players, rules, difficulty)
 
     WatermarkBackground(backgroundType = BackgroundType.COURTYARD, modifier = modifier) {
         Column(modifier = Modifier.fillMaxSize()) {
             GameHeader(title = stringResource(game.nameRes), onBackClick = onBackClick, onRulesClick = { showRules = true })
             BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
                 val wide = maxWidth >= 600.dp
-                val infoPanel = @Composable { m: Modifier -> LudoInfoPanel(game, onRulesClick = { showRules = true }, modifier = m) }
+                val infoPanel = @Composable { m: Modifier -> BoardInfoPanel(game, portrait, introRes, onRulesClick = { showRules = true }, modifier = m) }
                 val optionsPanel = @Composable { m: Modifier ->
                     RoyalPanel(title = stringResource(R.string.setup_title), modifier = m) {
                         RoyalSectionTitle(stringResource(R.string.setup_mode_title))
@@ -106,10 +111,7 @@ fun LudoSetupScreen(
                                 }
                             }
                         }
-                        Text(
-                            text = stringResource(if (players == 2) R.string.ludo_players_two_hint else if (players == 3) R.string.ludo_players_three_hint else R.string.ludo_players_four_hint),
-                            style = MaterialTheme.typography.bodyMedium, color = ParchmentTextDim, modifier = Modifier.padding(top = 6.dp)
-                        )
+                        Text(text = playersHint(players), style = MaterialTheme.typography.bodyMedium, color = ParchmentTextDim, modifier = Modifier.padding(top = 6.dp))
                         RoyalSectionTitle(stringResource(R.string.setup_difficulty))
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
                             AiDifficulty.entries.forEach { level ->
@@ -122,13 +124,13 @@ fun LudoSetupScreen(
                             }
                         }
                         RoyalSectionTitle(stringResource(R.string.ludo_house_rules))
-                        HouseRules(rules, onChange = { rules = it })
+                        houseRules()
                         if (withOthers) {
                             Text(stringResource(R.string.setup_others_hint), style = MaterialTheme.typography.bodyMedium, color = ParchmentTextDim, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 8.dp))
-                            RoyalButton(text = stringResource(R.string.net_host_table), onClick = { onOpenLobby(setup(), mode, true) }, modifier = Modifier.fillMaxWidth().padding(top = 16.dp))
-                            RoyalButton(text = stringResource(R.string.net_join_table), onClick = { onOpenLobby(setup(), mode, false) }, style = RoyalButtonStyle.STEEL, modifier = Modifier.fillMaxWidth().padding(top = 10.dp))
+                            RoyalButton(text = stringResource(R.string.net_host_table), onClick = { onOpenLobby(players, difficulty, mode, true) }, modifier = Modifier.fillMaxWidth().padding(top = 16.dp))
+                            RoyalButton(text = stringResource(R.string.net_join_table), onClick = { onOpenLobby(players, difficulty, mode, false) }, style = RoyalButtonStyle.STEEL, modifier = Modifier.fillMaxWidth().padding(top = 10.dp))
                         } else {
-                            RoyalButton(text = stringResource(R.string.setup_start), onClick = { onStart(setup(), mode) }, modifier = Modifier.fillMaxWidth().padding(top = 20.dp))
+                            RoyalButton(text = stringResource(R.string.setup_start), onClick = { onStart(players, difficulty, mode) }, modifier = Modifier.fillMaxWidth().padding(top = 20.dp))
                         }
                     }
                 }
@@ -142,11 +144,38 @@ fun LudoSetupScreen(
     if (showRules) {
         GameResultDialog(
             title = stringResource(R.string.action_rules),
-            lines = listOf(R.string.ludo_rules_1, R.string.ludo_rules_2, R.string.ludo_rules_3, R.string.ludo_rules_4, R.string.ludo_rules_5).map { stringResource(it) },
+            lines = rulesLines.map { stringResource(it) },
             primaryText = stringResource(R.string.spectate_ok),
             onPrimary = { showRules = false }
         )
     }
+}
+
+/** Ludo's page: the generic board setup page with Ludo's portrait, words and House rules. */
+@Composable
+fun LudoSetupScreen(
+    game: BoardGameInfo,
+    onBackClick: () -> Unit,
+    onStart: (LudoSetup, PlayMode) -> Unit,
+    onOpenLobby: (LudoSetup, PlayMode, host: Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    initial: LudoSetup = LudoSetup()
+) {
+    var rules by remember { mutableStateOf(initial.rules) }
+    BoardSetupScreen(
+        game = game,
+        portrait = { LudoThumbnail() },
+        introRes = R.string.ludo_intro,
+        rulesLines = listOf(R.string.ludo_rules_1, R.string.ludo_rules_2, R.string.ludo_rules_3, R.string.ludo_rules_4, R.string.ludo_rules_5),
+        playersHint = { n -> stringResource(if (n == 2) R.string.ludo_players_two_hint else if (n == 3) R.string.ludo_players_three_hint else R.string.ludo_players_four_hint) },
+        initialPlayers = initial.players,
+        initialDifficulty = initial.difficulty,
+        houseRules = { HouseRules(rules, onChange = { rules = it }) },
+        onBackClick = onBackClick,
+        onStart = { players, difficulty, mode -> onStart(LudoSetup(players, rules, difficulty), mode) },
+        onOpenLobby = { players, difficulty, mode, host -> onOpenLobby(LudoSetup(players, rules, difficulty), mode, host) },
+        modifier = modifier
+    )
 }
 
 /** The House rules plaque: five orb switches preset to the recommended ruleset, each with a one-line caption. */
@@ -163,13 +192,13 @@ fun HouseRules(rules: LudoRules, onChange: (LudoRules) -> Unit) {
 }
 
 @Composable
-private fun RuleRow(label: String, hint: String, on: Boolean, onChange: (Boolean) -> Unit) {
+fun RuleRow(label: String, hint: String, on: Boolean, onChange: (Boolean) -> Unit) {
     RoyalOptionRow(label = label) { RoyalOrbToggle(checked = on, onCheckedChange = onChange) }
     Text(hint, style = MaterialTheme.typography.bodySmall, color = ParchmentTextDim, modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp))
 }
 
 @Composable
-private fun LudoInfoPanel(game: BoardGameInfo, onRulesClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun BoardInfoPanel(game: BoardGameInfo, portrait: @Composable () -> Unit, introRes: Int, onRulesClick: () -> Unit, modifier: Modifier = Modifier) {
     RoyalPanel(title = stringResource(game.nameRes), modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             val shape = RoundedCornerShape(3.dp)
@@ -177,9 +206,9 @@ private fun LudoInfoPanel(game: BoardGameInfo, onRulesClick: () -> Unit, modifie
                 modifier = Modifier.size(96.dp)
                     .background(Brush.radialGradient(listOf(Color(0xFFB8741E), Color(0xFF3E2408))), shape)
                     .border(2.dp, GoldBevelDark, shape).padding(3.dp).border(1.dp, GoldBevelLight.copy(alpha = 0.6f), shape).padding(4.dp)
-            ) { LudoThumbnail() }
+            ) { portrait() }
             Column(modifier = Modifier.weight(1f).padding(start = 14.dp)) {
-                Text(stringResource(R.string.ludo_intro), style = MaterialTheme.typography.bodyLarge, color = ParchmentText)
+                Text(stringResource(introRes), style = MaterialTheme.typography.bodyLarge, color = ParchmentText)
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 8.dp)) {
                     Icon(Icons.Filled.Groups, contentDescription = null, tint = GoldBevelLight, modifier = Modifier.size(18.dp))
                     Text("${game.minPlayers}–${game.maxPlayers} ${stringResource(R.string.players_suffix)}", style = RoyalLabelStyle, color = GoldBevelLight, modifier = Modifier.padding(start = 6.dp))
