@@ -694,6 +694,19 @@ phone replays it. The record lives per signed-in account on the phone
 the seat this phone played, and shows on My Profile as "Ludo: 13 played · 6 won". Tested in
 `LudoResultsTest`. With this, Ludo's ten stages are complete.
 
+### Snakes & Ladders (Moksha Patam)
+
+**Stage 1 — the tile (approved: Design 2, Moksha Patam).** The Entertainment tab's second tile is
+the same Khel frame with the game's Indian original as its portrait (`ui/thumbnails/SnakesThumbnail.kt`):
+the ivory 10×10 board inside a gold vine border with green leaf beads, a green serpent with a crimson
+belly line winding down from a lotus head, two creeper ladders with gold rails and green rungs, and a
+lotus at the hundredth square. The plaque says **Moksha Patam** with "Snakes & Ladders" under it
+(`BoardGameInfo.altNameRes`), the clause is "Climb the ladders of virtue; the serpents bite.", 2–4
+players, in the eight languages. Tapping opens the game's page, which until stage 2 is a note that
+the introduction is the next design stage. The catalog entry is marked not yet playable, so the
+friends' game picker does not offer it before its table exists; `GameId.SNAKES_LADDERS` is there for
+the rooms, presence and lobby to use when they do.
+
 ## Sound and music
 
 All sound goes through one object, `audio/GameAudio.kt`, which owns the settings and is the only code

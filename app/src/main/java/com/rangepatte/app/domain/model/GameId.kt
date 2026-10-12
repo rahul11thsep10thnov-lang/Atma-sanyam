@@ -17,5 +17,7 @@ enum class GameId(val routeSegment: String) {
      * [com.rangepatte.app.domain.board.BoardCatalog] rather than [GameCatalog], but it needs an id here so
      * the lobby, the online rooms and friends' presence can carry it exactly like a card game.
      */
-    LUDO("ludo")
+    LUDO("ludo"),
+    /** Snakes & Ladders (Moksha Patam), the Entertainment tab's second board game. */
+    SNAKES_LADDERS("snakesLadders")
 }

@@ -20,5 +20,5 @@ object GameNames {
     /** The games a friend can be invited to: every card game that takes play requests, then the board games. */
     fun invitable(): List<GameId> =
         GameCatalog.all.map { it.id }.filter { com.rangepatte.app.domain.presence.GameCapabilities.supportsPlayRequests(it) } +
-            BoardCatalog.all.map { it.id.gameId }
+            BoardCatalog.all.filter { it.isPlayable }.map { it.id.gameId }
 }

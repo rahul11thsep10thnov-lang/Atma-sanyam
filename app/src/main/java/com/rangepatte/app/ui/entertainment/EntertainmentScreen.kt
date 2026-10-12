@@ -38,7 +38,10 @@ fun EntertainmentScreen(onPlayGame: (BoardGameInfo) -> Unit = {}, modifier: Modi
                             Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                                 rowGames.forEach { game ->
                                     BoardGameTile(game = game, onPlayClick = { onPlayGame(game) }, modifier = Modifier.weight(1f)) {
-                                        when (game.id) { BoardGameId.LUDO -> LudoThumbnail() }
+                                        when (game.id) {
+                                            BoardGameId.LUDO -> LudoThumbnail()
+                                            BoardGameId.SNAKES_LADDERS -> com.rangepatte.app.ui.thumbnails.SnakesThumbnail()
+                                        }
                                     }
                                 }
                                 repeat(columns - rowGames.size) { Spacer(modifier = Modifier.weight(1f)) }

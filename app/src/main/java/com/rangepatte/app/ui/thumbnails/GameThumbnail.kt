@@ -65,7 +65,7 @@ fun GameThumbnail(gameId: GameId, modifier: Modifier = Modifier) {
             GameId.LAKADI -> drawLakadiScoreSheet(textMeasurer)
             GameId.SPIDER_SOLITAIRE -> drawSpiderCascade(textMeasurer, palette)
             // Board games draw their own tile (ui/thumbnails/LudoThumbnail.kt); they never reach this canvas.
-            GameId.LUDO -> Unit
+            GameId.LUDO, GameId.SNAKES_LADDERS -> Unit
         }
     }
 }

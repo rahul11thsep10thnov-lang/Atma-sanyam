@@ -144,6 +144,9 @@ fun RangEPatteNavHost(
                             navController.navigate(Routes.boardLobby(game.id.routeSegment, mode, host, setup.players, setup.difficulty, setup.rules.encode()))
                         }
                     )
+                    // Snakes & Ladders: its own introduction page is stage 2.
+                    com.rangepatte.app.domain.board.BoardGameId.SNAKES_LADDERS ->
+                        com.rangepatte.app.ui.board.BoardIntroPlaceholder(game = game, onBackClick = { navController.popBackStack() }, textRes = R.string.board_intro_next)
                 }
             }
             composable(
@@ -190,6 +193,8 @@ fun RangEPatteNavHost(
                     // Solo, or the table the lobby handed over (stage 6): LudoScreen picks whichever is waiting.
                     com.rangepatte.app.domain.board.BoardGameId.LUDO ->
                         com.rangepatte.app.ui.board.LudoScreen(game = game, setup = com.rangepatte.app.domain.ludo.LudoSetupStore.pending, onBackClick = { navController.popBackStack() })
+                    com.rangepatte.app.domain.board.BoardGameId.SNAKES_LADDERS ->
+                        com.rangepatte.app.ui.board.BoardIntroPlaceholder(game = game, onBackClick = { navController.popBackStack() }, textRes = R.string.board_intro_next)
                 }
             }
             composable(Routes.FRIENDS) {

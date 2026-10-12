@@ -163,6 +163,17 @@ fun BoardGameTile(
             Box(modifier = Modifier.fillMaxSize().padding(4.dp)) { portrait() }
         }
         NamePlaque(text = stringResource(game.nameRes))
+        game.altNameRes?.let { alt ->
+            // The familiar name under the plaque (Moksha Patam · Snakes & Ladders).
+            Text(
+                text = stringResource(alt),
+                style = RoyalLabelStyle.copy(fontSize = 11.sp),
+                color = GoldBevelLight,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
         Text(
             text = stringResource(game.descriptionRes),
             style = TextStyle(fontFamily = BodyFont, fontSize = 14.sp, lineHeight = 18.sp),
@@ -170,7 +181,7 @@ fun BoardGameTile(
             textAlign = TextAlign.Center,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.padding(top = 6.dp)
+            modifier = Modifier.padding(top = if (game.altNameRes != null) 2.dp else 6.dp)
         )
         Text(
             text = playerCountLabel(game.minPlayers, game.maxPlayers, stringResource(R.string.players_suffix)),

@@ -24,13 +24,13 @@ import com.rangepatte.app.ui.theme.ParchmentTextDim
  * is approved and built: the game's name and a plain note, never a half-built game.
  */
 @Composable
-fun BoardIntroPlaceholder(game: BoardGameInfo, onBackClick: () -> Unit) {
+fun BoardIntroPlaceholder(game: BoardGameInfo, onBackClick: () -> Unit, textRes: Int = R.string.board_table_pending) {
     WatermarkBackground(backgroundType = BackgroundType.EVENING_BALCONY) {
         Column(modifier = Modifier.fillMaxSize()) {
             GameHeader(title = stringResource(game.nameRes), onBackClick = onBackClick)
             RoyalPanel(title = stringResource(game.nameRes), modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                 Text(
-                    text = stringResource(R.string.board_table_pending),
+                    text = stringResource(textRes),
                     style = MaterialTheme.typography.bodyLarge,
                     color = ParchmentTextDim,
                     textAlign = TextAlign.Center,
