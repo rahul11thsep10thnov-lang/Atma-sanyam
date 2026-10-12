@@ -42,6 +42,7 @@ fun MyProfileRoute(onChangeAvatar: () -> Unit, onChangeUsername: () -> Unit, onS
     val sinceLabel = stringResource(R.string.myprofile_member_since)
     val failed = stringResource(R.string.myprofile_delete_failed)
 
+    val ludo by AppServices.ludoRecord.value.collectAsState()
     val ui = MyProfileUi(
         username = profile?.username ?: "",
         avatarId = profile?.avatarId,
@@ -54,7 +55,8 @@ fun MyProfileRoute(onChangeAvatar: () -> Unit, onChangeUsername: () -> Unit, onS
         notifyFriendRequests = settings.notifyFriendRequests,
         notifyPlayRequests = settings.notifyPlayRequests,
         onlineWatchNames = settings.onlineWatch.mapNotNull { people[it]?.username },
-        usernameDaysLeft = ProfileRules.daysUntilUsernameChange(profile?.usernameChangedAt ?: 0, System.currentTimeMillis())
+        usernameDaysLeft = ProfileRules.daysUntilUsernameChange(profile?.usernameChangedAt ?: 0, System.currentTimeMillis()),
+        ludoRecord = ludo.takeIf { it.played > 0 }?.let { stringResource(R.string.myprofile_ludo_format, it.played, it.won) }
     )
     MyProfileScreen(
         ui = ui,

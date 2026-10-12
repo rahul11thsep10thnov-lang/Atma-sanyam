@@ -80,5 +80,10 @@ class LudoSession(setup: LudoSetup, youName: String, botNames: List<String>, you
         }
     }
 
+    override val rematchOffer: RematchOffer get() = RematchOffer.PLAY_AGAIN
+    override fun rematch() {
+        LudoEngine.rematch(state)?.let { state = it; shownDice = null; GameAudio.playCues(LudoSfx.start()) }
+    }
+
     override fun close() { scope.cancel() }
 }

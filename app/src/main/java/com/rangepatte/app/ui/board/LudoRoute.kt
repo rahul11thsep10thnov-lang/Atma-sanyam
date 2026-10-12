@@ -6,6 +6,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -91,12 +92,13 @@ fun LudoScreen(game: BoardGameInfo, setup: LudoSetup, onBackClick: () -> Unit) {
         ReconnectBand(stringResource(R.string.net_back_again), warning = false)
     }
     if (!table.connectionLost && state.phase == LudoPhase.OVER) {
-        val ordinals = listOf(R.string.ludo_place_1, R.string.ludo_place_2, R.string.ludo_place_3, R.string.ludo_place_4).map { stringResource(it) }
-        GameResultDialog(
-            title = if (state.places.firstOrNull() == table.mySeat) stringResource(R.string.game_you_won) else stringResource(R.string.ludo_match_over),
-            lines = state.places.mapIndexed { i, p -> "${ordinals[i]} · ${state.players[p].name}" },
-            primaryText = stringResource(R.string.game_back_to_khel),
-            onPrimary = onBackClick
+        // Stage 10: the finished match counts once towards this account's record (watchers have no seat to count).
+        val seated = table.mySeat in state.players.indices
+        LaunchedEffect(state) { if (seated) AppServices.ludoRecord.record(state, table.mySeat) }
+        val record by AppServices.ludoRecord.value.collectAsState()
+        LudoResultsDialog(
+            state = state, mySeat = table.mySeat, youName = youName, record = if (seated) record else null,
+            offer = table.rematchOffer, onRematch = table::rematch, onBack = onBackClick
         )
     }
 }

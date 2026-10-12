@@ -41,6 +41,9 @@ interface LudoTableController {
     fun acknowledgeRejoined() {}
     /** Table talk (stage 9); null on a solo table. */
     val talk: TalkControl? get() = null
+    /** Stage 10: who may start the match again from this phone. */
+    val rematchOffer: RematchOffer
+    fun rematch()
     fun start()
     fun roll()
     fun move(token: Int)
@@ -64,6 +67,8 @@ class LudoOnlineTable(private val session: GameSession<LudoState, LudoAction>) :
     override val rejoined: Boolean get() = session.rejoined
     override fun acknowledgeRejoined() = session.acknowledgeRejoined()
     override val talk: TalkControl? get() = session.talkControl(TalkLayout.BOARD)
+    override val rematchOffer: RematchOffer get() = if (session.isHost) RematchOffer.REMATCH else RematchOffer.WAITING
+    override fun rematch() { if (session.isHost && state.phase == LudoPhase.OVER) session.submit(LudoAction.Rematch) }
     override var busy: Boolean by mutableStateOf(false)
 
     /** Where friends can find this table: the online room code, or "nearby" for a Bluetooth/Wi-Fi table. */

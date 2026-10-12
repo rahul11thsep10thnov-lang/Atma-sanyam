@@ -678,6 +678,22 @@ the solo table feeds every step through the same mapping. Table-talk arrival now
 soft notification at every table. Tested in `LudoSfxTest`; the asset test now reads each WAV's
 header for its length.
 
+**Ludo stage 10 — results, statistics, rematch and return to lobby (approved: Design 5, the
+statistics table).** The match ends in a table (`ui/board/LudoResults.kt`): one row per player in
+finishing order with place, turns (rolls taken), sixes, captures, tokens lost and tokens home, your
+row in gold; under it your lifetime record — played, won, second, third — and then **Rematch** for
+the host, **Play again** alone, or "Waiting for the host to start a rematch…" for a guest or a
+watcher, and Back to Khel. The engine counts the statistics as the match goes (`LudoStats` in
+`LudoState`, carried by the state codec, so every phone shows the same numbers) and, when a match
+ends before everyone is home (the play-on rule off, or everyone else finished), ranks the rest by
+tokens home and then by how far their tokens have travelled. A rematch is a move like any other
+(`LudoAction.Rematch`): only the host's seat may make it and only once the match is over; it keeps
+the names, colours, computer seats and house rules and starts fresh tokens and counts, and every
+phone replays it. The record lives per signed-in account on the phone
+(`data/ludo/LudoRecordRepository.kt`, demo accounts included), counts each finished match once for
+the seat this phone played, and shows on My Profile as "Ludo: 13 played · 6 won". Tested in
+`LudoResultsTest`. With this, Ludo's ten stages are complete.
+
 ## Sound and music
 
 All sound goes through one object, `audio/GameAudio.kt`, which owns the settings and is the only code

@@ -9,6 +9,7 @@ import com.rangepatte.app.domain.ludo.LudoPhase
 import com.rangepatte.app.domain.ludo.LudoPlayer
 import com.rangepatte.app.domain.ludo.LudoRules
 import com.rangepatte.app.domain.ludo.LudoState
+import com.rangepatte.app.domain.ludo.LudoStats
 import com.rangepatte.app.domain.model.AiDifficulty
 import com.rangepatte.app.domain.model.GameId
 import com.rangepatte.app.net.core.GameMachine
@@ -40,18 +41,21 @@ object LudoMachine : GameMachine<LudoState, LudoAction> {
         )
 
     override fun apply(state: LudoState, action: LudoAction, seat: Int, random: Random): LudoState? {
+        // Only the host (seat 0) may start the rematch, and only once the match is over.
+        if (action == LudoAction.Rematch) return if (seat == 0 && state.phase == LudoPhase.OVER) LudoEngine.rematch(state) else null
         if (state.phase == LudoPhase.OVER || state.turn != seat) return null
         return LudoEngine.apply(state, action, random.nextInt(1, 7))
     }
 
-    override fun seatToAct(state: LudoState): Int? = state.turn.takeIf { state.phase != LudoPhase.OVER }
+    /** While the match is over the host "acts": its rematch is the only move left. */
+    override fun seatToAct(state: LudoState): Int? = if (state.phase == LudoPhase.OVER) 0 else state.turn
 
     override fun autoStep(state: LudoState): LudoState? = null
 
     override fun decideForBot(state: LudoState, seat: Int, difficulty: AiDifficulty, random: Random): LudoAction? = when (state.phase) {
         LudoPhase.ROLL -> LudoAction.Roll
         LudoPhase.MOVE -> LudoEngine.chooseToken(state, difficulty, random)?.let { LudoAction.Move(it) }
-        LudoPhase.OVER -> null
+        LudoPhase.OVER -> null // a computer host never asks for a rematch
     }
 
     override fun startSfx(): List<SfxCue> = LudoSfx.start()
@@ -61,10 +65,12 @@ object LudoMachine : GameMachine<LudoState, LudoAction> {
     override fun encode(action: LudoAction): String = when (action) {
         LudoAction.Roll -> "R"
         is LudoAction.Move -> "M${action.token}"
+        LudoAction.Rematch -> "N"
     }
 
     override fun decode(text: String): LudoAction? = when {
         text == "R" -> LudoAction.Roll
+        text == "N" -> LudoAction.Rematch
         text.startsWith("M") -> text.drop(1).toIntOrNull()?.takeIf { it in 0..3 }?.let { LudoAction.Move(it) }
         else -> null
     }
@@ -88,6 +94,7 @@ object LudoMachine : GameMachine<LudoState, LudoAction> {
             is LudoEvent.Won -> { int(3); int(e.player); int(e.place) }
         }
         int(state.moveCount)
+        list(state.stats) { s -> int(s.turns); int(s.sixes); int(s.captures); int(s.lost) }
     }.toString()
 
     override fun decodeState(text: String): LudoState? = runCatching {
@@ -103,7 +110,9 @@ object LudoMachine : GameMachine<LudoState, LudoAction> {
             3 -> LudoEvent.Won(r.int(), r.int())
             else -> null
         }
-        LudoState(players, rules, turn, phase, dice, streak, places, event, r.int())
+        val moveCount = r.int()
+        val stats = r.list { LudoStats(int(), int(), int(), int()) }
+        LudoState(players, rules, turn, phase, dice, streak, places, event, moveCount, stats)
     }.getOrNull()
 
     override fun redact(state: LudoState, seat: Int?): LudoState = state

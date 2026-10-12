@@ -21,6 +21,17 @@ data class LudoPlayer(
 
 enum class LudoPhase { ROLL, MOVE, OVER }
 
+/** What one player did in the match so far (stage 10), counted by the engine so every phone agrees. */
+data class LudoStats(
+    /** Rolls taken. */
+    val turns: Int = 0,
+    val sixes: Int = 0,
+    /** Opponents' tokens this player sent home. */
+    val captures: Int = 0,
+    /** This player's tokens sent home. */
+    val lost: Int = 0
+)
+
 /**
  * The whole game. [turn] indexes [players]; in [LudoPhase.ROLL] the player must roll, in
  * [LudoPhase.MOVE] they must pick one of [movable] tokens for [dice]. [places] lists finished
@@ -36,9 +47,15 @@ data class LudoState(
     val sixStreak: Int = 0,
     val places: List<Int> = emptyList(),
     val lastEvent: LudoEvent? = null,
-    val moveCount: Int = 0
+    val moveCount: Int = 0,
+    /** One entry per player, in seat order (empty in states from before stage 10: read as zeros). */
+    val stats: List<LudoStats> = emptyList()
 ) {
     val current: LudoPlayer get() = players[turn]
+    fun statsOf(seat: Int): LudoStats = stats.getOrElse(seat) { LudoStats() }
+    private fun withStats(seat: Int, change: (LudoStats) -> LudoStats): LudoState =
+        copy(stats = List(players.size) { i -> if (i == seat) change(statsOf(i)) else statsOf(i) })
+    internal fun tally(seat: Int, change: (LudoStats) -> LudoStats) = withStats(seat, change)
     /** The tokens of the current player that may move for [dice]. */
     val movable: List<Int> get() = if (phase == LudoPhase.MOVE && dice != null) LudoEngine.movableTokens(this, turn, dice) else emptyList()
 }
@@ -54,6 +71,8 @@ sealed interface LudoEvent {
 sealed interface LudoAction {
     data object Roll : LudoAction
     data class Move(val token: Int) : LudoAction
+    /** Stage 10: the host starts the match again with the same seats, colours and rules (only when it is over). */
+    data object Rematch : LudoAction
 }
 
 /**
@@ -65,8 +84,26 @@ object LudoEngine {
     fun newGame(names: List<String>, rules: LudoRules = LudoRules.DEFAULT, avatars: List<String?> = emptyList(), bots: Set<Int> = emptySet()): LudoState {
         require(names.size in 2..4) { "2 to 4 players" }
         val colors = colorsFor(names.size)
-        return LudoState(players = names.zip(colors) { n, c -> LudoPlayer(c, n) }.mapIndexed { i, p -> p.copy(avatarId = avatars.getOrNull(i), isBot = i in bots) }, rules = rules)
+        return LudoState(players = names.zip(colors) { n, c -> LudoPlayer(c, n) }.mapIndexed { i, p -> p.copy(avatarId = avatars.getOrNull(i), isBot = i in bots) }, rules = rules, stats = List(names.size) { LudoStats() })
     }
+
+    /** The same table again (stage 10): names, colours, avatars, computer seats and rules kept; tokens and counts fresh. */
+    fun rematch(state: LudoState): LudoState? {
+        if (state.phase != LudoPhase.OVER) return null
+        return LudoState(players = state.players.map { it.copy(tokens = List(4) { LudoBoard.YARD }) }, rules = state.rules, stats = List(state.players.size) { LudoStats() })
+    }
+
+    /**
+     * The final order (stage 10): the places already won, then everyone still playing ranked by tokens
+     * home, then by how far their tokens have travelled, then by seat.
+     */
+    fun finalPlaces(state: LudoState): List<Int> {
+        val rest = state.players.indices.filter { it !in state.places }
+            .sortedWith(compareByDescending<Int> { state.players[it].finished }.thenByDescending { progress(state.players[it]) }.thenBy { it })
+        return state.places + rest
+    }
+
+    private fun progress(p: LudoPlayer): Int = p.tokens.sumOf { if (it == LudoBoard.YARD) 0 else it + 1 }
 
     /** The colour of each seat at a table of [players]: 2 sit opposite (red, yellow), 3 leave blue empty. */
     fun colorsFor(players: Int): List<LudoColor> = when (players) {
@@ -100,8 +137,9 @@ object LudoEngine {
     private fun blockedByOwnStack(state: LudoState, player: Int, target: Int): Boolean = false
 
     /** Rolls [value] for the current player (the host decides the value; this only applies it). */
-    fun roll(state: LudoState, value: Int): LudoState? {
-        if (state.phase != LudoPhase.ROLL || value !in 1..6) return null
+    fun roll(before: LudoState, value: Int): LudoState? {
+        if (before.phase != LudoPhase.ROLL || value !in 1..6) return null
+        val state = before.tally(before.turn) { it.copy(turns = it.turns + 1, sixes = it.sixes + (if (value == 6) 1 else 0)) }
         val streak = if (value == 6) state.sixStreak + 1 else 0
         // Three sixes in a row forfeit the turn (only when sixes grant extra rolls).
         if (state.rules.extraRollOnSix && streak == 3) {
@@ -145,11 +183,15 @@ object LudoEngine {
         val extra = (dice == 6 && state.rules.extraRollOnSix) || (captured.isNotEmpty() && state.rules.extraRollOnCapture) || finished
         var after = state.copy(players = players, phase = LudoPhase.ROLL, dice = null, moveCount = state.moveCount + 1,
             lastEvent = LudoEvent.Moved(state.turn, token, from, to, captured, finished, extra))
+        if (captured.isNotEmpty()) {
+            after = after.tally(state.turn) { it.copy(captures = it.captures + captured.size) }
+            captured.forEach { (victim, _) -> after = after.tally(victim) { it.copy(lost = it.lost + 1) } }
+        }
         if (players[state.turn].isHome && state.turn !in after.places) {
             after = after.copy(places = after.places + state.turn, lastEvent = LudoEvent.Won(state.turn, after.places.size + 1))
             val stillPlaying = players.indices.filter { it !in after.places }
             if (!state.rules.playOnForPlaces || stillPlaying.size <= 1) {
-                return after.copy(phase = LudoPhase.OVER, places = after.places + stillPlaying)
+                return after.copy(phase = LudoPhase.OVER, places = finalPlaces(after))
             }
             return next(after)
         }
@@ -163,12 +205,13 @@ object LudoEngine {
             t = (t + 1) % state.players.size
             if (t !in state.places) return state.copy(turn = t, phase = LudoPhase.ROLL, dice = null, sixStreak = 0)
         }
-        return state.copy(phase = LudoPhase.OVER)
+        return state.copy(phase = LudoPhase.OVER, places = finalPlaces(state))
     }
 
     fun apply(state: LudoState, action: LudoAction, diceValue: Int): LudoState? = when (action) {
         LudoAction.Roll -> roll(state, diceValue)
         is LudoAction.Move -> move(state, action.token)
+        LudoAction.Rematch -> rematch(state)
     }
 
     /** The computer's choice of token: finish, capture, escape a threat, leave the yard, else advance the leader. */
