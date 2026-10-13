@@ -14,7 +14,7 @@ import kotlin.random.Random
 
 object TeenPattiMachine : GameMachine<TpState, TpAction> {
     override val gameId = GameId.TEEN_PATTI
-    override val botDelayMs = 1100L
+    override val botDelayMs = 1_900L
 
     override fun start(config: MatchConfig, random: Random) = TeenPattiEngine.newMatch(config.seatNames, random)
 

@@ -10,10 +10,14 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
 import com.rangepatte.app.R
 import com.rangepatte.app.data.membership.MembershipRepository
+import com.rangepatte.app.game.common.RewardOutcome
+import com.rangepatte.app.game.common.UndoGate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,6 +30,8 @@ import java.util.concurrent.atomic.AtomicBoolean
  * - **Interstitial** (full-screen) ads may show when a player leaves a game table — at most every
  *   [EXITS_PER_INTERSTITIAL]th exit and never twice within [MIN_INTERSTITIAL_GAP_MS], so they stay
  *   tolerable.
+ * - **Rewarded** ads unlock Undo for one game ([showRewarded]); they count only when watched to the end
+ *   and on screen for at least [UndoGate.MIN_AD_MS].
  * - Nothing is loaded or shown while the player is a paid member ([MembershipRepository.isAdFree]).
  * - Google's consent form (UMP) is shown first where the law requires it (EEA/UK); ads start only
  *   once consent allows them.
@@ -66,6 +72,7 @@ class AdsManager(private val membership: MembershipRepository) {
         MobileAds.initialize(appContext) {
             _adsReady.value = true
             preloadInterstitial(appContext)
+            preloadRewarded(appContext, onLoaded = null)
         }
     }
 
@@ -88,6 +95,73 @@ class AdsManager(private val membership: MembershipRepository) {
                 }
             }
         )
+    }
+
+    private var rewarded: RewardedAd? = null
+    private var rewardedLoading = false
+    private var rewardedWaiter: ((RewardedAd?) -> Unit)? = null
+
+    private fun preloadRewarded(context: Context, onLoaded: ((RewardedAd?) -> Unit)?) {
+        if (onLoaded != null) rewardedWaiter = onLoaded
+        if (!_adsReady.value || rewarded != null || rewardedLoading) return
+        rewardedLoading = true
+        RewardedAd.load(
+            context,
+            context.getString(R.string.admob_rewarded_unit_id),
+            AdRequest.Builder().build(),
+            object : RewardedAdLoadCallback() {
+                override fun onAdLoaded(ad: RewardedAd) {
+                    rewardedLoading = false
+                    val waiter = rewardedWaiter
+                    rewardedWaiter = null
+                    if (waiter != null) waiter(ad) else rewarded = ad
+                }
+
+                override fun onAdFailedToLoad(error: LoadAdError) {
+                    rewardedLoading = false
+                    rewarded = null
+                    rewardedWaiter?.invoke(null)
+                    rewardedWaiter = null
+                }
+            }
+        )
+    }
+
+    /**
+     * Shows a rewarded ad to unlock Undo and reports how it ended: [RewardOutcome.EARNED] only when the
+     * reward was granted and the ad stayed on screen for [UndoGate.MIN_AD_MS] or more.
+     */
+    fun showRewarded(activity: Activity, onDone: (RewardOutcome) -> Unit) {
+        if (!_adsReady.value) { onDone(RewardOutcome.UNAVAILABLE); return }
+        val ready = rewarded
+        if (ready != null) {
+            rewarded = null
+            present(activity, ready, onDone)
+        } else {
+            preloadRewarded(activity.applicationContext) { ad ->
+                if (ad == null) onDone(RewardOutcome.UNAVAILABLE) else present(activity, ad, onDone)
+            }
+        }
+    }
+
+    private fun present(activity: Activity, ad: RewardedAd, onDone: (RewardOutcome) -> Unit) {
+        var earned = false
+        var shownAt = 0L
+        ad.fullScreenContentCallback = object : FullScreenContentCallback() {
+            override fun onAdShowedFullScreenContent() { shownAt = SystemClock.elapsedRealtime() }
+
+            override fun onAdDismissedFullScreenContent() {
+                val watched = if (shownAt == 0L) 0L else SystemClock.elapsedRealtime() - shownAt
+                preloadRewarded(activity.applicationContext, onLoaded = null)
+                onDone(UndoGate.outcome(earned, watched))
+            }
+
+            override fun onAdFailedToShowFullScreenContent(error: AdError) {
+                preloadRewarded(activity.applicationContext, onLoaded = null)
+                onDone(RewardOutcome.UNAVAILABLE)
+            }
+        }
+        ad.show(activity) { earned = true }
     }
 
     /**

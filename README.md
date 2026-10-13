@@ -234,8 +234,8 @@ an `*Engine.kt`, `*Rules.kt`, and `*Screen.kt` — never touching the shared she
 
 ## How to change the card design
 
-Card painting lives in `ui/cards/`: `AntiqueCard.kt` (face, border, indices, pip layouts, Ace, Joker and
-`drawRoyalCardBack`), `SuitPips.kt` (the four suit shapes), `RoyalPortraits.kt` (K/Q/J) and
+Card painting lives in `ui/cards/`: `AntiqueCard.kt` (the classic white face, border, indices, pip layouts, Ace, Joker and
+the red lattice back `drawRoyalCardBack`), `SuitPips.kt` (the four suit shapes), `RoyalPortraits.kt` (K/Q/J) and
 `CardStyle.kt` (ink and paper colours). Every screen shows cards through `CardView`
 (`game/common/CardView.kt`), and the game thumbnails call the same drawing functions, so a change
 there changes the whole app.
@@ -725,7 +725,7 @@ the Ludo stage with the game's own board and words:
 - *Animation (4):* `SnakesMotion` spins the die, glides the token square by square with a trail,
   then climbs the ladder in a straight line or slides down the serpent's own curve; reduced motion
   snaps. The engine decides first; the Roll button waits while anything moves.
-- *Players (5):* one antique plaque per player in a row above the board (`SnakesPlaqueRow`): avatar
+- *Players (5):* one plaque per player at the corners of the board (`BoardTableLayout`, shared with Ludo since the table refresh): avatar
   with colour ring and suit badge, name, the square (or Start, or the place), a glow on the current
   player, the stage 8 away and Computer states, and the stage 9 bubbles beneath.
 - *Lobby, invitations, waiting states (6–8):* the same board lobby route, decor (`snakesLobbyDecor`),
@@ -744,6 +744,43 @@ the Ludo stage with the game's own board and words:
   played · M won"), Rematch / Play again / waiting line, and Back to Khel.
 
 With this both board games are complete. Nothing has yet run on two real phones.
+
+### Table refresh (owner's requests with reference pictures)
+
+- **Start under Rules:** every card and board setup page has its Start (or Host) button directly
+  under the Rules button as well as at the bottom (`GameInfoPanel`, `BoardInfoPanel`).
+- **Slower pace:** computer players wait about 1.5–2.8 s before each move (`botDelayMs` in each
+  machine, `GameSession.AUTO_STEP_DELAY_MS`, the solo Ludo / Moksha Patam sessions); played cards are
+  thrown onto the table over 0.65 s (`TrickTable`); tokens glide at 160–170 ms a square.
+- **Board tables (`ui/board/BoardTableLayout.kt`):** the board fills the width in portrait (about
+  three quarters of the screen) with a player plaque at each corner and the die between the bottom
+  two; sideways it fills the height with the plaques in two columns beside it. The player whose turn
+  it is gets a larger plaque with a thick pulsing gold border and a **YOUR TURN** / **TURN** tag.
+- **Ludo:** the bright standard board (coloured yards with white circles, white track, coloured
+  start / safe tiles with stars, entry arrows, centre triangles) inside the royal walnut frame with
+  gold rim and leaf corners; 3D pawns. The picture is turned so **your yard is always bottom-left**,
+  and the setup page lets you **pick your colour** (it travels as a sixth letter in the rules
+  options, `LudoRules.options`).
+- **The 3D die (`ui/board/Die3D.kt`):** a rounded cube with black pips, opposite faces summing to 7,
+  on a green pedestal. The secure random number decides the value first; the animation (toss →
+  tumble → two bounces → settle) is then built to land on that face. A wooden clack on impact with
+  two quieter clacks for the bounces (`DieTiming`). Settings → Animations off (or the phone's
+  animations off) snaps it — the reduced-motion option (`ui/motion/MotionPrefs.kt`).
+- **Moksha Patam:** pastel squares, a teal START tile and a gold MOKSHA lotus tile, wooden ladders and
+  nine serpents of different breeds (cobra, python, krait, viper, rat snake, tree snake, coral snake,
+  boa, sea krait — each with its own pattern and head), all lying slanted across columns with unequal
+  lengths. No serpent's mouth is on squares 1–10 and only one ladder starts there (3 → 22).
+- **Playing cards:** classic standard cards — white stock, bold corner indices, the traditional pip
+  layout with the lower half upside-down, a big Ace (larger for spades), double-ended court cards in
+  an ink frame — with small royal touches: a fine gold inner line, a gold ring round the Ace, the
+  red lattice back with a gold lotus medallion.
+- **Undo for members or after an ad:** every solo table (all card games, Solitaire, Spider, Ludo,
+  Moksha Patam) has Undo. A member uses it freely; anyone else sees it locked and can unlock it for
+  that game by watching a **rewarded ad of at least 30 seconds** (`game/common/UndoGate.kt`,
+  `AdsManager.showRewarded`) — it counts only when the ad is watched to the end and stays on screen
+  30 s or longer.
+- **Landscape:** turn the phone sideways at any table and the game takes the whole screen — no app
+  bar, banner or system bars (`ImmersiveSystemBars`), a slimmer header.
 
 ## Sound and music
 
@@ -820,7 +857,9 @@ always `123456` (the login screen says so), and the account stays on the phone o
 last one). Google's consent form appears first where the law requires it (EEA/UK). Members see no
 ads at all. The ad IDs in `res/values/ads_config.xml` are Google's public **test** IDs, which show
 "Test Ad" and never pay; create your app and ad units at <https://admob.google.com> and replace the
-three IDs there before publishing. Note that AdMob reviews apps in the card-game category — keep
+four IDs there (app, banner, interstitial, rewarded) before publishing. A **rewarded** ad unlocks
+Undo for one game; Google's test rewarded ad may be shorter than 30 seconds, in which case the app
+correctly says it was too short — use a real rewarded unit (or a longer test creative) to see an unlock. Note that AdMob reviews apps in the card-game category — keep
 everything points-only (no real-money play), as it is today.
 
 ### ₹29/month membership ("Remove ads?") and the payment gateway

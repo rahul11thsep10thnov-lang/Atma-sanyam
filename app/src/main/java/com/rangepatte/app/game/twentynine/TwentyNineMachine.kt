@@ -17,7 +17,7 @@ import kotlin.random.Random
 
 object TwentyNineMachine : GameMachine<T9State, TrickAction> {
     override val gameId = GameId.TWENTY_NINE
-    override val botDelayMs = 800L
+    override val botDelayMs = 1_500L
 
     override fun start(config: MatchConfig, random: Random) = TwentyNineEngine.newMatch(random)
 

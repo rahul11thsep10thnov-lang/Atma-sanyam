@@ -10,6 +10,8 @@ import com.rangepatte.app.game.ludo.LudoSfx
 import com.rangepatte.app.domain.ludo.LudoPhase
 import com.rangepatte.app.domain.ludo.LudoSetup
 import com.rangepatte.app.domain.ludo.LudoState
+import com.rangepatte.app.game.common.UndoControl
+import com.rangepatte.app.game.common.UndoHistory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -32,7 +34,7 @@ class LudoSession(setup: LudoSetup, youName: String, botNames: List<String>, you
     val difficulty = setup.difficulty
     override val mySeat = 0
 
-    override var state: LudoState by mutableStateOf(LudoEngine.newGame(listOf(youName) + botNames.take(setup.players - 1), setup.rules, avatars = listOf(youAvatar), bots = (1 until setup.players).toSet()))
+    override var state: LudoState by mutableStateOf(LudoEngine.newGame(listOf(youName) + botNames.take(setup.players - 1), setup.rules, avatars = listOf(youAvatar), bots = (1 until setup.players).toSet(), firstColor = setup.color))
         private set
 
     /** The last dice value shown on the die (kept while the player chooses a token). */
@@ -56,8 +58,16 @@ class LudoSession(setup: LudoSetup, youName: String, botNames: List<String>, you
     override fun roll() {
         if (!isMyTurn || state.phase != LudoPhase.ROLL || busy) return
         val value = dice.nextInt(1, 7)
-        LudoEngine.roll(state, value)?.let { step(it); shownDice = value }
+        val before = state
+        LudoEngine.roll(state, value)?.let { history.record(before to shownDice); step(it); shownDice = value }
     }
+
+    /** Undo takes the table back to just before one of your rolls (bots' turns since then are undone too). */
+    private val history = UndoHistory<Pair<LudoState, Int?>>()
+    override val undo: UndoControl
+        get() = UndoControl(usesLeft = history.usesLeft, enabled = history.canUndo && isMyTurn && !busy) {
+            if (isMyTurn && !busy) history.undo()?.let { (s, d) -> state = s; shownDice = d; GameAudio.play(Sfx.UI_TAP) }
+        }
 
     override fun move(token: Int) {
         if (!isMyTurn || state.phase != LudoPhase.MOVE || busy) return
@@ -69,11 +79,12 @@ class LudoSession(setup: LudoSetup, youName: String, botNames: List<String>, you
         while (state.phase != LudoPhase.OVER) {
             if (busy) { delay(60); continue }
             if (state.turn != mySeat) {
-                delay(500)
-                if (busy) continue
+                // A computer player pauses before each roll and each move, so people can follow it.
+                delay(BOT_ROLL_PAUSE_MS)
+                if (busy || state.turn == mySeat) continue
                 when (state.phase) {
                     LudoPhase.ROLL -> { val v = dice.nextInt(1, 7); LudoEngine.roll(state, v)?.let { step(it); shownDice = v } }
-                    LudoPhase.MOVE -> { delay(500); LudoEngine.chooseToken(state, difficulty, random)?.let { t -> LudoEngine.move(state, t)?.let { step(it) } } }
+                    LudoPhase.MOVE -> { delay(BOT_MOVE_PAUSE_MS); if (state.turn != mySeat && state.phase == LudoPhase.MOVE) LudoEngine.chooseToken(state, difficulty, random)?.let { t -> LudoEngine.move(state, t)?.let { step(it) } } }
                     LudoPhase.OVER -> Unit
                 }
             } else delay(150)
@@ -82,8 +93,12 @@ class LudoSession(setup: LudoSetup, youName: String, botNames: List<String>, you
 
     override val rematchOffer: RematchOffer get() = RematchOffer.PLAY_AGAIN
     override fun rematch() {
-        LudoEngine.rematch(state)?.let { state = it; shownDice = null; GameAudio.playCues(LudoSfx.start()) }
+        LudoEngine.rematch(state)?.let { state = it; shownDice = null; history.reset(); GameAudio.playCues(LudoSfx.start()) }
     }
 
     override fun close() { scope.cancel() }
 }
+
+/** How long a computer player waits before rolling, and between its roll and its move. */
+private const val BOT_ROLL_PAUSE_MS = 1_300L
+private const val BOT_MOVE_PAUSE_MS = 900L

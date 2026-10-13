@@ -86,7 +86,24 @@ enum class Sfx(val resName: String, val durationMs: Long) {
 }
 
 /** One effect to play [delayMs] after the event that caused it, so a sequence follows the action. */
-data class SfxCue(val sfx: Sfx, val delayMs: Long = 0)
+data class SfxCue(val sfx: Sfx, val delayMs: Long = 0, val volume: Float = 1f)
+
+/**
+ * The timeline of one die throw, shared by the 3D die animation and the sounds so they always agree:
+ * toss and tumble, then a main wooden clack on the first impact and quieter clacks on the bounces,
+ * then the settle. A six's gold flash follows the settle.
+ */
+object DieTiming {
+    /** From the toss to the die lying still with the result face up. */
+    const val TOTAL_MS = 1_300L
+    /** Each impact: when it happens and how loud its clack is (the first is the main one). */
+    val IMPACTS: List<Pair<Long, Float>> = listOf(750L to 1f, 950L to 0.45f, 1_080L to 0.22f)
+    /** The gold flash after a six settles. */
+    const val SIX_FLASH_MS = 500L
+
+    /** The clacks of one throw starting at [startMs]. */
+    fun clacks(startMs: Long = 0L): List<SfxCue> = IMPACTS.map { (at, volume) -> SfxCue(Sfx.DICE_LAND, startMs + at, volume) }
+}
 
 /** The sequences that more than one game uses, so every game sounds the same for the same moment. */
 object SfxSequences {

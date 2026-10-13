@@ -28,6 +28,8 @@ import com.rangepatte.app.domain.model.GameCatalog
 import com.rangepatte.app.domain.model.PlayMode
 import com.rangepatte.app.ui.account.LoginScreen
 import com.rangepatte.app.ui.ads.BannerAdSlot
+import com.rangepatte.app.ui.components.ImmersiveSystemBars
+import com.rangepatte.app.ui.components.isLandscape
 import com.rangepatte.app.ui.chrome.AppTopBar
 import com.rangepatte.app.ui.components.BottomNavigationBar
 import com.rangepatte.app.ui.entertainment.EntertainmentScreen
@@ -62,7 +64,15 @@ fun RangEPatteNavHost(
     val navController = rememberNavController()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
-    val showChrome = currentRoute != null && currentRoute !in routesWithoutAppChrome
+    // The Undo gate's "Become a member" button leads to the membership page.
+    androidx.compose.runtime.SideEffect {
+        com.rangepatte.app.game.common.UndoGate.openMembership = { navController.navigate(Routes.MEMBERSHIP) { launchSingleTop = true } }
+    }
+    // Sideways at a table, the game takes the whole screen: no app bar, banner or system bars.
+    val atGameTable = currentRoute == Routes.GAME_TABLE_PATTERN || currentRoute == Routes.BOARD_TABLE_PATTERN
+    val fullScreenTable = atGameTable && isLandscape()
+    ImmersiveSystemBars(enabled = fullScreenTable)
+    val showChrome = currentRoute != null && currentRoute !in routesWithoutAppChrome && !fullScreenTable
 
     val adFreeUntil by AppServices.membership.adFreeUntilMillis.collectAsState()
     val user by AppServices.account.currentUser.collectAsState()
@@ -142,7 +152,7 @@ fun RangEPatteNavHost(
                         onStart = { setup, mode -> com.rangepatte.app.domain.ludo.LudoSetupStore.pending = setup; navController.navigate(Routes.boardTable(game.id.routeSegment, mode)) },
                         onOpenLobby = { setup, mode, host ->
                             com.rangepatte.app.domain.ludo.LudoSetupStore.pending = setup
-                            navController.navigate(Routes.boardLobby(game.id.routeSegment, mode, host, setup.players, setup.difficulty, setup.rules.encode()))
+                            navController.navigate(Routes.boardLobby(game.id.routeSegment, mode, host, setup.players, setup.difficulty, com.rangepatte.app.domain.ludo.LudoRules.options(setup.rules, setup.color)))
                         }
                     )
                     com.rangepatte.app.domain.board.BoardGameId.SNAKES_LADDERS -> com.rangepatte.app.ui.snakes.SnakesSetupScreen(
@@ -173,7 +183,7 @@ fun RangEPatteNavHost(
                     val difficulty = args?.getString(Routes.ARG_DIFFICULTY)?.let { runCatching { AiDifficulty.valueOf(it) }.getOrNull() } ?: AiDifficulty.MEDIUM
                     val optionsText = args?.getString(Routes.ARG_OPTIONS).orEmpty()
                     val isLudo = game.id == com.rangepatte.app.domain.board.BoardGameId.LUDO
-                    val options = if (isLudo) com.rangepatte.app.domain.ludo.LudoRules.decode(optionsText).encode() else com.rangepatte.app.domain.snakes.SnakesRules.decode(optionsText).encode()
+                    val options = if (isLudo) com.rangepatte.app.domain.ludo.LudoRules.options(com.rangepatte.app.domain.ludo.LudoRules.decode(optionsText), com.rangepatte.app.domain.ludo.LudoRules.colorOf(optionsText)) else com.rangepatte.app.domain.snakes.SnakesRules.decode(optionsText).encode()
                     // The shared lobby page (Ludo stage 6, Design 1) with the token colours per seat and the house-rules line.
                     LobbyRoute(
                         game = game.asGameInfo(),
@@ -187,7 +197,7 @@ fun RangEPatteNavHost(
                         canInvite = true,
                         onTableReady = {
                             // The table takes everything from the session the lobby offered; the setup only matters for a solo game.
-                            if (isLudo) com.rangepatte.app.domain.ludo.LudoSetupStore.pending = com.rangepatte.app.domain.ludo.LudoSetup(playerCount, com.rangepatte.app.domain.ludo.LudoRules.decode(options), difficulty)
+                            if (isLudo) com.rangepatte.app.domain.ludo.LudoSetupStore.pending = com.rangepatte.app.domain.ludo.LudoSetup(playerCount, com.rangepatte.app.domain.ludo.LudoRules.decode(options), difficulty, com.rangepatte.app.domain.ludo.LudoRules.colorOf(options))
                             else com.rangepatte.app.domain.snakes.SnakesSetupStore.pending = com.rangepatte.app.domain.snakes.SnakesSetup(playerCount, com.rangepatte.app.domain.snakes.SnakesRules.decode(options), difficulty)
                             navController.navigate(Routes.boardTable(game.id.routeSegment, mode)) {
                                 popUpTo(Routes.BOARD_LOBBY_PATTERN) { inclusive = true }
@@ -414,7 +424,7 @@ private fun hostLobbyRoute(gameRoute: String): String =
         Routes.boardLobby(gameRoute, PlayMode.ONLINE, host = true, playerCount = setup.players, difficulty = setup.difficulty, options = setup.rules.encode())
     } else if (com.rangepatte.app.domain.model.GameNames.isBoardGame(gameRoute)) {
         val setup = com.rangepatte.app.domain.ludo.LudoSetupStore.pending
-        Routes.boardLobby(gameRoute, PlayMode.ONLINE, host = true, playerCount = setup.players, difficulty = setup.difficulty, options = setup.rules.encode())
+        Routes.boardLobby(gameRoute, PlayMode.ONLINE, host = true, playerCount = setup.players, difficulty = setup.difficulty, options = com.rangepatte.app.domain.ludo.LudoRules.options(setup.rules, setup.color))
     } else {
         Routes.lobby(gameRoute, PlayMode.ONLINE, host = true, playerCount = 4, difficulty = AiDifficulty.MEDIUM)
     }

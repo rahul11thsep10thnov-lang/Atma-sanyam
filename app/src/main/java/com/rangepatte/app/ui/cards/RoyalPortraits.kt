@@ -18,7 +18,7 @@ import com.rangepatte.app.domain.model.Rank
 import com.rangepatte.app.domain.model.Suit
 
 /*
- * The King, Queen and Jack of the app's single antique royal deck.
+ * The King, Queen and Jack of the app's deck: traditional double-ended court cards with royal figures.
  *
  * Each is an original miniature-style bust — in the spirit of Mughal and Rajput court portraits, not
  * a copy of any work — painted from vector paths in a 100 × 100 "portrait unit" box, so the same
@@ -44,10 +44,6 @@ private val Sapphire = Color(0xFF2B55A3)
 private val Steel = Color(0xFFC7CDD4)
 private val Lip = Color(0xFFA23B3B)
 
-private val PanelBurgundy = Color(0xFF6A1824)
-private val PanelBurgundyDeep = Color(0xFF3E0C14)
-private val PanelIndigo = Color(0xFF1E2B50)
-private val PanelIndigoDeep = Color(0xFF0F1830)
 
 private enum class Role { KING, QUEEN, JACK }
 
@@ -63,8 +59,8 @@ internal fun hasPortrait(rank: Rank): Boolean = roleOf(rank) != null
 
 /**
  * Paints the framed double-ended portrait panel of a face card inside a card of size [cardSize] whose
- * top-left is [topLeft]: jewel-toned panel, gold frame, two busts split by a gold rule and a small
- * suit medallion at the middle.
+ * top-left is [topLeft]: a white panel framed in ink with a fine gold line, two busts split by a rule,
+ * and the suit beside each head, in the manner of a traditional court card.
  */
 internal fun DrawScope.drawRoyalPortraitPanel(
     rank: Rank,
@@ -76,18 +72,15 @@ internal fun DrawScope.drawRoyalPortraitPanel(
     val role = roleOf(rank) ?: return
     val w = cardSize.width
     val h = cardSize.height
-    val panel = Rect(topLeft.x + w * 0.235f, topLeft.y + h * 0.075f, topLeft.x + w * 0.765f, topLeft.y + h * 0.925f)
+    val panel = Rect(topLeft.x + w * 0.255f, topLeft.y + h * 0.075f, topLeft.x + w * 0.745f, topLeft.y + h * 0.925f)
     val red = suit == Suit.HEARTS || suit == Suit.DIAMONDS
     val shape = RoundRect(panel, CornerRadius(w * 0.045f))
     val panelPath = Path().apply { addRoundRect(shape) }
 
-    // Panel ground: deep burgundy for red suits, deep indigo for black, with a soft inner glow.
+    // Panel ground: white stock, as on a printed court card, so the figure's flat colours stand out.
     drawRoundRect(
-        brush = Brush.verticalGradient(
-            listOf(if (red) PanelBurgundy else PanelIndigo, if (red) PanelBurgundyDeep else PanelIndigoDeep),
-            startY = panel.top, endY = panel.bottom
-        ),
-        topLeft = panel.topLeft, size = panel.size, cornerRadius = CornerRadius(w * 0.045f)
+        brush = Brush.verticalGradient(listOf(Color(0xFFFFFDF8), Color(0xFFF3EEE2)), startY = panel.top, endY = panel.bottom),
+        topLeft = panel.topLeft, size = panel.size, cornerRadius = CornerRadius(w * 0.02f)
     )
 
     val halfHeight = panel.height / 2f
@@ -99,30 +92,29 @@ internal fun DrawScope.drawRoyalPortraitPanel(
         rotate(180f, pivot = center) { drawBust(role, bounds, robe, red) }
     }
 
-    // Gold rule between the two halves, with a small suit medallion on it.
-    val midY = center.y
-    drawLine(Gold.copy(alpha = 0.85f), Offset(panel.left, midY), Offset(panel.right, midY), strokeWidth = w * 0.012f)
-    val medallion = w * 0.095f
-    drawCircle(Ivory, medallion, center)
-    drawCircle(Gold, medallion, center, style = Stroke(w * 0.016f))
-    drawCircle(GoldDark, medallion * 0.82f, center, style = Stroke(w * 0.006f))
-    drawSuitPip(suit, center, medallion * 1.05f, suitInk)
+    // The traditional split: a fine ink rule across the middle, and the suit beside each head.
+    drawLine(suitInk.copy(alpha = 0.8f), Offset(panel.left, center.y), Offset(panel.right, center.y), strokeWidth = maxOf(0.8f, w * 0.008f))
+    val pip = w * 0.06f
+    val pipAt = Offset(panel.right - pip * 1.5f, panel.top + pip * 1.6f)
+    drawSuitPip(suit, pipAt, pip, suitInk)
+    rotate(180f, pivot = center) { drawSuitPip(suit, pipAt, pip, suitInk) }
 
-    // Frame.
-    drawRoundRect(Gold, panel.topLeft, panel.size, CornerRadius(w * 0.045f), style = Stroke(w * 0.022f))
-    val inner = w * 0.03f
+    // Frame: a thin ink line with a fine gold line inside it (the royal touch).
+    drawRoundRect(suitInk, panel.topLeft, panel.size, CornerRadius(w * 0.02f), style = Stroke(maxOf(1f, w * 0.011f)))
+    val inner = w * 0.022f
     drawRoundRect(
-        GoldDark.copy(alpha = 0.8f),
+        Gold,
         Offset(panel.left + inner, panel.top + inner),
         Size(panel.width - inner * 2, panel.height - inner * 2),
-        CornerRadius(w * 0.025f), style = Stroke(w * 0.007f)
+        CornerRadius(w * 0.012f), style = Stroke(maxOf(0.7f, w * 0.007f))
     )
 }
 
+/** Flat court-card colours: red, blue and yellow, traded between the red and black suits. */
 private fun robeFor(role: Role, redSuit: Boolean): Color = when (role) {
-    Role.KING -> if (redSuit) Color(0xFF1B6B4D) else Color(0xFF9B1F30)
-    Role.QUEEN -> if (redSuit) Color(0xFFC8872A) else Color(0xFF7C2A5E)
-    Role.JACK -> if (redSuit) Color(0xFF2B55A3) else Color(0xFF1F7A56)
+    Role.KING -> if (redSuit) Color(0xFFC62828) else Color(0xFF1E4C9A)
+    Role.QUEEN -> if (redSuit) Color(0xFF1E4C9A) else Color(0xFFC62828)
+    Role.JACK -> if (redSuit) Color(0xFFD99A1C) else Color(0xFF2E7D4F)
 }
 
 private fun path(block: Path.() -> Unit) = Path().apply(block)

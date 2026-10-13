@@ -11,13 +11,27 @@ object SnakesBoard {
     const val START = 0
     const val LAST = 100
 
-    /** Ladder foot → top. */
-    val LADDERS: Map<Int, Int> = mapOf(4 to 14, 9 to 31, 20 to 38, 28 to 84, 40 to 59, 51 to 67, 63 to 81, 71 to 91)
+    /**
+     * Ladder foot → top. Every ladder leans (none runs straight up a column), their lengths differ, and
+     * only one starts in the first row (3 → 22).
+     */
+    val LADDERS: Map<Int, Int> = mapOf(3 to 22, 15 to 44, 21 to 42, 28 to 84, 36 to 57, 51 to 67, 71 to 92, 80 to 99)
 
-    /** Serpent head → tail. */
-    val SNAKES: Map<Int, Int> = mapOf(17 to 7, 54 to 34, 62 to 19, 64 to 60, 87 to 24, 93 to 73, 95 to 75, 98 to 79, 99 to 78)
+    /**
+     * Serpent head → tail. Every serpent lies slanted or sideways, their lengths differ, and no head is
+     * in the first row (1–10), so a fresh token is never bitten at once. [BREEDS] gives each its kind.
+     */
+    val SNAKES: Map<Int, Int> = mapOf(32 to 10, 48 to 26, 62 to 16, 64 to 60, 74 to 53, 87 to 24, 93 to 70, 95 to 77, 98 to 79)
 
-    /** Where a ladder or serpent on [square] leads, or null when the square is plain. */
+    /** The kinds of serpent drawn on the board: each looks like its breed, not just a colour. */
+    enum class Breed { COBRA, PYTHON, KRAIT, VIPER, RAT_SNAKE, TREE_SNAKE, CORAL, BOA, SEA_KRAIT }
+
+    /** Which breed lies at each serpent's head. */
+    val BREEDS: Map<Int, Breed> = mapOf(
+        32 to Breed.TREE_SNAKE, 48 to Breed.KRAIT, 62 to Breed.PYTHON, 64 to Breed.CORAL, 74 to Breed.VIPER,
+        87 to Breed.COBRA, 93 to Breed.RAT_SNAKE, 95 to Breed.SEA_KRAIT, 98 to Breed.BOA
+    )
+
     fun jump(square: Int): Int? = LADDERS[square] ?: SNAKES[square]
 
     /** The column (0 = left) and row (0 = bottom) of a square 1..100. */

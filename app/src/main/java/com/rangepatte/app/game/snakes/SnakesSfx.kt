@@ -1,5 +1,6 @@
 package com.rangepatte.app.game.snakes
 
+import com.rangepatte.app.audio.DieTiming
 import com.rangepatte.app.audio.Sfx
 import com.rangepatte.app.audio.SfxCue
 import com.rangepatte.app.domain.snakes.Outcome
@@ -12,9 +13,9 @@ import com.rangepatte.app.domain.snakes.SnakesState
  * [DIE_SPIN_MS], the token glides [STEP_MS] a square, a ladder or serpent takes [JUMP_MS]. Pure.
  */
 object SnakesSfx {
-    const val DIE_SPIN_MS = 600L
-    const val STEP_MS = 110L
-    const val JUMP_MS = 700L
+    val DIE_SPIN_MS = DieTiming.IMPACTS.first().first
+    const val STEP_MS = 170L
+    const val JUMP_MS = 1_100L
 
     fun start(): List<SfxCue> = listOf(SfxCue(Sfx.GAME_START))
 
@@ -23,9 +24,9 @@ object SnakesSfx {
         var end = 0L
         val t = after.last
         if (t != null && after.moveCount != before.moveCount) {
-            out += SfxCue(Sfx.DICE_ROLL)
-            out += SfxCue(Sfx.DICE_LAND, DIE_SPIN_MS)
-            end = DIE_SPIN_MS + 150
+            out += DieTiming.clacks()
+            // The token moves once the die has settled (and a six has flashed).
+            end = DieTiming.TOTAL_MS + (if (t.value == 6) DieTiming.SIX_FLASH_MS else 0L)
             when (t.outcome) {
                 Outcome.NO_ENTRY, Outcome.STAYED -> { out += SfxCue(Sfx.INVALID_MOVE, end); end += 350 }
                 Outcome.MOVED, Outcome.BOUNCED -> {

@@ -19,11 +19,11 @@ class LudoSfxTest {
     @Test fun aRollSpinsThenLandsAndASixAddsTheBonus() {
         val fresh = LudoEngine.newGame(listOf("A", "B"))
         val six = LudoEngine.roll(fresh, 6)!!
-        assertEquals(listOf(Sfx.DICE_ROLL, Sfx.DICE_LAND, Sfx.BONUS_ROLL), sounds(LudoSfx.cues(fresh, six, 0)))
+        assertEquals(listOf(Sfx.DICE_LAND, Sfx.DICE_LAND, Sfx.DICE_LAND, Sfx.BONUS_ROLL), sounds(LudoSfx.cues(fresh, six, 0)))
         val three = LudoEngine.roll(fresh, 3)!! // nothing can move: the turn passes to B
-        assertEquals(listOf(Sfx.DICE_ROLL, Sfx.DICE_LAND, Sfx.YOUR_TURN), sounds(LudoSfx.cues(fresh, three, 1)))
-        assertEquals(listOf(Sfx.DICE_ROLL, Sfx.DICE_LAND), sounds(LudoSfx.cues(fresh, three, 0)))
-        assertEquals(listOf(Sfx.DICE_ROLL, Sfx.DICE_LAND), sounds(LudoSfx.cues(fresh, three, null)))
+        assertEquals(listOf(Sfx.DICE_LAND, Sfx.DICE_LAND, Sfx.DICE_LAND, Sfx.YOUR_TURN), sounds(LudoSfx.cues(fresh, three, 1)))
+        assertEquals(listOf(Sfx.DICE_LAND, Sfx.DICE_LAND, Sfx.DICE_LAND), sounds(LudoSfx.cues(fresh, three, 0)))
+        assertEquals(listOf(Sfx.DICE_LAND, Sfx.DICE_LAND, Sfx.DICE_LAND), sounds(LudoSfx.cues(fresh, three, null)))
         assertEquals(LudoSfx.DIE_SPIN_MS, LudoSfx.cues(fresh, six, 0).first { it.sfx == Sfx.DICE_LAND }.delayMs)
     }
 
@@ -57,6 +57,6 @@ class LudoSfxTest {
         val fresh = LudoEngine.newGame(listOf("A", "B"), LudoRules.DEFAULT).copy(sixStreak = 2)
         val forfeit = LudoEngine.roll(fresh, 6)!!
         assertTrue(forfeit.lastEvent is LudoEvent.Forfeit)
-        assertEquals(listOf(Sfx.DICE_ROLL, Sfx.DICE_LAND, Sfx.INVALID_MOVE, Sfx.YOUR_TURN), sounds(LudoSfx.cues(fresh, forfeit, 1)))
+        assertEquals(listOf(Sfx.DICE_LAND, Sfx.DICE_LAND, Sfx.DICE_LAND, Sfx.INVALID_MOVE, Sfx.YOUR_TURN), sounds(LudoSfx.cues(fresh, forfeit, 1)))
     }
 }

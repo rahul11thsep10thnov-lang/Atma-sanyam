@@ -133,9 +133,9 @@ object GameAudio {
     fun playHandReveal() = play(Sfx.HAND_REVEAL)
 
     /** Plays [sfx] now, unless card sounds are off, silent, still loading, or it just played. */
-    fun play(sfx: Sfx) {
+    fun play(sfx: Sfx, volumeScale: Float = 1f) {
         try {
-            val volume = _settings.value.effectiveGameSoundVolume
+            val volume = _settings.value.effectiveGameSoundVolume * volumeScale.coerceIn(0f, 1f)
             if (volume <= 0f) return
             val soundPool = pool ?: return
             val id = soundIds[sfx]?.takeIf { it in loaded } ?: return
@@ -158,12 +158,12 @@ object GameAudio {
         if (cues.isEmpty() || _settings.value.effectiveGameSoundVolume <= 0f) return
         cues.forEach { cue ->
             if (cue.delayMs <= 0L) {
-                play(cue.sfx)
+                play(cue.sfx, cue.volume)
             } else {
                 lateinit var task: Runnable
                 task = Runnable {
                     pendingCues.remove(task)
-                    play(cue.sfx)
+                    play(cue.sfx, cue.volume)
                 }
                 pendingCues.add(task)
                 main.postDelayed(task, cue.delayMs)

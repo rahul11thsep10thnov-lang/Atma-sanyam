@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rangepatte.app.R
 import com.rangepatte.app.domain.board.BoardGameInfo
+import com.rangepatte.app.domain.ludo.LudoColor
 import com.rangepatte.app.domain.ludo.LudoRules
 import com.rangepatte.app.domain.ludo.LudoSetup
 import com.rangepatte.app.domain.model.AiDifficulty
@@ -85,7 +86,9 @@ fun BoardSetupScreen(
     onBackClick: () -> Unit,
     onStart: (players: Int, difficulty: AiDifficulty, mode: PlayMode) -> Unit,
     onOpenLobby: (players: Int, difficulty: AiDifficulty, mode: PlayMode, host: Boolean) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    /** Game-specific choices shown under Players (Ludo: the player's colour). */
+    extraOptions: @Composable () -> Unit = {}
 ) {
     var players by remember { mutableIntStateOf(initialPlayers) }
     var difficulty by remember { mutableStateOf(initialDifficulty) }
@@ -98,7 +101,9 @@ fun BoardSetupScreen(
             GameHeader(title = stringResource(game.nameRes), onBackClick = onBackClick, onRulesClick = { showRules = true })
             BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
                 val wide = maxWidth >= 600.dp
-                val infoPanel = @Composable { m: Modifier -> BoardInfoPanel(game, portrait, introRes, onRulesClick = { showRules = true }, modifier = m) }
+                val primaryText = stringResource(if (withOthers) R.string.net_host_table else R.string.setup_start)
+                val onPrimary = { if (withOthers) onOpenLobby(players, difficulty, mode, true) else onStart(players, difficulty, mode) }
+                val infoPanel = @Composable { m: Modifier -> BoardInfoPanel(game, portrait, introRes, onRulesClick = { showRules = true }, primaryText = primaryText, onPrimary = onPrimary, modifier = m) }
                 val optionsPanel = @Composable { m: Modifier ->
                     RoyalPanel(title = stringResource(R.string.setup_title), modifier = m) {
                         RoyalSectionTitle(stringResource(R.string.setup_mode_title))
@@ -112,6 +117,7 @@ fun BoardSetupScreen(
                             }
                         }
                         Text(text = playersHint(players), style = MaterialTheme.typography.bodyMedium, color = ParchmentTextDim, modifier = Modifier.padding(top = 6.dp))
+                        extraOptions()
                         RoyalSectionTitle(stringResource(R.string.setup_difficulty))
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
                             AiDifficulty.entries.forEach { level ->
@@ -162,6 +168,7 @@ fun LudoSetupScreen(
     initial: LudoSetup = LudoSetup()
 ) {
     var rules by remember { mutableStateOf(initial.rules) }
+    var color by remember { mutableStateOf(initial.color) }
     BoardSetupScreen(
         game = game,
         portrait = { LudoThumbnail() },
@@ -172,10 +179,28 @@ fun LudoSetupScreen(
         initialDifficulty = initial.difficulty,
         houseRules = { HouseRules(rules, onChange = { rules = it }) },
         onBackClick = onBackClick,
-        onStart = { players, difficulty, mode -> onStart(LudoSetup(players, rules, difficulty), mode) },
-        onOpenLobby = { players, difficulty, mode, host -> onOpenLobby(LudoSetup(players, rules, difficulty), mode, host) },
-        modifier = modifier
+        onStart = { players, difficulty, mode -> onStart(LudoSetup(players, rules, difficulty, color), mode) },
+        onOpenLobby = { players, difficulty, mode, host -> onOpenLobby(LudoSetup(players, rules, difficulty, color), mode, host) },
+        modifier = modifier,
+        extraOptions = { ColourPicker(color, onPick = { color = it }) }
     )
+}
+
+/** "Your colour": the four yard colours as round slots; the chosen yard is always drawn at the bottom-left. */
+@Composable
+private fun ColourPicker(selected: LudoColor, onPick: (LudoColor) -> Unit) {
+    RoyalSectionTitle(stringResource(R.string.ludo_your_colour))
+    Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
+        LudoColor.values().forEach { c ->
+            val name = stringResource(c.nameRes())
+            RoyalSlot(selected = c == selected, onClick = { onPick(c) }, contentDescription = name, size = 52.dp) {
+                Box(modifier = Modifier.size(30.dp).background(LudoPalette.of(c), androidx.compose.foundation.shape.CircleShape).border(2.dp, if (c == selected) GoldenGlow else Color.White.copy(alpha = 0.6f), androidx.compose.foundation.shape.CircleShape), contentAlignment = Alignment.Center) {
+                    Text(c.suit, color = Color.White, fontSize = 15.sp)
+                }
+            }
+        }
+    }
+    Text(stringResource(R.string.ludo_your_colour_hint), style = MaterialTheme.typography.bodySmall, color = ParchmentTextDim, modifier = Modifier.padding(top = 4.dp))
 }
 
 /** The House rules plaque: five orb switches preset to the recommended ruleset, each with a one-line caption. */
@@ -198,7 +223,7 @@ fun RuleRow(label: String, hint: String, on: Boolean, onChange: (Boolean) -> Uni
 }
 
 @Composable
-private fun BoardInfoPanel(game: BoardGameInfo, portrait: @Composable () -> Unit, introRes: Int, onRulesClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun BoardInfoPanel(game: BoardGameInfo, portrait: @Composable () -> Unit, introRes: Int, onRulesClick: () -> Unit, primaryText: String, onPrimary: () -> Unit, modifier: Modifier = Modifier) {
     RoyalPanel(title = stringResource(game.nameRes), modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             val shape = RoundedCornerShape(3.dp)
@@ -216,6 +241,7 @@ private fun BoardInfoPanel(game: BoardGameInfo, portrait: @Composable () -> Unit
             }
         }
         RoyalButton(text = stringResource(R.string.action_rules), onClick = onRulesClick, style = RoyalButtonStyle.STEEL, modifier = Modifier.fillMaxWidth().padding(top = 14.dp))
+        RoyalButton(text = primaryText, onClick = onPrimary, modifier = Modifier.fillMaxWidth().padding(top = 10.dp))
     }
 }
 

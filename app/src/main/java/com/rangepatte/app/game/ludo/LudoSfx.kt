@@ -1,5 +1,6 @@
 package com.rangepatte.app.game.ludo
 
+import com.rangepatte.app.audio.DieTiming
 import com.rangepatte.app.audio.Sfx
 import com.rangepatte.app.audio.SfxCue
 import com.rangepatte.app.domain.ludo.LudoBoard
@@ -13,9 +14,10 @@ import com.rangepatte.app.domain.ludo.LudoState
  * it only names the effects, once per engine event, for the phone sitting at [mySeat] (null: a watcher).
  */
 object LudoSfx {
-    const val DIE_SPIN_MS = 600L
-    const val STEP_MS = 90L
-    const val MIN_GLIDE_MS = 350L
+    /** The die's main clack: its first impact (the 3D die's timeline, [DieTiming]). */
+    val DIE_SPIN_MS = DieTiming.IMPACTS.first().first
+    const val STEP_MS = 160L
+    const val MIN_GLIDE_MS = 600L
     /** Up to this many squares the glide gets a tick per square. */
     const val STEP_TICKS_MAX = 6
 
@@ -26,16 +28,14 @@ object LudoSfx {
         var end = 0L
         when (val e = after.lastEvent) {
             is LudoEvent.Rolled -> {
-                out += SfxCue(Sfx.DICE_ROLL)
-                out += SfxCue(Sfx.DICE_LAND, DIE_SPIN_MS)
-                end = DIE_SPIN_MS + 150
+                out += DieTiming.clacks()
+                end = DieTiming.TOTAL_MS
                 if (e.value == 6 && !e.noMove && after.rules.extraRollOnSix) { out += SfxCue(Sfx.BONUS_ROLL, end); end += 250 }
             }
             is LudoEvent.Forfeit -> {
-                out += SfxCue(Sfx.DICE_ROLL)
-                out += SfxCue(Sfx.DICE_LAND, DIE_SPIN_MS)
-                out += SfxCue(Sfx.INVALID_MOVE, DIE_SPIN_MS + 200)
-                end = DIE_SPIN_MS + 550
+                out += DieTiming.clacks()
+                out += SfxCue(Sfx.INVALID_MOVE, DieTiming.TOTAL_MS + 100)
+                end = DieTiming.TOTAL_MS + 450
             }
             is LudoEvent.Moved -> end = moveCues(e, out)
             is LudoEvent.Won -> {

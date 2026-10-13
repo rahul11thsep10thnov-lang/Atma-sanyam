@@ -17,7 +17,7 @@ import kotlin.random.Random
 
 object DehlaPakadMachine : GameMachine<DpState, TrickAction> {
     override val gameId = GameId.DEHLA_PAKAD
-    override val botDelayMs = 800L
+    override val botDelayMs = 1_500L
 
     override fun start(config: MatchConfig, random: Random) = DehlaPakadEngine.newMatch(random)
 

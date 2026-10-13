@@ -17,7 +17,7 @@ import kotlin.random.Random
 
 object LakadiMachine : GameMachine<LkState, TrickAction> {
     override val gameId = GameId.LAKADI
-    override val botDelayMs = 800L
+    override val botDelayMs = 1_500L
 
     override fun start(config: MatchConfig, random: Random) = LakadiEngine.newGame(random)
 

@@ -57,7 +57,7 @@ fun Hand(
                 val progress = remember(card.id) { Animatable(0f) }
                 LaunchedEffect(card.id) {
                     delay(index * 90L)
-                    progress.animateTo(1f, animationSpec = tween(320, easing = FastOutSlowInEasing))
+                    progress.animateTo(1f, animationSpec = tween(520, easing = FastOutSlowInEasing))
                 }
                 val p = progress.value
                 DealWrapper(progress = p) { cardView() }

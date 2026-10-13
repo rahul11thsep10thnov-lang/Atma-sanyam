@@ -4,15 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -20,142 +17,121 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rangepatte.app.R
-import com.rangepatte.app.domain.ludo.LudoBoard
-import com.rangepatte.app.domain.ludo.LudoPhase
-import com.rangepatte.app.domain.ludo.LudoState
 import com.rangepatte.app.domain.talk.TableMessage
 import com.rangepatte.app.game.common.TalkBubble
-import com.rangepatte.app.ui.components.royal.antiquePlaque
 import com.rangepatte.app.ui.friends.PersonAvatar
-import com.rangepatte.app.ui.theme.GoldBevelDark
-import com.rangepatte.app.ui.theme.GoldBevelLight
 import com.rangepatte.app.ui.theme.GoldenGlow
-import com.rangepatte.app.ui.theme.PanelWoodDark
+
+/** What one corner plaque shows (Ludo and Moksha Patam share it). */
+data class CornerPlayer(
+    val name: String,
+    val avatarId: String?,
+    val isBot: Boolean,
+    val tint: Color,
+    val suit: String,
+    /** Four pips: how many are filled (tokens home in Ludo). Null hides the pips and shows [detail]. */
+    val filled: Int?,
+    val detail: String?,
+    val isTurn: Boolean,
+    val isYou: Boolean,
+    /** Seconds left while a dropped player's seat is kept (stage 8); null otherwise. */
+    val awayLeft: Int?,
+    val message: TableMessage? = null
+)
 
 /**
- * Stage 5 (approved: Design 1's plaque, in each player's own yard). Over the board, one antique
- * plaque per player sits in the middle of their yard, between the four nests: the Friends avatar
- * with a colour ring and suit badge, the username, and four token pips that fill gold as tokens get
- * home. The current player's plaque glows; a finished player's shows their place.
- *
- * Stage 8: a seat in [away] (seat → the moment its window closes) dims, shows an hourglass and counts
- * down "back in N s" from [now]; a seat in [botSeats] that the state still lists as a person has been
- * taken over by the computer and says so.
+ * A player's plaque at a corner of the board, as in the classic layout: the avatar ringed in the
+ * player's colour on the outer side, the name, and four pips that fill as tokens get home. When it is
+ * this player's turn the plaque is lit up boldly — a thick pulsing gold border, a brighter fill, a
+ * slight lift and a "YOUR TURN" / "TURN" tag — so nobody can miss whose move it is.
  */
 @Composable
-fun LudoYardPlaques(state: LudoState, youName: String, mySeat: Int, modifier: Modifier = Modifier, away: Map<Int, Long> = emptyMap(), botSeats: Set<Int> = emptySet(), now: Long = 0L, messages: List<TableMessage> = emptyList()) {
-    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
-        val s = maxWidth
-        val cell = s / (LudoBoard.SIZE + 1.2f)
-        val margin = cell * 0.6f
-        val width = cell * 3.6f
-        val height = cell * 2.2f
-        val places = listOf(R.string.ludo_place_1, R.string.ludo_place_2, R.string.ludo_place_3, R.string.ludo_place_4).map { stringResource(it) }
-        val computer = stringResource(R.string.ludo_plaque_computer)
-        state.players.forEachIndexed { i, p ->
-            val o = LudoBoard.yardOrigin(p.color)
-            val x = margin + cell * (o.col + 3) - width / 2
-            val y = margin + cell * (o.row + 3) - height / 2
-            val place = state.places.indexOf(i).takeIf { it >= 0 }?.let { places[it] }
-            val awayLeft = away[i]?.let { ((it - now) / 1000).toInt().coerceAtLeast(0) }
-            val takenOver = awayLeft == null && i in botSeats && !p.isBot
-            YardPlaque(
-                name = if (takenOver) computer else if (i == mySeat) youName else p.name,
-                avatarId = p.avatarId,
-                isBot = p.isBot || takenOver,
-                awayLeft = awayLeft,
-                suit = p.color.suit,
-                tint = LudoPalette.of(p.color),
-                home = p.finished,
-                place = place,
-                isTurn = state.turn == i && state.phase != LudoPhase.OVER,
-                width = width,
-                modifier = Modifier.offset(x = x, y = y)
-            )
-        }
-        // Stage 9: the newest table-talk message per seat as a parchment bubble just under the speaker's plaque;
-        // a watcher's message sits over the centre star.
-        messages.groupBy { it.seat }.forEach { (seat, list) ->
-            val m = list.last()
-            val speaker = state.players.getOrNull(seat)
-            val name = if (seat == TableMessage.WATCHER) m.name else speaker?.name.orEmpty()
-            val bx: Dp; val by: Dp
-            if (speaker != null) {
-                // Under the plaque in the top yards, above it in the bottom yards, so the bubble stays on the board.
-                val o = LudoBoard.yardOrigin(speaker.color)
-                val top = o.row < LudoBoard.SIZE / 2
-                bx = margin + cell * (o.col + 3) - cell * 1.9f
-                by = if (top) margin + cell * (o.row + 3) + height / 2 + 2.dp else margin + cell * (o.row + 3) - height / 2 - cell * 3.4f - 2.dp
-            } else {
-                bx = s / 2 - cell * 1.9f
-                by = s / 2 + cell * 1.5f
+fun CornerPlaque(player: CornerPlayer?, alignEnd: Boolean, onTop: Boolean, pulse: Float, modifier: Modifier = Modifier) {
+    Box(modifier = modifier, contentAlignment = if (alignEnd) Alignment.CenterEnd else Alignment.CenterStart) {
+        if (player == null) return@Box
+        val turn = player.isTurn
+        val shape = RoundedCornerShape(30.dp)
+        val label = stringResource(R.string.ludo_plaque_label_format, player.name, player.filled ?: 0)
+        Column(horizontalAlignment = if (alignEnd) Alignment.End else Alignment.Start) {
+            if (turn && onTop) TurnTag(player.isYou, pulse)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                modifier = Modifier
+                    .scale(if (turn) 1.06f else 1f)
+                    .alpha(if (player.awayLeft != null) 0.6f else 1f)
+                    .shadow(if (turn) 14.dp else 4.dp, shape, ambientColor = GoldenGlow, spotColor = GoldenGlow)
+                    .background(Brush.horizontalGradient(listOf(lerp(player.tint, Color.Black, if (turn) 0.15f else 0.45f), lerp(player.tint, Color.Black, if (turn) 0.35f else 0.65f))), shape)
+                    .border(if (turn) (3 + 2 * pulse).dp else 1.5.dp, if (turn) lerp(Color(0xFFFFD54F), Color.White, pulse * 0.5f) else player.tint, shape)
+                    .padding(horizontal = 6.dp, vertical = 5.dp)
+                    .semantics { contentDescription = label }
+            ) {
+                if (!alignEnd) Avatar(player)
+                Column(horizontalAlignment = if (alignEnd) Alignment.End else Alignment.Start, modifier = Modifier.padding(horizontal = 4.dp)) {
+                    Text(
+                        text = player.name, fontSize = 14.sp, lineHeight = 16.sp, fontWeight = FontWeight.Bold,
+                        color = if (turn) Color.White else Color(0xFFEDE3CF), maxLines = 1, overflow = TextOverflow.Ellipsis
+                    )
+                    when {
+                        player.awayLeft != null -> Text(stringResource(R.string.ludo_away_format, player.awayLeft), fontSize = 11.sp, color = Color(0xFFEDE3CF))
+                        player.filled != null -> Row(horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.padding(top = 3.dp)) {
+                            repeat(4) { i ->
+                                Box(Modifier.size(11.dp).background(if (i < player.filled) GoldenGlow else player.tint, CircleShape).border(1.dp, Color.White.copy(alpha = 0.8f), CircleShape))
+                            }
+                        }
+                        player.detail != null -> Text(player.detail, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = if (turn) GoldenGlow else Color(0xFFEDE3CF), maxLines = 1)
+                    }
+                }
+                if (alignEnd) Avatar(player)
             }
-            Box(modifier = Modifier.offset(x = bx, y = by).width(cell * 3.8f).height(cell * 3.4f), contentAlignment = Alignment.BottomCenter) {
-                TalkBubble(name = name, id = m.id)
+            if (turn && !onTop) TurnTag(player.isYou, pulse)
+        }
+        player.message?.let { m ->
+            Box(modifier = Modifier.align(if (alignEnd) Alignment.TopEnd else Alignment.TopStart).offset(y = if (onTop) 58.dp else (-58).dp)) {
+                TalkBubble(name = "", id = m.id)
             }
         }
     }
 }
 
 @Composable
-private fun YardPlaque(name: String, avatarId: String?, isBot: Boolean, awayLeft: Int?, suit: String, tint: Color, home: Int, place: String?, isTurn: Boolean, width: Dp, modifier: Modifier = Modifier) {
-    val label = stringResource(R.string.ludo_plaque_label_format, name, home)
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(2.dp),
-        modifier = modifier
-            .width(width)
-            .alpha(if (awayLeft != null) 0.6f else 1f)
-            .antiquePlaque(active = isTurn, cornerRadius = 6.dp)
-            .background(Brush.verticalGradient(listOf(if (isTurn) Color(0xFF4A2A14) else PanelWoodDark, PanelWoodDark)), RoundedCornerShape(6.dp))
-            .border(1.dp, if (isTurn) GoldenGlow else GoldBevelDark, RoundedCornerShape(6.dp))
-            .padding(horizontal = 4.dp, vertical = 3.dp)
-            .semantics { contentDescription = label }
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-            Box(contentAlignment = Alignment.BottomEnd) {
-                Box(modifier = Modifier.size(20.dp).border(2.dp, tint, CircleShape), contentAlignment = Alignment.Center) {
-                    if (awayLeft != null) Text("⏳", fontSize = 10.sp) else if (isBot) Text("🤖", fontSize = 10.sp) else PersonAvatar(avatarId, online = true, size = 16.dp)
-                }
-                Text(suit, fontSize = 8.sp, color = Color.White, fontWeight = FontWeight.Black, modifier = Modifier.offset(x = 2.dp, y = 2.dp).background(tint, CircleShape).padding(horizontal = 2.dp))
-            }
-            Text(
-                text = name,
-                fontSize = 9.sp,
-                lineHeight = 10.sp,
-                fontWeight = FontWeight.Bold,
-                color = if (isTurn) GoldenGlow else GoldBevelLight,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f, fill = false)
-            )
-        }
-        if (awayLeft != null) {
-            Text(stringResource(R.string.ludo_away_format, awayLeft), fontSize = 8.sp, lineHeight = 9.sp, fontWeight = FontWeight.Bold, color = GoldBevelLight, maxLines = 1)
-        } else if (place != null) {
-            Text(place, fontSize = 8.sp, lineHeight = 9.sp, fontWeight = FontWeight.Black, color = GoldenGlow)
-        } else {
-            Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-                repeat(4) { i ->
-                    Box(
-                        modifier = Modifier
-                            .size(7.dp)
-                            .background(if (i < home) GoldenGlow else Color(0xFF4A301B), CircleShape)
-                            .border(1.dp, if (i < home) GoldBevelLight else GoldBevelDark, CircleShape)
-                    )
-                }
+private fun Avatar(player: CornerPlayer) {
+    Box(contentAlignment = Alignment.BottomEnd) {
+        Box(
+            modifier = Modifier.size(42.dp).background(Color(0xFF2B1A0E), CircleShape).border(if (player.isTurn) 3.dp else 2.dp, if (player.isTurn) Color(0xFFFFD54F) else player.tint, CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            when {
+                player.awayLeft != null -> Text("⏳", fontSize = 18.sp)
+                player.isBot -> Text("🤖", fontSize = 18.sp)
+                else -> PersonAvatar(player.avatarId, online = true, size = 34.dp)
             }
         }
+        Text(player.suit, fontSize = 10.sp, color = Color.White, fontWeight = FontWeight.Black, modifier = Modifier.offset(x = 3.dp, y = 3.dp).background(player.tint, CircleShape).padding(horizontal = 3.dp))
     }
+}
+
+@Composable
+private fun TurnTag(isYou: Boolean, pulse: Float) {
+    Text(
+        text = stringResource(if (isYou) R.string.board_your_turn_tag else R.string.board_turn_tag),
+        fontSize = 12.sp, fontWeight = FontWeight.Black, color = Color(0xFF3A2208),
+        modifier = Modifier
+            .padding(vertical = 3.dp)
+            .background(lerp(Color(0xFFFFD54F), Color.White, pulse * 0.35f), RoundedCornerShape(10.dp))
+            .padding(horizontal = 10.dp, vertical = 2.dp)
+    )
 }

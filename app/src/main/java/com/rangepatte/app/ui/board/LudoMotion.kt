@@ -11,7 +11,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
+import com.rangepatte.app.audio.DieTiming
 import com.rangepatte.app.domain.ludo.Cell
+import com.rangepatte.app.game.ludo.LudoSfx
 import com.rangepatte.app.domain.ludo.LudoBoard
 import com.rangepatte.app.domain.ludo.LudoEvent
 import com.rangepatte.app.domain.ludo.LudoState
@@ -37,8 +39,11 @@ data class MotionFrame(
     val busy: Boolean get() = mover != null || flying.isNotEmpty()
 }
 
-/** The die as the screen draws it: the face to show and its spin while rolling. */
-data class DieFrame(val face: Int?, val rotation: Float, val rolling: Boolean, val sixFlash: Float)
+/**
+ * The die as the screen draws it: the face it will show, whether a throw is running and how far into
+ * its [DieTiming] timeline it is ([elapsedMs]), a [seed] that varies the tumble, and a six's flash.
+ */
+data class DieFrame(val face: Int?, val rotation: Float, val rolling: Boolean, val sixFlash: Float, val elapsedMs: Float = DieTiming.TOTAL_MS.toFloat(), val seed: Int = 0)
 
 /**
  * Runs the animations the engine's events call for and exposes the current [frame] and [die].
@@ -58,15 +63,17 @@ class LudoMotion(private val reduceMotion: Boolean) {
     private val flash = Animatable(0f)
     private val shineAlpha = Animatable(0f)
 
-    /** The die spins through random faces for 600 ms and settles on [value]. */
+    /**
+     * The 3D die is tossed, tumbles, bounces twice and settles showing [value] — which the engine
+     * decided before the throw; the animation only lands on it ([DiePose]).
+     */
     suspend fun roll(value: Int) {
         if (reduceMotion) { die = DieFrame(value, 0f, false, 0f); if (value == 6) flashSix(); return }
-        die = DieFrame(value, 0f, true, 0f)
+        val seed = Random.nextInt(0, 1_000)
+        die = DieFrame(value, 0f, true, 0f, 0f, seed)
         spin.snapTo(0f)
-        val faces = Random(value.toLong())
-        spin.animateTo(720f, tween(600, easing = FastOutSlowInEasing)) {
-            val settled = this.value > 600f
-            die = DieFrame(if (settled) value else 1 + faces.nextInt(6), this.value, !settled || this.value < 720f, 0f)
+        spin.animateTo(DieTiming.TOTAL_MS.toFloat(), tween(DieTiming.TOTAL_MS.toInt(), easing = LinearEasing)) {
+            die = DieFrame(value, 0f, true, 0f, this.value, seed)
         }
         die = DieFrame(value, 0f, false, 0f)
         if (value == 6) flashSix()
@@ -74,7 +81,7 @@ class LudoMotion(private val reduceMotion: Boolean) {
 
     private suspend fun flashSix() {
         flash.snapTo(1f)
-        flash.animateTo(0f, tween(500)) { die = die.copy(sixFlash = this.value) }
+        flash.animateTo(0f, tween(DieTiming.SIX_FLASH_MS.toInt())) { die = die.copy(sixFlash = this.value) }
     }
 
     /**
@@ -110,7 +117,7 @@ class LudoMotion(private val reduceMotion: Boolean) {
             return
         }
 
-        val duration = maxOf(350, 90 * (path.size - 1))
+        val duration = maxOf(LudoSfx.MIN_GLIDE_MS.toInt(), LudoSfx.STEP_MS.toInt() * (path.size - 1))
         progress.snapTo(0f)
         progress.animateTo(1f, tween(duration, easing = LinearEasing)) {
             val t = this.value * (path.size - 1)
@@ -130,7 +137,7 @@ class LudoMotion(private val reduceMotion: Boolean) {
         }
         if (capturedFrom.isNotEmpty()) {
             progress.snapTo(0f)
-            progress.animateTo(1f, tween(550, easing = FastOutSlowInEasing)) {
+            progress.animateTo(1f, tween(800, easing = FastOutSlowInEasing)) {
                 val v = this.value
                 frame = MotionFrame(flying = capturedFrom.map { (pi, ti, c) ->
                     val nest = LudoBoard.yardNests(before.players[pi].color)[ti].toOffset()

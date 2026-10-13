@@ -7,9 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 
 /**
- * The back of every card in the app: burgundy, antique gold and a lotus medallion, handcrafted in
- * the manner of Mughal/Rajasthani ornament and drawn in code (see [drawRoyalCardBack]). The same
- * back is used by every game.
+ * The back of every card in the app: the classic red lattice back with a small gold lotus medallion,
+ * drawn in code (see [drawRoyalCardBack]). The same back is used by every game.
  */
 @Composable
 internal fun CardBack(palette: CardPalette, modifier: Modifier = Modifier) {

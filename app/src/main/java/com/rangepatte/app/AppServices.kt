@@ -97,6 +97,7 @@ object AppServices {
             if (isFirebaseConnected) FirestorePlayRequestStore() else LocalPlayRequestStore(),
             friendStateOf = presence::stateOf, relationOf = friends::statusOf
         )
+        com.rangepatte.app.ui.motion.MotionPrefs.init(application)
         myProfile = com.rangepatte.app.data.profile.MyProfilePrefsRepository(application)
         ludoRecord = com.rangepatte.app.data.ludo.LudoRecordRepository(application)
         snakesRecord = com.rangepatte.app.data.ludo.LudoRecordRepository(application, "snakes_record")
@@ -115,6 +116,7 @@ object AppServices {
         account.onSignedOutListener = { profile.onSignedOut(); friends.stopWatching(); presence.onSignedOut(); playRequests.stopWatching(); notifications.stopWatching(); pokes.stopWatching(); pokePrefs.stop(); myProfile.stop(); ludoRecord.stop(); snakesRecord.stop() }
         account.currentUser.value?.let { profile.onSignedIn(it.uid); friends.start(it.uid); presence.onSignedIn(it.uid); playRequests.start(it.uid); myProfile.start(it.uid); notifications.start(it.uid); pokePrefs.start(it.uid); pokes.start(it.uid); ludoRecord.start(it.uid); snakesRecord.start(it.uid) }
         ads = AdsManager(membership)
+        com.rangepatte.app.game.common.UndoGate.isMember = { membership.isAdFree() }
         GameAudio.init(application)
     }
 }

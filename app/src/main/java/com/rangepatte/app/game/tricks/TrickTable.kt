@@ -9,7 +9,14 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -78,17 +85,29 @@ fun TrickTable(
                     .size(width = trickCard * 2.8f, height = trickCard * CARD_ASPECT * 1.75f)
             ) {
                 plays.forEach { play ->
-                    val align = when ((play.seat - mySeat + 4) % 4) {
+                    val relative = (play.seat - mySeat + 4) % 4
+                    val align = when (relative) {
                         0 -> Alignment.BottomCenter
                         1 -> Alignment.CenterEnd
                         2 -> Alignment.TopCenter
                         else -> Alignment.CenterStart
                     }
-                    CardView(
-                        card = play.card,
-                        selected = winnerSeat == play.seat,
-                        modifier = Modifier.align(align).width(trickCard)
-                    )
+                    // A played card is thrown in from its player's side, slowly enough to follow.
+                    key(play.card.id) {
+                        val flight = remember { Animatable(1f) }
+                        LaunchedEffect(Unit) { flight.animateTo(0f, tween(THROW_MS, easing = FastOutSlowInEasing)) }
+                        val dir = when (relative) { 0 -> 0f to 1f; 1 -> 1f to 0f; 2 -> 0f to -1f; else -> -1f to 0f }
+                        CardView(
+                            card = play.card,
+                            selected = winnerSeat == play.seat,
+                            modifier = Modifier.align(align).width(trickCard).graphicsLayer {
+                                translationX = dir.first * flight.value * size.width * 2.2f
+                                translationY = dir.second * flight.value * size.height * 1.6f
+                                rotationZ = flight.value * 18f * (if (relative % 2 == 0) 1f else -1f)
+                                alpha = 1f - flight.value * 0.4f
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -109,3 +128,6 @@ fun TrickTable(
         }
     }
 }
+
+/** How long a played card takes to land in the middle of the table. */
+private const val THROW_MS = 650

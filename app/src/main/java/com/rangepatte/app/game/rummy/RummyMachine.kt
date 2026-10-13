@@ -15,7 +15,7 @@ import kotlin.random.Random
 
 object RummyMachine : GameMachine<RummyState, RummyAction> {
     override val gameId = GameId.RUMMY
-    override val botDelayMs = 900L
+    override val botDelayMs = 1_700L
 
     override fun start(config: MatchConfig, random: Random) = RummyEngine.newGame(config.seatNames, random)
 

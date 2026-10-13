@@ -18,7 +18,7 @@ interface GameMachine<S, A> {
     val gameId: GameId
 
     /** How long a computer player "thinks" before moving, so people can follow what happens. */
-    val botDelayMs: Long get() = 900
+    val botDelayMs: Long get() = 1_600
 
     /** The very first position of a match. */
     fun start(config: MatchConfig, random: Random): S

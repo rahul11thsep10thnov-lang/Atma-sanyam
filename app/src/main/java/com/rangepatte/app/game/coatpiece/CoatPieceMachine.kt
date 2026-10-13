@@ -17,7 +17,7 @@ import kotlin.random.Random
 
 object CoatPieceMachine : GameMachine<CpState, TrickAction> {
     override val gameId = GameId.COAT_PIECE
-    override val botDelayMs = 800L
+    override val botDelayMs = 1_500L
 
     override fun start(config: MatchConfig, random: Random) = CoatPieceEngine.newMatch(random)
 

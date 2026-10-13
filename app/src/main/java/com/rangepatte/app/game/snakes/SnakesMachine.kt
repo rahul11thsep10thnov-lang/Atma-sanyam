@@ -25,7 +25,7 @@ import kotlin.random.Random
  */
 object SnakesMachine : GameMachine<SnakesState, SnakesAction> {
     override val gameId: GameId = GameId.SNAKES_LADDERS
-    override val botDelayMs: Long = 1_600
+    override val botDelayMs: Long = 2_800
 
     override fun start(config: MatchConfig, random: Random): SnakesState =
         SnakesEngine.newGame(config.seatNames, SnakesRules.decode(config.options), bots = (0 until config.seats).filter { it !in config.humanSeats }.toSet())

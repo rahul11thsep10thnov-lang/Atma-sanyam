@@ -140,4 +140,16 @@ class LudoMachineTest {
         val fresh = Wire.Start(config(2, setOf(0, 1), LudoRules(sixToEnter = false)), 1)
         assertEquals(fresh, Wire.decode(fresh.encode()))
     }
+
+    @Test fun theHostsColourTravelsWithTheRulesAndSeatsFollowClockwise() {
+        val opts = LudoRules.options(LudoRules(exactFinish = false), LudoColor.BLUE)
+        assertEquals("11101B", opts)
+        assertEquals(LudoRules(exactFinish = false), LudoRules.decode(opts))
+        assertEquals(LudoColor.BLUE, LudoRules.colorOf(opts))
+        assertEquals(LudoColor.RED, LudoRules.colorOf("10111"))
+        assertEquals(listOf(LudoColor.BLUE, LudoColor.RED, LudoColor.GREEN, LudoColor.YELLOW), com.rangepatte.app.domain.ludo.LudoEngine.colorsFor(4, LudoColor.BLUE))
+        assertEquals(listOf(LudoColor.GREEN, LudoColor.BLUE), com.rangepatte.app.domain.ludo.LudoEngine.colorsFor(2, LudoColor.GREEN))
+        val cfg = MatchConfig(GameId.LUDO, listOf("H", "G"), setOf(0, 1), AiDifficulty.EASY, 1, opts)
+        assertEquals(listOf(LudoColor.BLUE, LudoColor.GREEN), LudoMachine.start(cfg, Random(1)).players.map { it.color })
+    }
 }

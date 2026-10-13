@@ -222,7 +222,7 @@ private fun HostSection(lobby: LobbyUi, onShareCode: (String) -> Unit, decor: Lo
         )
     }
     RoyalSectionTitle(stringResource(R.string.net_players_format, lobby.names.size, lobby.totalSeats))
-    PeopleList(lobby.names, lobby.totalSeats, decor)
+    PeopleList(lobby.names, lobby.totalSeats, decor, lobby.options)
     Text(
         text = stringResource(R.string.net_empty_seats_note),
         style = MaterialTheme.typography.bodyMedium,
@@ -252,7 +252,7 @@ private fun GuestSection(lobby: LobbyUi, decor: LobbyDecor?) {
     if (lobby.stage == LobbyStage.AT_TABLE) {
         decor?.let { RulesLine(it.rulesLine(lobby.options)) }
         RoyalSectionTitle(stringResource(R.string.net_players_format, lobby.names.size, lobby.totalSeats))
-        PeopleList(lobby.names, lobby.totalSeats, decor)
+        PeopleList(lobby.names, lobby.totalSeats, decor, lobby.options)
         Text(
             text = stringResource(if (lobby.watching) R.string.net_watch_waiting else R.string.net_joined_waiting),
             style = MaterialTheme.typography.bodyLarge,
@@ -313,9 +313,9 @@ private fun RulesLine(text: String) {
 }
 
 @Composable
-private fun PeopleList(names: List<String>, totalSeats: Int, decor: LobbyDecor?) {
+private fun PeopleList(names: List<String>, totalSeats: Int, decor: LobbyDecor?, options: String = "") {
     if (decor != null && totalSeats > 0) {
-        ColouredSeats(names, totalSeats, decor)
+        ColouredSeats(names, totalSeats, decor, options)
         return
     }
     names.forEachIndexed { index, person ->
@@ -336,13 +336,13 @@ private fun PeopleList(names: List<String>, totalSeats: Int, decor: LobbyDecor?)
  * they will get ([LobbyHost.guestSeatOrder]), then the seats still open, which the computer takes.
  */
 @Composable
-private fun ColouredSeats(names: List<String>, totalSeats: Int, decor: LobbyDecor) {
+private fun ColouredSeats(names: List<String>, totalSeats: Int, decor: LobbyDecor, options: String) {
     val order = LobbyHost.guestSeatOrder(totalSeats)
     val seatOf = { index: Int -> if (index == 0) 0 else order.getOrElse(index - 1) { index } }
     val taken = names.indices.map(seatOf).toSet()
     val rows = names.mapIndexed { i, n -> seatOf(i) to n } + (0 until totalSeats).filter { it !in taken }.map { it to null }
     val shape = RoundedCornerShape(3.dp)
-    val seats = decor.seats(totalSeats)
+    val seats = decor.seatsFor(totalSeats, options)
     rows.forEach { (seat, person) ->
         val colour = seats.getOrNull(seat)?.color ?: GoldBevelDark
         val colourName = seats.getOrNull(seat)?.name.orEmpty()

@@ -10,6 +10,7 @@ import com.rangepatte.app.audio.GameAudio
 import com.rangepatte.app.audio.Sfx
 import com.rangepatte.app.domain.ludo.LudoState
 import com.rangepatte.app.game.common.TalkControl
+import com.rangepatte.app.game.common.UndoControl
 import com.rangepatte.app.game.common.TalkLayout
 import com.rangepatte.app.game.common.talkControl
 import com.rangepatte.app.net.GameSession
@@ -41,6 +42,8 @@ interface LudoTableController {
     fun acknowledgeRejoined() {}
     /** Table talk (stage 9); null on a solo table. */
     val talk: TalkControl? get() = null
+    /** The Undo button; only a table against the computer has one. */
+    val undo: UndoControl? get() = null
     /** Stage 10: who may start the match again from this phone. */
     val rematchOffer: RematchOffer
     fun rematch()

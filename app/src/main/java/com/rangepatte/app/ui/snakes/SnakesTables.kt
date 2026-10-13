@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.rangepatte.app.audio.GameAudio
+import com.rangepatte.app.audio.Sfx
 import com.rangepatte.app.domain.snakes.SnakesAction
 import com.rangepatte.app.domain.snakes.SnakesEngine
 import com.rangepatte.app.domain.snakes.SnakesPhase
@@ -11,6 +12,8 @@ import com.rangepatte.app.domain.snakes.SnakesSetup
 import com.rangepatte.app.domain.snakes.SnakesState
 import com.rangepatte.app.game.common.TalkControl
 import com.rangepatte.app.game.common.TalkLayout
+import com.rangepatte.app.game.common.UndoControl
+import com.rangepatte.app.game.common.UndoHistory
 import com.rangepatte.app.game.common.talkControl
 import com.rangepatte.app.game.snakes.SnakesSfx
 import com.rangepatte.app.net.GameSession
@@ -39,6 +42,8 @@ interface SnakesTableController {
     val rejoined: Boolean get() = false
     fun acknowledgeRejoined() {}
     val talk: TalkControl? get() = null
+    /** The Undo button; only a table against the computer has one. */
+    val undo: UndoControl? get() = null
     val rematchOffer: RematchOffer
     fun start()
     fun roll()
@@ -70,17 +75,26 @@ class SnakesSession(setup: SnakesSetup, youName: String, botNames: List<String>,
     override fun roll() {
         if (!isMyTurn || busy) return
         val value = dice.nextInt(1, 7)
-        SnakesEngine.roll(state, value)?.let { step(it); shownDice = value }
+        val before = state
+        SnakesEngine.roll(state, value)?.let { history.record(before to shownDice); step(it); shownDice = value }
     }
 
+    /** Undo takes the table back to just before one of your rolls (the computer's turns since then are undone too). */
+    private val history = UndoHistory<Pair<SnakesState, Int?>>()
+    override val undo: UndoControl
+        get() = UndoControl(usesLeft = history.usesLeft, enabled = history.canUndo && isMyTurn && !busy) {
+            if (isMyTurn && !busy) history.undo()?.let { (s, d) -> state = s; shownDice = d; GameAudio.play(Sfx.UI_TAP) }
+        }
+
     override fun rematch() {
-        SnakesEngine.rematch(state)?.let { state = it; shownDice = null; GameAudio.playCues(SnakesSfx.start()) }
+        SnakesEngine.rematch(state)?.let { state = it; shownDice = null; history.reset(); GameAudio.playCues(SnakesSfx.start()) }
     }
 
     private suspend fun runBots() {
         while (true) {
             if (state.phase == SnakesPhase.OVER || busy || state.turn == mySeat) { delay(120); continue }
-            delay(600)
+            // A computer player pauses before each roll, so people can follow it.
+            delay(1_400)
             if (busy || state.phase == SnakesPhase.OVER || state.turn == mySeat) continue
             val v = dice.nextInt(1, 7)
             SnakesEngine.roll(state, v)?.let { step(it); shownDice = v }

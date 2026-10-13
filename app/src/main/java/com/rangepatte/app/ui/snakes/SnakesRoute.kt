@@ -50,7 +50,7 @@ fun SnakesScreen(game: BoardGameInfo, setup: SnakesSetup, onBackClick: () -> Uni
     val state = table.state
     val pulse by rememberInfiniteTransition(label = "snakesPulse").animateFloat(0f, 1f, infiniteRepeatable(tween(900), RepeatMode.Reverse), label = "pulse")
     val context = androidx.compose.ui.platform.LocalContext.current
-    val reduceMotion = remember { runCatching { android.provider.Settings.Global.getFloat(context.contentResolver, android.provider.Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f }.getOrDefault(false) }
+    val reduceMotion = remember { com.rangepatte.app.ui.motion.MotionPrefs.reduceMotion(context) }
     val motion = rememberSnakesMotion(state, reduceMotion, onBusy = { table.busy = it })
     var now by remember { mutableStateOf(System.currentTimeMillis()) }
     val counting = table.awaySeats.isNotEmpty() || table.reconnecting
@@ -61,7 +61,8 @@ fun SnakesScreen(game: BoardGameInfo, setup: SnakesSetup, onBackClick: () -> Uni
         rules = { onDismiss ->
             GameResultDialog(title = stringResource(R.string.action_rules), lines = snakesRulesLines.map { stringResource(it) }, primaryText = stringResource(R.string.spectate_ok), onPrimary = onDismiss)
         },
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        undo = table.undo
     ) {
         SnakesTable(
             state = state, isMyTurn = table.isMyTurn && !motion.busy, shownDice = motion.die.face ?: table.shownDice, pulse = pulse, onRoll = table::roll,

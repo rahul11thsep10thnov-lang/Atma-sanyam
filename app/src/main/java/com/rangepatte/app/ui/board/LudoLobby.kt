@@ -18,7 +18,7 @@ import com.rangepatte.app.ui.multiplayer.SeatColour
 @Composable
 fun ludoLobbyDecor(): LobbyDecor {
     val names = LudoColor.entries.associateWith { stringResource(it.nameRes()) }
-    val seats = (2..4).associateWith { n -> LudoEngine.colorsFor(n).map { SeatColour(LudoPalette.of(it), names.getValue(it)) } }
+    val seatsFor = { n: Int, options: String -> LudoEngine.colorsFor(n.coerceIn(2, 4), LudoRules.colorOf(options)).map { SeatColour(LudoPalette.of(it), names.getValue(it)) } }
     val recommended = stringResource(R.string.ludo_lobby_rules_default)
     val none = stringResource(R.string.ludo_lobby_rules_none)
     val template = stringResource(R.string.ludo_lobby_rules_format)
@@ -27,7 +27,7 @@ fun ludoLobbyDecor(): LobbyDecor {
         stringResource(R.string.ludo_rule_extra_capture), stringResource(R.string.ludo_rule_exact_finish),
         stringResource(R.string.ludo_rule_play_on)
     ).map { it.lowercase() }
-    return LobbyDecor(seats) { options -> ludoRulesLine(LudoRules.decode(options), recommended, none, template, labels) }
+    return LobbyDecor(seatsFor) { options -> ludoRulesLine(LudoRules.decode(options), recommended, none, template, labels) }
 }
 
 /** "House rules: six to enter · extra roll on six · …", or the short forms for the recommended set and for none. */

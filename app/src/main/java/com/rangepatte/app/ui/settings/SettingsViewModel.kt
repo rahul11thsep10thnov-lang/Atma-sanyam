@@ -17,15 +17,20 @@ data class SettingsUiState(
  * [GameAudio], which remembers them between launches and is what actually plays.
  */
 class SettingsViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(SettingsUiState())
+    private val _uiState = MutableStateFlow(SettingsUiState(animationsEnabled = com.rangepatte.app.ui.motion.MotionPrefs.animations.value))
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
-    fun toggleAnimations(enabled: Boolean) = _uiState.update { it.copy(animationsEnabled = enabled) }
+    /** Off = reduced motion in the games (the die settles at once, tokens jump); remembered between launches. */
+    fun toggleAnimations(enabled: Boolean) {
+        com.rangepatte.app.ui.motion.MotionPrefs.setAnimations(enabled)
+        _uiState.update { it.copy(animationsEnabled = enabled) }
+    }
 
     fun toggleVibration(enabled: Boolean) = _uiState.update { it.copy(vibrationEnabled = enabled) }
 
     fun restoreDefaults() {
         GameAudio.restoreDefaults()
+        com.rangepatte.app.ui.motion.MotionPrefs.setAnimations(true)
         _uiState.value = SettingsUiState()
     }
 }

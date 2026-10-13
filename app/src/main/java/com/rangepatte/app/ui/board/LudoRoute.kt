@@ -58,7 +58,7 @@ fun LudoScreen(game: BoardGameInfo, setup: LudoSetup, onBackClick: () -> Unit) {
     val state = table.state
     val pulse by rememberInfiniteTransition(label = "ludoPulse").animateFloat(0f, 1f, infiniteRepeatable(tween(900), RepeatMode.Reverse), label = "pulse")
     val context = androidx.compose.ui.platform.LocalContext.current
-    val reduceMotion = remember { runCatching { android.provider.Settings.Global.getFloat(context.contentResolver, android.provider.Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f }.getOrDefault(false) }
+    val reduceMotion = remember { com.rangepatte.app.ui.motion.MotionPrefs.reduceMotion(context) }
     val motion = rememberLudoMotion(state, table.shownDice, reduceMotion, onBusy = { table.busy = it })
     // Stage 8: a one-second clock while a seat is kept or this phone is reconnecting, for the countdowns.
     var now by remember { mutableStateOf(System.currentTimeMillis()) }
@@ -74,7 +74,8 @@ fun LudoScreen(game: BoardGameInfo, setup: LudoSetup, onBackClick: () -> Unit) {
                 primaryText = stringResource(R.string.spectate_ok), onPrimary = onDismiss
             )
         },
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        undo = table.undo
     ) {
         LudoTable(
             state = state, isMyTurn = table.isMyTurn && !motion.busy, shownDice = motion.die.face ?: table.shownDice, pulse = pulse,

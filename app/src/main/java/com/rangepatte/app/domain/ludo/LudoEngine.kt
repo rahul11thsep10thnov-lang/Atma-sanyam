@@ -81,9 +81,9 @@ sealed interface LudoAction {
  */
 object LudoEngine {
     /** A fresh game for [names] in seat order; 2 players sit opposite (red and yellow), 3 leave blue empty. */
-    fun newGame(names: List<String>, rules: LudoRules = LudoRules.DEFAULT, avatars: List<String?> = emptyList(), bots: Set<Int> = emptySet()): LudoState {
+    fun newGame(names: List<String>, rules: LudoRules = LudoRules.DEFAULT, avatars: List<String?> = emptyList(), bots: Set<Int> = emptySet(), firstColor: LudoColor = LudoColor.RED): LudoState {
         require(names.size in 2..4) { "2 to 4 players" }
-        val colors = colorsFor(names.size)
+        val colors = colorsFor(names.size, firstColor)
         return LudoState(players = names.zip(colors) { n, c -> LudoPlayer(c, n) }.mapIndexed { i, p -> p.copy(avatarId = avatars.getOrNull(i), isBot = i in bots) }, rules = rules, stats = List(names.size) { LudoStats() })
     }
 
@@ -105,11 +105,19 @@ object LudoEngine {
 
     private fun progress(p: LudoPlayer): Int = p.tokens.sumOf { if (it == LudoBoard.YARD) 0 else it + 1 }
 
-    /** The colour of each seat at a table of [players]: 2 sit opposite (red, yellow), 3 leave blue empty. */
-    fun colorsFor(players: Int): List<LudoColor> = when (players) {
-        2 -> listOf(LudoColor.RED, LudoColor.YELLOW)
-        3 -> listOf(LudoColor.RED, LudoColor.GREEN, LudoColor.YELLOW)
-        else -> LudoColor.values().toList()
+    /**
+     * The colour of each seat at a table of [players], seat 0 playing [first] (the colour the player or
+     * the host chose) and the others following clockwise: two players sit opposite each other, three
+     * leave the yard before [first] empty.
+     */
+    fun colorsFor(players: Int, first: LudoColor = LudoColor.RED): List<LudoColor> {
+        val all = LudoColor.values()
+        fun at(step: Int) = all[(first.ordinal + step) % 4]
+        return when (players) {
+            2 -> listOf(at(0), at(2))
+            3 -> listOf(at(0), at(1), at(2))
+            else -> listOf(at(0), at(1), at(2), at(3))
+        }
     }
 
     /** The token indices of [player] that can legally move [dice] squares. */

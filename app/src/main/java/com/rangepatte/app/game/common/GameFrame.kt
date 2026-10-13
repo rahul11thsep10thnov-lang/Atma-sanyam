@@ -39,6 +39,7 @@ import com.rangepatte.app.ui.audio.AudioControlPanel
 import com.rangepatte.app.ui.background.BackgroundType
 import com.rangepatte.app.ui.components.AntiqueWoodTable
 import com.rangepatte.app.ui.components.GameHeader
+import com.rangepatte.app.ui.components.isLandscape
 import com.rangepatte.app.ui.components.TurnIndicator
 import com.rangepatte.app.ui.components.WatermarkBackground
 import com.rangepatte.app.ui.components.royal.RoyalButton
@@ -105,6 +106,10 @@ fun GameFrameChrome(
     var showRules by remember { mutableStateOf(false) }
     var showAudio by remember { mutableStateOf(false) }
     var showTalk by remember { mutableStateOf(false) }
+    // Undo is for members, or for this game once a 30-second rewarded ad has been watched (UndoGate).
+    var undoUnlocked by remember { mutableStateOf(false) }
+    var askUnlock by remember { mutableStateOf(false) }
+    var undoNote by remember { mutableStateOf<Int?>(null) }
     val audio by GameAudio.settings.collectAsState()
     BackHandler(onBack = onBackClick)
 
@@ -116,7 +121,8 @@ fun GameFrameChrome(
                     onBackClick = onBackClick,
                     onRulesClick = { showRules = true },
                     onAudioClick = { showAudio = !showAudio },
-                    audioSilent = audio.effectiveGameSoundVolume <= 0f && audio.effectiveMusicVolume <= 0f
+                    audioSilent = audio.effectiveGameSoundVolume <= 0f && audio.effectiveMusicVolume <= 0f,
+                    compact = isLandscape()
                 )
                 // The whole play area is one antique table: plaques, piles, hands and the Undo
                 // button all sit on the same waxed wood.
@@ -135,9 +141,10 @@ fun GameFrameChrome(
                                     modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
                                     horizontalArrangement = Arrangement.Center
                                 ) {
+                                    val open = undoUnlocked || UndoGate.isMember()
                                     RoyalButton(
-                                        text = "${stringResource(R.string.action_undo)} (${undo.usesLeft})",
-                                        onClick = undo.onUndo,
+                                        text = (if (open) "" else "\uD83D\uDD12 ") + "${stringResource(R.string.action_undo)} (${undo.usesLeft})",
+                                        onClick = { if (open) undo.onUndo() else askUnlock = true },
                                         enabled = undo.enabled && undo.usesLeft > 0,
                                         style = RoyalButtonStyle.STEEL
                                     )
@@ -174,6 +181,36 @@ fun GameFrameChrome(
     }
 
     if (showRules) rules { showRules = false }
+    if (askUnlock) {
+        GameResultDialog(
+            title = stringResource(R.string.undo_locked_title),
+            lines = listOf(stringResource(R.string.undo_locked_body)),
+            primaryText = stringResource(R.string.undo_watch_ad),
+            onPrimary = {
+                askUnlock = false
+                UndoGate.showRewardedAd { outcome ->
+                    if (outcome == RewardOutcome.EARNED) undoUnlocked = true
+                    undoNote = when (outcome) {
+                        RewardOutcome.EARNED -> R.string.undo_unlocked
+                        RewardOutcome.TOO_SHORT -> R.string.undo_ad_too_short
+                        RewardOutcome.UNAVAILABLE -> R.string.undo_ad_unavailable
+                    }
+                }
+            },
+            secondaryText = stringResource(R.string.undo_become_member),
+            onSecondary = { askUnlock = false; UndoGate.openMembership() },
+            tertiaryText = stringResource(R.string.undo_not_now),
+            onTertiary = { askUnlock = false }
+        )
+    }
+    undoNote?.let { note ->
+        GameResultDialog(
+            title = stringResource(R.string.action_undo),
+            lines = listOf(stringResource(note)),
+            primaryText = stringResource(R.string.spectate_ok),
+            onPrimary = { undoNote = null }
+        )
+    }
 }
 
 /** A modal panel for "you won / round over" and similar moments; stays up until a button is pressed. */
@@ -185,7 +222,9 @@ fun GameResultDialog(
     onPrimary: () -> Unit,
     secondaryText: String? = null,
     onSecondary: (() -> Unit)? = null,
-    extra: @Composable ColumnScope.() -> Unit = {}
+    extra: @Composable ColumnScope.() -> Unit = {},
+    tertiaryText: String? = null,
+    onTertiary: (() -> Unit)? = null
 ) {
     Dialog(
         onDismissRequest = {},
@@ -223,6 +262,15 @@ fun GameResultDialog(
                     text = secondaryText,
                     onClick = onSecondary,
                     style = RoyalButtonStyle.STEEL,
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                )
+            }
+            if (tertiaryText != null && onTertiary != null) {
+                RoyalButton(
+                    text = tertiaryText,
+                    onClick = onTertiary,
+                    style = RoyalButtonStyle.STEEL,
+                    compact = true,
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
                 )
             }

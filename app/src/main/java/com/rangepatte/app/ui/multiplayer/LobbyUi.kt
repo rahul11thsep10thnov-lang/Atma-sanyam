@@ -24,11 +24,9 @@ data class SeatColour(val color: androidx.compose.ui.graphics.Color, val name: S
  * the table's [LobbyUi.options]. Both depend on what the host announces, so they are functions.
  */
 data class LobbyDecor(
-    val seatsByTableSize: Map<Int, List<SeatColour>>,
+    val seatsFor: (totalSeats: Int, options: String) -> List<SeatColour>,
     val rulesLine: (options: String) -> String
-) {
-    fun seats(totalSeats: Int): List<SeatColour> = seatsByTableSize[totalSeats] ?: emptyList()
-}
+)
 
 /** Something went wrong: a message from the app's strings, with an optional extra detail to put in it. */
 data class LobbyError(@StringRes val messageRes: Int, val detail: String? = null)

@@ -14,6 +14,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.rangepatte.app.data.local.LanguagePreferences
 import com.rangepatte.app.domain.model.AppLanguage
+import com.rangepatte.app.game.common.RewardOutcome
+import com.rangepatte.app.game.common.UndoGate
 import com.rangepatte.app.navigation.RangEPatteNavHost
 import com.rangepatte.app.navigation.Routes
 import com.rangepatte.app.ui.language.ProvideAppLocale
@@ -33,6 +35,12 @@ class MainActivity : ComponentActivity() {
 
         // Consent form (where required by law) and the Google ads SDK; skipped for paid members.
         AppServices.ads.start(this)
+        // Undo's rewarded ad is shown over whichever activity is current (held weakly, as it is recreated on rotation).
+        val activity = java.lang.ref.WeakReference(this)
+        UndoGate.showRewardedAd = { done ->
+            val current = activity.get()
+            if (current == null) done(RewardOutcome.UNAVAILABLE) else AppServices.ads.showRewarded(current, done)
+        }
 
         setContent {
             // Held as state so choosing a language re-renders the whole UI in it immediately.

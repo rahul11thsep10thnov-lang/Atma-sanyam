@@ -456,7 +456,7 @@ class GameSession<S, A>(
     }
 
     companion object {
-        private const val AUTO_STEP_DELAY_MS = 1_300L
+        private const val AUTO_STEP_DELAY_MS = 2_000L
         private const val RECONNECT_RETRY_MS = 3_000L
         /** How many people may watch one table. */
         const val MAX_SPECTATORS = 4

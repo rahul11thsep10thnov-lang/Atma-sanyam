@@ -39,8 +39,11 @@ fun GameHeader(
     onRulesClick: (() -> Unit)? = null,
     /** When given, a speaker button opens the audio panel; [audioSilent] shows the muted icon. */
     onAudioClick: (() -> Unit)? = null,
-    audioSilent: Boolean = false
+    audioSilent: Boolean = false,
+    /** A slimmer strip, for a table held sideways where height is scarce. */
+    compact: Boolean = false
 ) {
+    val button = if (compact) Modifier.size(36.dp) else Modifier
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -49,10 +52,10 @@ fun GameHeader(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 4.dp, vertical = 2.dp),
+                .padding(horizontal = 4.dp, vertical = if (compact) 0.dp else 2.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = onBackClick) {
+            IconButton(onClick = onBackClick, modifier = button) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.content_desc_back),
@@ -69,7 +72,7 @@ fun GameHeader(
                 modifier = Modifier.weight(1f)
             )
             if (onAudioClick != null) {
-                IconButton(onClick = onAudioClick) {
+                IconButton(onClick = onAudioClick, modifier = button) {
                     Icon(
                         imageVector = if (audioSilent) Icons.Filled.VolumeOff else Icons.Filled.VolumeUp,
                         contentDescription = stringResource(R.string.audio_open),
@@ -78,7 +81,7 @@ fun GameHeader(
                 }
             }
             if (onRulesClick != null) {
-                IconButton(onClick = onRulesClick) {
+                IconButton(onClick = onRulesClick, modifier = button) {
                     Icon(
                         imageVector = Icons.Filled.Info,
                         contentDescription = stringResource(R.string.action_rules),
@@ -87,7 +90,7 @@ fun GameHeader(
                 }
             } else {
                 // Keeps the title optically centred when there is no trailing action.
-                Spacer(modifier = Modifier.size(48.dp))
+                Spacer(modifier = Modifier.size(if (compact) 36.dp else 48.dp))
             }
         }
         GoldRule()

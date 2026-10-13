@@ -31,13 +31,14 @@ object LudoMachine : GameMachine<LudoState, LudoAction> {
     override val gameId: GameId = GameId.LUDO
 
     /** Long enough for the die spin and a token glide (stage 4) to finish before the next computer move. */
-    override val botDelayMs: Long = 1_400
+    override val botDelayMs: Long = 2_600
 
     override fun start(config: MatchConfig, random: Random): LudoState =
         LudoEngine.newGame(
             names = config.seatNames,
             rules = LudoRules.decode(config.options),
-            bots = (0 until config.seats).filter { it !in config.humanSeats }.toSet()
+            bots = (0 until config.seats).filter { it !in config.humanSeats }.toSet(),
+            firstColor = LudoRules.colorOf(config.options)
         )
 
     override fun apply(state: LudoState, action: LudoAction, seat: Int, random: Random): LudoState? {

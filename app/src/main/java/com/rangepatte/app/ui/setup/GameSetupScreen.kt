@@ -93,8 +93,14 @@ fun GameSetupScreen(
             )
             BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
                 val wide = maxWidth >= 600.dp
+                // The primary action is offered right under Rules too, so a player never has to scroll for it.
+                val primaryText = stringResource(if (withOthers) R.string.net_host_table else R.string.setup_start)
+                val onPrimary = {
+                    if (withOthers) onOpenLobby(playerCount, difficulty, mode, true)
+                    else onStartGame(playerCount, difficulty, if (isMultiplayerCapable) mode else PlayMode.VS_COMPUTER)
+                }
                 val infoPanel = @Composable { panelModifier: Modifier ->
-                    GameInfoPanel(game = game, onRulesClick = { showRules = true }, modifier = panelModifier)
+                    GameInfoPanel(game = game, onRulesClick = { showRules = true }, primaryText = primaryText, onPrimary = onPrimary, modifier = panelModifier)
                 }
                 val optionsPanel = @Composable { panelModifier: Modifier ->
                     RoyalPanel(title = stringResource(R.string.setup_title), modifier = panelModifier) {
@@ -204,7 +210,7 @@ fun GameSetupScreen(
 }
 
 @Composable
-private fun GameInfoPanel(game: GameInfo, onRulesClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun GameInfoPanel(game: GameInfo, onRulesClick: () -> Unit, primaryText: String, onPrimary: () -> Unit, modifier: Modifier = Modifier) {
     RoyalPanel(title = stringResource(game.nameRes), modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             GamePortrait(game = game, size = 96.dp)
@@ -240,6 +246,13 @@ private fun GameInfoPanel(game: GameInfo, onRulesClick: () -> Unit, modifier: Mo
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 14.dp)
+        )
+        RoyalButton(
+            text = primaryText,
+            onClick = onPrimary,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp)
         )
     }
 }

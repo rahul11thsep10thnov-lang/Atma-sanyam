@@ -45,11 +45,17 @@ import com.rangepatte.app.ui.theme.GoldBevelDark
 import com.rangepatte.app.ui.theme.GoldBevelLight
 import com.rangepatte.app.ui.theme.ParchmentText
 
-/** The board with its nameplates and die; stateless so the harness can draw any position. */
+/**
+ * The Ludo table: the status line, then the board with a plaque at each corner and the die between the
+ * bottom two ([BoardTableLayout]). The picture is turned so this phone's own yard is at the bottom-left
+ * ([ludoQuarterTurns]); the player whose turn it is glows on their plaque and their yard. Stateless, so
+ * the harness can draw any position.
+ */
 @Composable
 fun LudoTable(state: LudoState, isMyTurn: Boolean, shownDice: Int?, pulse: Float, onRoll: () -> Unit, onMove: (Int) -> Unit, motion: MotionFrame = MotionFrame(), die: DieFrame = DieFrame(shownDice, 0f, false, 0f), mySeat: Int = 0, away: Map<Int, Long> = emptyMap(), botSeats: Set<Int> = emptySet(), now: Long = 0L, talk: TalkControl? = null) {
     val youName = stringResource(R.string.player_you)
-    Spacer(modifier = Modifier.height(6.dp))
+    val computer = stringResource(R.string.ludo_plaque_computer)
+    val places = listOf(R.string.ludo_place_1, R.string.ludo_place_2, R.string.ludo_place_3, R.string.ludo_place_4).map { stringResource(it) }
     val event = state.lastEvent
     val status = when {
         state.phase == LudoPhase.OVER -> ""
@@ -64,38 +70,37 @@ fun LudoTable(state: LudoState, isMyTurn: Boolean, shownDice: Int?, pulse: Float
     val awayNote = away.keys.firstOrNull()?.let { seat -> stringResource(R.string.ludo_status_away_format, state.players.getOrNull(seat)?.name.orEmpty()) }
     StatusLine(text = if (awayNote != null && status.isNotEmpty()) "$status · $awayNote" else awayNote ?: status, highlight = isMyTurn, compact = true)
 
-    // The board, with each player's plaque laid over their own yard (stage 5).
-    Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 2.dp)) {
-        LudoBoardView(state = state, highlight = if (isMyTurn) state.movable else emptyList(), onTokenTap = onMove, pulse = pulse, motion = motion)
-        LudoYardPlaques(state = state, youName = youName, mySeat = mySeat, away = away, botSeats = botSeats, now = now, messages = talk?.messages.orEmpty())
+    val viewColor = state.players.getOrNull(mySeat)?.color ?: state.players.first().color
+    val turns = ludoQuarterTurns(viewColor)
+    val latest = talk?.messages.orEmpty().groupBy { it.seat }.mapValues { it.value.last() }
+    val corners = MutableList<CornerPlayer?>(4) { null }
+    state.players.forEachIndexed { i, p ->
+        val awayLeft = away[i]?.let { ((it - now) / 1000).toInt().coerceAtLeast(0) }
+        val takenOver = awayLeft == null && i in botSeats && !p.isBot
+        val place = state.places.indexOf(i).takeIf { it >= 0 }?.let { places[it] }
+        corners[ludoScreenCorner(p.color, turns)] = CornerPlayer(
+            name = if (takenOver) computer else if (i == mySeat) youName else p.name,
+            avatarId = p.avatarId, isBot = p.isBot || takenOver, tint = LudoPalette.of(p.color), suit = p.color.suit,
+            filled = if (place == null) p.finished else null, detail = place,
+            isTurn = state.turn == i && state.phase != LudoPhase.OVER, isYou = i == mySeat,
+            awayLeft = awayLeft, message = latest[i]
+        )
     }
-
-    // The die and the Roll button sit below the board, never on it; with other people, the talk button joins them (stage 9).
     var showTalk by remember { mutableStateOf(false) }
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp, Alignment.CenterHorizontally), modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-        Die(value = die.face ?: shownDice, highlight = isMyTurn && state.phase == LudoPhase.ROLL, rotation = die.rotation, sixFlash = die.sixFlash)
-        RoyalButton(text = stringResource(R.string.ludo_roll), onClick = { GameAudio.play(Sfx.UI_TAP); onRoll() }, enabled = isMyTurn && state.phase == LudoPhase.ROLL, style = RoyalButtonStyle.CRIMSON)
-        if (talk != null) TalkButton(onClick = { GameAudio.play(if (showTalk) Sfx.UI_CLOSE else Sfx.UI_OPEN); showTalk = !showTalk })
-    }
-    if (talk != null && showTalk) {
-        TalkTray(talk, onClose = { GameAudio.play(Sfx.UI_CLOSE); showTalk = false }, modifier = Modifier.padding(horizontal = 4.dp))
-    }
-    Spacer(modifier = Modifier.height(4.dp))
-}
-
-/** An ivory die with a gold edge showing [value] (blank before the first roll). */
-@Composable
-fun Die(value: Int?, highlight: Boolean, modifier: Modifier = Modifier, rotation: Float = 0f, sixFlash: Float = 0f) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-            .size(52.dp)
-            .graphicsLayer { rotationZ = rotation; scaleX = 1f + 0.1f * sixFlash; scaleY = 1f + 0.1f * sixFlash }
-            .background(Brush.verticalGradient(listOf(Color.White, Color(0xFFF3E7CB))), RoundedCornerShape(10.dp))
-            .border(2.dp, if (sixFlash > 0f) Color(0xFFF5C542) else if (highlight) GoldBevelLight else GoldBevelDark, RoundedCornerShape(10.dp))
-    ) {
-        val faces = listOf("", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅")
-        if (value != null) Text(faces[value], fontSize = 40.sp, color = Color(0xFF24160C), fontWeight = FontWeight.Bold)
-        else Text("?", style = MaterialTheme.typography.titleLarge, color = GoldBevelDark)
-    }
+    BoardTableLayout(
+        corners = corners,
+        pulse = pulse,
+        board = { m -> LudoBoardView(state = state, highlight = if (isMyTurn) state.movable else emptyList(), onTokenTap = onMove, pulse = pulse, motion = motion, quarterTurns = turns, modifier = m.padding(2.dp)) },
+        controls = {
+            val canRoll = isMyTurn && state.phase == LudoPhase.ROLL
+            Die(value = shownDice, highlight = canRoll, frame = die, onClick = if (canRoll) ({ GameAudio.play(Sfx.UI_TAP); onRoll() }) else null)
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                RoyalButton(text = stringResource(R.string.ludo_roll), onClick = { GameAudio.play(Sfx.UI_TAP); onRoll() }, enabled = canRoll, style = RoyalButtonStyle.CRIMSON, compact = true)
+                if (talk != null) TalkButton(onClick = { GameAudio.play(if (showTalk) Sfx.UI_CLOSE else Sfx.UI_OPEN); showTalk = !showTalk })
+            }
+        },
+        below = {
+            if (talk != null && showTalk) TalkTray(talk, onClose = { GameAudio.play(Sfx.UI_CLOSE); showTalk = false }, modifier = Modifier.padding(horizontal = 4.dp))
+        }
+    )
 }

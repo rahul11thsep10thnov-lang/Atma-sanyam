@@ -57,3 +57,17 @@ design is described here and in the README section of each feature.
 | 8 | Waiting, reconnecting, game-full states | Design 1 (by standing approval) | The shared seat window: a dropped player's plaque dims with the hourglass and countdown, then shows Computer; the reconnecting band and "You're back!"; Watch on a full lobby. |
 | 9 | Quick messages, reactions, sound controls | Design 1 (by standing approval) | The talk button in the die row; bubbles under the speaker's plaque in the row above the board; the pack's remaining seven files mapped once per step in `SnakesSfx` (die, enter / move / steps, ladder climb, serpent hiss and slide, capture, near finish, finish square with the Moksha Patam victory on the winner's phone and its defeat sting on the others, your turn, a lost roll as a refusal). |
 | 10 | Results, statistics, rematch, return to lobby | Design 5 (statistics table, as Ludo's) | Place, turns, sixes, ladders, serpents, square per player; the lifetime record per account (`snakes_record`) on the dialog and My Profile; Rematch (host) / Play again (solo) / waiting line; Back to Khel. |
+
+## Table refresh (owner's requests with five reference pictures; Royal court by standing approval)
+
+| Request | Decision |
+|---------|----------|
+| Start button under Rules | Every setup page (card and board) repeats Start / Host under Rules; the bottom one stays. |
+| Slower pace | Bots pause 1.5–2.8 s; cards are thrown in over 0.65 s; tokens glide 160–170 ms a square; die roll 1.3 s. |
+| Board size and turn | Boards take the full width (about ¾ of a portrait screen) with corner plaques; sideways they fill the height. The current player's plaque grows, gets a thick pulsing gold border and a YOUR TURN / TURN tag; their Ludo yard glows. |
+| Ludo board (picture 1) | Standard bright board as the base (white circles in the yards, white track, coloured star tiles, arrows, centre triangles, 3D pawns) inside the royal walnut-and-gold frame with leaf corners; die on a green pedestal between the bottom plaques. The view is rotated so the phone's own colour is bottom-left; the host (or solo player) chooses their colour on the setup page — sixth letter of the rules options. |
+| Cards (pictures 2–3) | Classic standard deck as the base (white stock, standard indices and pip layout with inverted lower pips, framed double-ended court cards, red patterned back) with small royal accents (gold inner line, gold ring on the Ace, gold lotus medallion on the back). |
+| Dice (picture 4) | Rounded 3D cube, 1–6 with opposite faces summing to 7, black pips; toss → tumble → bounce → settle on the RNG's value (the animation never decides it); wooden clack on impact plus two quieter bounce clacks; lightweight vector model; Animations switch / system setting snaps it. |
+| Moksha Patam (picture 5) | Pastel squares, START teal tile, MOKSHA gold lotus tile, wooden ladders, leaf border in the royal frame. New layout: ladders 3→22, 15→44, 21→42, 28→84, 36→57, 51→67, 71→92, 80→99; serpents 32→10, 48→26, 62→16, 64→60, 74→53, 87→24, 93→70, 95→77, 98→79 — all slanted, unequal, no mouth on 1–10, one ladder from 1–10; nine distinct breeds. |
+| Undo | All solo tables; free for members, otherwise unlocked per game by a rewarded ad watched to the end for ≥ 30 s. |
+| Landscape | Game tables go full screen (no app bar, banner or system bars; slimmer header). |

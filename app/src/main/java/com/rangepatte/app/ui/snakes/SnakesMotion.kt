@@ -11,7 +11,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
+import com.rangepatte.app.audio.DieTiming
 import com.rangepatte.app.domain.snakes.Outcome
+import com.rangepatte.app.game.snakes.SnakesSfx
 import com.rangepatte.app.domain.snakes.SnakesBoard
 import com.rangepatte.app.domain.snakes.SnakesState
 import com.rangepatte.app.domain.snakes.SnakesTurn
@@ -38,12 +40,11 @@ class SnakesMotion(private val reduceMotion: Boolean) {
 
     suspend fun roll(value: Int) {
         if (reduceMotion) { die = DieFrame(value, 0f, false, 0f); if (value == 6) flashSix(); return }
-        die = DieFrame(value, 0f, true, 0f)
+        val seed = Random.nextInt(0, 1_000)
+        die = DieFrame(value, 0f, true, 0f, 0f, seed)
         spin.snapTo(0f)
-        val faces = Random(value.toLong())
-        spin.animateTo(720f, tween(600, easing = FastOutSlowInEasing)) {
-            val settled = this.value > 600f
-            die = DieFrame(if (settled) value else 1 + faces.nextInt(6), this.value, !settled || this.value < 720f, 0f)
+        spin.animateTo(DieTiming.TOTAL_MS.toFloat(), tween(DieTiming.TOTAL_MS.toInt(), easing = LinearEasing)) {
+            die = DieFrame(value, 0f, true, 0f, this.value, seed)
         }
         die = DieFrame(value, 0f, false, 0f)
         if (value == 6) flashSix()
@@ -51,7 +52,7 @@ class SnakesMotion(private val reduceMotion: Boolean) {
 
     private suspend fun flashSix() {
         flash.snapTo(1f)
-        flash.animateTo(0f, tween(500)) { die = die.copy(sixFlash = this.value) }
+        flash.animateTo(0f, tween(DieTiming.SIX_FLASH_MS.toInt())) { die = die.copy(sixFlash = this.value) }
     }
 
     /** The glide from [SnakesTurn.from] to [SnakesTurn.landed], then the jump to [SnakesTurn.to]. */
@@ -60,7 +61,7 @@ class SnakesMotion(private val reduceMotion: Boolean) {
         if (reduceMotion) { frame = SnakesFrame(); return }
         val path = (listOf(t.from) + SnakesBoard.path(t.from, t.landed)).map { squareOffset(it) }
         if (path.size > 1) {
-            val duration = maxOf(350, 110 * (path.size - 1))
+            val duration = maxOf(550, SnakesSfx.STEP_MS.toInt() * (path.size - 1))
             progress.snapTo(0f)
             progress.animateTo(1f, tween(duration, easing = LinearEasing)) {
                 val x = this.value * (path.size - 1)
@@ -80,7 +81,7 @@ class SnakesMotion(private val reduceMotion: Boolean) {
         if (t.to != t.landed) {
             val climbing = t.to > t.landed
             progress.snapTo(0f)
-            progress.animateTo(1f, tween(700, easing = FastOutSlowInEasing)) {
+            progress.animateTo(1f, tween(SnakesSfx.JUMP_MS.toInt(), easing = FastOutSlowInEasing)) {
                 val v = this.value
                 val at = if (climbing) {
                     val a = squareOffset(t.landed); val b = squareOffset(t.to)
