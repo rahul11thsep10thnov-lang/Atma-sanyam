@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 /**
@@ -28,12 +29,14 @@ fun BoardTableLayout(
     corners: List<CornerPlayer?>,
     pulse: Float,
     board: @Composable (Modifier) -> Unit,
-    controls: @Composable () -> Unit,
+    controls: @Composable (dieSize: Dp) -> Unit,
     modifier: Modifier = Modifier,
     below: @Composable () -> Unit = {}
 ) {
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
-        val landscape = maxWidth > maxHeight * 1.15f
+        val availW = maxWidth
+        val availH = maxHeight
+        val landscape = availW > availH * 1.15f
         if (landscape) {
             Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1f).fillMaxHeight().padding(6.dp), verticalArrangement = Arrangement.SpaceBetween) {
@@ -43,11 +46,14 @@ fun BoardTableLayout(
                 board(Modifier.fillMaxHeight().aspectRatio(1f, matchHeightConstraintsFirst = true))
                 Column(modifier = Modifier.weight(1f).fillMaxHeight().padding(6.dp), verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.End) {
                     CornerPlaque(corners.getOrNull(1), alignEnd = true, onTop = true, pulse = pulse, modifier = Modifier.fillMaxWidth())
-                    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) { controls(); below() }
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) { controls((availH * 0.26f).coerceIn(68.dp, 110.dp)); below() }
                     CornerPlaque(corners.getOrNull(2), alignEnd = true, onTop = false, pulse = pulse, modifier = Modifier.fillMaxWidth())
                 }
             }
         } else {
+            // Tall phones leave room below a square board: the die then gets a big row of its own, so the
+            // table is filled from top to bottom instead of leaving gaps.
+            val roomy = availH - availW > 250.dp
             Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly) {
                 Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp), verticalAlignment = Alignment.Bottom) {
                     CornerPlaque(corners.getOrNull(0), alignEnd = false, onTop = true, pulse = pulse, modifier = Modifier.weight(1f))
@@ -57,8 +63,11 @@ fun BoardTableLayout(
                 board(Modifier.fillMaxWidth().aspectRatio(1f))
                 Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
                     CornerPlaque(corners.getOrNull(3), alignEnd = false, onTop = false, pulse = pulse, modifier = Modifier.weight(1f))
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) { controls() }
+                    if (roomy) Spacer(Modifier.width(8.dp)) else Column(horizontalAlignment = Alignment.CenterHorizontally) { controls(68.dp) }
                     CornerPlaque(corners.getOrNull(2), alignEnd = true, onTop = false, pulse = pulse, modifier = Modifier.weight(1f))
+                }
+                if (roomy) Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+                    controls(((availH - availW - 150.dp)).coerceIn(90.dp, 150.dp))
                 }
                 below()
             }

@@ -91,9 +91,9 @@ fun SnakesTable(
         corners = corners,
         pulse = pulse,
         board = { m -> SnakesBoardView(state = state, pulse = pulse, motion = motion, modifier = m.padding(2.dp)) },
-        controls = {
+        controls = { dieSize ->
             val canRoll = isMyTurn && state.phase == SnakesPhase.ROLL
-            Die(value = shownDice, highlight = canRoll, frame = die, onClick = if (canRoll) ({ GameAudio.play(Sfx.UI_TAP); onRoll() }) else null)
+            Die(value = shownDice, highlight = canRoll, frame = die, size = dieSize, onClick = if (canRoll) ({ GameAudio.play(Sfx.UI_TAP); onRoll() }) else null)
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 RoyalButton(text = stringResource(R.string.ludo_roll), onClick = { GameAudio.play(Sfx.UI_TAP); onRoll() }, enabled = canRoll, style = RoyalButtonStyle.CRIMSON, compact = true)
                 if (talk != null) TalkButton(onClick = { GameAudio.play(if (showTalk) Sfx.UI_CLOSE else Sfx.UI_OPEN); showTalk = !showTalk })

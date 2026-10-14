@@ -64,12 +64,6 @@ internal fun DrawScope.drawAntiqueCard(
         topLeft = topLeft, size = cardSize, cornerRadius = corner
     )
     drawRoundRect(Edge, topLeft, cardSize, corner, style = Stroke(width = maxOf(1f, w * 0.012f)))
-    // The royal touch: a fine gold line just inside the edge.
-    val inset = w * 0.035f
-    drawRoundRect(
-        BorderGold.copy(alpha = 0.85f), topLeft + Offset(inset, inset), Size(w - inset * 2, h - inset * 2),
-        CornerRadius(w * (CARD_CORNER - 0.03f)), style = Stroke(maxOf(0.8f, w * 0.008f))
-    )
     if (card == null) return
 
     val ink = if (card.isRed) palette.redInk else palette.blackInk
@@ -97,7 +91,7 @@ private fun DrawScope.drawIndex(
     inline: Boolean
 ) {
     val w = cardSize.width
-    val rankPx = w * if (card.rank.label.length > 1) 0.2f else 0.245f
+    val rankPx = w * if (card.rank.label.length > 1) 0.24f else 0.294f
     val layout = textMeasurer.measure(
         text = card.rank.label,
         style = TextStyle(
@@ -105,9 +99,9 @@ private fun DrawScope.drawIndex(
             letterSpacing = if (card.rank.label.length > 1) (-0.04f * rankPx).toSp() else androidx.compose.ui.unit.TextUnit.Unspecified
         )
     )
-    val origin = topLeft + Offset(w * 0.07f, w * 0.035f)
+    val origin = topLeft + Offset(w * 0.055f, w * 0.03f)
     drawText(layout, topLeft = origin)
-    val pipRadius = w * 0.06f
+    val pipRadius = w * 0.065f
     if (inline) {
         drawSuitPip(card.suit, Offset(origin.x + layout.size.width + pipRadius * 1.35f, origin.y + layout.size.height * 0.56f), pipRadius, ink)
     } else {
@@ -116,9 +110,9 @@ private fun DrawScope.drawIndex(
     }
 }
 
-private val leftCol = 0.35f
+private val leftCol = 0.375f
 private val centerCol = 0.5f
-private val rightCol = 0.65f
+private val rightCol = 0.625f
 private val rows4 = listOf(0.22f, 0.4067f, 0.5933f, 0.78f)
 private val rows3 = listOf(0.22f, 0.5f, 0.78f)
 
@@ -147,7 +141,7 @@ private fun DrawScope.drawPips(card: PlayingCard, topLeft: Offset, cardSize: Siz
     val radius = w * when {
         positions.size <= 3 -> 0.115f
         positions.size <= 6 -> 0.1f
-        else -> 0.085f
+        else -> 0.078f
     }
     // As on a printed deck, the pips below the middle stand on their heads.
     positions.forEach { p ->
@@ -157,18 +151,25 @@ private fun DrawScope.drawPips(card: PlayingCard, topLeft: Offset, cardSize: Siz
     }
 }
 
-/** The Ace: one big suit symbol — the Ace of Spades larger still — inside a fine gold ring. */
+/** The Ace: one big suit symbol; the Ace of Spades is larger and set in a ring of printed ornament. */
 private fun DrawScope.drawAceMedallion(card: PlayingCard, topLeft: Offset, cardSize: Size, ink: Color) {
     val w = cardSize.width
     val center = Offset(topLeft.x + w / 2f, topLeft.y + cardSize.height / 2f)
     val spade = card.suit == com.rangepatte.app.domain.model.Suit.SPADES
-    val ring = w * if (spade) 0.36f else 0.3f
-    drawCircle(BorderGold, ring, center, style = Stroke(w * 0.01f))
-    for (i in 0 until 24) {
-        val a = (2 * Math.PI / 24 * i).toFloat()
-        drawCircle(BorderGold, w * 0.007f, Offset(center.x + cos(a) * ring * 1.08f, center.y + sin(a) * ring * 1.08f))
+    if (spade) {
+        // Scroll-work round the spade, as on the traditional Ace of Spades.
+        for (i in 0 until 16) {
+            val a = (2 * Math.PI / 16 * i).toFloat()
+            val r = w * 0.4f
+            val tip = Offset(center.x + cos(a) * r, center.y + sin(a) * r)
+            val base = Offset(center.x + cos(a) * r * 0.82f, center.y + sin(a) * r * 0.82f)
+            drawLine(ink, base, tip, strokeWidth = w * 0.022f, cap = StrokeCap.Round)
+            drawCircle(ink, w * 0.016f, tip)
+        }
+        drawCircle(ink, w * 0.33f, center, style = Stroke(w * 0.01f))
     }
-    drawSuitPip(card.suit, center, w * if (spade) 0.27f else 0.2f, ink)
+    drawSuitPip(card.suit, center, w * if (spade) 0.26f else 0.22f, ink)
+    if (spade) drawSuitPip(card.suit, center + Offset(0f, w * 0.01f), w * 0.12f, Color.White)
 }
 
 /** A printed Joker: blank ivory card with a crimson star and the word JOKER, at any size. */
@@ -209,62 +210,86 @@ internal fun DrawScope.drawAntiqueJoker(
 }
 
 /**
- * The back of every card: the classic patterned back — a white margin round a red (or [blue]) field
- * covered in a fine diamond lattice — with one royal touch, a small gold-ringed lotus medallion at
- * the centre. The same back is used by every game.
+ * The back of every card: the classic patterned back — a white margin round a red (or [blue]) field with
+ * a fine lattice, a mirrored ornamental scroll-work medallion and a double border. The same back is used
+ * by every game.
  */
 internal fun DrawScope.drawRoyalCardBack(topLeft: Offset, cardSize: Size, blue: Boolean = false) {
     val w = cardSize.width
     val h = cardSize.height
     val corner = CornerRadius(w * CARD_CORNER)
     val center = Offset(topLeft.x + w / 2f, topLeft.y + h / 2f)
-    val field = if (blue) Color(0xFF1F4E9C) else Color(0xFFB3182A)
-    val fieldDeep = if (blue) Color(0xFF163A78) else Color(0xFF8C1020)
-    val gold = Color(0xFFDDB75C)
+    val field = if (blue) Color(0xFF1F4E9C) else Color(0xFFC8202D)
+    val fieldDeep = if (blue) Color(0xFF14346F) else Color(0xFF9C1520)
 
     drawRoundRect(Color.Black.copy(alpha = 0.2f), topLeft + Offset(w * 0.025f, w * 0.045f), cardSize, corner)
     drawRoundRect(Color.Black.copy(alpha = 0.26f), topLeft + Offset(w * 0.01f, w * 0.02f), cardSize, corner)
     drawRoundRect(Color.White, topLeft, cardSize, corner)
     drawRoundRect(Edge, topLeft, cardSize, corner, style = Stroke(width = maxOf(1f, w * 0.012f)))
 
-    val m = w * 0.075f
+    val m = w * 0.07f
     val inner = Rect(topLeft.x + m, topLeft.y + m, topLeft.x + w - m, topLeft.y + h - m)
-    val innerCorner = CornerRadius(w * 0.035f)
+    val innerCorner = CornerRadius(w * 0.03f)
     val innerPath = Path().apply { addRoundRect(RoundRect(inner, innerCorner)) }
     drawRoundRect(field, inner.topLeft, inner.size, innerCorner)
+    val line = Color.White.copy(alpha = 0.8f)
+    val hair = maxOf(0.7f, w * 0.006f)
     clipPath(innerPath) {
-        // Diamond lattice in thin white lines, with a dot in every diamond.
-        val step = w * 0.09f
-        val line = Color.White.copy(alpha = 0.55f)
-        val stroke = maxOf(0.7f, w * 0.007f)
+        // Fine diamond lattice over the whole field.
+        val step = w * 0.07f
         var k = -h
         while (k < w + h) {
-            drawLine(line, Offset(inner.left + k, inner.top), Offset(inner.left + k + inner.height, inner.bottom), stroke)
-            drawLine(line, Offset(inner.left + k, inner.top), Offset(inner.left + k - inner.height, inner.bottom), stroke)
+            drawLine(line.copy(alpha = 0.3f), Offset(inner.left + k, inner.top), Offset(inner.left + k + inner.height, inner.bottom), hair)
+            drawLine(line.copy(alpha = 0.3f), Offset(inner.left + k, inner.top), Offset(inner.left + k - inner.height, inner.bottom), hair)
             k += step
         }
-        var y = inner.top
-        var row = 0
-        while (y < inner.bottom + step) {
-            var x = inner.left + if (row % 2 == 0) 0f else step / 2f
-            while (x < inner.right + step) {
-                drawCircle(fieldDeep, w * 0.014f, Offset(x, y + step / 2f))
-                x += step
-            }
-            y += step / 2f; row++
+        // A band of small scallops along the inside of the border.
+        val band = w * 0.075f
+        var x = inner.left + band
+        while (x < inner.right - band) {
+            drawCircle(line, w * 0.012f, Offset(x, inner.top + band))
+            drawCircle(line, w * 0.012f, Offset(x, inner.bottom - band))
+            x += band * 0.8f
         }
+        var y = inner.top + band
+        while (y < inner.bottom - band) {
+            drawCircle(line, w * 0.012f, Offset(inner.left + band, y))
+            drawCircle(line, w * 0.012f, Offset(inner.right - band, y))
+            y += band * 0.8f
+        }
+        // The central medallion: an oval of mirrored scroll-work.
+        val ow = w * 0.3f
+        val oh = h * 0.34f
+        drawOval(fieldDeep, Offset(center.x - ow, center.y - oh), Size(ow * 2, oh * 2))
+        drawOval(line, Offset(center.x - ow, center.y - oh), Size(ow * 2, oh * 2), style = Stroke(w * 0.012f))
+        drawOval(line.copy(alpha = 0.6f), Offset(center.x - ow * 0.9f, center.y - oh * 0.92f), Size(ow * 1.8f, oh * 1.84f), style = Stroke(hair))
+        for (flipY in listOf(1f, -1f)) for (flipX in listOf(1f, -1f)) {
+            val s = Path().apply {
+                moveTo(center.x + flipX * ow * 0.05f, center.y + flipY * oh * 0.12f)
+                cubicTo(
+                    center.x + flipX * ow * 0.7f, center.y + flipY * oh * 0.1f,
+                    center.x + flipX * ow * 0.75f, center.y + flipY * oh * 0.55f,
+                    center.x + flipX * ow * 0.3f, center.y + flipY * oh * 0.6f
+                )
+                cubicTo(
+                    center.x + flipX * ow * 0.05f, center.y + flipY * oh * 0.62f,
+                    center.x + flipX * ow * 0.08f, center.y + flipY * oh * 0.4f,
+                    center.x + flipX * ow * 0.25f, center.y + flipY * oh * 0.42f
+                )
+            }
+            drawPath(s, line, style = Stroke(w * 0.012f, cap = StrokeCap.Round))
+            drawCircle(line, w * 0.014f, Offset(center.x + flipX * ow * 0.25f, center.y + flipY * oh * 0.42f))
+            val tip = Path().apply {
+                moveTo(center.x + flipX * ow * 0.05f, center.y + flipY * oh * 0.12f)
+                quadraticTo(center.x + flipX * ow * 0.1f, center.y + flipY * oh * 0.55f, center.x, center.y + flipY * oh * 0.88f)
+            }
+            drawPath(tip, line, style = Stroke(w * 0.01f, cap = StrokeCap.Round))
+        }
+        diamondDot(center, w * 0.05f, Color.White)
     }
-    drawRoundRect(Color.White, inner.topLeft, inner.size, innerCorner, style = Stroke(w * 0.012f))
-    val in2 = w * 0.025f
-    drawRoundRect(Color.White.copy(alpha = 0.8f), inner.topLeft + Offset(in2, in2), Size(inner.width - in2 * 2, inner.height - in2 * 2), CornerRadius(w * 0.02f), style = Stroke(w * 0.006f))
-
-    // The royal touch: a small lotus medallion ringed in gold.
-    val medal = w * 0.2f
-    drawCircle(Color.White, medal * 1.12f, center)
-    drawCircle(field, medal, center)
-    drawCircle(gold, medal, center, style = Stroke(w * 0.014f))
-    lotus(center, medal * 0.82f, 8, gold, fieldDeep)
-    drawCircle(gold, medal * 0.16f, center)
+    drawRoundRect(Color.White, inner.topLeft, inner.size, innerCorner, style = Stroke(w * 0.014f))
+    val in2 = w * 0.03f
+    drawRoundRect(line, inner.topLeft + Offset(in2, in2), Size(inner.width - in2 * 2, inner.height - in2 * 2), CornerRadius(w * 0.02f), style = Stroke(w * 0.006f))
 }
 
 private fun DrawScope.diamondDot(c: Offset, r: Float, color: Color) {

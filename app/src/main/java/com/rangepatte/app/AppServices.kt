@@ -98,6 +98,7 @@ object AppServices {
             friendStateOf = presence::stateOf, relationOf = friends::statusOf
         )
         com.rangepatte.app.ui.motion.MotionPrefs.init(application)
+        com.rangepatte.app.ui.motion.OrientationPrefs.init(application)
         myProfile = com.rangepatte.app.data.profile.MyProfilePrefsRepository(application)
         ludoRecord = com.rangepatte.app.data.ludo.LudoRecordRepository(application)
         snakesRecord = com.rangepatte.app.data.ludo.LudoRecordRepository(application, "snakes_record")

@@ -14,7 +14,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.rangepatte.app.data.local.LanguagePreferences
 import com.rangepatte.app.domain.model.AppLanguage
+import androidx.lifecycle.lifecycleScope
 import com.rangepatte.app.game.common.RewardOutcome
+import com.rangepatte.app.ui.motion.OrientationPrefs
+import kotlinx.coroutines.launch
 import com.rangepatte.app.game.common.UndoGate
 import com.rangepatte.app.navigation.RangEPatteNavHost
 import com.rangepatte.app.navigation.Routes
@@ -40,6 +43,11 @@ class MainActivity : ComponentActivity() {
         UndoGate.showRewardedAd = { done ->
             val current = activity.get()
             if (current == null) done(RewardOutcome.UNAVAILABLE) else AppServices.ads.showRewarded(current, done)
+        }
+
+        // Screen orientation (Settings): applied now and whenever the choice changes.
+        lifecycleScope.launch {
+            OrientationPrefs.mode.collect { requestedOrientation = it.requested }
         }
 
         setContent {

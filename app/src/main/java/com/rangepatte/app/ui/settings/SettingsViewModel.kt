@@ -31,6 +31,7 @@ class SettingsViewModel : ViewModel() {
     fun restoreDefaults() {
         GameAudio.restoreDefaults()
         com.rangepatte.app.ui.motion.MotionPrefs.setAnimations(true)
+        com.rangepatte.app.ui.motion.OrientationPrefs.set(com.rangepatte.app.ui.motion.OrientationMode.AUTO)
         _uiState.value = SettingsUiState()
     }
 }

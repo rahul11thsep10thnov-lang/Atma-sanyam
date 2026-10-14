@@ -780,7 +780,19 @@ With this both board games are complete. Nothing has yet run on two real phones.
   `AdsManager.showRewarded`) — it counts only when the ad is watched to the end and stays on screen
   30 s or longer.
 - **Landscape:** turn the phone sideways at any table and the game takes the whole screen — no app
-  bar, banner or system bars (`ImmersiveSystemBars`), a slimmer header.
+  bar, banner, game name, header buttons or system bars (`ImmersiveSystemBars`); only the table (or
+  the Ludo / Moksha Patam board with its plaques and die).
+- **Screen orientation (Settings):** Portrait, Landscape or Auto, each with a phone icon
+  (`ui/settings/OrientationPicker.kt`, kept in `ui/motion/OrientationPrefs.kt`, applied by
+  `MainActivity`). Landscape and Auto-while-sideways give the full-screen tables above.
+- **Back asks first:** Back (arrow or system button) at any table shows "Leave the game?" with Yes / No.
+  The card setup page no longer pops the Rules open every time it is shown.
+- **Cards match the reference decks:** white stock, rank (20% larger) with its suit directly below it in
+  both corners, standard pip layout, traditional red / yellow / blue court cards in a black frame
+  (`RoyalPortraits.kt`), an ornate Ace of Spades, and the red patterned back (`drawRoyalCardBack`,
+  `blue = true` gives the blue one). No gold trim.
+- **Ludo / Moksha Patam in portrait:** the board is edge to edge and, on tall phones, the die gets a
+  big row of its own so the table is filled top to bottom (`BoardTableLayout`).
 
 ## Sound and music
 

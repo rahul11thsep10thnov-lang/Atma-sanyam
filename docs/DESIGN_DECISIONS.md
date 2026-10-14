@@ -71,3 +71,11 @@ design is described here and in the README section of each feature.
 | Moksha Patam (picture 5) | Pastel squares, START teal tile, MOKSHA gold lotus tile, wooden ladders, leaf border in the royal frame. New layout: ladders 3→22, 15→44, 21→42, 28→84, 36→57, 51→67, 71→92, 80→99; serpents 32→10, 48→26, 62→16, 64→60, 74→53, 87→24, 93→70, 95→77, 98→79 — all slanted, unequal, no mouth on 1–10, one ladder from 1–10; nine distinct breeds. |
 | Undo | All solo tables; free for members, otherwise unlocked per game by a rewarded ad watched to the end for ≥ 30 s. |
 | Landscape | Game tables go full screen (no app bar, banner or system bars; slimmer header). |
+
+### Second round (owner's follow-up)
+
+- Cards: exactly like enclosures 2 and 3 — classic white deck, suit symbol under the rank, rank 20% larger, traditional court figures, red lattice back; gold trim removed.
+- Settings gains Screen orientation: Portrait / Landscape / Auto with phone icons.
+- Landscape tables are true full screen (no header or game name, no app bar, banner or system bars).
+- Back always asks "Leave the game?" Yes / No; the setup page no longer auto-opens Rules.
+- Ludo / Moksha Patam portrait fills the table (big die row on tall phones); own colour is chosen on setup and always drawn bottom-left.

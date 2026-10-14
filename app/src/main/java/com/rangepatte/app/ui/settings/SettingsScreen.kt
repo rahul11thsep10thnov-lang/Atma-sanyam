@@ -56,6 +56,8 @@ fun SettingsScreen(
                     RoyalOptionRow(label = stringResource(R.string.settings_animations)) {
                         RoyalOrbToggle(checked = uiState.animationsEnabled, onCheckedChange = viewModel::toggleAnimations)
                     }
+                    RoyalSectionTitle(stringResource(R.string.settings_orientation))
+                    OrientationPicker()
                     RoyalOptionRow(label = stringResource(R.string.settings_vibration)) {
                         RoyalOrbToggle(checked = uiState.vibrationEnabled, onCheckedChange = viewModel::toggleVibration)
                     }

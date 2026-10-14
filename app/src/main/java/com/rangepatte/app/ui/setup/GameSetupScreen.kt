@@ -82,8 +82,6 @@ fun GameSetupScreen(
     val canPlayOnline = game.id in GameMachines.multiplayerGames
     val withOthers = mode == PlayMode.NEARBY || mode == PlayMode.ONLINE
 
-    LaunchedEffect(game.id) { showRules = true }
-
     WatermarkBackground(backgroundType = BackgroundType.COURTYARD, modifier = modifier) {
         Column(modifier = Modifier.fillMaxSize()) {
             GameHeader(

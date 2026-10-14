@@ -111,18 +111,22 @@ fun GameFrameChrome(
     var askUnlock by remember { mutableStateOf(false) }
     var undoNote by remember { mutableStateOf<Int?>(null) }
     val audio by GameAudio.settings.collectAsState()
-    BackHandler(onBack = onBackClick)
+    // Back (the arrow or the system button) asks first; only Yes leaves the table.
+    var askExit by remember { mutableStateOf(false) }
+    BackHandler { askExit = true }
+    val landscape = isLandscape()
 
     CompositionLocalProvider(LocalCardTextMeasurer provides rememberTextMeasurer(cacheSize = 256)) {
         WatermarkBackground(backgroundType = background, modifier = modifier) {
             Column(modifier = Modifier.fillMaxSize()) {
-                GameHeader(
+                // Sideways, the table is the whole screen: no header, no game name, no buttons.
+                if (!landscape) GameHeader(
                     title = title,
-                    onBackClick = onBackClick,
+                    onBackClick = { askExit = true },
                     onRulesClick = { showRules = true },
                     onAudioClick = { showAudio = !showAudio },
                     audioSilent = audio.effectiveGameSoundVolume <= 0f && audio.effectiveMusicVolume <= 0f,
-                    compact = isLandscape()
+                    compact = false
                 )
                 // The whole play area is one antique table: plaques, piles, hands and the Undo
                 // button all sit on the same waxed wood.
@@ -181,6 +185,16 @@ fun GameFrameChrome(
     }
 
     if (showRules) rules { showRules = false }
+    if (askExit) {
+        GameResultDialog(
+            title = stringResource(R.string.exit_game_title),
+            lines = listOf(stringResource(R.string.exit_game_body)),
+            primaryText = stringResource(R.string.exit_yes),
+            onPrimary = { askExit = false; onBackClick() },
+            secondaryText = stringResource(R.string.exit_no),
+            onSecondary = { askExit = false }
+        )
+    }
     if (askUnlock) {
         GameResultDialog(
             title = stringResource(R.string.undo_locked_title),
