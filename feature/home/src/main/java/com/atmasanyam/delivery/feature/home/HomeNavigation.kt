@@ -12,12 +12,16 @@ fun NavGraphBuilder.homeScreen(
     mapRenderer: DeliveryMapRenderer,
     onEnterGoodsDetails: (pickup: DeliveryLocation, destination: DeliveryLocation, route: Route) -> Unit,
     onLanguageSelected: (AppLanguage) -> Unit,
+    userLabel: String?,
+    onMenuItemSelected: (HomeMenuItem) -> Unit,
 ) {
     composable(Destination.Home.route) {
         HomeRoute(
             mapRenderer = mapRenderer,
             onEnterGoodsDetails = onEnterGoodsDetails,
             onLanguageSelected = onLanguageSelected,
+            userLabel = userLabel,
+            onMenuItemSelected = onMenuItemSelected,
         )
     }
 }

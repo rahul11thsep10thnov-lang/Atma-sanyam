@@ -68,6 +68,7 @@ dependencies {
     implementation(project(":feature:vehicle"))
     implementation(project(":feature:auth"))
     implementation(project(":feature:booking"))
+    implementation(project(":feature:account"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

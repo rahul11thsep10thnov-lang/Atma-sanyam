@@ -30,7 +30,7 @@ import com.atmasanyam.delivery.core.designsystem.components.SectionHeader
 @Composable
 fun AuthVerifyCodeScreen(
     phoneNumber: String,
-    onVerified: () -> Unit,
+    onVerified: (phoneNumber: String) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -78,7 +78,7 @@ fun AuthVerifyCodeScreen(
                 text = stringResource(R.string.auth_verify),
                 onClick = {
                     if (code.length == 6) {
-                        onVerified()
+                        onVerified(phoneNumber)
                     } else {
                         showError = true
                     }

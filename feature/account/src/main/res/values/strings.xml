@@ -1,0 +1,118 @@
+<resources>
+    <string name="account_cancel">Cancel</string>
+    <string name="account_save">Save</string>
+
+    <!-- Shown to guests on screens that need an account -->
+    <string name="account_sign_in_title">Sign in to continue</string>
+    <string name="account_sign_in_message">Sign in with your mobile number to use this section.</string>
+    <string name="account_sign_in_button">Sign in</string>
+
+    <!-- Profile -->
+    <string name="account_profile_title">My Profile</string>
+    <string name="account_profile_name">Name</string>
+    <string name="account_profile_name_error">Please enter your name.</string>
+    <string name="account_profile_phone">Mobile number</string>
+    <string name="account_profile_phone_value" translatable="false">+91 %1$s</string>
+    <string name="account_profile_note">Your mobile number is your sign-in and cannot be changed here. Your profile is stored on this device.</string>
+    <string name="account_profile_save">Save changes</string>
+    <string name="account_profile_saved">Profile updated</string>
+
+    <!-- Settings -->
+    <string name="account_settings_title">Settings</string>
+    <string name="account_settings_profile">Profile</string>
+    <string name="account_settings_favorites">Favorite Locations</string>
+    <string name="account_settings_logout">Logout</string>
+    <string name="account_settings_delete">Delete Account</string>
+    <string name="account_logout_title">Log out?</string>
+    <string name="account_logout_message">You will be signed out of Lokrath on this device. Your account and saved data are not deleted, and you can sign in again any time.</string>
+    <string name="account_logout_confirm">Log out</string>
+
+    <!-- Favorite locations -->
+    <string name="account_favorites_title">Favorite Locations</string>
+    <string name="account_favorites_empty_title">No saved locations</string>
+    <string name="account_favorites_empty_message">Save places you use often, like your home or shop.</string>
+    <string name="account_favorites_add">Add location</string>
+    <string name="account_favorites_address">Address</string>
+    <string name="account_favorites_address_error">Please enter an address.</string>
+    <string name="account_favorites_remove_title">Remove this location?</string>
+    <string name="account_favorites_remove">Remove</string>
+    <string name="account_label_home">Home</string>
+    <string name="account_label_work">Work</string>
+    <string name="account_label_shop">Shop</string>
+    <string name="account_label_other">Other</string>
+
+    <!-- Delete account -->
+    <string name="account_delete_title">Delete Account</string>
+    <string name="account_delete_heading">Delete your account?</string>
+    <string name="account_delete_intro">Deleting your account is permanent and cannot be undone.</string>
+    <string name="account_delete_consequences">The following will be erased and you will be signed out:\n\n• Your profile\n• Your favorite locations\n• Your booking history\n• Your notifications</string>
+    <string name="account_delete_scope_note">This version of Lokrath keeps your account on this device only, so this erases it from this phone. Nothing is stored on a server yet.</string>
+    <string name="account_delete_acknowledge">I understand this cannot be undone</string>
+    <string name="account_delete_button">Delete my account</string>
+    <string name="account_delete_confirm_title">Delete account permanently?</string>
+    <string name="account_delete_confirm_message">This will erase your account data from this device. This cannot be undone.</string>
+    <string name="account_delete_confirm_button">Delete</string>
+    <string name="account_delete_failed">Could not delete the account. Please try again.</string>
+
+    <!-- Help -->
+    <string name="account_help_title">Help</string>
+    <string name="account_help_about_heading">About Lokrath</string>
+    <string name="account_help_about_body">Lokrath is a goods &amp; commodity delivery service from Prayagraj. Book a vehicle to carry hardware, electricals, furniture, appliances and more from any shop to your door.</string>
+    <string name="account_help_faq_heading">Common questions</string>
+    <string name="account_help_q_book">How do I book a delivery?</string>
+    <string name="account_help_a_book">Enter the pickup and destination, add your goods details, pick a vehicle and tap Book. You only need to sign in at the last step.</string>
+    <string name="account_help_q_price">How is the price worked out?</string>
+    <string name="account_help_a_price">The price depends on distance, the vehicle and your goods. The booking summary shows every charge. The final price is confirmed when you book.</string>
+    <string name="account_help_q_vehicle">Which vehicle should I choose?</string>
+    <string name="account_help_a_vehicle">Lokrath only shows vehicles that can carry your goods\' weight and size. Pick the smallest one that fits to keep the fare low.</string>
+    <string name="account_help_q_login">How do I sign in?</string>
+    <string name="account_help_a_login">Enter your mobile number, then the 6-character code (letters and numbers) we send you. No email is needed.</string>
+    <string name="account_help_q_language">How do I change the language?</string>
+    <string name="account_help_a_language">Tap the language icon at the top of the home screen and choose English or हिन्दी.</string>
+
+    <!-- Booking history -->
+    <string name="account_history_title">Booking History</string>
+    <string name="account_history_empty_title">No bookings yet</string>
+    <string name="account_history_empty_message">Your deliveries will appear here once you book.</string>
+    <string name="account_history_route">%1$s → %2$s</string>
+    <string name="account_fare_value" translatable="false">₹%1$.0f</string>
+    <string name="account_status_searching">Finding a driver</string>
+    <string name="account_status_in_progress">In progress</string>
+    <string name="account_status_delivered">Delivered</string>
+    <string name="account_status_closed">Closed</string>
+
+    <!-- Safety -->
+    <string name="account_safety_title">Safety</string>
+    <string name="account_safety_intro">A few simple habits keep every delivery safe.</string>
+    <string name="account_safety_tip_pack">Pack goods securely and label fragile items before the driver arrives.</string>
+    <string name="account_safety_tip_vehicle">Check the vehicle and driver details before you load anything.</string>
+    <string name="account_safety_tip_booking_id">Hand over goods only for the booking ID you were given, and share it with the receiver.</string>
+    <string name="account_safety_tip_code">Never share your sign-in code with anyone, including people who say they are from Lokrath.</string>
+    <string name="account_safety_tip_valuables">Keep cash and valuables out of the load.</string>
+    <string name="account_safety_tip_prohibited">Do not book illegal, hazardous or prohibited goods.</string>
+    <string name="account_safety_emergency_note">In an emergency, contact the police, fire or ambulance services right away.</string>
+    <string name="account_safety_call">Call emergency services (%1$s)</string>
+
+    <!-- Refer and earn -->
+    <string name="account_refer_title">Refer and Earn</string>
+    <string name="account_refer_intro">Invite friends and shop owners to deliver with Lokrath by sharing your referral code.</string>
+    <string name="account_refer_your_code">Your referral code</string>
+    <string name="account_refer_share">Share code</string>
+    <string name="account_refer_share_text">Deliver goods from shop to home with Lokrath! Use my referral code %1$s.</string>
+    <string name="account_refer_note">Rewards for referrals will be available once the referral programme launches.</string>
+
+    <!-- Rewards -->
+    <string name="account_rewards_title">My Rewards</string>
+    <string name="account_rewards_empty_title">No rewards yet</string>
+    <string name="account_rewards_empty_message">Rewards you earn will appear here.</string>
+
+    <!-- Notifications -->
+    <string name="account_notifications_title">Notifications</string>
+    <string name="account_notifications_clear">Clear all</string>
+    <string name="account_notifications_empty_title">No notifications</string>
+    <string name="account_notifications_empty_message">Updates about your bookings will appear here.</string>
+    <string name="account_notification_confirmed_title">Booking confirmed</string>
+    <string name="account_notification_confirmed_body">Your booking %1$s has been placed. We are finding a driver.</string>
+    <string name="account_notification_update_title">Booking update</string>
+    <string name="account_notification_update_body">There is an update on booking %1$s.</string>
+</resources>

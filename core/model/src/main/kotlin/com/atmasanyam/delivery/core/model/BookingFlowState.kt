@@ -13,6 +13,8 @@ data class BookingFlowState(
     val route: Route? = null,
     val goodsDetails: GoodsDetails? = null,
     val selectedVehicleQuote: VehicleQuote? = null,
+    /** Set once the guest has signed in and the booking is placed; read by the confirmation screen. */
+    val confirmedBooking: BookingRecord? = null,
 ) {
     val hasPickupAndDestination: Boolean get() = pickup != null && destination != null
     val hasGoodsDetails: Boolean get() = goodsDetails != null

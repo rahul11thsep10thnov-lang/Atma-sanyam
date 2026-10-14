@@ -19,4 +19,17 @@ sealed class Destination(val route: String) {
     data object BookingConfirmation : Destination("booking_confirmation")
     data object LiveTracking : Destination("live_tracking")
     data object BookingHistory : Destination("booking_history")
+
+    // Hamburger menu destinations
+    data object Profile : Destination("profile")
+    data object Help : Destination("help")
+    data object Safety : Destination("safety")
+    data object ReferAndEarn : Destination("refer_and_earn")
+    data object MyRewards : Destination("my_rewards")
+    data object Notifications : Destination("notifications")
+    data object Settings : Destination("settings")
+
+    // Reached from Settings
+    data object FavoriteLocations : Destination("favorite_locations")
+    data object DeleteAccount : Destination("delete_account")
 }

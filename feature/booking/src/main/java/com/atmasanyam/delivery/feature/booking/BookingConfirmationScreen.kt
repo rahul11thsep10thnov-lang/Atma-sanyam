@@ -12,7 +12,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import com.atmasanyam.delivery.core.designsystem.components.PrimaryButton
 import com.atmasanyam.delivery.core.designsystem.labels.localizedName
 import com.atmasanyam.delivery.core.model.BookingFlowState
-import kotlin.random.Random
 
 @Composable
 fun BookingConfirmationScreen(
@@ -30,9 +28,9 @@ fun BookingConfirmationScreen(
     modifier: Modifier = Modifier,
 ) {
     val state = bookingFlowState.value
-    // A real booking ID comes from the backend at booking time (Phase 12); this client-side
-    // placeholder just demonstrates the WS-<year>-<sequence> format from the requirements.
-    val bookingId = remember { "WS-2026-%06d".format(Random.nextInt(1, 999_999)) }
+    // A real booking ID comes from the backend at booking time (Phase 12); until then the id is
+    // a client-side placeholder created when the booking was placed (see BookingFlowViewModel).
+    val bookingId = state.confirmedBooking?.bookingId.orEmpty()
 
     Scaffold(modifier = modifier) { padding ->
         Column(

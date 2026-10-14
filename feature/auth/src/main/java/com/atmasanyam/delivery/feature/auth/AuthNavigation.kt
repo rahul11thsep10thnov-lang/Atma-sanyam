@@ -12,7 +12,7 @@ fun NavGraphBuilder.authMobileScreen(onCodeSent: (phoneNumber: String) -> Unit, 
     }
 }
 
-fun NavGraphBuilder.authVerifyCodeScreen(onVerified: () -> Unit, onBack: () -> Unit) {
+fun NavGraphBuilder.authVerifyCodeScreen(onVerified: (phoneNumber: String) -> Unit, onBack: () -> Unit) {
     composable(
         route = Destination.AuthVerifyCode.route,
         arguments = listOf(navArgument(Destination.AuthVerifyCode.ARG_PHONE_NUMBER) { type = NavType.StringType }),

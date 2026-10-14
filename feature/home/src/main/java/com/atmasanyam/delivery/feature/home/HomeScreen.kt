@@ -13,28 +13,27 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Straighten
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -51,12 +50,15 @@ import com.atmasanyam.delivery.core.model.AppLanguage
 import com.atmasanyam.delivery.core.model.DeliveryLocation
 import com.atmasanyam.delivery.core.model.GeoPoint
 import com.atmasanyam.delivery.core.model.Route
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeRoute(
     mapRenderer: DeliveryMapRenderer,
     onEnterGoodsDetails: (pickup: DeliveryLocation, destination: DeliveryLocation, route: Route) -> Unit,
     onLanguageSelected: (AppLanguage) -> Unit,
+    userLabel: String?,
+    onMenuItemSelected: (HomeMenuItem) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(),
 ) {
@@ -70,6 +72,8 @@ fun HomeRoute(
         mapRenderer = mapRenderer,
         currentLanguage = currentLanguage,
         onLanguageSelected = onLanguageSelected,
+        userLabel = userLabel,
+        onMenuItemSelected = onMenuItemSelected,
         onPickupTextChanged = viewModel::onPickupTextChanged,
         onDestinationTextChanged = viewModel::onDestinationTextChanged,
         onUseCurrentLocationForPickup = { viewModel.onUseCurrentLocationForPickup(currentLocationLabel) },
@@ -88,71 +92,93 @@ fun HomeScreen(
     mapRenderer: DeliveryMapRenderer,
     currentLanguage: AppLanguage,
     onLanguageSelected: (AppLanguage) -> Unit,
+    userLabel: String?,
+    onMenuItemSelected: (HomeMenuItem) -> Unit,
     onPickupTextChanged: (String) -> Unit,
     onDestinationTextChanged: (String) -> Unit,
     onUseCurrentLocationForPickup: () -> Unit,
     onEnterGoodsDetails: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(modifier = modifier) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-        ) {
-            HomeHeader(currentLanguage = currentLanguage, onLanguageSelected = onLanguageSelected)
+    val drawerState = remember { newClosedDrawerState() }
+    val scope = rememberCoroutineScope()
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        modifier = modifier,
+        drawerContent = {
+            HomeMenuSheet(
+                userLabel = userLabel,
+                onItemSelected = { item ->
+                    scope.launch { drawerState.close() }
+                    onMenuItemSelected(item)
+                },
+            )
+        },
+    ) {
+        Scaffold { padding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+            ) {
+                HomeHeader(
+                    currentLanguage = currentLanguage,
+                    onLanguageSelected = onLanguageSelected,
+                    onMenuClick = { scope.launch { drawerState.open() } },
+                )
 
-            Text(
-                text = stringResource(R.string.home_title),
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(top = 16.dp, bottom = 20.dp),
-            )
+                Text(
+                    text = stringResource(R.string.home_title),
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.padding(top = 16.dp, bottom = 20.dp),
+                )
 
-            Text(
-                text = stringResource(R.string.home_pickup_question),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 8.dp),
-            )
-            LocationField(
-                label = stringResource(R.string.home_pickup_label),
-                value = uiState.pickupText,
-                onValueChange = onPickupTextChanged,
-                leadingIcon = Icons.Filled.Place,
-                placeholder = stringResource(R.string.home_pickup_placeholder),
-                onCurrentLocationClick = onUseCurrentLocationForPickup,
-            )
+                Text(
+                    text = stringResource(R.string.home_pickup_question),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                )
+                LocationField(
+                    label = stringResource(R.string.home_pickup_label),
+                    value = uiState.pickupText,
+                    onValueChange = onPickupTextChanged,
+                    leadingIcon = Icons.Filled.Place,
+                    placeholder = stringResource(R.string.home_pickup_placeholder),
+                    onCurrentLocationClick = onUseCurrentLocationForPickup,
+                )
 
-            Text(
-                text = stringResource(R.string.home_destination_question),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
-            )
-            LocationField(
-                label = stringResource(R.string.home_destination_label),
-                value = uiState.destinationText,
-                onValueChange = onDestinationTextChanged,
-                leadingIcon = Icons.Filled.LocationOn,
-                placeholder = stringResource(R.string.home_destination_placeholder),
-            )
+                Text(
+                    text = stringResource(R.string.home_destination_question),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
+                )
+                LocationField(
+                    label = stringResource(R.string.home_destination_label),
+                    value = uiState.destinationText,
+                    onValueChange = onDestinationTextChanged,
+                    leadingIcon = Icons.Filled.LocationOn,
+                    placeholder = stringResource(R.string.home_destination_placeholder),
+                )
 
-            MapPreview(
-                mapRenderer = mapRenderer,
-                pickupPoint = uiState.pickupPoint,
-                destinationPoint = uiState.destinationPoint,
-                showRoute = uiState.showRoutePreview,
-                distanceKm = uiState.mockDistanceKm,
-                etaMinutes = uiState.mockEtaMinutes,
-                modifier = Modifier.padding(top = 20.dp),
-            )
+                MapPreview(
+                    mapRenderer = mapRenderer,
+                    pickupPoint = uiState.pickupPoint,
+                    destinationPoint = uiState.destinationPoint,
+                    showRoute = uiState.showRoutePreview,
+                    distanceKm = uiState.mockDistanceKm,
+                    etaMinutes = uiState.mockEtaMinutes,
+                    modifier = Modifier.padding(top = 20.dp),
+                )
 
-            PrimaryButton(
-                text = stringResource(R.string.home_enter_goods),
-                onClick = onEnterGoodsDetails,
-                enabled = uiState.canEnterGoodsDetails,
-                modifier = Modifier.padding(top = 20.dp, bottom = 8.dp),
-            )
+                PrimaryButton(
+                    text = stringResource(R.string.home_enter_goods),
+                    onClick = onEnterGoodsDetails,
+                    enabled = uiState.canEnterGoodsDetails,
+                    modifier = Modifier.padding(top = 20.dp, bottom = 8.dp),
+                )
+            }
         }
     }
 }
@@ -161,17 +187,19 @@ fun HomeScreen(
 private fun HomeHeader(
     currentLanguage: AppLanguage,
     onLanguageSelected: (AppLanguage) -> Unit,
+    onMenuClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var menuExpanded by remember { mutableStateOf(false) }
-    var showAbout by remember { mutableStateOf(false) }
+    var languageMenuExpanded by remember { mutableStateOf(false) }
 
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Column {
+        IconButton(onClick = onMenuClick) {
+            Icon(Icons.Filled.Menu, contentDescription = stringResource(R.string.home_menu))
+        }
+        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = stringResource(R.string.home_brand),
                 style = MaterialTheme.typography.titleLarge,
@@ -184,18 +212,12 @@ private fun HomeHeader(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-        // The menu must be anchored in the same Box as the button so it drops down from it.
+        // The language menu must be anchored in the same Box as its button so it drops down from it.
         Box {
-            IconButton(onClick = { menuExpanded = true }) {
-                Icon(Icons.Filled.Menu, contentDescription = stringResource(R.string.home_menu))
+            IconButton(onClick = { languageMenuExpanded = true }) {
+                Icon(Icons.Filled.Translate, contentDescription = stringResource(R.string.home_language))
             }
-            DropdownMenu(expanded = menuExpanded, onDismissRequest = { menuExpanded = false }) {
-                Text(
-                    text = stringResource(R.string.home_menu_language),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                )
+            DropdownMenu(expanded = languageMenuExpanded, onDismissRequest = { languageMenuExpanded = false }) {
                 AppLanguage.entries.forEach { language ->
                     DropdownMenuItem(
                         text = { Text(language.nativeName) },
@@ -205,35 +227,13 @@ private fun HomeHeader(
                             }
                         },
                         onClick = {
-                            menuExpanded = false
+                            languageMenuExpanded = false
                             if (language != currentLanguage) onLanguageSelected(language)
                         },
                     )
                 }
-                HorizontalDivider()
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.home_menu_about)) },
-                    leadingIcon = { Icon(Icons.Filled.Info, contentDescription = null) },
-                    onClick = {
-                        menuExpanded = false
-                        showAbout = true
-                    },
-                )
             }
         }
-    }
-
-    if (showAbout) {
-        AlertDialog(
-            onDismissRequest = { showAbout = false },
-            title = { Text(stringResource(R.string.home_about_title)) },
-            text = { Text(stringResource(R.string.home_about_body)) },
-            confirmButton = {
-                TextButton(onClick = { showAbout = false }) {
-                    Text(stringResource(R.string.home_about_close))
-                }
-            },
-        )
     }
 }
 
