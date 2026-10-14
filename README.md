@@ -1,4 +1,4 @@
-# PrayagVaahan — On-Demand Goods Delivery
+# Lokrath — On-Demand Goods Delivery (English / हिन्दी)
 
 Native Android app (Kotlin, Jetpack Compose, Material 3, MVVM/Clean Architecture) for
 on-demand delivery of goods/articles from a shop to a customer's destination —
@@ -32,7 +32,8 @@ actually see and use the app at this stage.
 Gradle multi-module project, full navigation flow, and every screen in the guest →
 quote → auth → booking journey has real UI (not just placeholders) — goods details,
 vehicle matching + pricing, booking summary with an itemized price breakdown, mobile
-number + code entry, and now a real Google Map on Home. What's still mocked:
+number + code entry, and now a real Google Map on Home. The app is branded **Lokrath**
+and is fully bilingual (English / हिन्दी, switchable from the Home menu). What's still mocked:
 pickup/destination geocoding (Phase 4 — Home uses fixed demo coordinates today), and
 everything backend (Phase 12+) — see [Phase plan](#phase-plan).
 
@@ -101,11 +102,39 @@ billing card) means:
 
 No feature module, and nothing about the booking flow, ever needs to change.
 
+## Languages and brand images
+
+**Translations.** Each module keeps its own text in `src/main/res/values/strings.xml`
+(English) and `src/main/res/values-hi/strings.xml` (Hindi); names are prefixed per module
+(`home_…`, `goods_…`, `vehicle_…`, `booking_…`, `auth_…`, `label_…` for shared enum labels in
+`core:designsystem`). To fix a Hindi sentence, edit the matching line in a `values-hi` file.
+Brand words (Lokrath, the example phone/code hints) are `translatable="false"`.
+Adding a third language later = a new `values-xx` folder per module, one more entry in
+`AppLanguage` (`core:model`) and in `app/src/main/res/xml/locales_config.xml`.
+
+**Images** (all in `app/src/main/res/drawable-nodpi/`):
+
+| File | Used for |
+|---|---|
+| `app_background.webp` | Background behind every screen (Canva logo removed from the original) |
+| `splash_lokrath.webp` | 4-second launch splash (`SplashScreen.kt`) |
+| `ic_launcher_foreground.webp` / `ic_launcher_background.webp` | Adaptive launcher icon layers |
+
+The icon artwork is scaled to the launcher's safe zone (68 of 108 dp) over a blurred copy of
+its own edge colours, so round, squircle, rounded-square and teardrop launcher shapes all keep
+the "LOKRATH" wordmark and the truck fully visible.
+
 ## What exists today
 
 - Multi-module Gradle project (Kotlin DSL, version catalog) that opens in Android Studio
 - **A GitHub Actions workflow that builds and uploads a real, installable debug APK on
   every push** — see above
+- **Lokrath branding**: 4-second launch splash (supplied artwork, shown full-width so the
+  wordmark is never cropped), the supplied pastel artwork as the background of every
+  screen, and an adaptive launcher icon built from the supplied icon artwork
+- **English / हिन्दी**: every screen is translated; switch from the hamburger menu on Home
+  (the choice is remembered, and the app starts in Hindi on a Hindi phone)
+- **Hamburger menu** on Home: language choice (tick on the active one) and an About dialog
 - Material 3 theme + reusable Compose components
 - `PricingEngine` and `VehicleMatchingEngine` with a 4-tier sample vehicle catalog
   (Bike / Three-Wheeler / Mini Goods Vehicle / Large Goods Vehicle), fully unit tested
@@ -286,9 +315,12 @@ Android dependency: `./gradlew :core:model:test` (needs a JDK, no Android SDK).
 ### What you should see in the app
 
 - Opens directly to the Home screen (no login prompt).
-- "PrayagVaahan" header, tagline "Deliver anything from shop to home".
+- Launch: the **Lokrath** splash (boats on the water, wordmark, "Goods & Commodity delivery
+  service", PRAYAGRAJ) stays for exactly 4 seconds, then Home opens over the pastel background.
+- Home header says "Lokrath". Tap the **☰ menu** (top right): pick **English** or **हिन्दी**
+  and the whole app switches language; **About Lokrath** opens a short info dialog.
 - Without a real `MAPS_API_KEY` (true until one is supplied — see below), you'll see a
-  plain "Map preview unavailable" placeholder instead of a live map. That's a deliberate
+  plain "Map preview is not available yet." placeholder instead of a live map. That's a deliberate
   safety fallback, not a bug: an empty API key is a known crash trigger on some Maps SDK
   versions, and this can't be tested on a real device from where the code was written, so
   the app never attempts to construct a real map without a non-blank key.
