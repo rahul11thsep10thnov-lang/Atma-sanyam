@@ -46,7 +46,8 @@ core/
                              VehicleMatchingEngine, BookingFlowState. `gradle test`-able.
   navigation/                Pure Kotlin — Destination route constants shared by all features
   designsystem/               Android/Compose — Material 3 theme, reusable components
-  data/                       Android — BookingFlowViewModel (the shared in-progress order)
+  data/                       Android — BookingFlowViewModel (the shared in-progress order),
+                             AccountViewModel/AccountStore (signed-in user, stored on the device)
   map-api/                    Android/Compose — DeliveryMapRenderer interface, no map SDK
   map-google/                  Android/Compose — the Google Maps implementation of it
 feature/
@@ -55,6 +56,7 @@ feature/
   vehicle/                    Vehicle cards computed via VehicleMatchingEngine/PricingEngine
   auth/                       Mobile number entry + alphanumeric code verification (simulated)
   booking/                    Itemized booking summary + confirmation with a generated booking ID
+  account/                    Hamburger-menu screens and Settings (see next section)
 ```
 
 Dependency direction: `app` → every `feature:*` → `core:designsystem` / `core:data` /
@@ -76,6 +78,27 @@ Confirmation reads/writes the same instance. That's the mechanism behind the
 requirement that a guest's pickup, destination, goods, and selected vehicle are never
 lost when they're asked to authenticate — there's no re-entry, because there's only one
 piece of state for the whole flow, not one per screen.
+
+## Hamburger menu and Settings
+
+The menu (top-left icon on Home) has exactly eight entries, in this order: **My Profile, Help,
+Booking History, Safety, Refer and Earn, My Rewards, Notifications, Settings**. Settings has exactly
+four: **Profile, Favorite Locations, Logout, Delete Account**. The language switch is the translate
+icon in the Home header; "About Lokrath" lives at the top of Help.
+
+- Help and Safety are open to everyone. The other screens need an account; a guest sees
+  "Sign in to continue", which reuses the existing mobile number + code screens and returns to the
+  same screen. Booking while signed in skips the code step.
+- **Logout** asks for confirmation, then ends the session only; the account's data stays on the device.
+- **Delete Account** needs reading the consequences, ticking an acknowledgement and confirming a final
+  dialog. It erases that account's data **from this device** and says so. There is no server yet, so
+  nothing is claimed about server-side deletion.
+- Booking History, Notifications and Favorite Locations are real but device-local (bookings are
+  recorded when confirmed). Refer and Earn shows a code derived from the phone number and opens the
+  system share sheet; My Rewards honestly shows "No rewards yet" (no rewards programme exists).
+
+Still needing the backend (Phase 12): real sign-in/session, server-side bookings and notifications
+(FCM), account deletion (`DELETE /account`), referral/rewards programme, support contact details.
 
 ## Map provider architecture — swappable by design
 
