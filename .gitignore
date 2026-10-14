@@ -57,3 +57,19 @@ assets/garden_dev/
 assets/room_dev/
 assets/balcony_dev/
 assets/paradise/_tmp/
+
+# --- Wholesoul Android app (root Gradle project, module: app/) ---
+*.iml
+.gradle/
+local.properties
+.idea/
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.ap_
+*.dex
+*.class
+output.json
+/build/
+/app/build/
