@@ -16,3 +16,9 @@ internal fun CardBack(palette: CardPalette, modifier: Modifier = Modifier) {
         drawRoyalCardBack(Offset.Zero, size)
     }
 }
+
+/** The card back as a plain composable, in red or [blue]; for previews and any screen that shows a deck. */
+@Composable
+fun CardBackArt(blue: Boolean = false, modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) { drawRoyalCardBack(Offset.Zero, size, blue) }
+}

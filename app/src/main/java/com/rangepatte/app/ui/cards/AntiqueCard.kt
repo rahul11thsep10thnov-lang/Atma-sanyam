@@ -157,19 +157,27 @@ private fun DrawScope.drawAceMedallion(card: PlayingCard, topLeft: Offset, cardS
     val center = Offset(topLeft.x + w / 2f, topLeft.y + cardSize.height / 2f)
     val spade = card.suit == com.rangepatte.app.domain.model.Suit.SPADES
     if (spade) {
-        // Scroll-work round the spade, as on the traditional Ace of Spades.
-        for (i in 0 until 16) {
-            val a = (2 * Math.PI / 16 * i).toFloat()
-            val r = w * 0.4f
-            val tip = Offset(center.x + cos(a) * r, center.y + sin(a) * r)
-            val base = Offset(center.x + cos(a) * r * 0.82f, center.y + sin(a) * r * 0.82f)
-            drawLine(ink, base, tip, strokeWidth = w * 0.022f, cap = StrokeCap.Round)
-            drawCircle(ink, w * 0.016f, tip)
+        // Filigree round the spade, as on the printed Ace of Spades: a ring of leaf-scrolls in two sizes.
+        for (i in 0 until 28) {
+            val a = (2 * Math.PI / 28 * i).toFloat()
+            val big = i % 2 == 0
+            val r0 = w * 0.3f
+            val r1 = w * (if (big) 0.43f else 0.37f)
+            val side = 0.085f
+            val tip = Offset(center.x + cos(a) * r1, center.y + sin(a) * r1 * 1.12f)
+            val l = Offset(center.x + cos(a - side) * (r0 + r1) / 2f, center.y + sin(a - side) * (r0 + r1) / 2f * 1.12f)
+            val r = Offset(center.x + cos(a + side) * (r0 + r1) / 2f, center.y + sin(a + side) * (r0 + r1) / 2f * 1.12f)
+            val base = Offset(center.x + cos(a) * r0, center.y + sin(a) * r0 * 1.12f)
+            val leaf = Path().apply {
+                moveTo(base.x, base.y); quadraticTo(l.x, l.y, tip.x, tip.y); quadraticTo(r.x, r.y, base.x, base.y); close()
+            }
+            drawPath(leaf, ink)
         }
-        drawCircle(ink, w * 0.33f, center, style = Stroke(w * 0.01f))
+        drawOval(ink, Offset(center.x - w * 0.31f, center.y - w * 0.31f * 1.12f), Size(w * 0.62f, w * 0.62f * 1.12f), style = Stroke(w * 0.012f))
+        drawOval(Color.White, Offset(center.x - w * 0.28f, center.y - w * 0.28f * 1.12f), Size(w * 0.56f, w * 0.56f * 1.12f))
     }
-    drawSuitPip(card.suit, center, w * if (spade) 0.26f else 0.22f, ink)
-    if (spade) drawSuitPip(card.suit, center + Offset(0f, w * 0.01f), w * 0.12f, Color.White)
+    drawSuitPip(card.suit, center, w * if (spade) 0.23f else 0.22f, ink)
+    if (spade) drawSuitPip(card.suit, center + Offset(0f, w * 0.012f), w * 0.13f, Color.White)
 }
 
 /** A printed Joker: blank ivory card with a crimson star and the word JOKER, at any size. */
