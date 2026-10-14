@@ -6,9 +6,11 @@ import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.atmasanyam.delivery.core.data.BookingFlowViewModel
 import com.atmasanyam.delivery.core.mapgoogle.GoogleDeliveryMapRenderer
+import com.atmasanyam.delivery.core.model.AppLanguage
 import com.atmasanyam.delivery.core.navigation.Destination
 import com.atmasanyam.delivery.feature.auth.authMobileScreen
 import com.atmasanyam.delivery.feature.auth.authVerifyCodeScreen
@@ -17,6 +19,7 @@ import com.atmasanyam.delivery.feature.booking.bookingSummaryScreen
 import com.atmasanyam.delivery.feature.goods.goodsDetailsScreen
 import com.atmasanyam.delivery.feature.home.homeScreen
 import com.atmasanyam.delivery.feature.vehicle.vehicleSelectionScreen
+import com.atmasanyam.delivery.splash.SplashScreen
 
 /**
  * Wires every feature module's screens into the single guest -> quote -> auth -> booking flow.
@@ -27,19 +30,33 @@ import com.atmasanyam.delivery.feature.vehicle.vehicleSelectionScreen
  * survives navigating all the way through the auth step without being re-entered.
  */
 @Composable
-fun AtmaSanyamNavHost(navController: NavHostController = rememberNavController()) {
+fun AtmaSanyamNavHost(
+    onLanguageSelected: (AppLanguage) -> Unit,
+    navController: NavHostController = rememberNavController(),
+) {
     val bookingFlowViewModel: BookingFlowViewModel = viewModel()
     val bookingFlowState = bookingFlowViewModel.state.collectAsState()
     // The only line that needs to change to swap map providers (see core:map-api).
     val mapRenderer = remember { GoogleDeliveryMapRenderer() }
 
-    NavHost(navController = navController, startDestination = Destination.Home.route) {
+    NavHost(navController = navController, startDestination = Destination.Splash.route) {
+        composable(Destination.Splash.route) {
+            SplashScreen(
+                onFinished = {
+                    // Remove the splash from the back stack so Back on Home leaves the app.
+                    navController.navigate(Destination.Home.route) {
+                        popUpTo(Destination.Splash.route) { inclusive = true }
+                    }
+                },
+            )
+        }
         homeScreen(
             mapRenderer = mapRenderer,
             onEnterGoodsDetails = { pickup, destination, route ->
                 bookingFlowViewModel.setPickupAndDestination(pickup, destination, route)
                 navController.navigate(Destination.GoodsDetails.route)
             },
+            onLanguageSelected = onLanguageSelected,
         )
         goodsDetailsScreen(
             onContinueToVehicles = { goods ->

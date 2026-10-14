@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.AtmaSanyam" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/lokrath_splash_background</item>
+        <!-- Android 12+ shows its own icon splash first; match its background to our splash art. -->
+        <item name="android:windowSplashScreenBackground">@color/lokrath_splash_background</item>
+    </style>
+</resources>

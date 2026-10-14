@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.atmasanyam.delivery.core.designsystem.components.PrimaryButton
@@ -33,7 +34,7 @@ fun AuthMobileScreen(
     modifier: Modifier = Modifier,
 ) {
     var phoneNumber by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var showError by remember { mutableStateOf(false) }
 
     Scaffold(modifier = modifier) { padding ->
         Column(
@@ -43,44 +44,48 @@ fun AuthMobileScreen(
                 .padding(16.dp),
         ) {
             SectionHeader(
-                title = "Enter your mobile number",
-                subtitle = "We'll send a verification code to confirm it's you.",
+                title = stringResource(R.string.auth_mobile_title),
+                subtitle = stringResource(R.string.auth_mobile_subtitle),
             )
             OutlinedTextField(
                 value = phoneNumber,
                 onValueChange = { input ->
                     phoneNumber = input.filter { it.isDigit() }.take(10)
-                    errorMessage = null
+                    showError = false
                 },
-                label = { Text("Mobile number") },
-                placeholder = { Text("98765 43210") },
-                prefix = { Text("+91 ") },
+                label = { Text(stringResource(R.string.auth_mobile_label)) },
+                placeholder = { Text(stringResource(R.string.auth_mobile_placeholder)) },
+                prefix = { Text(stringResource(R.string.auth_mobile_prefix)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp),
             )
-            if (errorMessage != null) {
+            if (showError) {
                 Text(
-                    text = errorMessage.orEmpty(),
+                    text = stringResource(R.string.auth_mobile_error),
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(top = 8.dp),
                 )
             }
             PrimaryButton(
-                text = "Send code",
+                text = stringResource(R.string.auth_send_code),
                 onClick = {
                     if (phoneNumber.length == 10) {
                         onCodeSent(phoneNumber)
                     } else {
-                        errorMessage = "Please enter a valid 10-digit mobile number."
+                        showError = true
                     }
                 },
                 modifier = Modifier.padding(top = 20.dp),
             )
-            SecondaryButton(text = "Back", onClick = onBack, modifier = Modifier.padding(top = 12.dp))
+            SecondaryButton(
+                text = stringResource(R.string.auth_back),
+                onClick = onBack,
+                modifier = Modifier.padding(top = 12.dp),
+            )
         }
     }
 }

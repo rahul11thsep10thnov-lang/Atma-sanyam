@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import com.atmasanyam.delivery.core.designsystem.R
 
 /**
  * A search-style text field used for both pickup and destination in the map-first home screen.
@@ -38,7 +40,7 @@ fun LocationField(
                 IconButton(onClick = it) {
                     Icon(
                         Icons.Filled.MyLocation,
-                        contentDescription = "Use current location",
+                        contentDescription = stringResource(R.string.ds_use_current_location),
                         tint = MaterialTheme.colorScheme.primary,
                     )
                 }

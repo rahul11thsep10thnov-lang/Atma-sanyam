@@ -23,10 +23,17 @@ data class PriceBreakdown(
         get() = (subtotal * surgeMultiplier) + platformFee + tax
 }
 
+/** Why a vehicle can't carry a shipment. A code, so screens can word it in the user's language. */
+enum class IneligibilityReason {
+    WEIGHT_EXCEEDED,
+    DIMENSIONS_EXCEEDED,
+    VOLUME_EXCEEDED,
+}
+
 data class VehicleQuote(
     val vehicle: VehicleCategory,
     val eligible: Boolean,
-    val ineligibilityReason: String? = null,
+    val ineligibilityReason: IneligibilityReason? = null,
     val priceBreakdown: PriceBreakdown?,
     val etaMinutes: Int,
 )

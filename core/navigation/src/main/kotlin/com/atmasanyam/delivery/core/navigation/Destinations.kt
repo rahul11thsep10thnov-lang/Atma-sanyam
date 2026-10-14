@@ -6,6 +6,7 @@ package com.atmasanyam.delivery.core.navigation
  * Gradle modules (only the app module depends on every feature).
  */
 sealed class Destination(val route: String) {
+    data object Splash : Destination("splash")
     data object Home : Destination("home")
     data object GoodsDetails : Destination("goods_details")
     data object VehicleSelection : Destination("vehicle_selection")

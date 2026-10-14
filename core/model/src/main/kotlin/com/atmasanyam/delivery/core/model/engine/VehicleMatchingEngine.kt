@@ -1,6 +1,7 @@
 package com.atmasanyam.delivery.core.model.engine
 
 import com.atmasanyam.delivery.core.model.GoodsDetails
+import com.atmasanyam.delivery.core.model.IneligibilityReason
 import com.atmasanyam.delivery.core.model.StandardDimensionsCm
 import com.atmasanyam.delivery.core.model.VehicleCapacity
 import com.atmasanyam.delivery.core.model.VehicleCategory
@@ -15,9 +16,10 @@ import com.atmasanyam.delivery.core.model.VehicleCategory
  */
 object VehicleMatchingEngine {
 
+    /** [reason] is a code, not display text, so each screen can word it in the user's language. */
     data class EligibilityResult(
         val eligible: Boolean,
-        val reason: String? = null,
+        val reason: IneligibilityReason? = null,
     )
 
     fun evaluate(goods: GoodsDetails, vehicle: VehicleCategory): EligibilityResult {
@@ -25,16 +27,16 @@ object VehicleMatchingEngine {
         val capacity: VehicleCapacity = vehicle.capacity
 
         if (goods.approxWeightKg > capacity.maxWeightKg) {
-            return EligibilityResult(false, "Exceeds ${vehicle.name}'s weight limit of ${capacity.maxWeightKg.toInt()} kg.")
+            return EligibilityResult(false, IneligibilityReason.WEIGHT_EXCEEDED)
         }
         if (dims.lengthCm > capacity.maxLengthCm ||
             dims.widthCm > capacity.maxWidthCm ||
             dims.heightCm > capacity.maxHeightCm
         ) {
-            return EligibilityResult(false, "Item dimensions exceed ${vehicle.name}'s capacity.")
+            return EligibilityResult(false, IneligibilityReason.DIMENSIONS_EXCEEDED)
         }
         if (dims.volumeCubicCm > capacity.maxVolumeCubicCm) {
-            return EligibilityResult(false, "Item volume exceeds ${vehicle.name}'s capacity.")
+            return EligibilityResult(false, IneligibilityReason.VOLUME_EXCEEDED)
         }
         return EligibilityResult(true)
     }

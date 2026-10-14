@@ -1,0 +1,26 @@
+<resources>
+    <string name="goods_title">What are you delivering?</string>
+    <string name="goods_description_label">Describe your items (optional)</string>
+    <string name="goods_description_placeholder">e.g. 2 ceiling fans + electrical wires</string>
+
+    <string name="goods_quantity_title">How many items/packages?</string>
+    <string name="goods_quantity_decrease">Decrease quantity</string>
+    <string name="goods_quantity_increase">Increase quantity</string>
+
+    <string name="goods_weight_title">Approximate total weight</string>
+    <string name="goods_weight_hint">Don\'t know the exact weight? An approximate value is okay.</string>
+    <string name="goods_weight_label">Weight (kg)</string>
+
+    <string name="goods_size_title">Largest item\'s/package\'s size</string>
+    <string name="goods_size_hint">Enter the dimensions of your largest item/package.</string>
+    <string name="goods_length">Length</string>
+    <string name="goods_width">Width</string>
+    <string name="goods_height">Height</string>
+
+    <string name="goods_error_category">Please select what you\'re delivering.</string>
+    <string name="goods_error_weight">Please enter approximate weight.</string>
+    <string name="goods_error_dimensions">Please enter valid dimensions.</string>
+
+    <string name="goods_calculate">Calculate delivery charge</string>
+    <string name="goods_back">Back</string>
+</resources>

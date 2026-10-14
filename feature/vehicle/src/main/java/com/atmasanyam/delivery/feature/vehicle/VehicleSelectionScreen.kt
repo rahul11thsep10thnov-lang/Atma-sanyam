@@ -17,13 +17,17 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.atmasanyam.delivery.core.designsystem.components.ComingSoonScreen
 import com.atmasanyam.delivery.core.designsystem.components.PrimaryButton
 import com.atmasanyam.delivery.core.designsystem.components.SecondaryButton
+import com.atmasanyam.delivery.core.designsystem.labels.localizedDescription
+import com.atmasanyam.delivery.core.designsystem.labels.localizedName
 import com.atmasanyam.delivery.core.model.BookingFlowState
 import com.atmasanyam.delivery.core.model.GoodsDetails
+import com.atmasanyam.delivery.core.model.IneligibilityReason
 import com.atmasanyam.delivery.core.model.PriceBreakdown
 import com.atmasanyam.delivery.core.model.Route
 import com.atmasanyam.delivery.core.model.VehicleQuote
@@ -44,11 +48,11 @@ fun VehicleSelectionScreen(
 
     if (route == null || goodsDetails == null) {
         ComingSoonScreen(
-            title = "Missing details",
-            description = "Please go back and fill in your pickup, destination and goods details first.",
+            title = stringResource(R.string.vehicle_missing_title),
+            description = stringResource(R.string.vehicle_missing_body),
             modifier = modifier,
         ) {
-            SecondaryButton(text = "Back", onClick = onBack)
+            SecondaryButton(text = stringResource(R.string.vehicle_back), onClick = onBack)
         }
         return
     }
@@ -59,18 +63,22 @@ fun VehicleSelectionScreen(
     Scaffold(modifier = modifier) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
             Text(
-                text = "Available vehicles",
+                text = stringResource(R.string.vehicle_title),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(16.dp),
             )
             if (eligibleQuotes.isEmpty()) {
                 Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                     Text(
-                        text = "Your items exceed our currently available vehicle capacities.",
+                        text = stringResource(R.string.vehicle_none_suitable),
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodyLarge,
                     )
-                    SecondaryButton(text = "Back", onClick = onBack, modifier = Modifier.padding(top = 16.dp))
+                    SecondaryButton(
+                        text = stringResource(R.string.vehicle_back),
+                        onClick = onBack,
+                        modifier = Modifier.padding(top = 16.dp),
+                    )
                 }
             } else {
                 LazyColumn(modifier = Modifier.weight(1f).padding(horizontal = 16.dp)) {
@@ -78,7 +86,11 @@ fun VehicleSelectionScreen(
                         VehicleQuoteCard(quote = quote, onSelect = { onVehicleSelected(quote) })
                     }
                 }
-                SecondaryButton(text = "Back", onClick = onBack, modifier = Modifier.padding(16.dp))
+                SecondaryButton(
+                    text = stringResource(R.string.vehicle_back),
+                    onClick = onBack,
+                    modifier = Modifier.padding(16.dp),
+                )
             }
         }
     }
@@ -110,7 +122,7 @@ private fun VehicleQuoteCard(quote: VehicleQuote, onSelect: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(text = quote.vehicle.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text(text = quote.vehicle.localizedName(), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 val breakdown = quote.priceBreakdown
                 if (quote.eligible && breakdown != null) {
                     Text(
@@ -122,32 +134,45 @@ private fun VehicleQuoteCard(quote: VehicleQuote, onSelect: () -> Unit) {
                 }
             }
             Text(
-                text = "Suitable for: ${quote.vehicle.description}",
+                text = stringResource(R.string.vehicle_suitable_for, quote.vehicle.localizedDescription()),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 4.dp),
             )
             Text(
-                text = "Capacity: up to ${quote.vehicle.capacity.maxWeightKg.toInt()} kg",
+                text = stringResource(R.string.vehicle_capacity, quote.vehicle.capacity.maxWeightKg.toInt()),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             if (quote.eligible) {
                 Text(
-                    text = "ETA: ${quote.etaMinutes} min",
+                    text = stringResource(R.string.vehicle_eta, quote.etaMinutes),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                PrimaryButton(text = "Select", onClick = onSelect, modifier = Modifier.padding(top = 12.dp))
+                PrimaryButton(
+                    text = stringResource(R.string.vehicle_select),
+                    onClick = onSelect,
+                    modifier = Modifier.padding(top = 12.dp),
+                )
             } else {
                 Text(
-                    text = quote.ineligibilityReason
-                        ?: "This vehicle may not be suitable for your items. Please select a larger vehicle.",
+                    text = ineligibilityText(quote),
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(top = 8.dp),
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun ineligibilityText(quote: VehicleQuote): String {
+    val capacity = quote.vehicle.capacity
+    return when (quote.ineligibilityReason) {
+        IneligibilityReason.WEIGHT_EXCEEDED -> stringResource(R.string.vehicle_reason_weight, capacity.maxWeightKg.toInt())
+        IneligibilityReason.VOLUME_EXCEEDED -> stringResource(R.string.vehicle_reason_volume)
+        IneligibilityReason.DIMENSIONS_EXCEEDED, null -> stringResource(R.string.vehicle_reason_dimensions)
     }
 }

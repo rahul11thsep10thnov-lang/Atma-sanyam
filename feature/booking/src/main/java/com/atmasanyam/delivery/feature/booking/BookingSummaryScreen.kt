@@ -16,12 +16,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.atmasanyam.delivery.core.designsystem.components.ComingSoonScreen
 import com.atmasanyam.delivery.core.designsystem.components.PrimaryButton
 import com.atmasanyam.delivery.core.designsystem.components.SecondaryButton
 import com.atmasanyam.delivery.core.designsystem.components.SectionHeader
+import com.atmasanyam.delivery.core.designsystem.labels.labelRes
+import com.atmasanyam.delivery.core.designsystem.labels.localizedName
+import com.atmasanyam.delivery.core.designsystem.labels.shortLabelRes
 import com.atmasanyam.delivery.core.model.BookingFlowState
 
 @Composable
@@ -40,14 +44,18 @@ fun BookingSummaryScreen(
 
     if (pickup == null || destination == null || goods == null || vehicleQuote == null || breakdown == null) {
         ComingSoonScreen(
-            title = "Missing details",
-            description = "Please go back and complete the previous steps first.",
+            title = stringResource(R.string.booking_missing_title),
+            description = stringResource(R.string.booking_missing_body),
             modifier = modifier,
         ) {
-            SecondaryButton(text = "Back", onClick = onBack)
+            SecondaryButton(text = stringResource(R.string.booking_back), onClick = onBack)
         }
         return
     }
+
+    // Built before use because composable calls aren't allowed inside non-inline lambdas.
+    val categoryNames = goods.categories.map { stringResource(it.labelRes()) }
+    val dims = goods.largestItemDimensions
 
     Scaffold(modifier = modifier) { padding ->
         Column(
@@ -57,37 +65,54 @@ fun BookingSummaryScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp),
         ) {
-            SectionHeader(title = "Confirm your delivery")
+            SectionHeader(title = stringResource(R.string.booking_confirm_title))
 
-            SummaryRow(label = "Pickup", value = pickup.addressLine)
-            SummaryRow(label = "Destination", value = destination.addressLine)
-            SummaryRow(label = "Goods", value = goods.categories.joinToString { it.displayName })
+            SummaryRow(label = stringResource(R.string.booking_row_pickup), value = pickup.addressLine)
+            SummaryRow(label = stringResource(R.string.booking_row_destination), value = destination.addressLine)
+            SummaryRow(label = stringResource(R.string.booking_row_goods), value = categoryNames.joinToString(", "))
             if (goods.description.isNotBlank()) {
-                SummaryRow(label = "Description", value = goods.description)
+                SummaryRow(label = stringResource(R.string.booking_row_description), value = goods.description)
             }
-            SummaryRow(label = "Quantity", value = "${goods.quantity}")
-            SummaryRow(label = "Weight", value = "${goods.approxWeightKg} kg")
-            val dims = goods.largestItemDimensions
+            SummaryRow(label = stringResource(R.string.booking_row_quantity), value = "${goods.quantity}")
             SummaryRow(
-                label = "Dimensions",
-                value = "${dims.length} x ${dims.width} x ${dims.height} ${dims.unit.name.lowercase()}",
+                label = stringResource(R.string.booking_row_weight),
+                value = stringResource(R.string.booking_weight_value, formatNumber(goods.approxWeightKg)),
             )
-            SummaryRow(label = "Vehicle", value = vehicleQuote.vehicle.name)
-            SummaryRow(label = "ETA", value = "${vehicleQuote.etaMinutes} min")
+            SummaryRow(
+                label = stringResource(R.string.booking_row_dimensions),
+                value = stringResource(
+                    R.string.booking_dimensions_value,
+                    formatNumber(dims.length),
+                    formatNumber(dims.width),
+                    formatNumber(dims.height),
+                    stringResource(dims.unit.shortLabelRes()),
+                ),
+            )
+            SummaryRow(label = stringResource(R.string.booking_row_vehicle), value = vehicleQuote.vehicle.localizedName())
+            SummaryRow(
+                label = stringResource(R.string.booking_row_eta),
+                value = stringResource(R.string.booking_eta_value, vehicleQuote.etaMinutes),
+            )
 
             Card(modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = "Price breakdown", style = MaterialTheme.typography.titleMedium)
-                    PriceRow("Base fare", breakdown.baseFare)
-                    PriceRow("Distance charge", breakdown.distanceCharge)
-                    if (breakdown.loadingFee > 0) PriceRow("Loading fee", breakdown.loadingFee)
-                    if (breakdown.waitingFee > 0) PriceRow("Waiting fee", breakdown.waitingFee)
-                    if (breakdown.heavyWeightSurcharge > 0) PriceRow("Heavy item surcharge", breakdown.heavyWeightSurcharge)
-                    PriceRow("Platform fee", breakdown.platformFee)
-                    PriceRow("Tax", breakdown.tax)
+                    Text(text = stringResource(R.string.booking_price_breakdown), style = MaterialTheme.typography.titleMedium)
+                    PriceRow(stringResource(R.string.booking_base_fare), breakdown.baseFare)
+                    PriceRow(stringResource(R.string.booking_distance_charge), breakdown.distanceCharge)
+                    if (breakdown.loadingFee > 0) PriceRow(stringResource(R.string.booking_loading_fee), breakdown.loadingFee)
+                    if (breakdown.waitingFee > 0) PriceRow(stringResource(R.string.booking_waiting_fee), breakdown.waitingFee)
+                    if (breakdown.heavyWeightSurcharge > 0) {
+                        PriceRow(stringResource(R.string.booking_heavy_surcharge), breakdown.heavyWeightSurcharge)
+                    }
+                    PriceRow(stringResource(R.string.booking_platform_fee), breakdown.platformFee)
+                    PriceRow(stringResource(R.string.booking_tax), breakdown.tax)
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(text = "Estimated total", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                        Text(
+                            text = stringResource(R.string.booking_estimated_total),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                        )
                         Text(
                             text = "₹%.0f".format(breakdown.total),
                             style = MaterialTheme.typography.titleMedium,
@@ -98,11 +123,23 @@ fun BookingSummaryScreen(
                 }
             }
 
-            PrimaryButton(text = "Book delivery", onClick = onBookDelivery, modifier = Modifier.padding(top = 20.dp))
-            SecondaryButton(text = "Back", onClick = onBack, modifier = Modifier.padding(top = 12.dp, bottom = 8.dp))
+            PrimaryButton(
+                text = stringResource(R.string.booking_book),
+                onClick = onBookDelivery,
+                modifier = Modifier.padding(top = 20.dp),
+            )
+            SecondaryButton(
+                text = stringResource(R.string.booking_back),
+                onClick = onBack,
+                modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
+            )
         }
     }
 }
+
+/** 20.0 -> "20", 2.5 -> "2.5": whole numbers shouldn't carry a trailing ".0". */
+private fun formatNumber(value: Double): String =
+    if (value % 1.0 == 0.0) value.toLong().toString() else value.toString()
 
 @Composable
 private fun SummaryRow(label: String, value: String) {

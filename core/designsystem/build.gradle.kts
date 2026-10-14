@@ -27,6 +27,9 @@ android {
 }
 
 dependencies {
+    // Exposed because the localized-label helpers are extensions on core:model types.
+    api(project(":core:model"))
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)

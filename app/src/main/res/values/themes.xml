@@ -1,4 +1,7 @@
 <resources>
-    <!-- Compose draws all UI; this is only the pre-Compose window background/splash theme. -->
-    <style name="Theme.AtmaSanyam" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Compose draws all UI; this is the pre-Compose window theme. AppCompat is required by
+         AppCompatActivity, which provides the per-app language switching (see MainActivity). -->
+    <style name="Theme.AtmaSanyam" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/lokrath_splash_background</item>
+    </style>
 </resources>

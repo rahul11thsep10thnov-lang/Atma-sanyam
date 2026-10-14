@@ -1,0 +1,40 @@
+<resources>
+    <string name="ds_use_current_location">Use current location</string>
+
+    <!-- Goods categories -->
+    <string name="label_category_hardware">Hardware</string>
+    <string name="label_category_electrical">Electrical</string>
+    <string name="label_category_electronics">Electronics</string>
+    <string name="label_category_furniture">Furniture</string>
+    <string name="label_category_appliances">Appliances</string>
+    <string name="label_category_plumbing">Plumbing</string>
+    <string name="label_category_construction">Construction Material</string>
+    <string name="label_category_grocery">Grocery</string>
+    <string name="label_category_household">Household Items</string>
+    <string name="label_category_packages">Packages/Boxes</string>
+    <string name="label_category_other">Other</string>
+
+    <!-- Weight ranges -->
+    <string name="label_weight_under_5">&lt;5 kg</string>
+    <string name="label_weight_5_10">5-10 kg</string>
+    <string name="label_weight_10_25">10-25 kg</string>
+    <string name="label_weight_25_50">25-50 kg</string>
+    <string name="label_weight_50_100">50-100 kg</string>
+    <string name="label_weight_over_100">100+ kg</string>
+
+    <!-- Length units -->
+    <string name="label_unit_feet">Feet</string>
+    <string name="label_unit_inches">Inches</string>
+    <string name="label_unit_feet_short">ft</string>
+    <string name="label_unit_inches_short">in</string>
+
+    <!-- Vehicles (names and "suitable for" descriptions; admin-configured catalog text is the fallback) -->
+    <string name="label_vehicle_bike">Bike</string>
+    <string name="label_vehicle_three_wheeler">Three-Wheeler</string>
+    <string name="label_vehicle_mini_goods">Mini Goods Vehicle</string>
+    <string name="label_vehicle_large_goods">Large Goods Vehicle</string>
+    <string name="label_vehicle_bike_desc">Documents, small parcels and small electronics.</string>
+    <string name="label_vehicle_three_wheeler_desc">Multiple cartons, hardware and plumbing material.</string>
+    <string name="label_vehicle_mini_goods_desc">Furniture, appliances and multiple heavy boxes.</string>
+    <string name="label_vehicle_large_goods_desc">Construction material and large-volume house-shifting loads.</string>
+</resources>

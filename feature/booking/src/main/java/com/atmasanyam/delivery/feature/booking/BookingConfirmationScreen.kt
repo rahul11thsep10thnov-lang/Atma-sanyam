@@ -15,9 +15,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.atmasanyam.delivery.core.designsystem.components.PrimaryButton
+import com.atmasanyam.delivery.core.designsystem.labels.localizedName
 import com.atmasanyam.delivery.core.model.BookingFlowState
 import kotlin.random.Random
 
@@ -47,7 +49,7 @@ fun BookingConfirmationScreen(
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(bottom = 16.dp),
             )
-            Text(text = "Booking confirmed", style = MaterialTheme.typography.titleLarge)
+            Text(text = stringResource(R.string.booking_confirmed), style = MaterialTheme.typography.titleLarge)
             Text(
                 text = bookingId,
                 style = MaterialTheme.typography.headlineSmall,
@@ -56,19 +58,18 @@ fun BookingConfirmationScreen(
             )
             state.selectedVehicleQuote?.let { vehicleQuote ->
                 Text(
-                    text = "${vehicleQuote.vehicle.name} - status: SEARCHING",
+                    text = stringResource(R.string.booking_status_searching, vehicleQuote.vehicle.localizedName()),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             Text(
-                text = "Driver assignment and live tracking (Phase 14-15) will replace this " +
-                    "\"SEARCHING\" placeholder once the backend exists.",
+                text = stringResource(R.string.booking_confirmation_note),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 12.dp, bottom = 24.dp),
             )
-            PrimaryButton(text = "Back to home", onClick = onDone)
+            PrimaryButton(text = stringResource(R.string.booking_back_home), onClick = onDone)
         }
     }
 }

@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.atmasanyam.delivery.core.mapapi.DeliveryMapRenderer
 import com.atmasanyam.delivery.core.model.GeoPoint
@@ -54,6 +55,8 @@ class GoogleDeliveryMapRenderer : DeliveryMapRenderer {
 
         val pickupLatLng = pickup?.toLatLng()
         val destinationLatLng = destination?.toLatLng()
+        val pickupTitle = stringResource(R.string.map_marker_pickup)
+        val destinationTitle = stringResource(R.string.map_marker_destination)
 
         val cameraPositionState = rememberCameraPositionState {
             position = CameraPosition.fromLatLngZoom(INDIA_CENTER, DEFAULT_ZOOM)
@@ -71,8 +74,8 @@ class GoogleDeliveryMapRenderer : DeliveryMapRenderer {
         }
 
         GoogleMap(modifier = modifier, cameraPositionState = cameraPositionState) {
-            pickupLatLng?.let { Marker(state = MarkerState(position = it), title = "Pickup") }
-            destinationLatLng?.let { Marker(state = MarkerState(position = it), title = "Destination") }
+            pickupLatLng?.let { Marker(state = MarkerState(position = it), title = pickupTitle) }
+            destinationLatLng?.let { Marker(state = MarkerState(position = it), title = destinationTitle) }
 
             val routePoints = when {
                 !encodedRoutePolyline.isNullOrBlank() -> PolyUtil.decode(encodedRoutePolyline)
@@ -91,7 +94,7 @@ private fun NoApiKeyPlaceholder(modifier: Modifier = Modifier) {
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.surfaceVariant) {
         Box(modifier = Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.Center) {
             Text(
-                text = "Map preview unavailable - add a Google Maps API key to secrets.properties (see README).",
+                text = stringResource(R.string.map_unavailable),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

@@ -1,0 +1,17 @@
+<resources>
+    <string name="vehicle_title">Available vehicles</string>
+    <string name="vehicle_none_suitable">Your items exceed our currently available vehicle capacities.</string>
+    <string name="vehicle_back">Back</string>
+
+    <string name="vehicle_missing_title">Missing details</string>
+    <string name="vehicle_missing_body">Please go back and fill in your pickup, destination and goods details first.</string>
+
+    <string name="vehicle_suitable_for">Suitable for: %1$s</string>
+    <string name="vehicle_capacity">Capacity: up to %1$d kg</string>
+    <string name="vehicle_eta">ETA: %1$d min</string>
+    <string name="vehicle_select">Select</string>
+
+    <string name="vehicle_reason_weight">This vehicle may not be suitable: your items are heavier than its %1$d kg limit. Please select a larger vehicle.</string>
+    <string name="vehicle_reason_dimensions">This vehicle may not be suitable: your largest item is too big for it. Please select a larger vehicle.</string>
+    <string name="vehicle_reason_volume">This vehicle may not be suitable: your largest item takes up too much space. Please select a larger vehicle.</string>
+</resources>

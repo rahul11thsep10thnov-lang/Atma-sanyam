@@ -1,0 +1,18 @@
+<resources>
+    <string name="auth_mobile_title">Enter your mobile number</string>
+    <string name="auth_mobile_subtitle">We\'ll send a verification code to confirm it\'s you.</string>
+    <string name="auth_mobile_label">Mobile number</string>
+    <string name="auth_mobile_placeholder" translatable="false">98765 43210</string>
+    <string name="auth_mobile_prefix" translatable="false">+91 </string>
+    <string name="auth_mobile_error">Please enter a valid 10-digit mobile number.</string>
+    <string name="auth_send_code">Send code</string>
+    <string name="auth_back">Back</string>
+
+    <string name="auth_code_title">Enter verification code</string>
+    <string name="auth_code_sent_to">Sent to +91 %1$s</string>
+    <string name="auth_code_generic">Enter the code we sent you</string>
+    <string name="auth_code_label">Verification code</string>
+    <string name="auth_code_placeholder" translatable="false">A7K92B</string>
+    <string name="auth_code_error">Please enter the 6-character code.</string>
+    <string name="auth_verify">Verify</string>
+</resources>

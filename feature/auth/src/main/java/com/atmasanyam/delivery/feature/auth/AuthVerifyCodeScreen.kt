@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import com.atmasanyam.delivery.core.designsystem.components.PrimaryButton
@@ -34,7 +35,7 @@ fun AuthVerifyCodeScreen(
     modifier: Modifier = Modifier,
 ) {
     var code by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var showError by remember { mutableStateOf(false) }
 
     Scaffold(modifier = modifier) { padding ->
         Column(
@@ -44,43 +45,51 @@ fun AuthVerifyCodeScreen(
                 .padding(16.dp),
         ) {
             SectionHeader(
-                title = "Enter verification code",
-                subtitle = if (phoneNumber.isNotBlank()) "Sent to +91 $phoneNumber" else "Enter the code we sent you",
+                title = stringResource(R.string.auth_code_title),
+                subtitle = if (phoneNumber.isNotBlank()) {
+                    stringResource(R.string.auth_code_sent_to, phoneNumber)
+                } else {
+                    stringResource(R.string.auth_code_generic)
+                },
             )
             OutlinedTextField(
                 value = code,
                 onValueChange = {
                     code = it.filter { c -> c.isLetterOrDigit() }.take(6)
-                    errorMessage = null
+                    showError = false
                 },
-                label = { Text("Verification code") },
-                placeholder = { Text("A7K92B") },
+                label = { Text(stringResource(R.string.auth_code_label)) },
+                placeholder = { Text(stringResource(R.string.auth_code_placeholder)) },
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Characters),
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp),
             )
-            if (errorMessage != null) {
+            if (showError) {
                 Text(
-                    text = errorMessage.orEmpty(),
+                    text = stringResource(R.string.auth_code_error),
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(top = 8.dp),
                 )
             }
             PrimaryButton(
-                text = "Verify",
+                text = stringResource(R.string.auth_verify),
                 onClick = {
                     if (code.length == 6) {
                         onVerified()
                     } else {
-                        errorMessage = "Please enter the 6-character code."
+                        showError = true
                     }
                 },
                 modifier = Modifier.padding(top = 20.dp),
             )
-            SecondaryButton(text = "Back", onClick = onBack, modifier = Modifier.padding(top = 12.dp))
+            SecondaryButton(
+                text = stringResource(R.string.auth_back),
+                onClick = onBack,
+                modifier = Modifier.padding(top = 12.dp),
+            )
         }
     }
 }

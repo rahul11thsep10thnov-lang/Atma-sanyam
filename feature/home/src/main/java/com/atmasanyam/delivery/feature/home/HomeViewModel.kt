@@ -25,11 +25,12 @@ class HomeViewModel : ViewModel() {
     /**
      * Placeholder for FusedLocationProviderClient + reverse geocoding, wired up in Phase 3/4
      * once Google Maps/Places dependencies and the location permission flow (see requirement
-     * that permission is only requested when needed) are in place.
+     * that permission is only requested when needed) are in place. [label] is the already
+     * translated "Current location" text, so this class never needs a Context.
      */
-    fun onUseCurrentLocationForPickup() {
+    fun onUseCurrentLocationForPickup(label: String) {
         _uiState.update {
-            it.copy(pickupText = "Current location", isUsingCurrentLocationForPickup = true)
+            it.copy(pickupText = label, isUsingCurrentLocationForPickup = true)
         }
         recomputeMockRoute()
     }
