@@ -104,6 +104,7 @@ export const hi: Partial<Record<StringKey, string>> = {
   'craft.materials': 'तुम्हें चाहिए',
   'craft.start': 'बनाना शुरू करो',
   'craft.finished': 'तुमने बना लिया!',
+  'craft.openGame': 'गेम खोलें',
   'craft.adult': 'इस शिल्प में किसी बड़े की मदद लो।',
 
   'facts.title': 'क्या आप जानते हैं?',

@@ -177,6 +177,7 @@ export const en = {
   'craft.tip': 'Tip',
   'craft.caution': 'Careful',
   'craft.preview': 'What it will look like',
+  'craft.openGame': 'Open the game',
   'craft.animate': 'Show me the fold',
 
   // facts

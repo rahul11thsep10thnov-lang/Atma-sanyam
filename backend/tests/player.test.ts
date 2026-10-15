@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import request from 'supertest';
 import { eq } from 'drizzle-orm';
-import { children, gameProgress } from '../src/database/schema.js';
+import { children, craftTutorials, gameProgress } from '../src/database/schema.js';
 import { setupTestApp } from './helpers.js';
 import { addChild, as, birthMonthForAge, playerLogin, registerGuardian, subscribe } from './lojiHelpers.js';
 
@@ -181,5 +181,32 @@ describe('play sessions and progress', () => {
     const games = (await request(ctx.app).get('/v1/player/games').set(as(b.body.token))).body.games;
     expect(games.find((g: { id: string }) => g.id === 'chess').favourite).toBe(true);
     await request(ctx.app).delete('/v1/player/games/chess/favourite').set(as(b.body.token)).expect(204);
+  });
+});
+
+describe('craft library seed', () => {
+  it('seeds published tutorials with materials, hazards and diagrams, filtered by bracket', async () => {
+    const playerToken = (await playerLogin(ctx, big.playerId, '9137')).body.token as string;
+    const littleToken = (await request(ctx.app).post('/v1/player/login/verify').send({ challengeId: (await request(ctx.app).post('/v1/player/login').send({ playerId: little.playerId, pin: '4826' })).body.challengeId, code: ctx.sms.lastCode(GUARDIAN_PHONE)! })).body.token as string;
+    const all = await ctx.db.select().from(craftTutorials);
+    expect(all.length).toBeGreaterThanOrEqual(10);
+    for (const c of all) {
+      expect(c.status).toBe('published');
+      expect(c.materials.length).toBeGreaterThan(0);
+      expect(c.steps.length).toBeGreaterThan(0);
+      if (c.hazards.length) expect(c.adultSupervision).toBe(true);
+      if (c.kind === 'digital') expect(c.physical).toBe(false);
+    }
+    const list = await request(ctx.app).get('/v1/player/crafts').set(as(playerToken)).expect(200);
+    const ids = list.body.map((c: { id: string }) => c.id);
+    expect(ids).toContain('dog-face');
+    expect(ids).toContain('paper-crane');
+    const littleList = await request(ctx.app).get('/v1/player/crafts').set(as(littleToken)).expect(200);
+    const littleIds = littleList.body.map((c: { id: string }) => c.id);
+    expect(littleIds).toContain('dog-face');
+    expect(littleIds).not.toContain('paper-crane');
+    const detail = await request(ctx.app).get('/v1/player/crafts/dog-face').set(as(playerToken)).expect(200);
+    expect(detail.body.steps[0].diagram.paper).toBeDefined();
+    expect(detail.body.checklist.length).toBeGreaterThan(0);
   });
 });

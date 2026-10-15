@@ -66,6 +66,7 @@ export function CraftDetailScreen({ navigation, route }: NativeStackScreenProps<
     void p.loadProgress();
   };
   const previewEmoji = (craft.finalPreview as { emoji?: string } | undefined)?.emoji ?? m.emoji;
+  const gameId = (craft.finalPreview as { gameId?: string } | undefined)?.gameId;
 
   return (
     <PlayfulBackdrop colors={[m.color, colors.background]}>
@@ -116,6 +117,7 @@ export function CraftDetailScreen({ navigation, route }: NativeStackScreenProps<
               <Text style={{ fontSize: 72, marginTop: space.sm }}>{previewEmoji}</Text>
               {(craft.finalPreview as { diagram?: Diagram } | undefined)?.diagram && <FoldDiagram diagram={(craft.finalPreview as { diagram?: Diagram }).diagram} size={180} animate={false} />}
             </View>
+            {gameId && <BigButton label={t('craft.openGame')} emoji="🎮" size="xl" color={palette.sky} fullWidth onPress={() => navigation.navigate('GameDetail', { gameId })} style={{ marginTop: space.lg }} />}
             <BigButton label={craft.progress && craft.progress.stepsDone > 0 && !craft.progress.completedAt ? t('craft.continue') : t('craft.start')} emoji="✂️" size="xl" color={palette.lime} fullWidth onPress={() => setStep(craft.progress && !craft.progress.completedAt ? Math.min(craft.progress.stepsDone, total - 1) : 0)} style={{ marginTop: space.lg }} />
           </PopIn>
         )}

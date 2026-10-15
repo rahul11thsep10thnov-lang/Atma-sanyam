@@ -6,11 +6,12 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { sql } from 'drizzle-orm';
 import { createDatabase, type Db } from './client.js';
-import { achievements, ageBrackets, gameCategories, games } from './schema.js';
+import { achievements, ageBrackets, craftTutorials, gameCategories, games } from './schema.js';
 import { BRACKETS } from '../lib/age.js';
 import { ACHIEVEMENT_SEEDS, GAME_CATEGORIES, GAME_SEEDS } from '../catalogue/games.js';
+import { CRAFT_SEEDS } from '../catalogue/crafts.js';
 
-export async function seedCatalogue(db: Db): Promise<{ gamesInserted: number }> {
+export async function seedCatalogue(db: Db): Promise<{ gamesInserted: number; craftsInserted: number }> {
   await db
     .insert(ageBrackets)
     .values(BRACKETS.map((b, i) => ({ key: b.key, name: b.name, minAge: b.minAge, maxAge: b.maxAge, description: b.description, sortOrder: i })))
@@ -48,7 +49,13 @@ export async function seedCatalogue(db: Db): Promise<{ gamesInserted: number }> 
     .values(ACHIEVEMENT_SEEDS.map((a, i) => ({ key: a.key, name: a.name, description: a.description, icon: a.icon, rule: a.rule as Record<string, unknown>, sortOrder: i })))
     .onConflictDoNothing();
 
-  return { gamesInserted: inserted.length };
+  const crafts = await db
+    .insert(craftTutorials)
+    .values(CRAFT_SEEDS.map((c) => ({ ...c, status: 'published' as const })))
+    .onConflictDoNothing()
+    .returning({ id: craftTutorials.id });
+
+  return { gamesInserted: inserted.length, craftsInserted: crafts.length };
 }
 
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
@@ -61,7 +68,7 @@ if (isMain) {
   const database = createDatabase(url, 1);
   seedCatalogue(database.db)
     .then((r) => {
-      console.log(`Catalogue seeded (${r.gamesInserted} new games).`);
+      console.log(`Catalogue seeded (${r.gamesInserted} new games, ${r.craftsInserted} new crafts).`);
       return database.close();
     })
     .catch(async (err) => {
