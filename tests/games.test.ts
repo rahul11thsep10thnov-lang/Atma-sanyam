@@ -221,3 +221,154 @@ describe('ludo', () => {
     assert.ok([0, 1, 2, 3].includes(chooseToken(ai, 1, rng(1))));
   });
 });
+
+import { LEVELS as LAB_LEVELS, emptyGrid, simulate, countPieces as labPieces } from '../src/games/logic/physics.ts';
+import { makeCase, consistentSuspects } from '../src/games/logic/detective.ts';
+import { initFarm, plant, water, harvest, feed, collect, sellAll, nextDay, farmOutcome, CROPS, FARM_LEVELS } from '../src/games/logic/farm.ts';
+import { glide, starsForDistance } from '../src/games/logic/flight.ts';
+import { SCIENCE_BANK } from '../src/games/data/scienceBank.ts';
+import { GEOGRAPHY_BANK } from '../src/games/data/geographyBank.ts';
+import { ORIGAMI_MODELS, AIRPLANE_MODELS } from '../src/crafts/models.ts';
+
+describe('physics lab', () => {
+  it('a ball with no pieces falls straight down', () => {
+    const level = LAB_LEVELS.easy![0]!; // start column 1 has a wall at row 1: stuck
+    assert.equal(simulate(level, emptyGrid(level)).outcome, 'stuck');
+    const open = { ...level, walls: [] as [number, number][] };
+    const sim = simulate(open, emptyGrid(open));
+    assert.equal(sim.outcome, 'floor');
+    assert.equal(sim.path[sim.path.length - 1]![1], level.start);
+  });
+  it('a ramp starts a diagonal glide that a wall turns back into a fall', () => {
+    const level = { cols: 6, rows: 6, start: 0, cup: 5, walls: [] as [number, number][], ramps: 2, bumpers: 0, par: 1 };
+    const g = emptyGrid(level);
+    g[0]![0] = '/';
+    assert.equal(simulate(level, g).outcome, 'cup');
+    g[3]![3] = '#';
+    const sim = simulate(level, g);
+    assert.equal(sim.outcome, 'floor');
+    assert.equal(sim.path[sim.path.length - 1]![1], 2);
+    g[2]![2] = 'o';
+    assert.equal(simulate(level, g).path.some(([r, c]) => r === 3 && c === 1), true);
+  });
+  it('every level is solvable with exactly its par number of pieces (search)', () => {
+    for (const [name, levels] of Object.entries(LAB_LEVELS)) {
+      for (const level of levels) {
+        let best = Infinity;
+        const search = (g: ReturnType<typeof emptyGrid>, depth: number, used: number) => {
+          if (used >= best) return;
+          const sim = simulate(level, g);
+          if (sim.outcome === 'cup') { best = used; return; }
+          if (depth === 0) return;
+          for (const [r, c] of sim.path) {
+            if (r >= level.rows || g[r]![c] !== '') continue;
+            for (const piece of ['/', '\\', 'o'] as const) {
+              const g2 = g.map((row) => row.slice());
+              g2[r]![c] = piece;
+              search(g2, depth - 1, used + 1);
+            }
+          }
+        };
+        search(emptyGrid(level), level.par, 0);
+        assert.equal(best, level.par, `${name} level start ${level.start} → cup ${level.cup}`);
+        const { ramps } = labPieces(emptyGrid(level));
+        assert.equal(ramps, 0);
+      }
+    }
+  });
+});
+
+describe('detective mystery', () => {
+  it('generated cases have exactly one suspect consistent with all clues, for many seeds', () => {
+    for (let seed = 1; seed < 60; seed++) {
+      for (const n of [3, 4, 5]) {
+        const c = makeCase(rng(seed), n);
+        assert.equal(c.suspects.length, n);
+        assert.ok(c.clues.length >= 1);
+        assert.deepEqual(consistentSuspects(c), [c.culprit], `seed ${seed} n ${n}`);
+      }
+    }
+  });
+});
+
+describe('farm manager', () => {
+  it('planting costs coins, crops ripen after their days and sell at the market', () => {
+    let s = initFarm('easy', rng(3));
+    const carrot = CROPS[0]!;
+    const coins = s.coins;
+    s = plant(s, 0, carrot.id);
+    assert.equal(s.coins, coins - carrot.cost);
+    s = { ...s, weather: 'rainy', forecast: s.forecast.map(() => 'rainy' as const) };
+    for (let d = 0; d < carrot.days; d++) s = nextDay(s);
+    s = harvest(s, 0);
+    assert.equal(s.barn[carrot.id], 1);
+    s = sellAll(s);
+    assert.equal(s.coins, coins - carrot.cost + carrot.price);
+  });
+  it('dry weather pauses unwatered crops; watered ones grow', () => {
+    let s = initFarm('normal', rng(5));
+    s = plant(plant(s, 0, 'tomato'), 1, 'tomato');
+    s = water(s, 1);
+    s = { ...s, weather: 'dry' };
+    s = nextDay(s);
+    assert.equal(s.plots[0]!.grown, 0);
+    assert.equal(s.plots[1]!.grown, 1);
+  });
+  it('fed animals produce next day and the season can be won by a sensible plan', () => {
+    let s = initFarm('easy', rng(11));
+    s = feed(s, 0);
+    s = nextDay(s);
+    assert.equal(s.animals[0]!.produce, 1);
+    s = collect(s, 0);
+    assert.equal(s.barn.egg, 1);
+    // A simple strategy: plant carrots everywhere, water on dry days, harvest and sell daily.
+    s = initFarm('easy', rng(11));
+    while (farmOutcome(s) === 'playing') {
+      s.plots.forEach((p, i) => { if (p.crop && p.grown >= CROPS.find((c) => c.id === p.crop)!.days) s = harvest(s, i); });
+      s = sellAll(s);
+      s.plots.forEach((p, i) => { if (!p.crop) s = plant(s, i, s.coins >= 6 ? 'corn' : 'carrot'); });
+      s.plots.forEach((_, i) => { s = water(s, i); });
+      s.animals.forEach((_, i) => { s = feed(s, i); s = collect(s, i); });
+      s = nextDay(s);
+    }
+    assert.equal(farmOutcome(s), 'won');
+    assert.ok(FARM_LEVELS.easy!.goal <= s.coins);
+  });
+});
+
+describe('paper airplane', () => {
+  it('a smooth level throw beats an over-hard steep one, and wind is bounded', () => {
+    const d = { nose: 1 as const, wings: 'standard' as const, flaps: 0 as const };
+    const good = glide(d, { power: 0.8, angle: 12 }, 0).distance;
+    const bad = glide(d, { power: 1, angle: 55 }, 0).distance;
+    assert.ok(good > bad);
+    assert.ok(glide(d, { power: 0.8, angle: 12 }, 1).distance - good <= 3.01);
+    assert.equal(starsForDistance(good), 3);
+  });
+});
+
+describe('quiz banks', () => {
+  for (const [name, bank] of [['science', SCIENCE_BANK], ['geography', GEOGRAPHY_BANK]] as const) {
+    it(`${name}: 10+ questions per level, distinct options, correct answer first`, () => {
+      for (const level of ['easy', 'normal', 'hard']) assert.ok(bank.filter((q) => q.level === level).length >= 10, `${name} ${level}`);
+      for (const q of bank) {
+        assert.equal(new Set(q.options).size, q.options.length, q.q);
+        assert.ok(q.why.length > 10);
+      }
+      assert.equal(new Set(bank.map((q) => q.q)).size, bank.length);
+    });
+  }
+});
+
+describe('origami models', () => {
+  it('every step has a diagram with points inside the 0–100 square', () => {
+    for (const m of [...ORIGAMI_MODELS, ...AIRPLANE_MODELS]) {
+      assert.ok(m.steps.length >= 4, m.id);
+      for (const s of m.steps) {
+        const pts = [...(s.diagram.paper ?? []), ...(s.diagram.after ?? []), ...(s.diagram.shade ?? []), ...(s.diagram.folds ?? []).flatMap((f) => [f.from, f.to]), ...(s.diagram.arrows ?? []).flatMap((a) => [a.from, a.to])];
+        for (const [x, y] of pts) assert.ok(x >= 0 && x <= 100 && y >= 0 && y <= 100, `${m.id} ${s.title}`);
+        assert.ok(s.text.length > 10);
+      }
+    }
+  });
+});

@@ -112,6 +112,15 @@ export const GAME_LOADERS: Record<string, Loader> = {
   cricket: () => import('./defs/cricket'),
   'football-penalty': () => import('./defs/footballPenalty'),
   bowling: () => import('./defs/bowling'),
+  'science-quiz': () => import('./defs/scienceQuiz'),
+  'geography-quiz': () => import('./defs/geographyQuiz'),
+  'virtual-garden': () => import('./defs/virtualGarden'),
+  'virtual-cooking': () => import('./defs/virtualCooking'),
+  'farm-manager': () => import('./defs/farmManager'),
+  'physics-lab': () => import('./defs/physicsLab'),
+  'detective-mystery': () => import('./defs/detectiveMystery'),
+  'origami-studio': () => import('./defs/origamiStudio'),
+  'paper-airplane': () => import('./defs/paperAirplane'),
 };
 
 export const isImplemented = (id: string) => id in GAME_LOADERS;
