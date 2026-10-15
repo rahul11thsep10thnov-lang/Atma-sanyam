@@ -186,6 +186,13 @@ Faster, for clean batches: **Question Bank** → filter by job, subject,
 difficulty, status or source → select all → **Approve** / **Reject** /
 **Publish** / **Unpublish** / **Archive** in bulk.
 
+**Approve & publish all.** The button at the top of Review Questions approves
+and publishes every question waiting in the queue (only the ones for the job
+or exam you opened, if you came from one) after one confirmation. Questions
+with validation errors are skipped and stay in the queue; warnings do not stop
+a question. Only accounts that may both review and publish see it. Use it only
+for questions you already trust; you can still unpublish or archive afterwards.
+
 What to look at first:
 - questions with warnings (duplicates, mixed language, long correct option);
 - AI-reviewed items where `reviewer_answer` differs from the key;

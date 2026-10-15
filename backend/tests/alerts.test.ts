@@ -22,7 +22,7 @@ function fakeFetch(status = 200) {
 
 const base = (over: Partial<AlertConfig>): AlertConfig => ({
   webhookUrl: 'https://hooks.slack.com/services/T/B/X',
-  source: 'PoliceExams API (test)',
+  source: 'PoliceChayan API (test)',
   minIntervalSeconds: 600,
   maxPerHour: 30,
   ...over,
@@ -152,12 +152,12 @@ describe('alerts', () => {
   it('formats a readable message', () => {
     const text = formatAlert(
       { event: 'generation.failed', level: 'warn', title: 'A question-generation job failed', fields: { jobId: 'j1' }, suppressed: 2 },
-      'PoliceExams API (production)',
+      'PoliceChayan API (production)',
       new Date('2026-01-01T00:00:00Z')
     );
     expect(text).toBe(
       [
-        '⚠️ PoliceExams API (production): A question-generation job failed',
+        '⚠️ PoliceChayan API (production): A question-generation job failed',
         'event: generation.failed',
         'jobId: j1',
         '(+2 more like this in the last few minutes)',

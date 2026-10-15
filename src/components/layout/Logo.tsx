@@ -2,7 +2,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import SiteQuote from "@/components/layout/SiteQuote";
 
-/** Logo mark + "PoliceExams" wordmark, with the admin-editable quotation
+/** Logo mark + "PoliceChayan" wordmark, with the admin-editable quotation
  * directly under the name (hidden in the small/footer variants). */
 export default function Logo({
   inverted = false,
@@ -26,7 +26,7 @@ export default function Logo({
       <span className="flex min-w-0 flex-col">
         <span className={cn("brand-wordmark whitespace-nowrap", small ? "text-[1.25rem]" : "text-[1.7rem] sm:text-[2.05rem]")}>
           <span className={inverted ? "text-white" : "text-brand-dark"}>Police</span>
-          <span className="heading-grad brand-wordmark">Exams</span>
+          <span className="heading-grad brand-wordmark">Chayan</span>
         </span>
         {withQuote && <SiteQuote />}
       </span>

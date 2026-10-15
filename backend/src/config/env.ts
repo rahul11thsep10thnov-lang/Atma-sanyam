@@ -96,7 +96,7 @@ const envSchema = z.object({
   ALERT_WEBHOOK_URL: optionalString,
   TELEGRAM_BOT_TOKEN: optionalString,
   TELEGRAM_CHAT_ID: optionalString,
-  ALERT_SOURCE_NAME: z.string().default('PoliceExams API'),
+  ALERT_SOURCE_NAME: z.string().default('PoliceChayan API'),
   ALERT_MIN_INTERVAL_SECONDS: z.coerce.number().int().min(10).default(600),
   ALERT_MAX_PER_HOUR: z.coerce.number().int().min(1).default(30),
 

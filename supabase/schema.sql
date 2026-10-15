@@ -1,4 +1,4 @@
--- PoliceExams — Supabase / PostgreSQL schema
+-- PoliceChayan — Supabase / PostgreSQL schema
 -- Run this in the Supabase SQL editor (or `supabase db push`) on a fresh
 -- project. Safe to re-run: every statement is guarded with IF NOT EXISTS /
 -- OR REPLACE where possible.

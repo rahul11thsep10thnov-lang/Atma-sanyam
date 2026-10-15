@@ -1,4 +1,4 @@
-# PoliceExams
+# PoliceChayan
 
 **Police Constable & SI ki taiyari — Simple, Smart aur State-wise**
 

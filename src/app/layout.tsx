@@ -38,27 +38,27 @@ export const viewport: Viewport = {
   themeColor: "#ffffff",
 };
 
-const SITE_URL = "https://policeexams.example.com";
+const SITE_URL = "https://policechayan.example.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "PoliceExams — Police Constable & SI ki taiyari",
-    template: "%s | PoliceExams",
+    default: "PoliceChayan — Police Constable & SI ki taiyari",
+    template: "%s | PoliceChayan",
   },
   description:
     "UP, MP, Rajasthan, Bihar, Jharkhand, Uttarakhand, Haryana, Punjab aur Chhattisgarh Police Constable & SI exams ke liye simple practice, mock tests, PYQs aur state-wise preparation.",
   openGraph: {
-    title: "PoliceExams — Police Constable & SI ki taiyari",
+    title: "PoliceChayan — Police Constable & SI ki taiyari",
     description:
       "Simple, Smart aur State-wise Police Constable & SI exam preparation — practice, mock tests, PYQs, state GK aur bahut kuch.",
-    siteName: "PoliceExams",
+    siteName: "PoliceChayan",
     type: "website",
     locale: "en_IN",
   },
   twitter: {
     card: "summary_large_image",
-    title: "PoliceExams — Police Constable & SI ki taiyari",
+    title: "PoliceChayan — Police Constable & SI ki taiyari",
     description:
       "Simple, Smart aur State-wise Police Constable & SI exam preparation.",
   },
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "PoliceExams",
+  name: "PoliceChayan",
   url: SITE_URL,
   description:
     "Police Constable & SI ki taiyari — Simple, Smart aur State-wise exam preparation platform for UP, MP, Rajasthan, Bihar, Jharkhand, Uttarakhand, Haryana, Punjab aur Chhattisgarh.",

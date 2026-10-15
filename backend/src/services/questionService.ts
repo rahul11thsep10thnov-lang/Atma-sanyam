@@ -398,6 +398,59 @@ export async function bulkTransition(db: Db, ids: string[], action: ReviewAction
   return { succeeded: results.filter((r) => r.ok).length, failed: results.filter((r) => !r.ok).length, results };
 }
 
+/** Questions the review queue shows: waiting for a human decision. */
+const PENDING_STATUSES: QuestionStatus[] = ['needs_review', 'draft'];
+const hasNoErrors = sql`not exists (select 1 from jsonb_array_elements(${questions.validationIssues}) as i where i->>'severity' = 'error')`;
+
+/**
+ * Approves and publishes every question waiting in the review queue in one go
+ * (optionally only those of one exam or generation job). Questions with
+ * validation errors are never touched — they stay in the queue — so the
+ * "errors can't be approved" rule still holds. Warnings (possible duplicate,
+ * short explanation …) do not block. Each question still gets a human review
+ * record, and one audit entry records the whole action.
+ */
+export async function approvePublishAll(db: Db, scope: { examId?: string; jobId?: string }, adminId: string) {
+  const base = and(
+    inArray(questions.status, PENDING_STATUSES),
+    scope.examId ? eq(questions.examId, scope.examId) : undefined,
+    scope.jobId ? eq(questions.generationJobId, scope.jobId) : undefined
+  );
+  const [pendingRow] = await db.select({ n: count() }).from(questions).where(base);
+  let published = 0;
+  for (;;) {
+    const ids = (await db.select({ id: questions.id }).from(questions).where(and(base, hasNoErrors)).orderBy(asc(questions.createdAt), asc(questions.id)).limit(500)).map((r) => r.id);
+    if (!ids.length) break;
+    const now = new Date();
+    await db.transaction(async (tx) => {
+      await tx
+        .update(questions)
+        .set({ status: 'published', reviewedBy: adminId, reviewedAt: now, publishedAt: now, updatedAt: now })
+        .where(inArray(questions.id, ids));
+      await tx.insert(questionReviews).values(
+        ids.map((questionId) => ({
+          questionId,
+          reviewerType: 'human' as const,
+          adminId,
+          decision: 'approved' as const,
+          valid: true,
+          notes: 'Approve & publish all',
+        }))
+      );
+    });
+    published += ids.length;
+  }
+  const pending = Number(pendingRow?.n ?? 0);
+  const skippedWithErrors = Math.max(0, pending - published);
+  await audit(db, adminId, 'questions.approved_published_all', 'question', null, {
+    published,
+    skippedWithErrors,
+    ...(scope.examId ? { examId: scope.examId } : {}),
+    ...(scope.jobId ? { jobId: scope.jobId } : {}),
+  });
+  return { published, skippedWithErrors };
+}
+
 export async function deleteQuestion(db: Db, id: string, adminId: string) {
   const [used] = await db.select({ n: count() }).from(mockTestQuestions).where(eq(mockTestQuestions.questionId, id));
   const [answered] = await db.select({ n: count() }).from(testAnswers).where(eq(testAnswers.questionId, id));

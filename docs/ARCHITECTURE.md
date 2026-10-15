@@ -1,6 +1,6 @@
 # Architecture
 
-PoliceExams keeps the candidate-facing **website**, the **admin console**,
+PoliceChayan keeps the candidate-facing **website**, the **admin console**,
 the **API** (with its generation **worker**) and the **database** separate.
 Each can be deployed, scaled and secured on its own.
 

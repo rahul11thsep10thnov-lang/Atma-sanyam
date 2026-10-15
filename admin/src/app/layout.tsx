@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: { default: 'PoliceExams Admin', template: '%s · PoliceExams Admin' },
+  title: { default: 'PoliceChayan Admin', template: '%s · PoliceChayan Admin' },
   robots: { index: false, follow: false },
 };
 

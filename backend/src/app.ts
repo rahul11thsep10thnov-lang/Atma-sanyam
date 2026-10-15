@@ -42,7 +42,7 @@ export function createApp(deps: AppDeps, options: AppOptions = {}) {
   const limits = createRateLimits(options.disableRateLimits);
 
   app.get('/', (_req, res) => {
-    res.json({ name: 'PoliceExams API', status: 'ok' });
+    res.json({ name: 'PoliceChayan API', status: 'ok' });
   });
   app.use(
     '/api/admin',

@@ -4,7 +4,7 @@ import { MORE_NAV } from "@/lib/nav";
 
 export const metadata: Metadata = {
   title: "More",
-  description: "PoliceExams ke sabhi sections — PYQ, State GK, Daily Quiz, Current Affairs, Physical Test aur zyada.",
+  description: "PoliceChayan ke sabhi sections — PYQ, State GK, Daily Quiz, Current Affairs, Physical Test aur zyada.",
 };
 
 export default function MorePage() {

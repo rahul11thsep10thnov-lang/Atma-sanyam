@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "PoliceExams ki Privacy Policy — hum aapka data kaise collect aur use karte hain.",
+  description: "PoliceChayan ki Privacy Policy — hum aapka data kaise collect aur use karte hain.",
   alternates: { canonical: "/privacy-policy" },
 };
 
@@ -13,7 +13,7 @@ export default function PrivacyPolicyPage() {
       <div className="space-y-4 text-sm text-gray-700 leading-relaxed">
         <p>
           Hum aapki privacy ko seriously lete hain. Yeh policy batati hai ki
-          PoliceExams aapka data kaise collect, use aur protect karta hai.
+          PoliceChayan aapka data kaise collect, use aur protect karta hai.
         </p>
         <h2 className="text-base font-bold text-gray-900 mt-4">Hum kya collect karte hain</h2>
         <ul className="list-disc pl-5 space-y-1">

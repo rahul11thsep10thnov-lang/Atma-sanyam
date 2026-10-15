@@ -1,4 +1,4 @@
-// Shapes returned by the PoliceExams admin API (backend/src/routes/admin).
+// Shapes returned by the PoliceChayan admin API (backend/src/routes/admin).
 
 export type QuestionStatus = 'draft' | 'generated' | 'validating' | 'needs_review' | 'approved' | 'rejected' | 'published' | 'archived';
 export type Difficulty = 'easy' | 'medium' | 'hard';

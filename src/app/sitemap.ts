@@ -5,7 +5,7 @@ import { STUDY_NOTES } from "@/data/studyNotes";
 import { PYQ_PAPERS } from "@/data/pyq";
 import { MOCK_TESTS } from "@/data/mockTests";
 
-const SITE_URL = "https://policeexams.example.com";
+const SITE_URL = "https://policechayan.example.com";
 
 const STATIC_ROUTES = [
   "",

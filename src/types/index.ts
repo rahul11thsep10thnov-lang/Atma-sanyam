@@ -1,4 +1,4 @@
-// Core domain types for PoliceExams.
+// Core domain types for PoliceChayan.
 // These mirror the Supabase/Postgres schema in supabase/schema.sql so that
 // static seed data, generated data, and live DB rows all satisfy the same shape.
 

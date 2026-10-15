@@ -95,7 +95,7 @@ function LoginForm() {
             <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#ff6a00] to-[#ff9a4d] text-white shadow-md shadow-orange-300/50">
               <Shield size={22} />
             </span>
-            <span className="font-display text-lg font-bold text-brand-dark">PoliceExams</span>
+            <span className="font-display text-lg font-bold text-brand-dark">PoliceChayan</span>
           </div>
           <h1 className="mt-4 font-display text-[1.75rem] font-bold text-brand-dark">Login to continue 👋</h1>
           <p className="mt-1 text-[16px] text-slate-500">

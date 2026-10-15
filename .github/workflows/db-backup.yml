@@ -149,4 +149,4 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          .github/scripts/notify.sh "🚨 PoliceExams: the nightly database backup FAILED. Details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          .github/scripts/notify.sh "🚨 PoliceChayan: the nightly database backup FAILED. Details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

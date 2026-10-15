@@ -7,7 +7,7 @@ export function Brand({ subtitle = 'Admin console' }: { subtitle?: string }) {
         <Shield size={17} />
       </span>
       <div>
-        Police<b>Exams</b>
+        Police<b>Chayan</b>
         <small>{subtitle}</small>
       </div>
     </div>

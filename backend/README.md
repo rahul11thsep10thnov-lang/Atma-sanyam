@@ -1,4 +1,4 @@
-# PoliceExams API
+# PoliceChayan API
 
 Node.js + TypeScript (Express 5, Drizzle ORM, PostgreSQL) — question bank,
 AI generation pipeline, validation, mock-test engine, server-side scoring,

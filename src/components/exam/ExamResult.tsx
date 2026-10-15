@@ -149,7 +149,7 @@ function ExamTopBar({ exitHref }: { exitHref: string }) {
         </Link>
         <span className="font-display text-lg font-extrabold">
           <span className="text-brand-dark">Police</span>
-          <span className="text-brand-orange">Exams</span>
+          <span className="text-brand-orange">Chayan</span>
         </span>
       </div>
     </div>

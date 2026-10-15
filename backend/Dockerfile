@@ -1,4 +1,4 @@
-# Production image for the PoliceExams API (and, with a different command,
+# Production image for the PoliceChayan API (and, with a different command,
 # the standalone generation worker).
 FROM node:22-alpine AS build
 WORKDIR /app

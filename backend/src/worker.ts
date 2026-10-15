@@ -23,7 +23,7 @@ async function main() {
 }
 
 main().catch(async (e) => {
-  configureAlertsFromProcessEnv('PoliceExams worker');
+  configureAlertsFromProcessEnv('PoliceChayan worker');
   log.error('worker.start_failed', { message: errorMessage(e) });
   await flushAlerts();
   process.exit(1);

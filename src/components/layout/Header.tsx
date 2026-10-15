@@ -8,7 +8,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--card-border)] bg-white/95 backdrop-blur">
       <div className="container-page flex items-center justify-between gap-3 py-2">
-        <Link href="/" aria-label="PoliceExams home" className="min-w-0">
+        <Link href="/" aria-label="PoliceChayan home" className="min-w-0">
           <Logo withQuote />
         </Link>
 

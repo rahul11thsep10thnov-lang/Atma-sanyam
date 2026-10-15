@@ -33,6 +33,7 @@ function ReviewQueue() {
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [done, setDone] = useState(0);
+  const [publishingAll, setPublishingAll] = useState(false);
   const busy = useRef(false);
 
   const loadQueue = useCallback(async () => {
@@ -99,6 +100,37 @@ function ReviewQueue() {
     [q, queue, actions, loadQueue]
   );
 
+  async function approvePublishAll() {
+    const where = jobId ? 'from this job' : examId ? 'for this exam' : 'in the queue';
+    const ok = window.confirm(
+      `Approve and PUBLISH all ${total.toLocaleString()} questions waiting ${where}?\n\n` +
+        '• They go live on the website straight away.\n' +
+        '• Questions with validation errors are skipped and stay in the queue.\n' +
+        '• Warnings (possible duplicate, short explanation …) do NOT stop a question.\n\n' +
+        'You can unpublish or archive questions later, one by one or in bulk.'
+    );
+    if (!ok) return;
+    setPublishingAll(true);
+    setErr(null);
+    setMsg(null);
+    try {
+      const r = await api<{ published: number; skippedWithErrors: number }>('questions/approve-publish-all', {
+        method: 'POST',
+        body: { confirm: true, jobId, examId },
+      });
+      setMsg(
+        `Approved and published ${r.published.toLocaleString()} question(s).` +
+          (r.skippedWithErrors ? ` ${r.skippedWithErrors.toLocaleString()} with validation errors were skipped and are still in the queue.` : '')
+      );
+      setDone((d) => d + r.published);
+      await loadQueue();
+    } catch (e) {
+      setErr(errorMessage(e));
+    } finally {
+      setPublishingAll(false);
+    }
+  }
+
   // Keyboard shortcuts (ignored while typing or editing).
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -132,11 +164,18 @@ function ReviewQueue() {
             : `${total} waiting${jobId ? ' from this job' : ''} · ${done} reviewed this session`
         }
         actions={
-          jobId && (
-            <Link className="btn" href={`/generate/${jobId}`}>
-              ← Back to job
-            </Link>
-          )
+          <div className="row">
+            {jobId && (
+              <Link className="btn" href={`/generate/${jobId}`}>
+                ← Back to job
+              </Link>
+            )}
+            {can('questions:publish') && total > 0 && (
+              <button className="btn btn-primary" disabled={publishingAll} onClick={() => void approvePublishAll()}>
+                {publishingAll ? 'Publishing…' : `Approve & publish all (${total.toLocaleString()})`}
+              </button>
+            )}
+          </div>
         }
       />
       <OkAlert message={msg} />

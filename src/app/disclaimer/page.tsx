@@ -3,7 +3,7 @@ import DisclaimerBanner from "@/components/ui/DisclaimerBanner";
 
 export const metadata: Metadata = {
   title: "Disclaimer",
-  description: "PoliceExams disclaimer — yeh ek independent educational platform hai, official website nahi.",
+  description: "PoliceChayan disclaimer — yeh ek independent educational platform hai, official website nahi.",
   alternates: { canonical: "/disclaimer" },
 };
 
@@ -13,7 +13,7 @@ export default function DisclaimerPage() {
       <h1 className="text-2xl font-extrabold text-gray-900 mb-4">Disclaimer</h1>
 
       <DisclaimerBanner>
-        PoliceExams ek independent educational platform hai. Yeh kisi State
+        PoliceChayan ek independent educational platform hai. Yeh kisi State
         Police Department, Police Recruitment Board ya Government Department
         ka official website nahi hai.
       </DisclaimerBanner>

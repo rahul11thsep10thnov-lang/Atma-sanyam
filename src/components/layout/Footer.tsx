@@ -42,7 +42,7 @@ export default function Footer() {
       <div className="container-page py-10">
         <p className="font-display text-3xl font-extrabold">
           <span className="text-white">Police</span>
-          <span className="text-brand-orange">Exams</span>
+          <span className="text-brand-orange">Chayan</span>
         </p>
         <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-slate-400">
           Police Constable &amp; SI ki taiyari ke liye independent platform —
@@ -76,7 +76,7 @@ export default function Footer() {
             ))}
           </nav>
           <p className="mx-auto mt-6 max-w-2xl text-center text-xs leading-relaxed text-slate-500">
-            PoliceExams ek independent educational platform hai. Yeh kisi State
+            PoliceChayan ek independent educational platform hai. Yeh kisi State
             Police Department, Police Recruitment Board ya Government Department
             ka official website nahi hai. Recruitment-related information ke liye
             official notification ko final source maana jaaye.
@@ -84,7 +84,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-white/15 pt-6 text-[15px]">
-          <p>© {new Date().getFullYear()} PoliceExams. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} PoliceChayan. All rights reserved.</p>
           <p className="text-brand-orange">Made with ❤️ for Police Aspirants</p>
         </div>
       </div>

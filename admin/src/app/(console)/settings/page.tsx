@@ -128,7 +128,7 @@ function WebsiteSettings() {
         <label className="field" style={{ gridColumn: '1 / -1' }}>
           <span>Quotation under the website name</span>
           <input className="input" lang="hi" disabled={!editable} maxLength={160} value={s.quote} onChange={(e) => set({ quote: e.target.value })} />
-          <small>Shown in a Devanagari display font right below “PoliceExams”.</small>
+          <small>Shown in a Devanagari display font right below “PoliceChayan”.</small>
         </label>
         <label className="field">
           <span>Attribution (optional)</span>

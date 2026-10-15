@@ -93,7 +93,7 @@ export default function EnrollPage() {
       key: order.keyId,
       amount: order.amountInr * 100,
       currency: order.currency,
-      name: "PoliceExams",
+      name: "PoliceChayan",
       description: `${order.planName} · ${order.durationDays} din`,
       order_id: order.providerOrderId,
       theme: { color: "#ff6a5a" },

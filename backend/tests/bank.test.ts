@@ -1,4 +1,5 @@
 import request from 'supertest';
+import { sql } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { adminToken, auth, setupTestApp } from './helpers.js';
 import { SORT_KEYS } from '../src/services/questionService.js';
@@ -176,5 +177,67 @@ describe('question bank columns: import, sort, filter', () => {
     it('needs the questions:read permission', async () => {
       expect((await request(ctx.app).get('/api/admin/questions/facets')).status).toBe(401);
     });
+  });
+});
+
+describe('approve and publish all', () => {
+  let ctx: Ctx;
+  let admin: string;
+  const csvOf = (rows: string[]) => `${HEADER}\n${rows.join('\n')}\n`;
+
+  beforeAll(async () => {
+    ctx = await setupTestApp();
+    admin = await adminToken(ctx.app, ctx.db);
+    const rows = [
+      q({ id: 'P-1', question: '100 का 10% कितना होता है?', a: '10', b: '20', c: '30', d: '40' }),
+      q({ id: 'P-2', question: '200 का 10% कितना होता है?', a: '20', b: '10', c: '30', d: '40' }),
+      q({ id: 'P-3', question: '300 का 10% कितना होता है?', a: '30', b: '10', c: '20', d: '40' }),
+    ];
+    await request(ctx.app).post('/api/admin/imports').set(auth(admin)).send({ format: 'csv', content: csvOf(rows) });
+  });
+  afterAll(async () => {
+    await ctx.close();
+  });
+
+  it('needs an explicit confirmation', async () => {
+    const res = await request(ctx.app).post('/api/admin/questions/approve-publish-all').set(auth(admin)).send({});
+    expect(res.status).toBe(400);
+    expect((await request(ctx.app).get('/api/admin/questions?status=published').set(auth(admin))).body.total).toBe(0);
+  });
+
+  it('publishes everything waiting, but leaves a question with validation errors in the queue', async () => {
+    // Give one question a stored validation error, as if a check had failed.
+    const list = await request(ctx.app).get('/api/admin/questions?status=needs_review').set(auth(admin));
+    expect(list.body.total).toBe(3);
+    const bad = list.body.items[0].id as string;
+    await ctx.db.execute(sql`update questions set validation_issues = ${JSON.stringify([{ code: 'X', severity: 'error', message: 'broken' }])}::jsonb where id = ${bad}`);
+
+    const res = await request(ctx.app).post('/api/admin/questions/approve-publish-all').set(auth(admin)).send({ confirm: true });
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ published: 2, skippedWithErrors: 1 });
+
+    const published = await request(ctx.app).get('/api/admin/questions?status=published').set(auth(admin));
+    expect(published.body.total).toBe(2);
+    expect(published.body.items.every((x: { id: string }) => x.id !== bad)).toBe(true);
+    const still = await request(ctx.app).get('/api/admin/questions?status=needs_review').set(auth(admin));
+    expect(still.body.items.map((x: { id: string }) => x.id)).toEqual([bad]);
+
+    const detail = await request(ctx.app).get(`/api/admin/questions/${published.body.items[0].id}`).set(auth(admin));
+    expect(detail.body.publishedAt).toBeTruthy();
+    expect(detail.body.reviewedAt).toBeTruthy();
+    expect(detail.body.reviews.some((r: { reviewerType: string; decision: string }) => r.reviewerType === 'human' && r.decision === 'approved')).toBe(true);
+    const log = await request(ctx.app).get('/api/admin/audit').set(auth(admin));
+    expect(JSON.stringify(log.body)).toContain('questions.approved_published_all');
+  });
+
+  it('running it again with nothing left to publish changes nothing', async () => {
+    const res = await request(ctx.app).post('/api/admin/questions/approve-publish-all').set(auth(admin)).send({ confirm: true });
+    expect(res.body).toEqual({ published: 0, skippedWithErrors: 1 });
+  });
+
+  it('is refused to a reviewer who may not publish', async () => {
+    const reviewer = await adminToken(ctx.app, ctx.db, 'reviewer');
+    const res = await request(ctx.app).post('/api/admin/questions/approve-publish-all').set(auth(reviewer)).send({ confirm: true });
+    expect(res.status).toBe(403);
   });
 });

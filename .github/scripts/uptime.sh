@@ -22,7 +22,7 @@ for raw in "${urls[@]}"; do
   # Two tries 20 s apart, so one slow response is not an outage.
   status=000
   for attempt in 1 2; do
-    status=$(curl -sS -o /dev/null -w '%{http_code}' -L --max-time 25 -A 'PoliceExams-uptime/1.0' "$url" 2>/dev/null || true)
+    status=$(curl -sS -o /dev/null -w '%{http_code}' -L --max-time 25 -A 'PoliceChayan-uptime/1.0' "$url" 2>/dev/null || true)
     status=${status:-000}
     if [ "$status" -ge 200 ] 2>/dev/null && [ "$status" -lt 400 ]; then break; fi
     [ "$attempt" -eq 1 ] && sleep 20
@@ -33,7 +33,7 @@ for raw in "${urls[@]}"; do
     if [ -f "$key" ]; then
       read -r since _ _ < "$key"
       mins=$(( (now - since + 59) / 60 ))
-      "$here/notify.sh" "✅ PoliceExams: $url is back up (HTTP $status) after about $mins min."
+      "$here/notify.sh" "✅ PoliceChayan: $url is back up (HTTP $status) after about $mins min."
       rm -f "$key"
     fi
   else
@@ -43,12 +43,12 @@ for raw in "${urls[@]}"; do
       read -r since last_alert _ < "$key"
       if [ $((now - last_alert)) -ge "$REMIND_EVERY" ]; then
         mins=$(( (now - since) / 60 ))
-        "$here/notify.sh" "🚨 PoliceExams: $url is STILL DOWN (HTTP $status) — for about $mins min. $RUN_URL"
+        "$here/notify.sh" "🚨 PoliceChayan: $url is STILL DOWN (HTTP $status) — for about $mins min. $RUN_URL"
         last_alert=$now
       fi
       echo "$since $last_alert $status" > "$key"
     else
-      "$here/notify.sh" "🚨 PoliceExams: $url is DOWN (HTTP $status; 000 = no answer). $RUN_URL"
+      "$here/notify.sh" "🚨 PoliceChayan: $url is DOWN (HTTP $status; 000 = no answer). $RUN_URL"
       echo "$now $now $status" > "$key"
     fi
   fi

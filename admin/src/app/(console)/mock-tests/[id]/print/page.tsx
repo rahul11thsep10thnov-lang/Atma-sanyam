@@ -188,7 +188,7 @@ export default function PrintPage() {
           <section>
             <header className="paper-head">
               <div className="paper-brand">
-                Police<span>Exams</span>
+                Police<span>Chayan</span>
               </div>
               <h1>{t.title}</h1>
               <div className="paper-sub">
@@ -284,7 +284,7 @@ export default function PrintPage() {
           <section className={showPaper ? 'paper-break' : undefined}>
             <header className="paper-head">
               <div className="paper-brand">
-                Police<span>Exams</span>
+                Police<span>Chayan</span>
               </div>
               <h1>{t.title}</h1>
               <div className="paper-sub">

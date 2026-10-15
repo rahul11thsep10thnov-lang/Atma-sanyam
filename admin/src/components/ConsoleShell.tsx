@@ -152,7 +152,7 @@ export function ConsoleShell({ me, children }: { me: AdminMe; children: React.Re
               Menu
             </button>
             <strong>
-              Police<span style={{ color: 'var(--brand)' }}>Exams</span>
+              Police<span style={{ color: 'var(--brand)' }}>Chayan</span>
             </strong>
             <span className="small muted">{me.roleName}</span>
           </header>

@@ -3,7 +3,7 @@
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { getDisplayName } from "@/lib/localStore";
 
-// Client for the PoliceExams API (backend/). Only public data and the
+// Client for the PoliceChayan API (backend/). Only public data and the
 // user's own attempts pass through here — no keys: the API holds every
 // secret. When NEXT_PUBLIC_API_URL is empty the website runs on its
 // built-in demo tests exactly as before.

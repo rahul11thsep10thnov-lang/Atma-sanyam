@@ -14,7 +14,7 @@ export interface AlertConfig {
   webhookUrl?: string;
   telegramBotToken?: string;
   telegramChatId?: string;
-  /** Shown in every message, e.g. "PoliceExams API (production)". */
+  /** Shown in every message, e.g. "PoliceChayan API (production)". */
   source: string;
   minIntervalSeconds: number;
   maxPerHour: number;
@@ -226,7 +226,7 @@ export function configureAlerts(c: AlertConfig | null): void {
 
 /** Start-up failed before the environment was validated: alert anyway if
  * the alert variables are present, so a broken deploy is not silent. */
-export function configureAlertsFromProcessEnv(source = 'PoliceExams API'): void {
+export function configureAlertsFromProcessEnv(source = 'PoliceChayan API'): void {
   if (config) return;
   const e = process.env;
   const webhookUrl = e.ALERT_WEBHOOK_URL?.trim() || undefined;

@@ -1,4 +1,4 @@
-# PoliceExams admin console
+# PoliceChayan admin console
 
 Next.js 16 console for the exam team: exams and syllabus, question bank,
 AI generation, review queue, mock tests and blueprints, imports, source

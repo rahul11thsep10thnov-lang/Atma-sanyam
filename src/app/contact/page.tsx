@@ -4,7 +4,7 @@ import { Mail } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Contact Us",
-  description: "PoliceExams team se contact karein — sawal, suggestion ya feedback ke liye.",
+  description: "PoliceChayan team se contact karein — sawal, suggestion ya feedback ke liye.",
   alternates: { canonical: "/contact" },
 };
 
@@ -22,7 +22,7 @@ export default function ContactPage() {
         </span>
         <div>
           <p className="text-sm font-semibold text-gray-900">Email</p>
-          <p className="text-sm text-gray-600">support@policeexams.example.com</p>
+          <p className="text-sm text-gray-600">support@policechayan.example.com</p>
         </div>
       </div>
       <p className="text-xs text-gray-400 mt-6">

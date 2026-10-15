@@ -11,6 +11,7 @@ import type { RateLimits } from '../../middleware/rateLimits.js';
 import { cancelJob, createJob, estimate, getJob, listJobs, retryFailed } from '../../services/generationService.js';
 import { importQuestions } from '../../services/importService.js';
 import {
+  approvePublishAll,
   bulkTransition,
   createQuestion,
   deleteQuestion,
@@ -186,6 +187,12 @@ export function adminContentRouter(deps: AppDeps, auth: Auth, limits: RateLimits
       res.json(await transition(db, idParam(req), action, req.admin!.id, body.notes));
     });
   }
+
+  // One click: approve and publish everything waiting in the review queue.
+  r.post('/questions/approve-publish-all', A, auth.can('questions:review'), auth.can('questions:publish'), async (req, res) => {
+    const body = parse(z.object({ confirm: z.literal(true), examId: optionalUuid, jobId: optionalUuid }), req.body ?? {});
+    res.json(await approvePublishAll(db, { examId: body.examId, jobId: body.jobId }, req.admin!.id));
+  });
 
   r.post('/questions/bulk', A, async (req, res, next) => {
     const body = parse(

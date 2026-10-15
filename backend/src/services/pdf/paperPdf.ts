@@ -441,7 +441,7 @@ function footers(doc: PDFKit.PDFDocument, t: PaperTest, tx: PaperText): void {
     const y = PAGE_H - 32;
     doc.save().lineWidth(0.4).strokeColor('#bbbbbb').moveTo(M.left, y - 5).lineTo(M.left + W, y - 5).stroke().restore();
     const pageLabel = tx.page(i + 1, range.count);
-    const runs = fontRuns(clean(`PoliceExams · ${t.title}`), 'R');
+    const runs = fontRuns(clean(`PoliceChayan · ${t.title}`), 'R');
     doc.fillColor(LIGHT).fontSize(7.5);
     runs.forEach((r, k) => {
       doc.font(r.font);
@@ -472,9 +472,9 @@ export async function renderPaperPdf(t: PaperTest, opts: RenderOptions): Promise
     bufferPages: true,
     info: {
       Title: `${t.title} — ${opts.variant === 'key' ? tx.key : tx.paper}`,
-      Author: 'PoliceExams',
+      Author: 'PoliceChayan',
       Subject: `${t.examName} · ${t.languageName}`,
-      Creator: 'PoliceExams API',
+      Creator: 'PoliceChayan API',
     },
     lang: t.language === 'hi' ? 'hi-IN' : 'en-IN',
   });
