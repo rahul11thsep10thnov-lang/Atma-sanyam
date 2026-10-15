@@ -10,6 +10,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -157,6 +164,17 @@ fun GameFrameChrome(
                             if (watching != null) WatchingRibbon(watching)
                         }
                     }
+                    // Sideways there is no header, so the back arrow floats at the top-left to leave early.
+                    if (landscape) {
+                        Box(
+                            modifier = Modifier.align(Alignment.TopStart).padding(6.dp).size(40.dp)
+                                .background(Color(0x99000000), CircleShape)
+                                .clickable { askExit = true },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.content_desc_back), tint = GoldBevelLight)
+                        }
+                    }
                     if (watching != null) {
                         Box(modifier = Modifier.align(Alignment.TopCenter).padding(top = 6.dp)) {
                             TurnIndicator(text = stringResource(R.string.spectate_watching))
@@ -166,7 +184,7 @@ fun GameFrameChrome(
                         // Messages beside the sender's nameplate, the speech button in the top-left corner of the
                         // table, and the parchment tray over the hand area while it is open.
                         TalkPlaques(talk)
-                        TalkButton(onClick = { showTalk = !showTalk }, modifier = Modifier.align(Alignment.TopStart).padding(start = 8.dp, top = 8.dp))
+                        TalkButton(onClick = { showTalk = !showTalk }, modifier = Modifier.align(Alignment.TopStart).padding(start = 8.dp, top = if (landscape) 52.dp else 8.dp))
                         if (showTalk) {
                             TalkTray(talk, onClose = { showTalk = false }, modifier = Modifier.align(Alignment.BottomCenter).padding(8.dp))
                         }

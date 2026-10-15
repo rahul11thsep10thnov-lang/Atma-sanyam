@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.asStateFlow
 
 /** How the screen may turn (Settings → Screen orientation). */
 enum class OrientationMode(val requested: Int) {
-    PORTRAIT(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT),
-    LANDSCAPE(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE),
-    /** Follows the phone: it turns as the phone is turned (unless the phone's rotation lock is on). */
-    AUTO(ActivityInfo.SCREEN_ORIENTATION_FULL_USER)
+    PORTRAIT(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT),
+    LANDSCAPE(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE),
+    /** Follows the phone: portrait or landscape, either way up, as the phone is turned. */
+    AUTO(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR)
 }
 
 /** The chosen [OrientationMode], kept between launches; MainActivity applies it as it changes. */

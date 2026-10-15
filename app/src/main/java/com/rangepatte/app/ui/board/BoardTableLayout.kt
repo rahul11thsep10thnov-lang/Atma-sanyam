@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,13 +38,15 @@ fun BoardTableLayout(
         val availW = maxWidth
         val availH = maxHeight
         val landscape = availW > availH * 1.15f
+        // The board covers 7/13 of the table's area (as a square), never more than the room allows.
+        val side = minOf(minOf(availW, availH), with(androidx.compose.ui.platform.LocalDensity.current) { kotlin.math.sqrt(7f / 13f * availW.toPx() * availH.toPx()).toDp() })
         if (landscape) {
             Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-                Column(modifier = Modifier.weight(1f).fillMaxHeight().padding(6.dp), verticalArrangement = Arrangement.SpaceBetween) {
+                Column(modifier = Modifier.weight(1f).fillMaxHeight().padding(start = 6.dp, end = 6.dp, bottom = 6.dp, top = 40.dp), verticalArrangement = Arrangement.SpaceBetween) {
                     CornerPlaque(corners.getOrNull(0), alignEnd = false, onTop = true, pulse = pulse, modifier = Modifier.fillMaxWidth())
                     CornerPlaque(corners.getOrNull(3), alignEnd = false, onTop = false, pulse = pulse, modifier = Modifier.fillMaxWidth())
                 }
-                board(Modifier.fillMaxHeight().aspectRatio(1f, matchHeightConstraintsFirst = true))
+                board(Modifier.size(side))
                 Column(modifier = Modifier.weight(1f).fillMaxHeight().padding(6.dp), verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.End) {
                     CornerPlaque(corners.getOrNull(1), alignEnd = true, onTop = true, pulse = pulse, modifier = Modifier.fillMaxWidth())
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) { controls((availH * 0.26f).coerceIn(68.dp, 110.dp)); below() }
@@ -53,21 +56,21 @@ fun BoardTableLayout(
         } else {
             // Tall phones leave room below a square board: the die then gets a big row of its own, so the
             // table is filled from top to bottom instead of leaving gaps.
-            val roomy = availH - availW > 250.dp
+            val roomy = availH - side > 250.dp
             Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly) {
                 Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp), verticalAlignment = Alignment.Bottom) {
                     CornerPlaque(corners.getOrNull(0), alignEnd = false, onTop = true, pulse = pulse, modifier = Modifier.weight(1f))
                     Spacer(Modifier.width(8.dp))
                     CornerPlaque(corners.getOrNull(1), alignEnd = true, onTop = true, pulse = pulse, modifier = Modifier.weight(1f))
                 }
-                board(Modifier.fillMaxWidth().aspectRatio(1f))
+                board(Modifier.size(side).align(Alignment.CenterHorizontally))
                 Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
                     CornerPlaque(corners.getOrNull(3), alignEnd = false, onTop = false, pulse = pulse, modifier = Modifier.weight(1f))
                     if (roomy) Spacer(Modifier.width(8.dp)) else Column(horizontalAlignment = Alignment.CenterHorizontally) { controls(68.dp) }
                     CornerPlaque(corners.getOrNull(2), alignEnd = true, onTop = false, pulse = pulse, modifier = Modifier.weight(1f))
                 }
                 if (roomy) Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-                    controls(((availH - availW - 150.dp)).coerceIn(90.dp, 150.dp))
+                    controls(((availH - side - 150.dp)).coerceIn(90.dp, 150.dp))
                 }
                 below()
             }

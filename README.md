@@ -785,6 +785,7 @@ With this both board games are complete. Nothing has yet run on two real phones.
 - **Screen orientation (Settings):** Portrait, Landscape or Auto, each with a phone icon
   (`ui/settings/OrientationPicker.kt`, kept in `ui/motion/OrientationPrefs.kt`, applied by
   `MainActivity`). Landscape and Auto-while-sideways give the full-screen tables above.
+- **Board size and flipping:** the Ludo / Moksha Patam board covers 7/13 of the table's area (a square, never larger than the room allows), in portrait and landscape. Auto is the default and turns the screen all four ways (landscape and portrait, either way up) as the phone is turned, even if the phone's own rotation lock is on; Landscape and Portrait also flip 180°. In landscape a back arrow floats at the top-left of every game table.
 - **Back asks first:** Back (arrow or system button) at any table shows "Leave the game?" with Yes / No.
   The card setup page no longer pops the Rules open every time it is shown.
 - **Cards match the reference decks:** white stock, rank (20% larger) with its suit directly below it in
