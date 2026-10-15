@@ -1,66 +1,62 @@
-# Tame — Design system
+# LoJi — Design system
 
-The visual system behind every screen. Tokens live in `src/theme/`, the
-component kit in `src/ui/`. A screen never hand-picks a hex colour, a font
-size or a shadow; it asks the theme.
+Two identities on one token system (`src/theme/`, components in `src/ui/`):
 
-## Philosophy
+- **Player Console** — candy-bright, chunky, animated, big tap targets, emoji and vector art,
+  rounded display type. Children should *want* to tap everything.
+- **Guardian Console** — calm, legible, information-dense enough for a dashboard, the same
+  palette dialled down.
 
-Calm → Focus → Progress → Reward → Ownership. Beautiful before boring,
-simple before complex, immersive before information-dense, premium before
-gamified. Motion feels alive, never busy. 70% warm neutral, 20% brand
-accent, 10% highlight.
+`ThemeProvider` resolves `{ mode: 'player' | 'guardian', scheme: light | dark }`; screens ask
+`useTheme()` for `colors`, never a hex. The Player Console switches to the night palette with
+the OS; the Guardian Console follows the OS too.
 
-## Tokens (`src/theme/`)
+## Colour (`palette.ts` → `colors.ts`)
 
-| Module | What it holds |
-|---|---|
-| `palette.ts` | Raw pigments (cream, peach, terracotta, saffron, moss, night…). Not imported by screens. |
-| `colors.ts` | Semantic roles for **Golden Morning** (`lightColors`) and **Night Balcony** (`darkColors`): surfaces, ink, brand, status, lines, icons, puzzle covers. Status colours are reserved for status. The legacy `colors` / `typography` / `spacing` exports keep older code compiling and already use the new palette. |
-| `typography.ts` | Manrope 400/500/600/700 (the UI family). Scale: display 36, headingLarge 28, heading 22, subheading 17, body 15, bodySmall 13, caption 12, overline 11, button 16, timer 72 tabular. Set `fontFamily`, never `fontWeight`. Two display faces live outside the scale: **Caveat 700** for the home greeting only (`Greeting.tsx`) and **Bebas Neue** for the two mode chips only (`ModeChips.tsx`). |
-| `spacing.ts` | 4-pt scale (`space.xs`…`space.massive`), `space.screen` = 20, `space.card` = 16, touch target 48. |
-| `radii.ts` | sm 12 · md 16 · lg 22 · xl 28 · hero 32 · pill. |
-| `shadows.ts` | Four warm, low-opacity, large-blur levels; `shadowColor` is the bark tone. |
-| `motion.ts` | fast 150 · normal 240 · expressive 420 · environmental 4000 ms; standard/decelerate/gentle curves; press scale 0.97 spring. |
-| `icons.ts` | Sizes xs 16 · sm 20 · md 24 · lg 28 · xl 32 · feature 40 · hero 48; stroke 1.75. |
-| `ThemeContext.tsx` | `ThemeProvider` resolves Settings → Appearance (automatic / morning / night) against the OS; `useTheme()` → `{ colors, shadow, isDark }`. |
+Candy pigments: bubblegum `#FF6B9D`, tangerine `#FF8A3D`, sunshine `#FFC93C`, lime `#7ED957`,
+mint `#4FD1C5`, sky `#4FB3FF`, grape `#9B6BFF`, cherry `#FF5F6D`, each with a `*Deep` shade for
+3D button edges; creams (vanilla, marshmallow, cloud) and inks (`ink #2E2A4A`, soft, muted);
+night tones (nightSky, nightCard, nightRaised, starlight) for dark mode. Semantic roles
+(`background`, `surface`, `surfaceRaised`, `primary`, `secondary`, `success`, `warning`,
+`danger`, `text`, `textSecondary`, `icon`, `border`…) are defined per identity and scheme.
 
-## Kit (`src/ui/`)
+Game and category colours come from `src/games/registry.ts` so a game looks the same on its
+card, its detail page and the guardian's mirror.
 
-| Component | Use |
-|---|---|
-| `AppText` | `variant` (scale) + `tone` (ink role). Text never wears a series colour. |
-| `Icon` | One Lucide family, per-icon imports (`ICONS` map). No emoji, no mixed packs. |
-| `Tactile` | Pressable with the press spring and a selection haptic. Every tappable surface. |
-| `Button` / `IconButton` | primary · secondary · tertiary · destructive; sm 40 / md 52 / lg 56; icon buttons with a 48-pt hit area. |
-| `Card` | base · raised · floating · tinted · outline; `padding`, `paddingX`, `radius`. |
-| `Screen` | Themed background + safe-area padding (+ `bottomInset` for the floating bar). |
-| `FloatingTabBar` / `useTabBarInset` | The rounded, elevated bottom navigation and the inset content needs to stay clear of it. |
-| `SegmentedControl` | Sliding pill selector (sort orders, appearance). |
-| `ModeChips` | Two separate peach chips (`#FBD0AE` on, `#FBE8D9` off), 77 pt tall, Bebas Neue labels in dark ink; the home's Grow plants / Reveal jigsaws choice. |
-| `SettingToggle` / `SettingLink` / `SettingBlock` | Rows inside a settings card. |
-| `TextField` | Label, icon, hint/error, focus ring. |
+## Type (`typography.ts`)
 
-## Screens
+Fredoka 600/700 for display and numerals (player), Nunito 400/600/700/800 for body (player),
+Manrope 600/700 for the guardian dashboard. Scale: hero 40 · display 32 · headingLarge 26 ·
+heading 21 · subheading 17 · body 16 · bodySmall 14 · caption 12 · overline 11 · button 17 ·
+numeral 56 / numeralSmall 32 (tabular) · dashTitle 26 / dashHeading 19 / dashLabel 13. Set
+`fontFamily`, never `fontWeight`.
 
-- **Home** — handwritten greeting · Grow plants / Reveal jigsaws chips · dial · one breathing Start. The spaces live in their tabs, not on Home.
-- **Session** — picture reveals piece by piece (about 10,000 pieces for every jigsaw; a few open each second, spread over the whole picture); Tame chip, hairline progress, one close; Manrope timer with glow; result sheet (bloom + sprout / calm pause), then the placement sheet when something was earned.
-- **Balcony · Garden · Museum** — the places (`docs/SPACES.md`): the scene fills the screen; one smoked-glass dock floats above the tab bar (Focus · Customize · Store · Inventory · Gallery; the museum's is Collection · Edit · Store · Settings · Exit); tapping the scene hides every control, the tab bar included. Guides exist only in Customize. The garden has its own chrome: a minimap and a title chip over the whole garden, a back pill, the segment's name and a shuffle button up close, and one Grow button (`docs/PARADISE_GARDEN.md`); the museum carries a section chip with arrows. A focus session shows no controls but the timer and close.
-- **Progress** — stat tiles, seven-day bars (single series, direct labels, no grid), session pictures, planted empty state.
-- **Settings** — grouped iconed cards, appearance control, calm destructive actions.
-- **Library** — search, breadcrumbs, collection chips, sort control, cached grid.
+## Playful kit (`ui/Playful.tsx`, player only)
 
-## Rules
+`PlayfulBackdrop` (gradient with drifting shapes), `BigButton` (3D, md/lg/xl), `RoundButton`,
+`CandyCard`, `Chip`, `Badge`, `Stars`, `ProgressBar`, `Confetti`, `Bob` (idle bounce), `PopIn`,
+`EmojiDisc`. Motion respects *Reduce motion*.
 
-- Never mix icon families or add emoji as icons.
-- Never set `fontWeight` on a Manrope style; pick the family.
-- Never animate everything at once; ambient loops respect **reduce motion** (`useReducedMotion`).
-- Errors are calm and useful ("Something interrupted the connection." + Try again). Never shame a paused session.
-- Dark mode is a designed palette, not an inversion; check both schemes before calling a screen done.
-- Minimum touch target 48 pt (`hitSlop` when the visual is smaller).
+## Shared kit (`ui/`)
 
-## Build order (from the master prompt)
+`AppText`, `Icon` (Lucide, one family), `Tactile` (press scale + haptic), `Button`/`IconButton`,
+`Card`, `Screen`, `FloatingTabBar` (playful variant for the player), `TextField`,
+`SegmentedControl`, `SettingToggle/Link/Block`, `Avatar`, states (`LoadingState`, `EmptyState`,
+`ErrorState`, `OfflineBanner`).
 
-1 tokens · 2 typography · 3 icons · 4 buttons · 5 cards · 6 navigation · 7 home · 8 timer · 9 balcony · 10 plants · 11 rewards · 12 progress · 13 settings · 14 dark mode · 15 accessibility · 16 performance.
+## Age-aware UI
 
-Done: 1–14 (plus the library and auth on the kit; 9–11 are the photographic balcony, the focus plant's growth, coins and the jigsaw art wall). In progress: 15–16 (audit passes).
+Bracket A gets larger targets, spoken prompts (narration on by default), 2–3 choices and fewer
+words; D gets denser boards and longer text. Games read `ctx.bracket` and `ctx.difficulty`.
+
+## Accessibility
+
+Every control has an accessibility label (the smoke tests rely on them), minimum 48 pt targets,
+colour is never the only signal (icons + text), reduced-motion support, text-to-speech for
+prompts and facts.
+
+## Art
+
+Emoji and SVG only (no licensed image packs): avatars in `assets/avatars` (24, original),
+fold diagrams generated from data, colouring pictures as SVG regions. The image library in the
+admin console is for curated, licensed illustrations for facts.

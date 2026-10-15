@@ -75,6 +75,7 @@ describe('role-based access control (enforced by the API)', () => {
   const matrix: [string, string, string, number, number, number][] = [
     // method, path, label, super, admin, editor
     ['get', '/admin/v1/dashboard', 'dashboard', 200, 200, 200],
+    ['get', '/admin/v1/health', 'health', 200, 200, 200],
     ['get', '/admin/v1/guardians', 'guardians', 200, 200, 403],
     ['get', '/admin/v1/subscriptions', 'subscriptions', 200, 200, 403],
     ['get', '/admin/v1/games', 'games', 200, 200, 200],

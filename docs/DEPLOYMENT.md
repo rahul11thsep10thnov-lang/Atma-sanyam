@@ -7,10 +7,13 @@ Recommended low-cost setup (all have free tiers to start):
 | PostgreSQL | **Neon** (neon.tech) | Serverless Postgres, free tier, automatic backups/point-in-time restore |
 | API (`backend/`) | **Render** (render.com) — or Railway / Fly.io, anything that runs a Dockerfile | HTTPS + custom domain included |
 | Admin console (`admin/`) | **Vercel** (vercel.com) | Made for Next.js, free for small teams |
+| Website (`expo export --platform web`) | **Vercel / Netlify / any static host** | Static files; set `EXPO_PUBLIC_API_URL` at export time |
 | Push notifications | **Expo Push Service** (via EAS) | No Apple/Google push keys on your server |
-| Reset emails | **Resend** (resend.com) | Simple API, free tier |
+| OTP SMS | **MSG91** (India) or **Twilio** | See OTP_PROVIDERS.md |
+| Payments | **Google Play Billing** (Android) and **Razorpay** (website) | See SUBSCRIPTIONS.md |
+| Emails | **Resend** (resend.com) — optional | Receipts / support |
 
-Suggested domains: `api.your-domain.com` for the API, `admin.your-domain.com` for the console.
+Suggested domains: `api.your-domain.com` for the API, `app.your-domain.com` for the website, `admin.your-domain.com` for the console.
 A domain is optional (hosts give you `*.onrender.com` / `*.vercel.app` URLs) but recommended.
 
 ---
@@ -25,7 +28,7 @@ A domain is optional (hosts give you `*.onrender.com` / `*.vercel.app` URLs) but
 ## 2. API (Render)
 
 **Blueprint (fastest):** Render → *New* → *Blueprint* → pick this repo. It reads `render.yaml`,
-creates the `focus-api` web service and a daily `focus-cleanup` cron job, and asks for the
+creates the `loji-api` web service and a daily `loji-cleanup` cron job, and asks for the
 secret values.
 
 **Manual:** Render → *New* → *Web Service* → connect the repo, then:
@@ -40,13 +43,21 @@ secret values.
 | `NODE_ENV` | `production` |
 | `DATABASE_URL` | from Neon |
 | `TRUST_PROXY` | `1` |
-| `RESEND_API_KEY` / `EMAIL_FROM` | from Resend (optional; enables "Forgot password?" for email accounts) |
-| `SMS_PROVIDER` + `MSG91_AUTH_KEY`/`MSG91_TEMPLATE_ID` or `TWILIO_*` | SMS sign-in codes (see *SMS for sign-in codes*); without them phone sign-in is hidden |
+| `CORS_ORIGINS` | the website origin, e.g. `https://app.your-domain.com` |
+| `SMS_PROVIDER` + `MSG91_AUTH_KEY`/`MSG91_TEMPLATE_ID` or `TWILIO_*` | OTP codes (OTP_PROVIDERS.md); **required** for sign-up |
 | `DEFAULT_COUNTRY_CODE` | `91` unless the app is used mostly elsewhere |
-| `OTP_TEST_NUMBERS` | fixed-code numbers for app-store review, e.g. `+919999900001:123456` (optional) |
+| `OTP_TEST_NUMBERS` | fixed-code number for store review, e.g. `+919999900001:123456` (optional) |
+| `GOOGLE_PLAY_PACKAGE_NAME`, `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON`, `GOOGLE_PLAY_RTDN_TOKEN` | Play Billing verification + notifications (SUBSCRIPTIONS.md) |
+| `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_PLAN_ID`, `RAZORPAY_WEBHOOK_SECRET` | website payments (SUBSCRIPTIONS.md) |
+| `SUBSCRIPTION_PRODUCT_ID`, `SUBSCRIPTION_PRICE_INR` | `loji_monthly`, display price |
+| `RESEND_API_KEY` / `EMAIL_FROM` | optional emails |
 | `EXPO_ACCESS_TOKEN` | optional, see *Push notifications* |
 
-The container runs pending **migrations automatically** on every start, then the server.
+Never set `BILLING_SANDBOX`, `SMS_PROVIDER=console` or `OTP_TEST_NUMBERS_ALLOW_PRODUCTION` in production; the API refuses the first two.
+
+The container runs pending **migrations automatically** on every start, seeds the catalogue
+(brackets, categories, 40 games, craft tutorials, starter facts — only what is missing), then
+serves.
 
 **Create the first Super Admin** (once): Render → your service → *Shell*:
 
@@ -56,7 +67,6 @@ ADMIN_BOOTSTRAP_PASSWORD='A-long-Unique-passw0rd' \
 ADMIN_BOOTSTRAP_NAME='Your Name' \
 node dist/database/seedAdmin.js
 
-node dist/database/seedContent.js      # category tree: Religion › Shiva › Mahadev, Nature › …
 ```
 
 Lost the password? Re-run the first command with `--reset-password`.
@@ -78,6 +88,22 @@ Check: `https://api.your-domain.com/v1/health` → `{"ok":true,...}`.
 
 The console is `noindex` and every page requires a session; consider also restricting it by
 IP/SSO at the host level if your plan allows (Vercel → Deployment Protection).
+
+## 3b. Website (static export)
+
+The website is the same Expo app:
+
+```bash
+EXPO_PUBLIC_API_URL=https://api.your-domain.com \
+EXPO_PUBLIC_PRIVACY_POLICY_URL=https://your-domain.com/privacy EXPO_PUBLIC_TERMS_URL=https://your-domain.com/terms \
+EXPO_PUBLIC_SUPPORT_EMAIL=support@your-domain.com EXPO_PUBLIC_APP_ENV=production \
+npm run export:web            # → dist-web/
+```
+
+Upload `dist-web/` to any static host (Vercel: *Other* framework, output directory `dist-web`;
+Netlify: publish directory `dist-web`). The export is a single-page app: configure the host to
+rewrite unknown paths to `index.html`. Add the site's origin to the API's `CORS_ORIGINS`. The
+Razorpay checkout only runs on the website; Google Play Billing only in the Android app.
 
 ## 4. Mobile app environment variables (EAS)
 
@@ -102,7 +128,7 @@ For local development put the same keys in `.env` (see `.env.example`).
 
 1. `npx eas-cli init` (above) gives the app its EAS project ID — required for push tokens.
 2. **Android:** create a Firebase project → add an Android app with package
-   `com.atmasanyam.focus` → Project settings → Service accounts → *Generate new private key*.
+   `com.atmasanyam.loji` → Project settings → Service accounts → *Generate new private key*.
    Upload it: `npx eas-cli credentials` → Android → production → *Google Service Account* →
    *Manage your Google Service Account Key for Push Notifications (FCM V1)*.
 3. **iOS:** `npx eas-cli credentials` → iOS → *Push Notifications: Manage your Apple Push
@@ -114,15 +140,15 @@ For local development put the same keys in `.env` (see `.env.example`).
    Test: install a preview build → Settings → *News & announcements* on → admin console →
    Notifications → send to "Everyone".
 
-## 6. Email for password resets (Resend)
+## 6. Email (Resend, optional)
 
 1. Create a Resend account, add and verify your domain (DNS records they show you).
-2. Create an API key → set `RESEND_API_KEY` and `EMAIL_FROM` (e.g. `Tame <no-reply@your-domain.com>`)
-   on the API and redeploy. "Forgot password?" appears in the app automatically.
+2. Create an API key → set `RESEND_API_KEY` and `EMAIL_FROM` (e.g. `LoJi <no-reply@your-domain.com>`).
 
-## 6b. SMS for sign-in codes (MSG91 or Twilio)
+## 6b. SMS for one-time codes (MSG91 or Twilio)
 
-Sign-in is by a one-time code sent by SMS, so the API needs an SMS provider.
+Registration, sign-in and step-up use one-time codes by SMS, so the API needs a provider
+(details in OTP_PROVIDERS.md).
 
 - **MSG91 (India):** sign up at msg91.com, complete DLT registration for your sender ID, create an
   OTP template that includes `##OTP##`, then set `SMS_PROVIDER=msg91`, `MSG91_AUTH_KEY` (MSG91 →
@@ -134,9 +160,15 @@ Sign-in is by a one-time code sent by SMS, so the API needs an SMS provider.
 - **App-store review:** reviewers cannot receive your SMS, so set `OTP_TEST_NUMBERS` to a number
   and code you give them in the review notes, e.g. `+919999900001:123456`. No SMS is sent to it.
 
-Codes last 10 minutes, lock after 5 wrong attempts, at most 5 are sent to a number an hour and
-45 s apart. The API never logs codes or numbers (only the provider's error message). Live
-delivery has **not** been verified from this repository: it needs a provider account.
+Codes last 10 minutes, lock after 5 wrong attempts, are capped per number per hour and sent
+at most every 45 s. The API never logs codes or numbers (only the provider's error message).
+Live delivery has **not** been verified from this repository: it needs a provider account.
+
+## 6c. Payments
+
+Follow SUBSCRIPTIONS.md: create the `loji_monthly` subscription in Play Console, a service
+account with financial permissions, a Pub/Sub topic for real-time developer notifications
+pointing at `/v1/webhooks/google-play?token=…`; and a Razorpay plan + webhook for the website.
 
 ## 7. Updating
 
@@ -144,12 +176,14 @@ delivery has **not** been verified from this repository: it needs a provider acc
 - **Database changes:** edit `backend/src/database/schema.ts` → `npm run db:generate` → commit the
   new SQL in `backend/drizzle/`.
 - **App:** bump `version` in `app.json` for user-visible releases (build numbers auto-increment),
-  build and submit (see STORE_SUBMISSION.md). Use the admin console's *App version & update
-  notices* to nudge or require updates.
+  build and submit (see STORE_SUBMISSION.md); re-export the website. Use the admin console's
+  *App version & update notices* to nudge or require updates.
+- **Catalogue:** games, crafts and facts are edited in the console; new games need an app
+  release that ships their rules (`src/games/defs`) plus a catalogue entry with the same id.
 
 ## Backups & monitoring (recommended)
 
 - Neon keeps point-in-time history; for extra safety schedule a `pg_dump` to storage you control.
 - Add an uptime monitor on `/v1/health` (e.g. Better Stack, UptimeRobot).
-- App errors appear under **Analytics → App errors**. For full crash reporting with stack traces
+- App errors appear under **Analytics → App errors**; providers and background state under **System health**. For full crash reporting with stack traces
   consider adding Sentry (`@sentry/react-native`) later — it needs its own account/DSN.

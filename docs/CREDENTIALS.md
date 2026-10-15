@@ -14,7 +14,10 @@ in EAS, or in a local `.env` file that git ignores.
 | **Render** (or Railway/Fly) | API hosting | render.com | Free tier; ~$7/mo Starter recommended |
 | **Vercel** | Admin console hosting | vercel.com | Free (Hobby) |
 | **Firebase** | Android push delivery (FCM) | console.firebase.google.com | Free |
-| **Resend** *(optional)* | "Forgot password" emails | resend.com | Free tier |
+| **MSG91** or **Twilio** | OTP SMS for sign-up/sign-in | msg91.com / twilio.com | Pay per SMS (DLT registration needed in India) |
+| **Google Cloud** | Service account + Pub/Sub for Play Billing verification and notifications | console.cloud.google.com | Free |
+| **Razorpay** | Website subscriptions | razorpay.com | Per-transaction fees |
+| **Resend** *(optional)* | Emails | resend.com | Free tier |
 | **Domain** *(optional, recommended)* | `api.` / `admin.` / privacy-policy URLs | any registrar | ~$10/yr |
 
 ## Values, where to get them, where to put them
@@ -26,8 +29,12 @@ in EAS, or in a local `.env` file that git ignores.
 | `DATABASE_URL` | Neon → project → *Connection string* (includes `?sslmode=require`) | ✅ |
 | `NODE_ENV` | literally `production` | ✅ |
 | `TRUST_PROXY` | `1` on Render/Railway/Fly | ✅ |
+| `CORS_ORIGINS` | the website origin | ✅ |
+| `SMS_PROVIDER` + `MSG91_AUTH_KEY`/`MSG91_TEMPLATE_ID` or `TWILIO_ACCOUNT_SID`/`TWILIO_AUTH_TOKEN`/`TWILIO_FROM` | provider dashboards (OTP_PROVIDERS.md) | ✅ |
+| `GOOGLE_PLAY_PACKAGE_NAME`, `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON`, `GOOGLE_PLAY_RTDN_TOKEN` | Play Console / Google Cloud (SUBSCRIPTIONS.md) | ✅ for Android |
+| `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_PLAN_ID`, `RAZORPAY_WEBHOOK_SECRET` | Razorpay dashboard | ✅ for the website |
 | `RESEND_API_KEY` | Resend → API Keys → Create | optional |
-| `EMAIL_FROM` | an address on your Resend-verified domain, e.g. `Tame <no-reply@your-domain.com>` | with Resend |
+| `EMAIL_FROM` | an address on your Resend-verified domain, e.g. `LoJi <no-reply@your-domain.com>` | with Resend |
 | `EXPO_ACCESS_TOKEN` | expo.dev → Account settings → Access tokens | optional (push hardening) |
 | `SMS_PROVIDER` | `msg91`, `twilio` or `console` (development only) | for phone sign-in |
 | `MSG91_AUTH_KEY` / `MSG91_TEMPLATE_ID` | msg91.com → Authkey; OTP template with `##OTP##` (DLT-approved) | with MSG91 |

@@ -343,6 +343,7 @@ export const en = {
   'sub.subscribeGoogle': 'Subscribe with Google Play',
   'sub.subscribeWeb': 'Subscribe with card or UPI',
   'sub.subscribeSandbox': 'Activate test subscription (development only)',
+  'sub.otherPlatform': 'Subscriptions are bought on the LoJi website or on an Android phone. Your plan then works on every device you sign in on, including this one.',
   'sub.restore': 'Restore purchases',
   'sub.manage': 'Manage in Google Play',
   'sub.cancel': 'Cancel subscription',

@@ -151,6 +151,7 @@ export const hi: Partial<Record<StringKey, string>> = {
   'sub.price': '₹{price} / माह',
   'sub.status.active': 'सक्रिय',
   'sub.status.expired': 'समाप्त',
+  'sub.otherPlatform': 'सब्सक्रिप्शन LoJi वेबसाइट या Android फ़ोन पर ख़रीदा जाता है। उसके बाद आपका प्लान हर डिवाइस पर काम करता है, इस पर भी।',
   'sub.restore': 'खरीद पुनर्स्थापित करें',
 
   'settings.title': 'सेटिंग',

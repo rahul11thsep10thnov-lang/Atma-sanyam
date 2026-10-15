@@ -185,6 +185,9 @@ export function SubscriptionScreen() {
           {info.providers.googlePlay && Platform.OS === 'android' && !playBillingAvailable() && <AppText variant="caption" tone="muted">{t('sub.storeUnavailable')}</AppText>}
           {info.providers.razorpay && razorpayAvailable() && <Button label={t('sub.subscribeWeb')} icon="creditCard" onPress={buyWeb} loading={busy === 'web'} fullWidth />}
           {info.providers.sandbox && env.appEnv !== 'production' && <Button label={t('sub.subscribeSandbox')} variant="secondary" onPress={sandbox} loading={busy === 'sandbox'} fullWidth />}
+          {!(info.providers.googlePlay && Platform.OS === 'android') && !(info.providers.razorpay && razorpayAvailable()) && !(info.providers.sandbox && env.appEnv !== 'production') && (
+            <AppText variant="bodySmall" tone="secondary">{t('sub.otherPlatform')}</AppText>
+          )}
           <Button label={t('sub.restore')} variant="tertiary" onPress={restore} loading={busy === 'restore'} fullWidth />
           {info.manage.googlePlayUrl && <Button label={t('sub.manage')} variant="secondary" onPress={() => Linking.openURL(info.manage.googlePlayUrl!)} fullWidth />}
           {info.current?.provider === 'razorpay' && ent.active && ent.status !== 'cancelled' && <Button label={t('sub.cancel')} variant="destructive" onPress={cancelWeb} loading={busy === 'cancel'} fullWidth />}

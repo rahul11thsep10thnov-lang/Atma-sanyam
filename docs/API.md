@@ -1,210 +1,134 @@
-# Tame API reference
+# LoJi API reference
 
-Base URL: your API host, e.g. `https://api.your-domain.com`. All bodies are JSON.
+Base URL: your API host, e.g. `https://api.your-domain.com`. All bodies are JSON. Versioned
+under `/v1` (app) and `/admin/v1` (console).
 
 **Errors** always look like:
 
 ```json
-{ "error": { "code": "bad_request", "message": "Invalid request", "details": [{ "path": "email", "message": "Invalid email" }] } }
+{ "error": { "code": "bad_request", "message": "Invalid request", "details": [{ "path": "phone", "message": "Invalid phone" }] } }
 ```
 
-Codes: `bad_request` 400, `unauthorized` 401, `forbidden` 403, `not_found` 404, `conflict` 409,
-`payload_too_large` 413, `rate_limited` 429, `unavailable` 503, `internal` 500.
+Codes: `bad_request` 400, `unauthorized` 401, `subscription_required` 402, `forbidden` 403,
+`not_found` 404, `conflict` 409, `payload_too_large` 413, `rate_limited` 429, `unavailable` 503,
+`internal` 500.
 
-**Auth:** `Authorization: Bearer <token>`. App tokens come from `/v1/auth/*`, admin tokens from
-`/admin/v1/auth/login` (the admin console handles this for you).
+**Auth:** `Authorization: Bearer <token>`. Three kinds of token, never interchangeable:
+guardian (`/v1/guardian/login/verify`), player (`/v1/player/login[/verify]`), admin
+(`/admin/v1/auth/login`, handled by the console). Routes marked **E** also need an active
+family entitlement (otherwise 402 `subscription_required`); routes marked **S** need a step-up
+OTP (`/v1/guardian/step-up/*`) within the last 15 minutes.
+
+Rate limits (per IP unless noted): general 300/min; login 10/15 min per IP+identifier;
+register 10/h; OTP send 20/h per IP+identifier; OTP verify 30/15 min; recovery 10/h; billing
+10/min per principal; heartbeat 120/min per principal; webhooks 120/min; events 60/min.
 
 ---
 
-## App API (`/v1`)
-
-### Health & config
-
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| GET | `/v1/health` | — | `{ ok, time }` — also checks the database. |
-| GET | `/v1/config` | — | Complete remote config: `maintenance {enabled,message}`, `appVersion {minimumVersion, latestVersion, updateMessage, iosStoreUrl, androidStoreUrl}`, `features {contentLibrary, quoteTiles, customPhotos, accounts, pushNotifications, passwordReset}`, `texts {…}`, `session {gracePeriodSeconds}`, `serverTime`. Never cached. |
-
-### Content library
+## Public (`/v1`)
 
 | Method | Path | Description |
 |---|---|---|
-| GET | `/v1/categories` | Flat list `[{ id, name, parentId }]` (app builds the tree). Cached 5 min. |
-| GET | `/v1/images` | Published images. Query: `search`, `categoryId` (includes all sub-categories), `tags=a,b` (must have all), `sort=newest\|popular\|title`, `limit` (1–50, default 20), `cursor`. Returns `{ items: ContentImage[], nextCursor: string\|null }`. |
-| GET | `/v1/images/:id` | One published image. |
+| GET | `/v1/health` | `{ ok, time }`; checks the database. |
+| GET | `/v1/config` | Remote config: `maintenance`, `appVersion`, `features` (admin flags + server capabilities `phoneSignIn`, `googlePlayBilling`, `razorpayBilling`, `sandboxBilling`), `texts`, `limits`, `subscription { productId, priceInr }`, `termsVersion`, `serverTime`. |
+| GET | `/v1/catalogue/brackets` · `/game-categories` · `/fact-categories` | Public reference lists. |
+| GET | `/v1/categories`, `/v1/images`, `/v1/images/:id` | Published image library (admin-curated illustrations). |
+| POST | `/v1/devices` | Register/refresh an install `{ installId, platform, appVersion?, pushToken? }`. With a guardian or player token the device is linked to that account. |
+| POST | `/v1/events` | Coarse analytics events (no identifiers beyond the install id). |
+| GET | `/v1/ws/info` | WebSocket URL and protocol version. |
 
-`ContentImage`: `imageId, title, category, subcategory, tags, thumbnailUrl, mediumImageUrl, fullImageUrl, source, creator, license, attributionRequired, attributionText, createdAt, popularity`.
+## Guardian accounts (`/v1/guardian`)
 
-### Accounts
-
-Accounts are phone-first: a one-time code by SMS signs you in and creates the account the first
-time; then a password, a username and an avatar are set. Accounts created earlier with an email
-keep working with email + password.
-
-| Method | Path | Auth | Body → Response |
+| Method | Path | Auth | Body → Result |
 |---|---|---|---|
-| POST | `/v1/auth/otp/request` | — | `{ phone }` → `202 { ok, phone (masked), expiresInSeconds, resendAfterSeconds }`. Sends a 6-digit code (10 min). 429 after 5 codes an hour or within 45 s of the last; 503 when no SMS provider is configured; 502 when the provider fails. Rate limited per IP + number. |
-| POST | `/v1/auth/otp/verify` | — | `{ phone, code }` → `201` (account created) or `200` `{ token, expiresAt, user, onboarding }`. 5 wrong codes lock the code. The session may set a password without the old one for 15 minutes. |
-| POST | `/v1/auth/login` | — | `{ phone \| email, password }` → `{ token, expiresAt, user, onboarding }`. Generic 401 for wrong credentials. Rate limited. |
-| POST | `/v1/auth/register` | — | `{ email, password, displayName? }` → `201 { token, expiresAt, user, onboarding }`. Email accounts (kept for compatibility). |
-| POST | `/v1/auth/logout` | user | → 204 (revokes this session). |
-| POST | `/v1/auth/password-reset/request` | — | `{ email }` → `202` always. Emails a 6-digit code valid 15 min. 503 if email isn't configured. Phone accounts reset by signing in with a code and calling `/v1/me/password`. |
-| POST | `/v1/auth/password-reset/confirm` | — | `{ email, code, newPassword }` → `{ token, expiresAt, user, onboarding }`; revokes all other sessions. |
-| GET | `/v1/me` | user | → `user` + `onboarding` |
-| GET | `/v1/usernames/availability?username=` | user | → `{ username, available, reason: 'invalid' \| 'reserved' \| 'taken' \| null }`. Advisory; the unique index decides on save. 60/min. |
-| PATCH | `/v1/me` | user | `{ displayName?, username?, avatarId?, allowPokes?, discoverableByPhone? }` → user + onboarding. 409 if the username was just taken. |
-| POST | `/v1/me/password` | user | `{ currentPassword?, newPassword }` → 204 (signs out other devices). `currentPassword` may be left out when the account has no password yet or the session was opened by a code within 15 minutes. |
-| DELETE | `/v1/me` | user | `{ password? }` → 204. Deletes the account; analytics are kept but unlinked. |
+| POST | `/register/start` | — | `{ name, phone, password, consent: true, termsVersion }` → `{ challengeId }` (OTP sent). Password policy: 10+ chars with letters and digits. |
+| POST | `/register/verify` | — | `{ challengeId, code }` → `{ token, guardian }`. |
+| POST | `/login` | — | `{ phone, password }` → `{ challengeId }` (password checked first, then OTP sent). Lockout after repeated failures. |
+| POST | `/login/verify` | — | `{ challengeId, code, installId? }` → `{ token, guardian, entitlement }`. |
+| POST | `/otp/resend` | — | `{ challengeId }` → `{ challengeId }` (respects cooldown and per-number caps). |
+| POST | `/recovery/start` · `/recovery/verify` | — | Forgotten password: `{ phone }` → `{ challengeId }`; `{ challengeId, code, newPassword }` → `{ token }`. All other sessions are revoked. |
+| GET | `/me` | guardian | `{ guardian, entitlement, children: [...summary], pendingDeletion }`. |
+| PATCH | `/me` | guardian | `{ name?, email?, language?, notificationsEnabled? }`. |
+| POST | `/password` | guardian **S** | `{ currentPassword, newPassword }`; revokes other sessions. |
+| POST | `/step-up/start` · `/step-up/verify` | guardian | OTP to the guardian's phone → 15-minute step-up window. |
+| POST | `/logout` · `/logout-all` | guardian | Revoke this / every guardian session (`logout-all` also revokes player sessions). |
+| DELETE | `/me` | guardian **S** | Request account deletion: the account is frozen and deleted after `DELETION_COOLING_OFF_DAYS` by the cleanup job. |
+| POST | `/me/deletion/cancel` | guardian | Cancel a pending deletion. |
+| GET | `/me/export` | guardian **S** | JSON export of the household's data (data-portability). |
 
-`user` (the owner's own view): `id, phone, phoneMasked, email, username, displayName, avatarId,
-allowPokes, discoverableByPhone, hasPassword, createdAt`. Other people only ever get
-`id, username, displayName, avatarId` — never a number or email. `onboarding`:
-`{ needsPassword, needsUsername }`.
-
-**Password rule:** 6–15 characters with at least one capital letter, one small letter, one number
-and one special character, no spaces. **Username rule:** 3–20 characters, letters, numbers, dots
-and underscores, starting with a letter, no two dots/underscores in a row; case is kept for
-display, uniqueness is case-insensitive; some names (admin, support, tame, …) are reserved.
-
-Sessions last 30 days and extend while in use.
-
-### Friends, pokes, notifications, focus sessions
-
-All need a signed-in person. Other people are only ever `{ id, username, displayName, avatarId }`
-(never a number or email). Live updates come over the WebSocket below.
-
-| Method | Path | Body → Response |
-|---|---|---|
-| GET | `/v1/people/search?q=` | part of a username (2+ chars) or a full mobile number (exact; only people who allow it) → `{ items: [profile + relation ('none'|'friends'|'requested'|'incoming'|'blocked'), requestId] }`. Never oneself or anyone blocked either way. 40/min. |
-| GET | `/v1/friends` | → `{ friends: [profile + presence { online, focusing, inGroup, lastSeenAt } + weekMinutes + leadsMe], incoming, sent, myWeekMinutes, focusingCount }` |
-| POST | `/v1/friends/requests` | `{ userId }` → `201 { requestId, status: 'pending' }`; `200 … 'accepted'` when they had already asked you. 400 self, 403 blocked, 409 duplicate / already friends. 30/hour. |
-| POST | `/v1/friends/requests/:id/accept` · `/decline` | addressee only. Declining is quiet. |
-| DELETE | `/v1/friends/requests/:id` | cancel a request you sent |
-| DELETE | `/v1/friends/:userId` | unfriend |
-| POST / DELETE | `/v1/people/:userId/block` | block (ends the friendship and any request) / unblock; `GET /v1/people/blocked` |
-| POST | `/v1/pokes` | `{ userId, key }` → `201 { pokeId, delivered: 'live'|'notification', repeated }`. Friends only, 403 when they turned pokes off, 429 within 2 min of the last poke to them; the same `key` again is a no-op (`200`, `repeated: true`). |
-| GET | `/v1/notifications?limit&before` | → `{ items, nextCursor, unread }` |
-| POST | `/v1/notifications/read` | `{ ids } \| { all: true }` → `{ unread }` |
-| POST | `/v1/focus/sessions` | `{ clientSessionId, plannedMinutes }` → `201 { sessionId, startedAt }` (the same client id again returns the same session). Ends any other running session. |
-| POST | `/v1/focus/sessions/:id/heartbeat` | every minute while running; without one for 2 min the person no longer shows as focusing |
-| POST | `/v1/focus/sessions/:id/finish` | `{ outcome }` → `{ outcome, verifiedMinutes, rejected }`. A completion reported before the planned length has passed on the server's clock is recorded as failed and credits nothing. |
-| POST | `/v1/focus/sessions/:id/abandon` | the app left without finishing |
-| GET | `/v1/focus/stats` | → `{ weekMinutes, totalMinutes, completedSessions }` (verified minutes only) |
-
-**WebSocket** `GET /v1/ws?token=<bearer token>` (same token as the API; 4401 closes a bad one).
-Server → app events, as JSON: `hello`, `presence { userId, state }` (a friend connected,
-disconnected, started or finished focusing), `notification { notification, unread }`,
-`poke { from, pokeId }`, `friends_changed`, `group { event, sessionId, data }`. The app sends
-`ping`; the server answers `pong`. Presence is per API instance (in memory).
-
-### Group focus
-
-A host proposes a plant or a picture and a length, invites friends, everyone approved presses
-Start, and the server starts one clock. Its timestamps decide the end, each late joiner's own
-start, what a completed participant is credited (the usual tiers apply to that) and what an
-early exit costs. All need a signed-in person; the `group` WebSocket events carry live changes
-(`updated`, `participant`, `started`, `join_request`, `joined`, `join_declined`, `host_changed`,
-`message`, `ended`).
-
-| Method | Path | Body → Response |
-|---|---|---|
-| POST | `/v1/group/sessions` | `{ proposal: { kind: 'plant', speciesId, place? } \| { kind: 'remote', imageId, uri, title?, category? }, plannedMinutes (5–240), inviteeIds (friends, ≤ 11) }` → `201 session`. One open session per host. Invitees get a `group_invite` notification. |
-| GET | `/v1/group/sessions/mine` | my open sessions (lobby or running) |
-| GET | `/v1/group/sessions/joinable` | running sessions of my friends I could ask to join (more than a minute left) |
-| GET | `/v1/group/sessions/:id` | the session: status, proposal, plannedMinutes, revision, startedAt, endsAt, membersAtStart, serverTime, `me`, `participants` (profile + status + isHost + note + startedAt + rewardMinutes + penaltyCount). Members and the host's friends only. |
-| PATCH | `/v1/group/sessions/:id` | host, lobby only: `{ proposal?, plannedMinutes? }` → everyone is asked again (`revision` + 1) |
-| POST | `/v1/group/sessions/:id/respond` | invitee: `{ accept, note? }`; a decline with its note goes to the host (`group_rejected`) |
-| POST | `/v1/group/sessions/:id/ready` | approved member presses Start. When every approved member is ready (at least two), one atomic update turns `lobby` into `running` with `startedAt`/`endsAt`; participants become `active` and each gets a verified focus session. |
-| POST | `/v1/group/sessions/:id/cancel` · `/leave-lobby` | host cancels in the lobby / an invitee backs out |
-| POST | `/v1/group/sessions/:id/join` | a friend of the host asks to join a running session → `202`; the host is told |
-| POST | `/v1/group/sessions/:id/join-requests/:userId` | host: `{ approve }`. Approved, the joiner is `active` from now with their own `startedAt`; refused when less than a minute is left |
-| POST | `/v1/group/sessions/:id/heartbeat` | every ≤ 2 min while in the session (else shown as disconnected); settles the session once the clock has run out |
-| POST | `/v1/group/sessions/:id/leave` | leave early → `{ status: 'left_early', penaltyCount }` where `penaltyCount` = members in the session at that moment, decided once; the host's role passes to the longest-standing member |
-| POST | `/v1/group/sessions/:id/penalty-applied` | the app applied its penalty objects → `{ applied }` (true once) |
-| POST | `/v1/group/sessions/:id/finish` | once the clock has run out (idempotent): `active` → `completed` with `rewardMinutes` = min(planned, minutes since their own start); anyone without a heartbeat for 5 min at the end is `left_early` with no penalty |
-| GET / POST | `/v1/group/sessions/:id/messages` | the chat: `{ key }` from the predefined list only (`backend/src/lib/groupMessages.ts`); 15/min |
-
-### Devices & analytics
+## Household (`/v1/guardian`)
 
 | Method | Path | Auth | Description |
 |---|---|---|---|
-| POST | `/v1/devices` | optional | `{ installId, platform: ios\|android\|web, appVersion?, pushToken?: ExponentPushToken[…]\|null, pushEnabled? }` → 204. Upserts by `installId`; links to the signed-in user if a token is sent. |
-| POST | `/v1/events` | optional | `{ installId, platform, appVersion?, events: [{ name, occurredAt?, screen?, contentId?, properties? }] }` (1–50 events; `name` like `session_complete`; ≤20 scalar properties) → `202 { accepted }`. Rate limited 60/min/IP. |
+| GET | `/dashboard` | guardian | Children count, online/active players, current game and duration per child, today's and this week's minutes, progress summary, recent activity, subscription status. |
+| GET/POST | `/children` | guardian | List / create `{ displayName, birthMonth: 'YYYY-MM', avatarId, pin, playerOtpRequired?, bracketOverride? }` → child with `playerId` (`LOJI-XXXXXX`). Max per guardian from settings. |
+| GET/PATCH/DELETE | `/children/:id` | guardian | Detail (profile, live state, today's usage, progress, controls) / edit / soft-delete (restorable with `POST /children/:id/restore`). |
+| POST | `/children/:id/pin` | guardian **S** | Reset the PIN; revokes the child's sessions. |
+| POST | `/children/:id/revoke-sessions` | guardian | Sign the child out everywhere. |
+| POST | `/children/:id/player-session` | guardian **E** | Open the Player Console on this device without a PIN (returns a player token). |
+| GET/PUT | `/children/:id/controls` | guardian | Parental controls: `dailyLimitMinutes`, `sessionLimitMinutes`, `playWindows[{days,start,end}]`, `bedtimeStart/End`, `timezone`, `blockedCategories`, `blockedGames`, `allowedBrackets`, `soundEnabled`, `narrationEnabled`, `favouritesEnabled`, `mirroringEnabled`, `newDeviceApproval`. Changes are pushed to the child's socket. |
+| GET | `/children/:id/activity` | guardian | Session history and daily screen-time for the last weeks. |
+| POST | `/children/:id/session/pause` · `/resume` · `/end` | guardian | Live controls for the current game (delivered over the socket; honoured on the next heartbeat too). |
+| GET | `/children/:id/export` | guardian **S** | Export one child's data. |
+| GET | `/devices` · POST `/devices/:id/approve` · DELETE `/devices/:id` | guardian | Devices used by the household; approval when `newDeviceApproval` is on. |
 
-Events the app sends: `app_open`, `screen_view`, `content_view`, `session_start`,
-`session_complete`, `session_fail`, `sign_in`, `sign_up`, `password_reset`, `error`.
+## Subscription (`/v1/guardian/subscription`)
 
----
+| Method | Path | Description |
+|---|---|---|
+| GET | `/` | `{ entitlement, current, history, monthly { productId, priceInr }, providers { googlePlay, razorpay, sandbox }, manage { googlePlayUrl, supportEmail } }`. |
+| POST | `/google/verify` | `{ purchaseToken, productId }` → verified with the Play Developer API (`purchases.subscriptionsv2`), acknowledged, stored, entitlement recomputed. Rejects tokens bought by another account. |
+| POST | `/razorpay/create` | → `{ subscriptionId, keyId }` for Razorpay Checkout on the website. |
+| POST | `/razorpay/confirm` | `{ razorpay_payment_id, razorpay_subscription_id, razorpay_signature }` → signature verified (HMAC) and the subscription fetched from Razorpay. |
+| POST | `/razorpay/cancel` | Cancel at period end. |
+| POST | `/restore` | Re-verify every known purchase for this household. |
+| POST | `/sandbox/activate` · `/sandbox/transition` | Development/test only (`BILLING_SANDBOX=true`, refused in production): activate, or move to `grace`, `expired`, `cancelled`, `revoked`… to exercise the state machine. |
 
-## Admin API (`/admin/v1`)
+Webhooks (`/v1/webhooks`): `POST /google-play?token=<GOOGLE_PLAY_RTDN_TOKEN>` (Pub/Sub push
+body with `message.data` base64 RTDN; re-verifies the purchase), `POST /razorpay` (signature
+header checked with `RAZORPAY_WEBHOOK_SECRET`). Both are idempotent by event id.
 
-Every route except `/auth/login` requires an admin token **and** the listed permission.
-Responses are `Cache-Control: no-store`. Changes are written to the audit log.
+## Player (`/v1/player`)
 
-### Auth
-
-| Method | Path | Permission | Description |
+| Method | Path | Auth | Description |
 |---|---|---|---|
-| POST | `/auth/login` | — | `{ email, password }` → `{ token, expiresAt }` (12 h). 5 failures lock the account 15 min. |
-| POST | `/auth/logout` | any | Revokes the session. |
-| GET | `/auth/me` | any | `{ id, email, name, role {key,name}, permissions[] }` |
-| POST | `/auth/change-password` | any | `{ currentPassword, newPassword }` → 204; other sessions revoked. |
+| POST | `/login` | — | `{ playerId, pin, installId? }` → `{ token, me }`, or `202 { otpRequired: true, challengeId }` when the guardian requires a code (sent to the **guardian's** phone), or `403 device_approval_required`. |
+| POST | `/login/verify` | — | `{ challengeId, code }` → `{ token, me }`. |
+| GET | `/me` | player | Nickname, avatar, bracket, guardian's settings that affect the child (sound, narration, favourites), entitlement with `validUntil`, paused state. |
+| POST | `/logout` | player | |
+| GET | `/games` | player **E** | Games visible to this child (published, bracket allowed, not blocked), with progress, favourites and `recommended`. `GET /games/:id` for one. |
+| PUT/DELETE | `/games/:id/favourite` | player | |
+| POST | `/sessions/start` | player **E** | `{ gameId, clientSessionId, difficulty }` → `201 { sessionId, allowedSeconds, ... }` or `403` with a child-friendly reason (`bedtime`, `outside_play_window`, `daily_limit`, `paused`, `blocked`). |
+| POST | `/sessions/:id/heartbeat` | player | → `{ running, mustEnd, reason?, remainingSeconds, paused }`. Every 30 s (socket first, REST fallback). |
+| POST | `/sessions/:id/end` | player | `{ outcome, score?, stars?, progress? }` → achievements earned. Clears the mirror snapshot. |
+| GET | `/progress` · PUT `/progress/:gameId` | player | Per-game progress, achievements, crafts finished, facts read, quiz stats. |
+| GET | `/crafts` · `/crafts/:id` · PUT `/crafts/:id/progress` | player **E** | Tutorials for the child's brackets; full steps on detail; `{ stepsDone, checklistDone, completed }`. |
+| GET | `/facts` · `/facts/daily` · `/facts/random` · `/facts/history` · `/facts/categories` · `/facts/:id` | player **E** | Published facts for the brackets, with source and quiz questions (without the answer). Daily = same fact for everyone in a bracket that day; random prefers unseen. |
+| POST | `/facts/:id/view` · PUT `/facts/:id/favourite` | player | History and favourites (favourites can be disabled by the guardian). |
+| POST | `/quiz/answer` · GET `/quiz/history` | player | `{ questionId, chosenIndex }` → `{ correct, correctIndex, explanation }`. |
+| GET | `/controls` | player | The subset of controls the console needs (sound, narration, favourites, mirroring). |
 
-### Dashboard, analytics, audit
+## WebSocket (`/v1/ws?token=<guardian or player token>`)
 
-| Method | Path | Permission | Description |
-|---|---|---|---|
-| GET | `/dashboard` | dashboard:read | Counts (users, installs, content, sessions, notifications) + recent activity/users. Sections you can't access come back `null`. |
-| GET | `/analytics?days=7..180` | analytics:read | `active {dau,wau,mau}`, daily `dau[]` & `registrations[]`, `retention {d1,d7,d30,cohortSizes}`, `topScreens`, `topContent`, `sessions {completed, failed, completionRate, avgCompletedMinutes}`, `platforms`, `errors {count, recent[]}`. |
-| GET | `/audit-log?page&pageSize` | audit:read | Paginated audit entries. |
+Server → client (guardian): `hello {role, onlineChildren}`, `child_status {childId, online, session?}`,
+`watching {childId}`, `mirror_frame {childId, sessionId, gameId, seq, state, at}`,
+`mirror_ended {childId, reason}`, `error {code}` (`forbidden`, `mirroring_disabled`, `offline`).
+Server → client (player): `hello {role}`, `mirror_status {watchers}`, `session_control
+{action: pause|resume|end|signed_out}`, `controls_changed`, `profile_changed`,
+`heartbeat_result {sessionId, result}`, `pong`.
+Client → server: guardian `watch {childId}` / `unwatch {childId}`; player `mirror {sessionId,
+seq, state}` and `heartbeat {sessionId}`; either `ping`. Unauthenticated sockets are closed
+with code 4401.
 
-### Users
+## Admin (`/admin/v1`, admin token, permission per route)
 
-| Method | Path | Permission | Description |
-|---|---|---|---|
-| GET | `/users?search&status&page&pageSize` | users:read | Paginated list. |
-| GET | `/users/:id` | users:read | Profile, devices, active session count, last 50 events. |
-| PATCH | `/users/:id` | users:write | `{ status: active\|deactivated }` — deactivation signs them out everywhere. |
-| DELETE | `/users/:id` | users:delete | Permanent delete. |
+| Area | Routes |
+|---|---|
+| Auth | `POST /auth/login`, `GET /auth/me`, `POST /auth/logout`, password change. |
+| Guardians (`guardians:*`) | `GET /guardians` (search, status, paging; children as counts), `GET /guardians/:id` (children as brackets only, devices, subscriptions, deletion requests), `PATCH /guardians/:id {status}`, `DELETE /guardians/:id`. |
+| Subscriptions (`subscriptions:*`) | `GET /subscriptions/stats`, `GET /subscriptions`, `GET /subscriptions/:id/events`, `POST /subscriptions/:id/revoke`, `POST /subscriptions/:id/extend {days, reason}`. |
+| Catalogue (`content:*`) | `GET/POST /games`, `GET/PATCH /games/:id`, `GET/POST /game-categories`; `GET/POST /crafts`, `GET/PATCH/DELETE /crafts/:id`; `GET/POST /fact-sources`, `PATCH /fact-sources/:id`; `GET/POST /facts`, `GET/PATCH/DELETE /facts/:id`, `POST /facts/:id/status {status: draft|verified|published|archived}` (verify needs `content:verify` and a source; publish needs `content:publish`, a verification and ≥1 question), `POST /facts/:id/questions`, `PATCH/DELETE /questions/:id`, `GET /approvals`. |
+| Settings (`settings:*`) | `GET /settings`, `PUT /settings/:key` (maintenance, app_version, feature_flags, texts, limits). |
+| Notifications, analytics, audit, admins | `/notifications`, `/dashboard`, `/analytics`, `/audit-log`, `/health`, `/admins`, `/roles`. |
 
-### Content & categories
-
-| Method | Path | Permission | Description |
-|---|---|---|---|
-| GET | `/content?search&status&categoryId&page&pageSize` | content:read | Paginated list (drafts included). |
-| GET | `/content/:id` | content:read | |
-| POST | `/content` | content:write (+content:publish to create as published) | `{ title, categoryId?, subcategoryId?, tags[], thumbnailUrl, mediumUrl, fullUrl, source, creator, license, attributionRequired, attributionText?, status? }` |
-| PATCH | `/content/:id` | content:write (+content:publish to change `status`) | Any subset of the fields above. |
-| DELETE | `/content/:id` | content:delete | |
-| GET | `/categories` | content:read | With `contentCount`. |
-| POST | `/categories` | content:write | `{ name, parentId?, id?, sortOrder? }` — id defaults to a slug. |
-| PATCH | `/categories/:id` | content:write | `{ name?, parentId?, sortOrder? }` (cycle-safe). |
-| DELETE | `/categories/:id` | content:delete | 409 if it has sub-categories. |
-
-### App configuration
-
-| Method | Path | Permission | Description |
-|---|---|---|---|
-| GET | `/settings` | settings:read | `[{ key, label, description, value, defaults, updatedAt }]` |
-| PUT | `/settings/:key` | settings:write | `{ value }` validated against the key's schema (`maintenance`, `app_version`, `feature_flags`, `texts`, `session`). |
-
-### Notifications
-
-| Method | Path | Permission | Description |
-|---|---|---|---|
-| GET | `/notifications?page&pageSize` | notifications:read | History with delivery counts. |
-| GET | `/notifications/:id` | notifications:read | |
-| POST | `/notifications/preview` | notifications:send | `{ target }` → `{ recipients }` |
-| POST | `/notifications` | notifications:send | `{ title (≤65), body (≤240), target, sendNow=true }` → 202 `sending` (or 201 `draft`). Target: `{type:'all'}`, `{type:'signed_in'}`, `{type:'platform', platform:'ios'\|'android'}`, `{type:'users', userIds:[…]}`. |
-| POST | `/notifications/:id/send` | notifications:send | Send a draft. |
-| DELETE | `/notifications/:id` | notifications:send | Delete a draft. |
-
-### Admins & roles
-
-| Method | Path | Permission | Description |
-|---|---|---|---|
-| GET | `/roles` | admins:read | Roles with their permissions. |
-| GET | `/admins` | admins:read | |
-| POST | `/admins` | admins:write | `{ email, name, roleKey, password }` |
-| PATCH | `/admins/:id` | admins:write | `{ name?, roleKey?, status?, password?, unlock? }` — role/status/password changes sign that admin out. |
-| DELETE | `/admins/:id` | admins:write | Not yourself, not the last Super Admin. |
+Every admin mutation is recorded in `audit_logs` with the admin id, action, entity and a summary.

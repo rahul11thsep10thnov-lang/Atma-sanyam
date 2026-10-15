@@ -1,23 +1,36 @@
 # Building & submitting to Google Play and the App Store
 
+> **Google Play Families policy.** LoJi's target audience includes children, so in Play Console →
+> *Policy* → *App content* declare the target age groups (3–5, 6–8, 9–12), confirm **no ads**,
+> complete the **Data safety** form (data collected: guardian name and phone for account
+> management; child nickname, birth month and gameplay progress for app functionality; no
+> sharing, no ad IDs; encrypted in transit; deletion available in-app), and link the privacy
+> policy. Purchases are made by the guardian after an adult gate. Give the reviewer an
+> `OTP_TEST_NUMBERS` number and a sandbox-free way to subscribe (licence tester account).
+>
+> **App Store.** Subscriptions are not sold inside the iOS app (no StoreKit); the Plan screen
+> directs guardians to the website or Android. Apple may require in-app purchase for a
+> subscription app — plan StoreKit work before an iOS launch (see KNOWN_LIMITATIONS.md).
+
 Nothing here has been published yet — these are the steps you perform with your own accounts.
 
 ## What's already configured
 
 | | Android | iOS |
 |---|---|---|
-| App ID | `com.atmasanyam.focus` (package) | `com.atmasanyam.focus` (bundle ID) |
-| Name / version | Tame / `1.0.0` (`app.json` → `version`) | same |
+| App ID | `com.atmasanyam.loji` (package) | `com.atmasanyam.loji` (bundle ID) |
+| Name / version | LoJi / `1.0.0` (`app.json` → `version`) | same |
 | Build numbers | `versionCode` auto-incremented by EAS (`appVersionSource: remote`) | `buildNumber` auto-incremented by EAS |
 | Icon | Adaptive icon (photo background + themed monochrome layer) | `assets/icon.png` 1024×1024 |
 | Splash | `assets/splash-icon.png` on `#FFF3E8` | same |
-| Permissions | Internet, vibrate, notifications. Camera, microphone, media-library and overlay permissions are **explicitly removed** (the system photo picker needs none) | Photo-library purpose string only; no camera/microphone |
+| Permissions | Internet, vibrate, notifications, `com.android.vending.BILLING`. Camera, microphone, media-library, location and overlay permissions are **explicitly removed** | No camera/microphone/photo access |
 | Privacy | SecureStore excluded from backups | `PrivacyInfo.xcprivacy` (required-reason APIs + collected data), `ITSAppUsesNonExemptEncryption = false` |
 | Devices | Phones | iPhone only (`supportsTablet: false` — no iPad screenshots needed) |
-| Account deletion | In-app: Settings → Account → Delete account | same |
+| Account deletion | In-app: Guardian Settings → Delete account (cooling-off, cancellable) | same |
+| Audience | Designed for families: children 3–12 use the Player Console under a guardian account | same |
 
-> **App name:** store names must be unique. If "Tame" is taken, change `expo.name` in
-> `app.json` (e.g. "Tame – Puzzle Timer") — the bundle IDs don't need to change.
+> **App name:** store names must be unique. If "LoJi" is taken, change `expo.name` in
+> `app.json` (e.g. "LoJi – Kids Games & Learning") — the bundle IDs don't need to change.
 >
 > **Bundle IDs are permanent** once published. If you want a different one (e.g. your own
 > domain reversed), change `ios.bundleIdentifier` and `android.package` in `app.json` **before**
@@ -89,7 +102,7 @@ DEPLOYMENT.md §4) — at minimum `EXPO_PUBLIC_API_URL` and `EXPO_PUBLIC_PRIVACY
      store listing, Data safety form and app in line with that, or change the text.
    - *Account deletion* — Google also requires a **web link** where people can request
      deletion without the app. Publish a short page (e.g. `your-domain.com/delete-account`)
-     explaining: open Tame → Settings → Delete account, or email support from the account's
+     explaining: open LoJi → Guardian Settings → Delete account, or email support from the account's
      address. Enter that URL here.
    - *Ads*: No. *Target audience*: 18+ only (don't select children). *Content rating*: complete the
      questionnaire and say users can interact (friends, pokes, preset chat), which raises the
