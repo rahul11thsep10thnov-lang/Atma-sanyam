@@ -6,12 +6,14 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { sql } from 'drizzle-orm';
 import { createDatabase, type Db } from './client.js';
-import { achievements, ageBrackets, craftTutorials, gameCategories, games } from './schema.js';
+import { achievements, ageBrackets, craftTutorials, factSources, facts, gameCategories, games, quizQuestions } from './schema.js';
+import { eq, inArray } from 'drizzle-orm';
 import { BRACKETS } from '../lib/age.js';
 import { ACHIEVEMENT_SEEDS, GAME_CATEGORIES, GAME_SEEDS } from '../catalogue/games.js';
 import { CRAFT_SEEDS } from '../catalogue/crafts.js';
+import { FACT_SEEDS, SOURCE_SEEDS } from '../catalogue/facts.js';
 
-export async function seedCatalogue(db: Db): Promise<{ gamesInserted: number; craftsInserted: number }> {
+export async function seedCatalogue(db: Db): Promise<{ gamesInserted: number; craftsInserted: number; factsInserted: number }> {
   await db
     .insert(ageBrackets)
     .values(BRACKETS.map((b, i) => ({ key: b.key, name: b.name, minAge: b.minAge, maxAge: b.maxAge, description: b.description, sortOrder: i })))
@@ -55,7 +57,43 @@ export async function seedCatalogue(db: Db): Promise<{ gamesInserted: number; cr
     .onConflictDoNothing()
     .returning({ id: craftTutorials.id });
 
-  return { gamesInserted: inserted.length, craftsInserted: crafts.length };
+  const factsInserted = await seedFacts(db);
+  return { gamesInserted: inserted.length, craftsInserted: crafts.length, factsInserted };
+}
+
+/**
+ * Inserts the starter facts that are not in the database yet (by slug), each
+ * linked to its publisher source and with its quiz questions. Seeded facts
+ * are published: they are the editorial starter set, every one with a source
+ * an editor can re-check from the admin console.
+ */
+export async function seedFacts(db: Db): Promise<number> {
+  const existing = new Set((await db.select({ slug: facts.slug }).from(facts).where(inArray(facts.slug, FACT_SEEDS.map((f) => f.slug)))).map((r) => r.slug));
+  const missing = FACT_SEEDS.filter((f) => !existing.has(f.slug));
+  if (missing.length === 0) return 0;
+  // Sources: reuse by URL so re-seeding never duplicates them.
+  const sourceIds = new Map<string, string>();
+  for (const s of SOURCE_SEEDS) {
+    const [found] = await db.select({ id: factSources.id }).from(factSources).where(eq(factSources.url, s.url));
+    if (found) sourceIds.set(s.key, found.id);
+    else {
+      const [row] = await db.insert(factSources).values({ title: s.title, publisher: s.publisher, url: s.url, accessedOn: s.accessedOn, notes: 'Starter library source' }).returning({ id: factSources.id });
+      sourceIds.set(s.key, row!.id);
+    }
+  }
+  const now = new Date();
+  for (const f of missing) {
+    const sourceId = sourceIds.get(f.source);
+    if (!sourceId) throw new Error(`Fact ${f.slug} names unknown source ${f.source}`);
+    const [row] = await db
+      .insert(facts)
+      .values({ slug: f.slug, category: f.category, headline: f.headline, body: f.body, whyText: f.whyText, followUpQuestion: f.followUpQuestion, brackets: f.brackets, readingLevel: f.readingLevel, illustration: f.illustration, sourceId, status: 'published', verifiedAt: now, publishedAt: now })
+      .onConflictDoNothing()
+      .returning({ id: facts.id });
+    if (!row) continue;
+    if (f.quiz.length) await db.insert(quizQuestions).values(f.quiz.map((qq, i) => ({ factId: row.id, question: qq.question, options: qq.options, correctIndex: qq.correctIndex, explanation: qq.explanation, sortOrder: i })));
+  }
+  return missing.length;
 }
 
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
@@ -68,7 +106,7 @@ if (isMain) {
   const database = createDatabase(url, 1);
   seedCatalogue(database.db)
     .then((r) => {
-      console.log(`Catalogue seeded (${r.gamesInserted} new games, ${r.craftsInserted} new crafts).`);
+      console.log(`Catalogue seeded (${r.gamesInserted} new games, ${r.craftsInserted} new crafts, ${r.factsInserted} new facts).`);
       return database.close();
     })
     .catch(async (err) => {

@@ -55,7 +55,7 @@ const server = app.listen(env.PORT, () => {
 });
 realtime.attach(server);
 seedCatalogue(database.db)
-  .then((r) => (r.gamesInserted || r.craftsInserted) && console.log(`Catalogue: ${r.gamesInserted} new game(s), ${r.craftsInserted} new craft(s) added.`))
+  .then((r) => (r.gamesInserted || r.craftsInserted || r.factsInserted) && console.log(`Catalogue: ${r.gamesInserted} new game(s), ${r.craftsInserted} new craft(s), ${r.factsInserted} new fact(s) added.`))
   .catch((err) => console.error('Catalogue seed failed:', err instanceof Error ? err.message : err));
 
 async function shutdown(signal: string) {

@@ -1,7 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import request from 'supertest';
 import { eq } from 'drizzle-orm';
-import { children, craftTutorials, gameProgress } from '../src/database/schema.js';
+import { children, craftTutorials, facts, gameProgress, quizQuestions } from '../src/database/schema.js';
+import { FACT_CATEGORIES } from '../src/catalogue/factCategories.js';
 import { setupTestApp } from './helpers.js';
 import { addChild, as, birthMonthForAge, playerLogin, registerGuardian, subscribe } from './lojiHelpers.js';
 
@@ -208,5 +209,56 @@ describe('craft library seed', () => {
     const detail = await request(ctx.app).get('/v1/player/crafts/dog-face').set(as(playerToken)).expect(200);
     expect(detail.body.steps[0].diagram.paper).toBeDefined();
     expect(detail.body.checklist.length).toBeGreaterThan(0);
+  });
+});
+
+describe('Did You Know? starter library', () => {
+  it('seeds published facts in every category, each with a source and a quiz question', async () => {
+    const all = await ctx.db.select().from(facts);
+    expect(all.length).toBeGreaterThanOrEqual(38);
+    const categories = new Set(all.map((f) => f.category));
+    for (const c of FACT_CATEGORIES) expect(categories.has(c.key), `category ${c.key} has facts`).toBe(true);
+    for (const f of all) {
+      expect(f.status).toBe('published');
+      expect(f.sourceId).not.toBeNull();
+      expect(f.whyText.length).toBeGreaterThan(0);
+      expect(f.followUpQuestion.length).toBeGreaterThan(0);
+    }
+    const qs = await ctx.db.select().from(quizQuestions);
+    expect(new Set(qs.map((x) => x.factId)).size).toBe(all.length);
+    for (const x of qs) expect(x.correctIndex).toBeLessThan(x.options.length);
+  });
+
+  it('serves the daily fact with its source, filtered by bracket, and records views, favourites and quiz answers', async () => {
+    const bigToken = (await playerLogin(ctx, big.playerId, '9137')).body.token as string;
+    const daily = await request(ctx.app).get('/v1/player/facts/daily').set(as(bigToken)).expect(200);
+    expect(daily.body.source.publisher).toBeTruthy();
+    expect(daily.body.questions.length).toBeGreaterThan(0);
+    // The same fact for the same day.
+    const again = await request(ctx.app).get('/v1/player/facts/daily').set(as(bigToken)).expect(200);
+    expect(again.body.id).toBe(daily.body.id);
+    // Options reach the player without the answer.
+    expect(daily.body.questions[0]).not.toHaveProperty('correctIndex');
+    const list = await request(ctx.app).get('/v1/player/facts').set(as(bigToken)).expect(200);
+    expect(list.body.total).toBeGreaterThan(30);
+    // A 4-year-old sees only bracket-A facts.
+    const littleToken = (await request(ctx.app).post('/v1/player/login/verify').send({ challengeId: (await request(ctx.app).post('/v1/player/login').send({ playerId: little.playerId, pin: '4826' })).body.challengeId, code: ctx.sms.lastCode(GUARDIAN_PHONE)! })).body.token as string;
+    const littleList = await request(ctx.app).get('/v1/player/facts').set(as(littleToken)).expect(200);
+    expect(littleList.body.total).toBeLessThan(list.body.total);
+    for (const f of littleList.body.facts) expect(f.brackets).toContain('A');
+    // View, favourite, quiz.
+    await request(ctx.app).post(`/v1/player/facts/${daily.body.id}/view`).set(as(bigToken)).expect(200);
+    await request(ctx.app).put(`/v1/player/facts/${daily.body.id}/favourite`).set(as(bigToken)).send({ favourite: true }).expect(204);
+    const history = await request(ctx.app).get('/v1/player/facts/history').set(as(bigToken)).expect(200);
+    expect(history.body[0]).toMatchObject({ id: daily.body.id, favourite: true });
+    const [qrow] = await ctx.db.select().from(quizQuestions).where(eq(quizQuestions.id, daily.body.questions[0].id));
+    const wrong = (qrow!.correctIndex + 1) % qrow!.options.length;
+    const answer = await request(ctx.app).post('/v1/player/quiz/answer').set(as(bigToken)).send({ questionId: qrow!.id, chosenIndex: wrong }).expect(200);
+    expect(answer.body).toMatchObject({ correct: false, correctIndex: qrow!.correctIndex });
+    expect(answer.body.explanation.length).toBeGreaterThan(0);
+    const right = await request(ctx.app).post('/v1/player/quiz/answer').set(as(bigToken)).send({ questionId: qrow!.id, chosenIndex: qrow!.correctIndex }).expect(200);
+    expect(right.body.correct).toBe(true);
+    const qh = await request(ctx.app).get('/v1/player/quiz/history').set(as(bigToken)).expect(200);
+    expect(qh.body.length).toBe(2);
   });
 });
