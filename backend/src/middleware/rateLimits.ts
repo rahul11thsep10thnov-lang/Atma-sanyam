@@ -1,4 +1,5 @@
 import { rateLimit, ipKeyGenerator, type Options } from 'express-rate-limit';
+import type { Request } from 'express';
 
 // In-memory store: correct for a single API instance. If you scale to several
 // instances, switch to a shared store (e.g. rate-limit-redis).
@@ -10,56 +11,33 @@ const json = (message: string): Partial<Options> => ({
   },
 });
 
-import type { Request } from 'express';
-
-const userKey = (req: Request) => req.user?.id ?? ipKeyGenerator(req.ip ?? 'unknown');
+const principalKey = (req: Request) => req.guardian?.id ?? req.player?.childId ?? ipKeyGenerator(req.ip ?? 'unknown');
 
 function identifierOf(body: unknown): string {
   const b = (body ?? {}) as Record<string, unknown>;
-  const v = typeof b.phone === 'string' ? b.phone : typeof b.email === 'string' ? b.email : '';
+  const v = typeof b.phone === 'string' ? b.phone : typeof b.playerId === 'string' ? b.playerId : typeof b.email === 'string' ? b.email : '';
   return v.toLowerCase().replace(/[\s().-]/g, '').slice(0, 200);
 }
 
 export function createRateLimits(disabled = false) {
   const skip = () => disabled;
+  const byIpAndIdentifier = (req: Request) => `${ipKeyGenerator(req.ip ?? 'unknown')}|${identifierOf(req.body)}`;
   return {
     general: rateLimit({ windowMs: 60_000, limit: 300, skip, ...json('Too many requests, slow down.') }),
-    login: rateLimit({
-      windowMs: 15 * 60_000,
-      limit: 10,
-      skip,
-      // Per IP + email so one attacker can't lock out everyone behind a NAT
-      keyGenerator: (req) => `${ipKeyGenerator(req.ip ?? 'unknown')}|${identifierOf(req.body)}`,
-      ...json('Too many sign-in attempts. Try again in 15 minutes.'),
-    }),
+    // Password sign-ins (guardian) and PIN sign-ins (player): per IP + identifier
+    // so one attacker can't lock out everyone behind a NAT.
+    login: rateLimit({ windowMs: 15 * 60_000, limit: 10, skip, keyGenerator: byIpAndIdentifier, ...json('Too many sign-in attempts. Try again in 15 minutes.') }),
+    playerLogin: rateLimit({ windowMs: 15 * 60_000, limit: 10, skip, keyGenerator: byIpAndIdentifier, ...json('Too many tries. Ask your grown-up for help and try again in 15 minutes.') }),
     register: rateLimit({ windowMs: 60 * 60_000, limit: 10, skip, ...json('Too many sign-ups from this network. Try later.') }),
-    passwordReset: rateLimit({
-      windowMs: 60 * 60_000,
-      limit: 10,
-      skip,
-      keyGenerator: (req) => {
-        const email = typeof req.body?.email === 'string' ? req.body.email.toLowerCase().slice(0, 200) : '';
-        return `${ipKeyGenerator(req.ip ?? 'unknown')}|${email}`;
-      },
-      ...json('Too many password reset attempts. Try again later.'),
-    }),
-    // One-time codes: per IP + number, so one number can't be flooded with SMS
-    // (the route also caps sends per number per hour in the database).
-    otp: rateLimit({
-      windowMs: 60 * 60_000,
-      limit: 20,
-      skip,
-      keyGenerator: (req) => `${ipKeyGenerator(req.ip ?? 'unknown')}|${identifierOf(req.body)}`,
-      ...json('Too many code requests. Try again later.'),
-    }),
-    // People search while typing, friend requests, pokes: per person (the token), else per IP.
-    search: rateLimit({ windowMs: 60_000, limit: 40, skip, keyGenerator: userKey, ...json('Too many searches. Slow down.') }),
-    friendRequest: rateLimit({ windowMs: 60 * 60_000, limit: 30, skip, keyGenerator: userKey, ...json('Too many friend requests this hour.') }),
-    poke: rateLimit({ windowMs: 60_000, limit: 20, skip, keyGenerator: userKey, ...json('Too many pokes. Give your friends a minute.') }),
-    groupCreate: rateLimit({ windowMs: 60 * 60_000, limit: 20, skip, keyGenerator: userKey, ...json('Too many group sessions this hour.') }),
-    groupChat: rateLimit({ windowMs: 60_000, limit: 15, skip, keyGenerator: userKey, ...json('Slow down a little in the chat.') }),
-    // Live username checks while typing.
-    usernameCheck: rateLimit({ windowMs: 60_000, limit: 60, skip, ...json('Too many username checks. Slow down.') }),
+    // One-time codes: per IP + number (the OTP library also caps sends per number in the database).
+    otp: rateLimit({ windowMs: 60 * 60_000, limit: 20, skip, keyGenerator: byIpAndIdentifier, ...json('Too many code requests. Try again later.') }),
+    otpVerify: rateLimit({ windowMs: 15 * 60_000, limit: 30, skip, ...json('Too many attempts. Try again later.') }),
+    recovery: rateLimit({ windowMs: 60 * 60_000, limit: 10, skip, keyGenerator: byIpAndIdentifier, ...json('Too many recovery attempts. Try again later.') }),
+    // Purchase verification calls a store API: keep it modest per account.
+    billing: rateLimit({ windowMs: 60_000, limit: 10, skip, keyGenerator: principalKey, ...json('Too many purchase checks. Wait a minute.') }),
+    webhook: rateLimit({ windowMs: 60_000, limit: 120, skip, ...json('Too many notifications.') }),
+    // Gameplay heartbeats and mirror frames go over WebSocket; REST heartbeats are a fallback.
+    heartbeat: rateLimit({ windowMs: 60_000, limit: 120, skip, keyGenerator: principalKey, ...json('Slow down.') }),
     events: rateLimit({ windowMs: 60_000, limit: 60, skip, ...json('Too many analytics requests.') }),
   };
 }

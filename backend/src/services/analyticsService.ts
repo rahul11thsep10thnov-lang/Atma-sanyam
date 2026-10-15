@@ -30,9 +30,9 @@ export async function dashboardStats(db: Db) {
   }>(
     db,
     sql`select
-      (select count(*) from users)::int as total_users,
-      (select count(*) from users where status = 'active' and last_seen_at >= now() - interval '7 days')::int as active_users_7d,
-      (select count(*) from users where created_at >= now() - interval '7 days')::int as new_users_7d,
+      (select count(*) from guardians)::int as total_users,
+      (select count(*) from guardians where status = 'active' and last_seen_at >= now() - interval '7 days')::int as active_users_7d,
+      (select count(*) from guardians where created_at >= now() - interval '7 days')::int as new_users_7d,
       (select count(*) from devices)::int as total_installs,
       (select count(*) from devices where created_at >= now() - interval '7 days')::int as new_installs_7d,
       (select count(distinct install_id) from events where occurred_at >= now() - interval '7 days')::int as active_installs_7d,
@@ -40,8 +40,8 @@ export async function dashboardStats(db: Db) {
       (select count(*) from content where status = 'published')::int as content_published,
       (select count(*) from content where status = 'draft')::int as content_draft,
       (select count(*) from categories)::int as categories,
-      (select count(*) from events where name = 'session_complete' and occurred_at >= now() - interval '7 days')::int as sessions_completed_7d,
-      (select count(*) from events where name = 'session_fail' and occurred_at >= now() - interval '7 days')::int as sessions_failed_7d,
+      (select count(*) from game_sessions where outcome = 'completed' and started_at >= now() - interval '7 days')::int as sessions_completed_7d,
+      (select count(*) from game_sessions where outcome in ('abandoned', 'failed', 'timed_out', 'ended_by_guardian') and started_at >= now() - interval '7 days')::int as sessions_failed_7d,
       (select count(*) from notifications where status = 'sent' and sent_at >= now() - interval '30 days')::int as notifications_sent_30d`
   );
   return {
@@ -67,10 +67,34 @@ export async function recentAuditLog(db: Db, limit = 10) {
   );
 }
 
-export async function recentUsers(db: Db, limit = 5) {
-  return rows<{ id: string; email: string; display_name: string | null; created_at: string }>(
+export async function recentGuardians(db: Db, limit = 5) {
+  return rows<{ id: string; name: string; phone_masked: string; children: number; created_at: string }>(
     db,
-    sql`select id, email, display_name, created_at from users order by created_at desc limit ${limit}`
+    sql`select g.id, g.name, concat(left(g.phone, 3), ' •••••••• ', right(g.phone, 2)) as phone_masked,
+        (select count(*) from children c where c.guardian_id = g.id and c.status <> 'removed')::int as children, g.created_at
+        from guardians g order by g.created_at desc limit ${limit}`
+  );
+}
+
+export async function lojiStats(db: Db) {
+  return one<{ children: number; children_a: number; children_b: number; children_c: number; children_d: number; active_subscriptions: number; grace: number; expired: number; sessions_today: number; minutes_today: number; published_games: number; dev_games: number; published_crafts: number; published_facts: number; draft_facts: number }>(
+    db,
+    sql`select
+      (select count(*) from children where status <> 'removed')::int as children,
+      (select count(*) from children where status <> 'removed' and coalesce(bracket_override, age_bracket) = 'A')::int as children_a,
+      (select count(*) from children where status <> 'removed' and coalesce(bracket_override, age_bracket) = 'B')::int as children_b,
+      (select count(*) from children where status <> 'removed' and coalesce(bracket_override, age_bracket) = 'C')::int as children_c,
+      (select count(*) from children where status <> 'removed' and coalesce(bracket_override, age_bracket) = 'D')::int as children_d,
+      (select count(*) from entitlements where active)::int as active_subscriptions,
+      (select count(*) from subscriptions where status in ('grace', 'billing_retry'))::int as grace,
+      (select count(*) from entitlements where not active and status <> 'never_subscribed')::int as expired,
+      (select count(*) from game_sessions where started_at >= current_date)::int as sessions_today,
+      (select coalesce(sum(duration_seconds), 0) / 60 from game_sessions where started_at >= current_date)::int as minutes_today,
+      (select count(*) from games where status = 'published')::int as published_games,
+      (select count(*) from games where status = 'in_development')::int as dev_games,
+      (select count(*) from craft_tutorials where status = 'published')::int as published_crafts,
+      (select count(*) from facts where status = 'published')::int as published_facts,
+      (select count(*) from facts where status in ('draft', 'verified'))::int as draft_facts`
   );
 }
 
@@ -89,7 +113,7 @@ export async function analytics(db: Db, days: number) {
     db,
     sql`with d as (select generate_series(${since}, current_date, interval '1 day')::date as day)
         select to_char(d.day, 'YYYY-MM-DD') as date, count(u.id)::int as count
-        from d left join users u on u.created_at >= d.day and u.created_at < d.day + 1
+        from d left join guardians u on u.created_at >= d.day and u.created_at < d.day + 1
         group by d.day order by d.day`
   );
 

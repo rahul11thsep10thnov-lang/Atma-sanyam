@@ -1,6 +1,6 @@
 import { and, eq, inArray, isNotNull, sql, type SQL } from 'drizzle-orm';
 import type { Db } from '../database/client.js';
-import { devices, notifications, users, type NotificationTarget } from '../database/schema.js';
+import { devices, guardians, notifications, type NotificationTarget } from '../database/schema.js';
 import type { PushSender } from '../lib/push.js';
 
 function targetCondition(target: NotificationTarget): SQL | undefined {
@@ -8,11 +8,11 @@ function targetCondition(target: NotificationTarget): SQL | undefined {
     case 'all':
       return undefined;
     case 'signed_in':
-      return isNotNull(devices.userId);
+      return isNotNull(devices.guardianId);
     case 'platform':
       return eq(devices.platform, target.platform);
     case 'users':
-      return inArray(devices.userId, target.userIds);
+      return inArray(devices.guardianId, target.userIds);
   }
 }
 
@@ -24,8 +24,8 @@ export async function resolveRecipients(db: Db, target: NotificationTarget) {
   return db
     .select({ id: devices.id, pushToken: devices.pushToken })
     .from(devices)
-    .leftJoin(users, eq(users.id, devices.userId))
-    .where(and(...conds, sql`(${users.id} is null or ${users.status} = 'active')`));
+    .leftJoin(guardians, eq(guardians.id, devices.guardianId))
+    .where(and(...conds, sql`(${guardians.id} is null or ${guardians.status} = 'active')`));
 }
 
 export async function countRecipients(db: Db, target: NotificationTarget): Promise<number> {

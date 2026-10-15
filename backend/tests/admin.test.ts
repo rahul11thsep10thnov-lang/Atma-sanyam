@@ -31,8 +31,12 @@ describe('admin authentication', () => {
     expect((await request(ctx.app).get('/admin/v1/dashboard').set(as('x'.repeat(43)))).status).toBe(401);
   });
 
-  it('does not accept a mobile user token on admin routes', async () => {
-    const reg = await request(ctx.app).post('/v1/auth/register').send({ email: 'u@example.com', password: 'User-pass1' });
+  it('does not accept a guardian token on admin routes', async () => {
+    const start = await request(ctx.app).post('/v1/guardian/register/start').send({ name: 'Asha', phone: '+919876500001', password: 'Asha-pass1', acceptTerms: true });
+    expect(start.status).toBe(202);
+    const code = ctx.sms.lastCode('+919876500001')!;
+    const reg = await request(ctx.app).post('/v1/guardian/register/verify').send({ challengeId: start.body.challengeId, code });
+    expect(reg.status).toBe(201);
     expect((await request(ctx.app).get('/admin/v1/dashboard').set(as(reg.body.token))).status).toBe(401);
   });
 
@@ -41,7 +45,7 @@ describe('admin authentication', () => {
     expect(res.status).toBe(200);
     expect(res.body.role.key).toBe('editor');
     expect(res.body.permissions).toContain('content:publish');
-    expect(res.body.permissions).not.toContain('users:read');
+    expect(res.body.permissions).not.toContain('guardians:read');
     expect(res.headers['cache-control']).toBe('no-store');
   });
 
@@ -71,7 +75,10 @@ describe('role-based access control (enforced by the API)', () => {
   const matrix: [string, string, string, number, number, number][] = [
     // method, path, label, super, admin, editor
     ['get', '/admin/v1/dashboard', 'dashboard', 200, 200, 200],
-    ['get', '/admin/v1/users', 'users', 200, 200, 403],
+    ['get', '/admin/v1/guardians', 'guardians', 200, 200, 403],
+    ['get', '/admin/v1/subscriptions', 'subscriptions', 200, 200, 403],
+    ['get', '/admin/v1/games', 'games', 200, 200, 200],
+    ['get', '/admin/v1/facts', 'facts', 200, 200, 200],
     ['get', '/admin/v1/content', 'content', 200, 200, 200],
     ['get', '/admin/v1/settings', 'settings', 200, 200, 403],
     ['get', '/admin/v1/notifications', 'notifications', 200, 200, 403],
@@ -91,7 +98,7 @@ describe('role-based access control (enforced by the API)', () => {
 
   it('editor dashboard omits sections it may not see', async () => {
     const res = await request(ctx.app).get('/admin/v1/dashboard').set(as(editorToken));
-    expect(res.body.users).toBeNull();
+    expect(res.body.guardians).toBeNull();
     expect(res.body.content).toBeTruthy();
   });
 });
@@ -163,46 +170,57 @@ describe('content management', () => {
   });
 });
 
-describe('user management', () => {
-  let userId = '';
-  let userToken = '';
+describe('guardian management', () => {
+  let guardianId = '';
+  let guardianToken = '';
+  const PHONE = '+919876500002';
+
+  async function signIn() {
+    const start = await request(ctx.app).post('/v1/guardian/login').send({ phone: PHONE, password: 'Maya-pass1' });
+    if (start.status !== 202) return start;
+    return request(ctx.app).post('/v1/guardian/login/verify').send({ challengeId: start.body.challengeId, code: ctx.sms.lastCode(PHONE)! });
+  }
 
   beforeAll(async () => {
-    const reg = await request(ctx.app).post('/v1/auth/register').send({ email: 'maya@example.com', password: 'Maya-pass1', displayName: 'Maya' });
-    userId = reg.body.user.id;
-    userToken = reg.body.token;
+    const start = await request(ctx.app).post('/v1/guardian/register/start').send({ name: 'Maya', phone: PHONE, password: 'Maya-pass1', acceptTerms: true });
+    const reg = await request(ctx.app).post('/v1/guardian/register/verify').send({ challengeId: start.body.challengeId, code: ctx.sms.lastCode(PHONE)!, installId: 'install-maya-000000001' });
+    guardianId = reg.body.guardian.id;
+    guardianToken = reg.body.token;
+    await request(ctx.app).post('/v1/devices').set(as(guardianToken)).send({ installId: 'install-maya-000000001', platform: 'android' }).expect(200);
     await request(ctx.app)
       .post('/v1/events')
-      .set(as(userToken))
+      .set(as(guardianToken))
       .send({ installId: 'install-maya-000000001', platform: 'android', events: [{ name: 'screen_view', screen: 'Home' }] });
   });
 
-  it('lists and searches users', async () => {
-    const res = await request(ctx.app).get('/admin/v1/users?search=MAYA').set(as(adminTok));
+  it('lists and searches guardians without exposing secrets or full numbers', async () => {
+    const res = await request(ctx.app).get('/admin/v1/guardians?search=MAYA').set(as(adminTok));
     expect(res.body.total).toBe(1);
     expect(res.body.items[0]).not.toHaveProperty('passwordHash');
+    expect(res.body.items[0]).not.toHaveProperty('phone');
+    expect(res.body.items[0].phoneMasked).toMatch(/•/);
   });
 
-  it('shows user detail with activity', async () => {
-    const res = await request(ctx.app).get(`/admin/v1/users/${userId}`).set(as(adminTok));
+  it('shows guardian detail with devices and entitlement', async () => {
+    const res = await request(ctx.app).get(`/admin/v1/guardians/${guardianId}`).set(as(adminTok));
     expect(res.status).toBe(200);
-    expect(res.body.recentEvents[0].screen).toBe('Home');
     expect(res.body.devices).toHaveLength(1);
+    expect(res.body.entitlement.active).toBe(false);
   });
 
-  it('deactivation signs the user out and blocks login immediately', async () => {
-    await request(ctx.app).patch(`/admin/v1/users/${userId}`).set(as(adminTok)).send({ status: 'deactivated' }).expect(200);
-    expect((await request(ctx.app).get('/v1/me').set(as(userToken))).status).toBe(401);
-    const login = await request(ctx.app).post('/v1/auth/login').send({ email: 'maya@example.com', password: 'Maya-pass1' });
+  it('deactivation signs the guardian out and blocks login immediately', async () => {
+    await request(ctx.app).patch(`/admin/v1/guardians/${guardianId}`).set(as(adminTok)).send({ status: 'deactivated' }).expect(200);
+    expect((await request(ctx.app).get('/v1/guardian/me').set(as(guardianToken))).status).toBe(401);
+    const login = await signIn();
     expect(login.status).toBe(401);
     expect(login.body.error.message).toMatch(/deactivated/);
-    await request(ctx.app).patch(`/admin/v1/users/${userId}`).set(as(adminTok)).send({ status: 'active' }).expect(200);
-    await request(ctx.app).post('/v1/auth/login').send({ email: 'maya@example.com', password: 'Maya-pass1' }).expect(200);
+    await request(ctx.app).patch(`/admin/v1/guardians/${guardianId}`).set(as(adminTok)).send({ status: 'active' }).expect(200);
+    expect((await signIn()).status).toBe(200);
   });
 
-  it('deletes a user', async () => {
-    await request(ctx.app).delete(`/admin/v1/users/${userId}`).set(as(superToken)).expect(204);
-    expect((await request(ctx.app).get(`/admin/v1/users/${userId}`).set(as(superToken))).status).toBe(404);
+  it('deletes a guardian', async () => {
+    await request(ctx.app).delete(`/admin/v1/guardians/${guardianId}`).set(as(superToken)).expect(204);
+    expect((await request(ctx.app).get(`/admin/v1/guardians/${guardianId}`).set(as(superToken))).status).toBe(404);
   });
 });
 
@@ -219,11 +237,11 @@ describe('app configuration', () => {
     await request(ctx.app)
       .put('/admin/v1/settings/feature_flags')
       .set(as(adminTok))
-      .send({ value: { contentLibrary: false, quoteTiles: true, customPhotos: true, accounts: true, pushNotifications: true } })
+      .send({ value: { games: true, artAndCraft: false, didYouKnow: true, liveMirroring: true, pushNotifications: true, showInDevelopmentGames: false } })
       .expect(200);
     const cfg = await request(ctx.app).get('/v1/config');
     expect(cfg.body.maintenance).toEqual({ enabled: true, message: 'Back at 5pm' });
-    expect(cfg.body.features.contentLibrary).toBe(false);
+    expect(cfg.body.features.artAndCraft).toBe(false);
     const list = await request(ctx.app).get('/admin/v1/settings').set(as(adminTok));
     expect(list.body.find((s: { key: string }) => s.key === 'maintenance').value.enabled).toBe(true);
   });
@@ -236,7 +254,8 @@ describe('app configuration', () => {
 
 describe('push notifications', () => {
   beforeAll(async () => {
-    const reg = await request(ctx.app).post('/v1/auth/register').send({ email: 'push@example.com', password: 'Push-pass1' });
+    const start = await request(ctx.app).post('/v1/guardian/register/start').send({ name: 'Push', phone: '+919876500003', password: 'Push-pass1', acceptTerms: true });
+    const reg = await request(ctx.app).post('/v1/guardian/register/verify').send({ challengeId: start.body.challengeId, code: ctx.sms.lastCode('+919876500003')! });
     await request(ctx.app)
       .post('/v1/devices')
       .set(as(reg.body.token))
@@ -313,7 +332,6 @@ describe('analytics & dashboard', () => {
     expect(res.body.dau).toHaveLength(7);
     expect(res.body.dau.at(-1).count).toBeGreaterThanOrEqual(1);
     expect(res.body.active.mau).toBeGreaterThanOrEqual(1);
-    expect(res.body.sessions).toMatchObject({ completed: 1, failed: 1, completionRate: 50, avgCompletedMinutes: 30 });
     expect(res.body.topScreens[0].screen).toBe('Home');
     expect(res.body.errors.count).toBe(1);
     expect(res.body.registrations.at(-1).count).toBeGreaterThanOrEqual(1);
@@ -321,7 +339,8 @@ describe('analytics & dashboard', () => {
 
   it('dashboard aggregates counts and recent activity', async () => {
     const res = await request(ctx.app).get('/admin/v1/dashboard').set(as(superToken));
-    expect(res.body.users.total).toBeGreaterThanOrEqual(1);
+    expect(res.body.guardians.total).toBeGreaterThanOrEqual(1);
+    expect(res.body.catalogue.publishedGames).toBeGreaterThan(30);
     expect(res.body.recentActivity.length).toBeGreaterThan(0);
   });
 });
@@ -355,7 +374,7 @@ describe('admin user management', () => {
     // Admins (non-super) can't touch admin accounts at all.
     expect((await request(ctx.app).delete(`/admin/v1/admins/${superId}`).set(as(adminTok))).status).toBe(403);
     const roles = await request(ctx.app).get('/admin/v1/roles').set(as(superToken));
-    expect(roles.body.map((r: { key: string }) => r.key)).toEqual(['admin', 'editor', 'super_admin']);
+    expect(roles.body.map((r: { key: string }) => r.key)).toEqual(['admin', 'editor', 'fact_checker', 'super_admin', 'support']);
   });
 
   it('change-password requires the current password and revokes other sessions', async () => {

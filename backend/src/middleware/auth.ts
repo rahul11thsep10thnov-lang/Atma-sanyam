@@ -1,13 +1,22 @@
+// Who is calling. Three kinds of bearer token, three tables, no overlap: a
+// guardian token never works on a player route and vice versa, and neither
+// works on an admin route. Every protected route then adds what it needs:
+// a recent one-time code (step-up) for sensitive actions, an active paid
+// subscription (entitlement) for anything a child plays or a guardian
+// configures, and the child-belongs-to-guardian check inside the handler.
 import type { NextFunction, Request, RequestHandler, Response } from 'express';
-import { and, eq, gt, sql } from 'drizzle-orm';
-import { adminSessions, admins, rolePermissions, userSessions, users } from '../database/schema.js';
+import { and, eq, gt, isNull, sql } from 'drizzle-orm';
+import { adminSessions, admins, children, guardianSessions, guardians, playerSessions, rolePermissions } from '../database/schema.js';
 import type { Permission } from '../database/rbac.js';
-import { forbidden, unauthorized } from '../lib/httpError.js';
+import { HttpError, forbidden, unauthorized } from '../lib/httpError.js';
 import { hashToken } from '../lib/tokens.js';
+import { getEntitlement } from '../services/entitlementService.js';
 import type { AppDeps } from '../types.js';
 
 const TOKEN_RE = /^[A-Za-z0-9_-]{40,60}$/;
 const SLIDE_AFTER_MS = 60 * 60 * 1000;
+// A one-time code passed this recently lets a guardian do sensitive things.
+export const STEP_UP_WINDOW_MIN = 15;
 
 export function bearerToken(req: Request): string | null {
   const header = req.headers.authorization;
@@ -16,47 +25,136 @@ export function bearerToken(req: Request): string | null {
   return TOKEN_RE.test(token) ? token : null;
 }
 
+export const entitlementRequired = () => new HttpError(402, 'An active LoJi subscription is needed for this.', 'subscription_required');
+export const stepUpRequired = () => new HttpError(403, 'Please confirm this with a fresh verification code.', 'step_up_required');
+
 export function createAuth({ db, env }: AppDeps) {
-  async function resolveUser(req: Request): Promise<void> {
+  async function resolveGuardian(req: Request): Promise<void> {
     const token = bearerToken(req);
     if (!token) return;
     const now = new Date();
     const [row] = await db
       .select({
-        sessionId: userSessions.id,
-        lastUsedAt: userSessions.lastUsedAt,
-        userId: users.id,
-        email: users.email,
-        phone: users.phone,
+        sessionId: guardianSessions.id,
+        lastUsedAt: guardianSessions.lastUsedAt,
+        stepUpAt: guardianSessions.stepUpAt,
+        id: guardians.id,
+        phone: guardians.phone,
+        name: guardians.name,
+        status: guardians.status,
       })
-      .from(userSessions)
-      .innerJoin(users, eq(users.id, userSessions.userId))
-      .where(and(eq(userSessions.tokenHash, hashToken(token)), gt(userSessions.expiresAt, now), eq(users.status, 'active')))
+      .from(guardianSessions)
+      .innerJoin(guardians, eq(guardians.id, guardianSessions.guardianId))
+      .where(
+        and(
+          eq(guardianSessions.tokenHash, hashToken(token)),
+          gt(guardianSessions.expiresAt, now),
+          isNull(guardianSessions.revokedAt),
+          sql`${guardians.status} <> 'deactivated'`
+        )
+      )
       .limit(1);
     if (!row) return;
-
-    // Sliding expiry, written at most once an hour to keep reads cheap.
     if (now.getTime() - row.lastUsedAt.getTime() > SLIDE_AFTER_MS) {
-      const expiresAt = new Date(now.getTime() + env.USER_SESSION_TTL_DAYS * 86_400_000);
-      await db.update(userSessions).set({ lastUsedAt: now, expiresAt }).where(eq(userSessions.id, row.sessionId));
-      await db.update(users).set({ lastSeenAt: now }).where(eq(users.id, row.userId));
+      const expiresAt = new Date(now.getTime() + env.GUARDIAN_SESSION_TTL_DAYS * 86_400_000);
+      await db.update(guardianSessions).set({ lastUsedAt: now, expiresAt }).where(eq(guardianSessions.id, row.sessionId));
+      await db.update(guardians).set({ lastSeenAt: now }).where(eq(guardians.id, row.id));
     }
-    req.user = { id: row.userId, email: row.email, phone: row.phone, sessionId: row.sessionId };
+    req.guardian = { id: row.id, phone: row.phone, name: row.name, status: row.status, sessionId: row.sessionId, stepUpAt: row.stepUpAt };
   }
 
-  const optionalUser: RequestHandler = async (req, _res, next) => {
+  async function resolvePlayer(req: Request): Promise<void> {
+    const token = bearerToken(req);
+    if (!token) return;
+    const now = new Date();
+    const [row] = await db
+      .select({
+        sessionId: playerSessions.id,
+        lastUsedAt: playerSessions.lastUsedAt,
+        deviceId: playerSessions.deviceId,
+        childId: children.id,
+        guardianId: children.guardianId,
+        displayName: children.displayName,
+        ageBracket: children.ageBracket,
+        bracketOverride: children.bracketOverride,
+        guardianStatus: guardians.status,
+      })
+      .from(playerSessions)
+      .innerJoin(children, eq(children.id, playerSessions.childId))
+      .innerJoin(guardians, eq(guardians.id, children.guardianId))
+      .where(
+        and(
+          eq(playerSessions.tokenHash, hashToken(token)),
+          gt(playerSessions.expiresAt, now),
+          isNull(playerSessions.revokedAt),
+          eq(children.status, 'active'),
+          eq(guardians.status, 'active')
+        )
+      )
+      .limit(1);
+    if (!row) return;
+    if (now.getTime() - row.lastUsedAt.getTime() > SLIDE_AFTER_MS) {
+      await db.update(playerSessions).set({ lastUsedAt: now }).where(eq(playerSessions.id, row.sessionId));
+    }
+    req.player = {
+      childId: row.childId,
+      guardianId: row.guardianId,
+      displayName: row.displayName,
+      ageBracket: row.ageBracket,
+      effectiveBracket: row.bracketOverride ?? row.ageBracket,
+      sessionId: row.sessionId,
+      deviceId: row.deviceId,
+    };
+  }
+
+  const requireGuardian: RequestHandler = async (req, _res, next) => {
     try {
-      await resolveUser(req);
+      await resolveGuardian(req);
+      if (!req.guardian) throw unauthorized();
       next();
     } catch (err) {
       next(err);
     }
   };
 
-  const requireUser: RequestHandler = async (req, _res, next) => {
+  const requirePlayer: RequestHandler = async (req, _res, next) => {
     try {
-      await resolveUser(req);
-      if (!req.user) throw unauthorized();
+      await resolvePlayer(req);
+      if (!req.player) throw unauthorized();
+      next();
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  // Either kind, for shared endpoints such as the WebSocket ticket.
+  const requireGuardianOrPlayer: RequestHandler = async (req, _res, next) => {
+    try {
+      await resolveGuardian(req);
+      if (!req.guardian) await resolvePlayer(req);
+      if (!req.guardian && !req.player) throw unauthorized();
+      next();
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  // Must run after requireGuardian.
+  const requireStepUp: RequestHandler = (req, _res, next) => {
+    const at = req.guardian?.stepUpAt;
+    if (!at || Date.now() - at.getTime() > STEP_UP_WINDOW_MIN * 60_000) return next(stepUpRequired());
+    next();
+  };
+
+  // Must run after requireGuardian or requirePlayer. Loads the household's
+  // entitlement and refuses with 402 unless it is active right now.
+  const requireEntitlement: RequestHandler = async (req, _res, next) => {
+    try {
+      const guardianId = req.guardian?.id ?? req.player?.guardianId;
+      if (!guardianId) throw unauthorized();
+      const ent = await getEntitlement(db, guardianId);
+      req.entitlement = ent;
+      if (!ent.active) throw entitlementRequired();
       next();
     } catch (err) {
       next(err);
@@ -120,7 +218,7 @@ export function createAuth({ db, env }: AppDeps) {
       next();
     };
 
-  return { optionalUser, requireUser, requireAdmin, requirePermission };
+  return { requireGuardian, requirePlayer, requireGuardianOrPlayer, requireStepUp, requireEntitlement, requireAdmin, requirePermission };
 }
 
 export type Auth = ReturnType<typeof createAuth>;

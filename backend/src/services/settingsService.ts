@@ -18,7 +18,7 @@ export const SETTING_DEFINITIONS = {
       enabled: z.boolean(),
       message: z.string().trim().min(1).max(500),
     }),
-    defaults: { enabled: false, message: "We're making Tame even better. Please check back in a little while." },
+    defaults: { enabled: false, message: "LoJi is getting a little upgrade. Please check back in a little while." },
   },
   app_version: {
     label: 'App version & update notices',
@@ -34,7 +34,7 @@ export const SETTING_DEFINITIONS = {
     defaults: {
       minimumVersion: '1.0.0',
       latestVersion: '1.0.0',
-      updateMessage: 'A new version of Tame is available.',
+      updateMessage: 'A new version of LoJi is available.',
       iosStoreUrl: '',
       androidStoreUrl: '',
     },
@@ -43,39 +43,39 @@ export const SETTING_DEFINITIONS = {
     label: 'Feature flags',
     description: 'Turn app features on or off remotely without shipping an update.',
     schema: z.object({
-      contentLibrary: z.boolean(),
-      quoteTiles: z.boolean(),
-      customPhotos: z.boolean(),
-      accounts: z.boolean(),
+      games: z.boolean(),
+      artAndCraft: z.boolean(),
+      didYouKnow: z.boolean(),
+      liveMirroring: z.boolean(),
       pushNotifications: z.boolean(),
+      // Shows games whose status is in_development to development builds only.
+      showInDevelopmentGames: z.boolean(),
     }),
-    defaults: { contentLibrary: true, quoteTiles: true, customPhotos: true, accounts: true, pushNotifications: true },
+    defaults: { games: true, artAndCraft: true, didYouKnow: true, liveMirroring: true, pushNotifications: true, showInDevelopmentGames: false },
   },
   texts: {
     label: 'App texts',
     description: 'Copy shown in the app that can be changed without an update.',
     schema: z.object({
       announcement: z.string().trim().max(280),
-      sessionCompleteTitle: z.string().trim().min(1).max(60),
-      sessionCompleteMessage: z.string().trim().min(1).max(200),
-      sessionFailedTitle: z.string().trim().min(1).max(60),
-      sessionLeftAppMessage: z.string().trim().min(1).max(200),
-      sessionGaveUpMessage: z.string().trim().min(1).max(200),
+      guardianWelcome: z.string().trim().min(1).max(200),
+      playerWelcome: z.string().trim().min(1).max(120),
+      subscriptionPitch: z.string().trim().min(1).max(300),
+      timeUpMessage: z.string().trim().min(1).max(200),
     }),
     defaults: {
       announcement: '',
-      sessionCompleteTitle: 'Puzzle complete!',
-      sessionCompleteMessage: 'Great focus — your picture is fully assembled.',
-      sessionFailedTitle: 'Session failed',
-      sessionLeftAppMessage: "You left the app too long, so this puzzle didn't get finished.",
-      sessionGaveUpMessage: 'Session ended early — the puzzle stays incomplete.',
+      guardianWelcome: 'Welcome to LoJi. Add a child profile, set their playtime, and watch them learn.',
+      playerWelcome: 'Hi {name}! Ready to play?',
+      subscriptionPitch: 'One monthly plan unlocks every game, craft and discovery for every child in your home.',
+      timeUpMessage: 'Time for a break! Your playtime is finished for now.',
     },
   },
-  session: {
-    label: 'Focus session rules',
-    description: 'How long someone can leave the app mid-session before it fails.',
-    schema: z.object({ gracePeriodSeconds: z.number().int().min(3).max(60) }),
-    defaults: { gracePeriodSeconds: 5 },
+  limits: {
+    label: 'Default limits',
+    description: 'Defaults for new child profiles; guardians change them per child.',
+    schema: z.object({ dailyLimitMinutes: z.number().int().min(5).max(360), sessionLimitMinutes: z.number().int().min(5).max(120), maxChildrenPerGuardian: z.number().int().min(1).max(12) }),
+    defaults: { dailyLimitMinutes: 60, sessionLimitMinutes: 20, maxChildrenPerGuardian: 8 },
   },
 } as const;
 
@@ -119,15 +119,26 @@ export async function updateSetting(db: Db, key: SettingKey, value: unknown, adm
   return row;
 }
 
-export async function publicConfig(db: Db, server: { passwordReset: boolean; phoneSignIn: boolean }) {
+export interface ServerCapabilities {
+  phoneSignIn: boolean;
+  googlePlayBilling: boolean;
+  razorpayBilling: boolean;
+  sandboxBilling: boolean;
+  termsVersion: string;
+  subscription: { productId: string; priceInr: number };
+}
+
+export async function publicConfig(db: Db, server: ServerCapabilities) {
   const { values } = await loadSettings(db);
   return {
     maintenance: values.maintenance,
     appVersion: values.app_version,
-    // passwordReset / phoneSignIn reflect server capability (email / SMS configured), not an admin flag.
-    features: { ...values.feature_flags, passwordReset: server.passwordReset, phoneSignIn: server.phoneSignIn },
+    // The *Billing / phoneSignIn flags reflect server capability (providers configured), not an admin switch.
+    features: { ...values.feature_flags, phoneSignIn: server.phoneSignIn, googlePlayBilling: server.googlePlayBilling, razorpayBilling: server.razorpayBilling, sandboxBilling: server.sandboxBilling },
     texts: values.texts,
-    session: values.session,
+    limits: values.limits,
+    subscription: server.subscription,
+    termsVersion: server.termsVersion,
     serverTime: new Date().toISOString(),
   };
 }
