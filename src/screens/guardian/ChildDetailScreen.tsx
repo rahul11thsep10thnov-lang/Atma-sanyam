@@ -1,10 +1,11 @@
 // One child: profile, player id, live session, today's time, progress,
 // devices, and the management actions (PIN reset, pause, sign-out-all,
 // remove, export). Sensitive actions go through step-up.
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Alert, Platform, Share, StyleSheet, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useFocusEffect } from '@react-navigation/native';
+import { useGuardianRealtime } from '../../context/GuardianRealtime';
 import { RootStackParamList } from '../../navigation/types';
 import { AppText, Avatar, Button, Card, Screen, SettingLink, SettingToggle, LoadingState, ErrorState, Badge, ProgressBar, TextField } from '../../ui';
 import { ScreenHeader } from '../../components/ScreenHeader';
@@ -56,6 +57,9 @@ export function ChildDetailScreen({ navigation, route }: NativeStackScreenProps<
       void load();
     }, [load])
   );
+  // Live: the child coming online, starting or ending a game refreshes the card.
+  const rt = useGuardianRealtime();
+  useEffect(() => rt.onChildStatus((m) => { if (m.childId === id) void load(); }), [rt, id, load]);
 
   const run = async (key: string, fn: () => Promise<unknown>, then?: () => void) => {
     setBusy(key);
