@@ -1,10 +1,10 @@
-# Optional Render Blueprint for the Tame API (https://render.com/docs/blueprint-spec).
+# Optional Render Blueprint for the LoJi API (https://render.com/docs/blueprint-spec).
 # Render → New → Blueprint → pick this repo. You'll be asked for the values
 # marked `sync: false`. The database is expected to be external (e.g. Neon);
 # see docs/DEPLOYMENT.md.
 services:
   - type: web
-    name: focus-api
+    name: loji-api
     runtime: docker
     dockerContext: ./backend
     dockerfilePath: ./backend/Dockerfile
@@ -25,7 +25,7 @@ services:
         sync: false
 
   - type: cron
-    name: focus-cleanup
+    name: loji-cleanup
     runtime: docker
     dockerContext: ./backend
     dockerfilePath: ./backend/Dockerfile

@@ -1,14 +1,42 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { count, desc, eq } from 'drizzle-orm';
+import { count, desc, eq, sql } from 'drizzle-orm';
 import { admins, auditLogs } from '../../database/schema.js';
 import type { Auth } from '../../middleware/auth.js';
 import { parse } from '../../middleware/validate.js';
 import { analytics, dashboardStats, lojiStats, recentAuditLog, recentGuardians } from '../../services/analyticsService.js';
 import type { AppDeps } from '../../types.js';
 
-export function adminInsightsRouter({ db }: AppDeps, auth: Auth) {
+export function adminInsightsRouter({ db, env, sms, billing }: AppDeps, auth: Auth) {
   const r = Router();
+  const startedAt = Date.now();
+
+  // Operational health for the console: what is configured and whether the
+  // database answers. No secrets, only provider names and on/off flags.
+  r.get('/health', auth.requirePermission('dashboard:read'), async (_req, res) => {
+    let dbOk = true;
+    let dbLatencyMs = 0;
+    try {
+      const t = Date.now();
+      await db.execute(sql`select 1`);
+      dbLatencyMs = Date.now() - t;
+    } catch {
+      dbOk = false;
+    }
+    const [sessions] = await db.execute(sql`select count(*)::int as n from game_sessions where outcome = 'running'`).then((x) => x.rows as { n: number }[]);
+    const [pendingDeletions] = await db.execute(sql`select count(*)::int as n from account_deletion_requests where cancelled_at is null and completed_at is null`).then((x) => x.rows as { n: number }[]);
+    res.json({
+      ok: dbOk,
+      environment: env.NODE_ENV,
+      uptimeSeconds: Math.round((Date.now() - startedAt) / 1000),
+      database: { ok: dbOk, latencyMs: dbLatencyMs },
+      sms: { provider: sms?.name ?? 'none', testNumbers: env.OTP_TEST_NUMBERS.size },
+      billing: { googlePlay: !!billing.googlePlay, razorpay: !!billing.razorpay, sandbox: !!billing.sandbox, productId: env.SUBSCRIPTION_PRODUCT_ID, priceInr: env.SUBSCRIPTION_PRICE_INR },
+      runningGameSessions: sessions?.n ?? 0,
+      pendingDeletionRequests: pendingDeletions?.n ?? 0,
+      retention: { screenTimeDays: env.SCREEN_TIME_RETENTION_DAYS, deletionCoolingOffDays: env.DELETION_COOLING_OFF_DAYS },
+    });
+  });
 
   r.get('/dashboard', auth.requirePermission('dashboard:read'), async (req, res) => {
     const perms = req.admin!.permissions;

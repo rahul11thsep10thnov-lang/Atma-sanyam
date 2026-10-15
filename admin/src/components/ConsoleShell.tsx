@@ -21,12 +21,18 @@ export function useCan() {
 
 const NAV: { href: string; label: string; permission?: string }[] = [
   { href: '/', label: 'Dashboard', permission: 'dashboard:read' },
-  { href: '/users', label: 'Users', permission: 'users:read' },
-  { href: '/content', label: 'Content', permission: 'content:read' },
-  { href: '/categories', label: 'Categories', permission: 'content:read' },
-  { href: '/config', label: 'App configuration', permission: 'settings:read' },
+  { href: '/guardians', label: 'Guardians', permission: 'guardians:read' },
+  { href: '/subscriptions', label: 'Subscriptions', permission: 'subscriptions:read' },
+  { href: '/games', label: 'Games', permission: 'content:read' },
+  { href: '/crafts', label: 'Art & Craft', permission: 'content:read' },
+  { href: '/facts', label: 'Did You Know?', permission: 'content:read' },
+  { href: '/sources', label: 'Fact sources', permission: 'content:read' },
+  { href: '/content', label: 'Image library', permission: 'content:read' },
+  { href: '/categories', label: 'Image categories', permission: 'content:read' },
+  { href: '/config', label: 'Feature flags & config', permission: 'settings:read' },
   { href: '/notifications', label: 'Notifications', permission: 'notifications:read' },
   { href: '/analytics', label: 'Analytics', permission: 'analytics:read' },
+  { href: '/health', label: 'System health', permission: 'dashboard:read' },
   { href: '/admins', label: 'Admins & roles', permission: 'admins:read' },
   { href: '/audit', label: 'Audit log', permission: 'audit:read' },
   { href: '/account', label: 'My account' },
@@ -54,7 +60,7 @@ export function ConsoleShell({ me, children }: { me: AdminMe; children: React.Re
           <div className="brand">
             <img src="/icon.png" alt="" />
             <div>
-              Tame
+              LoJi
               <small>Admin console</small>
             </div>
           </div>
@@ -81,7 +87,7 @@ export function ConsoleShell({ me, children }: { me: AdminMe; children: React.Re
             <button className="btn btn-sm" onClick={() => setMenuOpen((o) => !o)} aria-expanded={menuOpen} aria-label="Menu">
               Menu
             </button>
-            <strong style={{ letterSpacing: '0.08em' }}>Tame</strong>
+            <strong style={{ letterSpacing: '0.08em' }}>LoJi</strong>
             <span className="small muted">{me.role.name}</span>
           </header>
           <main className="main" onClick={() => menuOpen && setMenuOpen(false)}>

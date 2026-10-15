@@ -2,7 +2,7 @@
 // is attached to backend calls here, so client-side JavaScript never sees it.
 import { cookies } from 'next/headers';
 
-export const SESSION_COOKIE = 'focus_admin';
+export const SESSION_COOKIE = 'loji_admin';
 
 export function apiUrl(): string {
   const url = process.env.API_URL;

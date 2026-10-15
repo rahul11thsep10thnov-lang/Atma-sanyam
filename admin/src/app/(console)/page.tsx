@@ -7,13 +7,15 @@ import { ErrorAlert, Kpi, PageHead } from '@/components/ui';
 import { useCan, useMe } from '@/components/ConsoleShell';
 
 interface Dashboard {
-  users: { total: number; active7d: number; new7d: number } | null;
+  guardians: { total: number; active7d: number; new7d: number } | null;
+  children: { total: number; byBracket: { A: number; B: number; C: number; D: number } } | null;
+  subscriptions: { active: number; grace: number; expired: number } | null;
+  play: { sessionsToday: number; minutesToday: number } | null;
+  catalogue: { publishedGames: number; inDevelopmentGames: number; publishedCrafts: number; publishedFacts: number; unpublishedFacts: number };
   installs: { total: number; new7d: number; active7d: number } | null;
-  content: { total: number; published: number; draft: number; categories: number };
-  sessions7d: { completed: number; failed: number } | null;
   notificationsSent30d: number | null;
   recentActivity: { id: number; action: string; entity_type: string; entity_id: string | null; created_at: string; admin_name: string | null }[] | null;
-  recentUsers: { id: string; email: string; display_name: string | null; created_at: string }[] | null;
+  recentGuardians: { id: string; name: string; phone_masked: string; created_at: string }[] | null;
 }
 
 export default function DashboardPage() {
@@ -23,24 +25,20 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <PageHead title={`Welcome, ${me.name.split(' ')[0]}`} subtitle="What’s happening in Tame right now." />
+      <PageHead title={`Welcome, ${me.name.split(' ')[0]}`} subtitle="What’s happening in LoJi right now." />
       <ErrorAlert error={error} />
       {loading && !data && <div className="card empty">Loading…</div>}
       {data && (
         <div className={loading ? 'loading-dim' : undefined}>
           <div className="kpis">
-            {data.users && <Kpi label="Registered users" value={data.users.total} sub={`+${data.users.new7d} in the last 7 days`} />}
-            {data.users && <Kpi label="Active accounts (7d)" value={data.users.active7d} />}
+            {data.guardians && <Kpi label="Family accounts" value={data.guardians.total} sub={`+${data.guardians.new7d} in the last 7 days · ${data.guardians.active7d} active`} />}
+            {data.children && <Kpi label="Child profiles" value={data.children.total} sub={`A ${data.children.byBracket.A} · B ${data.children.byBracket.B} · C ${data.children.byBracket.C} · D ${data.children.byBracket.D}`} />}
+            {data.subscriptions && <Kpi label="Active subscriptions" value={data.subscriptions.active} sub={`${data.subscriptions.grace} in grace/retry · ${data.subscriptions.expired} lapsed`} />}
+            {data.play && <Kpi label="Play sessions today" value={data.play.sessionsToday} sub={`${data.play.minutesToday} minutes played`} />}
+            <Kpi label="Published games" value={data.catalogue.publishedGames} sub={`${data.catalogue.inDevelopmentGames} in development`} />
+            <Kpi label="Craft tutorials" value={data.catalogue.publishedCrafts} sub="published" />
+            <Kpi label="Published facts" value={data.catalogue.publishedFacts} sub={`${data.catalogue.unpublishedFacts} draft or awaiting publish`} />
             {data.installs && <Kpi label="Active installs (7d)" value={data.installs.active7d} sub={`${data.installs.total} installs total`} />}
-            <Kpi label="Published images" value={data.content.published} sub={`${data.content.draft} drafts · ${data.content.categories} categories`} />
-            {data.sessions7d && (
-              <Kpi
-                label="Focus sessions (7d)"
-                value={data.sessions7d.completed + data.sessions7d.failed}
-                sub={`${data.sessions7d.completed} completed · ${data.sessions7d.failed} failed`}
-              />
-            )}
-            {data.notificationsSent30d !== null && <Kpi label="Notifications sent (30d)" value={data.notificationsSent30d} />}
           </div>
 
           <div className="grid grid-2">
@@ -70,23 +68,23 @@ export default function DashboardPage() {
                 )}
               </section>
             )}
-            {data.recentUsers && (
+            {data.recentGuardians && (
               <section className="card">
                 <div className="card-head">
-                  <h2>Newest users</h2>
-                  <Link href="/users" className="small">View all</Link>
+                  <h2>Newest family accounts</h2>
+                  <Link href="/guardians" className="small">View all</Link>
                 </div>
-                {data.recentUsers.length === 0 ? (
-                  <div className="empty">No registered users yet.</div>
+                {data.recentGuardians.length === 0 ? (
+                  <div className="empty">No guardians yet.</div>
                 ) : (
                   <div className="table-wrap">
                     <table>
                       <tbody>
-                        {data.recentUsers.map((u) => (
+                        {data.recentGuardians.map((u) => (
                           <tr key={u.id}>
                             <td>
-                              <Link href={`/users/${u.id}`}>{u.display_name || u.email}</Link>
-                              {u.display_name && <div className="small muted">{u.email}</div>}
+                              <Link href={`/guardians/${u.id}`}>{u.name}</Link>
+                              <div className="small muted">{u.phone_masked}</div>
                             </td>
                             <td className="num small muted">{relTime(u.created_at)}</td>
                           </tr>
