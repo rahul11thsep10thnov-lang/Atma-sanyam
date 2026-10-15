@@ -6,7 +6,7 @@ import { I18nManager } from 'react-native';
 import { en, StringKey } from './strings/en';
 import { hi } from './strings/hi';
 
-/** Tame is bilingual: English (UN English) and Hindi. */
+/** LoJi is bilingual today (English, Hindi); the table is built for more Indian languages. */
 export type Language = 'en' | 'hi';
 
 export const LANGUAGES: { id: Language; name: string; native: string; rtl?: boolean }[] = [
@@ -68,20 +68,3 @@ export function useLanguage(): Language {
 }
 
 export type { StringKey };
-
-const CATEGORY_KEYS: [RegExp, StringKey][] = [
-  [/nature|landscape/i, 'home.cat.nature'],
-  [/inspirational|quotes?|motivation/i, 'home.cat.inspirational'],
-  [/wildlife|animal/i, 'home.cat.wildlife'],
-  [/spiritual|sacred/i, 'home.cat.spirituality'],
-];
-
-/** A library collection's name in the current language: the four top collections and the bundled ones' subcollections; others as the library names them. */
-export function categoryLabel(c: { id: string; name: string; parentId?: string | null }): string {
-  if (c.parentId) {
-    const key = `cat.sub.${c.id.split('-').pop()}`;
-    return key in en ? t(key as StringKey) : c.name;
-  }
-  const hit = CATEGORY_KEYS.find(([re]) => re.test(`${c.id} ${c.name}`));
-  return hit ? t(hit[1]) : c.name;
-}

@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
-import { useFonts, Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold } from '@expo-google-fonts/manrope';
-import { Caveat_700Bold } from '@expo-google-fonts/caveat';
-import { BebasNeue_400Regular } from '@expo-google-fonts/bebas-neue';
+import { useFonts, Manrope_600SemiBold, Manrope_700Bold } from '@expo-google-fonts/manrope';
+import { Fredoka_600SemiBold, Fredoka_700Bold } from '@expo-google-fonts/fredoka';
+import { Nunito_400Regular, Nunito_600SemiBold, Nunito_700Bold, Nunito_800ExtraBold } from '@expo-google-fonts/nunito';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { SettingsProvider, useSettings } from './src/context/SettingsContext';
 import { RemoteConfigProvider } from './src/context/RemoteConfigContext';
-import { AuthProvider } from './src/context/AuthContext';
-import { SocialProvider } from './src/social/SocialContext';
-import { PokeOverlay } from './src/components/social/PokeOverlay';
+import { GuardianProvider } from './src/context/GuardianContext';
+import { PlayerProvider } from './src/context/PlayerContext';
+import { ConsoleProvider } from './src/context/ConsoleContext';
 import { AppGate } from './src/components/AppGate';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
 import { ThemeProvider, useTheme } from './src/theme/ThemeContext';
@@ -20,8 +20,6 @@ import { setAnalyticsEnabled, startAnalytics, track } from './src/services/analy
 import { setPushEnabled } from './src/services/device';
 
 setNotificationHandler();
-// Hold the splash until the UI font is ready, so the first frame is already
-// set in Manrope (App() hides it; a font failure still lets the app through).
 SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 // Keeps the analytics consent switch in Settings authoritative.
@@ -30,14 +28,8 @@ function AnalyticsConsent() {
   useEffect(() => {
     if (loading) return;
     setAnalyticsEnabled(settings.analyticsEnabled);
-    if (settings.analyticsEnabled) {
-      void startAnalytics().then(() => track('app_open'));
-    }
+    if (settings.analyticsEnabled) void startAnalytics().then(() => track('app_open'));
   }, [loading, settings.analyticsEnabled]);
-
-  // Push tokens can rotate (reinstall, OS restore); refresh it on launch so
-  // announcements keep reaching people who opted in. Never prompts again if
-  // permission was already decided.
   useEffect(() => {
     if (!loading && settings.pushEnabled) void setPushEnabled(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -51,7 +43,7 @@ function ThemedStatusBar() {
 }
 
 export default function App() {
-  const [fontsLoaded, fontError] = useFonts({ Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold, Caveat_700Bold, BebasNeue_400Regular });
+  const [fontsLoaded, fontError] = useFonts({ Manrope_600SemiBold, Manrope_700Bold, Fredoka_600SemiBold, Fredoka_700Bold, Nunito_400Regular, Nunito_600SemiBold, Nunito_700Bold, Nunito_800ExtraBold });
   const ready = fontsLoaded || !!fontError;
   useEffect(() => {
     if (ready) SplashScreen.hideAsync().catch(() => undefined);
@@ -65,16 +57,17 @@ export default function App() {
           <SettingsProvider>
             <ThemeProvider>
               <RemoteConfigProvider>
-                <AuthProvider>
-                  <SocialProvider>
-                    <AnalyticsConsent />
-                    <AppGate>
-                      <RootNavigator />
-                    </AppGate>
-                    <PokeOverlay />
-                    <ThemedStatusBar />
-                  </SocialProvider>
-                </AuthProvider>
+                <ConsoleProvider>
+                  <GuardianProvider>
+                    <PlayerProvider>
+                      <AnalyticsConsent />
+                      <AppGate>
+                        <RootNavigator />
+                      </AppGate>
+                      <ThemedStatusBar />
+                    </PlayerProvider>
+                  </GuardianProvider>
+                </ConsoleProvider>
               </RemoteConfigProvider>
             </ThemeProvider>
           </SettingsProvider>

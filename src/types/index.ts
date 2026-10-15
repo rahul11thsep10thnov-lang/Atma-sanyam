@@ -1,116 +1,233 @@
-export type DurationMinutes = 5 | 15 | 25 | 45 | 60 | number;
+// Shared app types. Server shapes mirror backend/src/routes/public/*.
 
-export type ImageSourceKind = 'art' | 'quote' | 'custom';
+export type AgeBracket = 'A' | 'B' | 'C' | 'D';
 
-export interface Quote {
+export interface Guardian {
   id: string;
-  text: string;
-  author: string;
+  name: string;
+  phone: string;
+  phoneMasked: string;
+  email: string | null;
+  status: 'active' | 'deactivated' | 'deleted_pending';
+  termsVersion: string;
+  createdAt: string;
 }
 
-export interface ArtImageRef {
-  kind: 'art';
+export interface Entitlement {
+  active: boolean;
+  status: string;
+  validUntil: string | null;
+}
+
+export interface Child {
   id: string;
-  uri: number;
+  displayName: string;
+  avatarId: string;
+  age: number;
+  ageBracket: AgeBracket;
+  bracketOverride: AgeBracket | null;
+  effectiveBracket: AgeBracket;
+  bracketName: string;
+  playerId: string;
+  playerOtpRequired: boolean;
+  status: 'active' | 'paused' | 'removed';
+  lastActiveAt: string | null;
+  createdAt: string;
 }
 
-export interface QuoteImageRef {
-  kind: 'quote';
-  quote: Quote;
-  background: string;
-  textColor: string;
+export interface PlayWindow {
+  days: number[];
+  start: string;
+  end: string;
 }
 
-export interface CustomImageRef {
-  kind: 'custom';
-  uri: string;
+export interface ParentalControls {
+  dailyLimitMinutes: number;
+  sessionLimitMinutes: number;
+  playWindows: PlayWindow[];
+  bedtimeStart: string | null;
+  bedtimeEnd: string | null;
+  timezone: string;
+  blockedCategories: string[];
+  blockedGames: string[];
+  allowedBrackets: AgeBracket[];
+  soundEnabled: boolean;
+  narrationEnabled: boolean;
+  favouritesEnabled: boolean;
+  mirroringEnabled: boolean;
+  newDeviceApproval: boolean;
+  updatedAt: string;
 }
 
-// An image chosen from the remote content library (src/content/). `uri` is
-// always a local file:// path already resolved from the disk cache — nothing
-// downstream needs to know the image came from a network catalog.
-export interface RemoteImageRef {
-  kind: 'remote';
-  uri: string;
-  imageId: string;
-  title: string;
-  attributionText: string | null;
-  /** The library category it came from (for the museum's collection). */
-  category?: string;
-}
-
-// Focus on the balcony itself: the session shows the person's balcony and
-// its focus plant grows while they focus (src/photoBalcony).
-export interface BalconyImageRef {
-  kind: 'balcony';
-}
-
-// Focus inside one of the person's spaces (src/spaces): the space shows
-// and its focus plant grows while they focus.
-export interface SpaceImageRef {
-  kind: 'space';
-  space: 'balcony' | 'garden';
-}
-
-// Focus to grow one plant of a species in the paradise garden (src/paradise):
-// the seed goes into the soil when the session starts, and the plant is
-// placed in the garden when it completes.
-export interface PlantImageRef {
-  kind: 'plant';
-  speciesId: string;
-  /** Where the grown plant goes: the paradise garden (default) or the balcony. */
-  place?: 'garden' | 'balcony';
-}
-
-export type ImageRef = ArtImageRef | QuoteImageRef | CustomImageRef | RemoteImageRef | BalconyImageRef | SpaceImageRef | PlantImageRef;
-
-export interface GridDims {
-  rows: number;
-  cols: number;
-}
-
-export interface SessionConfig {
-  durationMinutes: number;
-  image: ImageRef;
-  grid: GridDims;
-  /** Set when this session is part of a group focus: the server's clock decides the end. */
-  group?: {
-    sessionId: string;
+export interface LiveStatus {
+  online: boolean;
+  currentSession: {
+    id: string;
+    gameId: string;
+    gameName: string;
+    difficulty: string;
     startedAt: string;
-    endsAt: string;
-    /** When this person's own time began (a late joiner starts later than the group). */
-    myStartedAt: string;
-  };
+    durationSeconds: number;
+    lastActivityAt: string;
+    paused: boolean;
+    mirrorAvailable: boolean;
+  } | null;
+  lastActivityAt: string | null;
 }
 
-export type SessionOutcome = 'completed' | 'failed';
+export interface DashboardChild {
+  child: Child;
+  live: LiveStatus;
+  today: { day: string; minutes: number; limitMinutes: number };
+  week: { days: { day: string; minutes: number; sessions: number }[]; totalMinutes: number };
+  progress: { gamesPlayed: number; completions: number; stars: number; achievements: number };
+  recent: { gameId: string; gameName: string; startedAt: string; endedAt: string | null; outcome: string; score: number | null; durationSeconds: number }[];
+  mirroringEnabled: boolean;
+}
 
-export type FailureReason = 'left_app' | 'gave_up' | null;
+export interface Dashboard {
+  entitlement: Entitlement;
+  children: DashboardChild[];
+  activePlayers: number;
+}
 
-export interface SessionRecord {
+export interface GameDifficulty {
+  key: string;
+  label: string;
+  brackets?: AgeBracket[];
+}
+
+export interface GameProgressSummary {
+  plays: number;
+  completions: number;
+  bestScore: number | null;
+  bestTimeSeconds: number | null;
+  stars: number;
+  highestDifficulty: string | null;
+  lastPlayedAt: string | null;
+}
+
+export interface CatalogueGame {
   id: string;
-  startedAt: number;
-  endedAt: number;
-  durationMinutes: number;
-  grid: GridDims;
-  image: ImageRef;
-  outcome: SessionOutcome;
-  failureReason: FailureReason;
-  revealedFraction: number;
+  name: string;
+  tagline: string;
+  description: string;
+  instructions: string;
+  categoryId: string | null;
+  brackets: AgeBracket[];
+  difficulties: GameDifficulty[];
+  skills: string[];
+  contentRating: string;
+  estimatedMinutes: number;
+  offlineCapable: boolean;
+  accessibility: Record<string, unknown>;
+  translations: Record<string, { name?: string; tagline?: string; instructions?: string }>;
+  favourite: boolean;
+  progress: GameProgressSummary | null;
+}
+
+export interface PlayerMe {
+  child: { id: string; displayName: string; avatarId: string; ageBracket: AgeBracket; effectiveBracket: AgeBracket; bracketName: string; playerId: string };
+  entitlement: Entitlement;
+  controls: { soundEnabled: boolean; narrationEnabled: boolean; favouritesEnabled: boolean; mirroringEnabled: boolean; dailyLimitMinutes: number; sessionLimitMinutes: number; visibleBrackets: AgeBracket[] };
+  playtime: { allowed: true; usedMinutesToday: number; remainingSeconds: number; sessionLimitSeconds: number } | { allowed: false; usedMinutesToday: number; reason: string; message: string };
+}
+
+export interface CraftStep {
+  title: string;
+  text: string;
+  diagram?: Record<string, unknown>;
+  tip?: string;
+  caution?: string;
+}
+
+export interface Craft {
+  id: string;
+  title: string;
+  kind: 'origami' | 'paper_craft' | 'drawing' | 'digital';
+  description: string;
+  brackets: AgeBracket[];
+  difficulty: number;
+  estimatedMinutes: number;
+  materials: string[];
+  hazards: string[];
+  adultSupervision: boolean;
+  physical: boolean;
+  stepCount: number;
+  steps?: CraftStep[];
+  finalPreview?: Record<string, unknown> | null;
+  checklist?: string[];
+  translations: Record<string, Record<string, unknown>>;
+  progress: { stepsDone: number; checklistDone?: boolean[]; completedAt: string | null } | null;
+}
+
+export interface QuizQuestion {
+  id: string;
+  question: string;
+  options: string[];
+}
+
+export interface Fact {
+  id: string;
+  slug: string;
+  category: string;
+  headline: string;
+  body: string;
+  whyText: string;
+  followUpQuestion: string;
+  brackets: AgeBracket[];
+  readingLevel: number;
+  illustration: string;
+  audioUrl: string | null;
+  source: { title: string; publisher: string; url: string } | null;
+  questions: QuizQuestion[];
+  translations: Record<string, Record<string, string>>;
+  publishedAt: string | null;
+  viewed?: boolean;
+  favourite?: boolean;
+  viewedAt?: string;
+}
+
+export interface Achievement {
+  key: string;
+  name: string;
+  description: string;
+  icon: string;
+  earnedAt: string | null;
+}
+
+export interface PlayerProgress {
+  games: (GameProgressSummary & { gameId: string; data: Record<string, unknown>; version: number })[];
+  achievements: Achievement[];
+  crafts: { tutorialId: string; title: string; stepsDone: number; stepCount: number; completedAt: string | null }[];
+  factsRead: number;
+  quiz: { total: number; correct: number };
+}
+
+export interface SubscriptionInfo {
+  entitlement: Entitlement;
+  current: {
+    id: string;
+    provider: 'google_play' | 'razorpay' | 'sandbox';
+    productId: string;
+    status: string;
+    autoRenewing: boolean;
+    currentPeriodStart: string | null;
+    currentPeriodEnd: string | null;
+    cancelledAt: string | null;
+  } | null;
+  history: unknown[];
+  monthly: { productId: string; name: string; interval: string; priceInr: number; description: string };
+  providers: { googlePlay: boolean; razorpay: { keyId: string } | null; sandbox: boolean };
+  manage: { googlePlayUrl: string | null; supportEmail: string | null };
 }
 
 export interface AppSettings {
-  notificationsEnabled: boolean;
   soundEnabled: boolean;
-  // Anonymous usage analytics sent to the Tame server (on by default,
-  // disclosed in Settings and the privacy policy; can be turned off).
+  narrationEnabled: boolean;
   analyticsEnabled: boolean;
-  // "News & announcements" push notifications from the admin console.
   pushEnabled: boolean;
-  // Colour scheme: follow the OS, or force Golden Morning / Night Balcony.
   appearance?: 'system' | 'light' | 'dark';
-  // Chosen on first launch; undefined until then (the language screen shows).
   language?: 'en' | 'hi';
-  // How alive the garden is: everything, a calm few things, or still.
-  gardenMotion?: 'full' | 'calm' | 'off';
+  reducedMotion?: boolean;
 }

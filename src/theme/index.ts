@@ -1,7 +1,7 @@
-export { palette } from './palette';
-export { lightColors, darkColors, colors, spacing, radius, buttonHeight } from './colors';
-export type { ThemeColors } from './colors';
-export { typography, fontFamily, decorativeSerif } from './typography';
+export { palette, rainbow, rainbowSoft } from './palette';
+export { playerLight, playerDark, guardianLight, guardianDark, lightColors, darkColors, colors, buttonHeight } from './colors';
+export type { ThemeColors, ThemeMode as ThemeModeName } from './colors';
+export { typography, fontFamily } from './typography';
 export type { TypographyVariant } from './typography';
 export { space } from './spacing';
 export { radii } from './radii';
@@ -9,5 +9,5 @@ export { shadows } from './shadows';
 export type { ShadowLevel } from './shadows';
 export { duration, easing, press } from './motion';
 export { iconSize, iconStroke } from './icons';
-export { ThemeProvider, useTheme } from './ThemeContext';
+export { ThemeProvider, ThemeMode, useTheme, useThemeMode } from './ThemeContext';
 export type { Theme, Appearance } from './ThemeContext';

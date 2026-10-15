@@ -1,6 +1,6 @@
 export { AppText } from './AppText';
 export type { AppTextProps, TextRole } from './AppText';
-export { Icon, ICONS } from './Icon';
+export { Icon, ICONS, iconOrDefault } from './Icon';
 export type { IconName, IconProps } from './Icon';
 export { Tactile } from './Pressable';
 export type { TactileProps } from './Pressable';
@@ -11,3 +11,9 @@ export type { CardProps, CardVariant } from './Card';
 export { Screen } from './Screen';
 export { FloatingTabBar, useTabBarInset, TAB_BAR_HEIGHT } from './TabBar';
 export type { TabSpec } from './TabBar';
+export { TextField } from './TextField';
+export { SegmentedControl } from './SegmentedControl';
+export { SettingToggle, SettingLink, SettingBlock } from './SettingRow';
+export { Avatar } from './Avatar';
+export { PlayfulBackdrop, BigButton, RoundButton, CandyCard, Chip, Badge, Stars, ProgressBar, Confetti, Bob, PopIn, EmojiDisc, darken, lighten } from './Playful';
+export { LoadingState, EmptyState, ErrorState, OfflineBanner } from './States';

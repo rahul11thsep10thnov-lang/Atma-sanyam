@@ -28,5 +28,18 @@ export function passwordValid(password: string): boolean {
   return PASSWORD_RULES.every((r) => passwordRuleMet(r, password));
 }
 
-// Mirrors the server's username rule (backend/src/lib/username.ts).
-export const USERNAME_RE = /^[A-Za-z](?!.*[._]{2})[A-Za-z0-9._]{1,18}[A-Za-z0-9]$/;
+
+export const PASSWORD_RULE_MESSAGE = `Use ${PASSWORD_MIN}–${PASSWORD_MAX} characters with a capital letter, a small letter, a number and a special character`;
+
+/** What is still missing, in words, for the form's hint. */
+export function passwordProblems(password: string): string[] {
+  const problems: string[] = [];
+  if (password.length < PASSWORD_MIN) problems.push(`at least ${PASSWORD_MIN} characters`);
+  if (password.length > PASSWORD_MAX) problems.push(`at most ${PASSWORD_MAX} characters`);
+  if (!/[A-Z]/.test(password)) problems.push('a capital letter');
+  if (!/[a-z]/.test(password)) problems.push('a small letter');
+  if (!/\d/.test(password)) problems.push('a number');
+  if (!/[^A-Za-z0-9\s]/.test(password)) problems.push('a special character');
+  if (/\s/.test(password)) problems.push('no spaces');
+  return problems;
+}

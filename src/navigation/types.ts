@@ -1,25 +1,45 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
-import { RemoteImageRef, SessionConfig } from '../types';
 import type { LegalDocId } from '../legal/documents';
 
-export type RootTabParamList = {
-  Home: { mode?: 'plants' | 'jigsaw'; arrival?: string } | undefined; // arrival: a nonce so the same mode can be asked again
-  History: { arrival?: string } | undefined; // the Balcony tab (route name kept for saved navigation state)
-  Garden: { arrival?: string } | undefined;
-  Museum: undefined;
-  Friends: { tab?: 'friends' | 'requests' | 'find' } | undefined;
-  Progress: undefined;
+export type GuardianTabParamList = {
+  Dashboard: undefined;
+  Children: undefined;
+  Plan: undefined;
   Settings: undefined;
 };
 
+export type PlayerTabParamList = {
+  Home: undefined;
+  Games: { category?: string } | undefined;
+  Craft: undefined;
+  Facts: { category?: string } | undefined;
+  Progress: undefined;
+};
+
 export type RootStackParamList = {
-  Tabs: NavigatorScreenParams<RootTabParamList>;
-  ActiveSession: { config: SessionConfig };
-  ContentBrowser: { onSelect: (image: RemoteImageRef) => void; initialCategoryId?: string };
-  Auth: { mode?: 'signIn' | 'profile' | 'password' } | undefined;
-  Notifications: undefined;
+  Welcome: undefined;
+  // guardian
+  GuardianRegister: undefined;
+  GuardianLogin: undefined;
+  GuardianOtp: { purpose: 'register' | 'login' | 'recovery' | 'stepUp'; challengeId: string; phoneMasked: string; resendAfterSeconds: number; newPassword?: string; onDone?: () => void };
+  GuardianRecovery: undefined;
+  GuardianConsole: NavigatorScreenParams<GuardianTabParamList> | undefined;
+  ChildDetail: { childId: string };
+  ChildEditor: { childId?: string };
+  Controls: { childId: string };
+  Mirror: { childId: string };
+  Subscription: undefined;
+  ChangePassword: undefined;
+  StepUp: { onDone: () => void } | undefined;
+  // player
+  PlayerLogin: { playerId?: string } | undefined;
+  PlayerOtp: { challengeId: string; phoneMasked: string; childName: string; resendAfterSeconds: number };
+  PlayerConsole: NavigatorScreenParams<PlayerTabParamList> | undefined;
+  GameDetail: { gameId: string };
+  GamePlay: { gameId: string; difficulty: string };
+  CraftDetail: { craftId: string };
+  FactDetail: { factId: string; fact?: unknown };
+  AdultGate: { onPass: () => void } | undefined;
+  // shared
   Legal: { doc: LegalDocId };
-  GroupSetup: { editSessionId?: string } | undefined;
-  GroupLobby: { sessionId: string };
-  Language: undefined;
 };

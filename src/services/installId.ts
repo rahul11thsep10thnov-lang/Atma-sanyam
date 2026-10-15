@@ -2,7 +2,7 @@
 // routing. It is not derived from any hardware ID and resets on reinstall.
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const KEY = 'focus.installId.v1';
+const KEY = 'loji.installId.v1';
 let cached: string | null = null;
 
 function uuid(): string {

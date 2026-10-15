@@ -4,7 +4,7 @@ import { trackError } from '../services/analytics';
 import { AppText } from '../ui/AppText';
 import { Button } from '../ui/Button';
 import { Icon } from '../ui/Icon';
-import { lightColors } from '../theme/colors';
+import { playerLight as lightColors } from '../theme/colors';
 import { space } from '../theme/spacing';
 import { t } from '../i18n';
 
@@ -31,13 +31,13 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
     return (
       <View style={styles.screen}>
         <View style={styles.badge}>
-          <Icon name="leaf" size="lg" color={lightColors.growth} />
+          <Icon name="alert" size="lg" color={lightColors.primary} />
         </View>
-        <AppText variant="heading" align="center">{t('error.title')}</AppText>
+        <AppText variant="heading" align="center">Oops, something went wrong</AppText>
         <AppText variant="body" tone="secondary" align="center" style={styles.body}>
-          {t('error.body')}
+          LoJi hit a snag. Tap below to try again. Nothing you did was lost.
         </AppText>
-        <Button label={t('tryAgain')} icon="reset" onPress={() => this.setState({ hasError: false })} />
+        <Button label={t('common.retry')} icon="reset" onPress={() => this.setState({ hasError: false })} />
       </View>
     );
   }
@@ -45,6 +45,6 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: lightColors.background, alignItems: 'center', justifyContent: 'center', padding: space.xxxl },
-  badge: { width: 64, height: 64, borderRadius: 32, backgroundColor: lightColors.growthSoft, alignItems: 'center', justifyContent: 'center', marginBottom: space.lg },
+  badge: { width: 64, height: 64, borderRadius: 32, backgroundColor: lightColors.primarySoft, alignItems: 'center', justifyContent: 'center', marginBottom: space.lg },
   body: { marginTop: space.sm, marginBottom: space.xxl },
 });

@@ -38,7 +38,7 @@ export function AppGate({ children }: { children: React.ReactNode }) {
   const [dismissedUpdate, setDismissedUpdate] = useState(false);
 
   if (config.maintenance.enabled) {
-    return <FullScreenMessage icon="leaf" title={t('gate.backSoon')} message={config.maintenance.message} action={{ label: t('gate.checkAgain'), onPress: () => void refresh() }} />;
+    return <FullScreenMessage icon="cloud" title={t('gate.backSoon')} message={config.maintenance.message} action={{ label: t('gate.checkAgain'), onPress: () => void refresh() }} />;
   }
 
   const url = storeUrl(config.appVersion);

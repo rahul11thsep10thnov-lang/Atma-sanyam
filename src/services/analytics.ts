@@ -17,7 +17,7 @@ export type AnalyticsEvent = {
   occurredAt: string;
 };
 
-const QUEUE_KEY = 'focus.analyticsQueue.v1';
+const QUEUE_KEY = 'loji.analyticsQueue.v1';
 const MAX_QUEUE = 200;
 const BATCH = 50;
 

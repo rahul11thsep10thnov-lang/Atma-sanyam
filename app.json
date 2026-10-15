@@ -1,20 +1,19 @@
 {
   "expo": {
-    "name": "Tame",
-    "slug": "puzzlefocus",
+    "name": "LoJi",
+    "slug": "loji",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "scheme": "puzzlefocus",
+    "userInterfaceStyle": "automatic",
+    "scheme": "loji",
     "ios": {
-      "bundleIdentifier": "com.atmasanyam.focus",
-      "supportsTablet": false,
+      "bundleIdentifier": "com.atmasanyam.loji",
+      "supportsTablet": true,
       "config": {
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "Tame lets you pick one of your photos to turn into a puzzle. It only uses the photo you choose.",
         "UIBackgroundModes": [
           "remote-notification"
         ]
@@ -88,15 +87,17 @@
       }
     },
     "android": {
-      "package": "com.atmasanyam.focus",
+      "package": "com.atmasanyam.loji",
       "adaptiveIcon": {
-        "backgroundColor": "#D97B4D",
+        "backgroundColor": "#FFC93C",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "permissions": [],
+      "permissions": [
+        "com.android.vending.BILLING"
+      ],
       "blockedPermissions": [
         "android.permission.READ_MEDIA_IMAGES",
         "android.permission.READ_MEDIA_VIDEO",
@@ -107,22 +108,21 @@
       ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single",
+      "name": "LoJi",
+      "shortName": "LoJi",
+      "themeColor": "#FF6B9D",
+      "backgroundColor": "#FFF8EC",
+      "description": "Games, art, crafts and discoveries for children aged 3 to 12, with a guardian console."
     },
     "plugins": [
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "Tame lets you pick one of your photos to turn into a puzzle. It only uses the photo you choose.",
-          "cameraPermission": false,
-          "microphonePermission": false
-        }
-      ],
       [
         "expo-notifications",
         {
           "icon": "./assets/notification-icon.png",
-          "color": "#D97B4D",
+          "color": "#FF6B9D",
           "defaultChannel": "default"
         }
       ],
@@ -139,13 +139,7 @@
           "image": "./assets/splash-icon.png",
           "imageWidth": 180,
           "resizeMode": "contain",
-          "backgroundColor": "#FFF3E8"
-        }
-      ],
-      [
-        "expo-sensors",
-        {
-          "motionPermission": "Tame uses gentle device motion to give your balcony a sense of depth. Nothing is recorded."
+          "backgroundColor": "#FFF8EC"
         }
       ]
     ],

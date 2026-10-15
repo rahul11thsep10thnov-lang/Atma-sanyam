@@ -1,19 +1,12 @@
-// Semantic colour roles (PHASE 1 design tokens).
-//
-// `lightColors` is "Golden Morning", `darkColors` is "Night Balcony" — a
-// designed palette, not an inversion. Components read the active scheme via
-// `useTheme()` (ThemeContext.tsx). The legacy named exports at the bottom
-// (`colors`, `spacing`, `radius`, `buttonHeight`, `typography`) keep every
-// existing screen compiling and already move them onto the new palette;
-// they resolve to the light scheme and are being migrated screen by screen.
+// Semantic colour roles. Two identities (player / guardian), each with a
+// light and a dark scheme. Components read the active set via `useTheme()`.
 import { palette } from './palette';
-import { typography as typographyTokens } from './typography';
-import { radii } from './radii';
-import { space } from './spacing';
+
+export type ThemeMode = 'player' | 'guardian';
 
 export interface ThemeColors {
   scheme: 'light' | 'dark';
-  // surfaces
+  mode: ThemeMode;
   background: string;
   backgroundAlt: string;
   surface: string;
@@ -23,159 +16,198 @@ export interface ThemeColors {
   navSurface: string;
   overlay: string;
   scrim: string;
-  // ink
   text: string;
   textSecondary: string;
   textMuted: string;
   textOnAccent: string;
   textInverse: string;
-  // brand
   primary: string;
   primaryPressed: string;
   primarySoft: string;
   accent: string;
   accentSoft: string;
-  growth: string;
-  growthSoft: string;
-  // status (never used as "series 4")
+  secondary: string;
+  secondarySoft: string;
   success: string;
   successSoft: string;
   warning: string;
   warningSoft: string;
   danger: string;
   dangerSoft: string;
-  // lines
   border: string;
   borderStrong: string;
   divider: string;
-  // icons
   icon: string;
   iconActive: string;
-  // puzzle covers
-  coverPiece: string;
-  coverPieceAlt: string;
-  overlayLine: string;
-  // misc
   shadow: string;
   white: string;
+  /** Gradient stops for the screen background. */
+  gradient: [string, string, ...string[]];
 }
 
-export const lightColors: ThemeColors = {
+export const playerLight: ThemeColors = {
   scheme: 'light',
-  background: palette.cream,
-  backgroundAlt: palette.peach,
-  surface: '#FFFCF8',
-  surfaceRaised: palette.white,
-  surfaceMuted: '#F3E6D8',
-  surfaceTinted: '#F9E6D6',
-  navSurface: '#FFFCF8',
-  overlay: 'rgba(63,42,32,0.45)',
-  scrim: 'rgba(63,42,32,0.6)',
-  text: palette.barkDeep,
-  textSecondary: '#7A5B4A',
-  textMuted: '#A88B78',
+  mode: 'player',
+  background: palette.vanilla,
+  backgroundAlt: palette.marshmallow,
+  surface: palette.cloud,
+  surfaceRaised: palette.cloud,
+  surfaceMuted: '#F3EEF9',
+  surfaceTinted: '#FFF0DB',
+  navSurface: palette.cloud,
+  overlay: 'rgba(46,42,74,0.45)',
+  scrim: 'rgba(46,42,74,0.6)',
+  text: palette.ink,
+  textSecondary: palette.inkSoft,
+  textMuted: palette.inkMuted,
   textOnAccent: palette.white,
-  textInverse: palette.moonlit,
-  primary: palette.terracotta,
-  primaryPressed: palette.terracottaDeep,
-  primarySoft: '#F7DED1',
-  accent: palette.saffron,
-  accentSoft: '#FBE8CC',
-  growth: palette.moss,
-  growthSoft: '#E6EDDC',
-  success: '#4F7A48',
-  successSoft: '#E3EFDD',
-  warning: '#D9962E',
-  warningSoft: '#FBEFD6',
-  danger: '#C8503E',
-  dangerSoft: '#F9E0DA',
-  border: '#EADBC9',
-  borderStrong: '#D9C4AD',
-  divider: 'rgba(63,42,32,0.08)',
-  icon: '#A88B78',
-  iconActive: palette.terracotta,
-  coverPiece: '#F2E6D9',
-  coverPieceAlt: '#E8DACA',
-  overlayLine: 'rgba(23, 32, 42, 0.12)',
-  shadow: palette.bark,
+  textInverse: palette.starlight,
+  primary: palette.bubblegum,
+  primaryPressed: palette.bubblegumDeep,
+  primarySoft: '#FFE3EC',
+  accent: palette.sunshine,
+  accentSoft: '#FFF4CC',
+  secondary: palette.sky,
+  secondarySoft: '#DDEEFF',
+  success: palette.success,
+  successSoft: palette.successSoft,
+  warning: palette.warning,
+  warningSoft: palette.warningSoft,
+  danger: palette.danger,
+  dangerSoft: palette.dangerSoft,
+  border: '#F0E4EE',
+  borderStrong: '#E3D3E2',
+  divider: 'rgba(46,42,74,0.08)',
+  icon: palette.inkMuted,
+  iconActive: palette.bubblegum,
+  shadow: '#7A4A7A',
   white: palette.white,
+  gradient: ['#FFF3D6', '#FFE4EF', '#E3F0FF'],
 };
 
-export const darkColors: ThemeColors = {
+export const playerDark: ThemeColors = {
+  ...playerLight,
   scheme: 'dark',
-  background: palette.night,
-  backgroundAlt: '#211B17',
-  surface: palette.nightSurface,
+  background: palette.nightSky,
+  backgroundAlt: '#23204A',
+  surface: palette.nightCard,
   surfaceRaised: palette.nightRaised,
-  surfaceMuted: '#2A2320',
-  surfaceTinted: '#33271F',
-  navSurface: '#272019',
+  surfaceMuted: '#2F2B5C',
+  surfaceTinted: '#3A2F5C',
+  navSurface: palette.nightCard,
   overlay: 'rgba(0,0,0,0.5)',
   scrim: 'rgba(0,0,0,0.65)',
-  text: palette.moonlit,
-  textSecondary: '#C9B5A4',
-  textMuted: '#8F7A6B',
-  textOnAccent: palette.night,
-  textInverse: palette.barkDeep,
-  primary: '#E08A6B',
-  primaryPressed: '#F0A287',
-  primarySoft: 'rgba(224,138,107,0.18)',
-  accent: palette.amber,
-  accentSoft: 'rgba(232,179,92,0.18)',
-  growth: '#8AA77A',
-  growthSoft: 'rgba(138,167,122,0.18)',
-  success: '#8DBB82',
-  successSoft: 'rgba(141,187,130,0.16)',
-  warning: '#E2AE5C',
-  warningSoft: 'rgba(226,174,92,0.16)',
-  danger: '#E07A6A',
-  dangerSoft: 'rgba(224,122,106,0.16)',
+  text: palette.starlight,
+  textSecondary: '#C9C4EC',
+  textMuted: '#8F8AB8',
+  textOnAccent: palette.white,
+  textInverse: palette.ink,
+  primary: '#FF7FAE',
+  primaryPressed: '#FF99BF',
+  primarySoft: 'rgba(255,127,174,0.2)',
+  accent: palette.sunshine,
+  accentSoft: 'rgba(255,201,60,0.2)',
+  secondary: palette.sky,
+  secondarySoft: 'rgba(79,179,255,0.2)',
+  successSoft: 'rgba(34,160,107,0.2)',
+  warningSoft: 'rgba(233,162,59,0.2)',
+  dangerSoft: 'rgba(229,72,77,0.2)',
   border: palette.nightBorder,
-  borderStrong: '#4A3D35',
-  divider: 'rgba(243,231,218,0.08)',
-  icon: '#8F7A6B',
-  iconActive: '#E08A6B',
-  coverPiece: '#2E2621',
-  coverPieceAlt: '#352C26',
-  overlayLine: 'rgba(243,231,218,0.1)',
+  borderStrong: '#54509A',
+  divider: 'rgba(244,241,255,0.08)',
+  icon: '#8F8AB8',
+  iconActive: '#FF7FAE',
   shadow: palette.black,
-  white: palette.white,
+  gradient: ['#1E1B3A', '#2A2250', '#1B2A4A'],
 };
 
-// ---------------------------------------------------------------------------
-// Legacy exports — same keys the existing screens import, now on the new
-// palette. New code should use `useTheme()` and the token modules instead.
-// ---------------------------------------------------------------------------
+export const guardianLight: ThemeColors = {
+  scheme: 'light',
+  mode: 'guardian',
+  background: palette.paper,
+  backgroundAlt: palette.paperAlt,
+  surface: palette.white,
+  surfaceRaised: palette.white,
+  surfaceMuted: '#EEF0F8',
+  surfaceTinted: palette.indigoSoft,
+  navSurface: palette.white,
+  overlay: 'rgba(31,35,64,0.45)',
+  scrim: 'rgba(31,35,64,0.6)',
+  text: palette.slateInk,
+  textSecondary: palette.slateSoft,
+  textMuted: palette.slateMuted,
+  textOnAccent: palette.white,
+  textInverse: palette.white,
+  primary: palette.indigo,
+  primaryPressed: palette.indigoDeep,
+  primarySoft: palette.indigoSoft,
+  accent: palette.teal,
+  accentSoft: palette.tealSoft,
+  secondary: palette.tangerine,
+  secondarySoft: '#FFE7D6',
+  success: palette.success,
+  successSoft: palette.successSoft,
+  warning: palette.warning,
+  warningSoft: palette.warningSoft,
+  danger: palette.danger,
+  dangerSoft: palette.dangerSoft,
+  border: palette.paperLine,
+  borderStrong: '#C9CDE0',
+  divider: 'rgba(31,35,64,0.08)',
+  icon: palette.slateMuted,
+  iconActive: palette.indigo,
+  shadow: '#3B3F6B',
+  white: palette.white,
+  gradient: ['#F5F6FB', '#EEF0FA'],
+};
+
+export const guardianDark: ThemeColors = {
+  ...guardianLight,
+  scheme: 'dark',
+  background: palette.graphite,
+  backgroundAlt: '#191C33',
+  surface: palette.graphiteCard,
+  surfaceRaised: palette.graphiteRaised,
+  surfaceMuted: '#22264A',
+  surfaceTinted: 'rgba(79,70,229,0.18)',
+  navSurface: palette.graphiteCard,
+  overlay: 'rgba(0,0,0,0.5)',
+  scrim: 'rgba(0,0,0,0.65)',
+  text: '#EEF0FA',
+  textSecondary: '#B9BEDA',
+  textMuted: '#7E85A8',
+  textInverse: palette.slateInk,
+  primary: '#8B84FF',
+  primaryPressed: '#A29CFF',
+  primarySoft: 'rgba(139,132,255,0.2)',
+  accent: '#3FC7B6',
+  accentSoft: 'rgba(63,199,182,0.18)',
+  secondarySoft: 'rgba(255,138,61,0.2)',
+  successSoft: 'rgba(34,160,107,0.2)',
+  warningSoft: 'rgba(233,162,59,0.2)',
+  dangerSoft: 'rgba(229,72,77,0.2)',
+  border: palette.graphiteBorder,
+  borderStrong: '#4A5088',
+  divider: 'rgba(238,240,250,0.08)',
+  icon: '#7E85A8',
+  iconActive: '#8B84FF',
+  shadow: palette.black,
+  gradient: ['#14162B', '#1A1D38'],
+};
+
+// Kept for a few shared components that predate the theme hook.
+export const lightColors = playerLight;
+export const darkColors = playerDark;
 export const colors = {
-  primary: lightColors.primary,
-  secondary: lightColors.accent,
-  background: lightColors.background,
-  card: lightColors.surfaceRaised,
-  text: lightColors.text,
-  textSecondary: lightColors.textSecondary,
-  border: lightColors.border,
-  danger: lightColors.danger,
-  success: lightColors.success,
-  coverPiece: lightColors.coverPiece,
-  coverPieceAlt: lightColors.coverPieceAlt,
-  overlayLine: lightColors.overlayLine,
+  primary: playerLight.primary,
+  secondary: playerLight.accent,
+  background: playerLight.background,
+  card: playerLight.surfaceRaised,
+  text: playerLight.text,
+  textSecondary: playerLight.textSecondary,
+  border: playerLight.border,
+  danger: playerLight.danger,
+  success: playerLight.success,
   white: palette.white,
 };
-
-export const spacing = {
-  screenPadding: space.screen,
-  cardPadding: space.card,
-};
-
-export const radius = {
-  card: radii.md,
-};
-
-export const buttonHeight = 52;
-
-export const typography = {
-  heading: typographyTokens.headingLarge,
-  title: typographyTokens.subheading,
-  body: typographyTokens.body,
-  caption: typographyTokens.caption,
-};
+export const buttonHeight = 56;

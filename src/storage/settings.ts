@@ -1,14 +1,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppSettings } from '../types';
 
-const SETTINGS_KEY = 'puzzlefocus.settings.v1';
+const SETTINGS_KEY = 'loji.settings.v1';
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  notificationsEnabled: false,
   soundEnabled: true,
+  narrationEnabled: true,
   analyticsEnabled: true,
   pushEnabled: false,
   appearance: 'system',
+  language: 'en',
 };
 
 export async function loadSettings(): Promise<AppSettings> {

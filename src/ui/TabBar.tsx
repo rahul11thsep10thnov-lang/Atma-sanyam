@@ -12,8 +12,9 @@ import { radii } from '../theme/radii';
 import { space } from '../theme/spacing';
 import { duration, easing } from '../theme/motion';
 import { useTheme } from '../theme/ThemeContext';
+import { rainbow } from '../theme/palette';
 
-export const TAB_BAR_HEIGHT = 64;
+export const TAB_BAR_HEIGHT = 66;
 export const TAB_BAR_MARGIN = 12;
 
 export interface TabSpec {
@@ -21,8 +22,9 @@ export interface TabSpec {
   label: string;
 }
 
-function TabItem({ spec, focused, onPress, onLongPress }: { spec: TabSpec; focused: boolean; onPress: () => void; onLongPress: () => void }) {
+function TabItem({ spec, focused, onPress, onLongPress, playful, index }: { spec: TabSpec; focused: boolean; onPress: () => void; onLongPress: () => void; playful?: boolean; index: number }) {
   const { colors } = useTheme();
+  const accent = playful ? rainbow[index % rainbow.length] : colors.primary;
   const t = useRef(new Animated.Value(focused ? 1 : 0)).current;
   useEffect(() => {
     Animated.timing(t, { toValue: focused ? 1 : 0, duration: duration.normal, easing: easing.standard, useNativeDriver: true }).start();
@@ -40,18 +42,18 @@ function TabItem({ spec, focused, onPress, onLongPress }: { spec: TabSpec; focus
       accessibilityLabel={spec.label}
       style={styles.item}
     >
-      <Animated.View style={{ transform: [{ scale }, { translateY: lift }] }}>
-        <Icon name={spec.icon} size="md" color={focused ? 'active' : 'icon'} strokeWidth={focused ? 2.1 : 1.75} />
+      <Animated.View style={[{ transform: [{ scale }, { translateY: lift }] }, playful && focused && { backgroundColor: accent, borderRadius: 18, paddingHorizontal: 12, paddingVertical: 4 }]}>
+        <Icon name={spec.icon} size={playful ? 'lg' : 'md'} color={playful && focused ? '#fff' : focused ? accent : 'icon'} strokeWidth={focused ? 2.2 : 1.75} />
       </Animated.View>
-      <AppText variant="caption" numberOfLines={1} maxFontSizeMultiplier={1.1} style={[styles.label, { color: focused ? colors.primary : colors.textMuted }]}>
+      <AppText variant="caption" numberOfLines={1} maxFontSizeMultiplier={1.1} style={[styles.label, { color: focused ? accent : colors.textMuted }]}>
         {spec.label}
       </AppText>
-      <Animated.View style={[styles.dot, { backgroundColor: colors.primary, opacity: t, transform: [{ scale: t }] }]} />
+      {!playful && <Animated.View style={[styles.dot, { backgroundColor: accent, opacity: t, transform: [{ scale: t }] }]} />}
     </Tactile>
   );
 }
 
-export function FloatingTabBar({ state, descriptors, navigation, specs }: BottomTabBarProps & { specs: Record<string, TabSpec> }) {
+export function FloatingTabBar({ state, descriptors, navigation, specs, playful }: BottomTabBarProps & { specs: Record<string, TabSpec>; playful?: boolean }) {
   const { colors, shadow } = useTheme();
   const insets = useSafeAreaInsets();
   // A screen can step out of the way of its own content (the balcony hides
@@ -60,7 +62,7 @@ export function FloatingTabBar({ state, descriptors, navigation, specs }: Bottom
   if (focusedStyle?.display === 'none') return null;
   return (
     <View pointerEvents="box-none" style={[styles.wrap, { paddingBottom: Math.max(insets.bottom, TAB_BAR_MARGIN) }]}>
-      <View style={[styles.bar, { backgroundColor: colors.navSurface, borderColor: colors.border }, shadow.level3]}>
+      <View style={[styles.bar, playful && styles.barPlayful, { backgroundColor: colors.navSurface, borderColor: playful ? colors.borderStrong : colors.border }, shadow.level3]}>
         {state.routes.map((route, index) => {
           const focused = state.index === index;
           const spec = specs[route.name] ?? { icon: 'home' as IconName, label: descriptors[route.key]?.options.title ?? route.name };
@@ -69,7 +71,7 @@ export function FloatingTabBar({ state, descriptors, navigation, specs }: Bottom
             if (!focused && !event.defaultPrevented) navigation.navigate(route.name);
           };
           const onLongPress = () => navigation.emit({ type: 'tabLongPress', target: route.key });
-          return <TabItem key={route.key} spec={spec} focused={focused} onPress={onPress} onLongPress={onLongPress} />;
+          return <TabItem key={route.key} spec={spec} focused={focused} onPress={onPress} onLongPress={onLongPress} playful={playful} index={index} />;
         })}
       </View>
     </View>
@@ -86,6 +88,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     paddingHorizontal: space.sm,
   },
+  barPlayful: { height: TAB_BAR_HEIGHT + 8, borderWidth: 2 },
   item: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 6, minWidth: 0 },
   // seven tabs share the bar: the label stays on one line and a hair smaller
   label: { marginTop: 4, fontSize: 11, lineHeight: 14, paddingHorizontal: 1 },

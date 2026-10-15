@@ -13,9 +13,10 @@ export interface TextFieldProps extends TextInputProps {
   hint?: string;
   error?: string | null;
   icon?: IconName;
+  trailing?: React.ReactNode;
 }
 
-export const TextField = React.forwardRef<TextInput, TextFieldProps>(function TextField({ label, hint, error, icon, style, editable = true, ...rest }, ref) {
+export const TextField = React.forwardRef<TextInput, TextFieldProps>(function TextField({ label, hint, error, icon, trailing, style, editable = true, ...rest }, ref) {
   const { colors } = useTheme();
   const [focused, setFocused] = useState(false);
   const border = error ? colors.danger : focused ? colors.primary : colors.border;
@@ -43,6 +44,7 @@ export const TextField = React.forwardRef<TextInput, TextFieldProps>(function Te
           placeholderTextColor={colors.textMuted}
           style={[styles.input, typography.body, { color: colors.text }, style]}
         />
+        {trailing}
       </View>
       {error ? (
         <AppText variant="caption" tone="danger" style={styles.hint}>
@@ -60,7 +62,7 @@ export const TextField = React.forwardRef<TextInput, TextFieldProps>(function Te
 const styles = StyleSheet.create({
   wrap: { marginTop: space.md },
   label: { marginBottom: 6 },
-  field: { flexDirection: 'row', alignItems: 'center', gap: space.sm, height: 52, borderRadius: radii.md, borderWidth: 1, paddingHorizontal: space.md },
+  field: { flexDirection: 'row', alignItems: 'center', gap: space.sm, height: 56, borderRadius: radii.md, borderWidth: 1, paddingHorizontal: space.md },
   input: { flex: 1, height: '100%', paddingVertical: 0 },
   hint: { marginTop: 6 },
 });
