@@ -80,7 +80,9 @@ function PlayerTabs() {
   );
 }
 
-// Guardian screens outside the tabs render in the guardian identity.
+// Guardian screens outside the tabs render in the guardian identity. The
+// wrapped types are created once, here: creating them inside a render would
+// give React a new component type every time and remount the screen.
 const guardian = <P extends object>(Component: React.ComponentType<P>) =>
   function GuardianWrapped(props: P) {
     return (
@@ -89,6 +91,17 @@ const guardian = <P extends object>(Component: React.ComponentType<P>) =>
       </ThemeMode>
     );
   };
+const GRegister = guardian(GuardianRegisterScreen);
+const GLogin = guardian(GuardianLoginScreen);
+const GOtp = guardian(GuardianOtpScreen);
+const GRecovery = guardian(GuardianRecoveryScreen);
+const GChildDetail = guardian(ChildDetailScreen);
+const GChildEditor = guardian(ChildEditorScreen);
+const GControls = guardian(ControlsScreen);
+const GMirror = guardian(MirrorScreen);
+const GSubscription = guardian(SubscriptionScreen);
+const GChangePassword = guardian(ChangePasswordScreen);
+const GStepUp = guardian(StepUpScreen);
 
 export function RootNavigator() {
   const { colors, isDark } = useTheme();
@@ -162,18 +175,18 @@ export function RootNavigator() {
       >
         <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={initialRoute}>
           <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ animation: 'fade' }} />
-          <Stack.Screen name="GuardianRegister" component={guardian(GuardianRegisterScreen)} />
-          <Stack.Screen name="GuardianLogin" component={guardian(GuardianLoginScreen)} />
-          <Stack.Screen name="GuardianOtp" component={guardian(GuardianOtpScreen)} />
-          <Stack.Screen name="GuardianRecovery" component={guardian(GuardianRecoveryScreen)} />
+          <Stack.Screen name="GuardianRegister" component={GRegister} />
+          <Stack.Screen name="GuardianLogin" component={GLogin} />
+          <Stack.Screen name="GuardianOtp" component={GOtp} />
+          <Stack.Screen name="GuardianRecovery" component={GRecovery} />
           <Stack.Screen name="GuardianConsole" component={GuardianTabs} options={{ animation: 'fade' }} />
-          <Stack.Screen name="ChildDetail" component={guardian(ChildDetailScreen)} />
-          <Stack.Screen name="ChildEditor" component={guardian(ChildEditorScreen)} options={{ presentation: 'modal' }} />
-          <Stack.Screen name="Controls" component={guardian(ControlsScreen)} />
-          <Stack.Screen name="Mirror" component={guardian(MirrorScreen)} />
-          <Stack.Screen name="Subscription" component={guardian(SubscriptionScreen)} />
-          <Stack.Screen name="ChangePassword" component={guardian(ChangePasswordScreen)} options={{ presentation: 'modal' }} />
-          <Stack.Screen name="StepUp" component={guardian(StepUpScreen)} options={{ presentation: 'modal' }} />
+          <Stack.Screen name="ChildDetail" component={GChildDetail} />
+          <Stack.Screen name="ChildEditor" component={GChildEditor} options={{ presentation: 'modal' }} />
+          <Stack.Screen name="Controls" component={GControls} />
+          <Stack.Screen name="Mirror" component={GMirror} />
+          <Stack.Screen name="Subscription" component={GSubscription} />
+          <Stack.Screen name="ChangePassword" component={GChangePassword} options={{ presentation: 'modal' }} />
+          <Stack.Screen name="StepUp" component={GStepUp} options={{ presentation: 'modal' }} />
           <Stack.Screen name="PlayerLogin" component={PlayerLoginScreen} />
           <Stack.Screen name="PlayerOtp" component={PlayerOtpScreen} />
           <Stack.Screen name="PlayerConsole" component={PlayerTabs} options={{ animation: 'fade' }} />

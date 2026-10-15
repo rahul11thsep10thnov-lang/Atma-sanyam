@@ -31,6 +31,7 @@ export const TextField = React.forwardRef<TextInput, TextFieldProps>(function Te
         {icon ? <Icon name={icon} size="sm" color={focused ? 'primary' : 'icon'} /> : null}
         <TextInput
           ref={ref}
+          accessibilityLabel={label}
           {...rest}
           editable={editable}
           onFocus={(e) => {

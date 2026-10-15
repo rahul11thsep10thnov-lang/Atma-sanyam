@@ -10,6 +10,7 @@ import { RootNavigator } from './src/navigation/RootNavigator';
 import { SettingsProvider, useSettings } from './src/context/SettingsContext';
 import { RemoteConfigProvider } from './src/context/RemoteConfigContext';
 import { GuardianProvider } from './src/context/GuardianContext';
+import { GuardianRealtimeProvider } from './src/context/GuardianRealtime';
 import { PlayerProvider } from './src/context/PlayerContext';
 import { ConsoleProvider } from './src/context/ConsoleContext';
 import { AppGate } from './src/components/AppGate';
@@ -59,13 +60,15 @@ export default function App() {
               <RemoteConfigProvider>
                 <ConsoleProvider>
                   <GuardianProvider>
-                    <PlayerProvider>
-                      <AnalyticsConsent />
-                      <AppGate>
-                        <RootNavigator />
-                      </AppGate>
-                      <ThemedStatusBar />
-                    </PlayerProvider>
+                    <GuardianRealtimeProvider>
+                      <PlayerProvider>
+                        <AnalyticsConsent />
+                        <AppGate>
+                          <RootNavigator />
+                        </AppGate>
+                        <ThemedStatusBar />
+                      </PlayerProvider>
+                    </GuardianRealtimeProvider>
                   </GuardianProvider>
                 </ConsoleProvider>
               </RemoteConfigProvider>
