@@ -81,16 +81,21 @@ private val WoodDark = Color(0xFF5E3816)
 private val WoodLight = Color(0xFFC08A55)
 
 private fun DrawScope.drawSnakesBoard(measurer: TextMeasurer, state: SnakesState, pulse: Float, motion: SnakesFrame) {
-    val s = size.width
-    val cell = s / (SnakesBoard.SIZE + 1.3f)
-    val margin = cell * 0.65f
-    val boardSize = cell * SnakesBoard.SIZE
-    fun px(o: Offset) = Offset(margin + o.x * cell, margin + o.y * cell)
+    // The board may be stretched out of square to fill its room: each square is cellX wide and cellY
+    // tall, while round things (pawns, serpents' bodies, text) are sized by the smaller side.
+    val w = size.width
+    val h = size.height
+    val margin = minOf(w, h) / (SnakesBoard.SIZE + 1.3f) * 0.65f
+    val cellX = (w - margin * 2) / SnakesBoard.SIZE
+    val cellY = (h - margin * 2) / SnakesBoard.SIZE
+    val cell = minOf(cellX, cellY)
+    val boardSize = Size(cellX * SnakesBoard.SIZE, cellY * SnakesBoard.SIZE)
+    fun px(o: Offset) = Offset(margin + o.x * cellX, margin + o.y * cellY)
 
     // The royal frame.
-    drawRoundRect(Brush.linearGradient(listOf(LudoPalette.Walnut, LudoPalette.WalnutDark, LudoPalette.Walnut), Offset.Zero, Offset(s, s)), Offset.Zero, Size(s, s), CornerRadius(cell * 0.5f))
-    drawRoundRect(LudoPalette.Gold, Offset(margin * 0.4f, margin * 0.4f), Size(s - margin * 0.8f, s - margin * 0.8f), CornerRadius(cell * 0.35f), style = Stroke(width = cell * 0.06f))
-    drawRoundRect(Color(0xFFFAF4E6), Offset(margin, margin), Size(boardSize, boardSize), CornerRadius(cell * 0.2f))
+    drawRoundRect(Brush.linearGradient(listOf(LudoPalette.Walnut, LudoPalette.WalnutDark, LudoPalette.Walnut), Offset.Zero, Offset(w, h)), Offset.Zero, Size(w, h), CornerRadius(cell * 0.5f))
+    drawRoundRect(LudoPalette.Gold, Offset(margin * 0.4f, margin * 0.4f), Size(w - margin * 0.8f, h - margin * 0.8f), CornerRadius(cell * 0.35f), style = Stroke(width = cell * 0.06f))
+    drawRoundRect(Color(0xFFFAF4E6), Offset(margin, margin), boardSize, CornerRadius(cell * 0.2f))
 
     // Pastel squares and their numbers.
     val numberStyle = TextStyle(fontSize = (cell * 0.24f / density).sp, fontWeight = FontWeight.SemiBold, color = Number)
@@ -98,7 +103,7 @@ private fun DrawScope.drawSnakesBoard(measurer: TextMeasurer, state: SnakesState
         val c = squareOffset(sq)
         val tl = px(Offset(c.x - 0.5f, c.y - 0.5f))
         val pastel = Pastels[((sq * 37) xor (sq / 10 * 11)) % Pastels.size]
-        drawRect(pastel, tl + Offset(cell * 0.03f, cell * 0.03f), Size(cell * 0.94f, cell * 0.94f))
+        drawRect(pastel, tl + Offset(cellX * 0.03f, cellY * 0.03f), Size(cellX * 0.94f, cellY * 0.94f))
         if (sq != 1 && sq != SnakesBoard.LAST) {
             val label = measurer.measure("$sq", numberStyle)
             drawText(label, topLeft = tl + Offset(cell * 0.1f, cell * 0.06f))
@@ -107,25 +112,26 @@ private fun DrawScope.drawSnakesBoard(measurer: TextMeasurer, state: SnakesState
     // START on 1: a teal tile; MOKSHA on 100: a golden tile with a lotus.
     run {
         val tl = px(Offset(squareOffset(1).x - 0.5f, squareOffset(1).y - 0.5f))
-        drawRoundRect(Brush.verticalGradient(listOf(Color(0xFF1F8A78), Color(0xFF125C50)), tl.y, tl.y + cell), tl + Offset(cell * 0.03f, cell * 0.03f), Size(cell * 0.94f, cell * 0.94f), CornerRadius(cell * 0.12f))
+        drawRoundRect(Brush.verticalGradient(listOf(Color(0xFF1F8A78), Color(0xFF125C50)), tl.y, tl.y + cellY), tl + Offset(cellX * 0.03f, cellY * 0.03f), Size(cellX * 0.94f, cellY * 0.94f), CornerRadius(cell * 0.12f))
         val one = measurer.measure("1", TextStyle(fontSize = (cell * 0.4f / density).sp, fontWeight = FontWeight.Black, color = Color.White))
-        drawText(one, topLeft = Offset(tl.x + cell / 2f - one.size.width / 2f, tl.y + cell * 0.08f))
+        drawText(one, topLeft = Offset(tl.x + cellX / 2f - one.size.width / 2f, tl.y + cellY * 0.5f - cell * 0.42f))
         val start = measurer.measure("START", TextStyle(fontSize = (cell * 0.17f / density).sp, fontWeight = FontWeight.Bold, color = Color.White))
-        drawText(start, topLeft = Offset(tl.x + cell / 2f - start.size.width / 2f, tl.y + cell * 0.62f))
+        drawText(start, topLeft = Offset(tl.x + cellX / 2f - start.size.width / 2f, tl.y + cellY * 0.5f + cell * 0.12f))
     }
     run {
         val tl = px(Offset(squareOffset(100).x - 0.5f, squareOffset(100).y - 0.5f))
-        drawRoundRect(Brush.verticalGradient(listOf(Color(0xFFFFD866), Color(0xFFE09A1A)), tl.y, tl.y + cell), tl + Offset(cell * 0.03f, cell * 0.03f), Size(cell * 0.94f, cell * 0.94f), CornerRadius(cell * 0.12f))
-        drawLotus(Offset(tl.x + cell / 2f, tl.y + cell * 0.22f), cell * 0.16f)
+        drawRoundRect(Brush.verticalGradient(listOf(Color(0xFFFFD866), Color(0xFFE09A1A)), tl.y, tl.y + cellY), tl + Offset(cellX * 0.03f, cellY * 0.03f), Size(cellX * 0.94f, cellY * 0.94f), CornerRadius(cell * 0.12f))
+        val mid = tl.y + cellY * 0.5f
+        drawLotus(Offset(tl.x + cellX / 2f, mid - cell * 0.28f), cell * 0.16f)
         val hundred = measurer.measure("100", TextStyle(fontSize = (cell * 0.27f / density).sp, fontWeight = FontWeight.Black, color = Color(0xFF5A3A08)))
-        drawText(hundred, topLeft = Offset(tl.x + cell / 2f - hundred.size.width / 2f, tl.y + cell * 0.34f))
+        drawText(hundred, topLeft = Offset(tl.x + cellX / 2f - hundred.size.width / 2f, mid - cell * 0.16f))
         val moksha = measurer.measure("MOKSHA", TextStyle(fontSize = (cell * 0.14f / density).sp, fontWeight = FontWeight.Bold, color = Color(0xFF5A3A08)))
-        drawText(moksha, topLeft = Offset(tl.x + cell / 2f - moksha.size.width / 2f, tl.y + cell * 0.7f))
+        drawText(moksha, topLeft = Offset(tl.x + cellX / 2f - moksha.size.width / 2f, mid + cell * 0.2f))
     }
-    drawRoundRect(LudoPalette.GoldDark, Offset(margin, margin), Size(boardSize, boardSize), CornerRadius(cell * 0.2f), style = Stroke(cell * 0.05f))
+    drawRoundRect(LudoPalette.GoldDark, Offset(margin, margin), boardSize, CornerRadius(cell * 0.2f), style = Stroke(cell * 0.05f))
     // Leaves on the frame, as on a painted board: the corners and the middle of each side.
-    listOf(Offset(margin * 0.5f, margin * 0.5f), Offset(s - margin * 0.5f, margin * 0.5f), Offset(s - margin * 0.5f, s - margin * 0.5f), Offset(margin * 0.5f, s - margin * 0.5f),
-        Offset(s / 2f, margin * 0.5f), Offset(s / 2f, s - margin * 0.5f), Offset(margin * 0.5f, s / 2f), Offset(s - margin * 0.5f, s / 2f)
+    listOf(Offset(margin * 0.5f, margin * 0.5f), Offset(w - margin * 0.5f, margin * 0.5f), Offset(w - margin * 0.5f, h - margin * 0.5f), Offset(margin * 0.5f, h - margin * 0.5f),
+        Offset(w / 2f, margin * 0.5f), Offset(w / 2f, h - margin * 0.5f), Offset(margin * 0.5f, h / 2f), Offset(w - margin * 0.5f, h / 2f)
     ).forEach { drawLeaves(it, cell * 0.28f) }
 
     // Wooden ladders: two rails with rungs, the light from the top-left.

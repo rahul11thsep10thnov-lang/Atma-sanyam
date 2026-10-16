@@ -62,7 +62,8 @@ fun SnakesScreen(game: BoardGameInfo, setup: SnakesSetup, onBackClick: () -> Uni
             GameResultDialog(title = stringResource(R.string.action_rules), lines = snakesRulesLines.map { stringResource(it) }, primaryText = stringResource(R.string.spectate_ok), onPrimary = onDismiss)
         },
         onBackClick = onBackClick,
-        undo = table.undo
+        undo = table.undo,
+        inlineUndo = true
     ) {
         SnakesTable(
             state = state, isMyTurn = table.isMyTurn && !motion.busy, shownDice = motion.die.face ?: table.shownDice, pulse = pulse, onRoll = table::roll,

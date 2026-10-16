@@ -59,14 +59,15 @@ data class CornerPlayer(
  * slight lift and a "YOUR TURN" / "TURN" tag — so nobody can miss whose move it is.
  */
 @Composable
-fun CornerPlaque(player: CornerPlayer?, alignEnd: Boolean, onTop: Boolean, pulse: Float, modifier: Modifier = Modifier) {
+fun CornerPlaque(player: CornerPlayer?, alignEnd: Boolean, onTop: Boolean, pulse: Float, modifier: Modifier = Modifier, compact: Boolean = false) {
+    if (compact) { SidePlaque(player, pulse, alignEnd, modifier); return }
     Box(modifier = modifier, contentAlignment = if (alignEnd) Alignment.CenterEnd else Alignment.CenterStart) {
         if (player == null) return@Box
         val turn = player.isTurn
         val shape = RoundedCornerShape(30.dp)
         val label = stringResource(R.string.ludo_plaque_label_format, player.name, player.filled ?: 0)
-        Column(horizontalAlignment = if (alignEnd) Alignment.End else Alignment.Start) {
-            if (turn && onTop) TurnTag(player.isYou, pulse)
+        // The TURN tag floats just outside the plaque instead of taking a row of its own, so the board keeps the height.
+        Box(contentAlignment = if (alignEnd) Alignment.CenterEnd else Alignment.CenterStart) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -97,12 +98,60 @@ fun CornerPlaque(player: CornerPlayer?, alignEnd: Boolean, onTop: Boolean, pulse
                 }
                 if (alignEnd) Avatar(player)
             }
-            if (turn && !onTop) TurnTag(player.isYou, pulse)
+            if (turn) Box(modifier = Modifier.align(if (onTop) Alignment.TopCenter else Alignment.BottomCenter).offset(y = if (onTop) (-20).dp else 20.dp)) { TurnTag(player.isYou, pulse) }
         }
         player.message?.let { m ->
             Box(modifier = Modifier.align(if (alignEnd) Alignment.TopEnd else Alignment.TopStart).offset(y = if (onTop) 58.dp else (-58).dp)) {
                 TalkBubble(name = "", id = m.id)
             }
+        }
+    }
+}
+
+/**
+ * The narrow plaque for the side columns of a landscape table: the avatar above the name and the four
+ * pips (or the square), in a tall rounded card. The turn is shown just as boldly — a thick pulsing gold
+ * border, a brighter fill and the TURN tag on top.
+ */
+@Composable
+private fun SidePlaque(player: CornerPlayer?, pulse: Float, rightSide: Boolean, modifier: Modifier) {
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+        if (player == null) return@Box
+        val turn = player.isTurn
+        val shape = RoundedCornerShape(16.dp)
+        val label = stringResource(R.string.ludo_plaque_label_format, player.name, player.filled ?: 0)
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            if (turn) TurnTag(player.isYou, pulse)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .alpha(if (player.awayLeft != null) 0.6f else 1f)
+                    .shadow(if (turn) 12.dp else 3.dp, shape, ambientColor = GoldenGlow, spotColor = GoldenGlow)
+                    .background(Brush.verticalGradient(listOf(lerp(player.tint, Color.Black, if (turn) 0.15f else 0.45f), lerp(player.tint, Color.Black, if (turn) 0.35f else 0.65f))), shape)
+                    .border(if (turn) (3 + 2 * pulse).dp else 1.5.dp, if (turn) lerp(Color(0xFFFFD54F), Color.White, pulse * 0.5f) else player.tint, shape)
+                    .padding(horizontal = 4.dp, vertical = 5.dp)
+                    .semantics { contentDescription = label }
+            ) {
+                Avatar(player)
+                Text(
+                    text = player.name, fontSize = 12.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold,
+                    color = if (turn) Color.White else Color(0xFFEDE3CF), maxLines = 1, overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 2.dp)
+                )
+                when {
+                    player.awayLeft != null -> Text(stringResource(R.string.ludo_away_format, player.awayLeft), fontSize = 10.sp, color = Color(0xFFEDE3CF), maxLines = 1)
+                    player.filled != null -> Row(horizontalArrangement = Arrangement.spacedBy(3.dp), modifier = Modifier.padding(top = 2.dp)) {
+                        repeat(4) { i ->
+                            Box(Modifier.size(9.dp).background(if (i < player.filled) GoldenGlow else player.tint, CircleShape).border(1.dp, Color.White.copy(alpha = 0.8f), CircleShape))
+                        }
+                    }
+                    player.detail != null -> Text(player.detail, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = if (turn) GoldenGlow else Color(0xFFEDE3CF), maxLines = 1)
+                }
+            }
+        }
+        player.message?.let { m ->
+            // The bubble leans over the edge of the board, so it never covers the die or the Roll button.
+            Box(modifier = Modifier.align(if (rightSide) Alignment.CenterStart else Alignment.CenterEnd).offset(x = if (rightSide) (-56).dp else 56.dp)) { TalkBubble(name = "", id = m.id) }
         }
     }
 }

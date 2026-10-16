@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import com.rangepatte.app.game.common.TalkTray
 import com.rangepatte.app.game.common.TalkControl
 import com.rangepatte.app.game.common.TalkButton
+import com.rangepatte.app.game.common.LocalUndoButton
 import com.rangepatte.app.audio.Sfx
 import com.rangepatte.app.audio.GameAudio
 import androidx.compose.runtime.getValue
@@ -68,7 +69,7 @@ fun LudoTable(state: LudoState, isMyTurn: Boolean, shownDice: Int?, pulse: Float
     }
     // Stage 8: while someone is away the line also says that the computer is playing for them.
     val awayNote = away.keys.firstOrNull()?.let { seat -> stringResource(R.string.ludo_status_away_format, state.players.getOrNull(seat)?.name.orEmpty()) }
-    StatusLine(text = if (awayNote != null && status.isNotEmpty()) "$status · $awayNote" else awayNote ?: status, highlight = isMyTurn, compact = true)
+    StatusLine(text = if (awayNote != null && status.isNotEmpty()) "$status · $awayNote" else awayNote ?: status, highlight = isMyTurn, compact = true, singleLine = true)
 
     val viewColor = state.players.getOrNull(mySeat)?.color ?: state.players.first().color
     val turns = ludoQuarterTurns(viewColor)
@@ -94,10 +95,11 @@ fun LudoTable(state: LudoState, isMyTurn: Boolean, shownDice: Int?, pulse: Float
         controls = { dieSize ->
             val canRoll = isMyTurn && state.phase == LudoPhase.ROLL
             Die(value = shownDice, highlight = canRoll, frame = die, size = dieSize, onClick = if (canRoll) ({ GameAudio.play(Sfx.UI_TAP); onRoll() }) else null)
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                RoyalButton(text = stringResource(R.string.ludo_roll), onClick = { GameAudio.play(Sfx.UI_TAP); onRoll() }, enabled = canRoll, style = RoyalButtonStyle.CRIMSON, compact = true)
-                if (talk != null) TalkButton(onClick = { GameAudio.play(if (showTalk) Sfx.UI_CLOSE else Sfx.UI_OPEN); showTalk = !showTalk })
-            }
+            RoyalButton(text = stringResource(R.string.ludo_roll), onClick = { GameAudio.play(Sfx.UI_TAP); onRoll() }, enabled = canRoll, style = RoyalButtonStyle.CRIMSON, compact = true)
+        },
+        extras = {
+            LocalUndoButton.current?.invoke()
+            if (talk != null) TalkButton(onClick = { GameAudio.play(if (showTalk) Sfx.UI_CLOSE else Sfx.UI_OPEN); showTalk = !showTalk })
         },
         below = {
             if (talk != null && showTalk) TalkTray(talk, onClose = { GameAudio.play(Sfx.UI_CLOSE); showTalk = false }, modifier = Modifier.padding(horizontal = 4.dp))

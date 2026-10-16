@@ -57,6 +57,9 @@ import com.rangepatte.app.ui.theme.GoldBevelLight
 import com.rangepatte.app.ui.theme.GoldenGlow
 import com.rangepatte.app.ui.theme.ParchmentText
 
+/** The table's Undo button, for a game that places it itself (board games put it beside the die); null when there is none. */
+val LocalUndoButton = androidx.compose.runtime.compositionLocalOf<(@Composable () -> Unit)?> { null }
+
 /** What the Undo button needs: how many undos remain, whether one can happen right now, and what to do. */
 class UndoControl(val usesLeft: Int, val enabled: Boolean, val onUndo: () -> Unit)
 
@@ -108,6 +111,8 @@ fun GameFrameChrome(
     watching: WatchingInfo? = null,
     talk: TalkControl? = null,
     background: BackgroundType = BackgroundType.VILLAGE_CHAUPAL,
+    /** The board games put Undo beside their die (read through [LocalUndoButton]) instead of in a row of its own. */
+    inlineUndo: Boolean = false,
     content: @Composable ColumnScope.() -> Unit
 ) {
     var showRules by remember { mutableStateOf(false) }
@@ -123,7 +128,24 @@ fun GameFrameChrome(
     BackHandler { askExit = true }
     val landscape = isLandscape()
 
-    CompositionLocalProvider(LocalCardTextMeasurer provides rememberTextMeasurer(cacheSize = 256)) {
+    // The Undo button, locked (🔒) until the player is a member or has watched the 30-second ad.
+    val undoButton: @Composable (compact: Boolean) -> Unit = { compact ->
+        if (undo != null) {
+            val open = undoUnlocked || UndoGate.isMember()
+            RoyalButton(
+                text = (if (open) "" else "\uD83D\uDD12 ") + if (compact) "${stringResource(R.string.action_undo)} ${undo.usesLeft}" else "${stringResource(R.string.action_undo)} (${undo.usesLeft})",
+                onClick = { if (open) undo.onUndo() else askUnlock = true },
+                enabled = undo.enabled && undo.usesLeft > 0,
+                style = RoyalButtonStyle.STEEL,
+                compact = compact
+            )
+        }
+    }
+
+    CompositionLocalProvider(
+        LocalCardTextMeasurer provides rememberTextMeasurer(cacheSize = 256),
+        LocalUndoButton provides if (inlineUndo && undo != null) ({ undoButton(true) }) else null
+    ) {
         WatermarkBackground(backgroundType = background, modifier = modifier) {
             Column(modifier = Modifier.fillMaxSize()) {
                 // Sideways, the table is the whole screen: no header, no game name, no buttons.
@@ -147,19 +169,11 @@ fun GameFrameChrome(
                                     Column(modifier = Modifier.fillMaxSize().padding(horizontal = 4.dp, vertical = 0.dp).padding(top = if (watching != null) 40.dp else 0.dp), content = content)
                                 }
                             }
-                            if (undo != null) {
+                            if (undo != null && !inlineUndo) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
                                     horizontalArrangement = Arrangement.Center
-                                ) {
-                                    val open = undoUnlocked || UndoGate.isMember()
-                                    RoyalButton(
-                                        text = (if (open) "" else "\uD83D\uDD12 ") + "${stringResource(R.string.action_undo)} (${undo.usesLeft})",
-                                        onClick = { if (open) undo.onUndo() else askUnlock = true },
-                                        enabled = undo.enabled && undo.usesLeft > 0,
-                                        style = RoyalButtonStyle.STEEL
-                                    )
-                                }
+                                ) { undoButton(false) }
                             }
                             if (watching != null) WatchingRibbon(watching)
                         }
@@ -338,10 +352,11 @@ private fun WatchingRibbon(info: WatchingInfo) {
  * player's own turn ([highlight]) it becomes the gold "Your turn" badge instead of plain text.
  */
 @Composable
-fun StatusLine(text: String, modifier: Modifier = Modifier, highlight: Boolean = false, compact: Boolean = false) {
+fun StatusLine(text: String, modifier: Modifier = Modifier, highlight: Boolean = false, compact: Boolean = false, singleLine: Boolean = false) {
     if (text.isBlank()) return
     // Short lines ("Your turn") become the gold badge; a longer hint stays plain text, just brighter.
-    if (highlight && text.length <= BADGE_MAX_CHARS) {
+    // A single-line status (the board games, where every bit of height goes to the board) never takes the badge.
+    if (highlight && !singleLine && text.length <= BADGE_MAX_CHARS) {
         Box(modifier = modifier.fillMaxWidth().padding(vertical = if (compact) 3.dp else 5.dp), contentAlignment = Alignment.Center) {
             TurnIndicator(text = text)
         }
@@ -354,7 +369,8 @@ fun StatusLine(text: String, modifier: Modifier = Modifier, highlight: Boolean =
         color = if (highlight) GoldenGlow else ParchmentText,
         textAlign = TextAlign.Center,
         modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = if (compact) 1.dp else 4.dp),
-        maxLines = 2
+        maxLines = if (singleLine) 1 else 2,
+        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
     )
 }
 

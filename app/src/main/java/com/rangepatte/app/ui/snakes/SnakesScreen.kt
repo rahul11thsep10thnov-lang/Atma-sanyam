@@ -23,6 +23,7 @@ import com.rangepatte.app.domain.snakes.SnakesPhase
 import com.rangepatte.app.domain.snakes.SnakesState
 import com.rangepatte.app.game.common.StatusLine
 import com.rangepatte.app.game.common.TalkButton
+import com.rangepatte.app.game.common.LocalUndoButton
 import com.rangepatte.app.game.common.TalkControl
 import com.rangepatte.app.game.common.TalkTray
 import com.rangepatte.app.domain.snakes.SnakesBoard
@@ -46,7 +47,6 @@ fun SnakesTable(
     away: Map<Int, Long> = emptyMap(), botSeats: Set<Int> = emptySet(), now: Long = 0L, talk: TalkControl? = null
 ) {
     val youName = stringResource(R.string.player_you)
-    Spacer(modifier = Modifier.height(6.dp))
     val t = state.last
     fun nameOf(seat: Int) = if (seat == mySeat) youName else state.players[seat].name
     val status = when {
@@ -62,7 +62,7 @@ fun SnakesTable(
         else -> stringResource(R.string.turn_indicator_format, nameOf(state.turn))
     }
     val awayNote = away.keys.firstOrNull()?.let { seat -> stringResource(R.string.ludo_status_away_format, state.players.getOrNull(seat)?.name.orEmpty()) }
-    StatusLine(text = if (awayNote != null && status.isNotEmpty()) "$status · $awayNote" else awayNote ?: status, highlight = isMyTurn, compact = true)
+    StatusLine(text = if (awayNote != null && status.isNotEmpty()) "$status · $awayNote" else awayNote ?: status, highlight = isMyTurn, compact = true, singleLine = true)
 
     val places = listOf(R.string.ludo_place_1, R.string.ludo_place_2, R.string.ludo_place_3, R.string.ludo_place_4).map { stringResource(it) }
     val computer = stringResource(R.string.ludo_plaque_computer)
@@ -94,10 +94,11 @@ fun SnakesTable(
         controls = { dieSize ->
             val canRoll = isMyTurn && state.phase == SnakesPhase.ROLL
             Die(value = shownDice, highlight = canRoll, frame = die, size = dieSize, onClick = if (canRoll) ({ GameAudio.play(Sfx.UI_TAP); onRoll() }) else null)
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                RoyalButton(text = stringResource(R.string.ludo_roll), onClick = { GameAudio.play(Sfx.UI_TAP); onRoll() }, enabled = canRoll, style = RoyalButtonStyle.CRIMSON, compact = true)
-                if (talk != null) TalkButton(onClick = { GameAudio.play(if (showTalk) Sfx.UI_CLOSE else Sfx.UI_OPEN); showTalk = !showTalk })
-            }
+            RoyalButton(text = stringResource(R.string.ludo_roll), onClick = { GameAudio.play(Sfx.UI_TAP); onRoll() }, enabled = canRoll, style = RoyalButtonStyle.CRIMSON, compact = true)
+        },
+        extras = {
+            LocalUndoButton.current?.invoke()
+            if (talk != null) TalkButton(onClick = { GameAudio.play(if (showTalk) Sfx.UI_CLOSE else Sfx.UI_OPEN); showTalk = !showTalk })
         },
         below = {
             if (talk != null && showTalk) TalkTray(talk, onClose = { GameAudio.play(Sfx.UI_CLOSE); showTalk = false }, modifier = Modifier.padding(horizontal = 4.dp))

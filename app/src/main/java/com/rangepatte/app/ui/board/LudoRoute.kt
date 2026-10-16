@@ -75,7 +75,8 @@ fun LudoScreen(game: BoardGameInfo, setup: LudoSetup, onBackClick: () -> Unit) {
             )
         },
         onBackClick = onBackClick,
-        undo = table.undo
+        undo = table.undo,
+        inlineUndo = true
     ) {
         LudoTable(
             state = state, isMyTurn = table.isMyTurn && !motion.busy, shownDice = motion.die.face ?: table.shownDice, pulse = pulse,

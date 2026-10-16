@@ -90,7 +90,7 @@ fun LudoBoardView(
             .pointerInput(state.turn, state.phase, highlight, motion.busy, quarterTurns) {
                 detectTapGestures { offset ->
                     if (motion.busy) return@detectTapGestures
-                    val cell = boardCellAt(offset, size.width.toFloat(), quarterTurns)
+                    val cell = boardCellAt(offset, size.width.toFloat(), size.height.toFloat(), quarterTurns)
                     val me = state.current
                     val hit = highlight.firstOrNull { t ->
                         val pos = me.tokens[t]
@@ -105,26 +105,35 @@ fun LudoBoardView(
     }
 }
 
-private fun frameOf(s: Float): Pair<Float, Float> {
-    val cell = s / (LudoBoard.SIZE + 1.1f)
-    return cell to cell * 0.55f
+/**
+ * The board's geometry for a canvas of [w] × [h]: the frame margin (the same on every side) and the
+ * width and height of one cell. The board may be stretched out of square to fill the room it is given;
+ * round things (circles, pawns, stars) are then sized by the smaller of the two cell sides.
+ */
+private class LudoGeometry(w: Float, h: Float) {
+    val margin = min(w, h) / (LudoBoard.SIZE + 1.1f) * 0.55f
+    val cellX = (w - margin * 2) / LudoBoard.SIZE
+    val cellY = (h - margin * 2) / LudoBoard.SIZE
+    val cell = min(cellX, cellY)
 }
 
 /** The board cell under a tap, undoing the picture's rotation. */
-private fun boardCellAt(offset: Offset, widthPx: Float, turns: Int): Cell {
-    val (cell, margin) = frameOf(widthPx)
-    val x = (offset.x - margin) / cell
-    val y = (offset.y - margin) / cell
+private fun boardCellAt(offset: Offset, widthPx: Float, heightPx: Float, turns: Int): Cell {
+    val g = LudoGeometry(widthPx, heightPx)
+    val x = (offset.x - g.margin) / g.cellX
+    val y = (offset.y - g.margin) / g.cellY
     val back = rotateBoard(x, y, 4 - (turns % 4))
     return Cell(back.x.toInt(), back.y.toInt())
 }
 
 private fun DrawScope.drawLudoBoard(measurer: TextMeasurer, state: LudoState, highlight: Set<Int>, pulse: Float, motion: MotionFrame, turns: Int) {
-    val s = min(size.width, size.height)
-    val (cell, margin) = frameOf(s)
-    val board = cell * LudoBoard.SIZE
+    val g = LudoGeometry(size.width, size.height)
+    val w = size.width
+    val h = size.height
+    val cell = g.cell
+    val margin = g.margin
     /** A point in board units to the screen. */
-    fun p(x: Float, y: Float): Offset { val r = rotateBoard(x, y, turns); return Offset(margin + r.x * cell, margin + r.y * cell) }
+    fun p(x: Float, y: Float): Offset { val r = rotateBoard(x, y, turns); return Offset(margin + r.x * g.cellX, margin + r.y * g.cellY) }
     fun centre(c: Cell) = p(c.col + 0.5f, c.row + 0.5f)
     /** The screen rectangle of a block of cells (rotation keeps it axis-aligned). */
     fun rect(col: Float, row: Float, w: Float, h: Float): Pair<Offset, Size> {
@@ -133,11 +142,11 @@ private fun DrawScope.drawLudoBoard(measurer: TextMeasurer, state: LudoState, hi
     }
 
     // The royal frame: waxed wood, a gold rim, leaf corners.
-    drawRoundRect(Brush.linearGradient(listOf(LudoPalette.Walnut, LudoPalette.WalnutDark, LudoPalette.Walnut), Offset.Zero, Offset(s, s)), Offset.Zero, Size(s, s), CornerRadius(cell * 0.7f))
-    drawRoundRect(Color.Black.copy(alpha = 0.25f), Offset(margin * 0.55f, margin * 0.6f), Size(s - margin * 1.1f, s - margin * 1.1f), CornerRadius(cell * 0.4f))
-    drawRoundRect(LudoPalette.Gold, Offset(margin * 0.42f, margin * 0.42f), Size(s - margin * 0.84f, s - margin * 0.84f), CornerRadius(cell * 0.45f), style = Stroke(width = cell * 0.07f))
-    listOf(Offset(margin * 0.9f, margin * 0.9f), Offset(s - margin * 0.9f, margin * 0.9f), Offset(s - margin * 0.9f, s - margin * 0.9f), Offset(margin * 0.9f, s - margin * 0.9f)).forEach { drawLeafCorner(it, cell) }
-    drawRoundRect(LudoPalette.Cream, Offset(margin, margin), Size(board, board), CornerRadius(cell * 0.25f))
+    drawRoundRect(Brush.linearGradient(listOf(LudoPalette.Walnut, LudoPalette.WalnutDark, LudoPalette.Walnut), Offset.Zero, Offset(w, h)), Offset.Zero, Size(w, h), CornerRadius(cell * 0.7f))
+    drawRoundRect(Color.Black.copy(alpha = 0.25f), Offset(margin * 0.55f, margin * 0.6f), Size(w - margin * 1.1f, h - margin * 1.1f), CornerRadius(cell * 0.4f))
+    drawRoundRect(LudoPalette.Gold, Offset(margin * 0.42f, margin * 0.42f), Size(w - margin * 0.84f, h - margin * 0.84f), CornerRadius(cell * 0.45f), style = Stroke(width = cell * 0.07f))
+    listOf(Offset(margin * 0.9f, margin * 0.9f), Offset(w - margin * 0.9f, margin * 0.9f), Offset(w - margin * 0.9f, h - margin * 0.9f), Offset(margin * 0.9f, h - margin * 0.9f)).forEach { drawLeafCorner(it, cell) }
+    drawRoundRect(LudoPalette.Cream, Offset(margin, margin), Size(g.cellX * LudoBoard.SIZE, g.cellY * LudoBoard.SIZE), CornerRadius(cell * 0.25f))
 
     val playing = state.players.map { it.color }.toSet()
     val turnColor = if (state.phase != LudoPhase.OVER) state.current.color else null

@@ -5,10 +5,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.rangepatte.app.ui.language.findActivity
+
+/** The app window's size: the whole screen the percentages of a layout refer to. */
+@Composable
+fun screenSizeDp(): DpSize {
+    val c = LocalConfiguration.current
+    return DpSize(c.screenWidthDp.dp, c.screenHeightDp.dp)
+}
 
 /** True while the phone is held sideways. */
 @Composable
