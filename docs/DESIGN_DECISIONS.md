@@ -79,3 +79,9 @@ design is described here and in the README section of each feature.
 - Landscape tables are true full screen (no header or game name, no app bar, banner or system bars).
 - Back always asks "Leave the game?" Yes / No; the setup page no longer auto-opens Rules.
 - Ludo / Moksha Patam portrait fills the table (big die row on tall phones); own colour is chosen on setup and always drawn bottom-left.
+
+### Third round (printed Ludo board, matte gotis, branding)
+
+- Ludo: the flat printed board of the supplied picture (colours FF1018 / 25E500 / 55C7F5 / FFF500, thin black grid), 2 × 2 yard circles at ±0.9 cell from each yard's centre, coloured start cells, four coloured stars on white, coloured entry arrows with black outlines, centre triangles with black dividers. Square, not stretched. Rules and path logic are untouched.
+- Gotis: Design 5 (matte), no gloss, soft contact shadow.
+- First tab renamed Cards; app icon and opening picture are the supplied artwork.

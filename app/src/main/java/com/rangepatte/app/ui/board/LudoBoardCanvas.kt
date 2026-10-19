@@ -28,8 +28,8 @@ import com.rangepatte.app.domain.ludo.LudoState
 import kotlin.math.min
 
 /**
- * The board's palette: the bright standard Ludo colours on a cream board, framed in the royal court's
- * waxed wood and gold.
+ * The board's palette: the bright flat colours of the printed Ludo board (red, green, sky blue and
+ * yellow on white cells with thin black lines). The wood and gold are the Moksha Patam board's frame.
  */
 object LudoPalette {
     val Ivory = Color(0xFFF3E7CB)
@@ -37,6 +37,8 @@ object LudoPalette {
     val Gold = Color(0xFFD9B04C)
     val GoldDark = Color(0xFF8A6A2A)
     val Ink = Color(0xFF24160C)
+    /** The thin black of the printed board's grid and outlines. */
+    val Line = Color(0xFF111111)
     val Walnut = Color(0xFF8B5A2B)
     val WalnutDark = Color(0xFF4A2A12)
     val Cream = Color(0xFFF2ECDF)
@@ -44,7 +46,7 @@ object LudoPalette {
     val TileShade = Color(0xFFD8D1C3)
 
     fun of(color: LudoColor): Color = when (color) {
-        LudoColor.RED -> Color(0xFFE23A2E); LudoColor.GREEN -> Color(0xFF23A148); LudoColor.YELLOW -> Color(0xFFF5B913); LudoColor.BLUE -> Color(0xFF1F63D3)
+        LudoColor.RED -> Color(0xFFFF1018); LudoColor.GREEN -> Color(0xFF25E500); LudoColor.YELLOW -> Color(0xFFFFF500); LudoColor.BLUE -> Color(0xFF55C7F5)
     }
 
     fun dark(color: LudoColor): Color = lerp(of(color), Color.Black, 0.35f)
@@ -90,13 +92,16 @@ fun LudoBoardView(
             .pointerInput(state.turn, state.phase, highlight, motion.busy, quarterTurns) {
                 detectTapGestures { offset ->
                     if (motion.busy) return@detectTapGestures
-                    val cell = boardCellAt(offset, size.width.toFloat(), size.height.toFloat(), quarterTurns)
+                    val at = boardPointAt(offset, size.width.toFloat(), size.height.toFloat(), quarterTurns)
                     val me = state.current
-                    val hit = highlight.firstOrNull { t ->
+                    // The token whose resting place is nearest the tap, if it is near enough (about a cell).
+                    val hit = highlight.mapNotNull { t ->
                         val pos = me.tokens[t]
-                        val c = LudoBoard.cellOf(me.color, pos) ?: LudoBoard.yardNests(me.color)[t]
-                        c == cell
-                    }
+                        val c = LudoBoard.cellOf(me.color, pos)
+                        val centre = if (c != null) Offset(c.col + 0.5f, c.row + 0.5f) else LudoBoard.nestPoint(me.color, t).let { Offset(it.x + 0.5f, it.y + 0.5f) }
+                        val d = (centre - at).getDistance()
+                        if (d <= 0.8f) t to d else null
+                    }.minByOrNull { it.second }?.first
                     if (hit != null) onTokenTap(hit)
                 }
             }
@@ -117,13 +122,12 @@ private class LudoGeometry(w: Float, h: Float) {
     val cell = min(cellX, cellY)
 }
 
-/** The board cell under a tap, undoing the picture's rotation. */
-private fun boardCellAt(offset: Offset, widthPx: Float, heightPx: Float, turns: Int): Cell {
+/** The point on the board, in board units, under a tap, undoing the picture's rotation. */
+private fun boardPointAt(offset: Offset, widthPx: Float, heightPx: Float, turns: Int): Offset {
     val g = LudoGeometry(widthPx, heightPx)
     val x = (offset.x - g.margin) / g.cellX
     val y = (offset.y - g.margin) / g.cellY
-    val back = rotateBoard(x, y, 4 - (turns % 4))
-    return Cell(back.x.toInt(), back.y.toInt())
+    return rotateBoard(x, y, 4 - (turns % 4))
 }
 
 private fun DrawScope.drawLudoBoard(measurer: TextMeasurer, state: LudoState, highlight: Set<Int>, pulse: Float, motion: MotionFrame, turns: Int) {
@@ -141,78 +145,81 @@ private fun DrawScope.drawLudoBoard(measurer: TextMeasurer, state: LudoState, hi
         return Offset(min(a.x, b.x), min(a.y, b.y)) to Size(kotlin.math.abs(a.x - b.x), kotlin.math.abs(a.y - b.y))
     }
 
-    // The royal frame: waxed wood, a gold rim, leaf corners.
-    drawRoundRect(Brush.linearGradient(listOf(LudoPalette.Walnut, LudoPalette.WalnutDark, LudoPalette.Walnut), Offset.Zero, Offset(w, h)), Offset.Zero, Size(w, h), CornerRadius(cell * 0.7f))
-    drawRoundRect(Color.Black.copy(alpha = 0.25f), Offset(margin * 0.55f, margin * 0.6f), Size(w - margin * 1.1f, h - margin * 1.1f), CornerRadius(cell * 0.4f))
-    drawRoundRect(LudoPalette.Gold, Offset(margin * 0.42f, margin * 0.42f), Size(w - margin * 0.84f, h - margin * 0.84f), CornerRadius(cell * 0.45f), style = Stroke(width = cell * 0.07f))
-    listOf(Offset(margin * 0.9f, margin * 0.9f), Offset(w - margin * 0.9f, margin * 0.9f), Offset(w - margin * 0.9f, h - margin * 0.9f), Offset(margin * 0.9f, h - margin * 0.9f)).forEach { drawLeafCorner(it, cell) }
-    drawRoundRect(LudoPalette.Cream, Offset(margin, margin), Size(g.cellX * LudoBoard.SIZE, g.cellY * LudoBoard.SIZE), CornerRadius(cell * 0.25f))
+    // The printed board, flat: a thin black border, white cells with thin black lines, colour quadrants.
+    val line = maxOf(1f, cell * 0.022f)
+    val ink = LudoPalette.Line
+    drawRect(ink, Offset.Zero, Size(w, h))
+    drawRect(Color.White, Offset(margin, margin), Size(g.cellX * LudoBoard.SIZE, g.cellY * LudoBoard.SIZE))
 
     val playing = state.players.map { it.color }.toSet()
     val turnColor = if (state.phase != LudoPhase.OVER) state.current.color else null
+    fun tint(color: LudoColor) = if (color in playing) LudoPalette.of(color) else Color(0xFFC9C2B6)
 
-    // Yards: a bright rounded square, a white circle, four nests.
+    // Yards: the whole 6 × 6 quadrant in the colour, a white square inside it (one cell in from each
+    // side) and four circles in a 2 × 2 grid for the tokens.
     LudoColor.values().forEach { color ->
         val o = LudoBoard.yardOrigin(color)
-        val active = color in playing
-        val base = if (active) LudoPalette.of(color) else Color(0xFFB9B2A6)
-        val (tl, sz) = rect(o.col + 0.22f, o.row + 0.22f, 5.56f, 5.56f)
-        drawRoundRect(Color.Black.copy(alpha = 0.18f), tl + Offset(cell * 0.05f, cell * 0.1f), sz, CornerRadius(cell * 0.55f))
-        drawRoundRect(Brush.linearGradient(listOf(lerp(base, Color.White, 0.18f), base, lerp(base, Color.Black, 0.12f)), tl, tl + Offset(sz.width, sz.height)), tl, sz, CornerRadius(cell * 0.55f))
-        drawRoundRect(Color.White.copy(alpha = 0.55f), tl, sz, CornerRadius(cell * 0.55f), style = Stroke(width = cell * 0.08f))
-        // Whose turn it is: the yard itself glows gold.
+        val base = tint(color)
+        val (qtl, qsz) = rect(o.col.toFloat(), o.row.toFloat(), 6f, 6f)
+        drawRect(base, qtl, qsz)
+        drawRect(ink, qtl, qsz, style = Stroke(line))
+        // Whose turn it is: the quadrant's edge glows gold.
         if (color == turnColor) {
-            drawRoundRect(Color(0xFFFFD54F).copy(alpha = 0.55f + 0.4f * pulse), tl - Offset(cell * 0.1f, cell * 0.1f), Size(sz.width + cell * 0.2f, sz.height + cell * 0.2f), CornerRadius(cell * 0.62f), style = Stroke(width = cell * (0.16f + 0.08f * pulse)))
+            val glow = cell * (0.22f + 0.1f * pulse)
+            drawRect(Color(0xFFFFC21A).copy(alpha = 0.7f + 0.3f * pulse), qtl + Offset(glow / 2f, glow / 2f), Size(qsz.width - glow, qsz.height - glow), style = Stroke(glow))
         }
-        val c = p(o.col + 3f, o.row + 3f)
-        drawCircle(Color.White.copy(alpha = if (active) 0.62f else 0.4f), radius = cell * 2.25f, center = c)
-        drawCircle(lerp(base, Color.White, 0.3f), radius = cell * 2.25f, center = c, style = Stroke(width = cell * 0.06f))
-        LudoBoard.yardNests(color).forEach { n -> drawOval(lerp(base, Color.White, 0.25f).copy(alpha = 0.7f), centre(n) + Offset(-cell * 0.38f, cell * 0.12f), Size(cell * 0.76f, cell * 0.34f)) }
+        val (wtl, wsz) = rect(o.col + 1f, o.row + 1f, 4f, 4f)
+        drawRect(Color.White, wtl, wsz)
+        drawRect(ink, wtl, wsz, style = Stroke(line))
+        for (t in 0 until 4) {
+            val n = LudoBoard.nestPoint(color, t)
+            val c = p(n.x + 0.5f, n.y + 0.5f)
+            drawCircle(base, radius = cell * 0.56f, center = c)
+            drawCircle(ink, radius = cell * 0.56f, center = c, style = Stroke(line))
+        }
     }
 
-    // Track tiles, home columns, starts, stars and arrows.
+    // Track cells, home lanes, starts, safe stars and entry arrows.
     fun tile(c: Cell, fill: Color) {
-        val (tl, sz) = rect(c.col + 0.06f, c.row + 0.06f, 0.88f, 0.88f)
-        drawRoundRect(LudoPalette.TileShade, tl + Offset(0f, cell * 0.06f), sz, CornerRadius(cell * 0.16f))
-        drawRoundRect(Brush.verticalGradient(listOf(lerp(fill, Color.White, 0.25f), fill), tl.y, tl.y + sz.height), tl, sz, CornerRadius(cell * 0.16f))
+        val (tl, sz) = rect(c.col.toFloat(), c.row.toFloat(), 1f, 1f)
+        drawRect(fill, tl, sz)
+        drawRect(ink, tl, sz, style = Stroke(line))
     }
-    LudoBoard.TRACK.forEach { tile(it, LudoPalette.Tile) }
+    LudoBoard.TRACK.forEach { tile(it, Color.White) }
     LudoColor.values().forEach { color ->
-        val tint = if (color in playing) LudoPalette.of(color) else Color(0xFFC9C2B6)
-        LudoBoard.homeColumn(color).forEach { tile(it, tint) }
-        val start = LudoBoard.TRACK[color.startIndex]
-        tile(start, tint); drawStar(centre(start), cell * 0.3f, Color.White)
+        val tintColor = tint(color)
+        LudoBoard.homeColumn(color).forEach { tile(it, tintColor) }
+        // The start square is coloured; the star (the safe square eight on) is the colour on white.
+        tile(LudoBoard.TRACK[color.startIndex], tintColor)
         val star = LudoBoard.TRACK[(color.startIndex + 8) % LudoBoard.TRACK_LENGTH]
-        tile(star, tint); drawStar(centre(star), cell * 0.3f, Color.White)
-        // The arrow on the square before the home column, pointing in.
+        tile(star, Color.White)
+        drawStar(centre(star), cell * 0.36f, tintColor, ink, line)
+        // The arrow on the square before the home lane, pointing in.
         val (entry, dir) = when (color) {
             LudoColor.RED -> Cell(0, 7) to Offset(1f, 0f)
             LudoColor.GREEN -> Cell(7, 0) to Offset(0f, 1f)
             LudoColor.YELLOW -> Cell(14, 7) to Offset(-1f, 0f)
             LudoColor.BLUE -> Cell(7, 14) to Offset(0f, -1f)
         }
-        tile(entry, LudoPalette.Tile)
-        val from = p(entry.col + 0.5f - dir.x * 0.28f, entry.row + 0.5f - dir.y * 0.28f)
-        val to = p(entry.col + 0.5f + dir.x * 0.28f, entry.row + 0.5f + dir.y * 0.28f)
-        drawArrow(from, to, tint, cell)
+        val from = p(entry.col + 0.5f - dir.x * 0.3f, entry.row + 0.5f - dir.y * 0.3f)
+        val to = p(entry.col + 0.5f + dir.x * 0.3f, entry.row + 0.5f + dir.y * 0.3f)
+        drawArrow(from, to, tintColor, cell, ink)
     }
     motion.shine?.let { (c, alpha) ->
         drawCircle(Color(0xFFFFE082).copy(alpha = 0.7f * alpha), radius = cell * (0.5f + 0.5f * (1f - alpha)), center = centre(c))
     }
 
-    // Centre: the four triangles, edged in white, a small gold ring where they meet.
+    // Centre: the four triangles meeting at the middle, divided by thin black lines.
     val cx = p(7.5f, 7.5f)
     fun tri(a: Offset, b: Offset, color: LudoColor) {
         val path = Path().apply { moveTo(cx.x, cx.y); lineTo(a.x, a.y); lineTo(b.x, b.y); close() }
-        drawPath(path, if (color in playing) LudoPalette.of(color) else Color(0xFFC9C2B6))
-        drawPath(path, Color.White.copy(alpha = 0.7f), style = Stroke(width = cell * 0.05f))
+        drawPath(path, tint(color))
+        drawPath(path, ink, style = Stroke(line))
     }
     tri(p(6f, 6f), p(6f, 9f), LudoColor.RED)
     tri(p(6f, 6f), p(9f, 6f), LudoColor.GREEN)
     tri(p(9f, 6f), p(9f, 9f), LudoColor.YELLOW)
     tri(p(6f, 9f), p(9f, 9f), LudoColor.BLUE)
-    drawCircle(LudoPalette.Gold, radius = cell * 0.22f, center = cx)
-    drawCircle(Color.White, radius = cell * 0.22f, center = cx, style = Stroke(width = cell * 0.04f))
 
     // Tokens, grouped per cell; the current player's movable ones get a pulsing gold ring.
     data class Piece(val player: Int, val token: Int, val color: LudoColor)
@@ -229,8 +236,9 @@ private fun DrawScope.drawLudoBoard(measurer: TextMeasurer, state: LudoState, hi
         }
     }
     byCell.forEach { (c, pieces) ->
-        val base = centre(c)
         val inYard = pieces.all { state.players[it.player].tokens[it.token] == LudoBoard.YARD }
+        // A token in its yard stands on its own circle; any other on the middle of its cell.
+        val base = if (inYard) LudoBoard.nestPoint(pieces[0].color, pieces[0].token).let { p(it.x + 0.5f, it.y + 0.5f) } else centre(c)
         val height = cell * (if (inYard) 0.95f else 0.82f)
         pieces.forEachIndexed { i, piece ->
             val offset = if (pieces.size == 1) Offset.Zero else Offset((i - (pieces.size - 1) / 2f) * cell * 0.2f, (i % 2) * cell * 0.08f)
@@ -276,64 +284,56 @@ private fun DrawScope.drawLudoBoard(measurer: TextMeasurer, state: LudoState, hi
     }
 }
 
-/** A glossy pawn standing with its foot at [foot]: a wide base, a tapering body, a collar and a round head. */
+/**
+ * A matte pawn (the classic goti) standing with its foot at [foot]: a broad rounded base, a gently
+ * tapering body, a narrow neck and a round head, in soft diffuse shading with no glossy highlight, and
+ * a small contact shadow on the board.
+ */
 internal fun DrawScope.drawPawn(foot: Offset, height: Float, color: LudoColor, alpha: Float = 1f, shadow: Boolean = true) {
     val base = LudoPalette.of(color)
-    val dark = LudoPalette.dark(color)
-    val light = LudoPalette.light(color)
-    val w = height * 0.62f
-    if (shadow) drawOval(Color.Black.copy(alpha = 0.28f * alpha), foot - Offset(w * 0.55f, height * 0.06f), Size(w * 1.1f, height * 0.2f))
-    // Base disc.
-    drawOval(dark.copy(alpha = alpha), foot - Offset(w * 0.5f, height * 0.13f), Size(w, height * 0.22f))
-    drawOval(base.copy(alpha = alpha), foot - Offset(w * 0.48f, height * 0.18f), Size(w * 0.96f, height * 0.2f))
-    // Body: a cone from the base up to the neck.
-    val neckY = foot.y - height * 0.66f
+    val edge = lerp(base, Color.Black, 0.34f)
+    val soft = lerp(base, Color.White, 0.14f)
+    val rim = lerp(base, Color.Black, 0.55f).copy(alpha = alpha)
+    val w = height * 0.66f
+    if (shadow) {
+        drawOval(Color.Black.copy(alpha = 0.12f * alpha), foot - Offset(w * 0.68f, height * 0.1f), Size(w * 1.36f, height * 0.26f))
+        drawOval(Color.Black.copy(alpha = 0.3f * alpha), foot - Offset(w * 0.54f, height * 0.06f), Size(w * 1.08f, height * 0.16f))
+    }
+    val neckY = foot.y - height * 0.6f
     val body = Path().apply {
-        moveTo(foot.x - w * 0.4f, foot.y - height * 0.1f)
-        quadraticTo(foot.x - w * 0.12f, foot.y - height * 0.32f, foot.x - w * 0.14f, neckY)
-        lineTo(foot.x + w * 0.14f, neckY)
-        quadraticTo(foot.x + w * 0.12f, foot.y - height * 0.32f, foot.x + w * 0.4f, foot.y - height * 0.1f)
+        moveTo(foot.x - w * 0.5f, foot.y - height * 0.07f)
+        cubicTo(foot.x - w * 0.52f, foot.y - height * 0.21f, foot.x - w * 0.2f, foot.y - height * 0.22f, foot.x - w * 0.12f, neckY)
+        lineTo(foot.x + w * 0.12f, neckY)
+        cubicTo(foot.x + w * 0.2f, foot.y - height * 0.22f, foot.x + w * 0.52f, foot.y - height * 0.21f, foot.x + w * 0.5f, foot.y - height * 0.07f)
+        quadraticTo(foot.x, foot.y + height * 0.05f, foot.x - w * 0.5f, foot.y - height * 0.07f)
         close()
     }
-    drawPath(body, Brush.horizontalGradient(listOf(dark, base, light, base, dark), foot.x - w * 0.4f, foot.x + w * 0.4f), alpha = alpha)
-    // Collar.
-    drawOval(dark.copy(alpha = alpha), Offset(foot.x - w * 0.24f, neckY - height * 0.04f), Size(w * 0.48f, height * 0.09f))
-    // Head.
-    val head = Offset(foot.x, neckY - height * 0.16f)
+    drawPath(body, Brush.horizontalGradient(listOf(edge, base, soft, base, edge), foot.x - w * 0.5f, foot.x + w * 0.5f), alpha = alpha)
+    drawPath(body, rim, style = Stroke(maxOf(1f, height * 0.018f)))
     val r = height * 0.2f
-    drawCircle(Brush.radialGradient(listOf(Color.White.copy(alpha = 0.9f), light, base, dark), center = head - Offset(r * 0.35f, r * 0.4f), radius = r * 1.5f), radius = r, center = head, alpha = alpha)
+    val head = Offset(foot.x, neckY - r * 0.7f)
+    drawCircle(Brush.radialGradient(listOf(soft, base, edge), center = head - Offset(r * 0.3f, r * 0.35f), radius = r * 1.5f), radius = r, center = head, alpha = alpha)
+    drawCircle(rim, radius = r, center = head, style = Stroke(maxOf(1f, height * 0.018f)))
 }
 
-private fun DrawScope.drawArrow(from: Offset, to: Offset, color: Color, cell: Float) {
+/** An arrow in [color] with a thin black outline, as printed on the board. */
+private fun DrawScope.drawArrow(from: Offset, to: Offset, color: Color, cell: Float, outline: Color) {
     val dx = to.x - from.x; val dy = to.y - from.y
     val len = kotlin.math.sqrt(dx * dx + dy * dy).coerceAtLeast(0.01f)
     val ux = dx / len; val uy = dy / len
-    drawLine(color, from, to - Offset(ux * cell * 0.12f, uy * cell * 0.12f), strokeWidth = cell * 0.11f)
-    val head = Path().apply {
-        moveTo(to.x + ux * cell * 0.06f, to.y + uy * cell * 0.06f)
-        lineTo(to.x - ux * cell * 0.2f - uy * cell * 0.16f, to.y - uy * cell * 0.2f + ux * cell * 0.16f)
-        lineTo(to.x - ux * cell * 0.2f + uy * cell * 0.16f, to.y - uy * cell * 0.2f - ux * cell * 0.16f)
-        close()
+    val shaft = Path().apply {
+        val hw = cell * 0.055f
+        val tail = from; val neck = to - Offset(ux * cell * 0.2f, uy * cell * 0.2f)
+        moveTo(tail.x - uy * hw, tail.y + ux * hw); lineTo(neck.x - uy * hw, neck.y + ux * hw)
+        lineTo(neck.x - uy * cell * 0.17f, neck.y + ux * cell * 0.17f); lineTo(to.x + ux * cell * 0.02f, to.y + uy * cell * 0.02f)
+        lineTo(neck.x + uy * cell * 0.17f, neck.y - ux * cell * 0.17f); lineTo(neck.x + uy * hw, neck.y - ux * hw)
+        lineTo(tail.x + uy * hw, tail.y - ux * hw); close()
     }
-    drawPath(head, color)
+    drawPath(shaft, color)
+    drawPath(shaft, outline, style = Stroke(maxOf(1f, cell * 0.02f)))
 }
 
-/** A cluster of three green leaves with a gold berry: the royal frame's corner ornament. */
-private fun DrawScope.drawLeafCorner(at: Offset, cell: Float) {
-    val leaf = Color(0xFF3E7D3A); val leafDark = Color(0xFF24502A)
-    listOf(-40f, 0f, 40f).forEach { a ->
-        val rad = Math.toRadians(a.toDouble() - 45.0)
-        val tip = Offset(at.x + (cell * 0.55f * Math.cos(rad)).toFloat(), at.y + (cell * 0.55f * Math.sin(rad)).toFloat())
-        val mid = Offset((at.x + tip.x) / 2f, (at.y + tip.y) / 2f)
-        val nx = -(tip.y - at.y) * 0.32f; val ny = (tip.x - at.x) * 0.32f
-        val path = Path().apply { moveTo(at.x, at.y); quadraticTo(mid.x + nx, mid.y + ny, tip.x, tip.y); quadraticTo(mid.x - nx, mid.y - ny, at.x, at.y); close() }
-        drawPath(path, leaf)
-        drawLine(leafDark, at, tip, strokeWidth = cell * 0.03f)
-    }
-    drawCircle(LudoPalette.Gold, radius = cell * 0.12f, center = at)
-}
-
-internal fun DrawScope.drawStar(center: Offset, radius: Float, color: Color) {
+internal fun DrawScope.drawStar(center: Offset, radius: Float, color: Color, outline: Color? = null, outlineWidth: Float = 1f) {
     val path = Path()
     for (i in 0 until 10) {
         val r = if (i % 2 == 0) radius else radius * 0.45f
@@ -343,4 +343,5 @@ internal fun DrawScope.drawStar(center: Offset, radius: Float, color: Color) {
     }
     path.close()
     drawPath(path, color)
+    if (outline != null) drawPath(path, outline, style = Stroke(outlineWidth))
 }

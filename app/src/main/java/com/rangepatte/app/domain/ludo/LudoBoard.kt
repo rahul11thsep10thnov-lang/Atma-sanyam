@@ -8,6 +8,9 @@ enum class LudoColor(val suit: String) {
     val startIndex: Int get() = ordinal * 13
 }
 
+/** A point on the board in board units (a cell's top-left is its column and row). */
+data class BoardPoint(val x: Float, val y: Float)
+
 /** A cell of the 15×15 board: column and row, 0-based from the top-left. */
 data class Cell(val col: Int, val row: Int)
 
@@ -61,6 +64,21 @@ object LudoBoard {
         val o = yardOrigin(color)
         return listOf(Cell(o.col + 1, o.row + 1), Cell(o.col + 4, o.row + 1), Cell(o.col + 1, o.row + 4), Cell(o.col + 4, o.row + 4))
     }
+
+    /**
+     * Where a token rests in its yard on the printed board: the four circles of a 2 × 2 grid round the
+     * centre of the yard's white square (0.9 of a cell either side). Returned as the point to add 0.5 to
+     * for the circle's centre — the same convention as a [Cell] — so it moves like a cell does.
+     * [token] 0..3 runs top-left, top-right, bottom-left, bottom-right of the yard.
+     */
+    fun nestPoint(color: LudoColor, token: Int): BoardPoint {
+        val o = yardOrigin(color)
+        val sx = if (token % 2 == 0) -1f else 1f
+        val sy = if (token < 2) -1f else 1f
+        return BoardPoint(o.col + 3f + sx * NEST_SPREAD - 0.5f, o.row + 3f + sy * NEST_SPREAD - 0.5f)
+    }
+
+    const val NEST_SPREAD = 0.9f
 
     /** The eight safe stars: every start square and the square eight ahead of it. */
     val SAFE_INDICES: Set<Int> = LudoColor.values().flatMap { listOf(it.startIndex, it.startIndex + 8) }.toSet()

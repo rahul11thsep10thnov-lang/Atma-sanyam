@@ -91,6 +91,7 @@ fun LudoTable(state: LudoState, isMyTurn: Boolean, shownDice: Int?, pulse: Float
     BoardTableLayout(
         corners = corners,
         pulse = pulse,
+        squareBoard = true,
         board = { m -> LudoBoardView(state = state, highlight = if (isMyTurn) state.movable else emptyList(), onTokenTap = onMove, pulse = pulse, motion = motion, quarterTurns = turns, modifier = m.padding(2.dp)) },
         controls = { dieSize ->
             val canRoll = isMyTurn && state.phase == LudoPhase.ROLL

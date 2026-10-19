@@ -35,6 +35,8 @@ fun BoardTableLayout(
     board: @Composable (Modifier) -> Unit,
     controls: @Composable (dieSize: Dp) -> Unit,
     modifier: Modifier = Modifier,
+    /** True keeps the board a perfect square (Ludo's printed board); false stretches it to the shares below (Moksha Patam). */
+    squareBoard: Boolean = false,
     /** Small buttons (Undo, table talk): between the top plaques in portrait, between the left ones in landscape. */
     extras: @Composable () -> Unit = {},
     below: @Composable () -> Unit = {}
@@ -46,7 +48,7 @@ fun BoardTableLayout(
         val landscape = availW > availH * 1.15f
         if (landscape) {
             val sideMin = 70.dp
-            val boardW = minOf(screen.width * LANDSCAPE_SHARE, availW - sideMin * 2)
+            val boardW = if (squareBoard) minOf(availH, screen.width * LANDSCAPE_SHARE, availW - sideMin * 2) else minOf(screen.width * LANDSCAPE_SHARE, availW - sideMin * 2)
             val side = (availW - boardW) / 2
             Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
                 Column(
@@ -57,7 +59,7 @@ fun BoardTableLayout(
                     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) { extras() }
                     CornerPlaque(corners.getOrNull(3), alignEnd = false, onTop = false, pulse = pulse, modifier = Modifier.fillMaxWidth(), compact = true)
                 }
-                board(Modifier.width(boardW).fillMaxHeight())
+                board(if (squareBoard) Modifier.size(boardW) else Modifier.width(boardW).fillMaxHeight())
                 Column(
                     modifier = Modifier.width(side).fillMaxHeight().padding(horizontal = 2.dp, vertical = 4.dp),
                     verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally
@@ -72,18 +74,23 @@ fun BoardTableLayout(
         } else {
             // What the board leaves: a plaque row above (about 60 dp) and the bottom row with the die and Roll (about 100 dp).
             val reserve = 160.dp
-            val boardH = minOf(screen.height * PORTRAIT_SHARE, availH - reserve).coerceAtLeast(availW * 0.8f)
+            val boardH = if (squareBoard) minOf(availW, screen.height * PORTRAIT_SHARE, availH - reserve) else minOf(screen.height * PORTRAIT_SHARE, availH - reserve).coerceAtLeast(availW * 0.8f)
+            // A tall phone leaves room under a square board: the die then gets a big row of its own.
+            val roomy = squareBoard && availH - boardH > 330.dp
             Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly) {
                 Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp), verticalAlignment = Alignment.Bottom) {
                     CornerPlaque(corners.getOrNull(0), alignEnd = false, onTop = true, pulse = pulse, modifier = Modifier.weight(1f))
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.padding(horizontal = 4.dp)) { extras() }
                     CornerPlaque(corners.getOrNull(1), alignEnd = true, onTop = true, pulse = pulse, modifier = Modifier.weight(1f))
                 }
-                board(Modifier.fillMaxWidth().height(boardH))
+                if (squareBoard) board(Modifier.size(boardH).align(Alignment.CenterHorizontally)) else board(Modifier.fillMaxWidth().height(boardH))
                 Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
                     CornerPlaque(corners.getOrNull(3), alignEnd = false, onTop = false, pulse = pulse, modifier = Modifier.weight(1f))
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) { controls(56.dp) }
+                    if (roomy) Spacer(Modifier.width(8.dp)) else Column(horizontalAlignment = Alignment.CenterHorizontally) { controls(56.dp) }
                     CornerPlaque(corners.getOrNull(2), alignEnd = true, onTop = false, pulse = pulse, modifier = Modifier.weight(1f))
+                }
+                if (roomy) Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+                    controls((availH - boardH - 190.dp).coerceIn(80.dp, 150.dp))
                 }
                 below()
             }

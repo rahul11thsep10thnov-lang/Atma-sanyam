@@ -10,6 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.rangepatte.app.data.local.LanguagePreferences
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 import com.rangepatte.app.game.common.UndoGate
 import com.rangepatte.app.navigation.RangEPatteNavHost
 import com.rangepatte.app.navigation.Routes
+import com.rangepatte.app.ui.splash.SplashHost
 import com.rangepatte.app.ui.language.ProvideAppLocale
 import com.rangepatte.app.ui.theme.RangEPatteTheme
 
@@ -55,7 +57,9 @@ class MainActivity : ComponentActivity() {
             var language by remember { mutableStateOf(savedLanguage ?: AppLanguage.ENGLISH) }
             ProvideAppLocale(language) {
                 RangEPatteTheme {
+                    var showSplash by rememberSaveable { mutableStateOf(true) }
                     Surface(modifier = Modifier.fillMaxSize()) {
+                      SplashHost(visible = showSplash, onFinished = { showSplash = false }) {
                         RangEPatteNavHost(
                             startDestination = startDestination,
                             currentLanguage = language,
@@ -64,6 +68,7 @@ class MainActivity : ComponentActivity() {
                                 language = chosen
                             }
                         )
+                      }
                     }
                 }
             }

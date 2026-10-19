@@ -92,11 +92,12 @@ class LudoMotion(private val reduceMotion: Boolean) {
     suspend fun move(before: LudoState, event: LudoEvent.Moved) {
         val player = before.players[event.player]
         val color = player.color
-        val path: List<Cell> = buildList {
+        val path: List<Offset> = buildList {
             if (event.from == LudoBoard.YARD) {
-                add(LudoBoard.yardNests(color)[event.token]); add(LudoBoard.cellOf(color, event.to)!!)
+                val nest = LudoBoard.nestPoint(color, event.token)
+                add(Offset(nest.x, nest.y)); add(LudoBoard.cellOf(color, event.to)!!.toOffset())
             } else {
-                for (p in event.from..event.to) add(LudoBoard.cellOf(color, p)!!)
+                for (p in event.from..event.to) add(LudoBoard.cellOf(color, p)!!.toOffset())
             }
         }
         // Where the captured tokens were standing before they went home.
@@ -104,7 +105,7 @@ class LudoMotion(private val reduceMotion: Boolean) {
             val p = before.players[pi]
             Triple(pi, ti, LudoBoard.cellOf(p.color, p.tokens[ti])!!)
         }
-        val landing = path.last()
+        val landing = LudoBoard.cellOf(color, event.to)!!
         val landedSafe = event.to <= LudoBoard.LAST_TRACK && LudoBoard.isSafe(LudoBoard.trackIndex(color, event.to))
 
         if (reduceMotion) {
@@ -123,13 +124,13 @@ class LudoMotion(private val reduceMotion: Boolean) {
             val t = this.value * (path.size - 1)
             val i = t.toInt().coerceAtMost(path.size - 2)
             val f = t - i
-            val a = path[i].toOffset(); val b = path[i + 1].toOffset()
+            val a = path[i]; val b = path[i + 1]
             val at = Offset(a.x + (b.x - a.x) * f, a.y + (b.y - a.y) * f)
             val lift = sin(this.value * PI).toFloat() * 0.6f
             val trail = (1..4).mapNotNull { k ->
                 val tt = (t - k * 0.6f); if (tt < 0) null else {
                     val j = tt.toInt().coerceAtMost(path.size - 2); val g = tt - j
-                    val pa = path[j].toOffset(); val pb = path[j + 1].toOffset()
+                    val pa = path[j]; val pb = path[j + 1]
                     Offset(pa.x + (pb.x - pa.x) * g, pa.y + (pb.y - pa.y) * g)
                 }
             }
@@ -140,7 +141,7 @@ class LudoMotion(private val reduceMotion: Boolean) {
             progress.animateTo(1f, tween(800, easing = FastOutSlowInEasing)) {
                 val v = this.value
                 frame = MotionFrame(flying = capturedFrom.map { (pi, ti, c) ->
-                    val nest = LudoBoard.yardNests(before.players[pi].color)[ti].toOffset()
+                    val np = LudoBoard.nestPoint(before.players[pi].color, ti); val nest = Offset(np.x, np.y)
                     val from = c.toOffset()
                     val arc = sin(v * PI).toFloat() * 1.5f
                     MotionFrame.Flyer(pi, ti, Offset(from.x + (nest.x - from.x) * v, from.y + (nest.y - from.y) * v - arc), 1.25f - 0.75f * v)
