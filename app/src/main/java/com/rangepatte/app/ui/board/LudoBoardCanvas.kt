@@ -53,6 +53,11 @@ object LudoPalette {
     fun light(color: LudoColor): Color = lerp(of(color), Color.White, 0.45f)
 }
 
+/** Goti size on the board, as a multiple of the original drawing (the pawns were enlarged by a quarter). */
+private const val GOTI_SCALE = 1.25f
+/** How far below a cell's centre a pawn's foot stands, in cells: keeps the larger pawn centred on its cell. */
+private const val GOTI_FOOT = 0.34f
+
 /** Quarter turns clockwise that bring [color]'s yard to the bottom-left corner of the screen. */
 fun ludoQuarterTurns(color: LudoColor): Int = (3 - color.ordinal + 4) % 4
 
@@ -239,14 +244,17 @@ private fun DrawScope.drawLudoBoard(measurer: TextMeasurer, state: LudoState, hi
         val inYard = pieces.all { state.players[it.player].tokens[it.token] == LudoBoard.YARD }
         // A token in its yard stands on its own circle; any other on the middle of its cell.
         val base = if (inYard) LudoBoard.nestPoint(pieces[0].color, pieces[0].token).let { p(it.x + 0.5f, it.y + 0.5f) } else centre(c)
-        val height = cell * (if (inYard) 0.95f else 0.82f)
+        // Several on one cell are drawn a little smaller and fanned out, so each stays distinguishable.
+        val crowd = pieces.size > 1
+        val height = cell * (if (inYard) 0.95f else 0.82f) * GOTI_SCALE * (if (crowd) 0.88f else 1f)
+        val spread = if (pieces.size == 2) 0.3f else 0.22f
         pieces.forEachIndexed { i, piece ->
-            val offset = if (pieces.size == 1) Offset.Zero else Offset((i - (pieces.size - 1) / 2f) * cell * 0.2f, (i % 2) * cell * 0.08f)
-            val foot = base + offset + Offset(0f, cell * 0.3f)
+            val offset = if (!crowd) Offset.Zero else Offset((i - (pieces.size - 1) / 2f) * cell * spread, (i % 2) * cell * 0.1f)
+            val foot = base + offset + Offset(0f, cell * GOTI_FOOT)
             val mine = piece.player == state.turn && piece.token in highlight
             if (mine) {
-                drawOval(Color(0xFFFFD54F).copy(alpha = 0.45f + 0.35f * pulse), foot - Offset(cell * 0.5f, cell * 0.2f), Size(cell * 1.0f, cell * 0.4f))
-                drawCircle(Color(0xFFFFD54F).copy(alpha = 0.5f + 0.4f * pulse), radius = cell * (0.55f + 0.08f * pulse), center = foot - Offset(0f, height * 0.45f), style = Stroke(width = cell * 0.09f))
+                drawOval(Color(0xFFFFD54F).copy(alpha = 0.45f + 0.35f * pulse), foot - Offset(cell * 0.56f, cell * 0.22f), Size(cell * 1.12f, cell * 0.44f))
+                drawCircle(Color(0xFFFFD54F).copy(alpha = 0.5f + 0.4f * pulse), radius = cell * (0.68f + 0.08f * pulse), center = foot - Offset(0f, height * 0.42f), style = Stroke(width = cell * 0.09f))
             }
             drawPawn(foot, height, piece.color)
         }
@@ -263,12 +271,12 @@ private fun DrawScope.drawLudoBoard(measurer: TextMeasurer, state: LudoState, hi
     motion.mover?.let { m ->
         val color = state.players[m.player].color
         m.trail.forEachIndexed { i, o -> drawCircle(LudoPalette.of(color).copy(alpha = 0.3f - i * 0.06f), radius = cell * (0.3f - i * 0.04f), center = fractional(o)) }
-        val ground = fractional(m.at) + Offset(0f, cell * 0.3f)
-        drawOval(Color.Black.copy(alpha = 0.25f), ground - Offset(cell * 0.3f, cell * 0.08f), Size(cell * 0.6f, cell * 0.16f))
-        drawPawn(ground - Offset(0f, cell * 0.45f * m.lift), cell * (0.82f + 0.12f * m.lift), color, shadow = false)
+        val ground = fractional(m.at) + Offset(0f, cell * GOTI_FOOT)
+        drawOval(Color.Black.copy(alpha = 0.25f), ground - Offset(cell * 0.38f, cell * 0.1f), Size(cell * 0.76f, cell * 0.2f))
+        drawPawn(ground - Offset(0f, cell * 0.45f * m.lift), cell * (0.82f + 0.12f * m.lift) * GOTI_SCALE, color, shadow = false)
     }
     motion.flying.forEach { f ->
-        drawPawn(fractional(f.at) + Offset(0f, cell * 0.3f), cell * 0.82f * f.scale.coerceAtLeast(0.2f), state.players[f.player].color, alpha = (0.4f + 0.6f * f.scale).coerceIn(0f, 1f))
+        drawPawn(fractional(f.at) + Offset(0f, cell * GOTI_FOOT), cell * 0.82f * GOTI_SCALE * f.scale.coerceAtLeast(0.2f), state.players[f.player].color, alpha = (0.4f + 0.6f * f.scale).coerceIn(0f, 1f))
     }
     // Finished pawns: small ones on their colour's triangle.
     state.players.forEach { pl ->
@@ -278,22 +286,32 @@ private fun DrawScope.drawLudoBoard(measurer: TextMeasurer, state: LudoState, hi
             val along = if (pl.color == LudoColor.RED || pl.color == LudoColor.YELLOW) Offset(0f, 1f) else Offset(1f, 0f)
             repeat(home) { i ->
                 val k = (i - (home - 1) / 2f) * 0.42f
-                drawPawn(p(bx + along.x * k, by + along.y * k + 0.22f), cell * 0.5f, pl.color)
+                drawPawn(p(bx + along.x * k, by + along.y * k + 0.22f), cell * 0.5f * GOTI_SCALE, pl.color)
             }
         }
     }
 }
 
+/** The two soft iridescent tints a pearl pawn of [color] shows in its sheen: gentle shifts, never a change of colour. */
+private fun pearlTints(color: LudoColor): Pair<Color, Color> = when (color) {
+    LudoColor.RED -> Color(0xFFFFB3CF) to Color(0xFFFFD8B0)
+    LudoColor.GREEN -> Color(0xFFB5FFDD) to Color(0xFFF2FFAE)
+    LudoColor.YELLOW -> Color(0xFFFFD0E4) to Color(0xFFFFF6C8)
+    LudoColor.BLUE -> Color(0xFFD0C2FF) to Color(0xFFB6F1FF)
+}
+
 /**
- * A matte pawn (the classic goti) standing with its foot at [foot]: a broad rounded base, a gently
- * tapering body, a narrow neck and a round head, in soft diffuse shading with no glossy highlight, and
- * a small contact shadow on the board.
+ * A pearl-finish pawn (the classic goti) standing with its foot at [foot]: a broad rounded base, a
+ * gently tapering body, a narrow neck and a round head, in the colour's rich base with a soft lustrous
+ * highlight and a delicate iridescent sheen across it — pearl-coated plastic, not glass or chrome —
+ * and a small contact shadow on the board.
  */
 internal fun DrawScope.drawPawn(foot: Offset, height: Float, color: LudoColor, alpha: Float = 1f, shadow: Boolean = true) {
     val base = LudoPalette.of(color)
-    val edge = lerp(base, Color.Black, 0.34f)
-    val soft = lerp(base, Color.White, 0.14f)
-    val rim = lerp(base, Color.Black, 0.55f).copy(alpha = alpha)
+    val edge = lerp(base, Color.Black, 0.36f)
+    val lit = lerp(base, Color.White, 0.24f)
+    val (tintA, tintB) = pearlTints(color)
+    val rim = lerp(base, Color.Black, 0.5f).copy(alpha = 0.85f * alpha)
     val w = height * 0.66f
     if (shadow) {
         drawOval(Color.Black.copy(alpha = 0.12f * alpha), foot - Offset(w * 0.68f, height * 0.1f), Size(w * 1.36f, height * 0.26f))
@@ -308,12 +326,35 @@ internal fun DrawScope.drawPawn(foot: Offset, height: Float, color: LudoColor, a
         quadraticTo(foot.x, foot.y + height * 0.05f, foot.x - w * 0.5f, foot.y - height * 0.07f)
         close()
     }
-    drawPath(body, Brush.horizontalGradient(listOf(edge, base, soft, base, edge), foot.x - w * 0.5f, foot.x + w * 0.5f), alpha = alpha)
-    drawPath(body, rim, style = Stroke(maxOf(1f, height * 0.018f)))
+    // Body: the rich base shaded round, then the pearl sheen — two faint tints sweeping diagonally.
+    drawPath(body, Brush.horizontalGradient(listOf(edge, base, lit, base, edge), foot.x - w * 0.5f, foot.x + w * 0.5f), alpha = alpha)
+    drawPath(
+        body,
+        Brush.linearGradient(
+            0f to Color.Transparent, 0.28f to tintA.copy(alpha = 0.42f), 0.5f to Color.Transparent, 0.74f to tintB.copy(alpha = 0.34f), 1f to Color.Transparent,
+            start = Offset(foot.x - w * 0.5f, foot.y - height * 0.6f), end = Offset(foot.x + w * 0.5f, foot.y)
+        ),
+        alpha = alpha
+    )
+    // A soft, wide lustre down the lit side (a glow, not a mirror streak).
+    drawOval(
+        Brush.radialGradient(listOf(Color.White.copy(alpha = 0.5f * alpha), Color.Transparent), center = Offset(foot.x - w * 0.16f, foot.y - height * 0.36f), radius = height * 0.2f),
+        Offset(foot.x - w * 0.3f, foot.y - height * 0.56f), Size(w * 0.28f, height * 0.4f)
+    )
+    drawPath(body, rim, style = Stroke(maxOf(1f, height * 0.016f)))
+    // Head: a lit sphere with the same sheen and a soft highlight.
     val r = height * 0.2f
     val head = Offset(foot.x, neckY - r * 0.7f)
-    drawCircle(Brush.radialGradient(listOf(soft, base, edge), center = head - Offset(r * 0.3f, r * 0.35f), radius = r * 1.5f), radius = r, center = head, alpha = alpha)
-    drawCircle(rim, radius = r, center = head, style = Stroke(maxOf(1f, height * 0.018f)))
+    drawCircle(Brush.radialGradient(listOf(lerp(base, Color.White, 0.42f), lit, base, edge), center = head - Offset(r * 0.3f, r * 0.35f), radius = r * 1.6f), radius = r, center = head, alpha = alpha)
+    drawCircle(
+        Brush.linearGradient(
+            0f to Color.Transparent, 0.32f to tintA.copy(alpha = 0.4f), 0.55f to Color.Transparent, 0.8f to tintB.copy(alpha = 0.32f), 1f to Color.Transparent,
+            start = head - Offset(r, r), end = head + Offset(r, r)
+        ),
+        radius = r, center = head, alpha = alpha
+    )
+    drawCircle(Brush.radialGradient(listOf(Color.White.copy(alpha = 0.6f * alpha), Color.Transparent), center = head - Offset(r * 0.32f, r * 0.38f), radius = r * 0.55f), radius = r * 0.55f, center = head - Offset(r * 0.32f, r * 0.38f))
+    drawCircle(rim, radius = r, center = head, style = Stroke(maxOf(1f, height * 0.016f)))
 }
 
 /** An arrow in [color] with a thin black outline, as printed on the board. */
