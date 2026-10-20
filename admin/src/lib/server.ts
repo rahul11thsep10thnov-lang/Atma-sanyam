@@ -2,6 +2,7 @@
 // is attached to backend calls here, so client-side JavaScript never sees it.
 import { cookies } from 'next/headers';
 
+// Keep in sync with the literal in src/proxy.ts (the proxy cannot import this server-only module).
 export const SESSION_COOKIE = 'loji_admin';
 
 export function apiUrl(): string {

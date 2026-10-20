@@ -4,7 +4,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 export function proxy(req: NextRequest) {
-  const hasSession = req.cookies.has('focus_admin');
+  const hasSession = req.cookies.has('loji_admin');
   const { pathname } = req.nextUrl;
   if (!hasSession && pathname !== '/login') {
     const url = req.nextUrl.clone();
