@@ -180,6 +180,11 @@ export interface Fact {
   illustration: string;
   audioUrl: string | null;
   source: { title: string; publisher: string; url: string } | null;
+  /** Where an ingested fact was taken from, and the credit its licence requires. */
+  sourceUrl?: string | null;
+  attributionText?: string | null;
+  licenceName?: string | null;
+  language?: string;
   questions: QuizQuestion[];
   translations: Record<string, Record<string, string>>;
   publishedAt: string | null;

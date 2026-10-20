@@ -33,6 +33,8 @@ in EAS, or in a local `.env` file that git ignores.
 | `SMS_PROVIDER` + `MSG91_AUTH_KEY`/`MSG91_TEMPLATE_ID` or `TWILIO_ACCOUNT_SID`/`TWILIO_AUTH_TOKEN`/`TWILIO_FROM` | provider dashboards (OTP_PROVIDERS.md) | ✅ |
 | `GOOGLE_PLAY_PACKAGE_NAME`, `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON`, `GOOGLE_PLAY_RTDN_TOKEN` | Play Console / Google Cloud (SUBSCRIPTIONS.md) | ✅ for Android |
 | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_PLAN_ID`, `RAZORPAY_WEBHOOK_SECRET` | Razorpay dashboard | ✅ for the website |
+| `SOURCE_BOT_CONTACT` | an address you monitor, e.g. `ops@your-domain.com` (appears in the User-Agent of source checks) | recommended |
+| `NASA_API_KEY` (future) | only when a NASA connector is added; none is needed today | — |
 | `RESEND_API_KEY` | Resend → API Keys → Create | optional |
 | `EMAIL_FROM` | an address on your Resend-verified domain, e.g. `LoJi <no-reply@your-domain.com>` | with Resend |
 | `EXPO_ACCESS_TOKEN` | expo.dev → Account settings → Access tokens | optional (push hardening) |

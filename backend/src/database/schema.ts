@@ -692,15 +692,84 @@ export const craftProgress = pgTable(
 
 // ---- Did You Know? --------------------------------------------------------
 
-export const factSources = pgTable('fact_sources', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  title: text('title').notNull(),
-  publisher: text('publisher').notNull(),
-  url: text('url').notNull(),
-  accessedOn: text('accessed_on'), // YYYY-MM-DD
-  notes: text('notes'),
-  createdAt: createdAt(),
-});
+export const SOURCE_VERIFICATION_STATUSES = ['pending_review', 'approved', 'restricted', 'unavailable', 'verification_failed'] as const;
+export type SourceVerificationStatus = (typeof SOURCE_VERIFICATION_STATUSES)[number];
+export const SOURCE_ORIGINS = ['admin', 'registry', 'editorial', 'discovered'] as const;
+
+// A source of facts. The first six columns are the fields of the console's
+// "Add a source" form. The rest record where the source came from and, above
+// all, what has actually been verified about its licence. A source whose
+// verification_status is not 'approved' (with licence_verified = true) can
+// never supply ingested facts; see services/sourceRegistryService.ts.
+export const factSources = pgTable(
+  'fact_sources',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    title: text('title').notNull(),
+    publisher: text('publisher').notNull(),
+    url: text('url').notNull(),
+    accessedOn: text('accessed_on'), // YYYY-MM-DD: the day the source was last actually fetched
+    notes: text('notes'),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    // ---- identity -------------------------------------------------------
+    sourceKey: text('source_key'), // stable id for registry sources
+    canonicalUrl: text('canonical_url'), // normalised url: the duplicate guard
+    origin: text('origin', { enum: SOURCE_ORIGINS }).notNull().default('admin'),
+    connector: text('connector'), // content connector used to fetch facts, if any
+    attributionTemplate: text('attribution_template'),
+    // ---- licence (claims stay unverified until licence_verified = true) --
+    licenceName: text('licence_name'),
+    licenceUrl: text('licence_url'),
+    licenceVerified: boolean('licence_verified').notNull().default(false),
+    commercialUseAllowed: boolean('commercial_use_allowed'),
+    redistributionAllowed: boolean('redistribution_allowed'),
+    attributionRequired: boolean('attribution_required'),
+    shareAlikeRequired: boolean('share_alike_required'),
+    apiKeyRequired: boolean('api_key_required'),
+    rateLimitNotes: text('rate_limit_notes'),
+    contentTypesAllowed: text('content_types_allowed').array().notNull().default(sql`'{}'::text[]`),
+    // ---- verification state ----------------------------------------------
+    verificationStatus: text('verification_status', { enum: SOURCE_VERIFICATION_STATUSES }).notNull().default('pending_review'),
+    verificationEvidenceUrl: text('verification_evidence_url'),
+    lastVerifiedAt: timestamp('last_verified_at', { withTimezone: true }), // last time evidence was found to support the status
+    lastCheckedAt: timestamp('last_checked_at', { withTimezone: true }), // last attempt, successful or not
+    lastCheckError: text('last_check_error'),
+    consecutiveFailures: integer('consecutive_failures').notNull().default(0),
+    evidenceHash: text('evidence_hash'),
+    evidenceChangedAt: timestamp('evidence_changed_at', { withTimezone: true }),
+    ingestionSuspended: boolean('ingestion_suspended').notNull().default(false),
+    suspensionReason: text('suspension_reason'),
+    // ---- administrator protection ----------------------------------------
+    adminEdited: boolean('admin_edited').notNull().default(false), // the automation never rewrites wording an admin edited
+    statusLocked: boolean('status_locked').notNull().default(false), // an admin set the status; the automation only records checks
+  },
+  (t) => [
+    uniqueIndex('fact_sources_source_key_idx').on(t.sourceKey),
+    uniqueIndex('fact_sources_canonical_url_idx').on(t.canonicalUrl),
+    index('fact_sources_status_idx').on(t.verificationStatus),
+    check('fact_sources_status_check', sql`${t.verificationStatus} in ('pending_review', 'approved', 'restricted', 'unavailable', 'verification_failed')`),
+    check('fact_sources_origin_check', sql`${t.origin} in ('admin', 'registry', 'editorial', 'discovered')`),
+  ]
+);
+
+// Append-only history of everything the registry did to a source.
+export const sourceVerificationEvents = pgTable(
+  'source_verification_events',
+  {
+    id: bigserial('id', { mode: 'number' }).primaryKey(),
+    sourceId: uuid('source_id')
+      .notNull()
+      .references(() => factSources.id, { onDelete: 'cascade' }),
+    at: timestamp('at', { withTimezone: true }).notNull().defaultNow(),
+    trigger: text('trigger').notNull(), // seed | startup | scheduled | manual | discovery | ingest
+    outcome: text('outcome').notNull(), // seeded | verified | unchanged | failed | suspended | resumed | skipped | ingested
+    fromStatus: text('from_status'),
+    toStatus: text('to_status'),
+    detail: text('detail'),
+  },
+  (t) => [index('source_events_source_idx').on(t.sourceId, t.at)]
+);
 
 export const FACT_STATUSES = ['draft', 'verified', 'published', 'archived'] as const;
 
@@ -732,8 +801,22 @@ export const facts = pgTable(
     updatedBy: uuid('updated_by').references(() => admins.id, { onDelete: 'set null' }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
+    // ---- provenance (editorial facts leave these empty) -----------------
+    ingestionKind: text('ingestion_kind').notNull().default('editorial'), // editorial | ingested
+    language: text('language').notNull().default('en'), // language of headline/body; other languages live in translations
+    minimumAge: integer('minimum_age'),
+    maximumAge: integer('maximum_age'),
+    sourceUrl: text('source_url'), // the exact page the fact was taken from
+    supportingReference: text('supporting_reference'), // the source passage the fact was derived from
+    licenceName: text('licence_name'), // licence of the source content at the time of ingestion
+    attributionText: text('attribution_text'),
+    claimCheck: text('claim_check'), // source_supported (automated) | editor_verified
+    reviewedAt: timestamp('reviewed_at', { withTimezone: true }),
+    contentHash: text('content_hash'), // hash of the normalised text: exact-duplicate guard
   },
   (t) => [
+    uniqueIndex('facts_content_hash_idx').on(t.contentHash),
+    index('facts_ingestion_idx').on(t.ingestionKind, t.sourceId),
     check('facts_status_check', sql`${t.status} in ('draft', 'verified', 'published', 'archived')`),
     index('facts_status_idx').on(t.status, t.publishedAt),
     index('facts_category_idx').on(t.category),

@@ -33,10 +33,16 @@ const STATUS_TONE: Record<string, string> = {
   sending: 'badge-info',
   deactivated: 'badge-danger',
   failed: 'badge-danger',
+  approved: 'badge-good',
+  verified: 'badge-info',
+  pending_review: 'badge-warn',
+  restricted: 'badge-danger',
+  unavailable: 'badge-danger',
+  verification_failed: 'badge-danger',
 };
 
 export function StatusBadge({ status }: { status: string }) {
-  return <span className={`badge ${STATUS_TONE[status] ?? ''}`}>{status}</span>;
+  return <span className={`badge ${STATUS_TONE[status] ?? ''}`}>{status.replace(/_/g, ' ')}</span>;
 }
 
 export function ErrorAlert({ error }: { error: string | null | undefined }) {

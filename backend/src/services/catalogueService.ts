@@ -4,7 +4,8 @@
 // start so a blocked game cannot be started by calling the API directly.
 import { and, asc, eq, inArray } from 'drizzle-orm';
 import type { Db } from '../database/client.js';
-import { craftTutorials, facts, favouriteGames, gameProgress, games, type AgeBracketKey } from '../database/schema.js';
+import { craftTutorials, factSources, facts, favouriteGames, gameProgress, games, type AgeBracketKey } from '../database/schema.js';
+import { mayDeliverIngested } from './sourceRegistryService.js';
 import { bracketsUpTo } from '../lib/age.js';
 import type { Controls } from './controlsService.js';
 
@@ -117,6 +118,11 @@ export function publicFact(f: typeof facts.$inferSelect, source: { title: string
     questions,
     translations: f.translations,
     publishedAt: f.publishedAt?.toISOString() ?? null,
+    // Provenance, so the app can show the exact page and the required credit.
+    language: f.language,
+    sourceUrl: f.sourceUrl,
+    attributionText: f.attributionText,
+    licenceName: f.licenceName,
   };
 }
 
@@ -125,5 +131,10 @@ export async function listFactsForChild(db: Db, effective: AgeBracketKey, contro
   const conds = [eq(facts.status, 'published')];
   if (category) conds.push(eq(facts.category, category));
   const rows = await db.select().from(facts).where(and(...conds)).orderBy(asc(facts.publishedAt));
-  return rows.filter((f) => f.brackets.some((b) => allowed.includes(b as AgeBracketKey)));
+  // Facts ingested from a source are shown only while that source's licence is
+  // verified and not restricted. Served from the database: never from a live API.
+  const ingestedSourceIds = [...new Set(rows.filter((f) => f.ingestionKind === 'ingested' && f.sourceId).map((f) => f.sourceId!))];
+  const sources = ingestedSourceIds.length ? await db.select().from(factSources).where(inArray(factSources.id, ingestedSourceIds)) : [];
+  const sourceById = new Map(sources.map((s) => [s.id, s]));
+  return rows.filter((f) => f.brackets.some((b) => allowed.includes(b as AgeBracketKey)) && (f.ingestionKind !== 'ingested' || (!!f.sourceId && mayDeliverIngested(sourceById.get(f.sourceId)))));
 }

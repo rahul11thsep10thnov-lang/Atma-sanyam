@@ -75,6 +75,8 @@ Status: ✅ implemented and tested · ⚠️ implemented, needs a real account/r
 
 ## Content safety
 
+- ✅ **Source registry**: facts are ingested only from sources whose licence evidence was actually found (or approved by a person); fetching is https-only, allow-listed, SSRF-checked, robots-aware and rate-limited; no credential ever reaches the app. See SOURCE_REGISTRY.md.
+
 - ✅ Facts cannot be published without a source, a fact-checker verification and a quiz
   question; changing the wording of a published fact returns it to draft.
 - ✅ Crafts with hazardous materials must require adult supervision and show the warning before

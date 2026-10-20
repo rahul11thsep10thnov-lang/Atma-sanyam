@@ -12,6 +12,8 @@ import { BRACKETS } from '../lib/age.js';
 import { ACHIEVEMENT_SEEDS, GAME_CATEGORIES, GAME_SEEDS } from '../catalogue/games.js';
 import { CRAFT_SEEDS } from '../catalogue/crafts.js';
 import { FACT_SEEDS, SOURCE_SEEDS } from '../catalogue/facts.js';
+import { canonicalizeUrl } from '../lib/url.js';
+import { seedSourceRegistry } from '../services/sourceRegistryService.js';
 
 export async function seedCatalogue(db: Db): Promise<{ gamesInserted: number; craftsInserted: number; factsInserted: number }> {
   await db
@@ -57,6 +59,16 @@ export async function seedCatalogue(db: Db): Promise<{ gamesInserted: number; cr
     .onConflictDoNothing()
     .returning({ id: craftTutorials.id });
 
+  // Earlier installs recorded the starter sources with an "accessed on" date
+  // although nobody had fetched the pages. Reclassify exactly those untouched
+  // rows as editorial references with no access date (rows an admin edited
+  // no longer carry the original note and are left alone).
+  await db
+    .update(factSources)
+    .set({ origin: 'editorial', accessedOn: null, notes: 'Editorial reference: the starter facts were written by editors with this page as a reference. No content is copied or ingested from it, and its licence has not been reviewed.', updatedAt: new Date() })
+    .where(eq(factSources.notes, 'Starter library source'));
+  // The source registry first: editorial facts may cite a registry source.
+  await seedSourceRegistry(db);
   const factsInserted = await seedFacts(db);
   return { gamesInserted: inserted.length, craftsInserted: crafts.length, factsInserted };
 }
@@ -71,13 +83,19 @@ export async function seedFacts(db: Db): Promise<number> {
   const existing = new Set((await db.select({ slug: facts.slug }).from(facts).where(inArray(facts.slug, FACT_SEEDS.map((f) => f.slug)))).map((r) => r.slug));
   const missing = FACT_SEEDS.filter((f) => !existing.has(f.slug));
   if (missing.length === 0) return 0;
-  // Sources: reuse by URL so re-seeding never duplicates them.
+  // Sources: reuse by canonical URL so re-seeding (or a registry source with
+  // the same page) never creates a duplicate. Editorial references are not
+  // licence-checked sources: the editors wrote these facts and cite the page.
   const sourceIds = new Map<string, string>();
   for (const s of SOURCE_SEEDS) {
-    const [found] = await db.select({ id: factSources.id }).from(factSources).where(eq(factSources.url, s.url));
+    const canonical = canonicalizeUrl(s.url);
+    const [found] = canonical ? await db.select({ id: factSources.id }).from(factSources).where(eq(factSources.canonicalUrl, canonical)) : await db.select({ id: factSources.id }).from(factSources).where(eq(factSources.url, s.url));
     if (found) sourceIds.set(s.key, found.id);
     else {
-      const [row] = await db.insert(factSources).values({ title: s.title, publisher: s.publisher, url: s.url, accessedOn: s.accessedOn, notes: 'Starter library source' }).returning({ id: factSources.id });
+      const [row] = await db
+        .insert(factSources)
+        .values({ title: s.title, publisher: s.publisher, url: s.url, canonicalUrl: canonical, origin: 'editorial', accessedOn: null, notes: 'Editorial reference: the starter facts were written by editors with this page as a reference. No content is copied or ingested from it, and its licence has not been reviewed.', verificationStatus: 'pending_review' })
+        .returning({ id: factSources.id });
       sourceIds.set(s.key, row!.id);
     }
   }

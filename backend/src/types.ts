@@ -7,6 +7,7 @@ import type { Mailer } from './lib/mailer.js';
 import type { SmsSender } from './lib/sms.js';
 import type { RealtimeHub } from './realtime/hub.js';
 import type { BillingProviders } from './services/billing/index.js';
+import type { RegistryRuntime } from './services/sourceRegistryService.js';
 
 export interface AppDeps {
   db: Db;
@@ -21,6 +22,8 @@ export interface AppDeps {
   realtime: RealtimeHub;
   // Subscription verification per store/provider.
   billing: BillingProviders;
+  // Overrides for the source registry's fetching (tests inject a fake fetch).
+  sourceRuntime?: Partial<RegistryRuntime>;
 }
 
 export interface AuthGuardian {

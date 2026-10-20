@@ -5,6 +5,7 @@ import type { AppDeps } from '../../types.js';
 import { adminAuthRouter } from './auth.js';
 import { adminGuardiansRouter } from './guardians.js';
 import { adminCatalogueRouter } from './catalogue.js';
+import { adminSourcesRouter } from './sources.js';
 import { adminSubscriptionsRouter } from './subscriptions.js';
 import { adminContentRouter } from './content.js';
 import { adminSettingsRouter } from './settings.js';
@@ -20,6 +21,7 @@ export function adminRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeof
   r.use(auth.requireAdmin);
   r.use('/guardians', adminGuardiansRouter(deps, auth));
   r.use('/subscriptions', adminSubscriptionsRouter(deps, auth));
+  r.use('/fact-sources', adminSourcesRouter(deps, auth));
   r.use('/', adminCatalogueRouter(deps, auth));
   r.use('/settings', adminSettingsRouter(deps, auth));
   r.use('/notifications', adminNotificationsRouter(deps, auth));

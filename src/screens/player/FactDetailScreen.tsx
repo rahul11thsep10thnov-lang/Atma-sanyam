@@ -137,6 +137,12 @@ export function FactDetailScreen({ navigation, route }: NativeStackScreenProps<R
             <Tactile onPress={() => Linking.openURL(fact.source!.url)} accessibilityRole="link">
               <AppText variant="bodySmallStrong" tone="primary">{fact.source.title} — {fact.source.publisher}</AppText>
             </Tactile>
+            {fact.sourceUrl ? (
+              <Tactile onPress={() => Linking.openURL(fact.sourceUrl!)} accessibilityRole="link">
+                <AppText variant="caption" tone="primary">{fact.sourceUrl}</AppText>
+              </Tactile>
+            ) : null}
+            {fact.attributionText ? <AppText variant="caption" tone="muted" style={{ marginTop: 4 }}>{fact.attributionText}</AppText> : null}
           </View>
         )}
         <BigButton label={t('facts.random')} emoji="🎲" color={palette.grape} fullWidth style={{ marginTop: space.lg }} onPress={() => playerApi.randomFact().then((f) => navigation.replace('FactDetail', { factId: f.id, fact: f })).catch(() => undefined)} />

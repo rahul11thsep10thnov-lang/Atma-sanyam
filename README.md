@@ -37,7 +37,9 @@ This repository contains the whole product:
   mirroring come for free). See [docs/GAMES_STATUS.md](docs/GAMES_STATUS.md).
 - **Art & Craft studio**: origami and paper crafts with animated fold diagrams, materials,
   hazard warnings that force adult supervision, checklists; drawing and colouring on screen.
-- **Did You Know?**: 19 categories, every fact tied to a publisher source, a
+- **Did You Know?**: 21 categories, every fact tied to a publisher source, an automatic
+  free-licence source registry (33 sources, verified from licence evidence, see
+  [docs/SOURCE_REGISTRY.md](docs/SOURCE_REGISTRY.md)), a
   draft → verified → published workflow in the admin console, quizzes, daily discovery,
   favourites, history and narration.
 - **Parental controls enforced by the server**: daily and per-session limits, play windows,
@@ -94,6 +96,7 @@ node e2e/smoke.mjs              # browser smoke test of the web build (see e2e/R
 
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — modules, database schema, security model, offline behaviour
 - [docs/API.md](docs/API.md) — every endpoint and the WebSocket protocol
+- [docs/SOURCE_REGISTRY.md](docs/SOURCE_REGISTRY.md) — the automatic free-licence source registry and fact pipeline
 - [docs/GAMES_STATUS.md](docs/GAMES_STATUS.md) — the 40 games, brackets and what each one does
 - [docs/SUBSCRIPTIONS.md](docs/SUBSCRIPTIONS.md) — Google Play Billing and Razorpay setup, state machine, testing
 - [docs/OTP_PROVIDERS.md](docs/OTP_PROVIDERS.md) — MSG91 / Twilio setup and test numbers for store review

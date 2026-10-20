@@ -18,7 +18,7 @@ work.
 
 - **Sandbox billing** (`BILLING_SANDBOX=true`) is refused in production; it exists for tests and
   local development only.
-- **Facts starter library**: 42 facts were written for this build from well-established
+- **Facts starter library**: 46 facts were written for this build from well-established
   knowledge and each cites a publisher page. They are seeded as published so the feature works
   on a fresh install. An editor should re-check each against its source before launch; the
   console's workflow (draft → verified → published) is the tool for that.
@@ -38,6 +38,16 @@ work.
   WebAudio tones; drag-and-drop uses pointer events through `PanResponder`.
 - **Analytics** are first-party, coarse and event-based (no third-party SDKs, no advertising
   identifiers), by design for the Families policy.
+
+## Source registry and fact ingestion (see SOURCE_REGISTRY.md)
+
+- **No source has been verified live.** The development sandbox cannot reach the third-party sites, so the registry was exercised against recorded pages and a simulated network, and a real run there ended with every content source `verification_failed` (DNS blocked) and nothing approved. The first run on a host with outbound HTTPS is what verifies licences; until then no ingested fact can reach a child.
+- **The evidence rules are only as good as the page wording they look for.** Each rule (the strings in `src/catalogue/sourceRegistry.ts`) was written from knowledge of the publisher's terms, not from reading the live pages today. If a page is worded differently, the source simply stays `pending_review`, which is the safe direction; a person can then approve it in the console.
+- **Only one content connector exists** (Wikipedia article summaries, English with the Hindi Wikipedia summary when one exists). Other approved sources are registered and licence-checked, but facts from them still have to be written or imported by editors.
+- **Automatic age review is a heuristic** (reading difficulty plus a blocklist), not a child-safety guarantee, which is why ingested facts are stored as `verified` and need an editor (and a quiz question) to publish unless `FACT_INGEST_AUTO_PUBLISH=true`.
+- **Hindi text is not machine-translated.** It is the Hindi Wikipedia's own summary of the same topic, kept only if it passes its own checks; no AI translation is performed.
+- **DNS rebinding** is mitigated by resolving and checking addresses before each request, but the final connection uses the system resolver; run the API with egress restrictions where possible.
+- The editorial references behind the starter facts (Britannica, National Geographic Kids, BBC, and others) are **not free-licence sources**; they are cited as references only, and no content is copied from them.
 
 ## Operational
 

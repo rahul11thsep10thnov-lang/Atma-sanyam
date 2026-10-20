@@ -5,6 +5,7 @@ import { admins, auditLogs } from '../../database/schema.js';
 import type { Auth } from '../../middleware/auth.js';
 import { parse } from '../../middleware/validate.js';
 import { analytics, dashboardStats, lojiStats, recentAuditLog, recentGuardians } from '../../services/analyticsService.js';
+import { sourceSummary } from '../../services/sourceRegistryService.js';
 import type { AppDeps } from '../../types.js';
 
 export function adminInsightsRouter({ db, env, sms, billing }: AppDeps, auth: Auth) {
@@ -49,6 +50,7 @@ export function adminInsightsRouter({ db, env, sms, billing }: AppDeps, auth: Au
       subscriptions: perms.has('subscriptions:read') ? { active: loji.active_subscriptions, grace: loji.grace, expired: loji.expired } : null,
       play: perms.has('analytics:read') ? { sessionsToday: loji.sessions_today, minutesToday: loji.minutes_today } : null,
       catalogue: { publishedGames: loji.published_games, inDevelopmentGames: loji.dev_games, publishedCrafts: loji.published_crafts, publishedFacts: loji.published_facts, unpublishedFacts: loji.draft_facts },
+      sources: perms.has('content:read') ? await sourceSummary(db) : null,
       installs: perms.has('analytics:read') ? stats.installs : null,
       content: stats.content,
       sessions7d: perms.has('analytics:read') ? stats.sessions7d : null,

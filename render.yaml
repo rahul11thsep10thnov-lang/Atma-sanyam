@@ -36,3 +36,21 @@ services:
         value: production
       - key: DATABASE_URL
         sync: false
+
+  # Licence verification of registered fact sources, discovery and fact ingestion
+  # (see docs/SOURCE_REGISTRY.md). The API also runs this hourly in-process; the
+  # job is idempotent, so both can coexist.
+  - type: cron
+    name: loji-sources
+    runtime: docker
+    dockerContext: ./backend
+    dockerfilePath: ./backend/Dockerfile
+    schedule: "10 4 * * *"
+    dockerCommand: node dist/database/maintainSources.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: SOURCE_BOT_CONTACT
+        sync: false

@@ -8,11 +8,12 @@ import { BracketPicker } from './catalogue';
 import { ErrorAlert, OkAlert } from './ui';
 
 export const FACT_CATEGORIES: { key: string; name: string }[] = [
-  { key: 'space', name: 'Space & Astronomy' }, { key: 'animals', name: 'Animals & Wildlife' }, { key: 'senses', name: 'Human Senses & Nature' }, { key: 'oceans', name: 'Oceans & Marine Life' },
+  { key: 'space', name: 'Space & Astronomy' }, { key: 'animals', name: 'Animals & Wildlife' }, { key: 'senses', name: 'Human Body, Senses & Healthy Habits' }, { key: 'oceans', name: 'Oceans & Marine Life' },
   { key: 'dinosaurs', name: 'Dinosaurs & Prehistoric Life' }, { key: 'experiments', name: 'Science Experiments' }, { key: 'physics', name: 'Physics & Everyday Phenomena' }, { key: 'plants', name: 'Plants & Forests' },
-  { key: 'inventions', name: 'Inventions & Discoveries' }, { key: 'india', name: 'Indian History & Heritage' }, { key: 'geography', name: 'Geography & Unusual Places' }, { key: 'weather', name: 'Weather & Climate' },
+  { key: 'inventions', name: 'Inventions & Discoveries' }, { key: 'india', name: 'Indian History & Heritage' }, { key: 'geography', name: 'Geography & Unusual Places' }, { key: 'weather', name: 'Weather, Environment & Climate' },
   { key: 'maths', name: 'Mathematics & Patterns' }, { key: 'technology', name: 'Technology & Robotics' }, { key: 'engineering', name: 'Engineering & Machines' }, { key: 'food', name: 'Food & How Things Are Made' },
   { key: 'adaptations', name: "Nature's Unusual Adaptations" }, { key: 'ancient', name: 'Ancient Civilisations' }, { key: 'mysteries', name: 'Puzzles, Paradoxes & Mysteries' },
+  { key: 'arts', name: 'Art, Music & Literature' }, { key: 'general', name: 'General Knowledge' },
 ];
 export const ILLUSTRATIONS = ['sparkles', 'sun', 'moon', 'rocket', 'paw', 'eye', 'waves', 'bone', 'flask', 'zap', 'leaf', 'lightbulb', 'landmark', 'globe', 'cloud', 'hash', 'cpu', 'wrench', 'utensils', 'scroll', 'puzzle', 'phone', 'star', 'heart', 'brain', 'book'];
 

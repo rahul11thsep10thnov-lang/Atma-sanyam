@@ -16,7 +16,7 @@ import type { Fact } from '../../types';
 import { t } from '../../i18n';
 
 export const CATEGORY_EMOJI: Record<string, string> = {
-  space: '🚀', animals: '🦁', senses: '👁️', oceans: '🌊', dinosaurs: '🦕', experiments: '🧪', physics: '⚡', plants: '🌱', inventions: '💡', india: '🏛️', geography: '🌍', weather: '🌦️', maths: '🔢', technology: '🤖', engineering: '🏗️', food: '🍲', adaptations: '🦎', ancient: '🏺', mysteries: '🧩',
+  space: '🚀', animals: '🦁', senses: '👁️', oceans: '🌊', dinosaurs: '🦕', experiments: '🧪', physics: '⚡', plants: '🌱', inventions: '💡', india: '🏛️', geography: '🌍', weather: '🌦️', maths: '🔢', technology: '🤖', engineering: '🏗️', food: '🍲', adaptations: '🦎', ancient: '🏺', mysteries: '🧩', arts: '🎨', general: '📚',
 };
 export const ILLUSTRATION_EMOJI: Record<string, string> = {
   sparkles: '✨', moon: '🌙', lightning: '⚡', ship: '🚢', rainbow: '🌈', bee: '🐝', astronaut: '🧑‍🚀', penguin: '🐧', bridge: '🌉', seed: '🌰', desert: '🏜️', bird: '🐦', starfish: '⭐', plant: '🌿', metal: '🔩', origami: '🦢', sun: '☀️', volcano: '🌋', elephant: '🐘', octopus: '🐙', dinosaur: '🦖', whale: '🐋', honey: '🍯', bat: '🦇', cactus: '🌵', tiger: '🐯', peacock: '🦚', chameleon: '🦎', brain: '🧠', heart: '❤️', snowflake: '❄️', earth: '🌍', train: '🚆', computer: '💻', wheel: '☸️', zero: '0️⃣', mango: '🥭', rice: '🍚', hummingbird: '🐦', tortoise: '🐢', coral: '🪸', salt: '🧂', paper: '📄', kite: '🪁', lotus: '🪷', glass: '🥛', magnet: '🧲', camel: '🐪', mountain: '🏔️', river: '🏞️', clock: '🕰️', rocket: '🚀',

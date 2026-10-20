@@ -11,6 +11,7 @@ import { heartbeat } from './routes/public/player.js';
 import { createApp } from './app.js';
 import { createRealtimeHub } from './realtime/hub.js';
 import { createBillingProviders } from './services/billing/index.js';
+import { startSourceMaintenance } from './services/sourceScheduler.js';
 import type { AppDeps } from './types.js';
 
 const env = loadEnv();
@@ -58,8 +59,11 @@ seedCatalogue(database.db)
   .then((r) => (r.gamesInserted || r.craftsInserted || r.factsInserted) && console.log(`Catalogue: ${r.gamesInserted} new game(s), ${r.craftsInserted} new craft(s), ${r.factsInserted} new fact(s) added.`))
   .catch((err) => console.error('Catalogue seed failed:', err instanceof Error ? err.message : err));
 
+const stopSourceMaintenance = startSourceMaintenance(database.db, env);
+
 async function shutdown(signal: string) {
   console.log(`${signal} received, shutting down`);
+  stopSourceMaintenance();
   server.close();
   await realtime.close();
   await Promise.allSettled([...pendingDeliveries]);

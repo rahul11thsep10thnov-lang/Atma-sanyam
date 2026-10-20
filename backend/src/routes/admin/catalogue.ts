@@ -12,6 +12,7 @@ import { parse } from '../../middleware/validate.js';
 import { badRequest, conflict, forbidden, notFound } from '../../lib/httpError.js';
 import { escapeLike, slugify } from '../../lib/strings.js';
 import { audit } from '../../lib/audit.js';
+import { canIngestFrom } from '../../services/sourceRegistryService.js';
 import { FACT_CATEGORY_KEYS } from '../../catalogue/factCategories.js';
 import type { AppDeps } from '../../types.js';
 
@@ -191,28 +192,6 @@ export function adminCatalogueRouter({ db }: AppDeps, auth: Auth) {
     res.status(204).end();
   });
 
-  // ---- fact sources ----------------------------------------------------------
-  const sourceFields = z.object({ title: z.string().trim().min(1).max(200), publisher: z.string().trim().min(1).max(120), url: z.string().trim().url().max(500).refine((u) => u.startsWith('https://'), 'Use https://'), accessedOn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(), notes: z.string().trim().max(500).nullable().optional() });
-
-  r.get('/fact-sources', auth.requirePermission('content:read'), async (req, res) => {
-    const q = parse(z.object({ search: z.string().trim().max(100).optional() }), req.query);
-    res.json(await db.select().from(factSources).where(q.search ? or(ilike(factSources.title, `%${escapeLike(q.search)}%`), ilike(factSources.publisher, `%${escapeLike(q.search)}%`)) : undefined).orderBy(asc(factSources.publisher), asc(factSources.title)).limit(500));
-  });
-
-  r.post('/fact-sources', auth.requirePermission('content:write'), async (req, res) => {
-    const body = parse(sourceFields, req.body);
-    const [row] = await db.insert(factSources).values({ ...body, accessedOn: body.accessedOn ?? null, notes: body.notes ?? null }).returning();
-    res.status(201).json(row);
-  });
-
-  r.patch('/fact-sources/:id', auth.requirePermission('content:write'), async (req, res) => {
-    const id = parse(z.string().uuid(), req.params.id);
-    const body = parse(sourceFields.partial(), req.body);
-    const [row] = await db.update(factSources).set(body).where(eq(factSources.id, id)).returning();
-    if (!row) throw notFound('Source not found');
-    res.json(row);
-  });
-
   // ---- facts ------------------------------------------------------------------
   const factFields = z.object({
     slug: slug.optional(),
@@ -306,6 +285,11 @@ export function adminCatalogueRouter({ db }: AppDeps, auth: Auth) {
       if (!perms.has('content:publish')) throw forbidden('You cannot publish facts');
       if (!f.sourceId) throw badRequest('A fact cannot be published without a source');
       if (!f.verifiedAt) throw badRequest('A fact must be verified against its source before publishing');
+      if (f.ingestionKind === 'ingested') {
+        const [src] = await db.select().from(factSources).where(eq(factSources.id, f.sourceId));
+        if (!src || !canIngestFrom(src, 'text')) throw badRequest('This fact was ingested from a source that is not currently approved for use; approve the source first');
+        if (!f.attributionText || !f.sourceUrl) throw badRequest('An ingested fact needs its source page and attribution before publishing');
+      }
       const [q] = await db.select({ n: count() }).from(quizQuestions).where(eq(quizQuestions.factId, id));
       if ((q?.n ?? 0) === 0) throw badRequest('Add at least one quiz question before publishing');
       patch.publishedAt = new Date();

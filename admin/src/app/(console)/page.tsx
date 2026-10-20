@@ -12,6 +12,7 @@ interface Dashboard {
   subscriptions: { active: number; grace: number; expired: number } | null;
   play: { sessionsToday: number; minutesToday: number } | null;
   catalogue: { publishedGames: number; inDevelopmentGames: number; publishedCrafts: number; publishedFacts: number; unpublishedFacts: number };
+  sources: { total: number; registeredAutomatically: number; approved: number; awaitingReview: number; restricted: number; verificationFailed: number; unavailable: number; suspended: number; lastSuccessfulVerificationAt: string | null; errors: unknown[] } | null;
   installs: { total: number; new7d: number; active7d: number } | null;
   notificationsSent30d: number | null;
   recentActivity: { id: number; action: string; entity_type: string; entity_id: string | null; created_at: string; admin_name: string | null }[] | null;
@@ -38,6 +39,7 @@ export default function DashboardPage() {
             <Kpi label="Published games" value={data.catalogue.publishedGames} sub={`${data.catalogue.inDevelopmentGames} in development`} />
             <Kpi label="Craft tutorials" value={data.catalogue.publishedCrafts} sub="published" />
             <Kpi label="Published facts" value={data.catalogue.publishedFacts} sub={`${data.catalogue.unpublishedFacts} draft or awaiting publish`} />
+            {data.sources && <Kpi label="Fact sources approved" value={data.sources.approved} sub={`${data.sources.awaitingReview} awaiting licence review · ${data.sources.restricted} restricted · ${data.sources.errors.length} with errors`} />}
             {data.installs && <Kpi label="Active installs (7d)" value={data.installs.active7d} sub={`${data.installs.total} installs total`} />}
           </div>
 

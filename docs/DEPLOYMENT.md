@@ -50,6 +50,7 @@ secret values.
 | `GOOGLE_PLAY_PACKAGE_NAME`, `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON`, `GOOGLE_PLAY_RTDN_TOKEN` | Play Billing verification + notifications (SUBSCRIPTIONS.md) |
 | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_PLAN_ID`, `RAZORPAY_WEBHOOK_SECRET` | website payments (SUBSCRIPTIONS.md) |
 | `SUBSCRIPTION_PRODUCT_ID`, `SUBSCRIPTION_PRICE_INR` | `loji_monthly`, display price |
+| `SOURCE_BOT_CONTACT` | an email or URL put in the source bot's User-Agent (Wikimedia requires one); the other `SOURCE_*` / `FACT_INGEST_*` variables have defaults (see backend/.env.example) |
 | `RESEND_API_KEY` / `EMAIL_FROM` | optional emails |
 | `EXPO_ACCESS_TOKEN` | optional, see *Push notifications* |
 
@@ -72,6 +73,8 @@ node dist/database/seedAdmin.js
 Lost the password? Re-run the first command with `--reset-password`.
 
 **Custom domain:** Settings → Custom Domains → `api.your-domain.com` (HTTPS is automatic).
+
+**Source maintenance** (blueprint job `loji-sources`, daily): licence verification, discovery and fact ingestion, `node dist/database/maintainSources.js`. The API also runs the same idempotent cycle hourly in-process, so the cron job matters only on hosts that stop idle processes. Outbound HTTPS to the registered publishers must be allowed.
 
 **Daily cleanup** (if you didn't use the blueprint): *New* → *Cron Job*, same Docker settings,
 schedule `30 3 * * *`, command `node dist/database/cleanup.js`, env `DATABASE_URL`.
