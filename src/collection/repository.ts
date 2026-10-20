@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { ARTWORKS } from '../spaces/catalog';
 import { loadSpace } from '../spaces/repository';
 import { ArtworkRecord, CollectionState, INITIAL_COLLECTION, DEFAULT_FRAME } from './model';
+import { readJson, writeJson } from '../storage/safeStore';
 
 const KEY = 'focus.collection.v1';
 const OLD_ART_KEY = 'focus.art.v2';
@@ -46,14 +47,11 @@ async function migrateOldArt(): Promise<CollectionState> {
 
 export async function loadCollection(): Promise<CollectionState> {
   if (memo) return memo;
-  try {
-    const raw = await AsyncStorage.getItem(KEY);
-    memo = raw ? { ...INITIAL_COLLECTION, ...(JSON.parse(raw) as Partial<CollectionState>) } : null;
-  } catch {
-    memo = null;
-  }
+  // A collection that can't be read is never replaced: see storage/safeStore.
+  const read = await readJson<Partial<CollectionState>>(KEY);
+  memo = read.value ? { ...INITIAL_COLLECTION, ...read.value } : null;
   if (!memo) {
-    memo = await migrateOldArt();
+    memo = read.ok ? await migrateOldArt() : { ...INITIAL_COLLECTION, artworks: [] };
     await saveCollection(memo);
   }
   // the 3D garden that once hung artworks is gone: anything placed there returns to the collection
@@ -67,11 +65,7 @@ export async function loadCollection(): Promise<CollectionState> {
 export async function saveCollection(c: CollectionState): Promise<CollectionState> {
   memo = c;
   listeners.forEach((l) => l(c));
-  try {
-    await AsyncStorage.setItem(KEY, JSON.stringify(c));
-  } catch {
-    // best effort
-  }
+  await writeJson(KEY, c);
   return c;
 }
 

@@ -480,6 +480,8 @@ export const hi: Partial<Record<StringKey, string>> = {
   'session.seeInGarden': 'इसे बगीचे में देखें',
   'session.noPlantGrew': 'कोई {plant} नहीं उगा: सत्र जल्दी समाप्त हो गया',
   'session.saplingLeft': '{segment} में एक मुरझाया पौधा उस जगह को चिह्नित करता है; इसे बगीचे में सिक्कों से साफ़ करें',
+  'session.closedTitle': 'आपका पिछला सत्र समाप्त हो गया',
+  'session.closedBody': 'फ़ोकस सत्र के दौरान Tame बंद कर दिया गया था, इसलिए इसे ऐप छोड़ना माना गया।',
   'settings.gardenMotion': 'बगीचे का एनिमेशन',
   'settings.gardenMotionHint': 'बगीचे में तितलियाँ, पानी, हवा और रोशनी',
   'settings.motion.full': 'पूरा',
