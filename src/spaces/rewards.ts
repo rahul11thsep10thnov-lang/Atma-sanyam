@@ -1,6 +1,6 @@
 // Coins, lifetime focus, milestones, the rewarded-ad ledger and
 // membership. One coin per focused minute of a completed session.
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { readJson, writeJson } from '../storage/safeStore';
 
 export interface RewardState {
   schemaVersion: 2;
@@ -77,27 +77,21 @@ const KEY = 'focus.rewards.v3';
 const LEGACY_KEYS = ['focus.balcony.rewards.v2', 'focus.balconyWorld.rewards.v1'];
 
 export async function loadRewards(): Promise<RewardState> {
-  try {
-    let raw = await AsyncStorage.getItem(KEY);
-    if (!raw) {
-      for (const k of LEGACY_KEYS) {
-        raw = await AsyncStorage.getItem(k);
-        if (raw) break;
-      }
+  // Coins that can't be read are never replaced by zero: see storage/safeStore.
+  const read = await readJson<Partial<RewardState>>(KEY);
+  let value = read.value;
+  if (!value && read.ok) {
+    for (const k of LEGACY_KEYS) {
+      value = (await readJson<Partial<RewardState>>(k)).value;
+      if (value) break;
     }
-    if (!raw) return INITIAL_REWARDS;
-    return { ...INITIAL_REWARDS, ...(JSON.parse(raw) as Partial<RewardState>), schemaVersion: 2 };
-  } catch {
-    return INITIAL_REWARDS;
   }
+  if (!value) return INITIAL_REWARDS;
+  return { ...INITIAL_REWARDS, ...value, schemaVersion: 2 };
 }
 
 export async function saveRewards(state: RewardState): Promise<void> {
-  try {
-    await AsyncStorage.setItem(KEY, JSON.stringify(state));
-  } catch {
-    // best effort
-  }
+  await writeJson(KEY, state);
 }
 
 export async function updateRewards(fn: (r: RewardState) => RewardState): Promise<RewardState> {

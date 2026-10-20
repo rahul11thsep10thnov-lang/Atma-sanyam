@@ -11,6 +11,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Animated, BackHandler, Dimensions, Image, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PuzzleGrid } from '../components/PuzzleGrid';
 import { gridForAspect } from '../utils/grid';
@@ -32,6 +33,7 @@ import { useFocusTimer } from '../hooks/useFocusTimer';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { RootStackParamList } from '../navigation/types';
 import { saveSessionRecord } from '../storage/history';
+import { clearActiveSession, noteActiveSession } from '../storage/activeSession';
 import { FocusReport, reportFocusSession } from '../social/focusReporter';
 import { group as groupApi, GroupSessionView } from '../social/groupApi';
 import { GroupPanel } from '../components/session/GroupPanel';
@@ -101,6 +103,11 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
   const leftFreeRef = useRef(false);
   // friends see "focusing now"; a completed session's minutes are verified by the server
   const reportRef = useRef<FocusReport | null>(null);
+  // Writes and removals of the running-session note, in order (storage/activeSession).
+  const noteRef = useRef<Promise<void>>(Promise.resolve());
+  const endNote = useCallback(() => {
+    noteRef.current = noteRef.current.then(clearActiveSession);
+  }, []);
 
   const isPlant = config.image.kind === 'plant';
   const inSpace = config.image.kind === 'space' || config.image.kind === 'balcony';
@@ -148,6 +155,41 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Once the free first seconds are over, note the session, so that closing
+  // the app from Recents still counts as leaving it (settled at next launch).
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      noteRef.current = noteRef.current.then(() =>
+        resultRef.current || leftFreeRef.current
+          ? undefined
+          : noteActiveSession({
+              id: sessionIdRef.current,
+              startedAt: startedAtRef.current,
+              durationMinutes: config.durationMinutes,
+              grid: SESSION_GRID,
+              image: config.image,
+              groupSessionId: groupCfg?.sessionId,
+            })
+      );
+    }, GRACE_SECONDS * 1000);
+    return () => {
+      clearTimeout(timer);
+      endNote();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // The screen stays on while the session runs: a phone that dims and locks
+  // itself would otherwise count as leaving the app.
+  useEffect(() => {
+    if (result) return;
+    const tag = `session-${sessionIdRef.current}`;
+    activateKeepAwakeAsync(tag).catch(() => undefined);
+    return () => {
+      deactivateKeepAwake(tag).catch(() => undefined);
+    };
+  }, [result]);
+
   const show = (next: Result) => {
     if (resultRef.current) return;
     resultRef.current = next;
@@ -155,6 +197,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
   };
 
   const handleComplete = useCallback(() => {
+    endNote();
     finalizeSession('completed', null, 1);
     if (settings.soundEnabled) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => undefined);
     show({ outcome: 'completed' });
@@ -193,11 +236,12 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
         setRewardLines(lines);
       })
       .catch(() => undefined);
-  }, [finalizeSession, settings.soundEnabled, config.durationMinutes, config.image, groupCfg]);
+  }, [finalizeSession, settings.soundEnabled, config.durationMinutes, config.image, groupCfg, endNote]);
 
   const handleFail = useCallback(
     (reason: 'left_app' | 'gave_up', revealedFraction: number) => {
       if (leftFreeRef.current) return;
+      endNote();
       const elapsed = (Date.now() - startedAtRef.current) / 1000;
       finalizeSession('failed', reason, revealedFraction);
       if (settings.soundEnabled) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => undefined);
@@ -236,7 +280,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
         })
         .catch(() => undefined);
     },
-    [finalizeSession, settings.soundEnabled, config.image, isPlant, inSpace, groupCfg]
+    [finalizeSession, settings.soundEnabled, config.image, isPlant, inSpace, groupCfg, endNote]
   );
 
   // The server ended the group session (the clock ran out on its side, or
@@ -305,6 +349,7 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
   const leaveFree = () => {
     // within the grace period: no record, no penalty, no droop
     leftFreeRef.current = true;
+    endNote();
     reportRef.current?.finish('failed');
     if (groupCfg) void groupApi.leave(groupCfg.sessionId).catch(() => undefined);
     track('session_withdrawn', { properties: { durationMinutes: config.durationMinutes, imageKind: config.image.kind } });

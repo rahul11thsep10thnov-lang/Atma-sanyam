@@ -27,7 +27,7 @@ Tame: Focus Timer & Garden
 Stay off your phone, grow plants and reveal jigsaws. Offline, no ads, no login.
 ```
 
-**Full description** (about 1,780 characters)
+**Full description** (about 1,770 characters)
 
 ```
 Tame helps you put the phone down and get real work done. Start a focus session and your time turns into something you can see: a plant that grows beside you, or a picture that reveals itself tile by tile.
@@ -56,7 +56,7 @@ MADE TO BE CALM
 • Works completely offline. No account, no sign-in.
 • No ads and no in-app purchases.
 • Nothing leaves your phone: your history, plants, coins and photos stay on your device.
-• Morning and night themes, gentle motion, sound and haptics you can turn off.
+• Morning and night themes, gentle motion, vibration you can turn off.
 • Optional reminder if you leave the app in the middle of a session.
 • In English and Hindi.
 
@@ -79,7 +79,7 @@ Tame: फ़ोकस टाइमर और बगीचा
 फ़ोन से दूर रहें, पौधे उगाएँ, जिगसॉ खोलें। ऑफ़लाइन, बिना विज्ञापन, बिना लॉगिन।
 ```
 
-**Full description** (about 1,720 characters)
+**Full description** (about 1,700 characters)
 
 ```
 Tame आपको फ़ोन नीचे रखकर सच में काम करने में मदद करता है। फ़ोकस सेशन शुरू कीजिए और आपका समय कुछ ऐसा बन जाता है जिसे आप देख सकें: आपके पास बढ़ता एक पौधा, या एक तस्वीर जो टुकड़ा-टुकड़ा करके खुलती है।
@@ -108,7 +108,7 @@ Tame आपको फ़ोन नीचे रखकर सच में का
 • पूरी तरह ऑफ़लाइन चलता है। न अकाउंट, न साइन-इन।
 • कोई विज्ञापन नहीं, कोई इन-ऐप ख़रीदारी नहीं।
 • कुछ भी आपके फ़ोन से बाहर नहीं जाता: इतिहास, पौधे, सिक्के और फ़ोटो आपके डिवाइस पर ही रहते हैं।
-• सुबह और रात की थीम, धीमी हलचल, और आवाज़ व वाइब्रेशन जिन्हें आप बंद कर सकते हैं।
+• सुबह और रात की थीम, धीमी हलचल, और वाइब्रेशन जिसे आप बंद कर सकते हैं।
 • सेशन के बीच ऐप छोड़ने पर वैकल्पिक रिमाइंडर।
 • हिन्दी और अंग्रेज़ी में।
 

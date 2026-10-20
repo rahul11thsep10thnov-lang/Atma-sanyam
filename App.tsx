@@ -13,6 +13,7 @@ import { AuthProvider } from './src/context/AuthContext';
 import { SocialProvider } from './src/social/SocialContext';
 import { PokeOverlay } from './src/components/social/PokeOverlay';
 import { AppGate } from './src/components/AppGate';
+import { InterruptedSessionNotice } from './src/components/session/InterruptedSessionNotice';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
 import { ThemeProvider, useTheme } from './src/theme/ThemeContext';
 import { setNotificationHandler } from './src/notifications/safeNotifications';
@@ -68,6 +69,7 @@ export default function App() {
                 <AuthProvider>
                   <SocialProvider>
                     <AnalyticsConsent />
+                    <InterruptedSessionNotice />
                     <AppGate>
                       <RootNavigator />
                     </AppGate>
