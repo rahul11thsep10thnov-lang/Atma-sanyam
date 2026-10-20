@@ -7,7 +7,7 @@ import { RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navig
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAuth } from '../context/AuthContext';
 import { useSocial } from '../social/SocialContext';
-import { Friend, PendingRequest, Presence, Profile, SearchResult, social } from '../social/api';
+import { Friend, PendingRequest, Presence, Profile, ReportContext, SearchResult, social } from '../social/api';
 import { friendlyError } from '../services/apiClient';
 import { group, GroupSessionView } from '../social/groupApi';
 import { plantName } from '../paradise/catalog';
@@ -111,10 +111,13 @@ export function FriendsScreen() {
     if (route.params?.tab) setTab(route.params.tab);
   }, [route.params?.tab]);
 
+  const [searchNonce, setSearchNonce] = useState(0);
   useFocusEffect(
     useCallback(() => {
       void refreshFriends();
       void refreshGroups();
+      // Search again too: someone blocked from the report screen disappears.
+      setSearchNonce((n) => n + 1);
     }, [refreshFriends, refreshGroups])
   );
 
@@ -140,7 +143,7 @@ export function FriendsScreen() {
       }
     }, 400);
     return () => clearTimeout(timer);
-  }, [query]);
+  }, [query, searchNonce]);
 
   const data = friendsData;
   const focusing = useMemo(() => data?.friends.filter((f) => f.presence.focusing) ?? [], [data]);
@@ -169,10 +172,20 @@ export function FriendsScreen() {
     });
   };
 
+  const report = (p: Profile, context: ReportContext) => navigation.navigate('Report', { userId: p.id, name: nameOf(p), avatarId: p.avatarId, context });
+
+  // Android shows at most three buttons in an alert, so blocking lives on the report screen.
   const friendMenu = (f: Friend) => {
     Alert.alert(nameOf(f), f.displayName ?? undefined, [
+      { text: t('friends.reportOrBlock'), onPress: () => report(f, 'friends') },
       { text: t('friends.unfriend'), style: 'destructive', onPress: () => void act(f.id, () => social.unfriend(f.id)) },
-      { text: t('friends.block'), style: 'destructive', onPress: () => void act(f.id, () => social.block(f.id)) },
+      { text: t('cancel'), style: 'cancel' },
+    ]);
+  };
+
+  const personMenu = (p: Profile, context: ReportContext) => {
+    Alert.alert(nameOf(p), p.displayName ?? undefined, [
+      { text: t('friends.reportOrBlock'), onPress: () => report(p, context) },
       { text: t('cancel'), style: 'cancel' },
     ]);
   };
@@ -318,6 +331,7 @@ export function FriendsScreen() {
             <PersonRow
               key={r.requestId}
               person={r}
+              onPress={() => personMenu(r, 'request')}
               trailing={
                 <View style={styles.actions}>
                   <IconButton icon="close" label={t('friends.decline')} variant="tinted" size={40} onPress={() => void act(r.requestId, () => social.decline(r.requestId))} disabled={busyId === r.requestId} />
@@ -355,6 +369,7 @@ export function FriendsScreen() {
             <PersonRow
               key={p.id}
               person={p}
+              onPress={() => personMenu(p, 'search')}
               trailing={
                 p.relation === 'friends' ? (
                   <View style={styles.nameRow}>

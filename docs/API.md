@@ -82,6 +82,7 @@ All need a signed-in person. Other people are only ever `{ id, username, display
 | DELETE | `/v1/friends/requests/:id` | cancel a request you sent |
 | DELETE | `/v1/friends/:userId` | unfriend |
 | POST / DELETE | `/v1/people/:userId/block` | block (ends the friendship and any request) / unblock; `GET /v1/people/blocked` |
+| POST | `/v1/people/:userId/report` | `{ reason: 'harassment'\|'inappropriate_profile'\|'spam'\|'impersonation'\|'other', note? (≤500), context? ('friends'\|'search'\|'request'\|'group'), groupSessionId?, block? }` → `201 { reportId, duplicate: false, blocked }`; a repeat within 24 h while still open → `200 … duplicate: true`. 400 self / not in that group, 404 unknown person. 20/hour. The reported person is never told. |
 | POST | `/v1/pokes` | `{ userId, key }` → `201 { pokeId, delivered: 'live'|'notification', repeated }`. Friends only, 403 when they turned pokes off, 429 within 2 min of the last poke to them; the same `key` again is a no-op (`200`, `repeated: true`). |
 | GET | `/v1/notifications?limit&before` | → `{ items, nextCursor, unread }` |
 | POST | `/v1/notifications/read` | `{ ids } \| { all: true }` → `{ unread }` |
@@ -166,6 +167,13 @@ Responses are `Cache-Control: no-store`. Changes are written to the audit log.
 | GET | `/users/:id` | users:read | Profile, devices, active session count, last 50 events. |
 | PATCH | `/users/:id` | users:write | `{ status: active\|deactivated }` — deactivation signs them out everywhere. |
 | DELETE | `/users/:id` | users:delete | Permanent delete. |
+
+### Reports
+
+| Method | Path | Permission | Description |
+|---|---|---|---|
+| GET | `/reports?status&reportedId&page&pageSize` | reports:read | Paginated reports, newest first: reason, note, context, status, reporter and reported (`{ id, username, displayName, status }`; reporter `null` once their account is deleted) and `openReportsAboutReported`. Never phone numbers. |
+| PATCH | `/reports/:id` | reports:write | `{ status: open\|resolved\|dismissed, resolutionNote? }`; records who closed it and when. To act on the account, deactivate it under Users. |
 
 ### Content & categories
 

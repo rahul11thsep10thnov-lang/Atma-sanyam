@@ -33,6 +33,8 @@ const STATUS_TONE: Record<string, string> = {
   sending: 'badge-info',
   deactivated: 'badge-danger',
   failed: 'badge-danger',
+  open: 'badge-warn',
+  resolved: 'badge-good',
 };
 
 export function StatusBadge({ status }: { status: string }) {

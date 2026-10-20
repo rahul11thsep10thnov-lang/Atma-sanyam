@@ -26,7 +26,7 @@ export const TextField = React.forwardRef<TextInput, TextFieldProps>(function Te
           {label}
         </AppText>
       ) : null}
-      <View style={[styles.field, { borderColor: border, backgroundColor: editable ? colors.surfaceRaised : colors.surfaceMuted }]}>
+      <View style={[styles.field, rest.multiline && styles.fieldMultiline, { borderColor: border, backgroundColor: editable ? colors.surfaceRaised : colors.surfaceMuted }]}>
         {icon ? <Icon name={icon} size="sm" color={focused ? 'primary' : 'icon'} /> : null}
         <TextInput
           ref={ref}
@@ -41,7 +41,7 @@ export const TextField = React.forwardRef<TextInput, TextFieldProps>(function Te
             rest.onBlur?.(e);
           }}
           placeholderTextColor={colors.textMuted}
-          style={[styles.input, typography.body, { color: colors.text }, style]}
+          style={[styles.input, rest.multiline && styles.inputMultiline, typography.body, { color: colors.text }, style]}
         />
       </View>
       {error ? (
@@ -62,5 +62,8 @@ const styles = StyleSheet.create({
   label: { marginBottom: 6 },
   field: { flexDirection: 'row', alignItems: 'center', gap: space.sm, height: 52, borderRadius: radii.md, borderWidth: 1, paddingHorizontal: space.md },
   input: { flex: 1, height: '100%', paddingVertical: 0 },
+  // A note box grows with its text instead of keeping the one-line height.
+  fieldMultiline: { height: undefined, minHeight: 96, alignItems: 'flex-start', paddingVertical: space.sm },
+  inputMultiline: { height: undefined, minHeight: 80, textAlignVertical: 'top' },
   hint: { marginTop: 6 },
 });

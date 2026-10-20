@@ -1,6 +1,7 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { RemoteImageRef, SessionConfig } from '../types';
 import type { LegalDocId } from '../legal/documents';
+import type { ReportContext } from '../social/api';
 
 export type RootTabParamList = {
   Home: { mode?: 'plants' | 'jigsaw'; arrival?: string } | undefined; // arrival: a nonce so the same mode can be asked again
@@ -19,6 +20,7 @@ export type RootStackParamList = {
   Auth: { mode?: 'signIn' | 'profile' | 'password' } | undefined;
   Notifications: undefined;
   Legal: { doc: LegalDocId };
+  Report: { userId: string; name: string; avatarId?: string | null; context: ReportContext; groupSessionId?: string };
   GroupSetup: { editSessionId?: string } | undefined;
   GroupLobby: { sessionId: string };
   Language: undefined;

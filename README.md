@@ -103,9 +103,15 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Android/iOS bundle ex
   username with a live availability check, and an avatar. The small **Sign in** chip sits at the
   top right of Home. The API needs an SMS provider (`docs/DEPLOYMENT.md`); without one the app
   hides phone sign-in. Social features (friends, group focus) are planned on top: `docs/SOCIAL.md`.
-- Settings → Legal holds the five policies (Terms, Privacy, Account deletion, Subscription & refund,
-  Community guidelines): `src/legal/documents.ts`. `tools/legal/build_legal_html.mjs` turns the same
-  text into the public web page Google Play needs. The session dial can also be typed into: tap its
+- Settings → Legal holds the policies: `src/legal/documents.ts`. An offline build (no
+  `EXPO_PUBLIC_API_URL`, which is version 1) shows Terms, Privacy and Subscription & refund written
+  for an app that keeps everything on the phone; an online build adds Account deletion and Community
+  guidelines. `tools/legal/build_legal_html.mjs` (`LEGAL_MODE=offline|online`) turns the same text
+  into the public web page Google Play needs. Store texts: `docs/STORE_LISTING.md`.
+- Membership and rewarded ads are placeholders and stay hidden (`src/config/features.ts`).
+- Anyone you meet in the app (friends, requests, search results, a group lobby) can be reported:
+  a reason, an optional note and an optional block. Moderators see reports in the admin console
+  under *Reports*. The session dial can also be typed into: tap its
   number and enter minutes in multiples of 5.
 - Leaving the app starts a grace period (default 5 s, configurable from the admin console);
   stay away longer and the session fails.

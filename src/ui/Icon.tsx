@@ -7,6 +7,7 @@ import type { LucideIcon, LucideProps } from 'lucide-react-native';
 import Armchair from 'lucide-react-native/icons/armchair';
 import Bell from 'lucide-react-native/icons/bell';
 import BellRing from 'lucide-react-native/icons/bell-ring';
+import Flag from 'lucide-react-native/icons/flag';
 import Hand from 'lucide-react-native/icons/hand';
 import Send from 'lucide-react-native/icons/send';
 import UserCheck from 'lucide-react-native/icons/user-check';
@@ -78,6 +79,7 @@ export const ICONS = {
   armchair: Armchair,
   bell: Bell,
   bellRing: BellRing,
+  flag: Flag,
   hand: Hand,
   send: Send,
   userCheck: UserCheck,

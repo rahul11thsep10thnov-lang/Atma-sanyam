@@ -15,6 +15,8 @@ export const PERMISSIONS = {
   'settings:write': 'Change app configuration, feature flags and maintenance mode',
   'notifications:read': 'View notification history',
   'notifications:send': 'Create and send push notifications',
+  'reports:read': 'View reports people made about other users',
+  'reports:write': 'Resolve or dismiss reports',
   'analytics:read': 'View analytics',
   'admins:read': 'View admin users and roles',
   'admins:write': 'Create, edit and remove admin users',
