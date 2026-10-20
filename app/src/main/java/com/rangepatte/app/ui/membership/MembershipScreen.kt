@@ -105,7 +105,8 @@ fun MembershipScreen(
                     Benefit(Icons.Filled.Block, stringResource(R.string.membership_benefit_no_ads))
                     Benefit(Icons.Filled.Favorite, stringResource(R.string.membership_benefit_support))
 
-                    PricePlaque(text = stringResource(R.string.membership_price))
+                    val billing by AppServices.billing.state.collectAsState()
+                    PricePlaque(text = billing.price?.let { stringResource(R.string.checkout_per_month, it) } ?: stringResource(R.string.membership_price))
 
                     if (isMember) {
                         val until = DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(adFreeUntil))
@@ -138,8 +139,9 @@ fun MembershipScreen(
                                 .padding(top = 10.dp)
                         )
                     } else {
-                        RoyalButton(
-                            text = stringResource(if (isMember) R.string.membership_extend else R.string.membership_pay),
+                        // A subscription renews by itself, so a member is not asked to extend it.
+                        if (!isMember) RoyalButton(
+                            text = stringResource(R.string.checkout_subscribe),
                             onClick = onPayClick,
                             modifier = Modifier
                                 .fillMaxWidth()

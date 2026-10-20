@@ -10,6 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -37,6 +40,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var showAbout by remember { mutableStateOf(false) }
 
     WatermarkBackground(backgroundType = BackgroundType.CLASSICAL_LIVING_ROOM, modifier = modifier) {
         LazyColumn(contentPadding = PaddingValues(16.dp)) {
@@ -66,8 +70,7 @@ fun SettingsScreen(
                     RoyalOptionRow(label = stringResource(R.string.settings_language), onClick = onChangeLanguageClick) {
                         Text(text = currentLanguage.nativeName, style = RoyalLabelStyle, color = GoldBevelLight)
                     }
-                    RoyalOptionRow(label = stringResource(R.string.settings_about))
-                    RoyalOptionRow(label = stringResource(R.string.settings_reset_data))
+                    RoyalOptionRow(label = stringResource(R.string.settings_about), onClick = { showAbout = true })
 
                     Row(
                         modifier = Modifier
@@ -85,4 +88,5 @@ fun SettingsScreen(
             }
         }
     }
+    if (showAbout) AboutDialog(onDismiss = { showAbout = false })
 }

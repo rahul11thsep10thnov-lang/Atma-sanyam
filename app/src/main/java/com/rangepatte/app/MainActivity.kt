@@ -28,6 +28,12 @@ import com.rangepatte.app.ui.theme.RangEPatteTheme
 
 class MainActivity : ComponentActivity() {
 
+    override fun onResume() {
+        super.onResume()
+        // Google Play is the source of truth for the subscription: ask again whenever the app comes back.
+        AppServices.billing.refreshPurchases()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // The app is always dark (royal-court theme), so system bar icons must always be light.

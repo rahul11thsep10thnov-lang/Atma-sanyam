@@ -495,7 +495,7 @@
     <string name="myprofile_log_out">লগ আউট</string>
     <string name="myprofile_log_out_confirm">আবার লগ ইন করতে OTP লাগবে।</string>
     <string name="myprofile_delete">অ্যাকাউন্ট মুছুন</string>
-    <string name="myprofile_delete_confirm">এতে আপনার প্রোফাইল, ইউজারনেম, ছবি, উপস্থিতি ও সেটিংস মুছে যাবে। বন্ধুত্বগুলো বাদ যাবে। এটি ফেরানো যায় না।</string>
+    <string name="myprofile_delete_confirm">এটি আপনার ফোন নম্বর, নাম, প্রোফাইল, ইউজারনেম, ছবি, অনলাইন অবস্থা, বন্ধু, অনুরোধ, পোক এবং আপনার লগইন স্থায়ীভাবে মুছে দেবে। অন্য খেলোয়াড়দের সুরক্ষার জন্য আপনার অ্যাকাউন্ট সম্পর্কিত নিরাপত্তা রিপোর্ট রাখা হতে পারে। এটি ফেরানো যাবে না।</string>
     <string name="myprofile_delete_yes">মুছুন</string>
     <string name="myprofile_delete_failed">অ্যাকাউন্ট মোছা গেল না। সংযোগ দেখে আবার চেষ্টা করুন।</string>
     <string name="myprofile_cancel">বাতিল</string>
@@ -672,4 +672,24 @@
     <string name="exit_game_body">আপনি কি নিশ্চিত যে বের হতে চান? চলমান খেলাটি হারিয়ে যাবে।</string>
     <string name="exit_yes">হ্যাঁ</string>
     <string name="exit_no">না</string>
+
+    <!-- Play Billing checkout -->
+    <string name="checkout_subscribe">সাবস্ক্রাইব করুন</string>
+    <string name="checkout_restore">কেনাকাটা পুনরুদ্ধার করুন</string>
+    <string name="checkout_per_month">%1$s / মাস</string>
+    <string name="checkout_play_note">আপনার Google Play অ্যাকাউন্ট থেকে চার্জ করা হবে। বাতিল না করা পর্যন্ত প্রতি মাসে নবায়ন হবে। যেকোনো সময় Google Play-তে পেমেন্ট ও সাবস্ক্রিপশন, তারপর সাবস্ক্রিপশন থেকে বাতিল করুন।</string>
+    <string name="checkout_manage">সাবস্ক্রিপশন পরিচালনা করুন</string>
+    <string name="checkout_unavailable">Google Play এখন সাবস্ক্রিপশন লোড করতে পারেনি। সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।</string>
+    <string name="checkout_already">আপনি ইতিমধ্যেই সদস্য।</string>
+    <string name="checkout_pending">আপনার পেমেন্ট অনুমোদনের অপেক্ষায় আছে। Google Play নিশ্চিত করলেই বিজ্ঞাপন বন্ধ হবে।</string>
+    <string name="checkout_price_unknown">…</string>
+
+    <!-- Legal links, About and deletion -->
+    <string name="about_version">সংস্করণ %1$s</string>
+    <string name="about_close">বন্ধ করুন</string>
+    <string name="about_privacy">গোপনীয়তা নীতি</string>
+    <string name="about_terms">ব্যবহারের শর্তাবলী</string>
+    <string name="about_delete_web">ওয়েবে অ্যাকাউন্ট মুছুন</string>
+    <string name="about_contact">সহায়তায় যোগাযোগ করুন</string>
+    <string name="myprofile_delete_relogin">আপনার অনলাইন রেকর্ড মুছে ফেলা হয়েছে। নিরাপত্তার জন্য আরেকবার সাইন ইন করে লগইন মুছতে আবার অ্যাকাউন্ট মুছুন বেছে নিন।</string>
 </resources>

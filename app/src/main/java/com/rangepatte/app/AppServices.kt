@@ -10,7 +10,7 @@ import com.rangepatte.app.data.auth.FirebasePhoneAuthService
 import com.rangepatte.app.data.auth.FirestoreUserDirectory
 import com.rangepatte.app.data.auth.LocalOnlyUserDirectory
 import com.rangepatte.app.data.membership.MembershipRepository
-import com.rangepatte.app.data.payment.PaymentGateway
+import com.rangepatte.app.data.payment.PlayBilling
 import com.rangepatte.app.data.friends.FirestoreFriendsStore
 import com.rangepatte.app.data.friends.FriendsRepository
 import com.rangepatte.app.data.friends.LocalFriendsStore
@@ -23,7 +23,6 @@ import com.rangepatte.app.data.presence.PresenceRepository
 import com.rangepatte.app.data.profile.FirestoreProfileStore
 import com.rangepatte.app.data.profile.LocalProfileStore
 import com.rangepatte.app.data.profile.ProfileRepository
-import com.rangepatte.app.data.payment.PlaceholderPaymentGateway
 
 /**
  * App-wide singletons, created once in [RangEPatteApplication.onCreate]. A tiny hand-rolled
@@ -69,12 +68,31 @@ object AppServices {
     lateinit var connectivity: com.rangepatte.app.data.net.ConnectivityMonitor
         private set
 
-    /** Swap [PlaceholderPaymentGateway] for the real partner's implementation when one is chosen. */
-    val paymentGateway: PaymentGateway = PlaceholderPaymentGateway
+    /** Google Play Billing: the ad-free subscription (connects in [init]; refreshed whenever the app returns). */
+    lateinit var billing: PlayBilling
+        private set
 
     /** True when google-services.json was present at build time, so real SMS OTP + online database are on. */
     var isFirebaseConnected: Boolean = false
         private set
+
+    /**
+     * Deletes the signed-in player's account completely (online records, username, relations, pokes, play
+     * requests and the sign-in itself) and signs out. A [com.rangepatte.app.data.auth.NeedsRecentLoginException]
+     * failure means the data is gone but Firebase wants a fresh sign-in to remove the login: the caller
+     * signs out and asks the player to sign in and delete once more.
+     */
+    fun deleteAccount(onResult: (Result<Unit>) -> Unit) {
+        val uid = account.currentUser.value?.uid ?: return onResult(Result.failure(IllegalStateException("not signed in")))
+        val username = profile.profile.value?.username
+        val service: com.rangepatte.app.data.auth.AccountDeletion =
+            if (isFirebaseConnected) com.rangepatte.app.data.auth.FirestoreAccountDeletion()
+            else com.rangepatte.app.data.auth.LocalAccountDeletion { done -> profile.deleteProfile(done) }
+        service.deleteAll(uid, username) { result ->
+            if (result.isSuccess) account.signOut()
+            onResult(result)
+        }
+    }
 
     fun init(application: Application) {
         isFirebaseConnected = runCatching {
@@ -86,7 +104,10 @@ object AppServices {
         account = if (isFirebaseConnected) {
             AccountRepository(application, FirebasePhoneAuthService(), FirestoreUserDirectory())
         } else {
-            AccountRepository(application, DemoPhoneAuthService(), LocalOnlyUserDirectory)
+            // The demo login (a fixed OTP) is for debug builds only; a release build never offers it.
+            val auth: com.rangepatte.app.data.auth.PhoneAuthService =
+                if (BuildConfig.DEBUG) DemoPhoneAuthService() else com.rangepatte.app.data.auth.UnavailablePhoneAuthService()
+            AccountRepository(application, auth, LocalOnlyUserDirectory)
         }
         profile = ProfileRepository(application, if (isFirebaseConnected) FirestoreProfileStore() else LocalProfileStore(application))
         friends = FriendsRepository(if (isFirebaseConnected) FirestoreFriendsStore() else LocalFriendsStore(application))
@@ -117,6 +138,8 @@ object AppServices {
         account.onSignedOutListener = { profile.onSignedOut(); friends.stopWatching(); presence.onSignedOut(); playRequests.stopWatching(); notifications.stopWatching(); pokes.stopWatching(); pokePrefs.stop(); myProfile.stop(); ludoRecord.stop(); snakesRecord.stop() }
         account.currentUser.value?.let { profile.onSignedIn(it.uid); friends.start(it.uid); presence.onSignedIn(it.uid); playRequests.start(it.uid); myProfile.start(it.uid); notifications.start(it.uid); pokePrefs.start(it.uid); pokes.start(it.uid); ludoRecord.start(it.uid); snakesRecord.start(it.uid) }
         ads = AdsManager(membership)
+        billing = PlayBilling(application, membership)
+        billing.connect()
         com.rangepatte.app.game.common.UndoGate.isMember = { membership.isAdFree() }
         GameAudio.init(application)
     }

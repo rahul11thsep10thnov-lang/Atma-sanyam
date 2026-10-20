@@ -495,7 +495,7 @@
     <string name="myprofile_log_out">வெளியேறு</string>
     <string name="myprofile_log_out_confirm">மீண்டும் உள்நுழைய OTP தேவைப்படும்.</string>
     <string name="myprofile_delete">கணக்கை நீக்கு</string>
-    <string name="myprofile_delete_confirm">இது உங்கள் சுயவிவரம், பயனர்பெயர், படம், இருப்பு மற்றும் அமைப்புகளை நீக்கும். நட்புகள் நீங்கும். இதை மீட்க முடியாது.</string>
+    <string name="myprofile_delete_confirm">இது உங்கள் தொலைபேசி எண், பெயர், சுயவிவரம், பயனர்பெயர், படம், ஆன்லைன் நிலை, நண்பர்கள், கோரிக்கைகள், பொக்குகள் மற்றும் உங்கள் உள்நுழைவை நிரந்தரமாக நீக்கும். மற்ற வீரர்களைப் பாதுகாக்க உங்கள் கணக்கு பற்றிய பாதுகாப்பு அறிக்கைகள் வைத்திருக்கப்படலாம். இதைத் திரும்பப் பெற முடியாது.</string>
     <string name="myprofile_delete_yes">நீக்கு</string>
     <string name="myprofile_delete_failed">கணக்கை நீக்க முடியவில்லை. இணைப்பைச் சரிபார்த்து மீண்டும் முயலவும்.</string>
     <string name="myprofile_cancel">ரத்து</string>
@@ -672,4 +672,24 @@
     <string name="exit_game_body">நிச்சயமாக வெளியேற விரும்புகிறீர்களா? நடந்துகொண்டிருக்கும் ஆட்டம் இழக்கப்படும்.</string>
     <string name="exit_yes">ஆம்</string>
     <string name="exit_no">இல்லை</string>
+
+    <!-- Play Billing checkout -->
+    <string name="checkout_subscribe">சந்தா செலுத்துங்கள்</string>
+    <string name="checkout_restore">வாங்கல்களை மீட்டெடுக்கவும்</string>
+    <string name="checkout_per_month">%1$s / மாதம்</string>
+    <string name="checkout_play_note">கட்டணம் உங்கள் Google Play கணக்கில் வசூலிக்கப்படும். நீங்கள் ரத்து செய்யும் வரை ஒவ்வொரு மாதமும் புதுப்பிக்கப்படும். எப்போது வேண்டுமானாலும் Google Play இல் கட்டணங்கள் &amp; சந்தாக்கள், பின் சந்தாக்கள் பகுதியில் ரத்து செய்யலாம்.</string>
+    <string name="checkout_manage">சந்தாவை நிர்வகிக்கவும்</string>
+    <string name="checkout_unavailable">Google Play இப்போது சந்தாவை ஏற்ற முடியவில்லை. இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.</string>
+    <string name="checkout_already">நீங்கள் ஏற்கனவே உறுப்பினர்.</string>
+    <string name="checkout_pending">உங்கள் கட்டணம் அனுமதிக்காகக் காத்திருக்கிறது. Google Play உறுதிப்படுத்தியவுடன் விளம்பரங்கள் நிற்கும்.</string>
+    <string name="checkout_price_unknown">…</string>
+
+    <!-- Legal links, About and deletion -->
+    <string name="about_version">பதிப்பு %1$s</string>
+    <string name="about_close">மூடு</string>
+    <string name="about_privacy">தனியுரிமைக் கொள்கை</string>
+    <string name="about_terms">பயன்பாட்டு விதிமுறைகள்</string>
+    <string name="about_delete_web">இணையத்தில் கணக்கை நீக்கு</string>
+    <string name="about_contact">ஆதரவைத் தொடர்பு கொள்ளுங்கள்</string>
+    <string name="myprofile_delete_relogin">உங்கள் ஆன்லைன் பதிவுகள் நீக்கப்பட்டன. பாதுகாப்புக்காக ஒருமுறை மீண்டும் உள்நுழைந்து, உள்நுழைவை நீக்க கணக்கை நீக்கு என்பதை மீண்டும் தேர்ந்தெடுக்கவும்.</string>
 </resources>

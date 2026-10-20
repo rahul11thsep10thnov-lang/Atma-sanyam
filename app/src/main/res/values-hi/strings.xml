@@ -495,7 +495,7 @@
     <string name="myprofile_log_out">लॉग आउट</string>
     <string name="myprofile_log_out_confirm">वापस लॉग इन करने के लिए फिर OTP चाहिए होगा।</string>
     <string name="myprofile_delete">खाता हटाएँ</string>
-    <string name="myprofile_delete_confirm">इससे आपकी प्रोफ़ाइल, यूज़रनेम, तस्वीर, उपस्थिति और सेटिंग हट जाएँगी। दोस्तियाँ टूट जाएँगी। इसे पलटा नहीं जा सकता।</string>
+    <string name="myprofile_delete_confirm">यह आपका फ़ोन नंबर, नाम, प्रोफ़ाइल, यूज़रनेम, चित्र, ऑनलाइन स्थिति, मित्र, अनुरोध, पोक और आपका लॉगिन स्थायी रूप से हटा देगा। दूसरे खिलाड़ियों की सुरक्षा के लिए आपके खाते की सुरक्षा रिपोर्टें रखी जा सकती हैं। इसे वापस नहीं किया जा सकता।</string>
     <string name="myprofile_delete_yes">हटाएँ</string>
     <string name="myprofile_delete_failed">खाता नहीं हटाया जा सका। कनेक्शन जाँचें और फिर कोशिश करें।</string>
     <string name="myprofile_cancel">रद्द करें</string>
@@ -672,4 +672,24 @@
     <string name="exit_game_body">क्या आप निश्चित रूप से बाहर निकलना चाहते हैं? चल रहा खेल खो जाएगा।</string>
     <string name="exit_yes">हाँ</string>
     <string name="exit_no">नहीं</string>
+
+    <!-- Play Billing checkout -->
+    <string name="checkout_subscribe">सदस्यता लें</string>
+    <string name="checkout_restore">खरीदारी पुनर्स्थापित करें</string>
+    <string name="checkout_per_month">%1$s / माह</string>
+    <string name="checkout_play_note">शुल्क आपके Google Play खाते से लिया जाएगा। रद्द करने तक हर महीने नवीनीकरण होगा। कभी भी Google Play में भुगतान और सदस्यताएँ, फिर सदस्यताएँ में जाकर रद्द करें।</string>
+    <string name="checkout_manage">सदस्यता प्रबंधित करें</string>
+    <string name="checkout_unavailable">Google Play अभी सदस्यता लोड नहीं कर सका। अपना कनेक्शन जाँचें और पुनः प्रयास करें।</string>
+    <string name="checkout_already">आप पहले से सदस्य हैं।</string>
+    <string name="checkout_pending">आपका भुगतान स्वीकृति की प्रतीक्षा में है। Google Play की पुष्टि होते ही विज्ञापन बंद हो जाएँगे।</string>
+    <string name="checkout_price_unknown">…</string>
+
+    <!-- Legal links, About and deletion -->
+    <string name="about_version">संस्करण %1$s</string>
+    <string name="about_close">बंद करें</string>
+    <string name="about_privacy">गोपनीयता नीति</string>
+    <string name="about_terms">उपयोग की शर्तें</string>
+    <string name="about_delete_web">वेब पर खाता हटाएँ</string>
+    <string name="about_contact">सहायता से संपर्क करें</string>
+    <string name="myprofile_delete_relogin">आपके ऑनलाइन रिकॉर्ड हटा दिए गए हैं। सुरक्षा के लिए एक बार फिर साइन इन करें और लॉगिन हटाने के लिए खाता हटाएँ दोबारा चुनें।</string>
 </resources>

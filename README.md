@@ -852,8 +852,9 @@ Each signed-up player becomes one document in the Firestore collection **`users`
 name, app language, membership end date, sign-up time, last login, app version) — open it in the
 Firebase console, or export it to BigQuery / Google Sheets, for analysis.
 
-Until a Firebase project is connected the app runs in **demo mode**: no SMS is sent, the OTP is
-always `123456` (the login screen says so), and the account stays on the phone only. To go live:
+Until a Firebase project is connected a **debug** build runs in **demo mode**: no SMS is sent, the OTP is
+always `123456` (the login screen says so), and the account stays on the phone only. **Release builds never
+offer demo mode, and refuse to build without `app/google-services.json`.** To go live:
 
 1. Create a project at <https://console.firebase.google.com> and add an Android app with package
    name `com.rangepatte.app`.
@@ -862,9 +863,9 @@ always `123456` (the login screen says so), and the account stays on the phone o
 3. Download **`google-services.json`** and put it in the `app/` folder. The build detects it and
    switches Firebase on automatically (see the top of `app/build.gradle.kts`).
 4. In the console: **Authentication ▸ Sign-in method ▸ Phone** → enable; **Firestore Database** →
-   create. Use security rules that let a signed-in user write only their own record, e.g.
-   `match /users/{uid} { allow read, write: if request.auth != null && request.auth.uid == uid; }`.
-5. Publish a privacy policy — Google Play requires one when an app collects phone numbers.
+   create, then publish the rules in `firestore.rules` (`firebase deploy --only firestore:rules`; written
+   against the code, not yet run in the emulator).
+5. Publish a privacy policy — Google Play requires one when an app collects phone numbers. Drafts are in `docs/web/`; host them, fill in your details, and put the addresses in `res/values/legal_config.xml` (shown in Settings ▸ About and on the login page).
 
 ### Google ads
 
@@ -878,24 +879,24 @@ Undo for one game; Google's test rewarded ad may be shorter than 30 seconds, in 
 correctly says it was too short — use a real rewarded unit (or a longer test creative) to see an unlock. Note that AdMob reviews apps in the card-game category — keep
 everything points-only (no real-money play), as it is today.
 
-### ₹29/month membership ("Remove ads?") and the payment gateway
+### Ad-free membership: Google Play Billing
 
-The **Remove ads?** tab (top left of every page) opens the invitation to join the community for
-₹29/month. Joining needs a login, then **Pay ₹29** opens the checkout page (`ui/membership/`): order
-summary, choice of UPI / card / net banking / wallet, and Pay. All payment calls go through one
-interface, `PaymentGateway` (`data/payment/PaymentGateway.kt`); today it is a placeholder that
-charges nothing and says payments aren't live yet. Debug builds also show "Simulate successful
-payment" so the ad-free flow can be tested.
+The **Remove ads?** tab opens the invitation to join the community; **Subscribe** opens Google Play's own
+purchase sheet. The membership is an **auto-renewing monthly subscription** (`MembershipPlan.PRODUCT_ID =
+"remove_ads_monthly"`), handled by `data/payment/PlayBilling.kt` (Play Billing Library 8). Google Play is
+the source of truth: at start-up and every time the app comes back to the front the phone asks Play for the
+player's subscriptions, acknowledges new purchases (Play refunds unacknowledged ones after three days) and
+stores the answer (`MembershipRepository.setPlayEntitlement`, with a three-day offline grace, see
+`MembershipRules`). The price on screen is the one Play reports. The checkout page also has **Restore
+purchases**, **Manage subscription** (opens Play's subscription page for cancelling) and the renewal /
+cancellation disclosure. Debug builds keep a "Simulate successful payment" button.
 
-To connect a payment partner later: write one class implementing `PaymentGateway` (wrapping e.g.
-Razorpay, PayU or Cashfree's Android SDK) and return it from `AppServices.paymentGateway`. Confirm
-each payment on a server (the partner's webhook) before granting membership.
-
-**Important — Google Play billing policy:** removing ads is a digital benefit used inside the app,
-and Google Play generally requires such in-app purchases to go through **Google Play Billing**. In
-India, the *User Choice Billing* programme lets an approved developer offer an alternative payment
-partner **alongside** Play Billing. Check the current Play Console payments policy before choosing
-the partner; a `PaymentGateway` backed by Play Billing fits the same interface.
+To make it work you must (in Play Console, once the app exists): create a **subscription** with product id
+`remove_ads_monthly`, a monthly base plan priced ₹29 (the app's text says ₹29), and activate it; then test
+with a licence-tester account on an internal-testing build. Entitlement is decided on the phone from Play's
+purchase list; verifying purchase tokens on a server (Google Play Developer API + real-time developer
+notifications through a Cloud Function) is the stronger design and is **not built** — it needs your Play
+service account.
 
 ## Legal / product design notes
 
@@ -903,3 +904,21 @@ the partner; a `PaymentGateway` backed by Play Billing fits the same interface.
   non-monetary points; the ₹29 membership only removes ads.
 - Gameplay itself (single-player, AI, Pass & Play) still works offline. The `INTERNET` permission
   is now requested for ads, OTP login and the online users database.
+
+
+## Releasing to Google Play
+
+Full audit and checklists: `docs/play-store/` (`PLAY_STORE_LAUNCH_AUDIT.md`, `PLAY_STORE_LAUNCH_CHECKLIST.md`,
+`TEST_RESULTS.md`, `PRIVACY_AND_DATA_SAFETY_INVENTORY.md`, `PLAY_STORE_LISTING_DRAFT.md`,
+`RELEASE_BUILD_REPORT.md`). In short:
+
+- The app targets **API 36** (compileSdk 36, AGP 8.10.1, Gradle 8.11.1 — Android Studio Narwhal or newer).
+- Put `google-services.json` in `app/`, real AdMob ids in `res/values/ads_config.xml`, and your legal links in
+  `res/values/legal_config.xml`.
+- Signing: create `keystore.properties` at the repository root (`storeFile`, `storePassword`, `keyAlias`,
+  `keyPassword`; git-ignored) or set `TAASH_STORE_FILE`, `TAASH_STORE_PASSWORD`, `TAASH_KEY_ALIAS`,
+  `TAASH_KEY_PASSWORD`. Never commit keys.
+- Build the bundle: Android Studio ▸ Build ▸ Generate Signed App Bundle, or `./gradlew :app:bundleRelease`
+  → `app/build/outputs/bundle/release/app-release.aab`. Release builds use R8 (shrinking + obfuscation):
+  smoke-test the release build on a phone before uploading.
+- Account deletion is in Profile ▸ Delete account (online records + login); the web page is `docs/web/delete-account.html`.

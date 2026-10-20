@@ -41,6 +41,7 @@ fun MyProfileRoute(onChangeAvatar: () -> Unit, onChangeUsername: () -> Unit, onS
     var chooseOnline by remember { mutableStateOf(false) }
     val sinceLabel = stringResource(R.string.myprofile_member_since)
     val failed = stringResource(R.string.myprofile_delete_failed)
+    val relogin = stringResource(R.string.myprofile_delete_relogin)
 
     val ludo by AppServices.ludoRecord.value.collectAsState()
     val snakes by AppServices.snakesRecord.value.collectAsState()
@@ -73,9 +74,17 @@ fun MyProfileRoute(onChangeAvatar: () -> Unit, onChangeUsername: () -> Unit, onS
             onChooseOnlineFriends = { chooseOnline = true },
             onLogOut = { AppServices.account.signOut(); onSignedOut() },
             onDeleteAccount = {
-                AppServices.profile.deleteProfile { r ->
-                    if (r.isSuccess) { AppServices.account.signOut(); onSignedOut() }
-                    else Toast.makeText(context, failed, Toast.LENGTH_SHORT).show()
+                AppServices.deleteAccount { r ->
+                    when {
+                        r.isSuccess -> onSignedOut()
+                        r.exceptionOrNull() is com.rangepatte.app.data.auth.NeedsRecentLoginException -> {
+                            // The online records are already gone; only the login needs a fresh sign-in to be removed.
+                            AppServices.account.signOut()
+                            Toast.makeText(context, relogin, Toast.LENGTH_LONG).show()
+                            onSignedOut()
+                        }
+                        else -> Toast.makeText(context, failed, Toast.LENGTH_SHORT).show()
+                    }
                 }
             },
             onBackClick = onBackClick

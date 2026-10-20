@@ -183,6 +183,20 @@ private fun LoginForm(uiState: LoginUiState, viewModel: LoginViewModel) {
                         .fillMaxWidth()
                         .padding(top = 10.dp)
                 )
+                // Privacy policy and terms, shown once their addresses are filled in (res/values/legal_config.xml).
+                val legalContext = LocalContext.current
+                val privacyUrl = stringResource(R.string.legal_privacy_url)
+                val termsUrl = stringResource(R.string.legal_terms_url)
+                Row(horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally), modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+                    if (privacyUrl.isNotBlank()) Text(
+                        text = stringResource(R.string.about_privacy), style = MaterialTheme.typography.bodySmall, color = Color(0xFFF0B07A),
+                        modifier = Modifier.clickable(role = Role.Button) { com.rangepatte.app.ui.settings.openLink(legalContext, privacyUrl) }.padding(vertical = 8.dp)
+                    )
+                    if (termsUrl.isNotBlank()) Text(
+                        text = stringResource(R.string.about_terms), style = MaterialTheme.typography.bodySmall, color = Color(0xFFF0B07A),
+                        modifier = Modifier.clickable(role = Role.Button) { com.rangepatte.app.ui.settings.openLink(legalContext, termsUrl) }.padding(vertical = 8.dp)
+                    )
+                }
             }
             LoginStep.ENTER_OTP -> {
                 Text(

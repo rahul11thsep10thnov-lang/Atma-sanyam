@@ -495,7 +495,7 @@
     <string name="myprofile_log_out">लॉग आउट</string>
     <string name="myprofile_log_out_confirm">परत लॉग इन करण्यासाठी पुन्हा OTP लागेल.</string>
     <string name="myprofile_delete">खाते हटवा</string>
-    <string name="myprofile_delete_confirm">यामुळे तुमची प्रोफाइल, वापरकर्तानाव, चित्र, उपस्थिती आणि सेटिंग्ज काढल्या जातील. मैत्री तुटतील. हे परत करता येत नाही.</string>
+    <string name="myprofile_delete_confirm">हे तुमचा फोन नंबर, नाव, प्रोफाइल, युजरनेम, चित्र, ऑनलाइन स्थिती, मित्र, विनंत्या, पोक आणि तुमचे लॉगिन कायमचे हटवेल. इतर खेळाडूंच्या सुरक्षेसाठी तुमच्या खात्याबद्दलचे सुरक्षा अहवाल ठेवले जाऊ शकतात. हे परत करता येत नाही.</string>
     <string name="myprofile_delete_yes">हटवा</string>
     <string name="myprofile_delete_failed">खाते हटवता आले नाही. कनेक्शन तपासा आणि पुन्हा प्रयत्न करा.</string>
     <string name="myprofile_cancel">रद्द</string>
@@ -672,4 +672,24 @@
     <string name="exit_game_body">तुम्हाला नक्की बाहेर पडायचे आहे का? सुरू असलेला खेळ गमावला जाईल.</string>
     <string name="exit_yes">होय</string>
     <string name="exit_no">नाही</string>
+
+    <!-- Play Billing checkout -->
+    <string name="checkout_subscribe">सदस्यत्व घ्या</string>
+    <string name="checkout_restore">खरेदी पुन्हा मिळवा</string>
+    <string name="checkout_per_month">%1$s / महिना</string>
+    <string name="checkout_play_note">शुल्क तुमच्या Google Play खात्यातून आकारले जाईल. तुम्ही रद्द करेपर्यंत दर महिन्याला नूतनीकरण होईल. कधीही Google Play मध्ये पेमेंट आणि सदस्यत्वे, मग सदस्यत्वे येथे रद्द करा.</string>
+    <string name="checkout_manage">सदस्यत्व व्यवस्थापित करा</string>
+    <string name="checkout_unavailable">Google Play सध्या सदस्यत्व लोड करू शकले नाही. कनेक्शन तपासा आणि पुन्हा प्रयत्न करा.</string>
+    <string name="checkout_already">तुम्ही आधीच सदस्य आहात.</string>
+    <string name="checkout_pending">तुमचे पेमेंट मंजुरीच्या प्रतीक्षेत आहे. Google Play ने पुष्टी करताच जाहिराती बंद होतील.</string>
+    <string name="checkout_price_unknown">…</string>
+
+    <!-- Legal links, About and deletion -->
+    <string name="about_version">आवृत्ती %1$s</string>
+    <string name="about_close">बंद करा</string>
+    <string name="about_privacy">गोपनीयता धोरण</string>
+    <string name="about_terms">वापराच्या अटी</string>
+    <string name="about_delete_web">वेबवर खाते हटवा</string>
+    <string name="about_contact">सहाय्यकाशी संपर्क साधा</string>
+    <string name="myprofile_delete_relogin">तुमचे ऑनलाइन रेकॉर्ड हटवले आहेत. सुरक्षिततेसाठी एकदा पुन्हा साइन इन करा आणि लॉगिन हटवण्यासाठी खाते हटवा पुन्हा निवडा.</string>
 </resources>

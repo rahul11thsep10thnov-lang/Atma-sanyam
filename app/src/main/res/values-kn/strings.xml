@@ -495,7 +495,7 @@
     <string name="myprofile_log_out">ಲಾಗ್ ಔಟ್</string>
     <string name="myprofile_log_out_confirm">ಮತ್ತೆ ಲಾಗಿನ್ ಆಗಲು OTP ಬೇಕಾಗುತ್ತದೆ.</string>
     <string name="myprofile_delete">ಖಾತೆ ಅಳಿಸಿ</string>
-    <string name="myprofile_delete_confirm">ಇದು ನಿಮ್ಮ ಪ್ರೊಫೈಲ್, ಬಳಕೆದಾರ ಹೆಸರು, ಚಿತ್ರ, ಇರುವಿಕೆ ಮತ್ತು ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆಗೆಯುತ್ತದೆ. ಸ್ನೇಹಗಳು ಕಳೆದುಹೋಗುತ್ತವೆ. ಇದನ್ನು ಹಿಂತಿರುಗಿಸಲಾಗದು.</string>
+    <string name="myprofile_delete_confirm">ಇದು ನಿಮ್ಮ ಫೋನ್ ಸಂಖ್ಯೆ, ಹೆಸರು, ಪ್ರೊಫೈಲ್, ಬಳಕೆದಾರ ಹೆಸರು, ಚಿತ್ರ, ಆನ್‌ಲೈನ್ ಸ್ಥಿತಿ, ಸ್ನೇಹಿತರು, ವಿನಂತಿಗಳು, ಪೋಕ್‌ಗಳು ಮತ್ತು ನಿಮ್ಮ ಲಾಗಿನ್ ಅನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸುತ್ತದೆ. ಇತರ ಆಟಗಾರರ ರಕ್ಷಣೆಗಾಗಿ ನಿಮ್ಮ ಖಾತೆಯ ಬಗ್ಗೆ ಸುರಕ್ಷತಾ ವರದಿಗಳನ್ನು ಇರಿಸಿಕೊಳ್ಳಬಹುದು. ಇದನ್ನು ಹಿಂತಿರುಗಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="myprofile_delete_yes">ಅಳಿಸಿ</string>
     <string name="myprofile_delete_failed">ಖಾತೆ ಅಳಿಸಲಾಗಲಿಲ್ಲ. ಸಂಪರ್ಕ ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="myprofile_cancel">ರದ್ದು</string>
@@ -672,4 +672,24 @@
     <string name="exit_game_body">ನೀವು ಖಚಿತವಾಗಿ ನಿರ್ಗಮಿಸಲು ಬಯಸುವಿರಾ? ನಡೆಯುತ್ತಿರುವ ಆಟ ಕಳೆದುಹೋಗುತ್ತದೆ.</string>
     <string name="exit_yes">ಹೌದು</string>
     <string name="exit_no">ಇಲ್ಲ</string>
+
+    <!-- Play Billing checkout -->
+    <string name="checkout_subscribe">ಚಂದಾದಾರರಾಗಿ</string>
+    <string name="checkout_restore">ಖರೀದಿಗಳನ್ನು ಮರುಸ್ಥಾಪಿಸಿ</string>
+    <string name="checkout_per_month">%1$s / ತಿಂಗಳು</string>
+    <string name="checkout_play_note">ಶುಲ್ಕವನ್ನು ನಿಮ್ಮ Google Play ಖಾತೆಗೆ ವಿಧಿಸಲಾಗುತ್ತದೆ. ನೀವು ರದ್ದುಗೊಳಿಸುವವರೆಗೆ ಪ್ರತಿ ತಿಂಗಳು ನವೀಕರಿಸಲಾಗುತ್ತದೆ. ಯಾವಾಗ ಬೇಕಾದರೂ Google Play ನಲ್ಲಿ ಪಾವತಿಗಳು ಮತ್ತು ಚಂದಾದಾರಿಕೆಗಳು, ನಂತರ ಚಂದಾದಾರಿಕೆಗಳಲ್ಲಿ ರದ್ದುಗೊಳಿಸಿ.</string>
+    <string name="checkout_manage">ಚಂದಾದಾರಿಕೆಯನ್ನು ನಿರ್ವಹಿಸಿ</string>
+    <string name="checkout_unavailable">Google Play ಈಗ ಚಂದಾದಾರಿಕೆಯನ್ನು ಲೋಡ್ ಮಾಡಲು ಆಗಲಿಲ್ಲ. ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="checkout_already">ನೀವು ಈಗಾಗಲೇ ಸದಸ್ಯರಾಗಿದ್ದೀರಿ.</string>
+    <string name="checkout_pending">ನಿಮ್ಮ ಪಾವತಿ ಅನುಮೋದನೆಗಾಗಿ ಕಾಯುತ್ತಿದೆ. Google Play ದೃಢೀಕರಿಸಿದ ಕೂಡಲೇ ಜಾಹೀರಾತುಗಳು ನಿಲ್ಲುತ್ತವೆ.</string>
+    <string name="checkout_price_unknown">…</string>
+
+    <!-- Legal links, About and deletion -->
+    <string name="about_version">ಆವೃತ್ತಿ %1$s</string>
+    <string name="about_close">ಮುಚ್ಚಿ</string>
+    <string name="about_privacy">ಗೌಪ್ಯತಾ ನೀತಿ</string>
+    <string name="about_terms">ಬಳಕೆಯ ನಿಯಮಗಳು</string>
+    <string name="about_delete_web">ವೆಬ್‌ನಲ್ಲಿ ಖಾತೆಯನ್ನು ಅಳಿಸಿ</string>
+    <string name="about_contact">ಬೆಂಬಲವನ್ನು ಸಂಪರ್ಕಿಸಿ</string>
+    <string name="myprofile_delete_relogin">ನಿಮ್ಮ ಆನ್‌ಲೈನ್ ದಾಖಲೆಗಳನ್ನು ಅಳಿಸಲಾಗಿದೆ. ಭದ್ರತೆಗಾಗಿ ಒಮ್ಮೆ ಮತ್ತೆ ಸೈನ್ ಇನ್ ಮಾಡಿ ಮತ್ತು ಲಾಗಿನ್ ತೆಗೆದುಹಾಕಲು ಖಾತೆ ಅಳಿಸಿ ಅನ್ನು ಮತ್ತೆ ಆಯ್ಕೆಮಾಡಿ.</string>
 </resources>

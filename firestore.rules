@@ -1,0 +1,118 @@
+rules_version = '2';
+
+// Firestore security rules for Indian Taash. Deploy with the Firebase CLI:
+//   firebase deploy --only firestore:rules
+// (the project, Firestore database and Phone sign-in must exist first). These rules were written against
+// the app's code (see README "Online play"), but have NOT been run in the Firebase emulator or against a
+// live project: test them with the Rules Playground / emulator before relying on them.
+//
+// Principles: only signed-in players; every player may change only their own records; a pair of players
+// share only their own relation record; table (room) writes belong to the room's host.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isMe(uid) { return signedIn() && request.auth.uid == uid; }
+
+    // The sign-up record: phone number, name, membership. Owner only.
+    match /users/{uid} {
+      allow read, create, update, delete: if isMe(uid);
+    }
+
+    // Public identity (username, avatar). Everyone signed in may look; only the owner writes.
+    match /profiles/{uid} {
+      allow read: if signedIn();
+      allow create, update, delete: if isMe(uid);
+    }
+
+    // Reserved usernames. A name is created for its owner; it can be taken over only after it was released
+    // for 30 days (2,592,000,000 ms), mirroring ProfileRules in the app.
+    match /usernames/{name} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow update: if signedIn() && request.resource.data.uid == request.auth.uid
+        && (resource.data.uid == request.auth.uid
+            || (resource.data.get('releasedAt', null) != null
+                && request.time.toMillis() > resource.data.releasedAt + 2592000000));
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+
+    // Who is online and what they are playing.
+    match /presence/{uid} {
+      allow read: if signedIn();
+      allow write: if isMe(uid);
+    }
+
+    // One record per pair, id "lowUid_highUid" with fields a, b, kind, by. Only the two people in it.
+    match /relations/{pair} {
+      allow get: if signedIn()
+        && (pair.matches(request.auth.uid + '_.+') || pair.matches('.+_' + request.auth.uid));
+      allow list: if signedIn()
+        && (resource.data.a == request.auth.uid || resource.data.b == request.auth.uid);
+      allow create: if signedIn()
+        && (request.resource.data.a == request.auth.uid || request.resource.data.b == request.auth.uid)
+        && (pair == request.resource.data.a + '_' + request.resource.data.b
+            || pair == request.resource.data.b + '_' + request.resource.data.a);
+      allow update: if signedIn()
+        && (resource.data.a == request.auth.uid || resource.data.b == request.auth.uid)
+        && request.resource.data.a == resource.data.a && request.resource.data.b == resource.data.b;
+      allow delete: if signedIn()
+        && (resource.data.a == request.auth.uid || resource.data.b == request.auth.uid);
+    }
+
+    // Pokes: id "from_to". Only the sender writes, at most one per ten minutes (600,000 ms) per pair.
+    match /pokes/{id} {
+      allow create: if signedIn() && request.resource.data.from == request.auth.uid
+        && id == request.auth.uid + '_' + request.resource.data.to;
+      allow update: if signedIn() && request.resource.data.from == request.auth.uid
+        && id == request.auth.uid + '_' + request.resource.data.to
+        && request.resource.data.t >= resource.data.t + 600000;
+      allow get, list: if signedIn()
+        && (resource.data.to == request.auth.uid || resource.data.from == request.auth.uid);
+      allow delete: if signedIn()
+        && (resource.data.to == request.auth.uid || resource.data.from == request.auth.uid);
+    }
+
+    // "Come and play" requests between friends. Only the two people involved.
+    match /playRequests/{id} {
+      allow create: if signedIn() && request.resource.data.from == request.auth.uid;
+      allow get, list: if signedIn()
+        && (resource.data.to == request.auth.uid || resource.data.from == request.auth.uid);
+      allow update: if signedIn()
+        && (resource.data.to == request.auth.uid || resource.data.from == request.auth.uid)
+        && request.resource.data.from == resource.data.from && request.resource.data.to == resource.data.to;
+      allow delete: if signedIn()
+        && (resource.data.to == request.auth.uid || resource.data.from == request.auth.uid);
+    }
+
+    // Safety reports: anyone signed in may file one in their own name; nobody can read them from the app
+    // (the owner reads them in the Firebase console).
+    match /reports/{id} {
+      allow create: if signedIn() && request.resource.data.by == request.auth.uid;
+    }
+
+    // Online tables. A room is found by its code; only its host changes it or writes the game log; guests
+    // post their moves to the inbox, which only the host reads.
+    match /rooms/{code} {
+      function isHost() { return signedIn() && get(/databases/$(database)/documents/rooms/$(code)).data.host == request.auth.uid; }
+
+      allow get: if signedIn();
+      allow list: if false;
+      allow create: if signedIn() && request.resource.data.host == request.auth.uid;
+      allow update, delete: if signedIn() && resource.data.host == request.auth.uid;
+
+      match /log/{entry} {
+        allow read: if signedIn();
+        allow create: if isHost();
+      }
+      match /inbox/{message} {
+        allow create: if signedIn() && request.resource.data.from == request.auth.uid;
+        allow read: if isHost();
+      }
+      match /presence/{uid} {
+        allow read: if signedIn();
+        allow write: if isMe(uid);
+      }
+    }
+  }
+}

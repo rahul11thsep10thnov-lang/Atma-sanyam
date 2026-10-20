@@ -495,7 +495,7 @@
     <string name="myprofile_log_out">లాగ్ అవుట్</string>
     <string name="myprofile_log_out_confirm">మళ్ళీ లాగిన్ అవ్వడానికి OTP అవసరం.</string>
     <string name="myprofile_delete">ఖాతాను తొలగించు</string>
-    <string name="myprofile_delete_confirm">ఇది మీ ప్రొఫైల్, యూజర్‌నేమ్, చిత్రం, ఉనికి, సెట్టింగ్‌లను తొలగిస్తుంది. స్నేహాలు పోతాయి. దీన్ని వెనక్కి తీసుకోలేరు.</string>
+    <string name="myprofile_delete_confirm">ఇది మీ ఫోన్ నంబర్, పేరు, ప్రొఫైల్, యూజర్‌నేమ్, చిత్రం, ఆన్‌లైన్ స్థితి, స్నేహితులు, అభ్యర్థనలు, పోక్‌లు మరియు మీ లాగిన్‌ను శాశ్వతంగా తొలగిస్తుంది. ఇతర ఆటగాళ్ల భద్రత కోసం మీ ఖాతాపై భద్రతా నివేదికలు ఉంచబడవచ్చు. దీన్ని వెనక్కి తీసుకోలేరు.</string>
     <string name="myprofile_delete_yes">తొలగించు</string>
     <string name="myprofile_delete_failed">ఖాతాను తొలగించలేకపోయాం. కనెక్షన్ చూసి మళ్ళీ ప్రయత్నించండి.</string>
     <string name="myprofile_cancel">రద్దు</string>
@@ -672,4 +672,24 @@
     <string name="exit_game_body">మీరు నిజంగా వెళ్లిపోవాలనుకుంటున్నారా? జరుగుతున్న ఆట పోతుంది.</string>
     <string name="exit_yes">అవును</string>
     <string name="exit_no">కాదు</string>
+
+    <!-- Play Billing checkout -->
+    <string name="checkout_subscribe">సభ్యత్వం తీసుకోండి</string>
+    <string name="checkout_restore">కొనుగోళ్లను పునరుద్ధరించండి</string>
+    <string name="checkout_per_month">%1$s / నెల</string>
+    <string name="checkout_play_note">ఛార్జ్ మీ Google Play ఖాతా నుండి తీసుకోబడుతుంది. మీరు రద్దు చేసే వరకు ప్రతి నెలా పునరుద్ధరించబడుతుంది. ఎప్పుడైనా Google Play లో చెల్లింపులు &amp; సభ్యత్వాలు, ఆపై సభ్యత్వాలలో రద్దు చేయండి.</string>
+    <string name="checkout_manage">సభ్యత్వాన్ని నిర్వహించండి</string>
+    <string name="checkout_unavailable">Google Play ఇప్పుడు సభ్యత్వాన్ని లోడ్ చేయలేకపోయింది. కనెక్షన్ తనిఖీ చేసి మళ్లీ ప్రయత్నించండి.</string>
+    <string name="checkout_already">మీరు ఇప్పటికే సభ్యులు.</string>
+    <string name="checkout_pending">మీ చెల్లింపు ఆమోదం కోసం వేచి ఉంది. Google Play నిర్ధారించగానే ప్రకటనలు ఆగిపోతాయి.</string>
+    <string name="checkout_price_unknown">…</string>
+
+    <!-- Legal links, About and deletion -->
+    <string name="about_version">వెర్షన్ %1$s</string>
+    <string name="about_close">మూసివేయి</string>
+    <string name="about_privacy">గోప్యతా విధానం</string>
+    <string name="about_terms">వినియోగ నిబంధనలు</string>
+    <string name="about_delete_web">వెబ్‌లో ఖాతాను తొలగించండి</string>
+    <string name="about_contact">సహాయాన్ని సంప్రదించండి</string>
+    <string name="myprofile_delete_relogin">మీ ఆన్‌లైన్ రికార్డులు తొలగించబడ్డాయి. భద్రత కోసం ఒకసారి మళ్లీ సైన్ ఇన్ చేసి, లాగిన్‌ను తొలగించడానికి ఖాతా తొలగించు మళ్లీ ఎంచుకోండి.</string>
 </resources>

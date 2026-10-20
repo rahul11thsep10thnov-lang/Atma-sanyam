@@ -7,13 +7,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.concurrent.TimeUnit
 
-/** The paid "community pal" plan: ₹29 for one month without ads. */
-object MembershipPlan {
-    const val PRICE_PAISE = 2_900L
-    const val CURRENCY = "INR"
-    const val DURATION_DAYS = 30L
-}
-
 /**
  * Remembers until when this device is ad-free. Stored locally so the app knows instantly at start-up
  * (before any network call) whether to show ads; the same date is also written to the signed-in
@@ -28,7 +21,12 @@ class MembershipRepository(context: Context) {
 
     fun isAdFree(nowMillis: Long = System.currentTimeMillis()): Boolean = _adFreeUntilMillis.value > nowMillis
 
-    /** Adds one paid month, starting now or — if still a member — from the current end date. */
+    /** Stores what Google Play just said about the subscription (see [MembershipRules]). */
+    fun setPlayEntitlement(active: Boolean, nowMillis: Long = System.currentTimeMillis()) {
+        setAdFreeUntil(MembershipRules.adFreeUntil(active, nowMillis))
+    }
+
+    /** Debug builds only (the checkout's "simulate" button): adds one month, starting now or — if still a member — from the current end date. */
     fun addPaidMonth(nowMillis: Long = System.currentTimeMillis()): Long {
         val start = maxOf(nowMillis, _adFreeUntilMillis.value)
         val until = start + TimeUnit.DAYS.toMillis(MembershipPlan.DURATION_DAYS)
