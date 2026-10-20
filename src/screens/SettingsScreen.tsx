@@ -13,6 +13,7 @@ import { setPushEnabled } from '../services/device';
 import { friendlyError } from '../services/apiClient';
 import { appVersion } from '../services/appInfo';
 import { env, isBackendConfigured } from '../config/env';
+import { MONETIZATION_ENABLED } from '../config/features';
 import { RootStackParamList } from '../navigation/types';
 import { Screen } from '../ui/Screen';
 import { AppText } from '../ui/AppText';
@@ -28,7 +29,7 @@ import { typography } from '../theme/typography';
 import { Appearance, useTheme } from '../theme/ThemeContext';
 import { MembershipCard } from '../components/settings/MembershipCard';
 import { LANGUAGES, StringKey, t, useLanguage } from '../i18n';
-import { LEGAL_ORDER, LegalDocId } from '../legal/documents';
+import { legalOrderFor, LegalDocId } from '../legal/documents';
 import { IconName } from '../ui/Icon';
 
 const LEGAL_ICON: Record<LegalDocId, IconName> = { terms: 'fileText', privacy: 'lock', deletion: 'trash', subscription: 'star', community: 'users' };
@@ -60,6 +61,7 @@ export function SettingsScreen() {
 
   const showAccounts = isBackendConfigured && config.features.accounts;
   const showPush = isBackendConfigured && config.features.pushNotifications;
+  const legalDocs = legalOrderFor(isBackendConfigured);
 
   const toggleNotifications = async (value: boolean) => {
     if (value) {
@@ -125,9 +127,11 @@ export function SettingsScreen() {
         {t('settings.title')}
       </AppText>
 
-      <Section title={t('membership.section')}>
-        <MembershipCard />
-      </Section>
+      {MONETIZATION_ENABLED && (
+        <Section title={t('membership.section')}>
+          <MembershipCard />
+        </Section>
+      )}
 
       <Section title={t('settings.language')}>
         <SettingLink icon="quote" label={t('settings.language')} hint={languageName} onPress={() => navigation.navigate('Language')} last />
@@ -236,8 +240,8 @@ export function SettingsScreen() {
       </Section>
 
       <Section title={t('settings.legal')}>
-        {LEGAL_ORDER.map((id, i) => (
-          <SettingLink key={id} icon={LEGAL_ICON[id]} label={t(`legal.${id}` as StringKey)} onPress={() => navigation.navigate('Legal', { doc: id })} last={i === LEGAL_ORDER.length - 1} />
+        {legalDocs.map((id, i) => (
+          <SettingLink key={id} icon={LEGAL_ICON[id]} label={t(`legal.${id}` as StringKey)} onPress={() => navigation.navigate('Legal', { doc: id })} last={i === legalDocs.length - 1} />
         ))}
       </Section>
 

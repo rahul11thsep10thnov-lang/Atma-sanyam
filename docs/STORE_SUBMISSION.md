@@ -47,7 +47,49 @@ npm run submit:ios
 push notifications, which don't work in Expo Go.)
 
 Before the first production build, set the app's environment variables on EAS (see
-DEPLOYMENT.md §4) — at minimum `EXPO_PUBLIC_API_URL` and `EXPO_PUBLIC_PRIVACY_POLICY_URL`.
+DEPLOYMENT.md §4). For **version 1 (offline)** that is only `EXPO_PUBLIC_SUPPORT_EMAIL`; an online
+build also needs `EXPO_PUBLIC_API_URL` and `EXPO_PUBLIC_PRIVACY_POLICY_URL`.
+
+---
+
+## Version 1: offline only
+
+Version 1 ships **without the server**: no accounts, no friends, no analytics, no push, no
+membership and no ads. Everything stays on the phone. This is decided by the build, not by a
+setting people can change:
+
+- **Leave `EXPO_PUBLIC_API_URL` unset** in the EAS `production` environment. Without it the app
+  hides sign-in, the Friends tab, the bell, analytics and announcements, makes no request for
+  content (the picture library shows only the pictures inside the app), and Settings → Legal
+  shows the offline Terms, Privacy Policy and Subscription & Refund Policy.
+- **Set `EXPO_PUBLIC_SUPPORT_EMAIL`** — it is the contact address in the legal documents and the
+  *Contact support* row in Settings.
+- Membership and the "watch an ad for coins" box are switched off in `src/config/features.ts`
+  (`MONETIZATION_ENABLED = false`). Keep it off until real Google Play Billing and a real ad
+  network are added — the current ones are placeholders.
+
+**Privacy policy page** — `LEGAL_EMAIL=you@your-domain.com node --experimental-strip-types tools/legal/build_legal_html.mjs`
+(offline is the default; `LEGAL_MODE=online` builds the full set), host `docs/legal/index.html`
+over HTTPS and use `<url>#privacy` as the *Privacy policy URL*.
+
+**Play Console → App content, for version 1:**
+
+| Question | Answer |
+|---|---|
+| Privacy policy | `<your page>#privacy` |
+| Ads — does your app contain ads? | **No** |
+| App access | All functionality is available without special access |
+| Content rating questionnaire | Category *Utility, productivity, communication or other*. Violence, sexuality, language, drugs, gambling: **No**. Do users interact or exchange content? **No**. Shares location? **No**. Digital purchases? **No**. (Expect the lowest rating, e.g. *Everyone / 3+*.) |
+| Target audience | **13–15, 16–17 and 18+** (do **not** tick any age under 13, which would bring in the Families policy). The legal texts say 13+ for this version. |
+| Data safety → Does your app collect or share any of the required user data types? | **No.** Nothing is sent off the phone: history, plants, coins and settings are stored only in the app's private storage, and a photo picked for a jigsaw comes through the system photo picker and stays on the device. (Google may ask for the "encrypted in transit" and "deletion" questions only if you answer Yes.) |
+| Data deletion / account deletion URL | Not required: the app has no accounts. |
+| Government, financial, health, news app declarations | **No** to each |
+| Sensitive permissions | None (camera, microphone, media and overlay permissions are removed in `app.json`) |
+| Store listing | Use `docs/STORE_LISTING.md` (English and Hindi) |
+
+When a later version turns on the server, switch to the online answers below, publish the
+online legal page (`LEGAL_MODE=online`), and re-do Data safety, Target audience (18+) and the
+content rating (users interact) **before** that version is released.
 
 ---
 
@@ -68,7 +110,8 @@ DEPLOYMENT.md §4) — at minimum `EXPO_PUBLIC_API_URL` and `EXPO_PUBLIC_PRIVACY
    in `eas.json`). Submissions go to the **internal** track as a **draft**; promote from the console.
 5. **Store listing** — short description (≤80 chars), full description, app icon 512×512 (export
    from `assets/icon.png`), feature graphic 1024×500, 2–8 phone screenshots.
-6. **App content** (Policy → App content):
+6. **App content** (Policy → App content) — for an **online** build (with `EXPO_PUBLIC_API_URL`).
+   For version 1, use the offline table above instead.
    - *Privacy policy URL* — required (same page as `EXPO_PUBLIC_PRIVACY_POLICY_URL`).
    - *Data safety* — Collected (all optional: the app works without an account):
      **Phone number** and **Email address** (account management; email only for older accounts),
@@ -78,14 +121,17 @@ DEPLOYMENT.md §4) — at minimum `EXPO_PUBLIC_API_URL` and `EXPO_PUBLIC_PRIVACY
      other IDs** (random install id, push token). *Not* collected: location, photos, contacts,
      camera/microphone (the photo picker hands over only the photo someone chooses, and it stays
      on the device). Not shared with third parties for their own use, not used for ads.
-     Encrypted in transit: **Yes**. Users can request deletion: **Yes**.
+     Encrypted in transit: **Yes**. Users can request deletion: **Yes**. If you count reports
+     ("Report this person": reason, optional note) as data, they fall under **Other in-app messages**
+     / *Safety, security and compliance*.
    - *Policies* — the five documents in the app (Settings → Legal) come from
      `src/legal/documents.ts`. For the public links Google asks for, run
-     `LEGAL_EMAIL=you@your-domain.com node --experimental-strip-types tools/legal/build_legal_html.mjs`,
+     `LEGAL_MODE=online LEGAL_EMAIL=you@your-domain.com node --experimental-strip-types tools/legal/build_legal_html.mjs`,
      host `docs/legal/index.html` over HTTPS, and use `<url>#privacy` as the *Privacy policy URL*
      and `<url>#deletion` as the account-deletion link below. Also set `EXPO_PUBLIC_SUPPORT_EMAIL`
-     (it is the contact address shown in the documents). The documents say the app is for people
-     aged 18+, that membership and ads are not live yet, and that reports go by email: keep the
+     (it is the contact address shown in the documents). The online documents say the app is for
+     people aged 18+, that there are no paid features or ads, and that people can be reported from
+     the Friends tab and the group lobby (reviewed in the admin console → *Reports*): keep the
      store listing, Data safety form and app in line with that, or change the text.
    - *Account deletion* — Google also requires a **web link** where people can request
      deletion without the app. Publish a short page (e.g. `your-domain.com/delete-account`)

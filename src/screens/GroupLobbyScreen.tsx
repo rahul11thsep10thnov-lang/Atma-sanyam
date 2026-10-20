@@ -209,6 +209,15 @@ export function GroupLobbyScreen() {
                 </View>
                 {p.note ? <AppText variant="caption" tone="muted">“{p.note}”</AppText> : null}
               </View>
+              {p.id !== user?.id && (
+                <IconButton
+                  icon="flag"
+                  label={t('report.reportName', { name: p.username ? `@${p.username}` : p.displayName || t('friends.someone') })}
+                  variant="plain"
+                  size={36}
+                  onPress={() => navigation.navigate('Report', { userId: p.id, name: p.username ? `@${p.username}` : p.displayName || t('friends.someone'), avatarId: p.avatarId, context: 'group', groupSessionId: s.id })}
+                />
+              )}
             </View>
           </Card>
         ))}

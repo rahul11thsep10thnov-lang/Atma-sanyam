@@ -5,8 +5,8 @@ import React from 'react';
 import { Linking, StyleSheet, View } from 'react-native';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { env } from '../config/env';
-import { fillLegal, LEGAL_DOCS, LEGAL_ORDER, LEGAL_PUBLISHER, LEGAL_UPDATED, LegalDocId } from '../legal/documents';
+import { env, isBackendConfigured } from '../config/env';
+import { fillLegal, legalDocFor, legalOrderFor, LEGAL_PUBLISHER, LEGAL_UPDATED, LegalDocId } from '../legal/documents';
 import { RootStackParamList } from '../navigation/types';
 import { Screen } from '../ui/Screen';
 import { AppText } from '../ui/AppText';
@@ -19,10 +19,12 @@ export function LegalScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'Legal'>>();
   useLanguage();
-  const doc = LEGAL_DOCS[route.params.doc];
+  // An offline build has no account deletion or community guidelines; fall
+  // back to the Terms if one of those is asked for.
+  const doc = legalDocFor(route.params.doc, isBackendConfigured) ?? legalDocFor('terms', isBackendConfigured)!;
   const email = env.supportEmail;
   const fill = (text: string) => fillLegal(text, email);
-  const others = LEGAL_ORDER.filter((id) => id !== doc.id);
+  const others = legalOrderFor(isBackendConfigured).filter((id) => id !== doc.id);
 
   return (
     <Screen scroll>

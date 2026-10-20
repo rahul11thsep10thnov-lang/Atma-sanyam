@@ -4,7 +4,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { and, desc, eq, gt, ilike, inArray, isNull, or, sql } from 'drizzle-orm';
-import { blocks, focusSessions, friendships, pokes, userNotifications, users } from '../../database/schema.js';
+import { blocks, focusSessions, friendships, groupParticipants, pokes, REPORT_CONTEXTS, REPORT_REASONS, userNotifications, userReports, users } from '../../database/schema.js';
 import type { Auth } from '../../middleware/auth.js';
 import type { createRateLimits } from '../../middleware/rateLimits.js';
 import { parse } from '../../middleware/validate.js';
@@ -32,6 +32,8 @@ import type { AppDeps } from '../../types.js';
 const uuid = z.string().uuid();
 const POKE_COOLDOWN_MS = 2 * 60_000;
 const MAX_FRIENDS = 500;
+// A second report of the same person within this window adds nothing new.
+const REPORT_DEDUPE_MS = 24 * 60 * 60_000;
 // A completed session is believed only if the server saw it run for its planned
 // length (a few seconds of clock drift allowed).
 const COMPLETION_TOLERANCE_MS = 5_000;
@@ -232,16 +234,60 @@ export function socialRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeo
     res.status(204).end();
   });
 
+  async function block(me: string, other: string) {
+    await db.insert(blocks).values({ blockerId: me, blockedId: other }).onConflictDoNothing();
+    // Blocking ends the friendship and any open request, both ways.
+    await db.delete(friendships).where(or(and(eq(friendships.requesterId, me), eq(friendships.addresseeId, other)), and(eq(friendships.requesterId, other), eq(friendships.addresseeId, me))));
+    realtime.send(other, { type: 'friends_changed' });
+  }
+
   r.post('/people/:userId/block', async (req, res) => {
     const me = req.user!.id;
     const other = parse(uuid, req.params.userId);
     if (other === me) throw badRequest('You cannot block yourself');
     await profile(other);
-    await db.insert(blocks).values({ blockerId: me, blockedId: other }).onConflictDoNothing();
-    // Blocking ends the friendship and any open request, both ways.
-    await db.delete(friendships).where(or(and(eq(friendships.requesterId, me), eq(friendships.addresseeId, other)), and(eq(friendships.requesterId, other), eq(friendships.addresseeId, me))));
-    realtime.send(other, { type: 'friends_changed' });
+    await block(me, other);
     res.status(204).end();
+  });
+
+  // "Report this person". The reported person is never told who reported
+  // them; moderators review reports in the admin console.
+  const reportBody = z.object({
+    reason: z.enum(REPORT_REASONS),
+    note: z.string().trim().max(500).optional(),
+    context: z.enum(REPORT_CONTEXTS).optional(),
+    groupSessionId: uuid.optional(),
+    block: z.boolean().optional(),
+  });
+
+  r.post('/people/:userId/report', limits.report, async (req, res) => {
+    const me = req.user!.id;
+    const other = parse(uuid, req.params.userId);
+    const body = parse(reportBody, req.body);
+    if (other === me) throw badRequest('You cannot report yourself');
+    await profile(other);
+    if (body.groupSessionId) {
+      // Only someone who was in that group focus can point to it.
+      const [mine] = await db
+        .select({ userId: groupParticipants.userId })
+        .from(groupParticipants)
+        .where(and(eq(groupParticipants.sessionId, body.groupSessionId), eq(groupParticipants.userId, me)));
+      if (!mine) throw badRequest('You were not in that group focus');
+    }
+    const [recent] = await db
+      .select({ id: userReports.id })
+      .from(userReports)
+      .where(and(eq(userReports.reporterId, me), eq(userReports.reportedId, other), eq(userReports.status, 'open'), gt(userReports.createdAt, new Date(Date.now() - REPORT_DEDUPE_MS))));
+    let reportId = recent?.id;
+    if (!reportId) {
+      const [row] = await db
+        .insert(userReports)
+        .values({ reporterId: me, reportedId: other, reason: body.reason, note: body.note || null, context: body.context ?? null, groupSessionId: body.groupSessionId ?? null })
+        .returning({ id: userReports.id });
+      reportId = row!.id;
+    }
+    if (body.block) await block(me, other);
+    res.status(recent ? 200 : 201).json({ reportId, duplicate: Boolean(recent), blocked: Boolean(body.block) });
   });
 
   r.delete('/people/:userId/block', async (req, res) => {

@@ -25,6 +25,7 @@ const NAV: { href: string; label: string; permission?: string }[] = [
   { href: '/content', label: 'Content', permission: 'content:read' },
   { href: '/categories', label: 'Categories', permission: 'content:read' },
   { href: '/config', label: 'App configuration', permission: 'settings:read' },
+  { href: '/reports', label: 'Reports', permission: 'reports:read' },
   { href: '/notifications', label: 'Notifications', permission: 'notifications:read' },
   { href: '/analytics', label: 'Analytics', permission: 'analytics:read' },
   { href: '/admins', label: 'Admins & roles', permission: 'admins:read' },

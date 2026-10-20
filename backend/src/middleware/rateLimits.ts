@@ -57,6 +57,7 @@ export function createRateLimits(disabled = false) {
     friendRequest: rateLimit({ windowMs: 60 * 60_000, limit: 30, skip, keyGenerator: userKey, ...json('Too many friend requests this hour.') }),
     poke: rateLimit({ windowMs: 60_000, limit: 20, skip, keyGenerator: userKey, ...json('Too many pokes. Give your friends a minute.') }),
     groupCreate: rateLimit({ windowMs: 60 * 60_000, limit: 20, skip, keyGenerator: userKey, ...json('Too many group sessions this hour.') }),
+    report: rateLimit({ windowMs: 60 * 60_000, limit: 20, skip, keyGenerator: userKey, ...json('Too many reports this hour. Email support if it is urgent.') }),
     groupChat: rateLimit({ windowMs: 60_000, limit: 15, skip, keyGenerator: userKey, ...json('Slow down a little in the chat.') }),
     // Live username checks while typing.
     usernameCheck: rateLimit({ windowMs: 60_000, limit: 60, skip, ...json('Too many username checks. Slow down.') }),

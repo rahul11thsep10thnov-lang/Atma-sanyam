@@ -304,6 +304,42 @@ export const groupMessages = pgTable(
   (t) => [index('group_messages_session_idx').on(t.sessionId, t.createdAt)]
 );
 
+// "Report this person": one row per report, reviewed in the admin console.
+// The reporter is never shown to the reported person. Deleting the reporter's
+// account keeps the report without their id; deleting the reported account
+// removes reports about them.
+export const REPORT_REASONS = ['harassment', 'inappropriate_profile', 'spam', 'impersonation', 'other'] as const;
+export const REPORT_CONTEXTS = ['friends', 'search', 'request', 'group'] as const;
+
+export const userReports = pgTable(
+  'user_reports',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    reporterId: uuid('reporter_id').references(() => users.id, { onDelete: 'set null' }),
+    reportedId: uuid('reported_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    reason: text('reason', { enum: REPORT_REASONS }).notNull(),
+    note: text('note'),
+    // where in the app the report was made
+    context: text('context', { enum: REPORT_CONTEXTS }),
+    groupSessionId: uuid('group_session_id').references(() => groupSessions.id, { onDelete: 'set null' }),
+    status: text('status', { enum: ['open', 'resolved', 'dismissed'] }).notNull().default('open'),
+    createdAt: createdAt(),
+    resolvedAt: timestamp('resolved_at', { withTimezone: true }),
+    resolvedBy: uuid('resolved_by').references(() => admins.id, { onDelete: 'set null' }),
+    resolutionNote: text('resolution_note'),
+  },
+  (t) => [
+    check('user_reports_status_check', sql`${t.status} in ('open', 'resolved', 'dismissed')`),
+    check('user_reports_reason_check', sql`${t.reason} in ('harassment', 'inappropriate_profile', 'spam', 'impersonation', 'other')`),
+    check('user_reports_note_length_check', sql`char_length(${t.note}) <= 500`),
+    index('user_reports_status_idx').on(t.status, t.createdAt),
+    index('user_reports_reported_idx').on(t.reportedId, t.createdAt),
+    index('user_reports_reporter_idx').on(t.reporterId, t.reportedId, t.createdAt),
+  ]
+);
+
 // ---------------------------------------------------------------------------
 // Admin console users + role-based access control
 // ---------------------------------------------------------------------------

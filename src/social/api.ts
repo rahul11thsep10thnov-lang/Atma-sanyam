@@ -51,6 +51,16 @@ export interface AppNotification {
   createdAt: string;
 }
 
+export type ReportReason = 'harassment' | 'inappropriate_profile' | 'spam' | 'impersonation' | 'other';
+export type ReportContext = 'friends' | 'search' | 'request' | 'group';
+export interface ReportInput {
+  reason: ReportReason;
+  note?: string;
+  context?: ReportContext;
+  groupSessionId?: string;
+  block?: boolean;
+}
+
 export const social = {
   friends: () => apiRequest<FriendsPayload>('/v1/friends'),
   search: (q: string) => apiRequest<{ items: SearchResult[] }>('/v1/people/search', { query: { q } }),
@@ -61,6 +71,7 @@ export const social = {
   unfriend: (userId: string) => apiRequest<void>(`/v1/friends/${userId}`, { method: 'DELETE' }),
   block: (userId: string) => apiRequest<void>(`/v1/people/${userId}/block`, { method: 'POST' }),
   unblock: (userId: string) => apiRequest<void>(`/v1/people/${userId}/block`, { method: 'DELETE' }),
+  report: (userId: string, input: ReportInput) => apiRequest<{ reportId: string; duplicate: boolean; blocked: boolean }>(`/v1/people/${userId}/report`, { method: 'POST', body: input }),
   blocked: () => apiRequest<{ items: Profile[] }>('/v1/people/blocked'),
   poke: (userId: string, key: string) => apiRequest<{ pokeId: string; delivered: 'live' | 'notification'; repeated: boolean }>('/v1/pokes', { method: 'POST', body: { userId, key } }),
   notifications: (before?: string) => apiRequest<{ items: AppNotification[]; nextCursor: string | null; unread: number }>('/v1/notifications', { query: { before } }),

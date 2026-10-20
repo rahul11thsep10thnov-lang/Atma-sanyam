@@ -4,12 +4,23 @@
 //
 //   LEGAL_EMAIL=support@your-domain.com node --experimental-strip-types tools/legal/build_legal_html.mjs
 //
+// LEGAL_MODE=offline (the default, for version 1: no accounts, nothing leaves
+// the phone) or LEGAL_MODE=online (a build that uses the Tame API). Publish the
+// set that matches the build on Google Play.
+//
 // Writes docs/legal/index.html. Host it anywhere that serves HTTPS (GitHub Pages,
-// Netlify, your own domain). Use  <url>#privacy  as the privacy policy link and
-// <url>#deletion  as the account-deletion link.
-import { writeFileSync } from 'node:fs';
+// Netlify, your own domain). Use  <url>#privacy  as the privacy policy link and,
+// for an online build,  <url>#deletion  as the account-deletion link.
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { LEGAL_DOCS, LEGAL_ORDER, LEGAL_PUBLISHER, LEGAL_UPDATED, fillLegal } from '../../src/legal/documents.ts';
+import { legalDocFor, legalOrderFor, LEGAL_PUBLISHER, LEGAL_UPDATED, fillLegal } from '../../src/legal/documents.ts';
+
+const mode = (process.env.LEGAL_MODE || 'offline').toLowerCase();
+if (mode !== 'offline' && mode !== 'online') throw new Error('LEGAL_MODE must be "offline" or "online"');
+const online = mode === 'online';
+const order = legalOrderFor(online);
+const docOf = (id) => legalDocFor(id, online);
 
 const email = process.env.LEGAL_EMAIL || '';
 if (!email) console.warn('LEGAL_EMAIL is not set: the page will say "the support email listed on Tame’s Google Play page". Set it before publishing.');
@@ -17,8 +28,8 @@ if (!email) console.warn('LEGAL_EMAIL is not set: the page will say "the support
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const fill = (s) => esc(fillLegal(s, email));
 
-const sections = LEGAL_ORDER.map((id) => {
-  const d = LEGAL_DOCS[id];
+const sections = order.map((id) => {
+  const d = docOf(id);
   return `<section id="${id}">
 <h2>${esc(d.title)}</h2>
 <p class="lead">${fill(d.intro)}</p>
@@ -51,12 +62,13 @@ const html = `<!doctype html>
 <main>
 <h1>Tame</h1>
 <p class="meta">Tame your time · Legal &amp; User Policies · Published by ${esc(LEGAL_PUBLISHER)} · Updated ${esc(LEGAL_UPDATED)}</p>
-<nav>${LEGAL_ORDER.map((id) => `<a href="#${id}">${esc(LEGAL_DOCS[id].title)}</a>`).join('')}</nav>
+<nav>${order.map((id) => `<a href="#${id}">${esc(docOf(id).title)}</a>`).join('')}</nav>
 ${sections}
 </main>
 </body>
 </html>
 `;
 const out = fileURLToPath(new URL('../../docs/legal/index.html', import.meta.url));
+mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, html);
-console.log('wrote', out, `(${html.length} bytes)`);
+console.log('wrote', out, `(${mode}, ${html.length} bytes)`);

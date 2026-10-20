@@ -1,4 +1,5 @@
-// Coins: the balance, how coins are earned, and "watch an ad for coins".
+// Coins: the balance, how coins are earned, and "watch an ad for coins"
+// (the ad box only when monetization is on; see config/features).
 // Each ad within the last three hours pays less than the one before.
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -13,6 +14,7 @@ import { radii } from '../../theme/radii';
 import { space as sp } from '../../theme/spacing';
 import { useTheme } from '../../theme/ThemeContext';
 import { t } from '../../i18n';
+import { MONETIZATION_ENABLED } from '../../config/features';
 
 interface Props {
   visible: boolean;
@@ -69,7 +71,7 @@ export function AdSheet({ visible, rewards, onClose, onRewards, onToast }: Props
         <Row icon="leaf" text={t('ads.rulePenalty', { coins: PENALTY_REMOVAL_COINS })} />
         <Row icon="sparkles" text={t('ads.ruleMilestones')} />
       </View>
-      {member ? (
+      {!MONETIZATION_ENABLED ? null : member ? (
         <View style={[styles.adBox, { borderColor: colors.border }]}>
           <AppText variant="bodySmallStrong">{t('ads.memberTitle')}</AppText>
           <AppText variant="caption" tone="secondary">
