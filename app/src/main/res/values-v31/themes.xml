@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Android 12+ draws its own launch screen with the app icon. The icon is replaced by an empty drawable
+         and the background is the opening picture's colour, so the only thing people see is the app's own
+         opening picture (ui/splash/SplashScreen.kt). -->
+    <style name="Theme.RangEPatte" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">@color/royal_background</item>
+        <item name="android:windowBackground">@color/splash_background</item>
+        <item name="android:navigationBarColor">@color/panel_wood_dark</item>
+        <item name="android:windowSplashScreenBackground">@color/splash_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_icon_empty</item>
+    </style>
+</resources>

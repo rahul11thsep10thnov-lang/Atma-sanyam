@@ -4,7 +4,7 @@
          this only keeps the window dark before Compose draws, so there is no light flash on launch. -->
     <style name="Theme.RangEPatte" parent="android:Theme.Material.NoActionBar">
         <item name="android:statusBarColor">@color/royal_background</item>
-        <item name="android:windowBackground">@color/royal_background</item>
+        <item name="android:windowBackground">@color/splash_background</item>
         <item name="android:navigationBarColor">@color/panel_wood_dark</item>
     </style>
 </resources>

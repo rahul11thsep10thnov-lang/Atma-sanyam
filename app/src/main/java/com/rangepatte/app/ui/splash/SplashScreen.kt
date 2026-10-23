@@ -17,7 +17,7 @@ import com.rangepatte.app.R
 import kotlinx.coroutines.delay
 
 /** How long the opening picture stays up, in milliseconds, before it fades into the first page. */
-const val SPLASH_MS = 2_200L
+const val SPLASH_MS = 4_000L
 
 /**
  * The opening screen: the Taash Ganjifa picture, full screen, shown once as the app starts and then
