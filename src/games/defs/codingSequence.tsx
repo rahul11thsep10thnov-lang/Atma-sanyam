@@ -112,7 +112,7 @@ function CodingView({ state, dispatch, width, readOnly, sfx, ctx }: GameViewProp
   return (
     <RNView style={{ flex: 1, alignItems: 'center' }}>
       <Prompt emoji="🤖">Program the robot to reach the ⭐</Prompt>
-      <RNView style={[styles.grid, { width: cell * cols, height: cell * rows }]}>
+      <RNView style={[styles.grid, { width: cell * cols + 6, height: cell * rows + 6 }]}>
         {l.grid.map((row, y) => row.split('').map((ch, x) => (
           <RNView key={`${x}-${y}`} style={[styles.cell, { width: cell, height: cell, backgroundColor: ch === '#' ? '#2E2A4A' : (x + y) % 2 ? '#F3EEF9' : '#fff' }]}>
             {l.star[0] === x && l.star[1] === y && <Text style={{ fontSize: cell * 0.5 }}>⭐</Text>}

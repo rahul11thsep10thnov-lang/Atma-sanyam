@@ -84,7 +84,7 @@ function LabView({ state, dispatch, width, readOnly, sfx, say }: GameViewProps<S
     <RNView style={{ flex: 1, alignItems: 'center' }}>
       <Prompt emoji="⚗️">{message}</Prompt>
       <Scoreboard items={[{ label: 'Ramps', value: `${level.ramps - counts.ramps} left` }, { label: 'Bumpers', value: `${level.bumpers - counts.bumpers} left` }, { label: 'Tries', value: state.attempts }]} />
-      <RNView style={[styles.board, { width: cell * level.cols + 8 }]}>
+      <RNView style={[styles.board, { width: cell * level.cols + 14 }]}>
         <RNView style={{ flexDirection: 'row' }}>
           {Array.from({ length: level.cols }, (_, c) => <RNView key={c} style={{ width: cell, height: 28, alignItems: 'center' }}>{c === level.start && !state.sim && <Text style={{ fontSize: 22 }}>⚪</Text>}</RNView>)}
         </RNView>

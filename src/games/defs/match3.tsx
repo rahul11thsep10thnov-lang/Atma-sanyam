@@ -45,7 +45,7 @@ function Match3View({ state, dispatch, width, readOnly, sfx }: GameViewProps<Sta
   return (
     <RNView style={{ alignItems: 'center' }}>
       <Prompt emoji="🍬">Swap two sweets next to each other to make a line of 3</Prompt>
-      <RNView style={[styles.board, { width: cell * state.size, height: cell * state.size }]}>
+      <RNView style={[styles.board, { width: cell * state.size + 6, height: cell * state.size + 6 }]}>
         {state.grid.map((v, i) => (
           <Tactile key={i} haptic={false} disabled={readOnly} onPress={() => { sfx('tap'); dispatch({ type: 'tap', index: i }); }} accessibilityRole="button" accessibilityLabel={GEMS[v]} style={{ width: cell, height: cell }}>
             <RNView style={[styles.cell, { backgroundColor: state.selected === i ? '#FFF4CC' : (Math.floor(i / state.size) + i) % 2 ? '#F3EEF9' : '#fff', transform: [{ scale: state.selected === i ? 1.1 : 1 }] }]}>

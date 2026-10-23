@@ -52,7 +52,7 @@ function CheckersView({ state, dispatch, width, readOnly, sfx }: GameViewProps<S
   return (
     <RNView style={{ alignItems: 'center' }}>
       <Prompt emoji="⚫">{state.turn === 1 ? (moves.some((m) => m.captures.length) ? 'You must jump!' : 'Your move (red)') : 'Robot is thinking…'}</Prompt>
-      <RNView style={[styles.board, { width: cell * 8, height: cell * 8 }]}>
+      <RNView style={[styles.board, { width: cell * 8 + 8, height: cell * 8 + 8 }]}>
         {state.board.map((p, i) => {
           const dark = (Math.floor(i / 8) + (i % 8)) % 2 === 1;
           return (

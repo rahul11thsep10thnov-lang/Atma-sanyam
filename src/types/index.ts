@@ -17,6 +17,8 @@ export interface Entitlement {
   active: boolean;
   status: string;
   validUntil: string | null;
+  /** Any entitling subscription removes ads; derived by the server. */
+  adFree?: boolean;
 }
 
 export interface Child {
@@ -56,8 +58,20 @@ export interface ParentalControls {
   favouritesEnabled: boolean;
   mirroringEnabled: boolean;
   newDeviceApproval: boolean;
+  // Learning academy, rankings and rewards.
+  curriculumFramework: CurriculumFramework | null;
+  curriculumBoard: string | null;
+  schoolGrade: string | null;
+  learningGoals: { subject: string; lessonsPerWeek: number }[];
+  blockedSubjects: string[];
+  rankingsEnabled: boolean;
+  rewardShopEnabled: boolean;
+  coinDailyCap: number | null;
+  reducedMotion: boolean;
   updatedAt: string;
 }
+
+export type CurriculumFramework = 'ncert' | 'cbse' | 'cisce' | 'state' | 'ib_pyp' | 'ib_myp';
 
 export interface LiveStatus {
   online: boolean;
@@ -105,6 +119,7 @@ export interface GameProgressSummary {
   stars: number;
   highestDifficulty: string | null;
   lastPlayedAt: string | null;
+  tutorialCompletedAt?: string | null;
 }
 
 export interface CatalogueGame {
@@ -124,12 +139,29 @@ export interface CatalogueGame {
   translations: Record<string, { name?: string; tagline?: string; instructions?: string }>;
   favourite: boolean;
   progress: GameProgressSummary | null;
+  /** Has a leaderboard (a server scoring rule). */
+  competitive?: boolean;
 }
 
 export interface PlayerMe {
-  child: { id: string; displayName: string; avatarId: string; ageBracket: AgeBracket; effectiveBracket: AgeBracket; bracketName: string; playerId: string };
+  child: { id: string; displayName: string; avatarId: string; ageBracket: AgeBracket; effectiveBracket: AgeBracket; bracketName: string; playerId: string; age?: number; coins?: number; equippedRewards?: Record<string, string> };
   entitlement: Entitlement;
-  controls: { soundEnabled: boolean; narrationEnabled: boolean; favouritesEnabled: boolean; mirroringEnabled: boolean; dailyLimitMinutes: number; sessionLimitMinutes: number; visibleBrackets: AgeBracket[] };
+  /** subscriber: full access, no ads. ad_supported: playing with ads (admin flag). locked: needs the plan. */
+  access?: 'subscriber' | 'ad_supported' | 'locked';
+  controls: {
+    soundEnabled: boolean;
+    narrationEnabled: boolean;
+    favouritesEnabled: boolean;
+    mirroringEnabled: boolean;
+    dailyLimitMinutes: number;
+    sessionLimitMinutes: number;
+    visibleBrackets: AgeBracket[];
+    rankingsEnabled?: boolean;
+    rewardShopEnabled?: boolean;
+    reducedMotion?: boolean;
+    blockedSubjects?: string[];
+    curriculum?: { framework: CurriculumFramework | null; board: string | null; grade: string | null };
+  };
   playtime: { allowed: true; usedMinutesToday: number; remainingSeconds: number; sessionLimitSeconds: number } | { allowed: false; usedMinutesToday: number; reason: string; message: string };
 }
 

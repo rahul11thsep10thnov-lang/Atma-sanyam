@@ -1,6 +1,17 @@
 // Typed calls for the Guardian Console beyond the session itself.
 import { apiRequest } from '../services/apiClient';
-import type { Child, Dashboard, ParentalControls, SubscriptionInfo } from '../types';
+import type { Child, Dashboard, Entitlement, ParentalControls, SubscriptionInfo } from '../types';
+import type { LearningReport } from '../learning/types';
+
+export interface ChildRewards {
+  coins: { balance: number; earnedToday: number; dailyCap: number; defaultDailyCap: number; shopEnabled: boolean; equipped: Record<string, string>; owned: { key: string; name: string; emoji: string; kind: string; price: number }[]; values: Record<string, number | boolean> };
+  ledger: { id: number; amount: number; balanceAfter: number; reason: string; refType: string | null; refId: string | null; note: string | null; createdAt: string }[];
+  rankings: { enabled: boolean; globallyEnabled: boolean; mine: { gameId: string; rating: number | null; points: number; played: number; wins: number; rule: string }[] };
+  tutorials: { gameId: string; name: string; tutorialCompletedAt: string }[];
+  lessonsCompleted: number;
+  adFree: boolean;
+  entitlement: Entitlement;
+}
 
 export interface ChildDetail {
   child: Child;
@@ -42,6 +53,8 @@ export const guardianApi = {
   controls: (id: string) => apiRequest<ParentalControls>(`/v1/guardian/children/${id}/controls`),
   saveControls: (id: string, body: Partial<ParentalControls>) => apiRequest<ParentalControls>(`/v1/guardian/children/${id}/controls`, { method: 'PUT', body }),
   activity: (id: string, days = 30) => apiRequest<ChildActivity>(`/v1/guardian/children/${id}/activity`, { query: { days } }),
+  learning: (id: string) => apiRequest<LearningReport>(`/v1/guardian/children/${id}/learning`),
+  rewards: (id: string) => apiRequest<ChildRewards>(`/v1/guardian/children/${id}/rewards`),
   pauseSession: (id: string) => apiRequest<{ delivered: boolean }>(`/v1/guardian/children/${id}/session/pause`, { method: 'POST' }),
   resumeSession: (id: string) => apiRequest<{ delivered: boolean }>(`/v1/guardian/children/${id}/session/resume`, { method: 'POST' }),
   endSession: (id: string) => apiRequest<{ ended: number; delivered: boolean }>(`/v1/guardian/children/${id}/session/end`, { method: 'POST' }),

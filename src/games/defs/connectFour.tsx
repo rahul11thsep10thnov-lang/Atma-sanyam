@@ -45,7 +45,7 @@ function C4View({ state, dispatch, width, readOnly, sfx }: GameViewProps<State, 
   return (
     <RNView style={{ alignItems: 'center' }}>
       <Prompt emoji={state.turn === 1 ? '🔴' : '🟡'}>{w ? (w.who === 1 ? 'Four in a row! 🎉' : 'The robot got four.') : state.turn === 1 ? 'Tap a column to drop your red disc' : 'Robot is thinking…'}</Prompt>
-      <RNView style={[styles.board, { width: cell * COLS, height: cell * ROWS }]}>
+      <RNView style={[styles.board, { width: cell * COLS + 8, height: cell * ROWS + 8 }]}>
         {state.board.map((v, i) => (
           <RNView key={i} style={[styles.cell, { width: cell, height: cell }]}>
             <RNView style={[styles.disc, { width: cell * 0.78, height: cell * 0.78, backgroundColor: v === 1 ? '#FF5F6D' : v === 2 ? '#FFC93C' : '#fff', borderColor: w?.cells.includes(i) ? '#2E2A4A' : 'transparent', transform: [{ scale: state.last === i ? 1.08 : 1 }] }]} />

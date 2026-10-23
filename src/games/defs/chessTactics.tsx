@@ -58,7 +58,7 @@ function TacticsView({ state, dispatch, width, readOnly, sfx }: GameViewProps<St
   return (
     <RNView style={{ alignItems: 'center' }}>
       <Prompt emoji="♞">{state.solved ? `Correct! ${puzzle.theme} 🎉` : `${state.pos.turn === 'w' ? 'White' : 'Black'} to move. ${puzzle.theme}.`}</Prompt>
-      <RNView style={[styles.board, { width: cell * 8, height: cell * 8 }]}>
+      <RNView style={[styles.board, { width: cell * 8 + 8, height: cell * 8 + 8 }]}>
         {order.map((i) => {
           const p = state.pos.board[i]!;
           const dark = (Math.floor(i / 8) + (i % 8)) % 2 === 1;

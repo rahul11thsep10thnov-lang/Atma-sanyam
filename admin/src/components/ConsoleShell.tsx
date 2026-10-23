@@ -26,6 +26,8 @@ const NAV: { href: string; label: string; permission?: string }[] = [
   { href: '/games', label: 'Games', permission: 'content:read' },
   { href: '/crafts', label: 'Art & Craft', permission: 'content:read' },
   { href: '/facts', label: 'Did You Know?', permission: 'content:read' },
+  { href: '/lessons', label: 'Learning academy', permission: 'content:read' },
+  { href: '/rewards', label: 'Rewards & rankings', permission: 'content:read' },
   { href: '/sources', label: 'Fact sources', permission: 'content:read' },
   { href: '/content', label: 'Image library', permission: 'content:read' },
   { href: '/categories', label: 'Image categories', permission: 'content:read' },

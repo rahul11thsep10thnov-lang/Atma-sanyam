@@ -106,6 +106,7 @@ export function trackCell(abs: number): [number, number] {
   for (let r = 14; r >= 9; r--) cells.push([6, r]);
   for (let c = 5; c >= 0; c--) cells.push([c, 8]);
   cells.push([0, 7]);
+  cells.push([0, 6]); // 52nd cell: the one just before red's start
   return cells[abs % TRACK]!;
 }
 

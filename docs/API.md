@@ -37,6 +37,10 @@ register 10/h; OTP send 20/h per IP+identifier; OTP verify 30/15 min; recovery 1
 | POST | `/v1/events` | Coarse analytics events (no identifiers beyond the install id). |
 | GET | `/v1/ws/info` | WebSocket URL and protocol version. |
 
+`GET /catalogue/learning` (sections, subjects, ages, age focus, curriculum frameworks) and
+`GET /catalogue/scoring-rules` are public and cacheable. `/config` includes `rewards`,
+`rankings` and `ads` (units, caps, child-directed flags, `adSupportedAccess`).
+
 ## Guardian accounts (`/v1/guardian`)
 
 | Method | Path | Auth | Body → Result |
@@ -71,6 +75,13 @@ register 10/h; OTP send 20/h per IP+identifier; OTP verify 30/15 min; recovery 1
 | POST | `/children/:id/session/pause` · `/resume` · `/end` | guardian | Live controls for the current game (delivered over the socket; honoured on the next heartbeat too). |
 | GET | `/children/:id/export` | guardian **S** | Export one child's data. |
 | GET | `/devices` · POST `/devices/:id/approve` · DELETE `/devices/:id` | guardian | Devices used by the household; approval when `newDeviceApproval` is on. |
+| GET | `/children/:id/learning` | guardian | The learning report: totals, streak, per-section/subject levels and accuracy, weekly goals, next lessons, recent lessons. |
+| GET | `/children/:id/rewards` | guardian | Coins (balance, earned today, cap, owned rewards), ledger, rankings participation and summary, tutorials finished, `adFree`. |
+
+`PUT /children/:id/controls` also accepts `curriculumFramework`, `curriculumBoard`, `schoolGrade`,
+`learningGoals[{subject, lessonsPerWeek}]`, `blockedSubjects[]`, `rankingsEnabled`,
+`rewardShopEnabled`, `coinDailyCap` and `reducedMotion`.
+
 
 ## Subscription (`/v1/guardian/subscription`)
 
@@ -107,6 +118,16 @@ header checked with `RAZORPAY_WEBHOOK_SECRET`). Both are idempotent by event id.
 | POST | `/facts/:id/view` · PUT `/facts/:id/favourite` | player | History and favourites (favourites can be disabled by the guardian). |
 | POST | `/quiz/answer` · GET `/quiz/history` | player | `{ questionId, chosenIndex }` → `{ correct, correctIndex, explanation }`. |
 | GET | `/controls` | player | The subset of controls the console needs (sound, narration, favourites, mirroring). |
+| POST | `/games/:id/tutorial-complete` | player **E** | Records the How to Play tutorial once; pays `rewards.tutorialCompleted` coins once. |
+| GET | `/daily-challenge` | player **E** | Today's game for the bracket, its reward and whether it was completed. |
+| GET | `/coins` · POST `/coins/purchase {itemKey, idempotencyKey}` · PUT `/rewards/equip {kind, itemKey|null}` | player **E** | Wallet (balance, earned today, cap, ledger, shop items with owned/affordable/locked), purchases (409 insufficient, 403 shop closed / premium only), equipping. |
+| GET | `/rankings` · `/rankings/:gameId?window=week|month|all&bracket=` | player **E** | Ranked games with scoring rules and the child's summary; a leaderboard (nickname + avatar rows, `me`). 403 when rankings are off for the child. |
+| GET | `/learning/catalogue` · `/learning/lessons?section&subject&age=<n>|all&difficulty&topic` · `/learning/lessons/:id` · PUT `/learning/lessons/:id/progress` · `/learning/report` | player **E** | Sections and subjects with honest availability and levels; lessons default to the child's age (`age=all` explores every age); full lesson with steps, sources and curriculum labels; progress save (completion only with all steps; first completion pays coins and raises the subject level); the child's learning report. Blocked subjects 404. |
+
+`/sessions/:id/end` also returns `coins { awarded, balance, breakdown[] }`, `ranking` (points,
+won, ratingDelta, or null when the result did not count) and `dailyChallengeCompleted`. `/me`
+adds `child.age`, `child.coins`, `access` (`subscriber` | `ad_supported` | `locked`) and the
+guardian's rankings/shop/curriculum choices; `entitlement.adFree` is true for any active plan.
 
 ## WebSocket (`/v1/ws?token=<guardian or player token>`)
 
@@ -128,7 +149,9 @@ with code 4401.
 | Guardians (`guardians:*`) | `GET /guardians` (search, status, paging; children as counts), `GET /guardians/:id` (children as brackets only, devices, subscriptions, deletion requests), `PATCH /guardians/:id {status}`, `DELETE /guardians/:id`. |
 | Subscriptions (`subscriptions:*`) | `GET /subscriptions/stats`, `GET /subscriptions`, `GET /subscriptions/:id/events`, `POST /subscriptions/:id/revoke`, `POST /subscriptions/:id/extend {days, reason}`. |
 | Catalogue (`content:*`) | `GET/POST /games`, `GET/PATCH /games/:id`, `GET/POST /game-categories`; `GET/POST /crafts`, `GET/PATCH/DELETE /crafts/:id`; the source registry (below); `GET/POST /facts`, `GET/PATCH/DELETE /facts/:id`, `POST /facts/:id/status {status: draft|verified|published|archived}` (verify needs `content:verify` and a source; publish needs `content:publish`, a verification and ≥1 question), `POST /facts/:id/questions`, `PATCH/DELETE /questions/:id`, `GET /approvals`. |
-| Settings (`settings:*`) | `GET /settings`, `PUT /settings/:key` (maintenance, app_version, feature_flags, texts, limits). |
+| Settings (`settings:*`) | `GET /settings`, `PUT /settings/:key` (maintenance, app_version, feature_flags, texts, limits, rewards, rankings, ads). |
+| Learning academy (`content:*`) | `GET /learning/overview` (coverage by subject × age, DYK coverage, mapping counts), `GET /lessons` (filters section, subject, status, age, search), `GET/POST /lessons`, `PATCH /lessons/:id`, `POST /lessons/:id/status {status}` (publish needs `content:publish`, the nine-step template and a source), `POST /lessons/:id/curriculum/:index/verify {verificationStatus}` (`content:verify`), `DELETE /lessons/:id` (`content:delete`, not while published). |
+| Rewards & rankings | `GET /reward-items` (items with owner counts, coin economy), `POST /reward-items`, `PATCH /reward-items/:key`; `GET /rankings/overview` (`analytics:read`). |
 | Notifications, analytics, audit, admins | `/notifications`, `/dashboard`, `/analytics`, `/audit-log`, `/health`, `/admins`, `/roles`. |
 
 **Fact sources** (`/admin/v1/fact-sources`, see SOURCE_REGISTRY.md): `GET /` (filters `search`, `status`, `origin`; each row carries the licence fields, `factCount`, `publishedFactCount`, `ingestedFactCount`), `GET /summary` (dashboard numbers and recent verification errors), `GET /:id/events` (history), `POST /` (the "Add a source" form: `publisher`, `title`, `url`, `accessedOn?`, `notes?`; a URL already registered under any spelling is a 409), `PATCH /:id` (`content:write` edits wording and protects it from the registry; `content:publish` may also send `verificationStatus`, `licenceName`, `licenceUrl`, `verificationEvidenceUrl`, `ingestionSuspended`, `statusLocked`), `POST /:id/verify` (`content:verify`, "Verify now"), `POST /:id/ingest` and `POST /maintenance/run` (`content:publish`). `GET /dashboard` includes a `sources` summary.

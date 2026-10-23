@@ -107,10 +107,18 @@ Catalogue: `age_brackets`, `game_categories`, `games`, `achievements`, `craft_tu
 `fact_sources`, `facts`, `quiz_questions`, `content_approvals`, `app_settings`, `categories` +
 `content` (image library), `notifications`.
 
-Activity: `game_sessions` (outcome, duration, score, snapshot while running), `game_progress`,
-`child_achievements`, `favourite_games`, `craft_progress`, `fact_views`, `quiz_attempts`,
-`screen_time_records` (per child per day), `mirror_sessions`, `parental_controls`,
-`account_deletion_requests`, `events` (coarse analytics), `audit_logs`.
+Activity: `game_sessions` (outcome, duration, score, snapshot while running), `game_progress`
+(+ `tutorial_completed_at`), `child_achievements`, `favourite_games`, `craft_progress`,
+`fact_views`, `quiz_attempts`, `screen_time_records` (per child per day), `mirror_sessions`,
+`parental_controls` (+ curriculum, goals, blocked subjects, rankings/shop switches, coin cap,
+reduced motion), `account_deletion_requests`, `events` (coarse analytics), `audit_logs`.
+
+Learning academy: `lessons` (nine-step JSON content, curriculum mappings with verification
+status, sources, status workflow), `lesson_progress`, `learning_levels` (per child per subject).
+
+Economy and rankings: `coin_transactions` (append-only ledger, unique idempotency key;
+`children.coins` is the cached balance), `reward_items`, `child_rewards`
+(+ `children.equipped_rewards`), `ranking_events` (one per session, unique), `player_ratings`.
 
 Data minimisation: no child name beyond a nickname, no exact birth date, no photo, no free-text
 chat, no location. Phone numbers are masked in every admin view.

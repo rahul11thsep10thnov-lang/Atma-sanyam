@@ -1,26 +1,40 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-import { AppText, CandyCard, EmojiDisc, Stars, ProgressBar } from '../../ui';
+import { CompositeScreenProps, useFocusEffect } from '@react-navigation/native';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { PlayerTabParamList, RootStackParamList } from '../../navigation/types';
+import { AppText, CandyCard, EmojiDisc, Stars, ProgressBar, Badge } from '../../ui';
 import { PlayerScreen } from '../../components/player/PlayerScreen';
 import { BADGE_EMOJI, Section } from './PlayerHomeScreen';
 import { usePlayer } from '../../context/PlayerContext';
+import { useRemoteConfig } from '../../context/RemoteConfigContext';
+import { playerApi } from '../../api/player';
+import type { LearningReport } from '../../learning/types';
 import { metaFor } from '../../games/registry';
 import { palette, rainbow } from '../../theme/palette';
 import { space } from '../../theme/spacing';
 import { useTheme } from '../../theme/ThemeContext';
 import { t } from '../../i18n';
 
-export function ProgressScreen() {
+type Props = CompositeScreenProps<BottomTabScreenProps<PlayerTabParamList, 'Me'>, NativeStackScreenProps<RootStackParamList>>;
+
+export function ProgressScreen({ navigation }: Props) {
   const { colors } = useTheme();
   const p = usePlayer();
+  const { config } = useRemoteConfig();
+  const [report, setReport] = useState<LearningReport | null>(null);
   useFocusEffect(
     useCallback(() => {
       void p.loadProgress();
+      void p.refresh();
+      playerApi.learningReport().then(setReport).catch(() => undefined);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
   );
   const pr = p.progress;
+  const coins = p.me?.child.coins ?? 0;
+  const rankingsOn = config.features.rankings && (p.me?.controls.rankingsEnabled ?? true);
   const totals = {
     completions: pr?.games.reduce((n, g) => n + g.completions, 0) ?? 0,
     stars: pr?.games.reduce((n, g) => n + g.stars, 0) ?? 0,
@@ -37,7 +51,17 @@ export function ProgressScreen() {
   ];
   const bests = (pr?.games ?? []).filter((g) => g.completions > 0).sort((a, b) => b.stars - a.stars);
   return (
-    <PlayerScreen title={t('progress.title')} emoji="🏆">
+    <PlayerScreen title={t('tabs.me')} emoji="🏆">
+      <View style={{ flexDirection: 'row', gap: space.md, marginBottom: space.md }}>
+        <CandyCard color={palette.sunshine} onPress={() => navigation.navigate('Rewards')} label={t('rewards.title')} style={{ flex: 1 }}>
+          <View style={styles.tileInner}><Text style={{ fontSize: 32 }}>🪙</Text><Text style={[styles.tileNum, { color: '#4A3A00' }]}>{coins}</Text><Text style={[styles.tileLabel, { color: '#4A3A00' }]}>{t('rewards.title')}</Text></View>
+        </CandyCard>
+        {rankingsOn && (
+          <CandyCard color={palette.tangerine} onPress={() => navigation.navigate('Rankings')} label={t('rank.title')} style={{ flex: 1 }}>
+            <View style={styles.tileInner}><Text style={{ fontSize: 32 }}>🏆</Text><Text style={styles.tileNum}>↗</Text><Text style={styles.tileLabel}>{t('rank.title')}</Text></View>
+          </CandyCard>
+        )}
+      </View>
       <View style={styles.tiles}>
         {tiles.map(([label, n, emoji, color]) => (
           <CandyCard key={label} color={color} style={styles.tile}>
@@ -49,6 +73,33 @@ export function ProgressScreen() {
           </CandyCard>
         ))}
       </View>
+      <Section title={t('learn.report.title')} emoji="📚">
+        {!report || report.totals.lessonsCompleted + report.totals.lessonsInProgress === 0 ? (
+          <AppText variant="body" tone="secondary">{t('learn.report.empty')}</AppText>
+        ) : (
+          <View style={{ gap: space.sm }}>
+            <View style={{ flexDirection: 'row', gap: space.sm, flexWrap: 'wrap' }}>
+              <Badge label={`${t('learn.report.lessons')}: ${report.totals.lessonsCompleted}`} emoji="✅" color={colors.surfaceRaised} />
+              <Badge label={`${t('learn.report.streak')}: ${report.totals.streakDays}`} emoji="🔥" color={colors.surfaceRaised} />
+              <Badge label={`${t('learn.report.time')}: ${Math.round(report.totals.timeSeconds / 60)}`} emoji="⏱️" color={colors.surfaceRaised} />
+              {report.totals.quizTotal > 0 && <Badge label={`${t('learn.report.quiz')}: ${report.totals.quizCorrect}/${report.totals.quizTotal}`} emoji="🏁" color={colors.surfaceRaised} />}
+            </View>
+            {report.sections.filter((s) => s.subjects.length > 0).map((s) => (
+              <View key={s.key} style={[styles.bestRow, { backgroundColor: colors.surfaceRaised, flexDirection: 'column', alignItems: 'stretch' }]}>
+                <AppText variant="bodyStrong">{s.emoji} {s.name} · {t('learn.completed', { n: s.lessonsCompleted })}</AppText>
+                {s.subjects.map((sub) => (
+                  <View key={sub.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 }}>
+                    <Text>{sub.emoji}</Text>
+                    <AppText variant="bodySmall" style={{ flex: 1 }}>{sub.name}</AppText>
+                    {sub.level && <Badge label={t('learn.level', { age: sub.level.age })} color="#FFF4CC" />}
+                    <AppText variant="caption" tone="muted">{t('learn.completed', { n: sub.completed })}</AppText>
+                  </View>
+                ))}
+              </View>
+            ))}
+          </View>
+        )}
+      </Section>
       <Section title={t('progress.badges')} emoji="🏅">
         <View style={styles.badges}>
           {(pr?.achievements ?? []).map((a, i) => (

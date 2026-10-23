@@ -49,6 +49,35 @@ work.
 - **DNS rebinding** is mitigated by resolving and checking addresses before each request, but the final connection uses the system resolver; run the API with egress restrictions where possible.
 - The editorial references behind the starter facts (Britannica, National Geographic Kids, BBC, and others) are **not free-licence sources**; they are cited as references only, and no content is copied from them.
 
+## Learning academy, rewards, rankings and ads
+
+- **Curriculum mappings are all `pending_review`.** The 50 seeded lessons name the NCERT/CBSE/
+  CISCE/IB documents they were written against, but no mapping has been verified by a person
+  yet, so no lesson shows "Aligned with the selected curriculum topic" until a fact checker
+  verifies it in the console. This is deliberate: the label is a claim and the review is what
+  earns it.
+- **Lesson content was written by editors with the cited publisher pages as references**, like
+  the facts library; each Did You Know? links its source. Re-check before launch.
+- **Coverage is representative, not complete**: 50 lessons across 30 subjects and every age
+  3–12, roughly 2–5 per core subject. Drums, flute and violin have no lessons yet and say
+  "coming soon"; many subject/age cells are empty and the app says so rather than showing empty
+  cards (see the console's coverage table).
+- **Instrument and sports lessons cannot assess physical technique.** Practice activities check
+  taps on the screen; every such activity and the Sports section say so. Swimming lessons are
+  water-safety and vocabulary only and state that real swimming needs an in-person instructor.
+- **Hindi**: lesson content is English except the Hindi स्वर lesson; the schema has a
+  `translations` column and the editor accepts it.
+- **Ads have not been shown anywhere.** There is no native build or AdMob account in this
+  environment; the SDK path is implemented behind the native-only loader and must be exercised
+  on a device build with real app/unit ids (the plugin currently carries Google's sample app ids).
+  Ad-supported access is **off** by default; the subscription remains mandatory.
+- **Rankings are global but small.** "Family favourites" on Home is an editorial list (no
+  cross-household play statistics are collected). Leaderboards show nicknames; a guardian who
+  wants a child off the boards switches rankings off per child.
+- **Reward items are cosmetic placeholders** (emoji, colours); equipping an item is recorded
+  (`children.equipped_rewards`) but is not yet reflected in game boards or avatars.
+- **Pass-and-play** exists for Ludo, Snakes & Ladders and Chess only; it is on one device.
+
 ## Operational
 
 - The cleanup job (`npm run cleanup`) must be scheduled (Render blueprint includes it) for

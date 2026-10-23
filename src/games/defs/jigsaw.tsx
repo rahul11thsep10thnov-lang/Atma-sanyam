@@ -146,7 +146,7 @@ function JigsawView({ state, dispatch, width, height, readOnly, sfx }: GameViewP
   return (
     <RNView style={{ flex: 1, alignItems: 'center' }}>
       <Prompt emoji={pic.emoji}>Build the {pic.name}</Prompt>
-      <RNView onLayout={(e) => (boardOrigin.current = { x: e.nativeEvent.layout.x, y: e.nativeEvent.layout.y })} style={[styles.board, { width: boardSize, height: boardSize }]}>
+      <RNView onLayout={(e) => (boardOrigin.current = { x: e.nativeEvent.layout.x, y: e.nativeEvent.layout.y })} style={[styles.board, { width: boardSize + 6, height: boardSize + 6 }]}>
         <RNView style={{ opacity: 0.18, position: 'absolute' }}>
           <Svg width={boardSize} height={boardSize} viewBox="0 0 100 100">{pic.draw()}</Svg>
         </RNView>

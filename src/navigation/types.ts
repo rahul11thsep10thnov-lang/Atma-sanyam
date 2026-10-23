@@ -11,9 +11,9 @@ export type GuardianTabParamList = {
 export type PlayerTabParamList = {
   Home: undefined;
   Games: { category?: string } | undefined;
-  Craft: undefined;
+  Learn: undefined;
   Facts: { category?: string } | undefined;
-  Progress: undefined;
+  Me: undefined;
 };
 
 export type RootStackParamList = {
@@ -27,6 +27,8 @@ export type RootStackParamList = {
   ChildDetail: { childId: string };
   ChildEditor: { childId?: string };
   Controls: { childId: string };
+  ChildLearning: { childId: string };
+  ChildRewards: { childId: string };
   Mirror: { childId: string };
   Subscription: undefined;
   ChangePassword: undefined;
@@ -37,8 +39,17 @@ export type RootStackParamList = {
   PlayerConsole: NavigatorScreenParams<PlayerTabParamList> | undefined;
   GameDetail: { gameId: string };
   GamePlay: { gameId: string; difficulty: string };
+  CraftLibrary: undefined;
   CraftDetail: { craftId: string };
   FactDetail: { factId: string; fact?: unknown };
+  // learning academy
+  LearnSection: { section: 'study' | 'music' | 'sports' };
+  Subject: { subject: string };
+  Lesson: { lessonId: string; age?: number };
+  // rankings and rewards
+  Rankings: undefined;
+  Leaderboard: { gameId: string };
+  Rewards: undefined;
   AdultGate: { onPass: () => void } | undefined;
   // shared
   Legal: { doc: LegalDocId };

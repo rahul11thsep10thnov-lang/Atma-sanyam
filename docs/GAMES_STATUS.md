@@ -70,8 +70,27 @@ Legend — brackets: A 3–5 · B 6–8 · C 9–10 · D 11–12. "Logic module"
 - Farm Manager economy (planting, weather, animals, a winning strategy), paper-airplane flight
   model, quiz banks (≥10 questions per level, distinct options), origami diagram geometry.
 
+## Tutorials and board polish
+
+- Every game has a data-driven pictorial tutorial (`src/games/tutorials/definitions.ts`): meet
+  the game → controls → watch a move → try it (a glowing target the child must tap) → play, with
+  simpler wording for ages 3–5 where a game is offered to them. Entry points: "Show me how" on
+  the game page, automatically the first time a game is played (skippable), the Help button
+  during a game (pauses it), and Replay from the pause sheet. Finishing one pays coins once per
+  game (`tutorials.test.ts` checks coverage and the template).
+- Ludo, Snakes & Ladders and Chess: tumbling dice, gliding tokens, capture bursts, safe-square
+  stars, drawn snakes and ladders, legal-move pulses, pass-and-play with a friend on one device,
+  check cues and captured pieces (chess), Undo in Learn-the-moves / Beginner chess.
+- Two layout bugs found while verifying the boards in a browser were fixed: the Ludo track had
+  51 cells instead of 52 (the board crashed on load), and every wrapped grid board (chess,
+  chess tactics, checkers, connect four, match-3, word search, sudoku, block puzzle, coding
+  sequence, jigsaw, physics lab) was sized without its border, so the last cell of each row
+  wrapped onto the next line. Sizes now include the border; `games.test.ts` checks the Ludo
+  track geometry.
+
 ## Not yet done
 
-- Multiplayer or two-device play (every game is single player vs the computer).
+- Two-device or online multiplayer (pass-and-play on one device exists for Ludo, Snakes &
+  Ladders and Chess; every other game is single player vs the computer).
 - Game-specific analytics beyond sessions/outcomes/scores.
 - Translations of in-game text (the UI chrome is in English and Hindi; game copy is English).

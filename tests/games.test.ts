@@ -12,7 +12,7 @@ import { drop, winner, bestMove, empty, legalCols } from '../src/games/logic/con
 import { initialBoard, legalMoves as checkersMoves, applyMove, computerMove as checkersAi, countPieces } from '../src/games/logic/checkers.ts';
 import { fromFen, legalMoves, makeMove, outcome, inCheck, computerMove, START_FEN, algebraToIndex, indexToAlgebra } from '../src/games/logic/chess.ts';
 import { PUZZLES as CHESS_PUZZLES } from '../src/games/logic/chessPuzzles.ts';
-import { initialLudo, roll, moveToken, movable, chooseToken, HOME, absolute } from '../src/games/logic/ludo.ts';
+import { initialLudo, roll, moveToken, movable, chooseToken, HOME, absolute, TRACK, trackCell, homeCell } from '../src/games/logic/ludo.ts';
 
 describe('engine helpers', () => {
   it('seeded rng is deterministic and shuffle keeps every item', () => {
@@ -219,6 +219,22 @@ describe('ludo', () => {
     assert.ok(r.dice === null || (r.dice >= 1 && r.dice <= 6));
     const ai = { ...initialLudo(4), dice: 6, turn: 1 };
     assert.ok([0, 1, 2, 3].includes(chooseToken(ai, 1, rng(1))));
+  });
+  it('draws a closed 52-cell track where every cell has board coordinates and each step is one square', () => {
+    const cells = [...Array(TRACK).keys()].map((a) => trackCell(a));
+    assert.equal(new Set(cells.map((c) => c.join(','))).size, TRACK, 'all 52 cells are distinct');
+    for (let a = 0; a < TRACK; a++) {
+      const [x, y] = cells[a]!;
+      const [nx, ny] = cells[(a + 1) % TRACK]!;
+      assert.ok(x >= 0 && x <= 14 && y >= 0 && y <= 14, `cell ${a} on the board`);
+      assert.equal(Math.max(Math.abs(nx - x), Math.abs(ny - y)), 1, `cell ${a} touches the next one (arms turn on a diagonal corner)`);
+    }
+    // Each player's last track square sits next to the first square of their home column.
+    for (const p of [0, 1, 2, 3]) {
+      const [x, y] = trackCell(absolute(p, 50));
+      const [hx, hy] = homeCell(p, 1);
+      assert.equal(Math.abs(hx - x) + Math.abs(hy - y), 1, `player ${p} turns into the home column`);
+    }
   });
 });
 

@@ -161,6 +161,8 @@ export function ChildDetailScreen({ navigation, route }: NativeStackScreenProps<
       <Card variant="raised" paddingX="lg" padding={0} style={styles.card}>
         <SettingLink icon="shield" label={t('child.controls')} hint={`${data.controls.dailyLimitMinutes} min/day · ${data.controls.sessionLimitMinutes} min/session`} onPress={() => navigation.navigate('Controls', { childId: c.id })} />
         <SettingLink icon="chart" label={t('dash.recent')} hint={t('dash.weekly')} onPress={() => navigation.navigate('Controls', { childId: c.id })} />
+        <SettingLink icon="book" label={t('glearn.title')} hint={t('glearn.subtitle', { name: c.displayName })} onPress={() => navigation.navigate('ChildLearning', { childId: c.id })} />
+        <SettingLink icon="award" label={t('grewards.title')} onPress={() => navigation.navigate('ChildRewards', { childId: c.id })} />
         <SettingToggle icon="lock" label={t('child.otp')} hint={t('child.otpHint')} value={c.playerOtpRequired} busy={busy === 'otp'} onValueChange={(v) => run('otp', () => guardianApi.updateChild(c.id, { playerOtpRequired: v }))} />
         <SettingToggle icon="pause" label={t('child.pause')} value={c.status === 'paused'} busy={busy === 'status'} onValueChange={(v) => run('status', () => guardianApi.updateChild(c.id, { status: v ? 'paused' : 'active' }))} last />
       </Card>

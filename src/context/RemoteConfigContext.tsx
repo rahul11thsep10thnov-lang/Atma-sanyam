@@ -18,6 +18,13 @@ export interface RemoteConfig {
     liveMirroring: boolean;
     pushNotifications: boolean;
     showInDevelopmentGames: boolean;
+    studyPlayfully: boolean;
+    music: boolean;
+    sports: boolean;
+    rankings: boolean;
+    rewardShop: boolean;
+    ads: boolean;
+    adSupportedAccess: boolean;
     phoneSignIn: boolean;
     googlePlayBilling: boolean;
     razorpayBilling: boolean;
@@ -25,14 +32,33 @@ export interface RemoteConfig {
   };
   texts: { announcement: string; guardianWelcome: string; playerWelcome: string; subscriptionPitch: string; timeUpMessage: string };
   limits: { dailyLimitMinutes: number; sessionLimitMinutes: number; maxChildrenPerGuardian: number };
+  rewards: { tutorialCompleted: number; gameCompleted: number; gameWon: number; puzzleSolvedMin: number; puzzleSolvedMax: number; dailyChallenge: number; craftCompleted: number; lessonCompleted: number; quizCompleted: number; factDiscovered: number; dailyCap: number; shopEnabled: boolean };
+  rankings: { minPlayedForBoard: number; showBracketFilter: boolean; showImprovement: boolean; boardSize: number };
+  ads: AdsConfig;
   subscription: { productId: string; priceInr: number };
   termsVersion: string;
+}
+
+export interface AdsConfig {
+  enabled: boolean;
+  testMode: boolean;
+  provider: 'admob';
+  childDirected: true;
+  maxAdContentRating: 'G';
+  units: { interstitialAndroid: string; interstitialIos: string };
+  firstAdTargetSeconds: number;
+  betweenGamesTargetSeconds: number;
+  minGapSeconds: number;
+  maxPerHour: number;
+  maxPerDay: number;
+  loadTimeoutMs: number;
+  adSupportedAccess: boolean;
 }
 
 export const DEFAULT_CONFIG: RemoteConfig = {
   maintenance: { enabled: false, message: 'LoJi is getting a little upgrade. Please check back in a little while.' },
   appVersion: { minimumVersion: '1.0.0', latestVersion: '1.0.0', updateMessage: 'A new version of LoJi is available.', iosStoreUrl: '', androidStoreUrl: '' },
-  features: { games: true, artAndCraft: true, didYouKnow: true, liveMirroring: true, pushNotifications: isBackendConfigured, showInDevelopmentGames: false, phoneSignIn: false, googlePlayBilling: false, razorpayBilling: false, sandboxBilling: false },
+  features: { games: true, artAndCraft: true, didYouKnow: true, liveMirroring: true, pushNotifications: isBackendConfigured, showInDevelopmentGames: false, studyPlayfully: true, music: true, sports: true, rankings: true, rewardShop: true, ads: false, adSupportedAccess: false, phoneSignIn: false, googlePlayBilling: false, razorpayBilling: false, sandboxBilling: false },
   texts: {
     announcement: '',
     guardianWelcome: 'Welcome to LoJi. Add a child profile, set their playtime, and watch them learn.',
@@ -41,6 +67,10 @@ export const DEFAULT_CONFIG: RemoteConfig = {
     timeUpMessage: 'Time for a break! Your playtime is finished for now.',
   },
   limits: { dailyLimitMinutes: 60, sessionLimitMinutes: 20, maxChildrenPerGuardian: 8 },
+  rewards: { tutorialCompleted: 5, gameCompleted: 5, gameWon: 10, puzzleSolvedMin: 5, puzzleSolvedMax: 15, dailyChallenge: 10, craftCompleted: 10, lessonCompleted: 10, quizCompleted: 5, factDiscovered: 1, dailyCap: 150, shopEnabled: true },
+  rankings: { minPlayedForBoard: 1, showBracketFilter: true, showImprovement: true, boardSize: 50 },
+  // Off until the server says otherwise: an app with no config never shows an ad.
+  ads: { enabled: false, testMode: true, provider: 'admob', childDirected: true, maxAdContentRating: 'G', units: { interstitialAndroid: '', interstitialIos: '' }, firstAdTargetSeconds: 15, betweenGamesTargetSeconds: 25, minGapSeconds: 180, maxPerHour: 6, maxPerDay: 20, loadTimeoutMs: 6000, adSupportedAccess: false },
   subscription: { productId: 'loji_monthly', priceInr: 199 },
   termsVersion: '2026-10',
 };
@@ -56,6 +86,9 @@ function merge(partial: Partial<RemoteConfig> | null | undefined): RemoteConfig 
     features: { ...DEFAULT_CONFIG.features, ...p.features },
     texts: { ...DEFAULT_CONFIG.texts, ...p.texts },
     limits: { ...DEFAULT_CONFIG.limits, ...p.limits },
+    rewards: { ...DEFAULT_CONFIG.rewards, ...p.rewards },
+    rankings: { ...DEFAULT_CONFIG.rankings, ...p.rankings },
+    ads: { ...DEFAULT_CONFIG.ads, ...p.ads, units: { ...DEFAULT_CONFIG.ads.units, ...p.ads?.units } },
     subscription: { ...DEFAULT_CONFIG.subscription, ...p.subscription },
     termsVersion: p.termsVersion ?? DEFAULT_CONFIG.termsVersion,
   };

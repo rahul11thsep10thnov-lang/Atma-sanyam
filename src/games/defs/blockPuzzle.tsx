@@ -64,7 +64,7 @@ function BlockView({ state, dispatch, width, height, readOnly, sfx }: GameViewPr
   return (
     <RNView style={{ flex: 1, alignItems: 'center' }}>
       <Prompt emoji="🟦">Drag blocks onto the grid. Fill a row or column to clear it.</Prompt>
-      <RNView onLayout={(e) => (gridOrigin.current = { x: e.nativeEvent.layout.x, y: e.nativeEvent.layout.y })} style={[styles.grid, { width: cell * SIZE, height: cell * SIZE }]}>
+      <RNView onLayout={(e) => (gridOrigin.current = { x: e.nativeEvent.layout.x, y: e.nativeEvent.layout.y })} style={[styles.grid, { width: cell * SIZE + 6, height: cell * SIZE + 6 }]}>
         {state.grid.map((v, i) => <RNView key={i} style={{ width: cell, height: cell, padding: 1 }}><RNView style={{ flex: 1, borderRadius: 4, backgroundColor: v ? rainbow[(v - 1) % rainbow.length] : '#F3EEF9' }} /></RNView>)}
       </RNView>
       <RNView onLayout={(e) => (trayOrigin.current = { x: e.nativeEvent.layout.x, y: e.nativeEvent.layout.y })} style={[styles.tray, { width: cell * SIZE }]}>

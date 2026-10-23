@@ -10,10 +10,19 @@ import type { GameDefinition } from '../../games/engine';
 import { usePlayer } from '../../context/PlayerContext';
 import { ErrorState, LoadingState } from '../../ui';
 import { ApiError, friendlyError } from '../../services/apiClient';
+import { useAds } from '../../ads/useAds';
 import { t } from '../../i18n';
+
+let playedBefore = false;
+async function firstOrBetween(): Promise<'first' | 'between'> {
+  const trigger = playedBefore ? 'between' : 'first';
+  playedBefore = true;
+  return trigger;
+}
 
 export function GamePlayScreen({ navigation, route }: NativeStackScreenProps<RootStackParamList, 'GamePlay'>) {
   const p = usePlayer();
+  const ads = useAds();
   const { gameId, difficulty } = route.params;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [def, setDef] = useState<GameDefinition<any, any> | null>(null);
@@ -27,6 +36,11 @@ export function GamePlayScreen({ navigation, route }: NativeStackScreenProps<Roo
     (async () => {
       try {
         const d = await loadGame(gameId);
+        // Ads only ever run here, before a game starts — never during play.
+        // The manager returns immediately when the household is ad-free, a
+        // cap applies, or the SDK has nothing to show.
+        await ads.maybeShow(ads.enabled ? (await firstOrBetween()) : 'between');
+        if (!alive) return;
         await p.startSession(gameId, difficulty);
         if (!alive) return;
         setDef(d);
@@ -46,6 +60,7 @@ export function GamePlayScreen({ navigation, route }: NativeStackScreenProps<Roo
 
   const exit = async (result: GameResult | null) => {
     exiting.current = true;
+    ads.noteGameEnded();
     const r = await p.endSession(result?.outcome ?? 'abandoned', result ?? undefined);
     navigation.goBack();
     if (r?.newAchievements.length) {

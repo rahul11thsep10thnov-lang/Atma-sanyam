@@ -20,6 +20,8 @@ import { ChildrenScreen } from '../screens/guardian/ChildrenScreen';
 import { ChildDetailScreen } from '../screens/guardian/ChildDetailScreen';
 import { ChildEditorScreen } from '../screens/guardian/ChildEditorScreen';
 import { ControlsScreen } from '../screens/guardian/ControlsScreen';
+import { ChildLearningScreen } from '../screens/guardian/ChildLearningScreen';
+import { ChildRewardsScreen } from '../screens/guardian/ChildRewardsScreen';
 import { MirrorScreen } from '../screens/guardian/MirrorScreen';
 import { SubscriptionScreen } from '../screens/guardian/SubscriptionScreen';
 import { GuardianSettingsScreen, ChangePasswordScreen } from '../screens/guardian/SettingsScreen';
@@ -35,6 +37,12 @@ import { FactsScreen } from '../screens/player/FactsScreen';
 import { FactDetailScreen } from '../screens/player/FactDetailScreen';
 import { ProgressScreen } from '../screens/player/ProgressScreen';
 import { AdultGateScreen } from '../screens/player/AdultGateScreen';
+import { LearnScreen } from '../screens/player/learn/LearnScreen';
+import { LearnSectionScreen } from '../screens/player/learn/LearnSectionScreen';
+import { SubjectScreen } from '../screens/player/learn/SubjectScreen';
+import { LessonScreen } from '../screens/player/learn/LessonScreen';
+import { RankingsScreen, LeaderboardScreen } from '../screens/player/RankingsScreen';
+import { RewardsScreen } from '../screens/player/RewardsScreen';
 
 const GuardianTab = createBottomTabNavigator<GuardianTabParamList>();
 const PlayerTab = createBottomTabNavigator<PlayerTabParamList>();
@@ -65,17 +73,17 @@ function PlayerTabs() {
   const TABS: Record<keyof PlayerTabParamList, TabSpec> = {
     Home: { icon: 'home', label: t('tabs.home') },
     Games: { icon: 'puzzle', label: t('tabs.games') },
-    Craft: { icon: 'scissors', label: t('tabs.craft') },
+    Learn: { icon: 'book', label: t('tabs.learn') },
     Facts: { icon: 'lightbulb', label: t('tabs.facts') },
-    Progress: { icon: 'trophy', label: t('tabs.progress') },
+    Me: { icon: 'trophy', label: t('tabs.me') },
   };
   return (
     <PlayerTab.Navigator tabBar={(props) => <FloatingTabBar {...props} specs={TABS} playful />} screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: 'transparent' } }}>
       <PlayerTab.Screen name="Home" component={PlayerHomeScreen} />
       <PlayerTab.Screen name="Games" component={GamesScreen} />
-      <PlayerTab.Screen name="Craft" component={CraftLibraryScreen} />
+      <PlayerTab.Screen name="Learn" component={LearnScreen} />
       <PlayerTab.Screen name="Facts" component={FactsScreen} />
-      <PlayerTab.Screen name="Progress" component={ProgressScreen} />
+      <PlayerTab.Screen name="Me" component={ProgressScreen} />
     </PlayerTab.Navigator>
   );
 }
@@ -98,6 +106,8 @@ const GRecovery = guardian(GuardianRecoveryScreen);
 const GChildDetail = guardian(ChildDetailScreen);
 const GChildEditor = guardian(ChildEditorScreen);
 const GControls = guardian(ControlsScreen);
+const GChildLearning = guardian(ChildLearningScreen);
+const GChildRewards = guardian(ChildRewardsScreen);
 const GMirror = guardian(MirrorScreen);
 const GSubscription = guardian(SubscriptionScreen);
 const GChangePassword = guardian(ChangePasswordScreen);
@@ -144,8 +154,8 @@ export function RootNavigator() {
   useEffect(() => {
     if (!ready || !navRef.isReady()) return;
     const route = navRef.getCurrentRoute()?.name;
-    const inGuardian = ['GuardianConsole', 'ChildDetail', 'ChildEditor', 'Controls', 'Mirror', 'Subscription', 'ChangePassword', 'StepUp'].includes(route ?? '');
-    const inPlayer = ['PlayerConsole', 'GameDetail', 'GamePlay', 'CraftDetail', 'FactDetail', 'AdultGate'].includes(route ?? '');
+    const inGuardian = ['GuardianConsole', 'ChildDetail', 'ChildEditor', 'Controls', 'ChildLearning', 'ChildRewards', 'Mirror', 'Subscription', 'ChangePassword', 'StepUp'].includes(route ?? '');
+    const inPlayer = ['PlayerConsole', 'GameDetail', 'GamePlay', 'CraftLibrary', 'CraftDetail', 'FactDetail', 'AdultGate', 'LearnSection', 'Subject', 'Lesson', 'Rankings', 'Leaderboard', 'Rewards'].includes(route ?? '');
     if (inGuardian && g.status === 'signedOut') navRef.reset({ index: 0, routes: [{ name: p.status === 'signedIn' ? 'PlayerConsole' : 'Welcome' }] });
     if (inPlayer && p.status === 'signedOut') navRef.reset({ index: 0, routes: [{ name: g.status === 'signedIn' ? 'GuardianConsole' : 'Welcome' }] });
   }, [g.status, p.status, ready, navRef]);
@@ -183,6 +193,8 @@ export function RootNavigator() {
           <Stack.Screen name="ChildDetail" component={GChildDetail} />
           <Stack.Screen name="ChildEditor" component={GChildEditor} options={{ presentation: 'modal' }} />
           <Stack.Screen name="Controls" component={GControls} />
+          <Stack.Screen name="ChildLearning" component={GChildLearning} />
+          <Stack.Screen name="ChildRewards" component={GChildRewards} />
           <Stack.Screen name="Mirror" component={GMirror} />
           <Stack.Screen name="Subscription" component={GSubscription} />
           <Stack.Screen name="ChangePassword" component={GChangePassword} options={{ presentation: 'modal' }} />
@@ -192,8 +204,15 @@ export function RootNavigator() {
           <Stack.Screen name="PlayerConsole" component={PlayerTabs} options={{ animation: 'fade' }} />
           <Stack.Screen name="GameDetail" component={GameDetailScreen} options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
           <Stack.Screen name="GamePlay" component={GamePlayScreen} options={{ gestureEnabled: false, animation: 'fade', orientation: 'portrait' }} />
+          <Stack.Screen name="CraftLibrary" component={CraftLibraryScreen} />
           <Stack.Screen name="CraftDetail" component={CraftDetailScreen} />
           <Stack.Screen name="FactDetail" component={FactDetailScreen} options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="LearnSection" component={LearnSectionScreen} />
+          <Stack.Screen name="Subject" component={SubjectScreen} />
+          <Stack.Screen name="Lesson" component={LessonScreen} options={{ gestureEnabled: false, animation: 'fade' }} />
+          <Stack.Screen name="Rankings" component={RankingsScreen} />
+          <Stack.Screen name="Leaderboard" component={LeaderboardScreen} />
+          <Stack.Screen name="Rewards" component={RewardsScreen} />
           <Stack.Screen name="AdultGate" component={AdultGateScreen} options={{ presentation: 'modal' }} />
           <Stack.Screen name="Legal" component={LegalScreen} options={{ presentation: 'modal' }} />
         </Stack.Navigator>

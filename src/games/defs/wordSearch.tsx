@@ -75,7 +75,7 @@ function WordSearchView({ state, dispatch, width, readOnly, sfx, say }: GameView
           <Text key={p.word} style={[styles.word, state.found.includes(p.word) && styles.wordFound]}>{p.word}</Text>
         ))}
       </RNView>
-      <RNView {...pointer} style={[styles.grid, { width: cell * size, height: cell * size }]}>
+      <RNView {...pointer} style={[styles.grid, { width: cell * size + 6, height: cell * size + 6 }]}>
         {letters.map((l, i) => (
           <RNView key={i} style={[styles.cell, { width: cell, height: cell, backgroundColor: sel.includes(i) ? '#FFF4CC' : foundCells.has(i) ? rainbow[foundCells.get(i)! % rainbow.length] + '66' : '#fff' }]}>
             <Text style={[styles.letter, { fontSize: cell * 0.5 }]}>{l}</Text>

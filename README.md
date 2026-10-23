@@ -52,8 +52,25 @@ This repository contains the whole product:
   notifications) on Android and Razorpay on the website; a full state machine
   (never subscribed → pending → active ⇄ grace/billing retry → expired, cancelled-but-entitled,
   revoked) and enforcement on both the server (HTTP 402) and the client.
-- **Admin console** with roles (super admin, admin, editor, fact checker, support), catalogue
-  editors, subscription support actions, feature flags, system health and an audit log.
+- **Learning academy** — Study Playfully (13 subjects incl. Vedic Maths, physics, chemistry,
+  history, geography, computers), Music (piano, tabla, guitar) and Sports (8 sports) — 50 complete
+  nine-step lessons with interactive pictures, activities, a sourced Did You Know? and a chapter
+  challenge; lessons for every age 3–12 with mandatory cross-age exploring; curriculum mappings
+  (NCERT/CBSE/CISCE/state/IB) shown as "aligned" only once verified. See [docs/LEARNING.md](docs/LEARNING.md).
+- **Pictorial tutorials for all 40 games** (meet → controls → demo → try it → play), opened from
+  How to Play, the first time a game is played, Help during a game and Replay from pause.
+  Ludo, Snakes & Ladders and Chess have illustrated boards, tumbling dice, gliding tokens,
+  capture bursts, pass-and-play with a friend and (chess) undo in practice levels.
+- **Coins, rewards and rankings**: a server-authoritative coin ledger with idempotency and daily
+  caps, a cosmetic reward shop, per-game leaderboards (week/month/all time, age-group filters,
+  Elo rating for chess) validated once per session, a daily challenge, guardian opt-outs. See
+  [docs/RANKINGS_REWARDS.md](docs/RANKINGS_REWARDS.md).
+- **Ads for non-subscribers only** (Google AdMob, child-directed, never during a game, capped,
+  test units by default, off unless an admin flag lets unsubscribed households in). See
+  [docs/ADS.md](docs/ADS.md).
+- **Admin console** with roles (super admin, admin, editor, fact checker, support), catalogue,
+  lesson and reward editors, curriculum verification, subscription support actions, feature
+  flags, system health and an audit log.
 
 ## Quick start (local development)
 
@@ -86,8 +103,8 @@ on the Plan tab (sandbox billing), add a child, then open the Player Console.
 ## Tests
 
 ```bash
-cd backend && npm test          # 99 API tests against a real PostgreSQL (TEST_DATABASE_URL)
-npm test                        # 30 game-rule tests (node --test, no React)
+cd backend && npm test          # 157 API tests against a real PostgreSQL (TEST_DATABASE_URL)
+npm test                        # 33 game-rule and tutorial tests (node --test, no React)
 npx tsc --noEmit                # app · cd backend && npm run typecheck · cd admin && npm run typecheck
 node e2e/smoke.mjs              # browser smoke test of the web build (see e2e/README.md)
 ```
@@ -97,6 +114,9 @@ node e2e/smoke.mjs              # browser smoke test of the web build (see e2e/R
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — modules, database schema, security model, offline behaviour
 - [docs/API.md](docs/API.md) — every endpoint and the WebSocket protocol
 - [docs/SOURCE_REGISTRY.md](docs/SOURCE_REGISTRY.md) — the automatic free-licence source registry and fact pipeline
+- [docs/LEARNING.md](docs/LEARNING.md) — the learning academy: sections, age framework, chapter template, content, curriculum mapping
+- [docs/RANKINGS_REWARDS.md](docs/RANKINGS_REWARDS.md) — coins, the reward shop, rankings and the daily challenge
+- [docs/ADS.md](docs/ADS.md) — AdMob placement rules, child-directed settings and configuration
 - [docs/GAMES_STATUS.md](docs/GAMES_STATUS.md) — the 40 games, brackets and what each one does
 - [docs/SUBSCRIPTIONS.md](docs/SUBSCRIPTIONS.md) — Google Play Billing and Razorpay setup, state machine, testing
 - [docs/OTP_PROVIDERS.md](docs/OTP_PROVIDERS.md) — MSG91 / Twilio setup and test numbers for store review
@@ -111,7 +131,9 @@ node e2e/smoke.mjs              # browser smoke test of the web build (see e2e/R
 
 ```
 App.tsx, src/              Expo app (both consoles, game engine, crafts, realtime client)
-  src/games/               engine.ts · registry.ts · defs/ (40 games) · logic/ (pure rules) · shared/
+  src/games/               engine.ts · registry.ts · defs/ (40 games) · logic/ (pure rules) · shared/ · tutorials/ (40 pictorial tutorials)
+  src/learning/            lesson engine: types, visuals, activities, audio synth, LessonPlayer
+  src/ads/                 AdMob placement manager (caps, callbacks, diagnostics)
   src/crafts/              FoldDiagram (SVG) · built-in origami models
   src/screens/guardian     Guardian Console   src/screens/player  Player Console
   src/context              Guardian/Player sessions, realtime, remote config

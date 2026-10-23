@@ -42,7 +42,7 @@ function SudokuView({ state, dispatch, width, readOnly, sfx }: GameViewProps<Sta
   void hint;
   return (
     <RNView style={{ alignItems: 'center' }}>
-      <RNView style={[styles.grid, { width: size * n, height: size * n }]}>
+      <RNView style={[styles.grid, { width: size * n + 6, height: size * n + 6 }]}>
         {state.grid.map((v, i) => {
           const r = Math.floor(i / n), c = i % n;
           const given = !!givens[i];

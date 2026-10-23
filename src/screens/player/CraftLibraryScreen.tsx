@@ -1,9 +1,8 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { CompositeScreenProps, useFocusEffect } from '@react-navigation/native';
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { PlayerTabParamList, RootStackParamList } from '../../navigation/types';
+import { RootStackParamList } from '../../navigation/types';
 import { AppText, CandyCard, Chip, EmptyState, Badge, ProgressBar } from '../../ui';
 import { PlayerScreen } from '../../components/player/PlayerScreen';
 import { usePlayer } from '../../context/PlayerContext';
@@ -22,7 +21,7 @@ export const CRAFT_KIND_META: Record<Craft['kind'], { emoji: string; color: stri
 
 export const DIFFICULTY_LABEL = ['', 'Very easy', 'Easy', 'Medium', 'Tricky', 'Advanced'];
 
-type Props = CompositeScreenProps<BottomTabScreenProps<PlayerTabParamList, 'Craft'>, NativeStackScreenProps<RootStackParamList>>;
+type Props = NativeStackScreenProps<RootStackParamList, 'CraftLibrary'>;
 
 export function CraftLibraryScreen({ navigation }: Props) {
   const { colors } = useTheme();

@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/types';
-import { AppText, Button, Card, Screen, SettingToggle, Chip, LoadingState, ErrorState, Badge } from '../../ui';
+import { AppText, Button, Card, Screen, SettingToggle, Chip, LoadingState, ErrorState, Badge, TextField } from '../../ui';
 import { ScreenHeader } from '../../components/ScreenHeader';
 import { WeekChart } from '../../components/guardian/WeekChart';
 import { formatAgo, formatDuration } from '../../components/guardian/LiveBadge';
@@ -14,7 +14,24 @@ import { friendlyError } from '../../services/apiClient';
 import { GAME_CATEGORIES, GAME_REGISTRY_META } from '../../games/registry';
 import { space } from '../../theme/spacing';
 import { useTheme } from '../../theme/ThemeContext';
-import type { AgeBracket, ParentalControls, PlayWindow } from '../../types';
+import type { AgeBracket, CurriculumFramework, ParentalControls, PlayWindow } from '../../types';
+import { useRemoteConfig } from '../../context/RemoteConfigContext';
+
+const FRAMEWORKS: { key: CurriculumFramework; name: string }[] = [
+  { key: 'ncert', name: 'NCERT' },
+  { key: 'cbse', name: 'CBSE' },
+  { key: 'cisce', name: 'CISCE (ICSE/ISC)' },
+  { key: 'state', name: 'State board' },
+  { key: 'ib_pyp', name: 'IB PYP' },
+  { key: 'ib_myp', name: 'IB MYP' },
+];
+const GRADES = ['Nursery', 'LKG', 'UKG', 'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5', 'Class 6', 'Class 7'];
+const SUBJECTS: { key: string; name: string; emoji: string; section: string }[] = [
+  { key: 'maths', name: 'Mathematics', emoji: '🔢', section: 'study' }, { key: 'vedic-maths', name: 'Vedic Maths', emoji: '🧮', section: 'study' }, { key: 'physics', name: 'Physics', emoji: '⚡', section: 'study' }, { key: 'chemistry', name: 'Chemistry', emoji: '🧪', section: 'study' }, { key: 'biology', name: 'Biology', emoji: '🌱', section: 'study' }, { key: 'environment', name: 'Environment', emoji: '🌍', section: 'study' }, { key: 'history', name: 'History', emoji: '🏺', section: 'study' }, { key: 'geography', name: 'Geography', emoji: '🗺️', section: 'study' }, { key: 'computers', name: 'Computer Studies', emoji: '💻', section: 'study' }, { key: 'english', name: 'English', emoji: '🔤', section: 'study' }, { key: 'hindi', name: 'Hindi', emoji: '🪔', section: 'study' }, { key: 'general-knowledge', name: 'General Knowledge', emoji: '💡', section: 'study' }, { key: 'thinking', name: 'Thinking Skills', emoji: '🧩', section: 'study' },
+  { key: 'piano', name: 'Piano', emoji: '🎹', section: 'music' }, { key: 'tabla', name: 'Tabla', emoji: '🥁', section: 'music' }, { key: 'guitar', name: 'Guitar', emoji: '🎸', section: 'music' }, { key: 'drums', name: 'Drums', emoji: '🪘', section: 'music' }, { key: 'flute', name: 'Flute', emoji: '🎶', section: 'music' }, { key: 'violin', name: 'Violin', emoji: '🎻', section: 'music' },
+  { key: 'cricket', name: 'Cricket', emoji: '🏏', section: 'sports' }, { key: 'football', name: 'Football', emoji: '⚽', section: 'sports' }, { key: 'badminton', name: 'Badminton', emoji: '🏸', section: 'sports' }, { key: 'squash', name: 'Squash', emoji: '🎾', section: 'sports' }, { key: 'basketball', name: 'Basketball', emoji: '🏀', section: 'sports' }, { key: 'volleyball', name: 'Volleyball', emoji: '🏐', section: 'sports' }, { key: 'table-tennis', name: 'Table Tennis', emoji: '🏓', section: 'sports' }, { key: 'swimming', name: 'Swimming', emoji: '🏊', section: 'sports' },
+];
+const CAPS = [25, 50, 75, 100, 150, 200];
 import { t } from '../../i18n';
 
 const LIMITS = [15, 30, 45, 60, 90, 120, 180];
@@ -24,6 +41,7 @@ const BEDTIMES: [string, string][] = [['20:00', '07:00'], ['20:30', '07:00'], ['
 export function ControlsScreen({ navigation, route }: NativeStackScreenProps<RootStackParamList, 'Controls'>) {
   const { colors } = useTheme();
   const g = useGuardian();
+  const { config } = useRemoteConfig();
   const id = route.params.childId;
   const child = g.children.find((c) => c.id === id);
   const [c, setC] = useState<ParentalControls | null>(null);
@@ -51,7 +69,7 @@ export function ControlsScreen({ navigation, route }: NativeStackScreenProps<Roo
     setC({ ...c, ...p });
     setSaved(false);
   };
-  const toggleList = (key: 'blockedCategories' | 'blockedGames' | 'allowedBrackets', value: string) => {
+  const toggleList = (key: 'blockedCategories' | 'blockedGames' | 'allowedBrackets' | 'blockedSubjects', value: string) => {
     const list = c[key] as string[];
     patch({ [key]: list.includes(value) ? list.filter((x) => x !== value) : [...list, value] } as Partial<ParentalControls>);
   };
@@ -133,7 +151,52 @@ export function ControlsScreen({ navigation, route }: NativeStackScreenProps<Roo
         )}
       </Card>
 
+      <Card variant="raised" padding="lg" style={styles.card}>
+        <AppText variant="dashHeading">{t('controls.learning')}</AppText>
+        <AppText variant="dashLabel" tone="secondary" style={styles.label}>{t('glearn.curriculum')}</AppText>
+        <AppText variant="caption" tone="muted">{t('glearn.curriculumHint')}</AppText>
+        <View style={styles.wrap}>
+          <Chip label="—" selected={!c.curriculumFramework} onPress={() => patch({ curriculumFramework: null, schoolGrade: null, curriculumBoard: null })} small />
+          {FRAMEWORKS.map((f) => <Chip key={f.key} label={f.name} selected={c.curriculumFramework === f.key} onPress={() => patch({ curriculumFramework: f.key })} small />)}
+        </View>
+        {c.curriculumFramework && (
+          <>
+            <AppText variant="dashLabel" tone="secondary" style={styles.label}>{t('glearn.grade')}</AppText>
+            <View style={styles.wrap}>
+              {GRADES.map((gr) => <Chip key={gr} label={gr} selected={c.schoolGrade === gr} onPress={() => patch({ schoolGrade: c.schoolGrade === gr ? null : gr })} small />)}
+            </View>
+            {c.curriculumFramework === 'state' && (
+              <View style={{ marginTop: space.sm }}>
+                <TextField label={t('glearn.board')} value={c.curriculumBoard ?? ''} onChangeText={(v) => patch({ curriculumBoard: v || null })} />
+              </View>
+            )}
+          </>
+        )}
+        <AppText variant="dashLabel" tone="secondary" style={styles.label}>{t('glearn.goals')}</AppText>
+        <View style={styles.wrap}>
+          {SUBJECTS.filter((sub) => !c.blockedSubjects.includes(sub.key)).map((sub) => {
+            const goal = c.learningGoals.find((x) => x.subject === sub.key);
+            return <Chip key={sub.key} label={goal ? `${sub.name}: ${t('glearn.goalFor', { n: goal.lessonsPerWeek })}` : sub.name} emoji={sub.emoji} selected={!!goal} onPress={() => patch({ learningGoals: goal ? (goal.lessonsPerWeek >= 3 ? c.learningGoals.filter((x) => x.subject !== sub.key) : c.learningGoals.map((x) => (x.subject === sub.key ? { ...x, lessonsPerWeek: x.lessonsPerWeek + 1 } : x))) : [...c.learningGoals, { subject: sub.key, lessonsPerWeek: 1 }] })} small />;
+          })}
+        </View>
+        <AppText variant="caption" tone="muted">{t('glearn.addGoal')}: tap a subject for 1 lesson a week, again for 2, again for 3, once more to remove.</AppText>
+        <AppText variant="dashLabel" tone="secondary" style={styles.label}>{t('glearn.blocked')}</AppText>
+        <AppText variant="caption" tone="muted">{t('glearn.blockedHint')}</AppText>
+        <View style={styles.wrap}>
+          {SUBJECTS.map((sub) => <Chip key={sub.key} label={sub.name} emoji={sub.emoji} selected={c.blockedSubjects.includes(sub.key)} color={colors.danger} onPress={() => toggleList('blockedSubjects', sub.key)} small />)}
+        </View>
+        <AppText variant="dashLabel" tone="secondary" style={styles.label}>{t('grewards.cap')}</AppText>
+        <AppText variant="caption" tone="muted">{t('grewards.capHint', { n: config.rewards.dailyCap })}</AppText>
+        <View style={styles.wrap}>
+          <Chip label={`${config.rewards.dailyCap} (default)`} selected={c.coinDailyCap === null} onPress={() => patch({ coinDailyCap: null })} small />
+          {CAPS.filter((n) => n < config.rewards.dailyCap).map((n) => <Chip key={n} label={String(n)} selected={c.coinDailyCap === n} onPress={() => patch({ coinDailyCap: n })} small />)}
+        </View>
+      </Card>
+
       <Card variant="raised" paddingX="lg" padding={0} style={styles.card}>
+        <SettingToggle icon="trophy" label={t('grewards.rankingsOn')} hint={t('grewards.rankingsHint')} value={c.rankingsEnabled} onValueChange={(v) => patch({ rankingsEnabled: v })} />
+        <SettingToggle icon="award" label={t('grewards.shopOn')} hint={t('grewards.shopHint')} value={c.rewardShopEnabled} onValueChange={(v) => patch({ rewardShopEnabled: v })} />
+        <SettingToggle icon="sparkles" label={t('grewards.reducedMotion')} value={c.reducedMotion} onValueChange={(v) => patch({ reducedMotion: v })} />
         <SettingToggle icon="volume" label={t('controls.sound')} value={c.soundEnabled} onValueChange={(v) => patch({ soundEnabled: v })} />
         <SettingToggle icon="book" label={t('controls.narration')} value={c.narrationEnabled} onValueChange={(v) => patch({ narrationEnabled: v })} />
         <SettingToggle icon="heart" label={t('controls.favourites')} value={c.favouritesEnabled} onValueChange={(v) => patch({ favouritesEnabled: v })} />

@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { GameContext, GameDefinition, GameStatus } from '../engine';
 import { newSeed } from '../engine';
 import { metaFor } from '../registry';
+import { TutorialOverlay, tutorialFor } from '../tutorials';
 import { AppText, BigButton, Confetti, PopIn, RoundButton, Stars, PlayfulBackdrop, Badge } from '../../ui';
 import { usePlayer } from '../../context/PlayerContext';
 import { useSettings } from '../../context/SettingsContext';
@@ -59,9 +60,11 @@ export function GameShell<S, A>({ def, difficulty, savedProgress, onExit, remain
   const [elapsed, setElapsed] = useState(0);
   const [finished, setFinished] = useState<GameStatus | null>(null);
   const [confirmQuit, setConfirmQuit] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const tutorial = tutorialFor(def.id);
   const startedAt = useRef(Date.now());
   const status = useMemo(() => def.status(state, ctx), [def, state, ctx]);
-  const effectivePause = paused || !!pausedByGuardian || !!endedReason || !!finished;
+  const effectivePause = paused || !!pausedByGuardian || !!endedReason || !!finished || showHelp;
 
   const sfx = useCallback((kind: Parameters<typeof playSfx>[0]) => playSfx(kind, sound), [sound]);
   const say = useCallback((text: string) => speak(text, narration), [narration]);
@@ -156,9 +159,13 @@ export function GameShell<S, A>({ def, difficulty, savedProgress, onExit, remain
           </View>
         </View>
         {typeof remainingSeconds === 'number' && <Badge label={fmt(Math.max(0, remainingSeconds - elapsed))} icon="timer" color={remainingSeconds - elapsed < 120 ? colors.warningSoft : colors.surfaceMuted} />}
+        {tutorial && <RoundButton emoji="❔" label={t('tutorial.help')} onPress={() => setShowHelp(true)} color={palette.grape} size={46} />}
         <RoundButton icon="reset" label={t('games.restart')} onPress={restart} color={palette.sunshine} size={46} />
         <RoundButton icon={paused ? 'play' : 'pause'} label={paused ? t('games.resume') : t('games.pause')} onPress={() => setPaused((x) => !x)} color={palette.sky} size={46} />
       </View>
+      {tutorial && (
+        <TutorialOverlay tutorial={tutorial} bracket={ctx.bracket} visible={showHelp} sound={sound} narration={narration} onComplete={() => undefined} onClose={() => setShowHelp(false)} finishLabel={t('games.resume')} />
+      )}
       {typeof status.progress === 'number' && (
         <View style={[styles.progressTrack, { backgroundColor: colors.surfaceMuted }]}>
           <View style={[styles.progressFill, { width: `${Math.round(status.progress * 100)}%`, backgroundColor: meta.color }]} />
@@ -186,6 +193,7 @@ export function GameShell<S, A>({ def, difficulty, savedProgress, onExit, remain
             ) : (
               <BigButton label={t('games.resume')} emoji="▶️" onPress={() => setPaused(false)} color={palette.lime} />
             )}
+            {tutorial && !pausedByGuardian && <BigButton label={t('tutorial.replay')} emoji="🎬" onPress={() => { setPaused(false); setShowHelp(true); }} color={palette.grape} size="md" />}
             <BigButton label={t('games.quit')} emoji="🏠" onPress={quit} color={palette.sky} size="md" />
           </PopIn>
         </View>
