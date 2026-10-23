@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { and, asc, count, desc, eq, ilike, or, type SQL } from 'drizzle-orm';
 import { contentApprovals, craftTutorials, factSources, facts, gameCategories, games, quizQuestions, type CraftStep } from '../../database/schema.js';
 import type { Auth } from '../../middleware/auth.js';
-import { parse } from '../../middleware/validate.js';
+import { parse, parsePatch } from '../../middleware/validate.js';
 import { badRequest, conflict, forbidden, notFound } from '../../lib/httpError.js';
 import { escapeLike, slugify } from '../../lib/strings.js';
 import { audit } from '../../lib/audit.js';
@@ -78,7 +78,7 @@ export function adminCatalogueRouter({ db }: AppDeps, auth: Auth) {
 
   r.patch('/games/:id', auth.requirePermission('content:write'), async (req, res) => {
     const id = parse(slug, req.params.id);
-    const body = parse(gameFields.partial(), req.body);
+    const body = parsePatch(gameFields, req.body);
     const [existing] = await db.select().from(games).where(eq(games.id, id));
     if (!existing) throw notFound('Game not found');
     if (body.status !== undefined && body.status !== existing.status && !canPublish(req)) throw forbidden('You cannot publish or unpublish games');
@@ -167,7 +167,7 @@ export function adminCatalogueRouter({ db }: AppDeps, auth: Auth) {
 
   r.patch('/crafts/:id', auth.requirePermission('content:write'), async (req, res) => {
     const id = parse(slug, req.params.id);
-    const body = parse(craftFields.partial(), req.body);
+    const body = parsePatch(craftFields, req.body);
     const [existing] = await db.select().from(craftTutorials).where(eq(craftTutorials.id, id));
     if (!existing) throw notFound('Craft not found');
     const merged = { ...existing, ...body };
@@ -254,7 +254,7 @@ export function adminCatalogueRouter({ db }: AppDeps, auth: Auth) {
 
   r.patch('/facts/:id', auth.requirePermission('content:write'), async (req, res) => {
     const id = parse(z.string().uuid(), req.params.id);
-    const body = parse(factFields.partial(), req.body);
+    const body = parsePatch(factFields, req.body);
     const [existing] = await db.select().from(facts).where(eq(facts.id, id));
     if (!existing) throw notFound('Fact not found');
     // Any change to the wording invalidates the verification.
@@ -345,7 +345,7 @@ export function adminCatalogueRouter({ db }: AppDeps, auth: Auth) {
   });
 
   r.get('/approvals', auth.requirePermission('content:read'), async (req, res) => {
-    const q = parse(z.object({ entityType: z.enum(['game', 'craft', 'fact']).optional(), limit: z.coerce.number().int().min(1).max(200).default(50) }), req.query);
+    const q = parse(z.object({ entityType: z.enum(['game', 'craft', 'fact', 'lesson']).optional(), limit: z.coerce.number().int().min(1).max(200).default(50) }), req.query);
     res.json(await db.select().from(contentApprovals).where(q.entityType ? eq(contentApprovals.entityType, q.entityType) : undefined).orderBy(desc(contentApprovals.createdAt)).limit(q.limit));
   });
 

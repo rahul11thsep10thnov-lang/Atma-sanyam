@@ -44,7 +44,7 @@ describe('guardian registration', () => {
     expect(ok.body.token).toMatch(/^[A-Za-z0-9_-]{43}$/);
     expect(ok.body.guardian.name).toBe('Asha');
     expect(ok.body.guardian.phone).toBe(PHONE);
-    expect(ok.body.entitlement).toEqual({ active: false, status: 'never_subscribed', validUntil: null });
+    expect(ok.body.entitlement).toEqual({ active: false, status: 'never_subscribed', validUntil: null, adFree: false });
     expect(ok.body.children).toEqual([]);
     // The code works once.
     expect((await request(ctx.app).post('/v1/guardian/register/verify').send({ challengeId: res.body.challengeId, code })).status).toBe(400);

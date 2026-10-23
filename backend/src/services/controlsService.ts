@@ -23,6 +23,15 @@ export const DEFAULT_CONTROLS: Omit<Controls, 'childId' | 'updatedAt'> = {
   favouritesEnabled: true,
   mirroringEnabled: true,
   newDeviceApproval: false,
+  curriculumFramework: null,
+  curriculumBoard: null,
+  schoolGrade: null,
+  learningGoals: [],
+  blockedSubjects: [],
+  rankingsEnabled: true,
+  rewardShopEnabled: true,
+  coinDailyCap: null,
+  reducedMotion: false,
 };
 
 export async function getControls(db: Db, childId: string): Promise<Controls> {
@@ -112,6 +121,15 @@ export function publicControls(c: Controls) {
     favouritesEnabled: c.favouritesEnabled,
     mirroringEnabled: c.mirroringEnabled,
     newDeviceApproval: c.newDeviceApproval,
+    curriculumFramework: c.curriculumFramework,
+    curriculumBoard: c.curriculumBoard,
+    schoolGrade: c.schoolGrade,
+    learningGoals: c.learningGoals,
+    blockedSubjects: c.blockedSubjects,
+    rankingsEnabled: c.rankingsEnabled,
+    rewardShopEnabled: c.rewardShopEnabled,
+    coinDailyCap: c.coinDailyCap,
+    reducedMotion: c.reducedMotion,
     updatedAt: c.updatedAt.toISOString(),
   };
 }

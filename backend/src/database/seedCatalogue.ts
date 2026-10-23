@@ -6,7 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { sql } from 'drizzle-orm';
 import { createDatabase, type Db } from './client.js';
-import { achievements, ageBrackets, craftTutorials, factSources, facts, gameCategories, games, quizQuestions } from './schema.js';
+import { achievements, ageBrackets, craftTutorials, factSources, facts, gameCategories, games, lessons, quizQuestions, rewardItems, type CurriculumMapping } from './schema.js';
 import { eq, inArray } from 'drizzle-orm';
 import { BRACKETS } from '../lib/age.js';
 import { ACHIEVEMENT_SEEDS, GAME_CATEGORIES, GAME_SEEDS } from '../catalogue/games.js';
@@ -14,8 +14,10 @@ import { CRAFT_SEEDS } from '../catalogue/crafts.js';
 import { FACT_SEEDS, SOURCE_SEEDS } from '../catalogue/facts.js';
 import { canonicalizeUrl } from '../lib/url.js';
 import { seedSourceRegistry } from '../services/sourceRegistryService.js';
+import { LESSON_SEEDS } from '../catalogue/lessons/index.js';
+import { REWARD_ITEM_SEEDS } from '../services/coinService.js';
 
-export async function seedCatalogue(db: Db): Promise<{ gamesInserted: number; craftsInserted: number; factsInserted: number }> {
+export async function seedCatalogue(db: Db): Promise<{ gamesInserted: number; craftsInserted: number; factsInserted: number; lessonsInserted: number; lessonsUpdated: number }> {
   await db
     .insert(ageBrackets)
     .values(BRACKETS.map((b, i) => ({ key: b.key, name: b.name, minAge: b.minAge, maxAge: b.maxAge, description: b.description, sortOrder: i })))
@@ -70,7 +72,66 @@ export async function seedCatalogue(db: Db): Promise<{ gamesInserted: number; cr
   // The source registry first: editorial facts may cite a registry source.
   await seedSourceRegistry(db);
   const factsInserted = await seedFacts(db);
-  return { gamesInserted: inserted.length, craftsInserted: crafts.length, factsInserted };
+  // Reward shop items: insert what is missing; admins edit prices from the console.
+  await db.insert(rewardItems).values(REWARD_ITEM_SEEDS).onConflictDoNothing();
+  const lessonsResult = await seedLessons(db);
+  return { gamesInserted: inserted.length, craftsInserted: crafts.length, factsInserted, ...lessonsResult };
+}
+
+/**
+ * Seeds the learning academy's lessons. New lessons are inserted as
+ * published (they are the editorial starter set; every curriculum mapping is
+ * still pending_review until a fact checker verifies it). Lessons that came
+ * from the seed and were never edited in the console are refreshed with the
+ * latest seed content so corrections ship with the code — keeping any
+ * verification an admin already recorded on a matching mapping. A lesson an
+ * admin edited is left alone.
+ */
+export async function seedLessons(db: Db): Promise<{ lessonsInserted: number; lessonsUpdated: number }> {
+  const existing = await db.select({ id: lessons.id, origin: lessons.origin, adminEdited: lessons.adminEdited, curriculum: lessons.curriculum, status: lessons.status }).from(lessons).where(inArray(lessons.id, LESSON_SEEDS.map((l) => l.id)));
+  const byId = new Map(existing.map((e) => [e.id, e]));
+  const now = new Date();
+  let inserted = 0;
+  let updated = 0;
+  for (const l of LESSON_SEEDS) {
+    const row = {
+      section: l.section,
+      subject: l.subject,
+      topic: l.topic,
+      subtopic: l.subtopic ?? '',
+      title: l.title,
+      summary: l.summary,
+      recommendedAge: l.recommendedAge,
+      minAge: l.minAge ?? Math.max(3, l.recommendedAge - 2),
+      maxAge: l.maxAge ?? Math.min(12, l.recommendedAge + 2),
+      difficulty: l.difficulty ?? 'beginner',
+      level: l.level ?? 1,
+      learningObjective: l.learningObjective,
+      prerequisites: l.prerequisites ?? [],
+      steps: l.steps,
+      estimatedMinutes: l.estimatedMinutes ?? 8,
+      curriculum: l.curriculum ?? [],
+      sources: l.sources,
+      safetyNotes: l.safetyNotes ?? [],
+      adultAssisted: l.adultAssisted ?? false,
+      sortOrder: l.sortOrder ?? 0,
+    };
+    const prev = byId.get(l.id);
+    if (!prev) {
+      await db.insert(lessons).values({ id: l.id, ...row, status: 'published', publishedAt: now, origin: 'seed' }).onConflictDoNothing();
+      inserted += 1;
+      continue;
+    }
+    if (prev.origin !== 'seed' || prev.adminEdited) continue;
+    // Carry verification forward for mappings that still exist (same framework + grade + topic).
+    const curriculum: CurriculumMapping[] = row.curriculum.map((m) => {
+      const old = prev.curriculum.find((o) => o.framework === m.framework && o.grade === m.grade && o.syllabusTopic === m.syllabusTopic);
+      return old ? { ...m, verificationStatus: old.verificationStatus, lastReviewedAt: old.lastReviewedAt } : m;
+    });
+    await db.update(lessons).set({ ...row, curriculum, updatedAt: now }).where(eq(lessons.id, l.id));
+    updated += 1;
+  }
+  return { lessonsInserted: inserted, lessonsUpdated: updated };
 }
 
 /**
@@ -124,7 +185,7 @@ if (isMain) {
   const database = createDatabase(url, 1);
   seedCatalogue(database.db)
     .then((r) => {
-      console.log(`Catalogue seeded (${r.gamesInserted} new games, ${r.craftsInserted} new crafts, ${r.factsInserted} new facts).`);
+      console.log(`Catalogue seeded (${r.gamesInserted} new games, ${r.craftsInserted} new crafts, ${r.factsInserted} new facts, ${r.lessonsInserted} new lessons, ${r.lessonsUpdated} refreshed).`);
       return database.close();
     })
     .catch(async (err) => {

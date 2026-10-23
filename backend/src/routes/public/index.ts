@@ -10,6 +10,8 @@ import { parse } from '../../middleware/validate.js';
 import { EXPO_PUSH_TOKEN_RE } from '../../lib/push.js';
 import { publicConfig } from '../../services/settingsService.js';
 import { FACT_CATEGORIES } from '../../catalogue/factCategories.js';
+import { AGES, AGE_FOCUS, CURRICULUM_FRAMEWORKS, SECTIONS, SUBJECTS } from '../../catalogue/learning.js';
+import { SCORING_RULES } from '../../services/rankingService.js';
 import type { AppDeps } from '../../types.js';
 import { guardianRouter, TERMS_VERSION } from './guardian.js';
 import { householdRouter } from './household.js';
@@ -66,6 +68,7 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeo
         sandboxBilling: billing.sandbox !== null,
         termsVersion: TERMS_VERSION,
         subscription: { productId: env.SUBSCRIPTION_PRODUCT_ID, priceInr: env.SUBSCRIPTION_PRICE_INR },
+        ads: { interstitialAndroid: env.ADMOB_INTERSTITIAL_UNIT_ANDROID, interstitialIos: env.ADMOB_INTERSTITIAL_UNIT_IOS },
       })
     );
   });
@@ -98,6 +101,16 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeo
   r.get('/catalogue/fact-categories', (_req, res) => {
     res.set('Cache-Control', 'public, max-age=3600');
     res.json(FACT_CATEGORIES);
+  });
+  // The learning academy's fixed framework: sections, subjects, ages, curricula.
+  r.get('/catalogue/learning', (_req, res) => {
+    res.set('Cache-Control', 'public, max-age=3600');
+    res.json({ sections: SECTIONS, subjects: SUBJECTS, ages: AGES, ageFocus: AGE_FOCUS, curriculumFrameworks: CURRICULUM_FRAMEWORKS });
+  });
+  // How each competitive game is scored (shown under every leaderboard).
+  r.get('/catalogue/scoring-rules', (_req, res) => {
+    res.set('Cache-Control', 'public, max-age=3600');
+    res.json(Object.entries(SCORING_RULES).map(([gameId, rule]) => ({ gameId, kind: rule.kind, label: rule.label })));
   });
 
   // ---- devices (install registration + push) -----------------------------

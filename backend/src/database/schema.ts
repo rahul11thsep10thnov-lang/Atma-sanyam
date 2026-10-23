@@ -356,6 +356,9 @@ export const children = pgTable(
     playerOtpRequired: boolean('player_otp_required').notNull().default(true),
     status: text('status', { enum: ['active', 'paused', 'removed'] }).notNull().default('active'),
     lastActiveAt: timestamp('last_active_at', { withTimezone: true }),
+    // Authoritative coin balance; every change goes through coin_transactions.
+    coins: integer('coins').notNull().default(0),
+    equippedRewards: jsonb('equipped_rewards').$type<Record<string, string>>().notNull().default({}), // kind → item key
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
@@ -582,6 +585,7 @@ export const gameProgress = pgTable(
     data: jsonb('data').$type<Record<string, unknown>>().notNull().default({}),
     version: integer('version').notNull().default(0),
     lastPlayedAt: timestamp('last_played_at', { withTimezone: true }),
+    tutorialCompletedAt: timestamp('tutorial_completed_at', { withTimezone: true }),
     updatedAt: updatedAt(),
   },
   (t) => [primaryKey({ columns: [t.childId, t.gameId] }), index('game_progress_child_idx').on(t.childId, t.lastPlayedAt)]
@@ -908,6 +912,16 @@ export const parentalControls = pgTable('parental_controls', {
   favouritesEnabled: boolean('favourites_enabled').notNull().default(true),
   mirroringEnabled: boolean('mirroring_enabled').notNull().default(true),
   newDeviceApproval: boolean('new_device_approval').notNull().default(false),
+  // ---- learning, rankings and rewards (guardian choices) --------------------
+  curriculumFramework: text('curriculum_framework'), // ncert | cbse | cisce | state | ib_pyp | ib_myp | null
+  curriculumBoard: text('curriculum_board'), // e.g. "Maharashtra State Board" (free text, optional)
+  schoolGrade: text('school_grade'), // e.g. "Class 3" / "PYP 2" (optional)
+  learningGoals: jsonb('learning_goals').$type<{ subject: string; lessonsPerWeek: number }[]>().notNull().default([]),
+  blockedSubjects: text('blocked_subjects').array().notNull().default(sql`'{}'::text[]`), // subject keys or section keys
+  rankingsEnabled: boolean('rankings_enabled').notNull().default(true),
+  rewardShopEnabled: boolean('reward_shop_enabled').notNull().default(true),
+  coinDailyCap: integer('coin_daily_cap'), // null = the app default
+  reducedMotion: boolean('reduced_motion').notNull().default(false),
   updatedAt: updatedAt(),
 });
 
@@ -953,7 +967,7 @@ export const contentApprovals = pgTable(
   'content_approvals',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    entityType: text('entity_type', { enum: ['game', 'craft', 'fact'] }).notNull(),
+    entityType: text('entity_type', { enum: ['game', 'craft', 'fact', 'lesson'] }).notNull(),
     entityId: text('entity_id').notNull(),
     status: text('status', { enum: ['pending', 'approved', 'rejected'] }).notNull().default('pending'),
     reviewerId: uuid('reviewer_id').references(() => admins.id, { onDelete: 'set null' }),
@@ -982,4 +996,236 @@ export const accountDeletionRequests = pgTable(
     cancelledAt: timestamp('cancelled_at', { withTimezone: true }),
   },
   (t) => [index('account_deletion_requests_due_idx').on(t.scheduledFor, t.completedAt)]
+);
+
+// ---------------------------------------------------------------------------
+// Learning academy: Study Playfully, Music, Sports
+// ---------------------------------------------------------------------------
+
+export const LESSON_SECTIONS = ['study', 'music', 'sports'] as const;
+export const LESSON_STATUSES = ['draft', 'in_review', 'published', 'archived'] as const;
+export const LESSON_DIFFICULTIES = ['beginner', 'intermediate', 'advanced'] as const;
+
+// One step of the chapter template (see app src/learning/types.ts). Steps are
+// rendered by the app's lesson engine from this data; nothing is hard-coded
+// per lesson in a screen.
+export interface LessonStep {
+  kind: 'objective' | 'discover' | 'understand' | 'example' | 'tryIt' | 'realWorld' | 'revision' | 'didYouKnow' | 'challenge';
+  title?: string;
+  text?: string;
+  /** Short, age-simplified alternatives by bracket; falls back to text. */
+  textByBracket?: Partial<Record<'A' | 'B' | 'C' | 'D', string>>;
+  visual?: { kind: string; props?: Record<string, unknown> };
+  example?: { steps: string[]; visual?: { kind: string; props?: Record<string, unknown> } };
+  activity?: Record<string, unknown>; // { kind: 'mcq' | 'order' | 'tapTarget' | 'predict' | 'number' | 'match' | 'rhythm' | 'piano' | 'guitar' | 'tabla' | 'trueFalse', ... }
+  points?: string[];
+  fact?: { headline: string; body: string; source: { title: string; publisher: string; url: string } };
+  questions?: { question: string; options: string[]; correctIndex: number; explanation?: string }[];
+  safety?: string;
+}
+
+export interface CurriculumMapping {
+  framework: 'ncert' | 'cbse' | 'cisce' | 'state' | 'ib_pyp' | 'ib_myp';
+  board?: string;
+  grade: string; // "Class 3", "PYP 2", "MYP 1"
+  syllabusTopic: string;
+  learningOutcome?: string;
+  sourceRef: string; // the public document the mapping was taken from
+  verificationStatus: 'pending_review' | 'verified' | 'rejected';
+  lastReviewedAt?: string; // YYYY-MM-DD
+}
+
+export const lessons = pgTable(
+  'lessons',
+  {
+    id: text('id').primaryKey(), // slug
+    section: text('section', { enum: LESSON_SECTIONS }).notNull(),
+    subject: text('subject').notNull(), // key from catalogue/learning.ts
+    topic: text('topic').notNull(),
+    subtopic: text('subtopic').notNull().default(''),
+    title: text('title').notNull(),
+    summary: text('summary').notNull().default(''),
+    recommendedAge: integer('recommended_age').notNull(), // 3..12
+    minAge: integer('min_age').notNull().default(3),
+    maxAge: integer('max_age').notNull().default(12),
+    difficulty: text('difficulty', { enum: LESSON_DIFFICULTIES }).notNull().default('beginner'),
+    level: integer('level').notNull().default(1), // order within subject + age
+    learningObjective: text('learning_objective').notNull(),
+    prerequisites: text('prerequisites').array().notNull().default(sql`'{}'::text[]`),
+    steps: jsonb('steps').$type<LessonStep[]>().notNull().default([]),
+    estimatedMinutes: integer('estimated_minutes').notNull().default(8),
+    curriculum: jsonb('curriculum').$type<CurriculumMapping[]>().notNull().default([]),
+    sources: jsonb('sources').$type<{ title: string; publisher: string; url: string; accessedOn?: string }[]>().notNull().default([]),
+    safetyNotes: text('safety_notes').array().notNull().default(sql`'{}'::text[]`),
+    adultAssisted: boolean('adult_assisted').notNull().default(false),
+    status: text('status', { enum: LESSON_STATUSES }).notNull().default('draft'),
+    reviewedBy: uuid('reviewed_by').references(() => admins.id, { onDelete: 'set null' }),
+    reviewedAt: timestamp('reviewed_at', { withTimezone: true }),
+    publishedAt: timestamp('published_at', { withTimezone: true }),
+    sortOrder: integer('sort_order').notNull().default(0),
+    translations: jsonb('translations').$type<Record<string, Record<string, unknown>>>().notNull().default({}),
+    origin: text('origin').notNull().default('seed'), // seed | admin
+    adminEdited: boolean('admin_edited').notNull().default(false),
+    updatedBy: uuid('updated_by').references(() => admins.id, { onDelete: 'set null' }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    check('lessons_section_check', sql`${t.section} in ('study', 'music', 'sports')`),
+    check('lessons_status_check', sql`${t.status} in ('draft', 'in_review', 'published', 'archived')`),
+    check('lessons_age_check', sql`${t.recommendedAge} between 3 and 12`),
+    index('lessons_subject_idx').on(t.section, t.subject, t.status, t.recommendedAge),
+  ]
+);
+
+export const lessonProgress = pgTable(
+  'lesson_progress',
+  {
+    childId: uuid('child_id')
+      .notNull()
+      .references(() => children.id, { onDelete: 'cascade' }),
+    lessonId: text('lesson_id')
+      .notNull()
+      .references(() => lessons.id, { onDelete: 'cascade' }),
+    stepsDone: integer('steps_done').notNull().default(0),
+    stepsTotal: integer('steps_total').notNull().default(0),
+    activitiesCorrect: integer('activities_correct').notNull().default(0),
+    activitiesTotal: integer('activities_total').notNull().default(0),
+    bestQuizScore: integer('best_quiz_score'),
+    quizTotal: integer('quiz_total'),
+    timeSeconds: integer('time_seconds').notNull().default(0),
+    selectedAge: integer('selected_age'), // the learning age the child chose when doing it
+    startedAt: timestamp('started_at', { withTimezone: true }).notNull().defaultNow(),
+    completedAt: timestamp('completed_at', { withTimezone: true }),
+    lastStepAt: timestamp('last_step_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [primaryKey({ columns: [t.childId, t.lessonId] }), index('lesson_progress_child_idx').on(t.childId, t.lastStepAt)]
+);
+
+// Per subject, the age level a child has reached (highest recommended age
+// among completed lessons) — tracked separately per subject, instrument and sport.
+export const learningLevels = pgTable(
+  'learning_levels',
+  {
+    childId: uuid('child_id')
+      .notNull()
+      .references(() => children.id, { onDelete: 'cascade' }),
+    subject: text('subject').notNull(),
+    section: text('section').notNull(),
+    level: integer('level').notNull(), // age level 3..12
+    lessonsCompleted: integer('lessons_completed').notNull().default(0),
+    updatedAt: updatedAt(),
+  },
+  (t) => [primaryKey({ columns: [t.childId, t.subject] })]
+);
+
+// ---------------------------------------------------------------------------
+// Coins and rewards
+// ---------------------------------------------------------------------------
+
+export const COIN_REASONS = ['game_completed', 'game_won', 'puzzle_solved', 'tutorial_completed', 'craft_completed', 'daily_challenge', 'fact_discovered', 'lesson_completed', 'quiz_completed', 'achievement', 'shop_purchase', 'admin_adjustment'] as const;
+
+// Append-only ledger. The child's `coins` column is updated in the same
+// transaction; the idempotency key stops a retried request paying twice.
+export const coinTransactions = pgTable(
+  'coin_transactions',
+  {
+    id: bigserial('id', { mode: 'number' }).primaryKey(),
+    childId: uuid('child_id')
+      .notNull()
+      .references(() => children.id, { onDelete: 'cascade' }),
+    amount: integer('amount').notNull(), // positive = earned, negative = spent
+    balanceAfter: integer('balance_after').notNull(),
+    reason: text('reason').notNull(),
+    refType: text('ref_type'), // game | lesson | craft | fact | item | session
+    refId: text('ref_id'),
+    idempotencyKey: text('idempotency_key').notNull(),
+    note: text('note'),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex('coin_tx_idempotency_idx').on(t.idempotencyKey), index('coin_tx_child_idx').on(t.childId, t.createdAt)]
+);
+
+export const REWARD_KINDS = ['avatar_accessory', 'theme', 'board_skin', 'background', 'badge', 'effect', 'token_design', 'craft_template'] as const;
+
+export const rewardItems = pgTable(
+  'reward_items',
+  {
+    key: text('key').primaryKey(),
+    name: text('name').notNull(),
+    description: text('description').notNull().default(''),
+    kind: text('kind', { enum: REWARD_KINDS }).notNull(),
+    emoji: text('emoji').notNull().default('🎁'),
+    color: text('color').notNull().default('#FFC93C'),
+    visual: jsonb('visual').$type<Record<string, unknown>>().notNull().default({}),
+    price: integer('price').notNull(),
+    premiumOnly: boolean('premium_only').notNull().default(false),
+    status: text('status', { enum: ['draft', 'published', 'archived'] }).notNull().default('published'),
+    sortOrder: integer('sort_order').notNull().default(0),
+    createdAt: createdAt(),
+  },
+  (t) => [check('reward_items_kind_check', sql`${t.kind} in ('avatar_accessory', 'theme', 'board_skin', 'background', 'badge', 'effect', 'token_design', 'craft_template')`)]
+);
+
+export const childRewards = pgTable(
+  'child_rewards',
+  {
+    childId: uuid('child_id')
+      .notNull()
+      .references(() => children.id, { onDelete: 'cascade' }),
+    itemKey: text('item_key')
+      .notNull()
+      .references(() => rewardItems.key, { onDelete: 'cascade' }),
+    purchasedAt: createdAt(),
+  },
+  (t) => [primaryKey({ columns: [t.childId, t.itemKey] })]
+);
+
+// ---------------------------------------------------------------------------
+// Rankings
+// ---------------------------------------------------------------------------
+
+// One row per competitive result, written by the server when a session ends
+// (unique per session: a result can never count twice). Leaderboards sum
+// these over a window; chess keeps a rating in player_ratings.
+export const rankingEvents = pgTable(
+  'ranking_events',
+  {
+    id: bigserial('id', { mode: 'number' }).primaryKey(),
+    childId: uuid('child_id')
+      .notNull()
+      .references(() => children.id, { onDelete: 'cascade' }),
+    gameId: text('game_id')
+      .notNull()
+      .references(() => games.id, { onDelete: 'cascade' }),
+    sessionId: uuid('session_id')
+      .notNull()
+      .references(() => gameSessions.id, { onDelete: 'cascade' }),
+    bracket: text('bracket').notNull(),
+    points: integer('points').notNull(),
+    won: boolean('won').notNull().default(false),
+    score: integer('score'),
+    ratingDelta: integer('rating_delta').notNull().default(0),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex('ranking_events_session_idx').on(t.sessionId), index('ranking_events_game_idx').on(t.gameId, t.createdAt), index('ranking_events_child_idx').on(t.childId, t.gameId)]
+);
+
+export const playerRatings = pgTable(
+  'player_ratings',
+  {
+    childId: uuid('child_id')
+      .notNull()
+      .references(() => children.id, { onDelete: 'cascade' }),
+    gameId: text('game_id')
+      .notNull()
+      .references(() => games.id, { onDelete: 'cascade' }),
+    rating: integer('rating').notNull().default(1000),
+    points: integer('points').notNull().default(0),
+    played: integer('played').notNull().default(0),
+    wins: integer('wins').notNull().default(0),
+    updatedAt: updatedAt(),
+  },
+  (t) => [primaryKey({ columns: [t.childId, t.gameId] }), index('player_ratings_game_idx').on(t.gameId, t.rating)]
 );

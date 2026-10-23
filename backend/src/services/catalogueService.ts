@@ -8,6 +8,7 @@ import { craftTutorials, factSources, facts, favouriteGames, gameProgress, games
 import { mayDeliverIngested } from './sourceRegistryService.js';
 import { bracketsUpTo } from '../lib/age.js';
 import type { Controls } from './controlsService.js';
+import { COMPETITIVE_GAME_IDS } from './rankingService.js';
 
 export function visibleBrackets(effective: AgeBracketKey, controls: Pick<Controls, 'allowedBrackets'>): AgeBracketKey[] {
   const set = new Set<AgeBracketKey>(bracketsUpTo(effective));
@@ -64,8 +65,9 @@ export async function listGamesForChild(db: Db, childId: string, effective: AgeB
       ...publicGame(g, effective),
       favourite: favSet.has(g.id),
       progress: p
-        ? { plays: p.plays, completions: p.completions, bestScore: p.bestScore, bestTimeSeconds: p.bestTimeSeconds, stars: p.stars, highestDifficulty: p.highestDifficulty, lastPlayedAt: p.lastPlayedAt?.toISOString() ?? null }
+        ? { plays: p.plays, completions: p.completions, bestScore: p.bestScore, bestTimeSeconds: p.bestTimeSeconds, stars: p.stars, highestDifficulty: p.highestDifficulty, lastPlayedAt: p.lastPlayedAt?.toISOString() ?? null, tutorialCompletedAt: p.tutorialCompletedAt?.toISOString() ?? null }
         : null,
+      competitive: COMPETITIVE_GAME_IDS.includes(g.id),
     };
   });
 }

@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { eq } from 'drizzle-orm';
 import { factSources, sourceVerificationEvents, SOURCE_VERIFICATION_STATUSES } from '../../database/schema.js';
 import type { Auth } from '../../middleware/auth.js';
-import { parse } from '../../middleware/validate.js';
+import { parse, parsePatch } from '../../middleware/validate.js';
 import { badRequest, conflict, notFound } from '../../lib/httpError.js';
 import { audit } from '../../lib/audit.js';
 import { canonicalizeUrl } from '../../lib/url.js';
@@ -74,7 +74,7 @@ export function adminSourcesRouter(deps: AppDeps, auth: Auth) {
 
   r.patch('/:id', auth.requirePermission('content:write'), async (req, res) => {
     const id = parse(idParam, req.params.id);
-    const wording = parse(sourceFields.partial(), req.body);
+    const wording = parsePatch(sourceFields, req.body);
     const decision = parse(decisionFields, req.body);
     const [existing] = await db.select().from(factSources).where(eq(factSources.id, id));
     if (!existing) throw notFound('Source not found');

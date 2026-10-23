@@ -29,7 +29,13 @@ import { generatePlayerId } from '../../lib/ids.js';
 import { ageFromBirthMonth, birthMonthProblem, bracketForBirthMonth, BRACKETS } from '../../lib/age.js';
 import { creditScreenTime, getControls, localParts, publicControls, screenTimeSince, todaysMinutes } from '../../services/controlsService.js';
 import { createPlayerSession, revokeAllPlayerSessions } from '../../services/sessionService.js';
-import { publicEntitlement } from '../../services/entitlementService.js';
+import { getEntitlement, publicEntitlement } from '../../services/entitlementService.js';
+import { learningReport } from '../../services/learningService.js';
+import { wallet } from '../../services/coinService.js';
+import { myRankingSummary, SCORING_RULES } from '../../services/rankingService.js';
+import { loadSettings } from '../../services/settingsService.js';
+import { SUBJECT_BY_KEY } from '../../catalogue/learning.js';
+import { coinTransactions, lessonProgress } from '../../database/schema.js';
 import type { AppDeps } from '../../types.js';
 
 const idParam = z.string().uuid();
@@ -283,9 +289,20 @@ export function householdRouter(deps: AppDeps, auth: Auth) {
         favouritesEnabled: z.boolean().optional(),
         mirroringEnabled: z.boolean().optional(),
         newDeviceApproval: z.boolean().optional(),
+        // Learning academy, rankings and rewards.
+        curriculumFramework: z.enum(['ncert', 'cbse', 'cisce', 'state', 'ib_pyp', 'ib_myp']).nullable().optional(),
+        curriculumBoard: z.string().trim().max(80).nullable().optional(),
+        schoolGrade: z.string().trim().max(40).nullable().optional(),
+        learningGoals: z.array(z.object({ subject: z.string().regex(/^[a-z0-9-]{2,40}$/), lessonsPerWeek: z.number().int().min(1).max(21) })).max(30).optional(),
+        blockedSubjects: z.array(z.string().regex(/^[a-z0-9-]{2,40}$/)).max(40).optional(),
+        rankingsEnabled: z.boolean().optional(),
+        rewardShopEnabled: z.boolean().optional(),
+        coinDailyCap: z.number().int().min(0).max(10_000).nullable().optional(),
+        reducedMotion: z.boolean().optional(),
       }),
       req.body
     );
+    for (const key of [...(body.blockedSubjects ?? []), ...(body.learningGoals ?? []).map((g) => g.subject)]) if (!SUBJECT_BY_KEY.has(key)) throw badRequest(`Unknown subject ${key}`);
     if (body.timezone) {
       try {
         new Intl.DateTimeFormat('en', { timeZone: body.timezone });
@@ -340,6 +357,35 @@ export function householdRouter(deps: AppDeps, auth: Auth) {
       entitlement: publicEntitlement(req.entitlement ?? (await (await import('../../services/entitlementService.js')).getEntitlement(db, req.guardian!.id))),
       children: out,
       activePlayers: out.filter((o) => o.live.currentSession).length,
+    });
+  });
+
+  // ---- learning management -------------------------------------------------
+  // What the child learned: per section and subject, levels, quiz accuracy,
+  // streaks, time, goals and the next recommended lessons.
+  r.get('/children/:id/learning', async (req, res) => {
+    const c = await ownChild(req.guardian!.id, parse(idParam, req.params.id));
+    const controls = await getControls(db, c.id);
+    res.json(await learningReport(db, c.id, ageFromBirthMonth(c.birthMonth), controls));
+  });
+
+  // Coins (balance, ledger, owned rewards), rankings participation and the
+  // tutorials the child has finished.
+  r.get('/children/:id/rewards', async (req, res) => {
+    const c = await ownChild(req.guardian!.id, parse(idParam, req.params.id));
+    const [controls, { values }, ent] = await Promise.all([getControls(db, c.id), loadSettings(db), getEntitlement(db, req.guardian!.id)]);
+    const w = await wallet(db, c.id, { shopEnabled: values.feature_flags.rewardShop && values.rewards.shopEnabled && controls.rewardShopEnabled, premium: ent.active, timezone: controls.timezone, dailyCap: controls.coinDailyCap ?? values.rewards.dailyCap });
+    const ledger = await db.select().from(coinTransactions).where(eq(coinTransactions.childId, c.id)).orderBy(desc(coinTransactions.createdAt)).limit(200);
+    const tutorials = await db.select({ gameId: gameProgress.gameId, name: games.name, tutorialCompletedAt: gameProgress.tutorialCompletedAt }).from(gameProgress).innerJoin(games, eq(games.id, gameProgress.gameId)).where(and(eq(gameProgress.childId, c.id), sql`${gameProgress.tutorialCompletedAt} is not null`));
+    const [lessonsDone] = await db.select({ n: sql<number>`count(*) filter (where ${lessonProgress.completedAt} is not null)::int` }).from(lessonProgress).where(eq(lessonProgress.childId, c.id));
+    res.json({
+      coins: { balance: w.balance, earnedToday: w.earnedToday, dailyCap: controls.coinDailyCap ?? values.rewards.dailyCap, defaultDailyCap: values.rewards.dailyCap, shopEnabled: w.shopEnabled, equipped: w.equipped, owned: w.items.filter((i) => i.owned), values: values.rewards },
+      ledger: ledger.map((t) => ({ id: t.id, amount: t.amount, balanceAfter: t.balanceAfter, reason: t.reason, refType: t.refType, refId: t.refId, note: t.note, createdAt: t.createdAt.toISOString() })),
+      rankings: { enabled: controls.rankingsEnabled && values.feature_flags.rankings, globallyEnabled: values.feature_flags.rankings, mine: (await myRankingSummary(db, c.id)).map((m) => ({ ...m, rule: SCORING_RULES[m.gameId]?.label ?? '' })) },
+      tutorials: tutorials.map((t) => ({ ...t, tutorialCompletedAt: t.tutorialCompletedAt!.toISOString() })),
+      lessonsCompleted: lessonsDone?.n ?? 0,
+      adFree: ent.active,
+      entitlement: publicEntitlement(ent),
     });
   });
 

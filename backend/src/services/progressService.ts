@@ -2,7 +2,7 @@
 // kept per child per game; achievements are awarded here from server counts.
 import { and, count, eq, sql } from 'drizzle-orm';
 import type { Db } from '../database/client.js';
-import { achievements, childAchievements, craftProgress, factViews, gameProgress, quizAttempts, type AgeBracketKey } from '../database/schema.js';
+import { achievements, childAchievements, coinTransactions, craftProgress, factViews, gameProgress, lessonProgress, lessons, quizAttempts, rankingEvents, type AgeBracketKey } from '../database/schema.js';
 
 export async function recordCompletion(db: Db, childId: string, gameId: string, r: { completed: boolean; score: number | null; durationSeconds: number; difficulty: string; stars: number }) {
   const now = new Date();
@@ -47,10 +47,12 @@ export async function saveProgressData(db: Db, childId: string, gameId: string, 
 }
 
 interface Rule {
-  type: 'completions' | 'games_played' | 'facts_read' | 'quiz_correct' | 'crafts_done';
+  type: 'completions' | 'games_played' | 'facts_read' | 'quiz_correct' | 'crafts_done' | 'lessons_completed' | 'tutorials_completed' | 'coins_earned' | 'ranked_wins';
   count: number;
   gameId?: string;
   difficulty?: string;
+  section?: 'study' | 'music' | 'sports';
+  subject?: string;
 }
 
 export async function evaluateAchievements(db: Db, childId: string, bracket: AgeBracketKey): Promise<string[]> {
@@ -67,6 +69,16 @@ export async function evaluateAchievements(db: Db, childId: string, bracket: Age
   const [factsRead] = await db.select({ n: count() }).from(factViews).where(eq(factViews.childId, childId));
   const [quizCorrect] = await db.select({ n: count() }).from(quizAttempts).where(and(eq(quizAttempts.childId, childId), eq(quizAttempts.correct, true)));
   const [craftsDone] = await db.select({ n: count() }).from(craftProgress).where(and(eq(craftProgress.childId, childId), sql`${craftProgress.completedAt} is not null`));
+  const lessonsDone = candidates.some((a) => (a.rule as unknown as Rule).type === 'lessons_completed')
+    ? await db.select({ section: lessons.section, subject: lessons.subject }).from(lessonProgress).innerJoin(lessons, eq(lessons.id, lessonProgress.lessonId)).where(and(eq(lessonProgress.childId, childId), sql`${lessonProgress.completedAt} is not null`))
+    : [];
+  const tutorialsDone = progress.filter((p) => p.tutorialCompletedAt).length;
+  const [coinsEarned] = candidates.some((a) => (a.rule as unknown as Rule).type === 'coins_earned')
+    ? await db.select({ n: sql<number>`coalesce(sum(${coinTransactions.amount}) filter (where ${coinTransactions.amount} > 0), 0)::int` }).from(coinTransactions).where(eq(coinTransactions.childId, childId))
+    : [{ n: 0 }];
+  const [rankedWins] = candidates.some((a) => (a.rule as unknown as Rule).type === 'ranked_wins')
+    ? await db.select({ n: count() }).from(rankingEvents).where(and(eq(rankingEvents.childId, childId), eq(rankingEvents.won, true)))
+    : [{ n: 0 }];
 
   const newlyEarned: string[] = [];
   for (const a of candidates) {
@@ -91,6 +103,18 @@ export async function evaluateAchievements(db: Db, childId: string, bracket: Age
         break;
       case 'crafts_done':
         ok = (craftsDone?.n ?? 0) >= rule.count;
+        break;
+      case 'lessons_completed':
+        ok = lessonsDone.filter((l) => (!rule.section || l.section === rule.section) && (!rule.subject || l.subject === rule.subject)).length >= rule.count;
+        break;
+      case 'tutorials_completed':
+        ok = tutorialsDone >= rule.count;
+        break;
+      case 'coins_earned':
+        ok = (coinsEarned?.n ?? 0) >= rule.count;
+        break;
+      case 'ranked_wins':
+        ok = (rankedWins?.n ?? 0) >= rule.count;
         break;
     }
     if (ok) newlyEarned.push(a.key);

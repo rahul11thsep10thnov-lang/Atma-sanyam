@@ -19,6 +19,7 @@ import {
   favouriteGames,
   gameProgress,
   gameSessions,
+  games,
   guardians,
   playerSessions,
   quizAttempts,
@@ -39,6 +40,14 @@ import { creditScreenTime, decidePlay, getControls, localParts, publicControls, 
 import { getGameForChild, listCraftsForChild, listFactsForChild, listGamesForChild, publicCraft, publicFact, visibleBrackets } from '../../services/catalogueService.js';
 import { evaluateAchievements, recordCompletion, saveProgressData } from '../../services/progressService.js';
 import { FACT_CATEGORIES } from '../../catalogue/factCategories.js';
+import { loadSettings } from '../../services/settingsService.js';
+import { awardCoins, equipItem, purchaseItem, ShopError, wallet, type AwardResult } from '../../services/coinService.js';
+import { leaderboard, myRankingSummary, recordRankingResult, SCORING_RULES } from '../../services/rankingService.js';
+import { getLesson, learningCatalogue, learningReport, listLessons, saveLessonProgress } from '../../services/learningService.js';
+import { dailyChallengeFor, dailyKey } from '../../services/dailyChallengeService.js';
+import { ageFromBirthMonth } from '../../lib/age.js';
+import { SUBJECT_BY_KEY } from '../../catalogue/learning.js';
+import { entitlementRequired } from '../../middleware/auth.js';
 import type { AppDeps } from '../../types.js';
 
 const PIN_MAX_FAILURES = 5;
@@ -64,10 +73,13 @@ export function playerRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeo
     const today = localParts(new Date(), controls.timezone).day;
     const used = await todaysMinutes(db, c.id, today);
     const decision = decidePlay(controls, used);
+    const { values } = await loadSettings(db);
     return {
-      child: { id: c.id, displayName: c.displayName, avatarId: c.avatarId, ageBracket: c.ageBracket, effectiveBracket: effective, bracketName: BRACKETS.find((b) => b.key === effective)?.name ?? '', playerId: c.playerId },
+      child: { id: c.id, displayName: c.displayName, avatarId: c.avatarId, ageBracket: c.ageBracket, effectiveBracket: effective, bracketName: BRACKETS.find((b) => b.key === effective)?.name ?? '', playerId: c.playerId, age: ageFromBirthMonth(c.birthMonth), coins: c.coins, equippedRewards: c.equippedRewards },
       entitlement: publicEntitlement(ent),
-      controls: { soundEnabled: controls.soundEnabled, narrationEnabled: controls.narrationEnabled, favouritesEnabled: controls.favouritesEnabled, mirroringEnabled: controls.mirroringEnabled, dailyLimitMinutes: controls.dailyLimitMinutes, sessionLimitMinutes: controls.sessionLimitMinutes, visibleBrackets: visibleBrackets(effective, controls) },
+      // Households without a subscription may play with ads only when the admin flag is on.
+      access: ent.active ? ('subscriber' as const) : values.feature_flags.adSupportedAccess ? ('ad_supported' as const) : ('locked' as const),
+      controls: { soundEnabled: controls.soundEnabled, narrationEnabled: controls.narrationEnabled, favouritesEnabled: controls.favouritesEnabled, mirroringEnabled: controls.mirroringEnabled, dailyLimitMinutes: controls.dailyLimitMinutes, sessionLimitMinutes: controls.sessionLimitMinutes, visibleBrackets: visibleBrackets(effective, controls), rankingsEnabled: controls.rankingsEnabled && values.feature_flags.rankings, rewardShopEnabled: controls.rewardShopEnabled && values.feature_flags.rewardShop && values.rewards.shopEnabled, reducedMotion: controls.reducedMotion, blockedSubjects: controls.blockedSubjects, curriculum: { framework: controls.curriculumFramework, board: controls.curriculumBoard, grade: controls.schoolGrade } },
       playtime: decision.allowed ? { allowed: true, usedMinutesToday: used, remainingSeconds: decision.remainingTodaySeconds, sessionLimitSeconds: decision.sessionLimitSeconds } : { allowed: false, usedMinutesToday: used, reason: decision.reason, message: decision.message },
     };
   }
@@ -149,8 +161,31 @@ export function playerRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeo
     res.status(204).end();
   });
 
-  // Everything from here is paid content.
-  r.use(auth.requireEntitlement);
+  // Everything from here is paid content — unless the admin has turned on
+  // ad-supported access, in which case households without a subscription
+  // may play with ads (the app checks entitlement.adFree).
+  r.use(async (req, _res, next) => {
+    try {
+      const ent = await getEntitlement(db, req.player!.guardianId);
+      req.entitlement = ent;
+      if (ent.active) return next();
+      const { values } = await loadSettings(db);
+      if (values.feature_flags.adSupportedAccess) return next();
+      throw entitlementRequired();
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  // Shared helpers for the reward economy. Settings are read per request so
+  // an admin change applies immediately.
+  async function rewardContext(childId: string) {
+    const [{ values }, controls] = await Promise.all([loadSettings(db), getControls(db, childId)]);
+    const dailyCap = controls.coinDailyCap !== null ? Math.min(controls.coinDailyCap, values.rewards.dailyCap) : values.rewards.dailyCap;
+    return { values, controls, dailyCap, timezone: controls.timezone, rewards: values.rewards, flags: values.feature_flags };
+  }
+  const PUZZLE_CATEGORIES = new Set(['puzzles', 'matching', 'numbers', 'words']);
+  const DIFFICULTY_FACTOR: Record<string, number> = { tutorial: 0, mini: 0, easy: 0, normal: 0.5, hard: 1, expert: 1 };
 
   // ---- games ---------------------------------------------------------------
   r.get('/games', async (req, res) => {
@@ -241,19 +276,196 @@ export function playerRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeo
     if (!s) throw notFound('Session not found');
     const now = new Date();
     let durationSeconds = s.durationSeconds;
+    const coins: { reason: string; amount: number; label: string }[] = [];
+    let balance: number | null = null;
+    let ranking: { points: number; won: boolean; ratingDelta: number } | null = null;
+    let dailyChallengeCompleted = false;
     if (s.outcome === 'running') {
       const since = Math.min(Math.round((now.getTime() - s.lastHeartbeatAt.getTime()) / 1000), HEARTBEAT_STALE_S);
       durationSeconds += Math.max(0, since);
       await db.update(gameSessions).set({ outcome: body.outcome, endedAt: now, score: body.score ?? null, durationSeconds, snapshot: null, lastHeartbeatAt: now }).where(eq(gameSessions.id, s.id));
-      const controls = await getControls(db, req.player!.childId);
-      await creditScreenTime(db, req.player!.childId, localParts(now, controls.timezone).day, Math.floor(since / 60));
+      const { controls, rewards, flags, dailyCap, timezone } = await rewardContext(req.player!.childId);
+      await creditScreenTime(db, req.player!.childId, localParts(now, timezone).day, Math.floor(since / 60));
       await recordCompletion(db, req.player!.childId, s.gameId, { completed: body.outcome === 'completed', score: body.score ?? null, durationSeconds, difficulty: s.difficulty, stars: body.stars });
+      // ---- coins: decided here from the server's record, never from a client total.
+      if (body.outcome === 'completed') {
+        const [g] = await db.select({ categoryId: games.categoryId, name: games.name }).from(games).where(eq(games.id, s.gameId));
+        const rule = SCORING_RULES[s.gameId];
+        const won = body.stars >= 1;
+        let amount: number;
+        let reason: string;
+        let label: string;
+        if (rule && (rule.kind === 'wins' || rule.kind === 'rating')) {
+          amount = won ? rewards.gameWon : rewards.gameCompleted;
+          reason = won ? 'game_won' : 'game_completed';
+          label = won ? 'You won!' : 'Game finished';
+        } else if (g?.categoryId && PUZZLE_CATEGORIES.has(g.categoryId)) {
+          amount = Math.round(rewards.puzzleSolvedMin + (rewards.puzzleSolvedMax - rewards.puzzleSolvedMin) * (DIFFICULTY_FACTOR[s.difficulty] ?? 0.5));
+          reason = 'puzzle_solved';
+          label = 'Puzzle solved';
+        } else {
+          amount = rewards.gameCompleted;
+          reason = 'game_completed';
+          label = 'Game finished';
+        }
+        const r1 = await awardCoins(db, req.player!.childId, amount, reason, `session:${s.id}:complete`, { refType: 'session', refId: s.id, note: g?.name ?? s.gameId, dailyCap, timezone });
+        if (r1.awarded > 0) coins.push({ reason, amount: r1.awarded, label });
+        balance = r1.balance;
+        // Daily challenge: finishing today's game pays its bonus once per day.
+        const challenge = await dailyChallengeFor(db, req.player!.childId, req.player!.effectiveBracket, controls, rewards.dailyChallenge);
+        if (challenge && challenge.gameId === s.gameId && !challenge.completed) {
+          const r2 = await awardCoins(db, req.player!.childId, rewards.dailyChallenge, 'daily_challenge', dailyKey(req.player!.childId, challenge.day), { refType: 'game', refId: s.gameId, note: `Daily challenge ${challenge.day}`, dailyCap, timezone });
+          if (!r2.duplicate) dailyChallengeCompleted = true;
+          if (r2.awarded > 0) coins.push({ reason: 'daily_challenge', amount: r2.awarded, label: 'Daily challenge done!' });
+          balance = r2.balance;
+        }
+      }
+      // ---- rankings: validated against the game's scoring rule, once per session.
+      if (flags.rankings && controls.rankingsEnabled) {
+        ranking = await recordRankingResult(db, { sessionId: s.id, childId: req.player!.childId, gameId: s.gameId, bracket: req.player!.effectiveBracket, difficulty: s.difficulty, outcome: body.outcome, score: body.score ?? null, stars: body.stars, durationSeconds });
+      }
     }
     let progress: { accepted: boolean; version: number; data: Record<string, unknown> } | null = null;
     if (body.progress) progress = await saveProgressData(db, req.player!.childId, s.gameId, body.progress.data, body.progress.version);
     const newAchievements = await evaluateAchievements(db, req.player!.childId, req.player!.effectiveBracket);
     realtime.notifyGuardians(req.player!.guardianId, { type: 'child_status', childId: req.player!.childId, online: true, session: null, lastOutcome: body.outcome });
-    res.json({ durationSeconds, newAchievements, progress });
+    if (balance === null) {
+      const [c] = await db.select({ coins: children.coins }).from(children).where(eq(children.id, req.player!.childId));
+      balance = c?.coins ?? 0;
+    }
+    res.json({ durationSeconds, newAchievements, progress, coins: { awarded: coins.reduce((n, c) => n + c.amount, 0), balance, breakdown: coins }, ranking, dailyChallengeCompleted });
+  });
+
+  // ---- tutorials (How to Play) ---------------------------------------------------
+  // Finishing a game's pictorial tutorial is recorded once and pays a small reward once.
+  r.post('/games/:id/tutorial-complete', async (req, res) => {
+    const gameId = parse(gameIdField, req.params.id);
+    const controls = await getControls(db, req.player!.childId);
+    const g = await getGameForChild(db, gameId, req.player!.effectiveBracket, controls);
+    if (!g) throw notFound('Game not found');
+    const now = new Date();
+    await db
+      .insert(gameProgress)
+      .values({ childId: req.player!.childId, gameId, tutorialCompletedAt: now })
+      .onConflictDoUpdate({ target: [gameProgress.childId, gameProgress.gameId], set: { tutorialCompletedAt: sql`coalesce(${gameProgress.tutorialCompletedAt}, ${now})`, updatedAt: now } });
+    const { rewards, dailyCap, timezone } = await rewardContext(req.player!.childId);
+    const coins = await awardCoins(db, req.player!.childId, rewards.tutorialCompleted, 'tutorial_completed', `tutorial:${req.player!.childId}:${gameId}`, { refType: 'game', refId: gameId, note: `${g.name} tutorial`, dailyCap, timezone });
+    const [p] = await db.select({ at: gameProgress.tutorialCompletedAt }).from(gameProgress).where(and(eq(gameProgress.childId, req.player!.childId), eq(gameProgress.gameId, gameId)));
+    res.json({ tutorialCompletedAt: p?.at?.toISOString() ?? now.toISOString(), coins, newAchievements: await evaluateAchievements(db, req.player!.childId, req.player!.effectiveBracket) });
+  });
+
+  // ---- daily challenge --------------------------------------------------------------
+  r.get('/daily-challenge', async (req, res) => {
+    const { controls, rewards } = await rewardContext(req.player!.childId);
+    const challenge = await dailyChallengeFor(db, req.player!.childId, req.player!.effectiveBracket, controls, rewards.dailyChallenge);
+    if (!challenge) throw notFound('No challenge today');
+    res.json(challenge);
+  });
+
+  // ---- coins, shop and rewards -----------------------------------------------------
+  r.get('/coins', async (req, res) => {
+    const { controls, flags, rewards, dailyCap, timezone } = await rewardContext(req.player!.childId);
+    res.set('Cache-Control', 'no-store');
+    res.json({ ...(await wallet(db, req.player!.childId, { shopEnabled: flags.rewardShop && rewards.shopEnabled && controls.rewardShopEnabled, premium: !!req.entitlement?.active, timezone, dailyCap })), values: rewards });
+  });
+
+  r.post('/coins/purchase', async (req, res) => {
+    const body = parse(z.object({ itemKey: z.string().regex(/^[a-z0-9-]{2,80}$/), idempotencyKey: z.string().regex(/^[A-Za-z0-9-]{8,64}$/) }), req.body);
+    const { controls, flags, rewards } = await rewardContext(req.player!.childId);
+    try {
+      const result = await purchaseItem(db, req.player!.childId, body.itemKey, `purchase:${req.player!.childId}:${body.idempotencyKey}`, { shopEnabled: flags.rewardShop && rewards.shopEnabled && controls.rewardShopEnabled, premium: !!req.entitlement?.active });
+      res.status(result.duplicate ? 200 : 201).json({ item: result.item, balance: result.balance, duplicate: result.duplicate });
+    } catch (err) {
+      if (err instanceof ShopError) throw new HttpError(err.code === 'not_found' ? 404 : err.code === 'insufficient_coins' ? 409 : 403, err.message, err.code);
+      throw err;
+    }
+  });
+
+  r.put('/rewards/equip', async (req, res) => {
+    const body = parse(z.object({ kind: z.string().regex(/^[a-z_]{2,40}$/), itemKey: z.string().regex(/^[a-z0-9-]{2,80}$/).nullable() }), req.body);
+    try {
+      res.json({ equipped: await equipItem(db, req.player!.childId, body.itemKey, body.kind) });
+    } catch (err) {
+      if (err instanceof ShopError) throw new HttpError(404, err.message, err.code);
+      throw err;
+    }
+  });
+
+  // ---- rankings ------------------------------------------------------------------------
+  r.get('/rankings', async (req, res) => {
+    const { controls, flags, values } = await rewardContext(req.player!.childId);
+    const enabled = flags.rankings && controls.rankingsEnabled;
+    const visible = await listGamesForChild(db, req.player!.childId, req.player!.effectiveBracket, controls);
+    res.json({
+      enabled,
+      reason: !flags.rankings ? 'Rankings are switched off right now.' : !controls.rankingsEnabled ? 'Your grown-up has turned rankings off for you.' : null,
+      settings: values.rankings,
+      games: visible.filter((g) => SCORING_RULES[g.id]).map((g) => ({ gameId: g.id, name: g.name, kind: SCORING_RULES[g.id]!.kind, rule: SCORING_RULES[g.id]!.label })),
+      mine: enabled ? await myRankingSummary(db, req.player!.childId) : [],
+    });
+  });
+
+  r.get('/rankings/:gameId', async (req, res) => {
+    const gameId = parse(gameIdField, req.params.gameId);
+    const q = parse(z.object({ window: z.enum(['week', 'month', 'all']).default('week'), bracket: z.enum(['A', 'B', 'C', 'D']).optional() }), req.query);
+    const { controls, flags, values } = await rewardContext(req.player!.childId);
+    if (!flags.rankings || !controls.rankingsEnabled) throw new HttpError(403, 'Rankings are turned off', 'rankings_disabled');
+    if (!SCORING_RULES[gameId]) throw notFound('This game has no leaderboard');
+    const board = await leaderboard(db, gameId, q.window, req.player!.childId, { bracket: q.bracket, limit: values.rankings.boardSize });
+    const minPlayed = values.rankings.minPlayedForBoard;
+    res.set('Cache-Control', 'no-store');
+    res.json({ gameId, window: q.window, bracket: q.bracket ?? null, rule: board.rule, rows: board.rows.filter((r) => r.played >= minPlayed || r.isMe), me: board.me });
+  });
+
+  // ---- learning academy ------------------------------------------------------------------
+  async function learner(req: { player?: { childId: string } }) {
+    const c = await child(req);
+    const { controls, flags } = await rewardContext(c.id);
+    return { c, controls, flags, myAge: ageFromBirthMonth(c.birthMonth) };
+  }
+  const sectionField = z.enum(['study', 'music', 'sports']);
+
+  r.get('/learning/catalogue', async (req, res) => {
+    const { c, controls, flags, myAge } = await learner(req);
+    res.json(await learningCatalogue(db, c.id, myAge, controls, { study: flags.studyPlayfully, music: flags.music, sports: flags.sports }));
+  });
+
+  r.get('/learning/lessons', async (req, res) => {
+    const q = parse(z.object({ section: sectionField.optional(), subject: z.string().regex(/^[a-z0-9-]{2,40}$/).optional(), age: z.union([z.literal('all'), z.coerce.number().int().min(3).max(12)]).optional(), difficulty: z.enum(['beginner', 'intermediate', 'advanced']).optional(), topic: z.string().max(80).optional() }), req.query);
+    const { c, controls, flags, myAge } = await learner(req);
+    const subject = q.subject ? SUBJECT_BY_KEY.get(q.subject) : undefined;
+    if (q.subject && !subject) throw notFound('Unknown subject');
+    const section = q.section ?? subject?.section;
+    if (section && !flags[section === 'study' ? 'studyPlayfully' : section]) throw new HttpError(403, 'This section is switched off right now', 'section_disabled');
+    // Default: lessons for the child's own age; `age=all` explores every age.
+    const age = q.age === 'all' ? undefined : q.age ?? myAge;
+    res.json({ myAge, age: age ?? 'all', lessons: await listLessons(db, c.id, myAge, controls, { section, subject: q.subject, age, difficulty: q.difficulty, topic: q.topic }) });
+  });
+
+  r.get('/learning/report', async (req, res) => {
+    const { c, controls, myAge } = await learner(req);
+    res.json(await learningReport(db, c.id, myAge, controls));
+  });
+
+  r.get('/learning/lessons/:id', async (req, res) => {
+    const id = parse(z.string().regex(/^[a-z0-9-]{2,80}$/), req.params.id);
+    const { c, controls, myAge } = await learner(req);
+    const lesson = await getLesson(db, c.id, id, myAge, controls);
+    if (!lesson) throw notFound('Lesson not found');
+    res.json(lesson);
+  });
+
+  r.put('/learning/lessons/:id/progress', async (req, res) => {
+    const id = parse(z.string().regex(/^[a-z0-9-]{2,80}$/), req.params.id);
+    const body = parse(z.object({ stepsDone: z.number().int().min(0).max(20), activitiesCorrect: z.number().int().min(0).max(50).optional(), activitiesTotal: z.number().int().min(0).max(50).optional(), quizScore: z.number().int().min(0).max(50).optional(), quizTotal: z.number().int().min(0).max(50).optional(), timeSeconds: z.number().int().min(0).max(3600).optional(), selectedAge: z.number().int().min(3).max(12).optional(), completed: z.boolean().optional() }), req.body);
+    const { c, controls, myAge } = await learner(req);
+    const { rewards, dailyCap, timezone } = await rewardContext(c.id);
+    if (!(await getLesson(db, c.id, id, myAge, controls))) throw notFound('Lesson not found');
+    const result = await saveLessonProgress(db, c.id, id, body, { lessonCoins: rewards.lessonCompleted, dailyCap, timezone });
+    if (!result) throw notFound('Lesson not found');
+    const newAchievements = result.completed ? await evaluateAchievements(db, c.id, req.player!.effectiveBracket) : [];
+    const p = result.progress;
+    res.json({ progress: { stepsDone: p.stepsDone, stepsTotal: p.stepsTotal, activitiesCorrect: p.activitiesCorrect, activitiesTotal: p.activitiesTotal, bestQuizScore: p.bestQuizScore, quizTotal: p.quizTotal, timeSeconds: p.timeSeconds, completedAt: p.completedAt?.toISOString() ?? null }, completed: result.completed, firstCompletion: result.firstCompletion, coins: result.coins, levelUp: result.levelUp, newAchievements });
   });
 
   // ---- progress --------------------------------------------------------------
@@ -312,7 +524,12 @@ export function playerRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeo
       .insert(craftProgress)
       .values({ childId: req.player!.childId, tutorialId: id, stepsDone: body.stepsDone, checklistDone: body.checklistDone ?? [], completedAt })
       .onConflictDoUpdate({ target: [craftProgress.childId, craftProgress.tutorialId], set: { stepsDone: body.stepsDone, checklistDone: body.checklistDone ?? [], completedAt: completedAt ?? sql`${craftProgress.completedAt}`, updatedAt: new Date() } });
-    res.json({ newAchievements: await evaluateAchievements(db, req.player!.childId, req.player!.effectiveBracket) });
+    let coins: AwardResult | null = null;
+    if (completedAt) {
+      const { rewards, dailyCap, timezone } = await rewardContext(req.player!.childId);
+      coins = await awardCoins(db, req.player!.childId, rewards.craftCompleted, 'craft_completed', `craft:${req.player!.childId}:${id}`, { refType: 'craft', refId: id, note: c.title, dailyCap, timezone });
+    }
+    res.json({ newAchievements: await evaluateAchievements(db, req.player!.childId, req.player!.effectiveBracket), coins });
   });
 
   // ---- Did You Know? ------------------------------------------------------------
@@ -382,7 +599,9 @@ export function playerRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeo
     const [f] = await db.select({ id: facts.id }).from(facts).where(and(eq(facts.id, id), eq(facts.status, 'published')));
     if (!f) throw notFound('Fact not found');
     await db.insert(factViews).values({ childId: req.player!.childId, factId: id }).onConflictDoUpdate({ target: [factViews.childId, factViews.factId], set: { viewedAt: new Date() } });
-    res.json({ newAchievements: await evaluateAchievements(db, req.player!.childId, req.player!.effectiveBracket) });
+    const { rewards, dailyCap, timezone } = await rewardContext(req.player!.childId);
+    const coins = await awardCoins(db, req.player!.childId, rewards.factDiscovered, 'fact_discovered', `fact:${req.player!.childId}:${id}`, { refType: 'fact', refId: id, dailyCap, timezone });
+    res.json({ newAchievements: await evaluateAchievements(db, req.player!.childId, req.player!.effectiveBracket), coins });
   });
 
   r.put('/facts/:id/favourite', async (req, res) => {
@@ -400,7 +619,12 @@ export function playerRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeo
     if (!q) throw notFound('Question not found');
     const correct = q.correctIndex === body.chosenIndex;
     await db.insert(quizAttempts).values({ childId: req.player!.childId, factId: q.factId, questionId: q.id, chosenIndex: body.chosenIndex, correct });
-    res.json({ correct, correctIndex: q.correctIndex, explanation: q.explanation, newAchievements: await evaluateAchievements(db, req.player!.childId, req.player!.effectiveBracket) });
+    let coins: AwardResult | null = null;
+    if (correct) {
+      const { rewards, dailyCap, timezone } = await rewardContext(req.player!.childId);
+      coins = await awardCoins(db, req.player!.childId, rewards.quizCompleted, 'quiz_completed', `quiz:${req.player!.childId}:${q.id}`, { refType: 'fact', refId: q.factId, dailyCap, timezone });
+    }
+    res.json({ correct, correctIndex: q.correctIndex, explanation: q.explanation, newAchievements: await evaluateAchievements(db, req.player!.childId, req.player!.effectiveBracket), coins });
   });
 
   r.get('/quiz/history', async (req, res) => {

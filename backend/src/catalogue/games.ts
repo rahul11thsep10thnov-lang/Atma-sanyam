@@ -338,4 +338,14 @@ export const ACHIEVEMENT_SEEDS = [
   { key: 'quiz_whiz', name: 'Quiz Whiz', description: 'Answered ten quiz questions correctly.', icon: 'check', rule: { type: 'quiz_correct', count: 10 } },
   { key: 'paper_folder', name: 'Paper Folder', description: 'Completed your first craft.', icon: 'scissors', rule: { type: 'crafts_done', count: 1 } },
   { key: 'craft_club', name: 'Craft Club', description: 'Completed five crafts.', icon: 'palette', rule: { type: 'crafts_done', count: 5 } },
+  // Learning academy, tutorials, coins and rankings.
+  { key: 'first_lesson', name: 'First Lesson', description: 'Finished your first lesson in the academy.', icon: 'book', rule: { type: 'lessons_completed', count: 1 } },
+  { key: 'ten_lessons', name: 'Keen Learner', description: 'Finished ten lessons.', icon: 'graduation', rule: { type: 'lessons_completed', count: 10 } },
+  { key: 'music_maker', name: 'Music Maker', description: 'Finished your first music lesson.', icon: 'music', rule: { type: 'lessons_completed', count: 1, section: 'music' } },
+  { key: 'sports_star', name: 'Sports Star', description: 'Finished your first sports lesson.', icon: 'medal', rule: { type: 'lessons_completed', count: 1, section: 'sports' } },
+  { key: 'science_explorer', name: 'Science Explorer', description: 'Finished three science lessons.', icon: 'flask', rule: { type: 'lessons_completed', count: 3, section: 'study' } },
+  { key: 'tutorial_pro', name: 'Ready Player', description: 'Finished the How to Play tutorial for five games.', icon: 'compass', rule: { type: 'tutorials_completed', count: 5 } },
+  { key: 'coin_collector', name: 'Coin Collector', description: 'Earned 100 coins.', icon: 'coin', rule: { type: 'coins_earned', count: 100 } },
+  { key: 'coin_hoard', name: 'Treasure Keeper', description: 'Earned 500 coins.', icon: 'gem', rule: { type: 'coins_earned', count: 500 } },
+  { key: 'first_ranked_win', name: 'On the Board', description: 'Won your first ranked game.', icon: 'trophy', rule: { type: 'ranked_wins', count: 1 } },
 ] as const;

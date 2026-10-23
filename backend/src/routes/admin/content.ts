@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { asc, count, eq } from 'drizzle-orm';
 import { categories, content } from '../../database/schema.js';
 import type { Auth } from '../../middleware/auth.js';
-import { parse } from '../../middleware/validate.js';
+import { parse, parsePatch } from '../../middleware/validate.js';
 import { badRequest, conflict, forbidden, notFound } from '../../lib/httpError.js';
 import { slugify } from '../../lib/strings.js';
 import { audit } from '../../lib/audit.js';
@@ -98,7 +98,7 @@ export function adminContentRouter({ db, env }: AppDeps, auth: Auth) {
 
   r.patch('/content/:id', auth.requirePermission('content:write'), async (req, res) => {
     const id = parse(idParam, req.params.id);
-    const body = parse(contentFields.partial(), req.body);
+    const body = parsePatch(contentFields, req.body);
     const [existing] = await db.select().from(content).where(eq(content.id, id));
     if (!existing) throw notFound('Content not found');
 

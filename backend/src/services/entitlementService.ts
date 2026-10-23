@@ -72,7 +72,8 @@ export async function getEntitlement(db: Db, guardianId: string, now = new Date(
 }
 
 export function publicEntitlement(ent: Entitlement) {
-  return { active: ent.active, status: ent.status, validUntil: ent.validUntil?.toISOString() ?? null };
+  // adFree is derived here and nowhere else: any entitling subscription removes ads.
+  return { active: ent.active, status: ent.status, validUntil: ent.validUntil?.toISOString() ?? null, adFree: ent.active };
 }
 
 /** Admin support action: end a household's access now (refund, abuse). */

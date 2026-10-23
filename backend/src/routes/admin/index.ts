@@ -12,6 +12,7 @@ import { adminSettingsRouter } from './settings.js';
 import { adminNotificationsRouter } from './notifications.js';
 import { adminInsightsRouter } from './insights.js';
 import { adminAdminsRouter } from './admins.js';
+import { adminLearningRouter } from './learning.js';
 
 export function adminRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeof createRateLimits>) {
   const r = Router();
@@ -26,6 +27,7 @@ export function adminRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeof
   r.use('/settings', adminSettingsRouter(deps, auth));
   r.use('/notifications', adminNotificationsRouter(deps, auth));
   r.use('/', adminContentRouter(deps, auth));
+  r.use('/', adminLearningRouter(deps, auth));
   r.use('/', adminInsightsRouter(deps, auth));
   r.use('/', adminAdminsRouter(deps, auth));
   return r;

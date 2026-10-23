@@ -116,6 +116,14 @@ const envSchema = z.object({
   FACT_INGEST_ENABLED: flag(true),
   FACT_INGEST_AUTO_PUBLISH: flag(false),
   FACT_INGEST_MAX_PER_RUN: z.coerce.number().int().min(1).max(100).default(10),
+
+  // ---- Ads (docs/ADS.md) -----------------------------------------------------
+  // Google AdMob interstitial ad unit ids, one per platform. The AdMob *app*
+  // ids live in the app's app.json (they are needed at build time). Without
+  // unit ids the app uses Google's sample units (test mode) and nothing is
+  // ever paid out; subscribers never see ads whatever is set here.
+  ADMOB_INTERSTITIAL_UNIT_ANDROID: z.string().trim().regex(/^(ca-app-pub-\d{16}\/\d{10})?$/, 'Use an AdMob unit id like ca-app-pub-1234567890123456/1234567890').default(''),
+  ADMOB_INTERSTITIAL_UNIT_IOS: z.string().trim().regex(/^(ca-app-pub-\d{16}\/\d{10})?$/, 'Use an AdMob unit id like ca-app-pub-1234567890123456/1234567890').default(''),
 });
 
 export type Env = z.infer<typeof envSchema>;

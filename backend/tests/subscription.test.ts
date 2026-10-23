@@ -27,7 +27,7 @@ const status = async () => (await request(ctx.app).get('/v1/guardian/subscriptio
 describe('subscription gate', () => {
   it('without a subscription the guardian console is limited to account and purchase screens', async () => {
     const s = await status();
-    expect(s.entitlement).toEqual({ active: false, status: 'never_subscribed', validUntil: null });
+    expect(s.entitlement).toEqual({ active: false, status: 'never_subscribed', validUntil: null, adFree: false });
     expect(s.monthly.priceInr).toBeGreaterThan(0);
     expect((await request(ctx.app).get('/v1/guardian/me').set(as(token))).status).toBe(200);
     expect((await request(ctx.app).get('/v1/guardian/dashboard').set(as(token))).status).toBe(200); // read-only, shows the locked state
