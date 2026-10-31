@@ -33,6 +33,10 @@ object AppServices {
         private set
     lateinit var account: AccountRepository
         private set
+    /** False in a release build that still carries Google's test ad ids: no ads, free Undo, no membership. */
+    var adsEnabled: Boolean = false
+        private set
+
     lateinit var ads: AdsManager
         private set
     /** Username and avatar — the public identity used by the Friends features. */
@@ -137,10 +141,15 @@ object AppServices {
         account.onSignedInListener = { uid -> profile.onSignedIn(uid); friends.start(uid); presence.onSignedIn(uid); playRequests.start(uid); myProfile.start(uid); notifications.start(uid); pokePrefs.start(uid); pokes.start(uid); ludoRecord.start(uid); snakesRecord.start(uid) }
         account.onSignedOutListener = { profile.onSignedOut(); friends.stopWatching(); presence.onSignedOut(); playRequests.stopWatching(); notifications.stopWatching(); pokes.stopWatching(); pokePrefs.stop(); myProfile.stop(); ludoRecord.stop(); snakesRecord.stop() }
         account.currentUser.value?.let { profile.onSignedIn(it.uid); friends.start(it.uid); presence.onSignedIn(it.uid); playRequests.start(it.uid); myProfile.start(it.uid); notifications.start(it.uid); pokePrefs.start(it.uid); pokes.start(it.uid); ludoRecord.start(it.uid); snakesRecord.start(it.uid) }
+        // Ads stay off in a release build until real AdMob ids replace Google's public test ids
+        // (res/values/ads_config.xml). With ads off there is nothing to remove, so Undo is free and the
+        // "Remove ads" membership is hidden.
+        adsEnabled = BuildConfig.DEBUG ||
+            application.getString(R.string.admob_app_id) != AdsManager.TEST_APP_ID
         ads = AdsManager(membership)
         billing = PlayBilling(application, membership)
         billing.connect()
-        com.rangepatte.app.game.common.UndoGate.isMember = { membership.isAdFree() }
+        com.rangepatte.app.game.common.UndoGate.isMember = { !adsEnabled || membership.isAdFree() }
         GameAudio.init(application)
     }
 }

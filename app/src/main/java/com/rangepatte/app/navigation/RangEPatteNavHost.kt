@@ -87,6 +87,7 @@ fun RangEPatteNavHost(
             if (showChrome) {
                 AppTopBar(
                     isAdFree = adFreeUntil > System.currentTimeMillis(),
+                    showMembershipTab = AppServices.adsEnabled,
                     user = user,
                     onRemoveAdsClick = { navController.navigate(Routes.MEMBERSHIP) { launchSingleTop = true } },
                     // Signed in, the account tab opens My Profile (Element 16); signed out, the login page.

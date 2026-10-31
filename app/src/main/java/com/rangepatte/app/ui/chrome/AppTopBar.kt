@@ -60,6 +60,8 @@ import com.rangepatte.app.ui.theme.RoyalLabelStyle
 @Composable
 fun AppTopBar(
     isAdFree: Boolean,
+    /** False while the app has no ads: the Remove-ads / Ad-free tab is hidden. */
+    showMembershipTab: Boolean = true,
     user: UserProfile?,
     onRemoveAdsClick: () -> Unit,
     onAccountClick: () -> Unit,
@@ -81,7 +83,9 @@ fun AppTopBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            if (isAdFree) {
+            if (!showMembershipTab) {
+                Spacer(modifier = Modifier.weight(1f))
+            } else if (isAdFree) {
                 TopBarTab(
                     text = stringResource(R.string.topbar_ad_free),
                     icon = Icons.Filled.WorkspacePremium,

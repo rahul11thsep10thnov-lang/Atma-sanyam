@@ -50,7 +50,7 @@ class AdsManager(private val membership: MembershipRepository) {
 
     /** Call once from the Activity: asks for consent if needed, then starts the ads SDK. */
     fun start(activity: Activity) {
-        if (membership.isAdFree()) return
+        if (!com.rangepatte.app.AppServices.adsEnabled || membership.isAdFree()) return
         val consentInformation = UserMessagingPlatform.getConsentInformation(activity)
         consentInformation.requestConsentInfoUpdate(
             activity,
@@ -196,8 +196,11 @@ class AdsManager(private val membership: MembershipRepository) {
         ad.show(activity)
     }
 
-    private companion object {
-        const val EXITS_PER_INTERSTITIAL = 2
-        const val MIN_INTERSTITIAL_GAP_MS = 120_000L
+    companion object {
+        /** Google's public sample app id; real ids must replace it before ads are switched on. */
+        const val TEST_APP_ID = "ca-app-pub-3940256099942544~3347511713"
+
+        private const val EXITS_PER_INTERSTITIAL = 2
+        private const val MIN_INTERSTITIAL_GAP_MS = 120_000L
     }
 }
