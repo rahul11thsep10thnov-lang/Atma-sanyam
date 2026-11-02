@@ -3,6 +3,8 @@ import {
   bigserial,
   boolean,
   check,
+  date,
+  real,
   foreignKey,
   index,
   integer,
@@ -559,3 +561,295 @@ export const auditLogs = pgTable(
   },
   (t) => [index('audit_logs_created_at_idx').on(t.createdAt)]
 );
+
+// ---------------------------------------------------------------------------
+// DADU – Dadaji's Miniverse (children's learning product built on this API).
+// Every table is prefixed dadu_ and nothing above is altered. Child-scoped
+// rows cascade from dadu_child_profiles so deleting a child removes all of
+// its data; deleting the parent account cascades through the child.
+// ---------------------------------------------------------------------------
+
+export const DADU_AGE_BANDS = ['A0', 'A1', 'A2', 'A3', 'A4', 'A5'] as const;
+export const DADU_DIFFICULTIES = ['gentle', 'steady', 'stretch'] as const;
+export const DADU_LANGUAGE_MODES = ['single', 'bilingual', 'compare', 'en-with-hi', 'hi-with-en'] as const;
+export const DADU_CONSENT_KINDS = ['processing', 'photos', 'analytics'] as const;
+export const DADU_EVENT_KINDS = ['lesson', 'story', 'activity', 'assessment', 'assignment'] as const;
+export const DADU_CONTENT_KINDS = ['lesson', 'story', 'assignment', 'object', 'character', 'location'] as const;
+export const DADU_CONTENT_STATUSES = [
+  'draft',
+  'educational_review',
+  'factual_review',
+  'language_review',
+  'cultural_review',
+  'rights_review',
+  'safety_review',
+  'approved',
+  'published',
+] as const;
+export const DADU_RIGHTS = ['original', 'public-domain', 'licensed', 'pending'] as const;
+export const DADU_ASSET_KINDS = ['image', 'audio', 'animation', 'video', 'font'] as const;
+export const DADU_PACK_KINDS = ['core', 'language', 'world', 'section', 'stories', 'audio'] as const;
+
+export const daduChildProfiles = pgTable(
+  'dadu_child_profiles',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    band: text('band', { enum: DADU_AGE_BANDS }).notNull(),
+    difficulty: text('difficulty', { enum: DADU_DIFFICULTIES }).notNull().default('steady'),
+    language: text('language').notNull().default('en'),
+    helperLanguage: text('helper_language'),
+    languageMode: text('language_mode', { enum: DADU_LANGUAGE_MODES }).notNull().default('single'),
+    avatar: jsonb('avatar').$type<{ skin: string; hair: string; top: string }>().notNull(),
+    templeEnabled: boolean('temple_enabled').notNull().default(false),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    deletedAt: timestamp('deleted_at', { withTimezone: true }),
+  },
+  (t) => [
+    index('dadu_child_profiles_user_idx').on(t.userId, t.deletedAt),
+    check('dadu_child_profiles_band_check', sql`${t.band} in ('A0', 'A1', 'A2', 'A3', 'A4', 'A5')`),
+    check('dadu_child_profiles_difficulty_check', sql`${t.difficulty} in ('gentle', 'steady', 'stretch')`),
+    check('dadu_child_profiles_name_length_check', sql`char_length(${t.name}) between 1 and 40`),
+  ]
+);
+
+export const daduConsents = pgTable(
+  'dadu_consents',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    childId: uuid('child_id').references(() => daduChildProfiles.id, { onDelete: 'cascade' }),
+    version: text('version').notNull(),
+    kind: text('kind', { enum: DADU_CONSENT_KINDS }).notNull(),
+    grantedAt: timestamp('granted_at', { withTimezone: true }).notNull().defaultNow(),
+    withdrawnAt: timestamp('withdrawn_at', { withTimezone: true }),
+  },
+  (t) => [
+    index('dadu_consents_user_idx').on(t.userId, t.kind),
+    index('dadu_consents_child_idx').on(t.childId),
+    check('dadu_consents_kind_check', sql`${t.kind} in ('processing', 'photos', 'analytics')`),
+  ]
+);
+
+export const daduWorldStates = pgTable(
+  'dadu_world_states',
+  {
+    childId: uuid('child_id')
+      .primaryKey()
+      .references(() => daduChildProfiles.id, { onDelete: 'cascade' }),
+    state: jsonb('state').$type<Record<string, unknown>>().notNull(),
+    version: integer('version').notNull().default(1),
+    updatedAt: updatedAt(),
+  }
+);
+
+export const daduProgressEvents = pgTable(
+  'dadu_progress_events',
+  {
+    id: bigserial('id', { mode: 'number' }).primaryKey(),
+    childId: uuid('child_id')
+      .notNull()
+      .references(() => daduChildProfiles.id, { onDelete: 'cascade' }),
+    kind: text('kind', { enum: DADU_EVENT_KINDS }).notNull(),
+    contentId: text('content_id').notNull(),
+    payload: jsonb('payload').$type<Record<string, unknown>>().notNull(),
+    clientId: text('client_id').notNull().unique(),
+    occurredAt: timestamp('occurred_at', { withTimezone: true }).notNull(),
+    receivedAt: timestamp('received_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('dadu_progress_events_child_idx').on(t.childId, t.id),
+    check('dadu_progress_events_kind_check', sql`${t.kind} in ('lesson', 'story', 'activity', 'assessment', 'assignment')`),
+  ]
+);
+
+export const daduMastery = pgTable(
+  'dadu_mastery',
+  {
+    childId: uuid('child_id')
+      .notNull()
+      .references(() => daduChildProfiles.id, { onDelete: 'cascade' }),
+    concept: text('concept').notNull(),
+    score: real('score').notNull().default(0),
+    attempts: integer('attempts').notNull().default(0),
+    correct: integer('correct').notNull().default(0),
+    intervalDays: integer('interval_days').notNull().default(1),
+    lastSeenAt: timestamp('last_seen_at', { withTimezone: true }).notNull().defaultNow(),
+    nextReviewAt: timestamp('next_review_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.childId, t.concept] }), index('dadu_mastery_due_idx').on(t.childId, t.nextReviewAt)]
+);
+
+export const daduAssignmentCompletions = pgTable(
+  'dadu_assignment_completions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    childId: uuid('child_id')
+      .notNull()
+      .references(() => daduChildProfiles.id, { onDelete: 'cascade' }),
+    assignmentId: text('assignment_id').notNull(),
+    completedAt: timestamp('completed_at', { withTimezone: true }).notNull().defaultNow(),
+    note: text('note'),
+    photoAssetId: text('photo_asset_id'),
+    consentId: uuid('consent_id').references(() => daduConsents.id, { onDelete: 'set null' }),
+  },
+  (t) => [
+    uniqueIndex('dadu_assignment_completions_unique').on(t.childId, t.assignmentId),
+    check('dadu_assignment_completions_note_check', sql`char_length(${t.note}) <= 500`),
+  ]
+);
+
+export const daduScreenTime = pgTable(
+  'dadu_screen_time',
+  {
+    childId: uuid('child_id')
+      .notNull()
+      .references(() => daduChildProfiles.id, { onDelete: 'cascade' }),
+    day: date('day').notNull(),
+    minutes: integer('minutes').notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.childId, t.day] })]
+);
+
+export const daduScreenRules = pgTable('dadu_screen_rules', {
+  childId: uuid('child_id')
+    .primaryKey()
+    .references(() => daduChildProfiles.id, { onDelete: 'cascade' }),
+  dailyMinutes: integer('daily_minutes'),
+  bedtime: text('bedtime'),
+  breakEveryMinutes: integer('break_every_minutes').notNull().default(20),
+  updatedAt: updatedAt(),
+});
+
+export const daduContentItems = pgTable(
+  'dadu_content_items',
+  {
+    id: text('id').primaryKey(),
+    kind: text('kind', { enum: DADU_CONTENT_KINDS }).notNull(),
+    section: text('section'),
+    subject: text('subject'),
+    topic: text('topic'),
+    bands: text('bands').array().notNull().default(sql`'{}'::text[]`),
+    difficulty: integer('difficulty').notNull().default(1),
+    languages: text('languages').array().notNull().default(sql`'{}'::text[]`),
+    rights: text('rights', { enum: DADU_RIGHTS }).notNull().default('original'),
+    provenance: text('provenance').notNull().default(''),
+    status: text('status', { enum: DADU_CONTENT_STATUSES }).notNull().default('draft'),
+    currentVersion: integer('current_version').notNull().default(1),
+    publishedVersion: integer('published_version'),
+    createdBy: uuid('created_by').references(() => admins.id, { onDelete: 'set null' }),
+    updatedBy: uuid('updated_by').references(() => admins.id, { onDelete: 'set null' }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    index('dadu_content_items_kind_status_idx').on(t.kind, t.status, t.updatedAt),
+    index('dadu_content_items_section_idx').on(t.section, t.kind),
+    check('dadu_content_items_id_check', sql`${t.id} ~ '^[a-z0-9_.-]{3,120}$'`),
+    check('dadu_content_items_difficulty_check', sql`${t.difficulty} between 1 and 5`),
+  ]
+);
+
+export const daduContentVersions = pgTable(
+  'dadu_content_versions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    itemId: text('item_id')
+      .notNull()
+      .references(() => daduContentItems.id, { onDelete: 'cascade' }),
+    version: integer('version').notNull(),
+    body: jsonb('body').$type<Record<string, unknown>>().notNull(),
+    changeNote: text('change_note').notNull().default(''),
+    createdBy: uuid('created_by').references(() => admins.id, { onDelete: 'set null' }),
+    createdAt: createdAt(),
+    publishedAt: timestamp('published_at', { withTimezone: true }),
+  },
+  (t) => [uniqueIndex('dadu_content_versions_item_version').on(t.itemId, t.version)]
+);
+
+export const daduReviewSteps = pgTable(
+  'dadu_review_steps',
+  {
+    id: bigserial('id', { mode: 'number' }).primaryKey(),
+    itemId: text('item_id')
+      .notNull()
+      .references(() => daduContentItems.id, { onDelete: 'cascade' }),
+    version: integer('version').notNull(),
+    step: text('step').notNull(),
+    decision: text('decision', { enum: ['approve', 'send_back'] }).notNull(),
+    reviewerId: uuid('reviewer_id').references(() => admins.id, { onDelete: 'set null' }),
+    note: text('note').notNull().default(''),
+    createdAt: createdAt(),
+  },
+  (t) => [index('dadu_review_steps_item_idx').on(t.itemId, t.version, t.id)]
+);
+
+export const daduMediaAssets = pgTable(
+  'dadu_media_assets',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    kind: text('kind', { enum: DADU_ASSET_KINDS }).notNull(),
+    url: text('url').notNull(),
+    mime: text('mime').notNull(),
+    bytes: integer('bytes').notNull().default(0),
+    width: integer('width'),
+    height: integer('height'),
+    durationMs: integer('duration_ms'),
+    sha256: text('sha256').notNull().unique(),
+    licence: text('licence').notNull(),
+    source: text('source').notNull(),
+    creator: text('creator').notNull(),
+    attributionRequired: boolean('attribution_required').notNull().default(false),
+    attributionText: text('attribution_text'),
+    characterKey: text('character_key'),
+    locationId: text('location_id'),
+    version: integer('version').notNull().default(1),
+    uploadedBy: uuid('uploaded_by').references(() => admins.id, { onDelete: 'set null' }),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index('dadu_media_assets_kind_idx').on(t.kind, t.createdAt),
+    index('dadu_media_assets_character_idx').on(t.characterKey),
+    index('dadu_media_assets_location_idx').on(t.locationId),
+    check('dadu_media_assets_sha_check', sql`${t.sha256} ~ '^[0-9a-f]{64}$'`),
+  ]
+);
+
+export const daduPacks = pgTable(
+  'dadu_packs',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    kind: text('kind', { enum: DADU_PACK_KINDS }).notNull(),
+    language: text('language'),
+    version: integer('version').notNull(),
+    manifest: jsonb('manifest').$type<Record<string, unknown>>().notNull(),
+    bytes: integer('bytes').notNull().default(0),
+    sha256: text('sha256').notNull(),
+    status: text('status', { enum: ['draft', 'published'] }).notNull().default('draft'),
+    createdBy: uuid('created_by').references(() => admins.id, { onDelete: 'set null' }),
+    createdAt: createdAt(),
+    publishedAt: timestamp('published_at', { withTimezone: true }),
+  },
+  (t) => [uniqueIndex('dadu_packs_kind_language_version').on(t.kind, t.language, t.version), index('dadu_packs_status_idx').on(t.status, t.kind)]
+);
+
+export const daduFeatureFlags = pgTable('dadu_feature_flags', {
+  key: text('key').primaryKey(),
+  value: jsonb('value').$type<unknown>().notNull(),
+  updatedBy: uuid('updated_by').references(() => admins.id, { onDelete: 'set null' }),
+  updatedAt: updatedAt(),
+});
+
+export const daduSyncCursors = pgTable('dadu_sync_cursors', {
+  childId: uuid('child_id')
+    .primaryKey()
+    .references(() => daduChildProfiles.id, { onDelete: 'cascade' }),
+  cursor: text('cursor').notNull().default('0'),
+  updatedAt: updatedAt(),
+});

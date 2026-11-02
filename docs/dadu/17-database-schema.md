@@ -1,5 +1,10 @@
 # DADU – Database schema
 
+> **Implementation notes (2026-11-02).** Migration `backend/drizzle/0006_dadu.sql` creates fifteen
+> `dadu_` tables; see `DATABASE_MIGRATION_LOG.md` for the list, how it was verified and the divergences:
+> localised text is embedded in version bodies instead of a translations table, the curriculum tree
+> lives on `dadu_content_items`, and wallet/inventory/plants are fields of the world-state JSON.
+
 PostgreSQL, Drizzle ORM, SQL migrations in `backend/drizzle/`, as today. Follows `00-canon.md`
 for ids, bands and languages; the API that reads these tables is in `18-api.md`; the workflow
 rules are in `20-admin-cms.md`. Conventions carried over from `backend/src/database/schema.ts`:

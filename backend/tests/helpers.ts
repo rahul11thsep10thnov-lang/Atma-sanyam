@@ -91,7 +91,7 @@ export async function setupTestApp(opts: { disableRateLimits?: boolean; withMail
 
 export async function createAdmin(
   db: Database['db'],
-  roleKey: 'super_admin' | 'admin' | 'editor',
+  roleKey: 'super_admin' | 'admin' | 'editor' | 'reviewer',
   email = `${roleKey}@example.com`,
   password = STRONG_PASSWORD
 ) {

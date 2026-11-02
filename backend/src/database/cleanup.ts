@@ -5,7 +5,7 @@
 import { lt, sql } from 'drizzle-orm';
 import { loadEnv } from '../config/env.js';
 import { createDatabase } from './client.js';
-import { adminSessions, events, otpCodes, passwordResetCodes, userSessions } from './schema.js';
+import { adminSessions, daduChildProfiles, events, otpCodes, passwordResetCodes, userSessions } from './schema.js';
 
 async function main() {
   const env = loadEnv();
@@ -23,8 +23,10 @@ async function main() {
     // Sign-in codes are kept a day so sends per number can be counted.
     const o = await db.delete(otpCodes).where(lt(otpCodes.createdAt, new Date(now.getTime() - 86_400_000))).returning({ id: otpCodes.id });
     const e = await db.delete(events).where(lt(events.occurredAt, cutoff)).returning({ id: events.id });
+    // DADU child profiles a parent removed are kept 30 days (undo window), then purged with every child-scoped row (cascade).
+    const c = await db.delete(daduChildProfiles).where(lt(daduChildProfiles.deletedAt, new Date(now.getTime() - 30 * 86_400_000))).returning({ id: daduChildProfiles.id });
     console.log(
-      `Removed ${u.length} user sessions, ${a.length} admin sessions, ${r.length} reset codes, ${o.length} sign-in codes, ${e.length} events older than ${env.EVENTS_RETENTION_DAYS} days.`
+      `Removed ${u.length} user sessions, ${a.length} admin sessions, ${r.length} reset codes, ${o.length} sign-in codes, ${e.length} events older than ${env.EVENTS_RETENTION_DAYS} days, ${c.length} DADU child profiles past the 30-day undo window.`
     );
   } finally {
     await database.close();

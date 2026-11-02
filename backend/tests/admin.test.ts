@@ -355,7 +355,7 @@ describe('admin user management', () => {
     // Admins (non-super) can't touch admin accounts at all.
     expect((await request(ctx.app).delete(`/admin/v1/admins/${superId}`).set(as(adminTok))).status).toBe(403);
     const roles = await request(ctx.app).get('/admin/v1/roles').set(as(superToken));
-    expect(roles.body.map((r: { key: string }) => r.key)).toEqual(['admin', 'editor', 'super_admin']);
+    expect(roles.body.map((r: { key: string }) => r.key)).toEqual(['admin', 'editor', 'reviewer', 'super_admin']);
   });
 
   it('change-password requires the current password and revokes other sessions', async () => {

@@ -21,7 +21,9 @@
     "test": "vitest run",
     "cleanup": "tsx --env-file-if-exists=.env src/database/cleanup.ts",
     "cleanup:prod": "node dist/database/cleanup.js",
-    "seed:content:prod": "node dist/database/seedContent.js"
+    "seed:content:prod": "node dist/database/seedContent.js",
+    "seed:dadu": "tsx --env-file-if-exists=.env src/database/seedDadu.ts",
+    "seed:dadu:prod": "node dist/database/seedDadu.js"
   },
   "dependencies": {
     "cors": "^2.8.6",

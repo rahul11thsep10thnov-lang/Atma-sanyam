@@ -10,6 +10,7 @@ import { adminNotificationsRouter } from './notifications.js';
 import { adminInsightsRouter } from './insights.js';
 import { adminAdminsRouter } from './admins.js';
 import { adminReportsRouter } from './reports.js';
+import { adminDaduRouter } from './dadu.js';
 
 export function adminRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeof createRateLimits>) {
   const r = Router();
@@ -21,6 +22,7 @@ export function adminRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeof
   r.use('/settings', adminSettingsRouter(deps, auth));
   r.use('/notifications', adminNotificationsRouter(deps, auth));
   r.use('/reports', adminReportsRouter(deps, auth));
+  r.use('/dadu', adminDaduRouter(deps, auth));
   r.use('/', adminContentRouter(deps, auth));
   r.use('/', adminInsightsRouter(deps, auth));
   r.use('/', adminAdminsRouter(deps, auth));

@@ -21,6 +21,21 @@ export const PERMISSIONS = {
   'admins:read': 'View admin users and roles',
   'admins:write': 'Create, edit and remove admin users',
   'audit:read': 'View the admin audit log',
+  // DADU content pipeline and parent support
+  'dadu:content:read': 'View DADU lessons, stories, assignments, objects, characters and locations',
+  'dadu:content:write': 'Create and edit DADU content drafts',
+  'dadu:review:educational': 'Sign off the educational review step',
+  'dadu:review:factual': 'Sign off the factual verification step',
+  'dadu:review:language': 'Sign off the language proofreading step',
+  'dadu:review:cultural': 'Sign off the cultural review step',
+  'dadu:review:rights': 'Sign off the copyright and rights step',
+  'dadu:review:safety': 'Sign off the child-safety review step',
+  'dadu:content:approve': 'Give final approval to reviewed DADU content',
+  'dadu:content:publish': 'Publish, unpublish and roll back DADU content',
+  'dadu:assets:write': 'Register and edit DADU media assets',
+  'dadu:packs:publish': 'Build and publish DADU offline packs',
+  'dadu:flags:write': 'Change DADU feature flags',
+  'dadu:parents:read': 'Read-only parent support view of child profiles',
 } as const;
 
 export type Permission = keyof typeof PERMISSIONS;
@@ -40,8 +55,22 @@ export const ROLES: Record<string, { name: string; description: string; permissi
   },
   editor: {
     name: 'Editor',
-    description: 'Content manager: creates, edits and publishes content.',
-    permissions: ['dashboard:read', 'content:read', 'content:write', 'content:publish'],
+    description: 'Content manager: creates, edits and publishes content; drafts DADU content.',
+    permissions: ['dashboard:read', 'content:read', 'content:write', 'content:publish', 'dadu:content:read', 'dadu:content:write'],
+  },
+  reviewer: {
+    name: 'Reviewer',
+    description: 'DADU reviewer: signs off the educational, factual, language, cultural, rights and safety steps.',
+    permissions: [
+      'dashboard:read',
+      'dadu:content:read',
+      'dadu:review:educational',
+      'dadu:review:factual',
+      'dadu:review:language',
+      'dadu:review:cultural',
+      'dadu:review:rights',
+      'dadu:review:safety',
+    ],
   },
 };
 

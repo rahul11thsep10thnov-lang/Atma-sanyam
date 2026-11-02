@@ -25,6 +25,15 @@ export interface AuthUser {
   sessionId: string;
 }
 
+export interface DaduChild {
+  id: string;
+  userId: string;
+  name: string;
+  band: string;
+  difficulty: string;
+  language: string;
+}
+
 export interface AuthAdmin {
   id: string;
   email: string;
@@ -41,6 +50,8 @@ declare global {
       user?: AuthUser;
       admin?: AuthAdmin;
       requestId?: string;
+      // Set by requireChild on /v1/dadu/children/:id/* routes.
+      daduChild?: DaduChild;
     }
   }
 }

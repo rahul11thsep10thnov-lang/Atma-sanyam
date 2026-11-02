@@ -1,5 +1,14 @@
 # DADU – API architecture
 
+> **Implementation notes (2026-11-02).** The routes that exist are listed, with their tests, in
+> `API_COMPLETION_MATRIX.md`. Where this document and the implementation differ, the implementation
+> uses: `/v1/dadu/manifest` instead of `/bootstrap`; `PUT /children/:id/world` + `POST /children/:id/progress`
+> instead of `sync/push` and `sync/pull`; kind-typed content items (`lesson`, `story`, `assignment`,
+> `object`, `character`, `location`) with a single create/edit/transition/publish/rollback surface;
+> `/assets` (metadata + URL) instead of multipart `/media`; feature flags instead of `/config`.
+> Not implemented yet: server gate tokens, photo upload storage, certificates, translations workbench,
+> standalone assessment sets, curriculum tree CRUD, pack file hosting.
+
 The DADU API is an extension of the existing Express 5 service in `backend/`. Conventions,
 auth, errors and rate limiting are the ones in `docs/API.md`; this document covers what is added.
 Tables are defined in `17-database-schema.md`; the client-side use of each group is described in
