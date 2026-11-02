@@ -43,6 +43,8 @@ import { FACT_CATEGORIES } from '../../catalogue/factCategories.js';
 import { loadSettings } from '../../services/settingsService.js';
 import { awardCoins, equipItem, purchaseItem, ShopError, wallet, type AwardResult } from '../../services/coinService.js';
 import { leaderboard, myRankingSummary, recordRankingResult, SCORING_RULES } from '../../services/rankingService.js';
+import { randomInt } from 'node:crypto';
+import { verifyEndedGame } from '../../services/replayService.js';
 import { getLesson, learningCatalogue, learningReport, listLessons, saveLessonProgress } from '../../services/learningService.js';
 import { dailyChallengeFor, dailyKey } from '../../services/dailyChallengeService.js';
 import { ageFromBirthMonth } from '../../lib/age.js';
@@ -231,19 +233,21 @@ export function playerRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeo
     const running = await db.select().from(gameSessions).where(and(eq(gameSessions.childId, req.player!.childId), eq(gameSessions.outcome, 'running')));
     for (const s of running) {
       if (s.clientSessionId === body.clientSessionId) {
-        res.json({ sessionId: s.id, resumed: true, remainingSeconds: decision.remainingTodaySeconds, sessionLimitSeconds: decision.sessionLimitSeconds });
+        res.json({ sessionId: s.id, resumed: true, seed: s.seed, remainingSeconds: decision.remainingTodaySeconds, sessionLimitSeconds: decision.sessionLimitSeconds });
         return;
       }
       await db.update(gameSessions).set({ outcome: 'abandoned', endedAt: now, snapshot: null }).where(eq(gameSessions.id, s.id));
     }
+    // The server owns the seed: the app plays the game it is dealt and the server can replay it.
+    const seed = randomInt(0, 2 ** 31);
     const [s] = await db
       .insert(gameSessions)
-      .values({ childId: req.player!.childId, gameId: g.id, clientSessionId: body.clientSessionId, difficulty: body.difficulty, deviceId: req.player!.deviceId })
+      .values({ childId: req.player!.childId, gameId: g.id, clientSessionId: body.clientSessionId, difficulty: body.difficulty, deviceId: req.player!.deviceId, seed, bracket: req.player!.effectiveBracket })
       .returning({ id: gameSessions.id });
     await creditScreenTime(db, req.player!.childId, today, 0, true);
     await db.update(children).set({ lastActiveAt: now }).where(eq(children.id, req.player!.childId));
     realtime.notifyGuardians(req.player!.guardianId, { type: 'child_status', childId: req.player!.childId, online: true, session: { id: s!.id, gameId: g.id, gameName: g.name, startedAt: now.toISOString() } });
-    res.status(201).json({ sessionId: s!.id, resumed: false, remainingSeconds: decision.remainingTodaySeconds, sessionLimitSeconds: decision.sessionLimitSeconds });
+    res.status(201).json({ sessionId: s!.id, resumed: false, seed, remainingSeconds: decision.remainingTodaySeconds, sessionLimitSeconds: decision.sessionLimitSeconds });
   });
 
   // The app heartbeats every 30 s (over WebSocket when connected, else here).
@@ -269,6 +273,8 @@ export function playerRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeo
         score: z.number().int().min(0).max(1_000_000).nullable().optional(),
         stars: z.number().int().min(0).max(3).default(0),
         progress: z.object({ data: z.record(z.string(), z.unknown()), version: z.number().int().min(0) }).optional(),
+        // The moves played, replayed by the server to recompute the result (see replayService).
+        proof: z.unknown().optional(),
       }),
       req.body
     );
@@ -280,18 +286,23 @@ export function playerRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeo
     let balance: number | null = null;
     let ranking: { points: number; won: boolean; ratingDelta: number } | null = null;
     let dailyChallengeCompleted = false;
+    // What the child claims is checked against a replay of the moves; the server records and pays what the replay shows.
+    const claim = { outcome: body.outcome, score: body.score ?? null, stars: body.stars };
+    const verification = s.outcome === 'running' ? await verifyEndedGame({ gameId: s.gameId, difficulty: s.difficulty, bracket: s.bracket ?? req.player!.effectiveBracket, seed: s.seed, claim, proof: body.proof }) : { status: 'not_applicable' as const, note: null, effective: claim, rankable: false, mode: null };
+    const eff = verification.effective;
     if (s.outcome === 'running') {
       const since = Math.min(Math.round((now.getTime() - s.lastHeartbeatAt.getTime()) / 1000), HEARTBEAT_STALE_S);
       durationSeconds += Math.max(0, since);
-      await db.update(gameSessions).set({ outcome: body.outcome, endedAt: now, score: body.score ?? null, durationSeconds, snapshot: null, lastHeartbeatAt: now }).where(eq(gameSessions.id, s.id));
+      await db.update(gameSessions).set({ outcome: eff.outcome, endedAt: now, score: eff.score, durationSeconds, snapshot: null, lastHeartbeatAt: now, verification: verification.status, verificationNote: verification.note }).where(eq(gameSessions.id, s.id));
       const { controls, rewards, flags, dailyCap, timezone } = await rewardContext(req.player!.childId);
       await creditScreenTime(db, req.player!.childId, localParts(now, timezone).day, Math.floor(since / 60));
-      await recordCompletion(db, req.player!.childId, s.gameId, { completed: body.outcome === 'completed', score: body.score ?? null, durationSeconds, difficulty: s.difficulty, stars: body.stars });
+      await recordCompletion(db, req.player!.childId, s.gameId, { completed: eff.outcome === 'completed', score: eff.score, durationSeconds, difficulty: s.difficulty, stars: eff.stars });
       // ---- coins: decided here from the server's record, never from a client total.
-      if (body.outcome === 'completed') {
+      if (eff.outcome === 'completed') {
         const [g] = await db.select({ categoryId: games.categoryId, name: games.name }).from(games).where(eq(games.id, s.gameId));
         const rule = SCORING_RULES[s.gameId];
-        const won = body.stars >= 1;
+        // A win bonus needs a trusted result, and pass-and-play games (the child plays both sides) are never wins.
+        const won = eff.stars >= 1 && verification.status !== 'unverified' && verification.mode !== 'friends';
         let amount: number;
         let reason: string;
         let label: string;
@@ -321,19 +332,19 @@ export function playerRouter(deps: AppDeps, auth: Auth, limits: ReturnType<typeo
         }
       }
       // ---- rankings: validated against the game's scoring rule, once per session.
-      if (flags.rankings && controls.rankingsEnabled) {
-        ranking = await recordRankingResult(db, { sessionId: s.id, childId: req.player!.childId, gameId: s.gameId, bracket: req.player!.effectiveBracket, difficulty: s.difficulty, outcome: body.outcome, score: body.score ?? null, stars: body.stars, durationSeconds });
+      if (flags.rankings && controls.rankingsEnabled && verification.rankable) {
+        ranking = await recordRankingResult(db, { sessionId: s.id, childId: req.player!.childId, gameId: s.gameId, bracket: req.player!.effectiveBracket, difficulty: s.difficulty, outcome: eff.outcome, score: eff.score, stars: eff.stars, durationSeconds });
       }
     }
     let progress: { accepted: boolean; version: number; data: Record<string, unknown> } | null = null;
     if (body.progress) progress = await saveProgressData(db, req.player!.childId, s.gameId, body.progress.data, body.progress.version);
     const newAchievements = await evaluateAchievements(db, req.player!.childId, req.player!.effectiveBracket);
-    realtime.notifyGuardians(req.player!.guardianId, { type: 'child_status', childId: req.player!.childId, online: true, session: null, lastOutcome: body.outcome });
+    realtime.notifyGuardians(req.player!.guardianId, { type: 'child_status', childId: req.player!.childId, online: true, session: null, lastOutcome: eff.outcome });
     if (balance === null) {
       const [c] = await db.select({ coins: children.coins }).from(children).where(eq(children.id, req.player!.childId));
       balance = c?.coins ?? 0;
     }
-    res.json({ durationSeconds, newAchievements, progress, coins: { awarded: coins.reduce((n, c) => n + c.amount, 0), balance, breakdown: coins }, ranking, dailyChallengeCompleted });
+    res.json({ durationSeconds, newAchievements, progress, coins: { awarded: coins.reduce((n, c) => n + c.amount, 0), balance, breakdown: coins }, ranking, dailyChallengeCompleted, verification: { status: verification.status, note: verification.note } });
   });
 
   // ---- tutorials (How to Play) ---------------------------------------------------

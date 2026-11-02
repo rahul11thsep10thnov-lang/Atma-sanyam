@@ -63,7 +63,7 @@
     "export:web": "expo export --platform web --output-dir dist-web",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "i18n:missing": "node --experimental-strip-types scripts/i18nCheck.ts",
-    "lint": "eslint src backend/src admin/src tests scripts --max-warnings=0"
+    "lint": "eslint src backend/src backend/tests admin/src tests scripts --max-warnings=0"
   },
   "private": true
 }

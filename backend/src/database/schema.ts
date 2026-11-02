@@ -555,6 +555,12 @@ export const gameSessions = pgTable(
     snapshotSeq: integer('snapshot_seq').notNull().default(0),
     snapshotAt: timestamp('snapshot_at', { withTimezone: true }),
     pausedByGuardianAt: timestamp('paused_by_guardian_at', { withTimezone: true }),
+    // Verified results: the server picks the game's seed and the bracket it was
+    // started with, then replays the action log the app sends at the end.
+    seed: integer('seed'),
+    bracket: text('bracket'),
+    verification: text('verification'), // verified | corrected | rejected | unverified | not_applicable
+    verificationNote: text('verification_note'),
   },
   (t) => [
     check('game_sessions_outcome_check', sql`${t.outcome} in ('running', 'completed', 'abandoned', 'ended_by_guardian', 'timed_out', 'failed')`),

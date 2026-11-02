@@ -49,6 +49,44 @@ only, exclude children whose guardian turned rankings off (`parental_controls.ra
 and paused profiles, and show the scoring rule under every board. Admins can switch rankings
 off globally (feature flag) and see result counts per game.
 
+## Verified results (anti-cheat)
+
+A result is never taken on the app's word for the games that can be replayed. The server deals
+each session's **seed** (`POST /sessions/start` → `seed`), the app logs every action the child
+takes, and `POST /sessions/:id/end` carries that log as `proof: { restart, actions[] }`
+(`restart` counts mid-game restarts, each a new deal derived from the seed). The server replays
+the log through the **same game code the app runs** and records, ranks and pays what the replay
+shows (`backend/src/services/replayService.ts`).
+
+| Verdict | When | Effect |
+|---|---|---|
+| `verified` | the replay reproduces the claimed outcome, score and stars | recorded, ranked and paid as claimed |
+| `corrected` | the log is valid but the claim differs | the replay's outcome, score and stars are used |
+| `rejected` | no proof, malformed proof, the moves never finish the game, or the engine errors | recorded as abandoned; no coins, no ranking |
+| `unverified` | the server could not check it (worker timeout or busy, session without a seed) | result kept, but no ranking and no win bonus; the child is not punished for our failure |
+| `not_applicable` | an abandoned game, or a game that cannot be replayed | the older bounds-only checks apply |
+
+- **Replayed** (16 ranked games): chess, chess tactics, memory cards, jigsaw, sudoku, word search,
+  anagram builder, connect four, checkers, science quiz, geography quiz, maze runner, Ludo,
+  Snakes & Ladders, match-3, block puzzle.
+- **Not replayed**: cricket (timer-driven), bowling and football penalty (analogue aim and
+  power measured on the device). They keep the score-range and minimum-time checks only.
+- **Pass-and-play** (Ludo, Snakes & Ladders, chess "two players on this device") is verified but
+  never ranked and never paid as a win, because one child plays both sides.
+- The replay runs in a worker thread with a memory limit and an 8 s timeout, at most two at a
+  time; a log may hold at most 3000 actions and 30 restarts, and the end route accepts a 256 KB
+  body (all other routes keep 100 KB).
+- The server code that replays games is **generated from the app's own game code**:
+  `cd backend && npm run engines:build` rewrites `backend/src/games/engines.generated.ts`, and CI
+  runs `npm run engines:check` so the two can never drift apart. Run `engines:build` and commit
+  the result whenever you change a replayable game or `src/games/logic`.
+
+**What this does not stop.** A log is still produced by the child's device. Someone who runs the
+game's real code can produce a *legal* log (for example by solving the dealt sudoku, or by
+playing chess with an outside engine). What it does stop is forged results: claiming a win that
+was never played, editing scores, truncated or impossible games, or playing both sides in
+pass-and-play for ranking points. Minimum game lengths and daily coin caps still apply.
+
 ## Daily challenge
 
 One game per day per bracket (seeded by date), picked from what the child may play, shown on

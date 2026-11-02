@@ -7,7 +7,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 
 export default tseslint.config(
-  { ignores: ['**/node_modules/**', '**/dist/**', '**/dist-web/**', '**/.next/**', '**/.expo/**', 'backend/drizzle/**', 'assets/**', 'scripts/generatePlaceholderArt.js', 'e2e/**', '**/*.config.js', 'metro.config.js', '**/next-env.d.ts'] },
+  { ignores: ['**/node_modules/**', '**/dist/**', '**/dist-web/**', '**/.next/**', '**/.expo/**', 'backend/drizzle/**', 'backend/src/games/engines.generated.ts', 'assets/**', 'scripts/generatePlaceholderArt.js', 'e2e/**', '**/*.config.js', 'metro.config.js', '**/next-env.d.ts'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

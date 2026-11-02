@@ -7,6 +7,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useR
 import { AppState } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { isBackendConfigured } from '../config/env';
+import type { GameProof } from '../games/engine';
 import { apiRequest, ApiError, setAuthToken, setUnauthorizedHandler } from '../services/apiClient';
 import { secureDelete, secureGet, secureSet } from '../services/secureStorage';
 import { getInstallId } from '../services/installId';
@@ -32,6 +33,8 @@ export interface LiveSession {
   startedAt: number;
   remainingSeconds: number;
   sessionLimitSeconds: number;
+  /** The deal the server chose for this session (null if the server did not send one). */
+  seed: number | null;
   pausedByGuardian: boolean;
   endedReason: string | null;
   endedMessage: string | null;
@@ -60,7 +63,7 @@ interface PlayerCtx {
   loadProgress: () => Promise<PlayerProgress | null>;
   toggleFavourite: (gameId: string, favourite: boolean) => Promise<void>;
   startSession: (gameId: string, difficulty: string) => Promise<LiveSession>;
-  endSession: (outcome: 'completed' | 'abandoned' | 'failed', result?: { score?: number | null; stars?: number; progress?: { data: Record<string, unknown>; version: number } }) => Promise<{ newAchievements: string[] } | null>;
+  endSession: (outcome: 'completed' | 'abandoned' | 'failed', result?: { score?: number | null; stars?: number; progress?: { data: Record<string, unknown>; version: number }; proof?: GameProof }) => Promise<{ newAchievements: string[] } | null>;
   sendFrame: (state: unknown) => void;
   saveProgress: (gameId: string, data: Record<string, unknown>, version: number) => Promise<{ accepted: boolean; version: number; data: Record<string, unknown> } | null>;
   signOut: () => Promise<void>;
@@ -291,8 +294,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   const startSession = useCallback(
     async (gameId: string, difficulty: string): Promise<LiveSession> => {
-      const r = await apiRequest<{ sessionId: string; remainingSeconds: number; sessionLimitSeconds: number }>('/v1/player/sessions/start', { method: 'POST', as: 'player', body: { gameId, clientSessionId: clientSessionId(), difficulty } });
-      const s: LiveSession = { sessionId: r.sessionId, gameId, difficulty, startedAt: Date.now(), remainingSeconds: Math.min(r.remainingSeconds, r.sessionLimitSeconds), sessionLimitSeconds: r.sessionLimitSeconds, pausedByGuardian: false, endedReason: null, endedMessage: null };
+      const r = await apiRequest<{ sessionId: string; seed?: number | null; remainingSeconds: number; sessionLimitSeconds: number }>('/v1/player/sessions/start', { method: 'POST', as: 'player', body: { gameId, clientSessionId: clientSessionId(), difficulty } });
+      const s: LiveSession = { sessionId: r.sessionId, gameId, difficulty, startedAt: Date.now(), remainingSeconds: Math.min(r.remainingSeconds, r.sessionLimitSeconds), sessionLimitSeconds: r.sessionLimitSeconds, seed: r.seed ?? null, pausedByGuardian: false, endedReason: null, endedMessage: null };
       seq.current = 0;
       setLive(s);
       return s;
@@ -301,12 +304,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   );
 
   const endSession = useCallback(
-    async (outcome: 'completed' | 'abandoned' | 'failed', result: { score?: number | null; stars?: number; progress?: { data: Record<string, unknown>; version: number } } = {}) => {
+    async (outcome: 'completed' | 'abandoned' | 'failed', result: { score?: number | null; stars?: number; progress?: { data: Record<string, unknown>; version: number }; proof?: GameProof } = {}) => {
       const s = sessionRef.current;
       setLive(null);
       if (!s) return null;
       try {
-        const r = await apiRequest<{ durationSeconds: number; newAchievements: string[] }>(`/v1/player/sessions/${s.sessionId}/end`, { method: 'POST', as: 'player', body: { outcome, score: result.score ?? null, stars: result.stars ?? 0, progress: result.progress } });
+        const r = await apiRequest<{ durationSeconds: number; newAchievements: string[] }>(`/v1/player/sessions/${s.sessionId}/end`, { method: 'POST', as: 'player', body: { outcome, score: result.score ?? null, stars: result.stars ?? 0, progress: result.progress, proof: outcome === 'abandoned' ? undefined : result.proof } });
         void loadProgress();
         void refresh();
         return { newAchievements: r.newAchievements };

@@ -25,7 +25,9 @@
     "cleanup:prod": "node dist/database/cleanup.js",
     "seed:content:prod": "node dist/database/seedContent.js",
     "sources:maintain": "tsx --env-file-if-exists=.env src/database/maintainSources.ts",
-    "sources:maintain:prod": "node dist/database/maintainSources.js"
+    "sources:maintain:prod": "node dist/database/maintainSources.js",
+    "engines:build": "node scripts/bundleEngines.mjs",
+    "engines:check": "node scripts/bundleEngines.mjs --check"
   },
   "dependencies": {
     "cors": "^2.8.6",
@@ -45,6 +47,7 @@
     "@types/supertest": "^7.2.1",
     "@types/ws": "^8.18.2",
     "drizzle-kit": "^0.31.11",
+    "esbuild": "^0.28.2",
     "supertest": "^7.3.0",
     "tsx": "^4.23.15",
     "typescript": "~6.0.3",

@@ -4,6 +4,7 @@ import { eq } from 'drizzle-orm';
 import { coinTransactions, entitlements, gameSessions, subscriptions } from '../src/database/schema.js';
 import { createAdmin, adminToken, setupTestApp } from './helpers.js';
 import { addChild, as, birthMonthForAge, playerLogin, registerGuardian, subscribe } from './lojiHelpers.js';
+import { setReplayRunnerForTests } from '../src/services/replayService.js';
 
 let ctx: Awaited<ReturnType<typeof setupTestApp>>;
 let guardianToken = '';
@@ -11,13 +12,16 @@ let kid: Awaited<ReturnType<typeof addChild>>;
 let token = '';
 let n = 0;
 
+// The replay worker is replaced by what it would report for the result under test (see verifiedResults.test.ts for real games).
 async function playAndEnd(gameId: string, difficulty: string, result: { outcome: 'completed' | 'abandoned' | 'failed'; score?: number | null; stars?: number }, seconds = 90) {
   n += 1;
+  setReplayRunnerForTests(async () => ({ ok: true, phase: result.outcome === 'completed' ? 'won' : 'lost', score: result.score ?? null, stars: result.stars ?? 0, mode: null, applied: 1 }));
   const start = await request(ctx.app).post('/v1/player/sessions/start').set(as(token)).send({ gameId, clientSessionId: `client-${String(n).padStart(6, '0')}`, difficulty });
   if (start.status !== 201) throw new Error(`start failed ${start.status} ${JSON.stringify(start.body)}`);
   // Pretend the session has been running for a while (the server credits at most 90 s since the last heartbeat).
   await ctx.db.update(gameSessions).set({ lastHeartbeatAt: new Date(Date.now() - seconds * 1000), durationSeconds: Math.max(0, seconds - 90) }).where(eq(gameSessions.id, start.body.sessionId));
-  const end = await request(ctx.app).post(`/v1/player/sessions/${start.body.sessionId}/end`).set(as(token)).send({ stars: 0, ...result });
+  const end = await request(ctx.app).post(`/v1/player/sessions/${start.body.sessionId}/end`).set(as(token)).send({ stars: 0, ...result, proof: { restart: 0, actions: [] } });
+  setReplayRunnerForTests(null);
   if (end.status !== 200) throw new Error(`end failed ${end.status} ${JSON.stringify(end.body)}`);
   return { sessionId: start.body.sessionId as string, body: end.body };
 }

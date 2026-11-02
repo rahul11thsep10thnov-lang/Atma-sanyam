@@ -77,6 +77,13 @@ work.
 - **Reward items are cosmetic placeholders** (emoji, colours); equipping an item is recorded
   (`children.equipped_rewards`) but is not yet reflected in game boards or avatars.
 - **Pass-and-play** exists for Ludo, Snakes & Ladders and Chess only; it is on one device.
+- **Verified results stop forged results, not skilled cheating.** The server replays the moves
+  the app logged, so a made-up win or score is rejected or corrected, but a person or bot that
+  plays legal moves (an outside chess engine, a sudoku solver reading the dealt puzzle) still
+  produces a valid log. Cricket, bowling and football penalty depend on timing or analogue aim
+  and are not replayable; they keep the older score-range checks only. See RANKINGS_REWARDS.md.
+- **Old app builds cannot rank replayable games**: without a proof the server records the game
+  as abandoned. Ship the app update with the API.
 
 ## Operational
 

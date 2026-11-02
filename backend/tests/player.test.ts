@@ -1,10 +1,11 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import request from 'supertest';
 import { eq } from 'drizzle-orm';
-import { children, craftTutorials, facts, gameProgress, quizQuestions } from '../src/database/schema.js';
+import { children, craftTutorials, facts, gameProgress, gameSessions, quizQuestions } from '../src/database/schema.js';
 import { FACT_CATEGORIES } from '../src/catalogue/factCategories.js';
 import { setupTestApp } from './helpers.js';
 import { addChild, as, birthMonthForAge, playerLogin, registerGuardian, subscribe } from './lojiHelpers.js';
+import { memoryPairs, playScript } from './playGame.js';
 
 let ctx: Awaited<ReturnType<typeof setupTestApp>>;
 let token = '';
@@ -146,13 +147,19 @@ describe('play sessions and progress', () => {
     expect(again.body.sessionId).toBe(start.body.sessionId);
     const hb = await request(ctx.app).post(`/v1/player/sessions/${start.body.sessionId}/heartbeat`).set(as(t));
     expect(hb.body.running).toBe(true);
-    const end = await request(ctx.app).post(`/v1/player/sessions/${start.body.sessionId}/end`).set(as(t)).send({ outcome: 'completed', score: 120, stars: 3, progress: { data: { unlocked: 2 }, version: 0 } });
+    // The server dealt the seed; the child plays that exact game and the server replays the moves.
+    expect(again.body.seed).toBe(start.body.seed);
+    const [row] = await ctx.db.select({ bracket: gameSessions.bracket }).from(gameSessions).where(eq(gameSessions.id, start.body.sessionId));
+    const played = playScript('memory-cards', 'hard', row!.bracket!, start.body.seed, memoryPairs);
+    expect(played.phase).toBe('won');
+    const end = await request(ctx.app).post(`/v1/player/sessions/${start.body.sessionId}/end`).set(as(t)).send({ ...played.claim, proof: played.proof, progress: { data: { unlocked: 2 }, version: 0 } });
     expect(end.status).toBe(200);
+    expect(end.body.verification.status).toBe('verified');
     expect(end.body.newAchievements).toContain('first_game');
     expect(end.body.newAchievements).toContain('memory_master');
     const prog = await request(ctx.app).get('/v1/player/progress').set(as(t));
     const mem = prog.body.games.find((g: { gameId: string }) => g.gameId === 'memory-cards');
-    expect(mem).toMatchObject({ plays: 1, completions: 1, bestScore: 120, stars: 3, highestDifficulty: 'hard', data: { unlocked: 2 }, version: 1 });
+    expect(mem).toMatchObject({ plays: 1, completions: 1, bestScore: played.claim.score, stars: played.claim.stars, highestDifficulty: 'hard', data: { unlocked: 2 }, version: 1 });
     expect(prog.body.achievements.find((a: { key: string }) => a.key === 'first_game').earnedAt).toBeTruthy();
   });
 

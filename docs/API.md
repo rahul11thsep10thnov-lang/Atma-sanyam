@@ -124,8 +124,12 @@ header checked with `RAZORPAY_WEBHOOK_SECRET`). Both are idempotent by event id.
 | GET | `/rankings` · `/rankings/:gameId?window=week|month|all&bracket=` | player **E** | Ranked games with scoring rules and the child's summary; a leaderboard (nickname + avatar rows, `me`). 403 when rankings are off for the child. |
 | GET | `/learning/catalogue` · `/learning/lessons?section&subject&age=<n>|all&difficulty&topic` · `/learning/lessons/:id` · PUT `/learning/lessons/:id/progress` · `/learning/report` | player **E** | Sections and subjects with honest availability and levels; lessons default to the child's age (`age=all` explores every age); full lesson with steps, sources and curriculum labels; progress save (completion only with all steps; first completion pays coins and raises the subject level); the child's learning report. Blocked subjects 404. |
 
+`/sessions/start` also returns the session's `seed` (the deal the app must play). For the 16
+replayable games `/sessions/:id/end` takes `proof: { restart, actions[] }` and the server replays
+it (see RANKINGS_REWARDS.md → Verified results); the body limit on that route is 256 KB.
 `/sessions/:id/end` also returns `coins { awarded, balance, breakdown[] }`, `ranking` (points,
-won, ratingDelta, or null when the result did not count) and `dailyChallengeCompleted`. `/me`
+won, ratingDelta, or null when the result did not count), `verification { status, note }`
+(`verified` | `corrected` | `rejected` | `unverified` | `not_applicable`) and `dailyChallengeCompleted`. `/me`
 adds `child.age`, `child.coins`, `access` (`subscriber` | `ad_supported` | `locked`) and the
 guardian's rankings/shop/curriculum choices; `entitlement.adFree` is true for any active plan.
 

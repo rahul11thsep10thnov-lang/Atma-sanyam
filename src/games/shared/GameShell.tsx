@@ -5,8 +5,8 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import type { GameContext, GameDefinition, GameStatus } from '../engine';
-import { newSeed } from '../engine';
+import type { GameContext, GameDefinition, GameProof, GameStatus } from '../engine';
+import { deriveSeed, newSeed, PROOF_MAX_ACTIONS, PROOF_MAX_RESTARTS } from '../engine';
 import { metaFor } from '../registry';
 import { TutorialOverlay, tutorialFor } from '../tutorials';
 import { AppText, BigButton, Confetti, PopIn, RoundButton, Stars, PlayfulBackdrop, Badge } from '../../ui';
@@ -23,6 +23,8 @@ export interface GameResult {
   score: number | null;
   stars: number;
   progress?: { data: Record<string, unknown>; version: number };
+  /** Every action taken, so the server can replay the game and verify the result. */
+  proof?: GameProof;
 }
 
 interface Props<S, A> {
@@ -35,6 +37,8 @@ interface Props<S, A> {
   endedReason?: string | null;
   endedMessage?: string | null;
   sendFrame?: (state: unknown) => void;
+  /** The deal chosen by the server for this session; with it the server can replay and verify the game. */
+  serverSeed?: number | null;
 }
 
 function fmt(s: number) {
@@ -42,7 +46,7 @@ function fmt(s: number) {
   return `${m}:${String(s % 60).padStart(2, '0')}`;
 }
 
-export function GameShell<S, A>({ def, difficulty, savedProgress, onExit, remainingSeconds, pausedByGuardian, endedReason, endedMessage, sendFrame }: Props<S, A>) {
+export function GameShell<S, A>({ def, difficulty, savedProgress, onExit, remainingSeconds, pausedByGuardian, endedReason, endedMessage, sendFrame, serverSeed }: Props<S, A>) {
   const { colors } = useTheme();
   const p = usePlayer();
   const { settings } = useSettings();
@@ -51,7 +55,11 @@ export function GameShell<S, A>({ def, difficulty, savedProgress, onExit, remain
   const meta = metaFor(def.id);
   const sound = settings.soundEnabled && (p.me?.controls.soundEnabled ?? true);
   const narration = settings.narrationEnabled && (p.me?.controls.narrationEnabled ?? true);
-  const [seed, setSeed] = useState(newSeed);
+  const [seed, setSeed] = useState(() => (serverSeed != null ? deriveSeed(serverSeed, 0) : newSeed()));
+  // The moves played since the current deal began. Sent when the game ends so the server can replay them.
+  // Only games driven purely by discrete actions are logged (a timer-driven game cannot be replayed).
+  const logging = serverSeed != null && !def.tick;
+  const proofLog = useRef<{ restart: number; actions: unknown[]; overflow: boolean }>({ restart: 0, actions: [], overflow: false });
   const ctx = useMemo<GameContext>(() => ({ difficulty, bracket: p.child?.effectiveBracket ?? 'B', seed, sound, narration }), [difficulty, p.child?.effectiveBracket, seed, sound, narration]);
   const [state, setState] = useState<S>(() => def.init(ctx));
   const stateRef = useRef(state);
@@ -72,9 +80,14 @@ export function GameShell<S, A>({ def, difficulty, savedProgress, onExit, remain
   const dispatch = useCallback(
     (action: A) => {
       if (effectivePause) return;
+      if (logging) {
+        const log = proofLog.current;
+        if (log.actions.length >= PROOF_MAX_ACTIONS) log.overflow = true;
+        else log.actions.push(JSON.parse(JSON.stringify(action)));
+      }
       setState((s) => def.reduce(s, action, ctx));
     },
-    [def, ctx, effectivePause]
+    [def, ctx, effectivePause, logging]
   );
 
   // Game-driven ticks (arcade physics).
@@ -116,7 +129,11 @@ export function GameShell<S, A>({ def, difficulty, savedProgress, onExit, remain
   useEffect(() => () => stopSpeaking(), []);
 
   const restart = () => {
-    const s = newSeed();
+    const log = proofLog.current;
+    const restart = log.restart + 1;
+    // A new deal starts a new log; past the server's limit the game simply goes unverified.
+    proofLog.current = { restart, actions: [], overflow: restart > PROOF_MAX_RESTARTS };
+    const s = serverSeed != null ? deriveSeed(serverSeed, Math.min(restart, PROOF_MAX_RESTARTS)) : newSeed();
     setSeed(s);
     setState(def.init({ ...ctx, seed: s }));
     setElapsed(0);
@@ -128,7 +145,9 @@ export function GameShell<S, A>({ def, difficulty, savedProgress, onExit, remain
   const finish = (outcome: GameResult['outcome']) => {
     const st = finished ?? status;
     const progress = def.persist ? { data: def.persist(stateRef.current, savedProgress?.data ?? {}), version: savedProgress?.version ?? 0 } : undefined;
-    onExit({ outcome, score: st.score ?? null, stars: st.stars ?? 0, progress });
+    const log = proofLog.current;
+    const proof = logging && !log.overflow && outcome !== 'abandoned' ? { restart: log.restart, actions: log.actions } : undefined;
+    onExit({ outcome, score: st.score ?? null, stars: st.stars ?? 0, progress, proof });
   };
 
   const quit = () => {

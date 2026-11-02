@@ -84,6 +84,14 @@ A guardian's pause/resume/end is pushed over the socket and also honoured on the
 heartbeat. Blocked categories/games and allowed brackets filter the catalogue server-side, and
 `GET /v1/player/games/:id` refuses blocked games.
 
+### Verified game results
+The API deals a seed per play session and replays the move log the app sends at the end, using
+a bundle of the app's own reducers (`backend/src/games/engines.generated.ts`, built by
+`backend/scripts/bundleEngines.mjs` with React Native swapped for inert stubs) inside a worker
+thread. `services/replayService.ts` returns a verdict that `routes/public/player.ts` uses to
+decide what is stored, ranked and paid. Details and limits: RANKINGS_REWARDS.md. Migration 0009
+adds `game_sessions.seed`, `bracket`, `verification` and `verification_note`.
+
 ### Live mirror
 
 Player sockets send `{type:'mirror', sessionId, seq, state}` (the game state, throttled by the

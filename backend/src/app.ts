@@ -29,6 +29,8 @@ export function createApp(deps: AppDeps, options: AppOptions = {}) {
       maxAge: 600,
     })
   );
+  // A finished game's move log can exceed the default; only this route accepts the larger body.
+  app.use('/v1/player/sessions', express.json({ limit: '256kb' }));
   app.use(express.json({ limit: '100kb' }));
   app.use(requestLogger(options.logRequests ?? deps.env.NODE_ENV !== 'test'));
 

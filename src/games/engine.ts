@@ -85,6 +85,24 @@ export function newSeed(): number {
   return Math.floor(Math.random() * 2 ** 31);
 }
 
+/**
+ * The server deals each session a seed; a restart plays a new deal derived from it.
+ * Must stay identical to deriveSeed in backend/src/services/replayService.ts
+ * (tests/engine.test.ts and the backend tests assert the same vector).
+ */
+export function deriveSeed(base: number, restart: number): number {
+  if (restart === 0) return base;
+  return ((Math.imul(base ^ 0x9e3779b9, 0x85ebca6b) + Math.imul(restart, 0xc2b2ae35)) >>> 0) % 2147483648;
+}
+
+/** What the app sends when a game ends so the server can replay it and compute the true result. */
+export interface GameProof {
+  restart: number;
+  actions: unknown[];
+}
+export const PROOF_MAX_ACTIONS = 3000;
+export const PROOF_MAX_RESTARTS = 30;
+
 /** Stars from a move count against a par: at or under par → 3, 1.5× → 2, else 1. */
 export function starsForMoves(moves: number, par: number): number {
   if (moves <= par) return 3;

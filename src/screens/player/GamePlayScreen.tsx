@@ -82,6 +82,7 @@ export function GamePlayScreen({ navigation, route }: NativeStackScreenProps<Roo
       endedReason={p.session.endedReason}
       endedMessage={p.session.endedMessage}
       sendFrame={p.sendFrame}
+      serverSeed={p.session.seed}
     />
   );
 }

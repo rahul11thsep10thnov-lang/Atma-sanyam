@@ -103,9 +103,12 @@ on the Plan tab (sandbox billing), add a child, then open the Player Console.
 ## Tests
 
 ```bash
-cd backend && npm test          # 157 API tests against a real PostgreSQL (TEST_DATABASE_URL)
-npm test                        # 33 game-rule and tutorial tests (node --test, no React)
+cd backend && npm test          # 179 API tests against a real PostgreSQL (TEST_DATABASE_URL), incl. real games replayed by the server
+npm test                        # 59 game-rule, tutorial, seed and Hindi-translation tests (node --test, no React)
+npm run lint                    # ESLint over the app, API and admin (zero warnings allowed)
+npm run i18n:missing            # Hindi coverage: which English strings still lack a translation
 npx tsc --noEmit                # app · cd backend && npm run typecheck · cd admin && npm run typecheck
+cd backend && npm run engines:build   # regenerate the server's copy of the replayable game code (CI runs engines:check)
 node e2e/smoke.mjs              # browser smoke test of the web build (see e2e/README.md)
 ```
 
