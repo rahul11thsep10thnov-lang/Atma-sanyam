@@ -16,7 +16,11 @@ export interface Manifest {
 export interface PackSummary { id: string; kind: string; language: string | null; version: number; bytes: number; sha256: string; publishedAt: string | null }
 export interface PackManifest extends PackSummary { manifest: { items: { id: string; version: number; sha256: string; kind: string }[] } }
 export interface ServerChild extends ChildProfile { updatedAt: string }
-export interface ProgressEvent { clientId: string; kind: 'lesson' | 'story' | 'activity' | 'assessment' | 'assignment'; contentId: string; payload: Record<string, unknown>; occurredAt: string }
+/** Payload is strict on the server (backend/src/dadu/contracts.ts): only these keys are accepted. */
+export interface ProgressPayload { concept?: string; result?: number; difficulty?: 'gentle' | 'steady' | 'stretch'; minutes?: number; durationSec?: number; level?: 'little' | 'explorer'; stars?: number; coins?: number }
+export interface ProgressEvent { clientId: string; kind: 'lesson' | 'story' | 'activity' | 'assessment' | 'assignment'; contentId: string; payload: ProgressPayload; occurredAt: string }
+/** Error codes the server uses for DADU routes. */
+export type DaduErrorCode = 'consent_required' | 'child_limit' | 'version_conflict' | 'photo_consent_required' | 'workflow_invalid' | 'workflow_locked' | 'duplicate_asset' | 'asset_in_use';
 export interface Consent { id: string; childId: string | null; kind: 'processing' | 'photos' | 'analytics'; version: string; grantedAt: string; withdrawnAt: string | null }
 export interface ScreenRules { dailyMinutes: number | null; bedtime: string | null; breakEveryMinutes: number }
 export interface ChildSummary {
@@ -43,10 +47,11 @@ export const daduApi = {
   },
   world: {
     get: (childId: string) => apiRequest<{ state: WorldState; version: number }>(`/v1/dadu/children/${childId}/world`),
+    /** 409 `version_conflict` returns the merged copy in `world`; callers adopt it (see sync.ts). */
     put: (childId: string, state: WorldState, version: number) => apiRequest<{ state: WorldState; version: number }>(`/v1/dadu/children/${childId}/world`, { method: 'PUT', body: { state, version } }),
   },
   progress: {
-    push: (childId: string, events: ProgressEvent[]) => apiRequest<{ accepted: number; duplicates: number }>(`/v1/dadu/children/${childId}/progress`, { method: 'POST', body: { events } }),
+    push: (childId: string, events: ProgressEvent[]) => apiRequest<{ accepted: number; duplicates: number; mastery: unknown[] }>(`/v1/dadu/children/${childId}/progress`, { method: 'POST', body: { events } }),
     pull: (childId: string, since?: string | null) => apiRequest<{ events: ProgressEvent[]; cursor: string }>(`/v1/dadu/children/${childId}/progress`, { query: { since: since ?? undefined } }),
   },
   assignments: {

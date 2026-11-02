@@ -4,7 +4,9 @@ export class ApiError extends Error {
   constructor(
     public readonly status: number,
     message: string,
-    public readonly code?: string
+    public readonly code?: string,
+    /** The parsed error response, when the server sent one (DADU's 409 carries the merged world). */
+    public readonly body?: unknown
   ) {
     super(message);
   }
@@ -71,7 +73,7 @@ export async function apiRequest<T>(path: string, opts: RequestOptions = {}): Pr
   if (!res.ok) {
     const err = (data as { error?: { message?: string; code?: string } } | null)?.error;
     if (res.status === 401 && authToken && opts.auth !== false) onUnauthorized?.();
-    throw new ApiError(res.status, err?.message ?? `Request failed (${res.status})`, err?.code);
+    throw new ApiError(res.status, err?.message ?? `Request failed (${res.status})`, err?.code, data ?? undefined);
   }
   return data as T;
 }
