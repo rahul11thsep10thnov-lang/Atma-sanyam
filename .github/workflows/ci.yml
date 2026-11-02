@@ -36,6 +36,7 @@ jobs:
           cache: npm
           cache-dependency-path: backend/package-lock.json
       - run: npm ci
+      - run: npm audit --audit-level=moderate
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
@@ -57,6 +58,7 @@ jobs:
           cache: npm
           cache-dependency-path: admin/package-lock.json
       - run: npm ci
+      - run: npm audit --audit-level=moderate
       - run: npm run typecheck
       - run: npm run build
 
@@ -72,6 +74,8 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      # Remaining findings are inside Expo's own build tooling (fixed only by Expo 58), so only critical ones fail the build.
+      - run: npm audit --audit-level=critical
       - run: npm ci
       - run: npx tsc --noEmit
       - run: npm test
