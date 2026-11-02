@@ -22,7 +22,13 @@ export function useCan() {
 const NAV: { href: string; label: string; permission?: string }[] = [
   { href: '/', label: 'Dashboard', permission: 'dashboard:read' },
   { href: '/users', label: 'Users', permission: 'users:read' },
-  { href: '/content', label: 'Content', permission: 'content:read' },
+  { href: '/dadu', label: 'DADU content', permission: 'dadu:content:read' },
+  { href: '/dadu/translations', label: 'DADU translations', permission: 'dadu:content:read' },
+  { href: '/dadu/assets', label: 'DADU media assets', permission: 'dadu:content:read' },
+  { href: '/dadu/packs', label: 'DADU offline packs', permission: 'dadu:content:read' },
+  { href: '/dadu/flags', label: 'DADU feature flags', permission: 'settings:read' },
+  { href: '/dadu/parents', label: 'DADU parent support', permission: 'users:read' },
+  { href: '/content', label: 'Picture library (legacy)', permission: 'content:read' },
   { href: '/categories', label: 'Categories', permission: 'content:read' },
   { href: '/config', label: 'App configuration', permission: 'settings:read' },
   { href: '/reports', label: 'Reports', permission: 'reports:read' },
@@ -40,7 +46,11 @@ export function ConsoleShell({ me, children }: { me: AdminMe; children: React.Re
 
   useEffect(() => setMenuOpen(false), [pathname]);
 
-  const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/';
+    if (href === '/dadu') return pathname === '/dadu' || pathname.startsWith('/dadu/content');
+    return pathname.startsWith(href);
+  };
 
   async function signOut() {
     setSigningOut(true);
@@ -55,7 +65,7 @@ export function ConsoleShell({ me, children }: { me: AdminMe; children: React.Re
           <div className="brand">
             <img src="/icon.png" alt="" />
             <div>
-              Tame
+              DADU
               <small>Admin console</small>
             </div>
           </div>
@@ -82,7 +92,7 @@ export function ConsoleShell({ me, children }: { me: AdminMe; children: React.Re
             <button className="btn btn-sm" onClick={() => setMenuOpen((o) => !o)} aria-expanded={menuOpen} aria-label="Menu">
               Menu
             </button>
-            <strong style={{ letterSpacing: '0.08em' }}>Tame</strong>
+            <strong style={{ letterSpacing: '0.08em' }}>DADU</strong>
             <span className="small muted">{me.role.name}</span>
           </header>
           <main className="main" onClick={() => menuOpen && setMenuOpen(false)}>

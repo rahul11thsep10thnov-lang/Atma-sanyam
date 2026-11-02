@@ -1,5 +1,55 @@
 # 20 – Admin panel and content management system
 
+## Implementation notes (console, as built)
+
+The DADU CMS extends the existing Next.js console under `admin/src/app/(console)/dadu/`. It talks to
+`/admin/v1/dadu/*` through the same-origin proxy and gates every page with `useCan()`; the API
+re-checks every permission.
+
+| Route | Page | Permission to view | Files |
+|---|---|---|---|
+| `/dadu` | Overview: counts by kind and by workflow step (computed client-side, one list call per kind and per status), quick links, workflow legend | `dadu:content:read` | `dadu/page.tsx` |
+| `/dadu/content` | Filterable list (kind, section, status, language, search), status pills, "New item" | `dadu:content:read` | `dadu/content/page.tsx` |
+| `/dadu/content/new`, `/dadu/content/[id]` | Editor: mandatory metadata, learning objective, bands, languages, rights, provenance; structured lesson editor (title, host, world, companion, concept, simpler/advanced/example, Little and Explorer step lists with dialogue/activity/quiz/echo steps, add/remove/reorder) and a raw JSON tab for every kind; version history with rollback; review panel with the eight-step state machine, send-back with note, publish/unpublish with confirmation | read: `dadu:content:read`; edit: `dadu:content:write`; transitions: the step's `dadu:review:*` permission; publish: `dadu:content:publish` | `dadu/content/new/page.tsx`, `dadu/content/[id]/page.tsx`, `components/dadu/DaduContentForm.tsx`, `LessonStepsEditor.tsx`, `LocalisedInput.tsx`, `ReviewPanel.tsx`, `WorkflowLegend.tsx` |
+| `/dadu/translations` | Published items × 14 languages from each item's `languages` field, coverage row, "missing <language>" filter, links to the editor | `dadu:content:read` | `dadu/translations/page.tsx` |
+| `/dadu/assets` | Asset registry list with kind filter and search; register form with mandatory licence, source, creator and SHA-256; 409 duplicates shown explicitly; delete with confirmation | `dadu:content:read` / `dadu:content:write` | `dadu/assets/page.tsx` |
+| `/dadu/packs` | Pack list, build form (kind, language), publish with confirmation, manifest viewer | `dadu:content:read` / `dadu:content:publish` | `dadu/packs/page.tsx` |
+| `/dadu/flags` | JSON value per flag, save per key, seeded defaults for `dadu.temple.default_on`, `dadu.languages.enabled`, `dadu.echo.every_n_lessons`, `dadu.legacy_tame_visible` | `settings:read` / `settings:write` | `dadu/flags/page.tsx` |
+| `/dadu/parents` | Parent user id → read-only child profiles | `users:read` | `dadu/parents/page.tsx` |
+
+Shared constants (sections, worlds, characters, bands, kinds, rights, activity kinds, the workflow
+table, item types and the client-side validators) live in `admin/src/lib/dadu.ts`; they mirror
+`src/dadu/core/*` in the app and must be kept in step by hand, because the console does not import
+from the app bundle.
+
+Client-side validation before submit: id `^[a-z0-9_.-]+$`, subject and topic present, at least one
+band, English among the languages, English text in the objective and in every localised object of
+the body (`missingEnglish()` walks the body), provenance present. Rights `pending` is allowed on save
+and refused by the server on publish; the panel shows the server's message.
+
+Endpoint shapes the console relies on (the API must honour them):
+
+- `GET /admin/v1/dadu/content` query `kind, section, status, language, q, page, pageSize` →
+  `{ items, total, page, pageSize }`; each item carries `id, kind, section, subject, topic, bands,
+  difficulty, languages, rights, provenance, status, version, body, objective, createdAt, updatedAt`.
+- `GET /admin/v1/dadu/content/:id` → `{ item, versions: [{ version, body, changeNote, createdAt,
+  publishedAt }], reviews: [{ version, step, decision, reviewer, note, createdAt }] }`.
+- `POST /admin/v1/dadu/content` body `{ id, kind, section, subject, topic, bands, difficulty, languages,
+  rights, provenance, objective, body, changeNote }` → the item; `PUT /content/:id` same without `id`.
+- `POST /content/:id/transition { to, note? }` (to `draft` requires a note), `POST /content/:id/publish`,
+  `POST /content/:id/unpublish`, `POST /content/:id/rollback { version }`.
+- `GET /assets` → paginated `{ items … }`; `POST /assets` returns 409 on a duplicate `sha256` or URL;
+  `DELETE /assets/:id`.
+- `GET /packs` → `{ items: Pack[] }` or a bare array (both handled); `POST /packs/build { kind, language }`
+  → the pack with `version` and `itemCount`; `POST /packs/:id/publish`.
+- `GET /flags` → `{ flags: [{ key, value, updatedAt }] }`; `PUT /flags/:key { value }`.
+- `GET /parents/:userId/children` → `{ children: [...] }` or a bare array.
+
+Not built in the console yet: file upload to object storage (assets are registered by URL after an
+out-of-band upload), bulk import, per-language proofreader scoping in the UI (the API enforces it),
+and dashboards of review throughput.
+
+
 Follows `00-canon.md`. Related: `17-database-schema.md` (tables and workflow columns), `18-api.md`
 (`/admin/v1/dadu/*`), `14-voice-audio.md` (audio review), `13-story-library.md` (rights),
 `15-real-world-assignments.md` (safety checklist), `16-assessment.md` (item linting), `21-roadmap.md`.

@@ -23,7 +23,7 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <PageHead title={`Welcome, ${me.name.split(' ')[0]}`} subtitle="What’s happening in Tame right now." />
+      <PageHead title={`Welcome, ${me.name.split(' ')[0]}`} subtitle="What’s happening in DADU right now." />
       <ErrorAlert error={error} />
       {loading && !data && <div className="card empty">Loading…</div>}
       {data && (
