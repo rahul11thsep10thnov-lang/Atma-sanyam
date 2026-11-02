@@ -39,8 +39,10 @@
     "three": "^0.166.1"
   },
   "devDependencies": {
+    "@types/node": "^22.20.5",
     "@types/react": "~19.2.2",
     "pureimage": "^0.4.20",
+    "tsx": "^4.23.15",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -56,7 +58,8 @@
     "build:android:production": "eas build --profile production --platform android",
     "build:ios:production": "eas build --profile production --platform ios",
     "submit:android": "eas submit --profile production --platform android",
-    "submit:ios": "eas submit --profile production --platform ios"
+    "submit:ios": "eas submit --profile production --platform ios",
+    "test:dadu": "tsc -p tsconfig.dadu-tests.json && tsx --test \"src/dadu/**/*.test.ts\""
   },
   "private": true
 }
