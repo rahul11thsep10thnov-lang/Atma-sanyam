@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SpaceId } from './packTypes';
 import { ArtState, INITIAL_ART, SpaceState, initialState } from './model';
 import { SPACES } from './catalog';
+import { preserveUnreadable, readJson, writeJson } from '../storage/safeStore';
 
 const KEY = (space: SpaceId) => `focus.space.${space}.v2`;
 const ART_KEY = 'focus.art.v2';
@@ -36,15 +37,15 @@ async function migrateBalcony(): Promise<SpaceState | null> {
 export async function loadSpace(space: SpaceId): Promise<SpaceState> {
   const m = memo[space];
   if (m) return m;
-  let state: SpaceState | null = null;
-  try {
-    const raw = await AsyncStorage.getItem(KEY(space));
-    state = raw ? (JSON.parse(raw) as SpaceState) : null;
-  } catch {
+  // A space that can't be read is never replaced: see storage/safeStore.
+  const read = await readJson<SpaceState>(KEY(space));
+  let state = read.value;
+  if (state && state.schemaVersion !== 2) {
+    await preserveUnreadable(KEY(space), JSON.stringify(state));
     state = null;
   }
-  if (!state && space === 'balcony') state = await migrateBalcony();
-  if (!state || state.schemaVersion !== 2) {
+  if (!state && read.ok && space === 'balcony') state = await migrateBalcony();
+  if (!state) {
     state = initialState(space);
     await saveSpace(state);
   }
@@ -56,11 +57,8 @@ export async function saveSpace(state: SpaceState): Promise<SpaceState> {
   const next = { ...state, version: Date.now() };
   memo[state.space] = next;
   listeners.forEach((l) => l(state.space, next));
-  try {
-    await AsyncStorage.setItem(KEY(state.space), JSON.stringify(next));
-  } catch {
-    // best effort; the memory copy stays authoritative for this run
-  }
+  // the memory copy stays authoritative for this run if the write is skipped or fails
+  await writeJson(KEY(state.space), next);
   return next;
 }
 

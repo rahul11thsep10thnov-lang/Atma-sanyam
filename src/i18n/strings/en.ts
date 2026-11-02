@@ -478,6 +478,8 @@ export const en = {
   'session.seeInGarden': 'See it in the garden',
   'session.noPlantGrew': 'No {plant} grew: the session ended early',
   'session.saplingLeft': 'A wilted sapling marks the place in {segment}; clear it for coins in the garden',
+  'session.closedTitle': 'Your last session ended',
+  'session.closedBody': 'Tame was closed during a focus session, so it counted as leaving the app.',
   'settings.gardenMotion': 'Garden animation',
   'settings.gardenMotionHint': 'Butterflies, water, wind and light in the garden',
   'settings.motion.full': 'Full',

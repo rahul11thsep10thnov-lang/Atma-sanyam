@@ -1,9 +1,9 @@
 // Local persistence for the museum, with a subscription.
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCallback, useEffect, useState } from 'react';
 import { ArtworkRecord } from '../collection/model';
 import { INITIAL_MUSEUM, MuseumObject, MuseumState, hangInMuseum, takeDownFromMuseum } from './model';
 import { museumWidthOf } from './store';
+import { preserveUnreadable, readJson, writeJson } from '../storage/safeStore';
 
 const KEY = 'focus.museum.v1';
 
@@ -12,14 +12,13 @@ const listeners = new Set<(m: MuseumState) => void>();
 
 export async function loadMuseum(): Promise<MuseumState> {
   if (memo) return memo;
-  let state: MuseumState | null = null;
-  try {
-    const raw = await AsyncStorage.getItem(KEY);
-    state = raw ? (JSON.parse(raw) as MuseumState) : null;
-  } catch {
+  // A museum that can't be read is never replaced: see storage/safeStore.
+  let state = (await readJson<MuseumState>(KEY)).value;
+  if (state && state.schemaVersion !== 1) {
+    await preserveUnreadable(KEY, JSON.stringify(state));
     state = null;
   }
-  if (!state || state.schemaVersion !== 1) state = { ...INITIAL_MUSEUM, version: Date.now() };
+  if (!state) state = { ...INITIAL_MUSEUM, version: Date.now() };
   memo = state;
   return state;
 }
@@ -28,11 +27,7 @@ export async function saveMuseum(m: MuseumState): Promise<MuseumState> {
   const next = { ...m, version: Date.now() };
   memo = next;
   listeners.forEach((l) => l(next));
-  try {
-    await AsyncStorage.setItem(KEY, JSON.stringify(next));
-  } catch {
-    // best effort
-  }
+  await writeJson(KEY, next);
   return next;
 }
 

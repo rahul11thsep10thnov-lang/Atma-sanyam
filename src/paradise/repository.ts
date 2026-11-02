@@ -5,6 +5,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCallback, useEffect, useState } from 'react';
 import { INITIAL_PARADISE, ParadiseState, fromOldGarden, rehome } from './model';
+import { preserveUnreadable, readJson, writeJson } from '../storage/safeStore';
 
 const KEY = 'focus.paradise.v1';
 const OLD_GARDEN_KEY = 'focus.garden3d.v1';
@@ -14,14 +15,14 @@ const listeners = new Set<(s: ParadiseState) => void>();
 
 export async function loadParadise(): Promise<ParadiseState> {
   if (memo) return memo;
-  let state: ParadiseState | null = null;
-  try {
-    const raw = await AsyncStorage.getItem(KEY);
-    state = raw ? (JSON.parse(raw) as ParadiseState) : null;
-  } catch {
+  // A garden that can't be read is never replaced: see storage/safeStore.
+  const read = await readJson<ParadiseState>(KEY);
+  let state = read.value;
+  if (state && state.schemaVersion !== 1) {
+    await preserveUnreadable(KEY, JSON.stringify(state));
     state = null;
   }
-  if (!state) {
+  if (!state && read.ok) {
     try {
       const old = await AsyncStorage.getItem(OLD_GARDEN_KEY);
       if (old) state = fromOldGarden((JSON.parse(old) as { items?: { itemId: string; minutes?: number; placedAt: number }[] }).items ?? []);
@@ -40,11 +41,7 @@ export async function saveParadise(s: ParadiseState): Promise<ParadiseState> {
   const next = { ...s, version: Date.now() };
   memo = next;
   listeners.forEach((l) => l(next));
-  try {
-    await AsyncStorage.setItem(KEY, JSON.stringify(next));
-  } catch {
-    // best effort
-  }
+  await writeJson(KEY, next);
   return next;
 }
 

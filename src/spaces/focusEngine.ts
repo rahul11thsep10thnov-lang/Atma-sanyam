@@ -18,6 +18,8 @@ import { SPECIES_BY_ID, SegmentId, plantName } from '../paradise/catalog';
 import { addPenalty as addParadisePenalty, plantFromSession } from '../paradise/model';
 import { loadParadise, saveParadise } from '../paradise/repository';
 import { ImageRef } from '../types';
+import { saveSessionRecord } from '../storage/history';
+import { takeActiveSession } from '../storage/activeSession';
 
 export interface NewPlant {
   id: string;
@@ -144,6 +146,32 @@ export async function recordPausedSession(image: ImageRef, elapsedSeconds = GRAC
     where: 'balcony',
     penalties: next.placed.filter((p) => p.itemId === 'dead_sapling' || p.itemId === 'broken_frame').length,
   };
+}
+
+/** A session the app was closed during (see storage/activeSession): it
+ * counts as leaving the app, exactly like staying away past the grace
+ * period: a failed record in history and the usual wilted sapling or
+ * drooping plant. A group focus is settled by the server, so it only gets
+ * its history record here. Returns what happened, or null if nothing was
+ * pending. */
+export async function settleInterruptedSession(): Promise<{ penalty: PausedOutcome | null } | null> {
+  const note = await takeActiveSession();
+  if (!note) return null;
+  await saveSessionRecord({
+    id: note.id,
+    startedAt: note.startedAt,
+    endedAt: note.startedAt,
+    durationMinutes: note.durationMinutes,
+    grid: note.grid,
+    image: note.image,
+    outcome: 'failed',
+    failureReason: 'left_app',
+    revealedFraction: 0,
+  });
+  if (note.groupSessionId) return { penalty: null };
+  const kind = note.image.kind;
+  if (kind !== 'plant' && kind !== 'space' && kind !== 'balcony') return { penalty: null };
+  return { penalty: await recordPausedSession(note.image) };
 }
 
 /** Leaving a group focus early: as many wilted saplings and broken pictures
