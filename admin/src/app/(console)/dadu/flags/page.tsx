@@ -62,14 +62,14 @@ function FlagCard({ flag, canEdit, onSaved }: { flag: Flag & { help?: string; se
 export default function FlagsPage() {
   const can = useCan();
   const [newKey, setNewKey] = useState('');
-  const { data, error, loading, reload } = useApi<{ flags: Flag[] }>(can('settings:read') ? 'dadu/flags' : null);
-  if (!can('settings:read')) return <Forbidden />;
+  const { data, error, loading, reload } = useApi<{ flags: Flag[] }>(can('dadu:content:read') ? 'dadu/flags' : null);
+  if (!can('dadu:content:read')) return <Forbidden />;
   const existing = data?.flags ?? [];
   const merged = [
     ...existing.map((f) => ({ ...f, help: KNOWN.find((k) => k.key === f.key)?.help })),
     ...KNOWN.filter((k) => !existing.some((f) => f.key === k.key)).map((k) => ({ key: k.key, value: k.value, updatedAt: null, help: k.help, seeded: true })),
   ];
-  const canEdit = can('settings:write');
+  const canEdit = can('dadu:flags:write');
 
   return (
     <div>

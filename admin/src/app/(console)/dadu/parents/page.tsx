@@ -26,7 +26,7 @@ export default function ParentsPage() {
   const [children, setChildren] = useState<Child[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  if (!can('users:read')) return <Forbidden />;
+  if (!can('dadu:parents:read')) return <Forbidden />;
 
   async function lookup(e: React.FormEvent) {
     e.preventDefault();
