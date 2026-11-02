@@ -1,5 +1,14 @@
 # 15 – Real-world assignment architecture: "Dadaji's Real World Adventures"
 
+> **Implementation notes (2026-11-02).** The assignment contract is the `Assignment` type in
+> `src/dadu/core/content.ts`; the lifecycle (available → started → completed with parent confirmation,
+> optional note, photo only with parent consent), supervision gating by band and badge award are in
+> `src/dadu/engines/assignments.ts`. The catalogue below is partly authored as data in
+> `src/dadu/content/assignments.ts` (51 assignments, English and Hindi, all eight contract parts);
+> ids there follow this document where the two overlap. Photo storage itself (upload, encryption,
+> deletion) is the backend's responsibility and is not part of the engine. Unit tests:
+> `src/dadu/__tests__/engines.misc.test.ts`.
+
 Follows `00-canon.md`. Related: `10-interactive-object-map.md` (objects that launch assignments),
 `11-eight-sections.md` (lessons that launch them), `16-assessment.md` (practical-activity items),
 `19-parent-dashboard.md` (parent unlock, photo consent), `17-database-schema.md` (tables),

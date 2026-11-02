@@ -1,5 +1,14 @@
 # 16 – Assessment architecture
 
+> **Implementation notes (2026-11-02).** The mastery model in section 5 is implemented in
+> `src/dadu/engines/mastery.ts` (`updateMastery`, `masteryState`, `dueForRevision`, `pickNextDifficulty`,
+> `summarise`); assessment sets and the twelve question-type validators are in
+> `src/dadu/engines/assessment.ts` (`buildAssessment`, `buildOlympiad`, `isCorrect`, `resultWeight`,
+> `recordAnswer`). Items are currently drawn from lesson quiz steps (`src/dadu/content/lessons/`);
+> dedicated per-concept question banks are not yet authored. Unit tests:
+> `src/dadu/__tests__/engines.mastery.test.ts`. One deviation: the "needs revision" state is derived
+> from attempts, score and the due date (no separate "was mastered" flag is stored on `MasteryRecord`).
+
 Follows `00-canon.md`. Related: `11-eight-sections.md` (lesson IDs, concepts), `12-age-adaptive-interface.md`
 (adaptation engine inputs), `15-real-world-assignments.md` (practical activities), `02-character-bible.md`
 (Dadaji's and Mitthu's lines), `19-parent-dashboard.md` (reports), `17-database-schema.md` (tables
