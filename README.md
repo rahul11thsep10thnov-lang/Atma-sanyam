@@ -1,4 +1,26 @@
-# Tame
+# DADU – Dadaji's Miniverse
+
+**Learn, Play, Explore and Grow!** An immersive, multilingual Indian child-development universe for
+ages 0–12, taught by Dadaji with Gopu, Kim, Molly, the cow (name pending approval), Dhanu and Mitthu.
+
+This repository is being repurposed from the Tame focus app (below) into DADU. The product is in the
+**design-before-coding** stage:
+
+- **Design documents (23 + canon):** [`docs/dadu/`](docs/dadu/) – start with
+  [`docs/dadu/00-canon.md`](docs/dadu/00-canon.md), then the numbered files. Decisions waiting for a
+  yes or no are listed in [`docs/dadu/APPROVAL.md`](docs/dadu/APPROVAL.md).
+- **Visual prototype:** [`prototype/dadu/index.html`](prototype/dadu/index.html) – open it in a browser.
+  It shows the characters, the Miniverse map, the living room, science laboratory, music room, art
+  room, private and public gardens, library, temple courtyard, a space excursion, the main dashboard,
+  a learning section, stories, tests, real-world assignments, Mitthu's Echo, the parental gate and the
+  parent dashboard, switchable between a preschool child and an older child and between English and
+  Hindi. All art and text in it is original.
+- **What is reused:** the Expo 57 mobile app, the Express 5 + Drizzle + PostgreSQL API and the Next.js
+  admin console described below become DADU's foundation (`docs/dadu/01-product-architecture.md`).
+
+---
+
+## Legacy foundation: Tame
 
 A calm focus timer where a jigsaw puzzle assembles itself while you stay on task.
 Leave the app mid-session and the puzzle stays unfinished.

@@ -1,0 +1,1109 @@
+<title>DADU Prototype</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: a picture-book spread. Left page = the phone (the app itself). Right page = the index of screens and the note for the open screen. On phones the spread stacks. */
+:root{
+  --paper:#FFF6E5; --cream:#FFEFD2; --card:#FFFFFF;
+  --saffron:#F4A523; --marigold:#FFC94D; --haldi:#FFE08A;
+  --clay:#D9663D; --peepal:#4E9F3D; --leaf:#8BC34A; --monsoon:#2E86AB; --sky:#BFE6F7;
+  --indigo:#2F3C7E; --night:#1B2142; --plum:#8E4585; --rose:#F28DA6;
+  --ink:#3A2E2A; --inkSoft:#6F5F58; --line:#EAD9BF;
+  --pageBg:#F3E4C8; --shadow:0 18px 40px rgba(90,60,20,.18);
+  --display:'Baloo 2','Nunito','Noto Sans',system-ui,sans-serif;
+  --body:'Nunito','Noto Sans',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --pageBg:#15192F; --paper:#1F2446; --cream:#272C52; --card:#2A3058; --ink:#F6EEDC; --inkSoft:#C9BFAE; --line:#3B4270; --shadow:0 18px 40px rgba(0,0,0,.45); color-scheme:dark } }
+:root[data-theme="dark"]{ --pageBg:#15192F; --paper:#1F2446; --cream:#272C52; --card:#2A3058; --ink:#F6EEDC; --inkSoft:#C9BFAE; --line:#3B4270; --shadow:0 18px 40px rgba(0,0,0,.45); color-scheme:dark }
+*{box-sizing:border-box}
+body{margin:0;background:var(--pageBg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 40px;
+  background-image:radial-gradient(rgba(120,80,30,.07) 1px,transparent 1.5px);background-size:14px 14px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;margin:0;text-wrap:balance}
+.spread{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:28px;align-items:start}
+@media (max-width:900px){.spread{grid-template-columns:minmax(0,1fr)}}
+.masthead{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 24px;padding-bottom:8px;border-bottom:3px dotted var(--line)}
+.masthead h1{font-size:clamp(28px,4vw,44px);color:var(--indigo);letter-spacing:.5px}
+.masthead h1 small{display:block;font-size:.42em;color:var(--clay);font-weight:700;letter-spacing:0}
+.masthead p{margin:0;color:var(--inkSoft);max-width:52ch}
+/* controls */
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.seg{display:inline-flex;background:var(--cream);border:2px solid var(--line);border-radius:999px;padding:3px}
+.seg button{font-family:var(--display);font-weight:700;font-size:15px;border:0;background:transparent;color:var(--inkSoft);padding:8px 14px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--saffron);color:#2A1A05;box-shadow:0 2px 0 rgba(0,0,0,.08)}
+.seg button:focus-visible,.list button:focus-visible{outline:3px solid var(--monsoon);outline-offset:2px}
+.pill{font-family:var(--display);font-weight:700;font-size:14px;border:2px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:999px;cursor:pointer}
+.pill[aria-pressed="true"]{background:var(--indigo);border-color:var(--indigo);color:#fff}
+/* phone stage */
+.stage{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;padding-block:18px}
+.phone{width:min(100%,400px);aspect-ratio:9/19;background:#1a1410;border-radius:44px;padding:12px;box-shadow:var(--shadow);position:relative;flex:0 0 auto}
+.phone::after{content:"";position:absolute;top:22px;left:50%;transform:translateX(-50%);width:96px;height:22px;background:#1a1410;border-radius:999px;z-index:5}
+.screen{width:100%;height:100%;border-radius:34px;overflow:hidden;background:#FFF6E5;color:#3A2E2A;position:relative;font-family:var(--body);display:flex;flex-direction:column;isolation:isolate}
+.phone-label{font-family:var(--display);font-weight:700;color:var(--inkSoft);text-align:center;margin-top:10px;font-size:15px}
+.phone-wrap{display:flex;flex-direction:column;align-items:center;width:min(100%,400px)}
+/* the app chrome (fixed colours: the app is its own designed world, light paper with a bedtime night mode) */
+.app-status{height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:12px;font-weight:800;color:#3A2E2A}
+.app-top{display:flex;align-items:center;gap:10px;padding:4px 14px 6px}
+.app-top .wordmark{font-family:var(--display);font-weight:800;font-size:22px;color:#2F3C7E;letter-spacing:1px;line-height:1}
+.app-top .wordmark small{display:block;font-size:10px;color:#D9663D;letter-spacing:0;font-weight:700}
+.app-top .spacer{flex:1}
+.chip{display:inline-flex;align-items:center;gap:5px;background:#fff;border:2px solid #EAD9BF;border-radius:999px;padding:3px 9px;font-family:var(--display);font-weight:700;font-size:13px;color:#3A2E2A}
+.app-body{flex:1;min-height:0;overflow:auto;position:relative;scrollbar-width:thin}
+.app-body::-webkit-scrollbar{width:0}
+.app-tabs{flex:0 0 auto;display:flex;justify-content:space-around;padding:8px 8px 14px;background:#fff;border-top:2px solid #EAD9BF}
+.app-tabs button{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:2px;font-family:var(--display);font-weight:700;font-size:11px;color:#6F5F58;cursor:pointer;padding:4px 6px;border-radius:14px;min-width:54px}
+.app-tabs button[aria-current="page"]{color:#2F3C7E;background:#FFEFD2}
+.app-tabs.little button{font-size:0;min-width:74px;padding:6px}
+.app-tabs.little button svg{width:46px;height:46px}
+.app-tabs button svg{width:28px;height:28px}
+/* in-app components */
+.scene{display:block;width:100%;height:auto}
+.scene text{font-family:var(--display)}
+.hot{cursor:pointer}
+.hot .ring{animation:pulse 1.8s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
+@keyframes pulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}
+@media (prefers-reduced-motion:reduce){.hot .ring{animation:none}}
+.bubble{margin:10px 14px;background:#fff;border:3px solid #EAD9BF;border-radius:22px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;position:relative}
+.bubble .av{flex:0 0 auto;width:52px;height:52px;border-radius:50%;background:#FFEFD2;overflow:hidden;display:grid;place-items:center}
+.bubble .av svg{width:46px;height:46px}
+.bubble .who{font-family:var(--display);font-weight:800;font-size:12px;color:#D9663D;text-transform:uppercase;letter-spacing:.5px}
+.bubble p{margin:2px 0 0;font-size:15px;line-height:1.4}
+.little .bubble p{font-size:18px;font-weight:700}
+.bubble .hi{display:block;color:#6F5F58;font-size:13px;margin-top:3px}
+.row{display:flex;gap:10px;padding:0 14px;flex-wrap:wrap}
+.big-btn{font-family:var(--display);font-weight:800;font-size:17px;border:0;border-radius:22px;padding:14px 18px;background:#F4A523;color:#2A1A05;cursor:pointer;box-shadow:0 4px 0 #C98310;flex:1}
+.big-btn.ghost{background:#fff;color:#2F3C7E;box-shadow:0 4px 0 #EAD9BF;border:2px solid #EAD9BF}
+.big-btn.green{background:#4E9F3D;color:#fff;box-shadow:0 4px 0 #35702A}
+.little .big-btn{font-size:20px;padding:20px 18px;border-radius:28px}
+.big-btn:active{transform:translateY(3px);box-shadow:none}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:6px 14px 14px}
+.tile{border:0;border-radius:24px;padding:12px;text-align:left;color:#fff;font-family:var(--display);font-weight:800;font-size:15px;line-height:1.15;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-height:118px;position:relative;overflow:hidden;box-shadow:0 5px 0 rgba(0,0,0,.18)}
+.tile svg{width:56px;height:56px}
+.tile small{font-family:var(--body);font-weight:700;font-size:11px;opacity:.9}
+.little .tiles{grid-template-columns:1fr 1fr;gap:14px}
+.little .tile{min-height:150px;font-size:19px;align-items:center;text-align:center;justify-content:center}
+.little .tile svg{width:84px;height:84px}
+.little .tile small{display:none}
+.section-h{display:flex;align-items:center;gap:8px;padding:10px 14px 4px;font-family:var(--display);font-weight:800;font-size:17px;color:#2F3C7E}
+.section-h .bar{flex:1;height:3px;border-radius:3px;background:#EAD9BF}
+.card{margin:8px 14px;background:#fff;border:2px solid #EAD9BF;border-radius:20px;padding:12px}
+.card h3{font-size:17px;color:#2F3C7E}
+.card p{margin:4px 0 0;font-size:14px;color:#6F5F58}
+.list-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:2px dotted #EAD9BF}
+.list-row:first-of-type{border-top:0}
+.list-row .ic{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;flex:0 0 auto}
+.list-row .ic svg{width:28px;height:28px}
+.list-row b{font-family:var(--display);font-size:15px;color:#3A2E2A;display:block;line-height:1.2}
+.list-row span{font-size:12px;color:#6F5F58}
+.progress{height:10px;border-radius:999px;background:#FFEFD2;overflow:hidden;border:1px solid #EAD9BF}
+.progress i{display:block;height:100%;border-radius:999px;background:#4E9F3D}
+.overlay{position:absolute;inset:0;background:rgba(58,46,42,.45);display:flex;align-items:flex-end;z-index:4}
+.sheet{background:#FFF6E5;width:100%;max-height:92%;overflow:auto;border-radius:30px 30px 0 0;padding:12px 0 18px;box-shadow:0 -10px 30px rgba(0,0,0,.2)}
+.sheet .grab{width:48px;height:6px;border-radius:3px;background:#EAD9BF;margin:0 auto 8px}
+.steps{display:flex;gap:4px;padding:0 14px 8px}
+.steps i{flex:1;height:6px;border-radius:3px;background:#EAD9BF}
+.steps i.on{background:#F4A523}
+.steps i.done{background:#4E9F3D}
+.step-name{padding:0 14px;font-family:var(--display);font-weight:800;color:#D9663D;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:8px 14px}
+.choice{border:3px solid #EAD9BF;background:#fff;border-radius:20px;padding:10px;font-family:var(--display);font-weight:700;font-size:15px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;color:#3A2E2A}
+.choice svg{width:64px;height:64px}
+.choice.ok{border-color:#4E9F3D;background:#EAF6E4}
+.choice.no{border-color:#D9663D;background:#FBE9E2}
+.little .choice{font-size:0;padding:14px}
+.little .choice svg{width:96px;height:96px}
+.quiz-q{padding:4px 14px 2px;font-family:var(--display);font-weight:700;font-size:16px}
+.badge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:6px 14px}
+.badge{background:#fff;border:2px solid #EAD9BF;border-radius:20px;padding:10px 6px;text-align:center;font-family:var(--display);font-weight:700;font-size:12px;line-height:1.2}
+.badge svg{width:56px;height:56px}
+.badge.locked{opacity:.45;filter:grayscale(1)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:13px;padding:6px 14px}
+.kv b{font-family:var(--display);color:#2F3C7E}
+.gate{padding:30px 20px;text-align:center}
+.gate .pin{display:flex;gap:10px;justify-content:center;margin:14px 0}
+.gate .pin i{width:16px;height:16px;border-radius:50%;border:2px solid #2F3C7E;display:block}
+.gate .pin i.f{background:#2F3C7E}
+.keys{display:grid;grid-template-columns:repeat(3,64px);gap:10px;justify-content:center}
+.keys button{height:56px;border-radius:18px;border:2px solid #EAD9BF;background:#fff;font-family:var(--display);font-size:22px;font-weight:700;cursor:pointer;color:#3A2E2A}
+.lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:8px 14px 20px}
+.lang{border:3px solid #EAD9BF;background:#fff;border-radius:20px;padding:12px 8px;text-align:center;cursor:pointer;font-family:var(--display)}
+.lang b{display:block;font-size:20px;line-height:1.1;color:#2F3C7E}
+.lang span{font-size:12px;color:#6F5F58;font-family:var(--body);font-weight:700}
+.lang[aria-pressed="true"]{border-color:#F4A523;background:#FFF3D6}
+.stars{display:flex;gap:4px}
+.toast{position:absolute;left:14px;right:14px;bottom:90px;background:#2F3C7E;color:#fff;border-radius:18px;padding:12px 14px;font-family:var(--display);font-weight:700;z-index:6;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.timebar{display:flex;align-items:center;gap:8px;padding:6px 14px;font-size:12px;font-weight:700;color:#6F5F58}
+.timebar .progress{flex:1}
+.bedtime .screen{background:#1B2142;color:#F6EEDC}
+.night-bg{background:#1B2142;color:#F6EEDC}
+/* right page: the index */
+.page{background:var(--paper);border:2px solid var(--line);border-radius:28px;padding:18px;box-shadow:var(--shadow);position:sticky;top:16px}
+@media (max-width:900px){.page{position:static}}
+.page h2{font-size:20px;color:var(--indigo);margin-bottom:6px}
+.group{font-family:var(--display);font-weight:800;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--clay);margin:12px 0 4px}
+.list{display:flex;flex-wrap:wrap;gap:6px}
+.list button{font-family:var(--display);font-weight:700;font-size:13px;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 11px;cursor:pointer}
+.list button[aria-current="true"]{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.note{margin-top:14px;border-top:3px dotted var(--line);padding-top:10px;font-size:14px;color:var(--inkSoft)}
+.note b{color:var(--ink);font-family:var(--display);font-size:15px}
+.note ul{margin:6px 0 0;padding-left:18px}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.legend span{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--inkSoft)}
+.legend i{width:14px;height:14px;border-radius:50%;display:inline-block}
+.foot{grid-column:1/-1;color:var(--inkSoft);font-size:13px;border-top:3px dotted var(--line);padding-top:10px}
+</style>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+<!-- ===== CHARACTER LIBRARY (original designs; reused everywhere with <use>) ===== -->
+<!-- Dadaji -->
+<symbol id="c-dadaji" viewBox="0 0 120 210">
+  <ellipse cx="60" cy="200" rx="34" ry="6" fill="rgba(0,0,0,.15)"/>
+  <!-- dhoti -->
+  <path d="M38 150 L36 190 Q60 196 84 190 L82 150 Z" fill="#FFFFFF" stroke="#D9CBB3" stroke-width="1.5"/>
+  <path d="M60 152 L58 190 M48 154 L47 188 M72 154 L73 188" stroke="#E6DCCB" stroke-width="1.5"/>
+  <!-- chappals -->
+  <ellipse cx="48" cy="195" rx="12" ry="5" fill="#8B5A2B"/><ellipse cx="74" cy="195" rx="12" ry="5" fill="#8B5A2B"/>
+  <!-- kurta -->
+  <path d="M30 95 Q30 86 40 84 L80 84 Q90 86 90 95 L92 156 L28 156 Z" fill="#FFF3DC" stroke="#E6D3B3" stroke-width="1.5"/>
+  <rect x="28" y="148" width="64" height="8" fill="#F4A523"/>
+  <rect x="28" y="144" width="64" height="3" fill="#2F3C7E"/>
+  <path d="M52 84 L60 100 L68 84" fill="none" stroke="#2F3C7E" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M60 100 L60 124" stroke="#E6D3B3" stroke-width="2"/>
+  <circle cx="60" cy="108" r="1.6" fill="#2F3C7E"/><circle cx="60" cy="116" r="1.6" fill="#2F3C7E"/>
+  <!-- gamchha -->
+  <path d="M40 86 Q58 118 78 150" stroke="#F4A523" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M40 86 Q58 118 78 150" stroke="#2F3C7E" stroke-width="2" fill="none" stroke-dasharray="3 4"/>
+  <!-- left arm holding a book -->
+  <path d="M34 92 Q22 118 26 140" stroke="#FFF3DC" stroke-width="14" fill="none" stroke-linecap="round"/>
+  <path d="M34 92 Q22 118 26 140" stroke="#E6D3B3" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-dasharray="0 0"/>
+  <circle cx="27" cy="146" r="7" fill="#E9B98E"/>
+  <rect x="14" y="140" width="26" height="18" rx="2" fill="#2E86AB" transform="rotate(-10 27 149)"/>
+  <rect x="17" y="143" width="20" height="12" rx="1" fill="#BFE6F7" transform="rotate(-10 27 149)"/>
+  <!-- right arm raised, pointing finger -->
+  <path d="M86 92 Q104 80 100 58" stroke="#FFF3DC" stroke-width="14" fill="none" stroke-linecap="round"/>
+  <circle cx="100" cy="54" r="8" fill="#E9B98E"/>
+  <rect x="98" y="38" width="5" height="16" rx="2.5" fill="#E9B98E"/>
+  <!-- neck and head -->
+  <rect x="52" y="72" width="16" height="16" fill="#E9B98E"/>
+  <path d="M28 44 Q30 18 60 16 Q90 18 92 44 L92 50 L28 50 Z" fill="#F4F1EC"/>
+  <circle cx="60" cy="50" r="29" fill="#E9B98E"/>
+  <circle cx="31" cy="52" r="5" fill="#E9B98E"/><circle cx="89" cy="52" r="5" fill="#E9B98E"/>
+  <path d="M33 40 Q36 26 60 24 Q84 26 87 40 Q74 34 60 35 Q46 34 33 40 Z" fill="#F4F1EC"/>
+  <path d="M31 46 Q29 60 33 72 Q36 60 36 46 Z M89 46 Q91 60 87 72 Q84 60 84 46 Z" fill="#F4F1EC"/>
+  <!-- eyebrows -->
+  <path d="M40 42 Q48 37 55 41 M65 41 Q72 37 80 42" stroke="#F4F1EC" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- spectacles -->
+  <circle cx="48" cy="51" r="9.5" fill="#fff" fill-opacity=".45" stroke="#3A2E2A" stroke-width="2.5"/>
+  <circle cx="72" cy="51" r="9.5" fill="#fff" fill-opacity=".45" stroke="#3A2E2A" stroke-width="2.5"/>
+  <path d="M57.5 51 L62.5 51 M38.5 50 L31 48 M81.5 50 L89 48" stroke="#3A2E2A" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="49" cy="52" r="3" fill="#3A2E2A"/><circle cx="73" cy="52" r="3" fill="#3A2E2A"/>
+  <circle cx="50" cy="51" r="1" fill="#fff"/><circle cx="74" cy="51" r="1" fill="#fff"/>
+  <!-- nose, moustache, smile -->
+  <path d="M60 54 Q56 62 61 64" stroke="#C98F6A" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M46 66 Q53 61 60 66 Q67 61 74 66 Q70 72 60 70 Q50 72 46 66 Z" fill="#F4F1EC"/>
+  <path d="M50 72 Q60 80 70 72" stroke="#A85B3C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <circle cx="42" cy="62" r="4" fill="#F28DA6" opacity=".35"/><circle cx="78" cy="62" r="4" fill="#F28DA6" opacity=".35"/>
+</symbol>
+<!-- Dadaji face only (avatar) -->
+<symbol id="f-dadaji" viewBox="22 12 76 70"><use href="#c-dadaji" width="120" height="210"/></symbol>
+
+<!-- Gopu -->
+<symbol id="c-gopu" viewBox="0 0 100 170">
+  <ellipse cx="50" cy="163" rx="26" ry="5" fill="rgba(0,0,0,.15)"/>
+  <!-- legs -->
+  <rect x="36" y="128" width="11" height="26" rx="5" fill="#D9A070"/><rect x="53" y="128" width="11" height="26" rx="5" fill="#D9A070"/>
+  <rect x="35" y="134" width="12" height="7" rx="2" fill="#F1D7B6"/><path d="M38 137.5 h6 M41 135 v5" stroke="#D9663D" stroke-width="1.2"/>
+  <path d="M30 156 Q30 150 38 150 L48 150 L50 160 L30 162 Z" fill="#D9663D"/><path d="M70 156 Q70 150 62 150 L52 150 L50 160 L70 162 Z" fill="#D9663D"/>
+  <path d="M31 160 L50 159 M50 159 L69 160" stroke="#fff" stroke-width="2"/>
+  <!-- shorts -->
+  <path d="M30 116 L70 116 L72 134 L52 134 L50 128 L48 134 L28 134 Z" fill="#2E86AB"/>
+  <!-- t-shirt -->
+  <path d="M28 76 Q28 70 36 70 L64 70 Q72 70 72 76 L74 118 L26 118 Z" fill="#FFC94D"/>
+  <path d="M22 86 L28 72 L36 78 L34 92 Z M78 86 L72 72 L64 78 L66 92 Z" fill="#FFC94D"/>
+  <ellipse cx="50" cy="98" rx="8" ry="10" fill="#F4A523" transform="rotate(-20 50 98)"/><path d="M53 88 q6 -6 10 -2 q-6 2 -10 4" fill="#4E9F3D"/>
+  <!-- arms -->
+  <path d="M26 90 Q16 100 20 118" stroke="#D9A070" stroke-width="10" fill="none" stroke-linecap="round"/>
+  <path d="M74 88 Q88 70 84 52" stroke="#D9A070" stroke-width="10" fill="none" stroke-linecap="round"/>
+  <circle cx="84" cy="48" r="7" fill="#D9A070"/><circle cx="20" cy="120" r="6" fill="#D9A070"/>
+  <!-- head -->
+  <rect x="43" y="60" width="14" height="14" fill="#D9A070"/>
+  <circle cx="50" cy="44" r="26" fill="#D9A070"/>
+  <circle cx="25" cy="46" r="4.5" fill="#D9A070"/><circle cx="75" cy="46" r="4.5" fill="#D9A070"/>
+  <path d="M24 42 Q24 16 50 16 Q78 16 76 42 Q70 30 58 33 Q54 22 46 30 Q36 28 24 42 Z" fill="#2B1D14"/>
+  <path d="M56 20 Q62 8 70 12 Q64 14 62 22 Z" fill="#2B1D14"/>
+  <!-- eyes -->
+  <ellipse cx="41" cy="46" rx="6" ry="7" fill="#fff"/><ellipse cx="59" cy="46" rx="6" ry="7" fill="#fff"/>
+  <circle cx="42" cy="47" r="3.5" fill="#2B1D14"/><circle cx="60" cy="47" r="3.5" fill="#2B1D14"/>
+  <circle cx="43" cy="45.5" r="1.2" fill="#fff"/><circle cx="61" cy="45.5" r="1.2" fill="#fff"/>
+  <path d="M35 37 Q41 34 46 37 M54 37 Q59 34 65 37" stroke="#2B1D14" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- grin -->
+  <path d="M40 56 Q50 66 60 56 Z" fill="#8E3B2E"/><path d="M42 56 Q50 60 58 56 Z" fill="#fff"/>
+  <circle cx="34" cy="54" r="4" fill="#F28DA6" opacity=".45"/><circle cx="66" cy="54" r="4" fill="#F28DA6" opacity=".45"/>
+</symbol>
+<symbol id="f-gopu" viewBox="18 8 64 62"><use href="#c-gopu" width="100" height="170"/></symbol>
+
+<!-- Kim the dog -->
+<symbol id="c-kim" viewBox="0 0 150 110">
+  <ellipse cx="80" cy="104" rx="52" ry="5" fill="rgba(0,0,0,.15)"/>
+  <path d="M122 60 Q146 40 132 26 Q128 44 118 50" stroke="#D9A066" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <rect x="50" y="78" width="11" height="24" rx="5" fill="#D9A066"/><rect x="70" y="80" width="11" height="22" rx="5" fill="#D9A066"/>
+  <rect x="95" y="80" width="11" height="22" rx="5" fill="#D9A066"/><rect x="110" y="78" width="11" height="24" rx="5" fill="#D9A066"/>
+  <ellipse cx="55.5" cy="102" rx="7" ry="3.5" fill="#fff"/><ellipse cx="75.5" cy="102" rx="7" ry="3.5" fill="#fff"/><ellipse cx="100.5" cy="102" rx="7" ry="3.5" fill="#fff"/><ellipse cx="115.5" cy="102" rx="7" ry="3.5" fill="#fff"/>
+  <ellipse cx="85" cy="66" rx="46" ry="26" fill="#D9A066"/>
+  <ellipse cx="62" cy="76" rx="20" ry="13" fill="#FFF8EE"/>
+  <circle cx="38" cy="44" r="25" fill="#D9A066"/>
+  <ellipse cx="22" cy="40" rx="9" ry="15" fill="#A5733F" transform="rotate(20 22 40)"/>
+  <path d="M52 22 Q58 8 64 24 Z" fill="#A5733F"/>
+  <ellipse cx="25" cy="54" rx="13" ry="9" fill="#FFF8EE"/>
+  <ellipse cx="16" cy="51" rx="5" ry="4" fill="#2B1D14"/>
+  <path d="M24 60 Q28 68 34 62" stroke="#2B1D14" stroke-width="2" fill="none"/>
+  <path d="M27 62 Q28 72 34 70 Q32 66 30 62 Z" fill="#F28DA6"/>
+  <circle cx="34" cy="40" r="4.5" fill="#2B1D14"/><circle cx="35.5" cy="38.5" r="1.5" fill="#fff"/>
+  <path d="M28 34 Q34 30 40 34" stroke="#2B1D14" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M46 66 Q58 60 64 68" stroke="#D9663D" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <circle cx="58" cy="70" r="4.5" fill="#F4A523" stroke="#B8780F" stroke-width="1"/>
+</symbol>
+<symbol id="f-kim" viewBox="8 14 60 56"><use href="#c-kim" width="150" height="110"/></symbol>
+
+<!-- Molly the rabbit -->
+<symbol id="c-molly" viewBox="0 0 90 130">
+  <ellipse cx="45" cy="124" rx="24" ry="5" fill="rgba(0,0,0,.15)"/>
+  <ellipse cx="36" cy="30" rx="8" ry="26" fill="#B8BCC6"/><ellipse cx="36" cy="30" rx="4" ry="19" fill="#F6C6D0"/>
+  <path d="M54 50 Q50 20 66 12 Q78 16 70 34 Q64 44 60 52 Z" fill="#B8BCC6"/><path d="M58 46 Q57 26 66 18 Q70 24 64 36 Z" fill="#F6C6D0"/>
+  <ellipse cx="45" cy="95" rx="24" ry="27" fill="#B8BCC6"/><ellipse cx="45" cy="100" rx="14" ry="18" fill="#FFF8EE"/>
+  <ellipse cx="30" cy="120" rx="11" ry="5" fill="#B8BCC6"/><ellipse cx="60" cy="120" rx="11" ry="5" fill="#B8BCC6"/>
+  <circle cx="45" cy="60" r="22" fill="#B8BCC6"/>
+  <path d="M26 72 Q45 80 64 72 L62 78 Q45 86 28 78 Z" fill="#4E9F3D"/><path d="M58 76 L70 86 L62 88 Z" fill="#4E9F3D"/>
+  <ellipse cx="45" cy="68" rx="9" ry="6" fill="#FFF8EE"/><ellipse cx="45" cy="64" rx="3" ry="2" fill="#F28DA6"/>
+  <path d="M45 66 L45 70 M40 70 Q45 74 50 70" stroke="#6F5F58" stroke-width="1.5" fill="none"/>
+  <path d="M30 66 L18 64 M30 69 L19 71 M60 66 L72 64 M60 69 L71 71" stroke="#6F5F58" stroke-width="1" />
+  <circle cx="37" cy="56" r="4.5" fill="#2B1D14"/><circle cx="53" cy="56" r="4.5" fill="#2B1D14"/>
+  <circle cx="38.5" cy="54.5" r="1.5" fill="#fff"/><circle cx="54.5" cy="54.5" r="1.5" fill="#fff"/>
+  <rect x="60" y="44" width="4" height="22" rx="1" fill="#FFC94D" transform="rotate(30 62 55)"/><path d="M66 68 l-4 -2 l2 -4 Z" fill="#E9B98E" transform="rotate(30 62 55)"/>
+  <rect x="14" y="88" width="22" height="26" rx="3" fill="#2E86AB" transform="rotate(-8 25 101)"/><rect x="17" y="91" width="16" height="20" rx="2" fill="#FFF8EE" transform="rotate(-8 25 101)"/>
+  <path d="M20 97 h10 M20 101 h10 M20 105 h7" stroke="#B8BCC6" stroke-width="1.2" transform="rotate(-8 25 101)"/>
+  <circle cx="22" cy="86" r="5" fill="#B8BCC6"/>
+</symbol>
+<symbol id="f-molly" viewBox="20 30 50 50"><use href="#c-molly" width="90" height="130"/></symbol>
+
+<!-- Gauri the cow (proposed name) -->
+<symbol id="c-gauri" viewBox="0 0 200 150">
+  <ellipse cx="105" cy="144" rx="70" ry="6" fill="rgba(0,0,0,.15)"/>
+  <path d="M176 84 Q194 100 186 128" stroke="#F3EBDD" stroke-width="7" fill="none" stroke-linecap="round"/><ellipse cx="186" cy="130" rx="6" ry="9" fill="#5B3A1E"/>
+  <rect x="66" y="104" width="14" height="36" rx="6" fill="#F3EBDD"/><rect x="88" y="106" width="14" height="34" rx="6" fill="#F3EBDD"/>
+  <rect x="134" y="106" width="14" height="34" rx="6" fill="#F3EBDD"/><rect x="154" y="104" width="14" height="36" rx="6" fill="#F3EBDD"/>
+  <rect x="64" y="134" width="18" height="8" rx="3" fill="#5B3A1E"/><rect x="86" y="134" width="18" height="8" rx="3" fill="#5B3A1E"/><rect x="132" y="134" width="18" height="8" rx="3" fill="#5B3A1E"/><rect x="152" y="134" width="18" height="8" rx="3" fill="#5B3A1E"/>
+  <path d="M60 110 Q50 70 90 56 L160 54 Q188 60 184 92 Q184 116 160 116 L80 116 Q62 118 60 110 Z" fill="#F3EBDD"/>
+  <path d="M104 64 Q122 54 136 68 Q140 84 122 88 Q104 86 104 64 Z" fill="#A5733F"/>
+  <path d="M152 92 Q166 84 172 98 Q168 110 156 108 Q146 102 152 92 Z" fill="#A5733F"/>
+  <ellipse cx="116" cy="114" rx="18" ry="8" fill="#F6C6D0"/>
+  <!-- head -->
+  <path d="M44 40 Q30 30 32 20 Q40 22 46 34 Z M76 40 Q90 30 88 20 Q80 22 74 34 Z" fill="#E9D9C0" stroke="#C9B698" stroke-width="1.5"/>
+  <ellipse cx="60" cy="62" rx="30" ry="32" fill="#F3EBDD"/>
+  <ellipse cx="30" cy="54" rx="10" ry="6" fill="#F3EBDD" transform="rotate(-20 30 54)"/><ellipse cx="90" cy="54" rx="10" ry="6" fill="#F3EBDD" transform="rotate(20 90 54)"/>
+  <ellipse cx="60" cy="80" rx="20" ry="13" fill="#F6C6D0"/>
+  <ellipse cx="52" cy="80" rx="3" ry="4" fill="#C9788B"/><ellipse cx="68" cy="80" rx="3" ry="4" fill="#C9788B"/>
+  <path d="M52 90 Q60 94 68 90" stroke="#C9788B" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <circle cx="48" cy="58" r="5" fill="#2B1D14"/><circle cx="72" cy="58" r="5" fill="#2B1D14"/>
+  <circle cx="49.5" cy="56.5" r="1.6" fill="#fff"/><circle cx="73.5" cy="56.5" r="1.6" fill="#fff"/>
+  <path d="M40 52 Q44 48 48 50 M72 50 Q76 48 80 52" stroke="#2B1D14" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M52 44 Q60 40 68 44" stroke="#A5733F" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- garland and bell -->
+  <g fill="#F4A523"><circle cx="40" cy="92" r="4"/><circle cx="48" cy="98" r="4"/><circle cx="57" cy="102" r="4"/><circle cx="66" cy="103" r="4"/><circle cx="75" cy="100" r="4"/><circle cx="83" cy="94" r="4"/></g>
+  <g fill="#D9663D"><circle cx="44" cy="95" r="2"/><circle cx="52.5" cy="100.5" r="2"/><circle cx="61.5" cy="103" r="2"/><circle cx="70.5" cy="102" r="2"/><circle cx="79" cy="97.5" r="2"/></g>
+  <path d="M62 104 L62 110" stroke="#6F5F58" stroke-width="1.5"/><path d="M57 110 Q62 106 67 110 L68 118 L56 118 Z" fill="#FFC94D" stroke="#B8780F"/>
+</symbol>
+<symbol id="f-gauri" viewBox="24 22 76 76"><use href="#c-gauri" width="200" height="150"/></symbol>
+
+<!-- Dhanu the calf -->
+<symbol id="c-dhanu" viewBox="0 0 110 100">
+  <ellipse cx="58" cy="95" rx="36" ry="4" fill="rgba(0,0,0,.15)"/>
+  <path d="M94 56 Q106 60 102 76" stroke="#D9A066" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <rect x="44" y="66" width="10" height="22" rx="5" fill="#D9A066" transform="rotate(-14 49 77)"/><rect x="58" y="68" width="10" height="22" rx="5" fill="#D9A066"/>
+  <rect x="76" y="68" width="10" height="22" rx="5" fill="#D9A066" transform="rotate(12 81 79)"/><rect x="86" y="66" width="10" height="22" rx="5" fill="#D9A066" transform="rotate(20 91 77)"/>
+  <ellipse cx="68" cy="58" rx="32" ry="20" fill="#D9A066"/>
+  <ellipse cx="78" cy="56" rx="10" ry="7" fill="#FFF8EE"/>
+  <circle cx="34" cy="40" r="22" fill="#D9A066"/>
+  <ellipse cx="14" cy="36" rx="8" ry="5" fill="#D9A066" transform="rotate(-20 14 36)"/><ellipse cx="54" cy="36" rx="8" ry="5" fill="#D9A066" transform="rotate(20 54 36)"/>
+  <path d="M28 20 Q30 8 38 10 Q34 14 36 20 Q40 12 46 16 Q40 18 40 22 Z" fill="#A5733F"/>
+  <ellipse cx="34" cy="52" rx="14" ry="9" fill="#F6C6D0"/>
+  <ellipse cx="29" cy="52" rx="2.2" ry="3" fill="#C9788B"/><ellipse cx="39" cy="52" rx="2.2" ry="3" fill="#C9788B"/>
+  <ellipse cx="25" cy="38" rx="6" ry="7" fill="#fff"/><ellipse cx="43" cy="38" rx="6" ry="7" fill="#fff"/>
+  <circle cx="26" cy="39" r="3.8" fill="#2B1D14"/><circle cx="44" cy="39" r="3.8" fill="#2B1D14"/>
+  <circle cx="27.5" cy="37.5" r="1.3" fill="#fff"/><circle cx="45.5" cy="37.5" r="1.3" fill="#fff"/>
+  <path d="M30 60 Q34 64 38 60" stroke="#C9788B" stroke-width="1.5" fill="none"/>
+</symbol>
+<symbol id="f-dhanu" viewBox="6 6 56 60"><use href="#c-dhanu" width="110" height="100"/></symbol>
+
+<!-- Mitthu the mountain parrot -->
+<symbol id="c-mitthu" viewBox="0 0 70 110">
+  <rect x="4" y="96" width="62" height="5" rx="2.5" fill="#8B5A2B"/>
+  <path d="M40 70 Q62 86 58 108 Q50 92 36 80 Z" fill="#2E86AB"/><path d="M42 72 Q58 84 56 100 Q50 90 40 80 Z" fill="#4E9F3D"/>
+  <ellipse cx="34" cy="62" rx="20" ry="26" fill="#5BAE3C"/>
+  <path d="M18 48 Q6 62 14 80 Q24 76 26 56 Z" fill="#3E8E2C"/>
+  <circle cx="32" cy="30" r="17" fill="#4A6D9C"/>
+  <path d="M46 28 Q60 30 54 42 Q48 44 44 36 Z" fill="#E8603C"/><path d="M46 36 Q52 42 50 44 Q46 42 44 38 Z" fill="#C9472A"/>
+  <circle cx="38" cy="26" r="5.5" fill="#fff"/><circle cx="39" cy="26.5" r="3.2" fill="#2B1D14"/><circle cx="40" cy="25.5" r="1" fill="#fff"/>
+  <path d="M26 44 Q34 46 42 44" stroke="#E8603C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M26 86 L22 97 M30 86 L30 97 M40 86 L44 97" stroke="#E8603C" stroke-width="3" stroke-linecap="round"/>
+</symbol>
+<symbol id="f-mitthu" viewBox="10 8 52 52"><use href="#c-mitthu" width="70" height="110"/></symbol>
+
+<!-- ===== ICONS: eight sections + companions + tabs ===== -->
+<symbol id="i-academic" viewBox="0 0 64 64"><rect x="8" y="12" width="48" height="36" rx="6" fill="#1F2A5C"/><rect x="12" y="16" width="40" height="28" rx="3" fill="#2F3C7E"/><path d="M18 26 h20 M18 32 h28 M18 38 h14" stroke="#fff" stroke-width="3" stroke-linecap="round"/><rect x="40" y="46" width="14" height="5" rx="2.5" fill="#fff"/><path d="M8 52 h48" stroke="#8B5A2B" stroke-width="5" stroke-linecap="round"/></symbol>
+<symbol id="i-stem" viewBox="0 0 64 64"><circle cx="30" cy="34" r="14" fill="none" stroke="#fff" stroke-width="6"/><g stroke="#fff" stroke-width="6" stroke-linecap="round"><path d="M30 12v6M30 50v6M8 34h6M46 34h6M14.4 18.4l4.3 4.3M41.3 45.3l4.3 4.3M14.4 49.6l4.3-4.3M41.3 22.7l4.3-4.3"/></g><circle cx="30" cy="34" r="5" fill="#FFC94D"/><path d="M50 6 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 Z" fill="#FFC94D"/></symbol>
+<symbol id="i-music" viewBox="0 0 64 64"><ellipse cx="22" cy="42" rx="14" ry="10" fill="#8B5A2B"/><ellipse cx="22" cy="36" rx="14" ry="8" fill="#E9D9C0"/><circle cx="22" cy="36" r="5" fill="#3A2E2A"/><ellipse cx="46" cy="44" rx="11" ry="8" fill="#8B5A2B"/><ellipse cx="46" cy="39" rx="11" ry="6" fill="#E9D9C0"/><circle cx="46" cy="39" r="4" fill="#3A2E2A"/><path d="M46 8 v18 M46 8 l12 4 v8 l-12 -4" fill="#FFC94D" stroke="#FFC94D" stroke-width="3" stroke-linejoin="round"/><circle cx="42" cy="26" r="4" fill="#FFC94D"/></symbol>
+<symbol id="i-art" viewBox="0 0 64 64"><path d="M32 8 C18 8 8 18 8 30 c0 12 10 20 22 20 c4 0 4-6 8-6 c8 0 18-4 18-14 C56 18 46 8 32 8 Z" fill="#FFF8EE"/><circle cx="20" cy="26" r="4" fill="#D9663D"/><circle cx="32" cy="18" r="4" fill="#FFC94D"/><circle cx="44" cy="24" r="4" fill="#4E9F3D"/><circle cx="18" cy="38" r="4" fill="#2E86AB"/><path d="M50 42 l-20 16 l-4 -4 l16 -20 Z" fill="#F4A523"/><path d="M28 56 l-4 -4 l-4 6 Z" fill="#3A2E2A"/></symbol>
+<symbol id="i-sports" viewBox="0 0 64 64"><path d="M14 56 l24 -24" stroke="#8B5A2B" stroke-width="10" stroke-linecap="round"/><path d="M34 30 l12 -12 l6 6 l-12 12 Z" fill="#E9D9C0"/><circle cx="46" cy="46" r="9" fill="#D9663D"/><path d="M40 40 q6 6 12 12" stroke="#fff" stroke-width="2" fill="none"/><path d="M12 10 v18 M18 10 v18 M24 10 v18 M10 10 h16" stroke="#FFF8EE" stroke-width="3" stroke-linecap="round"/></symbol>
+<symbol id="i-nature" viewBox="0 0 64 64"><path d="M10 50 q22 -12 44 0 l-4 8 h-36 Z" fill="#E9B98E"/><path d="M32 46 v-18" stroke="#4E9F3D" stroke-width="4" stroke-linecap="round"/><path d="M32 34 q-14 -4 -14 -18 q14 2 14 18 Z" fill="#8BC34A"/><path d="M32 30 q14 -6 14 -20 q-14 4 -14 20 Z" fill="#4E9F3D"/><circle cx="52" cy="14" r="7" fill="#FFC94D"/></symbol>
+<symbol id="i-mind" viewBox="0 0 64 64"><path d="M14 14 h14 a6 6 0 1 1 8 0 h14 v14 a6 6 0 1 0 0 8 v14 h-14 a6 6 0 1 1 -8 0 h-14 v-14 a6 6 0 1 0 0 -8 Z" fill="#FFF8EE"/><path d="M32 46 c-8 -6 -14 -10 -14 -16 a7 7 0 0 1 14 -2 a7 7 0 0 1 14 2 c0 6 -6 10 -14 16 Z" fill="#D9663D"/></symbol>
+<symbol id="i-explore" viewBox="0 0 64 64"><circle cx="24" cy="40" r="16" fill="#2E86AB"/><path d="M14 34 q6 -4 10 2 q6 6 14 0 M12 44 q10 8 22 2" stroke="#8BC34A" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M36 30 l20 -20" stroke="#3A2E2A" stroke-width="7" stroke-linecap="round"/><path d="M50 8 l8 8 l-4 4 l-8 -8 Z" fill="#FFF8EE"/><circle cx="56" cy="42" r="3" fill="#FFF8EE"/><circle cx="48" cy="52" r="2" fill="#FFF8EE"/></symbol>
+<symbol id="i-stories" viewBox="0 0 64 64"><path d="M8 14 q12 -4 24 2 v38 q-12 -6 -24 -2 Z" fill="#FFF8EE"/><path d="M56 14 q-12 -4 -24 2 v38 q12 -6 24 -2 Z" fill="#FFEFD2"/><path d="M14 24 h12 M14 32 h12 M14 40 h8 M38 24 h12 M38 32 h12" stroke="#2F3C7E" stroke-width="2.5" stroke-linecap="round"/><path d="M32 16 v38" stroke="#D9663D" stroke-width="2"/></symbol>
+<symbol id="i-tests" viewBox="0 0 64 64"><rect x="12" y="8" width="40" height="48" rx="6" fill="#FFF8EE"/><rect x="24" y="4" width="16" height="10" rx="3" fill="#D9663D"/><path d="M20 26 l5 5 l9 -9 M20 42 l5 5 l9 -9" stroke="#4E9F3D" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M38 26 h8 M38 42 h8" stroke="#2F3C7E" stroke-width="3" stroke-linecap="round"/></symbol>
+<symbol id="i-achieve" viewBox="0 0 64 64"><path d="M32 6 l7 14 15 2 -11 10 3 15 -14 -7 -14 7 3 -15 -11 -10 15 -2 Z" fill="#FFC94D" stroke="#F4A523" stroke-width="2"/><path d="M24 46 l-4 14 l12 -6 l12 6 l-4 -14" fill="#D9663D"/></symbol>
+<symbol id="i-parent" viewBox="0 0 64 64"><circle cx="24" cy="22" r="10" fill="#E9B98E"/><circle cx="44" cy="28" r="7" fill="#D9A070"/><path d="M8 56 q0 -18 16 -18 q16 0 16 18 Z" fill="#2F3C7E"/><path d="M34 56 q0 -14 10 -14 q10 0 10 14 Z" fill="#FFC94D"/><rect x="40" y="6" width="16" height="12" rx="3" fill="#8B5A2B"/><rect x="44" y="2" width="8" height="8" rx="4" fill="none" stroke="#8B5A2B" stroke-width="3"/></symbol>
+<symbol id="i-house" viewBox="0 0 64 64"><path d="M8 32 L32 10 L56 32 Z" fill="#D9663D"/><rect x="14" y="30" width="36" height="26" rx="3" fill="#FFF3DC"/><rect x="27" y="40" width="10" height="16" rx="2" fill="#8B5A2B"/><rect x="18" y="36" width="7" height="7" fill="#BFE6F7"/><rect x="40" y="36" width="7" height="7" fill="#BFE6F7"/></symbol>
+<symbol id="i-map" viewBox="0 0 64 64"><path d="M8 16 l16 -6 l16 6 l16 -6 v38 l-16 6 l-16 -6 l-16 6 Z" fill="#FFF3DC" stroke="#8B5A2B" stroke-width="3" stroke-linejoin="round"/><path d="M24 10 v38 M40 16 v38" stroke="#8B5A2B" stroke-width="2"/><circle cx="32" cy="30" r="5" fill="#D9663D"/></symbol>
+<symbol id="i-me" viewBox="0 0 64 64"><circle cx="32" cy="22" r="13" fill="#D9A070"/><path d="M10 58 q0 -20 22 -20 q22 0 22 20 Z" fill="#FFC94D"/><path d="M20 18 q4 -12 12 -10 q10 -2 14 10 q-6 -6 -13 -4 q-7 -2 -13 4 Z" fill="#2B1D14"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2 l3 6.5 7 .8 -5.2 4.8 1.4 7 -6.2 -3.6 -6.2 3.6 1.4 -7 -5.2 -4.8 7 -.8 Z" fill="#FFC94D" stroke="#C98310" stroke-width="1"/></symbol>
+<symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#FFC94D" stroke="#C98310" stroke-width="1.5"/><circle cx="12" cy="12" r="6" fill="none" stroke="#C98310" stroke-width="1.5"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="3" fill="#2F3C7E"/><path d="M8 10 V7 a4 4 0 0 1 8 0 v3" fill="none" stroke="#2F3C7E" stroke-width="2.5"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#4E9F3D"/><path d="M6 12 l4 4 l8 -8" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-speaker" viewBox="0 0 24 24"><path d="M4 9 h4 l5 -4 v14 l-5 -4 h-4 Z" fill="#2F3C7E"/><path d="M16 8 q4 4 0 8 M18.5 5.5 q6 6.5 0 13" stroke="#2F3C7E" stroke-width="2" fill="none" stroke-linecap="round"/></symbol>
+<symbol id="i-badge" viewBox="0 0 64 64"><circle cx="32" cy="28" r="20" fill="#FFC94D" stroke="#F4A523" stroke-width="4"/><path d="M24 48 l-4 14 l12 -6 l12 6 l-4 -14" fill="#D9663D"/><path d="M32 16 l4 8 8 1 -6 6 2 8 -8 -4 -8 4 2 -8 -6 -6 8 -1 Z" fill="#fff"/></symbol>
+<symbol id="i-leafbadge" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="#8BC34A"/><path d="M32 50 q-18 -6 -14 -28 q20 2 14 28 Z" fill="#FFF8EE"/><path d="M32 48 q2 -14 -4 -22" stroke="#4E9F3D" stroke-width="2" fill="none"/></symbol>
+<symbol id="i-sunbadge" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="#2E86AB"/><circle cx="32" cy="32" r="10" fill="#FFC94D"/><g stroke="#FFC94D" stroke-width="3" stroke-linecap="round"><path d="M32 10v6M32 48v6M10 32h6M48 32h6M16 16l4 4M44 44l4 4M16 48l4-4M44 20l4-4"/></g></symbol>
+</defs>
+</svg>
+<div class="spread">
+  <header class="masthead">
+    <div>
+      <h1>DADU <small>Dadaji's Miniverse · Learn, Play, Explore and Grow!</small></h1>
+      <p>Visual prototype for approval: the characters, the Miniverse, the rooms, the learning tabs and the parent side, shown for a preschool child and for an older child.</p>
+    </div>
+    <div class="controls" role="group" aria-label="Prototype controls">
+      <div class="seg" role="group" aria-label="Child age">
+        <button id="ageLittle" aria-pressed="true" onclick="setAge('little')">Preschool · Gopu, 4</button>
+        <button id="ageExplorer" aria-pressed="false" onclick="setAge('explorer')">Older · Gopu, 10</button>
+      </div>
+      <div class="seg" role="group" aria-label="Language">
+        <button id="langEn" aria-pressed="true" onclick="setLang('en')">English</button>
+        <button id="langHi" aria-pressed="false" onclick="setLang('hi')">हिन्दी</button>
+      </div>
+      <button class="pill" id="cmp" aria-pressed="false" onclick="toggleCompare()">Side by side</button>
+    </div>
+  </header>
+  <main class="stage" id="stage" aria-live="polite"></main>
+  <aside class="page">
+    <h2>Screens</h2>
+    <div id="index"></div>
+    <div class="note" id="note"></div>
+    <div class="legend"><span><i style="background:#F4A523"></i>Tap a glowing ring to open its lesson</span><span><i style="background:#4E9F3D"></i>Correct</span><span><i style="background:#D9663D"></i>Try again (never shaming)</span></div>
+  </aside>
+  <footer class="foot">Everything on this page is original art and text made for DADU. The cow's name "Gauri" is a proposal awaiting approval. Design documents: <code>docs/dadu/</code> in the repository.</footer>
+</div>
+<script>
+/* ============ STATE ============ */
+const S = { age:'little', lang:'en', screen:'language', compare:false, lesson:null, step:0, picked:null, gate:'', pin:[], story:null, storyPage:0, rwaDone:false, toast:'' };
+const L = (en,hi)=>({en,hi});
+const tx = (o,lang)=> (typeof o==='string'?o:(o[lang]||o.en));
+
+/* ============ STRINGS ============ */
+const T = {
+  tabs:{ map:L('Miniverse','मिनीवर्स'), learn:L('Learn','सीखें'), stories:L('Stories','कहानियाँ'), tests:L('Tests','परीक्षा'), me:L('Me','मैं') },
+  sections:[
+    {k:'academic',c:'#2F3C7E',n:L('Academic Learning','पढ़ाई-लिखाई'),s:L('Languages · Maths · Science · Social','भाषा · गणित · विज्ञान · समाज')},
+    {k:'stem',c:'#2E86AB',n:L('STEM and Technology','विज्ञान-तकनीक'),s:L('Coding · Robotics · Computers','कोडिंग · रोबोटिक्स · कंप्यूटर')},
+    {k:'music',c:'#E07A95',n:L('Music and Performing Arts','संगीत और कला'),s:L('Swar · Taal · Dance · Theatre','स्वर · ताल · नृत्य · नाटक')},
+    {k:'art',c:'#8E4585',n:L('Art and Creativity','कला और रचना'),s:L('Drawing · Rangoli · Clay · Crafts','चित्र · रंगोली · मिट्टी · शिल्प')},
+    {k:'sports',c:'#D9663D',n:L('Sports and Fitness','खेल और सेहत'),s:L('Cricket · Yoga · Kabaddi · Balance','क्रिकेट · योग · कबड्डी · संतुलन')},
+    {k:'nature',c:'#4E9F3D',n:L('Nature and Life Skills','प्रकृति और जीवन कौशल'),s:L('Garden · Animals · Hygiene · Money','बगीचा · जानवर · सफ़ाई · पैसा')},
+    {k:'mind',c:'#E0901C',n:L('Cognitive and Social Skills','सोच और समाज'),s:L('Memory · Logic · Chess · Empathy','याद · तर्क · शतरंज · सहानुभूति')},
+    {k:'explore',c:'#C98310',n:L('Knowledge and Exploration','ज्ञान और खोज'),s:L('Space · Dinosaurs · History · World','अंतरिक्ष · डायनासोर · इतिहास · दुनिया')}
+  ],
+  companions:[ {k:'stories',n:L("Dadaji's Story Corner",'दादाजी की कहानियाँ'),c:'#8B5A2B'}, {k:'tests',n:L('Tests and Challenges','परीक्षा और चुनौतियाँ'),c:'#2E86AB'}, {k:'achievements',n:L('My Achievements','मेरी उपलब्धियाँ'),c:'#F4A523'}, {k:'parents',n:L('Parent Dashboard','अभिभावक डैशबोर्ड'),c:'#2F3C7E'} ],
+  chars:[
+    {k:'dadaji',n:L('Dadaji','दादाजी'),r:L('The one and only teacher. Introduces every lesson, explains, asks, encourages, corrects, tells stories.','एकमात्र शिक्षक। हर पाठ शुरू करते हैं, समझाते हैं, पूछते हैं, हौसला देते हैं, कहानियाँ सुनाते हैं।')},
+    {k:'gopu',n:L('Gopu','गोपू'),r:L('The naughty, curious grandchild. Asks unexpected questions and makes funny mistakes.','शरारती, जिज्ञासु पोता/पोती। अनोखे सवाल पूछता है और मज़ेदार गलतियाँ करता है।')},
+    {k:'kim',n:L('Kim','किम'),r:L('Playful dog. Sports, reasoning, "let us go and find out!"','खिलंदड़ कुत्ता। खेल, तर्क, "चलो पता लगाएँ!"')},
+    {k:'molly',n:L('Molly','मॉली'),r:L('Intelligent rabbit. Maths, puzzles, logic and dry jokes.','चतुर खरगोश। गणित, पहेलियाँ, तर्क और मज़ाक।')},
+    {k:'gauri',n:L('Gauri (proposed)','गौरी (प्रस्तावित)'),r:L('Gentle cow. Agriculture, nature, animals, nutrition.','कोमल गाय। खेती, प्रकृति, जानवर, पोषण।')},
+    {k:'dhanu',n:L('Dhanu','धनु'),r:L('Mischievous calf. Simple activities and funny moments.','शरारती बछड़ा। आसान गतिविधियाँ और हँसी के पल।')},
+    {k:'mitthu',n:L('Mitthu','मिट्ठू'),r:L('Mountain parrot. Repeats key lines for revision; Gopu listens and repeats.','पहाड़ी तोता। दोहराने के लिए मुख्य बातें दोहराता है; गोपू सुनकर दोहराता है।')}
+  ],
+  steps:[L('Dadaji introduces','दादाजी बताते हैं'),L('Gopu asks','गोपू पूछता है'),L('Friend joins in','दोस्त साथ देता है'),L('Dadaji explains','दादाजी समझाते हैं'),L('Your turn','आपकी बारी'),L('Feedback','प्रतिक्रिया'),L('Quick check','छोटी परीक्षा'),L("Mitthu's Echo",'मिट्ठू की गूँज')],
+  next:L('Next','आगे'), start:L('Start','शुरू करें'), tapObj:L('Tap something to learn about it','किसी चीज़ को छुओ और सीखो'), listen:L('Listen','सुनो'),
+  well:L('Shabash! That is right.','शाबाश! बिल्कुल सही।'), again:L('Not this one. Let us look again together.','यह नहीं। चलो फिर से साथ देखते हैं।'),
+  objective:L('Learning objective','सीखने का लक्ष्य'), realworld:L('Real-world adventure','असली दुनिया का काम'),
+  done:L('Finish','पूरा'), close:L('Close','बंद करें')
+};
+
+/* ============ LESSONS (content for the interactive objects) ============ */
+/* Each lesson follows the canonical formula. 'little' = Little mode (A1–A2), 'explorer' = Explorer mode (A3–A5). */
+const LESSONS = {
+ 'house.living_room.telescope':{ title:L('The telescope','दूरबीन'), section:'explore', objective:L('Know that the Moon, planets and stars are far away and a telescope makes them look closer.','जानना कि चाँद, ग्रह और तारे बहुत दूर हैं और दूरबीन उन्हें पास दिखाती है।'), rwa:L('Tonight, look at the Moon with an adult and draw its shape.','आज रात किसी बड़े के साथ चाँद देखो और उसका आकार बनाओ।'),
+  little:{ en:[['dadaji','Beta, look! This is my telescope. It makes far-away things look big.'],['gopu','Dadaji, can I see the Moon in it?'],['molly','I counted: the Moon is very, very far. Further than the mango tree!'],['dadaji','Yes! The Moon is far, so it looks small. The telescope makes it look close.'],['you','Tap the Moon in the sky.'],['dadaji','Shabash! You found the Moon.'],['quiz','Which one do we see at night?'],['mitthu','The Moon is far. The telescope makes it close.']],
+           hi:[['dadaji','बेटा, देखो! यह मेरी दूरबीन है। यह दूर की चीज़ों को बड़ा दिखाती है।'],['gopu','दादाजी, क्या मैं इसमें चाँद देख सकता हूँ?'],['molly','मैंने गिना: चाँद बहुत-बहुत दूर है। आम के पेड़ से भी दूर!'],['dadaji','हाँ! चाँद दूर है, इसलिए छोटा दिखता है। दूरबीन उसे पास दिखाती है।'],['you','आसमान में चाँद को छुओ।'],['dadaji','शाबाश! तुमने चाँद ढूँढ लिया।'],['quiz','रात में हम किसे देखते हैं?'],['mitthu','चाँद दूर है। दूरबीन उसे पास लाती है।']] },
+  explorer:{ en:[['dadaji','This refracting telescope has two lenses. The big one collects light; the small one magnifies the image.'],['gopu','If the Moon is 384,000 km away, how does it look so close?'],['molly','Magnification! A 50x telescope makes it look as if it were 7,680 km away. I did the division.'],['dadaji','Exactly. Light from the Moon enters the objective lens, bends, and forms a small image that the eyepiece enlarges.'],['you','Put the planets in order from the Sun.'],['dadaji','Well reasoned. Mercury, Venus, Earth, Mars: the rocky four come first.'],['quiz','Which lens collects the light in a telescope?'],['mitthu','Objective collects. Eyepiece magnifies.']],
+            hi:[['dadaji','इस दूरबीन में दो लेंस हैं। बड़ा लेंस रोशनी इकट्ठा करता है; छोटा लेंस छवि को बड़ा करता है।'],['gopu','चाँद 3,84,000 किमी दूर है तो इतना पास कैसे दिखता है?'],['molly','आवर्धन! 50 गुना दूरबीन उसे ऐसा दिखाती है जैसे 7,680 किमी दूर हो। मैंने भाग किया।'],['dadaji','बिल्कुल। चाँद की रोशनी अभिदृश्यक लेंस में जाकर मुड़ती है, छोटी छवि बनती है, जिसे नेत्रिका बड़ा करती है।'],['you','ग्रहों को सूर्य से क्रम में लगाओ।'],['dadaji','सही सोच। बुध, शुक्र, पृथ्वी, मंगल: पहले चार पथरीले ग्रह।'],['quiz','दूरबीन में रोशनी कौन-सा लेंस इकट्ठा करता है?'],['mitthu','अभिदृश्यक इकट्ठा करता है। नेत्रिका बड़ा करती है।']] },
+  quiz:{ little:[['moon',L('Moon','चाँद'),true],['sun',L('Sun','सूरज'),false],['leaf',L('Leaf','पत्ता'),false],['ball',L('Ball','गेंद'),false]], explorer:[['lens',L('Objective lens','अभिदृश्यक लेंस'),true],['eye',L('Eyepiece','नेत्रिका'),false],['tripod',L('Tripod','तिपाई'),false],['moon',L('The Moon','चाँद'),false]] } },
+ 'house.living_room.globe':{ title:L('The globe','ग्लोब'), section:'academic', objective:L('Find India on the globe and name the continent it is in.','ग्लोब पर भारत ढूँढना और उसका महाद्वीप बताना।'), rwa:L('Find India on a real map or atlas at home and show it to someone.','घर के नक्शे या एटलस पर भारत ढूँढकर किसी को दिखाओ।'),
+  little:{ en:[['dadaji','This round ball is our Earth, beta. Blue is water, green is land.'],['molly','Dadaji, where is India? Where is our house?'],['kim','Woof! I smell mangoes. India must be there!'],['dadaji','Ha ha, Kim. India is here, shaped like a kite, with the sea on three sides.'],['you','Tap India on the globe.'],['dadaji','Shabash! That is our India.'],['quiz','What is the blue colour on the globe?'],['mitthu','Blue is water. Green is land.']],
+           hi:[['dadaji','यह गोल गेंद हमारी धरती है, बेटा। नीला पानी है, हरा ज़मीन।'],['molly','दादाजी, भारत कहाँ है? हमारा घर कहाँ है?'],['kim','भौं! मुझे आम की खुशबू आ रही है। भारत वहीं होगा!'],['dadaji','हा हा, किम। भारत यहाँ है, पतंग जैसा, तीन ओर समुद्र।'],['you','ग्लोब पर भारत को छुओ।'],['dadaji','शाबाश! यही हमारा भारत है।'],['quiz','ग्लोब पर नीला रंग क्या है?'],['mitthu','नीला पानी। हरा ज़मीन।']] },
+  explorer:{ en:[['dadaji','A globe is the only map with no distortion, because it is the same shape as the Earth.'],['gopu','Then why do flat maps make Greenland look as big as Africa?'],['molly','Because stretching a sphere flat stretches the poles. Africa is actually 14 times larger.'],['dadaji','Correct. India lies in Asia, between 8° and 37° North, with the Tropic of Cancer passing through its middle.'],['you','Find the Tropic of Cancer and tap a state it crosses.'],['dadaji','Good. Gujarat, Rajasthan, Madhya Pradesh, Chhattisgarh, Jharkhand, West Bengal, Tripura and Mizoram all lie on it.'],['quiz','Which continent is India in?'],['mitthu','Globe: no distortion. Tropic of Cancer: through the middle of India.']],
+            hi:[['dadaji','ग्लोब ही एकमात्र नक्शा है जिसमें कोई विकृति नहीं, क्योंकि यह धरती जैसा ही गोल है।'],['gopu','तो सपाट नक्शों में ग्रीनलैंड अफ़्रीका जितना बड़ा क्यों दिखता है?'],['molly','क्योंकि गोले को सपाट करने पर ध्रुव खिंच जाते हैं। असल में अफ़्रीका 14 गुना बड़ा है।'],['dadaji','सही। भारत एशिया में, 8° से 37° उत्तर के बीच है, और कर्क रेखा इसके बीच से गुज़रती है।'],['you','कर्क रेखा ढूँढो और उस पर आने वाला एक राज्य छुओ।'],['dadaji','बढ़िया। गुजरात, राजस्थान, मध्य प्रदेश, छत्तीसगढ़, झारखंड, पश्चिम बंगाल, त्रिपुरा और मिज़ोरम इस पर हैं।'],['quiz','भारत किस महाद्वीप में है?'],['mitthu','ग्लोब: कोई विकृति नहीं। कर्क रेखा: भारत के बीच से।']] },
+  quiz:{ little:[['water',L('Water','पानी'),true],['leaf',L('Trees','पेड़'),false],['sun',L('Sun','सूरज'),false],['ball',L('Ball','गेंद'),false]], explorer:[['asia',L('Asia','एशिया'),true],['africa',L('Africa','अफ़्रीका'),false],['europe',L('Europe','यूरोप'),false],['australia',L('Australia','ऑस्ट्रेलिया'),false]] } },
+ 'house.lab.magnet':{ title:L('The magnet','चुंबक'), section:'stem', objective:L('Predict which objects a magnet attracts.','अनुमान लगाना कि चुंबक किन चीज़ों को खींचता है।'), rwa:L('With an adult, test five safe objects at home with a fridge magnet.','किसी बड़े के साथ फ्रिज के चुंबक से घर की पाँच सुरक्षित चीज़ें जाँचो।'),
+  little:{ en:[['dadaji','This is a magnet, beta. It pulls some things like magic. But it is not magic, it is science!'],['gopu','Will it pull my mango?'],['kim','Woof! It pulled my bell! Give it back!'],['dadaji','Kim\'s bell is iron, so the magnet pulls it. A mango is not iron, so it stays.'],['you','Tap the thing the magnet will pull.'],['dadaji','Shabash! Iron things come to the magnet.'],['quiz','Which one will the magnet pull?'],['mitthu','Magnet pulls iron. Not mango, not leaf.']],
+           hi:[['dadaji','यह चुंबक है, बेटा। यह कुछ चीज़ों को जादू की तरह खींचता है। पर यह जादू नहीं, विज्ञान है!'],['gopu','क्या यह मेरा आम खींचेगा?'],['kim','भौं! इसने मेरी घंटी खींच ली! वापस दो!'],['dadaji','किम की घंटी लोहे की है, इसलिए चुंबक खींचता है। आम लोहे का नहीं, तो वह वहीं रहेगा।'],['you','उस चीज़ को छुओ जिसे चुंबक खींचेगा।'],['dadaji','शाबाश! लोहे की चीज़ें चुंबक के पास आती हैं।'],['quiz','चुंबक किसे खींचेगा?'],['mitthu','चुंबक लोहा खींचता है। आम नहीं, पत्ता नहीं।']] },
+  explorer:{ en:[['dadaji','A magnet has two poles. Like poles push apart; unlike poles pull together. Iron, nickel and cobalt are attracted.'],['gopu','Then why does it not pull this steel-looking spoon?'],['molly','Hypothesis: that spoon is stainless steel with a lot of nickel and chromium, which can be non-magnetic.'],['dadaji','Good hypothesis. We test, we do not assume. Try the spoon, the nail, the coin and the pencil.'],['you','Sort the four objects: attracted or not.'],['dadaji','The iron nail and the bell: attracted. The brass coin and the pencil: not. Molly was right about the spoon.'],['quiz','Which metal is NOT attracted by a magnet?'],['mitthu','Like poles repel. Unlike poles attract. Iron, nickel, cobalt.']],
+            hi:[['dadaji','चुंबक के दो ध्रुव होते हैं। समान ध्रुव दूर भागते हैं; असमान पास आते हैं। लोहा, निकल और कोबाल्ट आकर्षित होते हैं।'],['gopu','तो यह स्टील जैसा चम्मच क्यों नहीं खिंचता?'],['molly','परिकल्पना: यह स्टेनलेस स्टील है, जिसमें निकल-क्रोमियम ज़्यादा हैं, वह अचुंबकीय हो सकता है।'],['dadaji','अच्छी परिकल्पना। हम जाँचते हैं, मानते नहीं। चम्मच, कील, सिक्का और पेंसिल आज़माओ।'],['you','चारों चीज़ों को बाँटो: खिंचीं या नहीं।'],['dadaji','लोहे की कील और घंटी: खिंचीं। पीतल का सिक्का और पेंसिल: नहीं। चम्मच के बारे में मॉली सही थी।'],['quiz','कौन-सी धातु चुंबक से नहीं खिंचती?'],['mitthu','समान ध्रुव दूर। असमान पास। लोहा, निकल, कोबाल्ट।']] },
+  quiz:{ little:[['nail',L('Iron nail','लोहे की कील'),true],['leaf',L('Leaf','पत्ता'),false],['mango',L('Mango','आम'),false],['pencil',L('Pencil','पेंसिल'),false]], explorer:[['copper',L('Copper','ताँबा'),true],['iron',L('Iron','लोहा'),false],['nickel',L('Nickel','निकल'),false],['cobalt',L('Cobalt','कोबाल्ट'),false]] } },
+ 'house.music_room.harmonium':{ title:L('Sa Re Ga Ma','सा रे गा मा'), section:'music', objective:L('Hear and sing the seven swaras in order.','सात स्वरों को क्रम में सुनना और गाना।'), rwa:L('Sing Sa Re Ga Ma Pa Dha Ni Sa to a family member tonight.','आज रात घर में किसी को सा रे गा मा पा धा नी सा गाकर सुनाओ।'),
+  little:{ en:[['dadaji','Beta, this is my harmonium. Each key sings one note: Sa, Re, Ga, Ma...'],['gopu','Sa re ga ma pa dha ni SAAA! Was that right?'],['mitthu','Sa Re Ga Ma! Sa Re Ga Ma!'],['dadaji','Mitthu loves it. Seven swaras climb up like the steps of our veranda.'],['you','Tap the keys from Sa to Sa.'],['dadaji','Shabash! You climbed all seven steps.'],['quiz','Which swara comes first?'],['mitthu','Sa Re Ga Ma Pa Dha Ni Sa.']],
+           hi:[['dadaji','बेटा, यह मेरा हारमोनियम है। हर पट्टी एक स्वर गाती है: सा, रे, गा, मा...'],['gopu','सा रे गा मा पा धा नी साआआ! सही था?'],['mitthu','सा रे गा मा! सा रे गा मा!'],['dadaji','मिट्ठू को बहुत पसंद है। सात स्वर हमारे बरामदे की सीढ़ियों जैसे ऊपर चढ़ते हैं।'],['you','सा से सा तक पट्टियाँ दबाओ।'],['dadaji','शाबाश! तुमने सातों सीढ़ियाँ चढ़ लीं।'],['quiz','सबसे पहला स्वर कौन-सा है?'],['mitthu','सा रे गा मा पा धा नी सा।']] },
+  explorer:{ en:[['dadaji','The seven swaras make a saptak. Sa and Pa are fixed; Re, Ga, Dha, Ni can be komal (flat) and Ma can be teevra (sharp).'],['gopu','So Raag Bhairav and Raag Yaman use the same seven names but different notes?'],['molly','Yes! Twelve possible notes, arranged in patterns. It is set theory with feelings.'],['dadaji','Bhairav uses komal Re and komal Dha; Yaman uses teevra Ma. Listen to both and feel the morning in one, the evening in the other.'],['you','Play the Yaman aaroh: Ni Re Ga Ma(teevra) Dha Ni Sa.'],['dadaji','Beautiful. Now you know why Yaman is sung at dusk.'],['quiz','Which two swaras never change?'],['mitthu','Sa and Pa are fixed. Ma can be teevra.']],
+            hi:[['dadaji','सात स्वर मिलकर सप्तक बनाते हैं। सा और पा अचल हैं; रे, गा, धा, नी कोमल हो सकते हैं और मा तीव्र।'],['gopu','तो राग भैरव और राग यमन में नाम वही सात पर स्वर अलग?'],['molly','हाँ! बारह संभव स्वर, अलग-अलग क्रम में। यह भावनाओं वाला समुच्चय-सिद्धांत है।'],['dadaji','भैरव में कोमल रे और कोमल धा; यमन में तीव्र मा। दोनों सुनो, एक में सुबह, दूसरे में शाम महसूस करो।'],['you','यमन का आरोह बजाओ: नी रे गा मा(तीव्र) धा नी सा।'],['dadaji','सुंदर। अब समझे कि यमन शाम को क्यों गाया जाता है।'],['quiz','कौन-से दो स्वर कभी नहीं बदलते?'],['mitthu','सा और पा अचल। मा तीव्र हो सकता है।']] },
+  quiz:{ little:[['sa',L('Sa','सा'),true],['ma',L('Ma','मा'),false],['ni',L('Ni','नी'),false],['pa',L('Pa','पा'),false]], explorer:[['sapa',L('Sa and Pa','सा और पा'),true],['rega',L('Re and Ga','रे और गा'),false],['mani',L('Ma and Ni','मा और नी'),false],['dhani',L('Dha and Ni','धा और नी'),false]] } },
+ 'house.art_room.rangoli':{ title:L('Rangoli patterns','रंगोली के पैटर्न'), section:'art', objective:L('Continue a repeating pattern of shapes and colours.','आकृतियों और रंगों का दोहराता पैटर्न आगे बढ़ाना।'), rwa:L('Make a small rangoli with flower petals or coloured rice at your door.','अपने दरवाज़े पर फूल की पंखुड़ियों या रंगीन चावल से छोटी रंगोली बनाओ।'),
+  little:{ en:[['dadaji','Look at the floor, beta. Dots, lines and petals make a rangoli.'],['gopu','I want to put a big orange blob in the middle!'],['molly','Pattern alert! Orange, green, orange, green... what comes next?'],['dadaji','A pattern repeats. If we keep the rule, the rangoli looks balanced and pretty.'],['you','Tap the colour that comes next.'],['dadaji','Shabash! Orange, green, orange, green, orange!'],['quiz','What comes next: petal, dot, petal, dot, ...?'],['mitthu','A pattern repeats. Keep the rule.']],
+           hi:[['dadaji','ज़मीन देखो, बेटा। बिंदु, रेखाएँ और पंखुड़ियाँ मिलकर रंगोली बनती है।'],['gopu','मैं बीच में बड़ा नारंगी धब्बा लगाऊँगा!'],['molly','पैटर्न! नारंगी, हरा, नारंगी, हरा... आगे क्या?'],['dadaji','पैटर्न दोहराता है। नियम रखो तो रंगोली संतुलित और सुंदर दिखती है।'],['you','अगला रंग छुओ।'],['dadaji','शाबाश! नारंगी, हरा, नारंगी, हरा, नारंगी!'],['quiz','आगे क्या: पंखुड़ी, बिंदु, पंखुड़ी, बिंदु, ...?'],['mitthu','पैटर्न दोहराता है। नियम रखो।']] },
+  explorer:{ en:[['dadaji','Kolam from Tamil Nadu is drawn on a dot grid with one unbroken line. Rangoli from Maharashtra uses symmetry around a centre.'],['gopu','One unbroken line around 25 dots? That sounds like a maze.'],['molly','It is a graph! Each dot is a node; the line visits every space exactly once. Mathematicians call it a Eulerian path.'],['dadaji','Art and mathematics were never separate in India. Try a 5 by 5 grid with four-fold symmetry.'],['you','Complete the mirrored quarter of the design.'],['dadaji','Perfect symmetry. Fold it in your mind and both halves match.'],['quiz','Which rangoli style uses a dot grid and one unbroken line?'],['mitthu','Kolam: dot grid, one line. Symmetry: fold and match.']],
+            hi:[['dadaji','तमिलनाडु का कोलम बिंदुओं की जाली पर एक अटूट रेखा से बनता है। महाराष्ट्र की रंगोली केंद्र के चारों ओर सममित होती है।'],['gopu','25 बिंदुओं के चारों ओर एक अटूट रेखा? यह तो भूलभुलैया लगती है।'],['molly','यह ग्राफ़ है! हर बिंदु एक नोड; रेखा हर जगह ठीक एक बार जाती है। गणितज्ञ इसे ऑयलर पथ कहते हैं।'],['dadaji','भारत में कला और गणित कभी अलग नहीं थे। 5×5 जाली पर चार-तरफ़ा सममिति आज़माओ।'],['you','डिज़ाइन का दर्पण-चौथाई पूरा करो।'],['dadaji','पूर्ण सममिति। मन में मोड़ो और दोनों हिस्से मिल जाएँगे।'],['quiz','कौन-सी शैली बिंदु-जाली और एक अटूट रेखा उपयोग करती है?'],['mitthu','कोलम: बिंदु जाली, एक रेखा। सममिति: मोड़ो और मिलाओ।']] },
+  quiz:{ little:[['petal',L('Petal','पंखुड़ी'),true],['dot',L('Dot','बिंदु'),false],['leaf',L('Leaf','पत्ता'),false],['star',L('Star','तारा'),false]], explorer:[['kolam',L('Kolam','कोलम'),true],['madhubani',L('Madhubani','मधुबनी'),false],['warli',L('Warli','वारली'),false],['mandala',L('Mandala','मंडला'),false]] } },
+ 'house.garden.tulsi':{ title:L('The tulsi plant','तुलसी का पौधा'), section:'nature', objective:L('Name the parts of a plant and what it needs to grow.','पौधे के भाग और उसकी ज़रूरतें बताना।'), rwa:L('Water a plant at home every morning for a week with an adult and draw how it changes.','एक हफ़्ते तक रोज़ सुबह किसी बड़े के साथ पौधे को पानी दो और बदलाव का चित्र बनाओ।'),
+  little:{ en:[['dadaji','Beta, look at this beautiful tulsi. It needs sunlight and water.'],['gopu','Can I give it my milk instead of water?'],['gauri','Hmmm, no, little one. Plants drink water through their roots, under the soil.'],['dadaji','Gauri is right. Roots drink, the stem carries, the leaves make food from sunlight.'],['you','Tap the watering can to water the tulsi.'],['dadaji','Shabash! See the leaves stand up? The tulsi says thank you.'],['quiz','Which part of the plant drinks water?'],['mitthu','Roots drink. Leaves make food.']],
+           hi:[['dadaji','बेटा, इस सुंदर तुलसी को देखो। इसे धूप और पानी चाहिए।'],['gopu','क्या मैं पानी की जगह अपना दूध दे दूँ?'],['gauri','हम्म, नहीं बेटा। पौधे मिट्टी के नीचे जड़ों से पानी पीते हैं।'],['dadaji','गौरी सही कहती है। जड़ें पीती हैं, तना ले जाता है, पत्ते धूप से खाना बनाते हैं।'],['you','तुलसी को पानी देने के लिए झारी छुओ।'],['dadaji','शाबाश! देखो पत्ते खड़े हो गए? तुलसी धन्यवाद कह रही है।'],['quiz','पौधे का कौन-सा भाग पानी पीता है?'],['mitthu','जड़ें पीती हैं। पत्ते खाना बनाते हैं।']] },
+  explorer:{ en:[['dadaji','Let us understand how sunlight, water and carbon dioxide are used during photosynthesis.'],['gopu','So the leaf is a kitchen? What is the recipe?'],['gauri','Six water, six carbon dioxide, a little sunlight: one sugar and six oxygen. I breathe that oxygen, child.'],['dadaji','6CO2 + 6H2O + light gives C6H12O6 + 6O2. Chlorophyll in the leaf traps the light; stomata let the gases in and out.'],['you','Label the leaf: chlorophyll, stomata, veins.'],['dadaji','Correct. And tulsi leaves also hold eugenol, which is why Ayurveda values them.'],['quiz','Which gas does a plant take in for photosynthesis?'],['mitthu','Carbon dioxide in. Oxygen out. Sugar made.']],
+            hi:[['dadaji','चलो समझें कि प्रकाश-संश्लेषण में धूप, पानी और कार्बन डाइऑक्साइड कैसे काम आते हैं।'],['gopu','तो पत्ता एक रसोई है? विधि क्या है?'],['gauri','छह पानी, छह कार्बन डाइऑक्साइड, थोड़ी धूप: एक शक्कर और छह ऑक्सीजन। वही ऑक्सीजन मैं साँस में लेती हूँ।'],['dadaji','6CO2 + 6H2O + प्रकाश से C6H12O6 + 6O2। पत्ते का क्लोरोफ़िल प्रकाश पकड़ता है; रंध्र गैसें अंदर-बाहर करते हैं।'],['you','पत्ते पर नाम लगाओ: क्लोरोफ़िल, रंध्र, शिराएँ।'],['dadaji','सही। और तुलसी के पत्तों में यूजेनॉल होता है, इसलिए आयुर्वेद इन्हें महत्व देता है।'],['quiz','प्रकाश-संश्लेषण के लिए पौधा कौन-सी गैस लेता है?'],['mitthu','कार्बन डाइऑक्साइड अंदर। ऑक्सीजन बाहर। शक्कर बनी।']] },
+  quiz:{ little:[['root',L('Roots','जड़ें'),true],['leaf',L('Leaf','पत्ता'),false],['flower',L('Flower','फूल'),false],['sun',L('Sun','सूरज'),false]], explorer:[['co2',L('Carbon dioxide','कार्बन डाइऑक्साइड'),true],['o2',L('Oxygen','ऑक्सीजन'),false],['n2',L('Nitrogen','नाइट्रोजन'),false],['h2',L('Hydrogen','हाइड्रोजन'),false]] } },
+ 'town.public_garden.balance_beam':{ title:L('Balance','संतुलन'), section:'sports', objective:L('Walk a line with arms out and understand why that helps balance.','हाथ फैलाकर रेखा पर चलना और समझना कि इससे संतुलन क्यों बनता है।'), rwa:L('Walk along a line on the floor at home, ten steps, with arms out.','घर में फ़र्श की रेखा पर हाथ फैलाकर दस कदम चलो।'),
+  little:{ en:[['dadaji','Beta, this low beam is for balancing. Arms out, like a bird!'],['gopu','Like Mitthu! Flap flap!'],['kim','Woof! I can do it with four legs. Can you do it with two?'],['dadaji','Slowly. Look ahead, not at your feet. Arms out help you stay steady.'],['you','Tap left, right, left, right to walk the beam.'],['dadaji','Shabash! You walked the whole beam.'],['quiz','What do we do with our arms to balance?'],['mitthu','Arms out. Look ahead. Slow steps.']],
+           hi:[['dadaji','बेटा, यह नीचा बीम संतुलन के लिए है। हाथ फैलाओ, चिड़िया की तरह!'],['gopu','मिट्ठू की तरह! फड़-फड़!'],['kim','भौं! मैं चार पैरों से कर सकता हूँ। तुम दो से कर सकते हो?'],['dadaji','धीरे-धीरे। आगे देखो, पैरों की ओर नहीं। फैले हाथ संतुलन रखते हैं।'],['you','बीम पर चलने के लिए बाएँ, दाएँ, बाएँ, दाएँ छुओ।'],['dadaji','शाबाश! तुमने पूरा बीम पार किया।'],['quiz','संतुलन के लिए हाथों का क्या करते हैं?'],['mitthu','हाथ फैलाओ। आगे देखो। धीरे चलो।']] },
+  explorer:{ en:[['dadaji','Balance is about your centre of gravity staying above your base of support.'],['gopu','So why does a tightrope walker carry that long pole?'],['kim','Hmm, a heavy pole makes the body slower to tip? Like my tail when I turn fast!'],['dadaji','Exactly, Kim. The pole increases the moment of inertia, so small wobbles take longer to grow, giving time to correct.'],['you','Choose the body position that keeps the centre of gravity lowest.'],['dadaji','Knees bent, arms out: lower centre, wider base. That is also the kabaddi raider\'s stance.'],['quiz','Where must your centre of gravity stay to keep balance?'],['mitthu','Centre of gravity above the base. Bend the knees.']],
+            hi:[['dadaji','संतुलन का मतलब है कि तुम्हारा गुरुत्व-केंद्र आधार के ऊपर रहे।'],['gopu','तो रस्सी पर चलने वाला लंबा डंडा क्यों रखता है?'],['kim','हम्म, भारी डंडा शरीर को झुकने में धीमा करता है? जैसे तेज़ मुड़ते समय मेरी पूँछ!'],['dadaji','बिल्कुल, किम। डंडा जड़त्व-आघूर्ण बढ़ाता है, इसलिए छोटे डगमगाहट धीरे बढ़ते हैं और सुधारने का समय मिलता है।'],['you','वह मुद्रा चुनो जिसमें गुरुत्व-केंद्र सबसे नीचा रहे।'],['dadaji','घुटने मुड़े, हाथ फैले: नीचा केंद्र, चौड़ा आधार। यही कबड्डी के रेडर की मुद्रा है।'],['quiz','संतुलन के लिए गुरुत्व-केंद्र कहाँ रहना चाहिए?'],['mitthu','गुरुत्व-केंद्र आधार के ऊपर। घुटने मोड़ो।']] },
+  quiz:{ little:[['arms',L('Arms out','हाथ फैले'),true],['sleep',L('Lie down','लेट जाओ'),false],['ball',L('Throw a ball','गेंद फेंको'),false],['book',L('Read','पढ़ो'),false]], explorer:[['base',L('Above the base','आधार के ऊपर'),true],['head',L('In the head','सिर में'),false],['outside',L('Outside the feet','पैरों के बाहर'),false],['arms',L('In the arms','हाथों में'),false]] } },
+ 'town.library.story_shelf':{ title:L('The Monkey and the Crocodile','बंदर और मगरमच्छ'), section:'stories', objective:L('Listen to a Panchatantra story and say what the monkey did cleverly.','पंचतंत्र की कहानी सुनना और बताना कि बंदर ने क्या चतुराई की।'), rwa:L('Tell this story to someone at home in your own words.','यह कहानी घर में किसी को अपने शब्दों में सुनाओ।'),
+  little:{ en:[['dadaji','Beta, pick a book! This one is from the Panchatantra: a monkey who lived in a jamun tree by the river.'],['gopu','Did the monkey eat all the jamuns alone?'],['molly','No! He shared them with a crocodile every day. Sharing made them friends.'],['dadaji','But the crocodile\'s wife wanted the monkey\'s heart. The clever monkey said: "My heart is on the tree!" and escaped.'],['you','Tap the jamun tree where the monkey kept his "heart".'],['dadaji','Shabash! The monkey thought fast and stayed safe.'],['quiz','Who did the monkey share jamuns with?'],['mitthu','Share with friends. Think fast when in danger.']],
+           hi:[['dadaji','बेटा, एक किताब चुनो! यह पंचतंत्र से है: नदी किनारे जामुन के पेड़ पर रहने वाला बंदर।'],['gopu','क्या बंदर ने सारे जामुन अकेले खा लिए?'],['molly','नहीं! वह रोज़ मगरमच्छ के साथ बाँटता था। बाँटने से दोस्ती हुई।'],['dadaji','पर मगरमच्छ की पत्नी को बंदर का दिल चाहिए था। चतुर बंदर बोला: "मेरा दिल तो पेड़ पर है!" और बच निकला।'],['you','जामुन का पेड़ छुओ जहाँ बंदर ने "दिल" रखा था।'],['dadaji','शाबाश! बंदर ने तेज़ी से सोचा और सुरक्षित रहा।'],['quiz','बंदर ने जामुन किसके साथ बाँटे?'],['mitthu','दोस्तों से बाँटो। ख़तरे में तेज़ी से सोचो।']] },
+  explorer:{ en:[['dadaji','The Panchatantra was composed around 200 BCE by Vishnu Sharma to teach princes niti, the art of wise conduct, through animal fables.'],['gopu','So each story is secretly a lesson in strategy?'],['molly','Yes. In this one the crocodile breaks trust, and the monkey uses presence of mind. Two moves, one game.'],['dadaji','Notice the structure: friendship, betrayal, quick thinking, escape. Stories inside stories, like boxes inside boxes.'],['you','Order the four events of the story.'],['dadaji','Correct sequence. The moral is not "never trust", it is "stay alert and keep your wits".'],['quiz','What quality saved the monkey?'],['mitthu','Panchatantra: niti through fables. Presence of mind saves.']],
+            hi:[['dadaji','पंचतंत्र लगभग 200 ईसा पूर्व विष्णु शर्मा ने राजकुमारों को नीति सिखाने के लिए पशु-कथाओं से रचा।'],['gopu','तो हर कहानी गुप्त रूप से रणनीति का पाठ है?'],['molly','हाँ। इसमें मगरमच्छ भरोसा तोड़ता है, बंदर हाज़िरजवाबी दिखाता है। दो चालें, एक खेल।'],['dadaji','ढाँचा देखो: दोस्ती, धोखा, तेज़ सोच, बचाव। कहानी के अंदर कहानी, डिब्बे में डिब्बा।'],['you','कहानी की चार घटनाओं को क्रम में लगाओ।'],['dadaji','सही क्रम। सीख "कभी भरोसा मत करो" नहीं, बल्कि "सजग रहो और बुद्धि रखो" है।'],['quiz','किस गुण ने बंदर को बचाया?'],['mitthu','पंचतंत्र: कथाओं से नीति। हाज़िरजवाबी बचाती है।']] },
+  quiz:{ little:[['croc',L('Crocodile','मगरमच्छ'),true],['kim',L('A dog','कुत्ता'),false],['elephant',L('Elephant','हाथी'),false],['fish',L('Fish','मछली'),false]], explorer:[['wit',L('Presence of mind','हाज़िरजवाबी'),true],['strength',L('Strength','ताक़त'),false],['speed',L('Speed','तेज़ी'),false],['luck',L('Luck','क़िस्मत'),false]] } },
+ 'town.temple.bell':{ title:L('The temple bell','मंदिर की घंटी'), section:'explore', objective:L('Learn why bells are rung and how a bell makes sound (vibration).','जानना कि घंटी क्यों बजाई जाती है और घंटी से आवाज़ कैसे बनती है (कंपन)।'), rwa:L('Gently tap a steel glass and a plastic cup at home and listen to the difference.','घर में स्टील का गिलास और प्लास्टिक का कप हल्के से बजाकर फ़र्क सुनो।'),
+  little:{ en:[['dadaji','Beta, this is the temple bell. People ring it when they enter. Tung-tung-tung!'],['gopu','Why does it keep singing after I let go?'],['dhanu','Maa! It is shaking! I can feel it with my nose!'],['dadaji','Dhanu is right. The bell shakes very fast. That shaking is called vibration, and it makes the sound.'],['you','Tap the bell to ring it.'],['dadaji','Shabash! Hear it hum? That hum is vibration.'],['quiz','What makes the bell\'s sound?'],['mitthu','Bell shakes. Shaking makes sound.']],
+           hi:[['dadaji','बेटा, यह मंदिर की घंटी है। लोग अंदर आते समय बजाते हैं। टुन-टुन-टुन!'],['gopu','छोड़ने के बाद भी यह क्यों गाती रहती है?'],['dhanu','माँ! यह हिल रही है! मैं नाक से महसूस कर सकता हूँ!'],['dadaji','धनु सही है। घंटी बहुत तेज़ हिलती है। इस हिलने को कंपन कहते हैं, और इसी से आवाज़ बनती है।'],['you','घंटी बजाने के लिए उसे छुओ।'],['dadaji','शाबाश! गूँज सुनी? वह गूँज कंपन है।'],['quiz','घंटी की आवाज़ किससे बनती है?'],['mitthu','घंटी हिलती है। हिलने से आवाज़।']] },
+  explorer:{ en:[['dadaji','Temple bells are cast from panchadhatu, a five-metal alloy, so they ring with a long sustain. Tradition says the sound clears the mind before prayer. That is belief; the physics is vibration.'],['gopu','Why does a bigger bell sound lower?'],['molly','Bigger bell, more mass, slower vibration, lower frequency. Fewer waves per second.'],['dadaji','Right. Frequency is measured in hertz. A small bell may ring at 2,000 Hz; a large one near 500 Hz.'],['you','Match each bell to its sound: big to low, small to high.'],['dadaji','Correct. Remember we label this card "tradition" for the belief and "science" for the vibration.'],['quiz','A bigger bell vibrates...'],['mitthu','Bigger bell, lower sound. Frequency in hertz.']],
+            hi:[['dadaji','मंदिर की घंटियाँ पंचधातु से ढाली जाती हैं, इसलिए देर तक गूँजती हैं। परंपरा कहती है कि यह ध्वनि प्रार्थना से पहले मन साफ़ करती है। वह मान्यता है; भौतिकी है कंपन।'],['gopu','बड़ी घंटी की आवाज़ भारी क्यों होती है?'],['molly','बड़ी घंटी, ज़्यादा द्रव्यमान, धीमा कंपन, कम आवृत्ति। प्रति सेकंड कम तरंगें।'],['dadaji','सही। आवृत्ति हर्ट्ज़ में नापी जाती है। छोटी घंटी 2,000 हर्ट्ज़, बड़ी लगभग 500 हर्ट्ज़।'],['you','हर घंटी को उसकी आवाज़ से मिलाओ: बड़ी-भारी, छोटी-पतली।'],['dadaji','सही। याद रखो, इस कार्ड पर मान्यता के लिए "परंपरा" और कंपन के लिए "विज्ञान" का लेबल है।'],['quiz','बड़ी घंटी कंपन करती है...'],['mitthu','बड़ी घंटी, भारी आवाज़। आवृत्ति हर्ट्ज़ में।']] },
+  quiz:{ little:[['shake',L('Shaking','हिलना'),true],['sun',L('Sunlight','धूप'),false],['water',L('Water','पानी'),false],['leaf',L('Leaves','पत्ते'),false]], explorer:[['slower',L('Slower, lower pitch','धीमा, नीचा स्वर'),true],['faster',L('Faster, higher pitch','तेज़, ऊँचा स्वर'),false],['same',L('The same','वैसा ही'),false],['none',L('Not at all','बिल्कुल नहीं'),false]] } }
+};
+/* Short previews for objects that do not have a full lesson in this prototype */
+const PREVIEWS = {
+ 'house.living_room.bookshelf':L('Dadaji: "Pick a book, beta. Every book is a door."','दादाजी: "किताब चुनो, बेटा। हर किताब एक दरवाज़ा है।"'),
+ 'house.living_room.radio':L('Dadaji: "This radio has no wires. Sound travels in invisible waves."','दादाजी: "इस रेडियो में तार नहीं। आवाज़ अदृश्य तरंगों में चलती है।"'),
+ 'house.living_room.clock':L('Dadaji: "The small hand is slow, the big hand is fast. What time is it?"','दादाजी: "छोटी सुई धीमी, बड़ी सुई तेज़। समय क्या हुआ?"'),
+ 'house.living_room.carrom':L('Molly: "Angles! Hit the striker here and the coin goes there."','मॉली: "कोण! स्ट्राइकर यहाँ मारो, गोटी वहाँ जाएगी।"'),
+ 'house.lab.beakers':L('Dadaji: "Blue and yellow water... what colour will they make?"','दादाजी: "नीला और पीला पानी... कौन-सा रंग बनेगा?"'),
+ 'house.lab.microscope':L('Dadaji: "A drop of pond water is a whole city under the microscope."','दादाजी: "सूक्ष्मदर्शी में तालाब की एक बूँद पूरा शहर है।"'),
+ 'house.lab.circuit':L('Dadaji: "Close the loop and the bulb lights. Open it and it sleeps."','दादाजी: "घेरा पूरा करो तो बल्ब जलेगा। खोलो तो सो जाएगा।"'),
+ 'house.lab.prism':L('Dadaji: "White light hides seven colours. The prism lets them out."','दादाजी: "सफ़ेद रोशनी में सात रंग छिपे हैं। प्रिज़्म उन्हें बाहर लाता है।"'),
+ 'house.music_room.tabla':L('Dadaji: "Dha dhin dhin dha. Count with me: one, two, three, four."','दादाजी: "धा धिन धिन धा। गिनो: एक, दो, तीन, चार।"'),
+ 'house.music_room.sitar':L('Dadaji: "Pluck the string. A shorter string sings higher."','दादाजी: "तार छेड़ो। छोटा तार ऊँचा गाता है।"'),
+ 'house.music_room.flute':L('Mitthu: "Phoo! Cover a hole, the note changes!"','मिट्ठू: "फू! छेद बंद करो, सुर बदल गया!"'),
+ 'house.music_room.ghungroo':L('Dadaji: "Kathak begins with the feet. Ta thei thei tat."','दादाजी: "कथक पैरों से शुरू होता है। ता थेई थेई तत।"'),
+ 'house.art_room.easel':L('Dadaji: "Draw a tree the way you see it, not the way I do."','दादाजी: "पेड़ वैसा बनाओ जैसा तुम देखते हो, जैसा मैं नहीं।"'),
+ 'house.art_room.clay':L('Dadaji: "Wet clay, slow hands. Let us make a diya."','दादाजी: "गीली मिट्टी, धीमे हाथ। चलो दीया बनाएँ।"'),
+ 'house.art_room.origami':L('Molly: "One square, eight folds, one crane. Geometry you can hold."','मॉली: "एक वर्ग, आठ तह, एक सारस। हाथ में पकड़ने वाली ज्यामिति।"'),
+ 'house.art_room.madhubani':L('Dadaji: "Madhubani fills every space with fish, birds and flowers."','दादाजी: "मधुबनी हर जगह मछली, चिड़िया और फूलों से भरती है।"'),
+ 'house.garden.mango_tree':L('Dadaji: "Count the mangoes. Which ones are ripe? Look at the colour."','दादाजी: "आम गिनो। कौन-से पके हैं? रंग देखो।"'),
+ 'house.garden.vegetables':L('Gauri: "Tomato, brinjal, spinach. Red, purple, green, all good for you."','गौरी: "टमाटर, बैंगन, पालक। लाल, बैंगनी, हरा, सब अच्छे।"'),
+ 'house.garden.pond':L('Kim: "Woof! A frog! Egg, tadpole, frog. Three lives in one pond."','किम: "भौं! मेंढक! अंडा, टैडपोल, मेंढक। एक तालाब में तीन जीवन।"'),
+ 'house.garden.compost':L('Dadaji: "Peels go in, soil comes out. Nothing is waste in a garden."','दादाजी: "छिलके अंदर, मिट्टी बाहर। बगीचे में कुछ बेकार नहीं।"'),
+ 'house.garden.butterfly':L('Dadaji: "Sit still. The butterfly will come to the flower, not to your hand."','दादाजी: "चुप बैठो। तितली फूल पर आएगी, हाथ पर नहीं।"'),
+ 'house.garden.feeder':L('Dadaji: "Sparrow, bulbul, sunbird. Can you tell them by their song?"','दादाजी: "गौरैया, बुलबुल, शकरखोरा। आवाज़ से पहचानोगे?"'),
+ 'house.garden.shelter':L('Reserved plot: a future animal shelter (goats, hens, ducks, bees).','आरक्षित जगह: भविष्य का पशु-आश्रय (बकरी, मुर्गी, बत्तख, मधुमक्खी)।'),
+ 'town.public_garden.swing':L('Dadaji: "Push, let go, swing back. A pendulum, just like my clock!"','दादाजी: "धक्का दो, छोड़ो, वापस। लोलक, मेरी घड़ी जैसा!"'),
+ 'town.public_garden.cricket':L('Kim: "Woof! Bat, ball, wickets. Keep your eye on the ball."','किम: "भौं! बल्ला, गेंद, विकेट। गेंद पर नज़र रखो।"'),
+ 'town.public_garden.sundial':L('Dadaji: "No battery. The Sun tells the time with a shadow."','दादाजी: "कोई बैटरी नहीं। सूरज परछाई से समय बताता है।"'),
+ 'town.public_garden.trees':L('Dadaji: "Neem, peepal, banyan. Touch the bark, smell the leaf."','दादाजी: "नीम, पीपल, बरगद। छाल छुओ, पत्ता सूँघो।"'),
+ 'town.public_garden.slide':L('Dadaji: "Up the steps, down the slide. Which is harder, and why?"','दादाजी: "सीढ़ी ऊपर, फिसलपट्टी नीचे। कौन-सा मुश्किल, और क्यों?"'),
+ 'town.library.regional':L('Librarian: "This shelf has the same story in Tamil, Bengali and Odia."','लाइब्रेरियन: "इस शेल्फ़ पर वही कहानी तमिल, बांग्ला और ओड़िया में है।"'),
+ 'town.library.audio':L('Dadaji: "Put on the headphones and let the story walk with you."','दादाजी: "हेडफ़ोन लगाओ और कहानी को साथ चलने दो।"'),
+ 'town.library.science':L('Molly: "Reference shelf! Where facts live and get checked."','मॉली: "संदर्भ शेल्फ़! जहाँ तथ्य रहते हैं और जाँचे जाते हैं।"'),
+ 'town.library.desk':L('Dadaji: "A library card is a promise: borrow, care, return."','दादाजी: "लाइब्रेरी कार्ड एक वादा है: लो, सँभालो, लौटाओ।"'),
+ 'town.temple.ganesha':L('Dadaji: "Ganesha\'s stories (mythology): the broken tusk and the Mahabharata."','दादाजी: "गणेश की कथाएँ (पौराणिक): टूटा दाँत और महाभारत।"'),
+ 'town.temple.regional':L('Regional gallery: Jagannath (Odisha), Meenakshi (Tamil Nadu), Vithoba (Maharashtra)...','क्षेत्रीय दीर्घा: जगन्नाथ (ओडिशा), मीनाक्षी (तमिलनाडु), विठोबा (महाराष्ट्र)...'),
+ 'town.temple.lamp':L('Dadaji: "Oil, wick, flame. Festivals of light: Diwali, Karthigai, Dev Deepawali."','दादाजी: "तेल, बाती, लौ। रोशनी के त्योहार: दिवाली, कार्तिगई, देव दीपावली।"'),
+ 'town.temple.architecture':L('Dadaji (history): "A shikhara in the north, a gopuram in the south. Stone tells us the century."','दादाजी (इतिहास): "उत्तर में शिखर, दक्षिण में गोपुरम। पत्थर सदी बताता है।"'),
+ 'town.temple.heritage':L('Shared heritage wing: Buddhist, Jain, Sikh, Sufi and tribal traditions, each in its own words.','साझा विरासत: बौद्ध, जैन, सिख, सूफ़ी और जनजातीय परंपराएँ, हर एक अपने शब्दों में।'),
+ 'house.living_room.diya':L('Dadaji: "Tell me, which festival do we light this for?"','दादाजी: "बताओ, यह दीया किस त्योहार पर जलाते हैं?"')
+};
+</script>
+<script>
+/* ============ SVG HELPERS ============ */
+const ch = (k,x,y,w,flip)=>`<use href="#c-${k}" x="${x}" y="${y}" width="${w}" height="${({dadaji:1.75,gopu:1.7,kim:.73,molly:1.44,gauri:.75,dhanu:.9,mitthu:1.57})[k]*w}" ${flip?`transform="translate(${2*x+w} 0) scale(-1 1)"`:''}/>`;
+function hot(x,y,id,label,age,lang){
+  const little = age==='little';
+  const r = little?22:14;
+  const lbl = (!little && label)?`<text x="${x}" y="${y+r+13}" text-anchor="middle" font-size="10" font-weight="700" fill="#2F3C7E" stroke="#FFF6E5" stroke-width="3" paint-order="stroke">${tx(label,lang)}</text>`:'';
+  return `<g class="hot" data-obj="${id}" role="button" tabindex="0" aria-label="${tx(label||id,lang)}"><circle class="ring" cx="${x}" cy="${y}" r="${r}" fill="#F4A523" fill-opacity=".25" stroke="#F4A523" stroke-width="3"/><circle cx="${x}" cy="${y}" r="${little?8:5}" fill="#fff" stroke="#F4A523" stroke-width="2"/>${lbl}</g>`;
+}
+const sceneWrap = (vb,inner)=>`<svg class="scene" viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" role="img">${inner}</svg>`;
+
+/* ============ SCENES ============ */
+function wallBorder(w,c1,c2){ let d=''; for(let x=8;x<w;x+=20) d+=`<circle cx="${x}" cy="12" r="3" fill="${c2}"/>`; return `<rect x="0" y="0" width="${w}" height="24" fill="${c1}"/>${d}<rect x="0" y="24" width="${w}" height="3" fill="${c2}"/>`; }
+function books(x,y,w,rows){ const cols=['#D9663D','#2E86AB','#4E9F3D','#F4A523','#8E4585','#2F3C7E','#E07A95','#C98310']; let s=''; for(let r=0;r<rows;r++){ let cx=x+4; let i=0; while(cx<x+w-8){ const bw=6+((r*7+i*3)%6); s+=`<rect x="${cx}" y="${y+r*30+6+((i*5)%6)}" width="${bw}" height="${24-((i*5)%6)}" rx="1.5" fill="${cols[(r+i)%cols.length]}"/>`; cx+=bw+2; i++; } s+=`<rect x="${x}" y="${y+r*30+30}" width="${w}" height="3" fill="#6B3F1E"/>`; } return s; }
+
+function sceneLiving(age,lang){ return sceneWrap('0 0 360 300',`
+  <rect width="360" height="200" fill="#F6D9B5"/><rect y="200" width="360" height="100" fill="#C98A5B"/>
+  <path d="M0 200 h360 M0 230 h360 M0 260 h360" stroke="#B8794A" stroke-width="1.5"/>
+  ${wallBorder(360,'#2F3C7E','#F4A523')}
+  <!-- jharokha window -->
+  <path d="M212 125 V70 Q212 32 250 30 Q288 32 288 70 V125 Z" fill="#8B5A2B"/>
+  <path d="M218 125 V72 Q218 40 250 38 Q282 40 282 72 V125 Z" fill="#BFE6F7"/>
+  <circle cx="268" cy="58" r="8" fill="#FFC94D"/><path d="M218 125 V110 Q240 92 262 112 L282 100 V125 Z" fill="#8BC34A"/>
+  <path d="M250 38 V125 M218 82 H282" stroke="#8B5A2B" stroke-width="3"/>
+  <!-- bookshelf -->
+  <rect x="18" y="40" width="96" height="160" rx="4" fill="#8B5A2B"/><rect x="24" y="46" width="84" height="148" fill="#5E3A1A"/>
+  ${books(24,46,84,4)}
+  <!-- telescope -->
+  <path d="M292 198 L312 140 M332 198 L312 140 M312 198 L312 140" stroke="#5E3A1A" stroke-width="4" stroke-linecap="round"/>
+  <rect x="290" y="92" width="62" height="18" rx="6" fill="#2F3C7E" transform="rotate(-35 312 140)"/><rect x="340" y="92" width="18" height="20" rx="4" fill="#F4A523" transform="rotate(-35 312 140)"/>
+  <circle cx="312" cy="140" r="6" fill="#F4A523"/>
+  <!-- globe -->
+  <rect x="150" y="150" width="30" height="50" rx="4" fill="#8B5A2B"/><rect x="140" y="196" width="50" height="6" rx="3" fill="#5E3A1A"/>
+  <circle cx="165" cy="140" r="22" fill="#2E86AB"/><path d="M152 132 q8 -6 14 2 q6 8 14 0 M150 146 q10 10 24 2 M168 122 q6 4 2 10" stroke="#8BC34A" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M165 112 A28 28 0 0 1 165 168" fill="none" stroke="#F4A523" stroke-width="3"/>
+  <!-- radio on cabinet -->
+  <rect x="122" y="160" width="4" height="0"/>
+  <!-- clock -->
+  <circle cx="160" cy="62" r="18" fill="#FFF8EE" stroke="#8B5A2B" stroke-width="4"/><path d="M160 62 V50 M160 62 L169 66" stroke="#3A2E2A" stroke-width="2.5" stroke-linecap="round"/><circle cx="160" cy="62" r="2" fill="#D9663D"/>
+  <!-- diya shelf -->
+  <rect x="120" y="100" width="70" height="5" fill="#8B5A2B"/><path d="M140 100 q0 -8 8 -8 q8 0 8 8 Z" fill="#D9663D"/><ellipse cx="148" cy="88" rx="3" ry="5" fill="#FFC94D"/><path d="M168 100 q0 -8 8 -8 q8 0 8 8 Z" fill="#D9663D"/><ellipse cx="176" cy="88" rx="3" ry="5" fill="#FFC94D"/>
+  <!-- rug -->
+  <ellipse cx="180" cy="262" rx="120" ry="26" fill="#D9663D"/><ellipse cx="180" cy="262" rx="100" ry="18" fill="#F4A523"/><ellipse cx="180" cy="262" rx="70" ry="10" fill="#D9663D"/>
+  <!-- carrom board leaning -->
+  <rect x="300" y="208" width="52" height="52" rx="3" fill="#E9D9C0" stroke="#8B5A2B" stroke-width="4" transform="skewY(-8)"/><circle cx="326" cy="230" r="4" fill="#3A2E2A"/><circle cx="314" cy="224" r="3" fill="#D9663D"/><circle cx="338" cy="226" r="3" fill="#FFF"/>
+  <!-- radio -->
+  <rect x="196" y="150" width="48" height="36" rx="6" fill="#8B5A2B"/><rect x="202" y="156" width="20" height="24" rx="3" fill="#E9D9C0"/><circle cx="233" cy="162" r="5" fill="#FFC94D"/><circle cx="233" cy="176" r="4" fill="#F4A523"/><path d="M240 150 L256 126" stroke="#5E3A1A" stroke-width="2"/>
+  <rect x="190" y="186" width="60" height="16" rx="3" fill="#5E3A1A"/>
+  <!-- characters -->
+  ${ch('dadaji',40,160,76)} ${ch('gopu',110,210,56)} ${ch('molly',250,236,40)} ${ch('mitthu',62,120,22)}
+  ${hot(318,118,'house.living_room.telescope',L('Telescope','दूरबीन'),age,lang)}
+  ${hot(165,140,'house.living_room.globe',L('Globe','ग्लोब'),age,lang)}
+  ${hot(66,70,'house.living_room.bookshelf',L('Bookshelf','किताबें'),age,lang)}
+  ${hot(220,168,'house.living_room.radio',L('Radio','रेडियो'),age,lang)}
+  ${hot(160,62,'house.living_room.clock',L('Clock','घड़ी'),age,lang)}
+  ${hot(326,234,'house.living_room.carrom',L('Carrom','कैरम'),age,lang)}
+  ${hot(176,92,'house.living_room.diya',L('Diya','दीया'),age,lang)}
+`); }
+
+function sceneLab(age,lang){ let tiles=''; for(let y=0;y<200;y+=25) for(let x=0;x<360;x+=25) tiles+=`<rect x="${x+1}" y="${y+1}" width="23" height="23" fill="${((x+y)/25)%2?'#DDEFF7':'#E9F5FA'}"/>`;
+ return sceneWrap('0 0 360 300',`
+  <rect width="360" height="200" fill="#CFE8F2"/>${tiles}<rect y="200" width="360" height="100" fill="#A9B7BF"/>
+  ${wallBorder(360,'#2E86AB','#FFF8EE')}
+  <!-- poster -->
+  <rect x="26" y="40" width="80" height="60" rx="4" fill="#FFF8EE" stroke="#2F3C7E" stroke-width="2"/><circle cx="66" cy="70" r="14" fill="none" stroke="#F4A523" stroke-width="3"/><circle cx="66" cy="70" r="4" fill="#D9663D"/><circle cx="80" cy="64" r="3" fill="#2E86AB"/><circle cx="54" cy="78" r="3" fill="#2E86AB"/><text x="66" y="94" text-anchor="middle" font-size="8" fill="#2F3C7E">H2O · Fe · O2</text>
+  <!-- shelf with jars -->
+  <rect x="130" y="54" width="200" height="6" fill="#8B5A2B"/>
+  <rect x="140" y="30" width="18" height="24" rx="3" fill="#FFC94D" opacity=".85"/><rect x="166" y="34" width="18" height="20" rx="3" fill="#8BC34A" opacity=".85"/><rect x="192" y="28" width="18" height="26" rx="3" fill="#F28DA6" opacity=".85"/><rect x="218" y="36" width="18" height="18" rx="3" fill="#2E86AB" opacity=".85"/>
+  <rect x="256" y="26" width="24" height="28" rx="3" fill="#BFE6F7" stroke="#6F8F9C"/><path d="M268 50 v-14 q-8 -4 -4 -10 q6 2 4 10 q8 -4 6 6" stroke="#4E9F3D" stroke-width="2" fill="none"/>
+  <!-- bench -->
+  <rect x="20" y="150" width="320" height="14" rx="4" fill="#8B5A2B"/><rect x="30" y="164" width="300" height="40" fill="#5E3A1A"/>
+  <!-- beakers -->
+  <path d="M60 150 V118 h26 V150 Z" fill="#DDEFF7" stroke="#6F8F9C" stroke-width="2"/><rect x="62" y="132" width="22" height="16" fill="#2E86AB"/>
+  <path d="M96 150 V124 h22 V150 Z" fill="#DDEFF7" stroke="#6F8F9C" stroke-width="2"/><rect x="98" y="136" width="18" height="12" fill="#FFC94D"/>
+  <path d="M128 150 L124 112 h30 L150 150 Z" fill="#DDEFF7" stroke="#6F8F9C" stroke-width="2"/><path d="M130 150 L128 132 h20 L146 150 Z" fill="#4E9F3D"/>
+  <!-- magnet -->
+  <path d="M190 148 V124 a16 16 0 0 1 32 0 V148 h-10 V124 a6 6 0 0 0 -12 0 V148 Z" fill="#D9663D"/><rect x="190" y="138" width="10" height="10" fill="#A9B7BF"/><rect x="212" y="138" width="10" height="10" fill="#A9B7BF"/>
+  <rect x="200" y="152" width="4" height="10" fill="#6F5F58"/><rect x="211" y="153" width="4" height="9" fill="#6F5F58" transform="rotate(20 213 157)"/>
+  <!-- microscope -->
+  <rect x="250" y="140" width="40" height="10" rx="3" fill="#2F3C7E"/><path d="M270 140 V110 q-14 -4 -10 -22" stroke="#2F3C7E" stroke-width="8" fill="none" stroke-linecap="round"/><rect x="254" y="82" width="12" height="18" rx="3" fill="#6F8F9C"/><circle cx="276" cy="124" r="6" fill="#BFE6F7" stroke="#2F3C7E"/>
+  <!-- circuit -->
+  <rect x="304" y="130" width="30" height="20" rx="2" fill="#E9D9C0"/><path d="M304 140 h-8 v-20 h20" stroke="#D9663D" stroke-width="2" fill="none"/><circle cx="318" cy="112" r="8" fill="#FFC94D" stroke="#C98310" stroke-width="2"/><path d="M326 120 h8 v20" stroke="#D9663D" stroke-width="2" fill="none"/>
+  <!-- prism on floor table -->
+  <path d="M310 240 L330 206 L350 240 Z" fill="#DDEFF7" stroke="#6F8F9C" stroke-width="2"/><path d="M350 226 l20 -4 M350 232 l20 2 M350 238 l20 8" stroke="#D9663D" stroke-width="2"/><path d="M350 229 l20 -1" stroke="#F4A523" stroke-width="2"/><path d="M350 235 l20 5" stroke="#4E9F3D" stroke-width="2"/>
+  <!-- scale -->
+  <path d="M150 262 h50 M175 262 V232 M150 232 L200 232" stroke="#8B5A2B" stroke-width="4" stroke-linecap="round"/><path d="M150 232 l-10 14 h20 Z M200 232 l-10 14 h20 Z" fill="#F4A523"/>
+  ${ch('dadaji',22,170,70,true)} ${ch('gopu',226,200,50)} ${ch('kim',98,240,66)}
+  ${hot(206,136,'house.lab.magnet',L('Magnet','चुंबक'),age,lang)}
+  ${hot(104,132,'house.lab.beakers',L('Beakers','बीकर'),age,lang)}
+  ${hot(268,112,'house.lab.microscope',L('Microscope','सूक्ष्मदर्शी'),age,lang)}
+  ${hot(318,122,'house.lab.circuit',L('Circuit','परिपथ'),age,lang)}
+  ${hot(330,228,'house.lab.prism',L('Prism','प्रिज़्म'),age,lang)}
+`); }
+
+function sceneMusic(age,lang){ let keys=''; for(let i=0;i<12;i++) keys+=`<rect x="${192+i*11}" y="140" width="10" height="26" rx="1" fill="#FFF8EE" stroke="#C9B698"/>`; for(let i=0;i<11;i++) if(![2,6,9].includes(i)) keys+=`<rect x="${199+i*11}" y="140" width="6" height="16" fill="#3A2E2A"/>`;
+ return sceneWrap('0 0 360 300',`
+  <rect width="360" height="200" fill="#F8D7DF"/><rect y="200" width="360" height="100" fill="#8E4585"/><rect y="200" width="360" height="100" fill="url(#rug)"/>
+  <defs><pattern id="rug" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="#8E4585"/><path d="M12 2 l10 10 -10 10 -10 -10 Z" fill="#A85E9D"/><circle cx="12" cy="12" r="3" fill="#F4A523"/></pattern></defs>
+  ${wallBorder(360,'#E07A95','#FFF8EE')}
+  <!-- flute on wall -->
+  <rect x="40" y="60" width="110" height="9" rx="4.5" fill="#C98A5B" transform="rotate(-8 95 64)"/><g fill="#5E3A1A" transform="rotate(-8 95 64)"><circle cx="70" cy="64.5" r="2"/><circle cx="82" cy="64.5" r="2"/><circle cx="94" cy="64.5" r="2"/><circle cx="106" cy="64.5" r="2"/><circle cx="118" cy="64.5" r="2"/><circle cx="130" cy="64.5" r="2"/></g>
+  <!-- sitar leaning -->
+  <ellipse cx="60" cy="178" rx="26" ry="22" fill="#C98A5B"/><circle cx="60" cy="178" r="8" fill="#5E3A1A"/><rect x="56" y="60" width="9" height="110" rx="4" fill="#8B5A2B"/><rect x="52" y="54" width="18" height="14" rx="4" fill="#5E3A1A"/><path d="M58 70 V170 M62 70 V170" stroke="#FFF8EE" stroke-width=".8"/>
+  <!-- harmonium -->
+  <rect x="182" y="120" width="140" height="54" rx="6" fill="#8B5A2B"/><rect x="188" y="126" width="128" height="12" rx="3" fill="#5E3A1A"/>${keys}<rect x="300" y="110" width="26" height="18" rx="3" fill="#C98A5B"/>
+  <!-- tabla pair -->
+  <ellipse cx="130" cy="246" rx="26" ry="10" fill="#E9D9C0"/><path d="M104 246 q0 40 26 40 q26 0 26 -40 Z" fill="#8B5A2B"/><circle cx="130" cy="246" r="8" fill="#3A2E2A"/>
+  <ellipse cx="190" cy="252" rx="30" ry="12" fill="#E9D9C0"/><path d="M160 252 q0 36 30 36 q30 0 30 -36 Z" fill="#A9B7BF"/><circle cx="190" cy="252" r="9" fill="#3A2E2A"/>
+  <!-- ghungroo -->
+  <path d="M260 230 q20 -10 40 0" stroke="#D9663D" stroke-width="4" fill="none"/><g fill="#FFC94D" stroke="#C98310"><circle cx="264" cy="232" r="4"/><circle cx="274" cy="228" r="4"/><circle cx="284" cy="226" r="4"/><circle cx="294" cy="228" r="4"/><circle cx="302" cy="232" r="4"/></g>
+  <!-- stage lamp -->
+  <rect x="330" y="40" width="14" height="60" rx="3" fill="#F4A523"/><ellipse cx="337" cy="36" rx="12" ry="6" fill="#FFC94D"/>
+  <rect x="142" y="126" width="40" height="5" rx="2" fill="#8B5A2B"/><path d="M146 131 l6 10 M178 131 l-6 10" stroke="#8B5A2B" stroke-width="3"/>
+  ${ch('dadaji',236,176,66)} ${ch('gopu',300,196,50,true)} ${ch('mitthu',150,86,26)} ${ch('dhanu',20,236,60)}
+  ${hot(250,150,'house.music_room.harmonium',L('Harmonium','हारमोनियम'),age,lang)}
+  ${hot(160,250,'house.music_room.tabla',L('Tabla','तबला'),age,lang)}
+  ${hot(60,120,'house.music_room.sitar',L('Sitar','सितार'),age,lang)}
+  ${hot(95,64,'house.music_room.flute',L('Flute','बाँसुरी'),age,lang)}
+  ${hot(284,230,'house.music_room.ghungroo',L('Ghungroo','घुँघरू'),age,lang)}
+`); }
+
+function sceneArt(age,lang){ let rang=''; for(let a=0;a<8;a++){ const r=a*45; rang+=`<ellipse cx="200" cy="222" rx="9" ry="22" fill="${a%2?'#F4A523':'#4E9F3D'}" transform="rotate(${r} 200 250)"/>`; }
+ return sceneWrap('0 0 360 300',`
+  <rect width="360" height="200" fill="#FFF3DC"/><rect y="200" width="360" height="100" fill="#E9D9C0"/>
+  ${wallBorder(360,'#8E4585','#FFC94D')}
+  <!-- madhubani border -->
+  <g transform="translate(0 30)"><path d="M10 10 q10 -8 20 0 q10 8 20 0 q10 -8 20 0 q10 8 20 0 q10 -8 20 0 q10 8 20 0 q10 -8 20 0 q10 8 20 0 q10 -8 20 0 q10 8 20 0 q10 -8 20 0 q10 8 20 0 q10 -8 20 0 q10 8 20 0 q10 -8 20 0 q10 8 20 0 q10 -8 20 0" stroke="#D9663D" stroke-width="2" fill="none"/><g fill="#2E86AB"><ellipse cx="40" cy="12" rx="8" ry="3"/><ellipse cx="120" cy="12" rx="8" ry="3"/><ellipse cx="200" cy="12" rx="8" ry="3"/><ellipse cx="280" cy="12" rx="8" ry="3"/></g></g>
+  <!-- drawings on string -->
+  <path d="M20 60 q170 24 320 0" stroke="#8B5A2B" stroke-width="2" fill="none"/>
+  <g><rect x="40" y="62" width="34" height="42" fill="#fff" stroke="#EAD9BF"/><path d="M57 96 V80 M57 80 q-10 -2 -8 -12 q10 0 8 12 q10 -2 8 -12 q-10 0 -8 12" stroke="#4E9F3D" stroke-width="2" fill="none"/></g>
+  <g><rect x="110" y="70" width="34" height="42" fill="#fff" stroke="#EAD9BF"/><circle cx="127" cy="88" r="9" fill="#FFC94D"/><g stroke="#F4A523" stroke-width="2"><path d="M127 74v-4M127 106v-4M113 88h-4M145 88h-4"/></g></g>
+  <g><rect x="190" y="72" width="34" height="42" fill="#fff" stroke="#EAD9BF"/><path d="M196 104 l10 -20 l8 12 l6 -8 l8 16 Z" fill="#2E86AB"/></g>
+  <g><rect x="270" y="64" width="34" height="42" fill="#fff" stroke="#EAD9BF"/><circle cx="287" cy="84" r="6" fill="#D9A070"/><rect x="281" y="90" width="12" height="12" rx="3" fill="#FFC94D"/></g>
+  <!-- easel -->
+  <path d="M40 290 L70 160 L100 290 M70 160 V290" stroke="#8B5A2B" stroke-width="4" stroke-linecap="round"/>
+  <rect x="34" y="150" width="72" height="56" fill="#fff" stroke="#8B5A2B" stroke-width="3"/><path d="M40 200 q20 -40 30 -10 q10 -30 30 -4" stroke="#8E4585" stroke-width="4" fill="none"/><circle cx="90" cy="166" r="8" fill="#F4A523"/>
+  <!-- paint pots -->
+  <g><rect x="120" y="176" width="14" height="20" rx="3" fill="#D9663D"/><rect x="138" y="176" width="14" height="20" rx="3" fill="#2E86AB"/><rect x="156" y="176" width="14" height="20" rx="3" fill="#4E9F3D"/><rect x="174" y="176" width="14" height="20" rx="3" fill="#FFC94D"/><rect x="116" y="196" width="76" height="8" rx="2" fill="#8B5A2B"/></g>
+  <!-- clay wheel -->
+  <ellipse cx="300" cy="196" rx="34" ry="10" fill="#8B5A2B"/><path d="M286 196 q-4 -26 14 -30 q18 4 14 30 Z" fill="#B8794A"/><ellipse cx="300" cy="166" rx="10" ry="4" fill="#8B5A2B"/>
+  <!-- rangoli -->
+  ${rang}<circle cx="200" cy="250" r="10" fill="#D9663D"/><circle cx="200" cy="250" r="4" fill="#FFF8EE"/>
+  <!-- origami cranes -->
+  <path d="M250 150 l12 -12 l12 12 l-6 6 l6 10 l-12 -6 l-12 6 l6 -10 Z" fill="#E07A95"/><path d="M226 158 l10 -10 l10 10 l-5 5 l5 8 l-10 -5 l-10 5 l5 -8 Z" fill="#2E86AB"/>
+  ${ch('dadaji',280,210,62,true)} ${ch('molly',130,232,40)} ${ch('gopu',40,208,48)}
+  ${hot(200,250,'house.art_room.rangoli',L('Rangoli','रंगोली'),age,lang)}
+  ${hot(70,178,'house.art_room.easel',L('Easel','ईज़ल'),age,lang)}
+  ${hot(300,180,'house.art_room.clay',L('Clay wheel','चाक'),age,lang)}
+  ${hot(250,150,'house.art_room.origami',L('Origami','ओरिगामी'),age,lang)}
+  ${hot(180,42,'house.art_room.madhubani',L('Madhubani','मधुबनी'),age,lang)}
+`); }
+
+function sceneGarden(age,lang){ return sceneWrap('0 0 360 300',`
+  <defs><linearGradient id="skyg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BFE6F7"/><stop offset="1" stop-color="#EAF6FB"/></linearGradient></defs>
+  <rect width="360" height="140" fill="url(#skyg)"/><circle cx="310" cy="40" r="18" fill="#FFC94D"/>
+  <path d="M0 140 q60 -30 120 -10 t120 -8 t120 10 V300 H0 Z" fill="#8BC34A"/><rect y="170" width="360" height="130" fill="#6DAE3C"/>
+  <!-- house wall edge -->
+  <rect x="0" y="60" width="54" height="110" fill="#F6D9B5"/><rect x="0" y="52" width="60" height="12" fill="#D9663D"/><rect x="14" y="80" width="26" height="30" fill="#BFE6F7" stroke="#8B5A2B" stroke-width="3"/>
+  <!-- mango tree -->
+  <rect x="92" y="110" width="14" height="70" fill="#8B5A2B"/><ellipse cx="100" cy="92" rx="46" ry="38" fill="#4E9F3D"/><ellipse cx="80" cy="100" rx="26" ry="22" fill="#5BAE3C"/><ellipse cx="122" cy="98" rx="26" ry="22" fill="#5BAE3C"/>
+  <g fill="#FFC94D"><ellipse cx="78" cy="112" rx="5" ry="7"/><ellipse cx="104" cy="118" rx="5" ry="7"/><ellipse cx="126" cy="110" rx="5" ry="7"/><ellipse cx="96" cy="78" rx="5" ry="7"/></g>
+  <!-- path -->
+  <path d="M160 300 q10 -60 60 -90 q40 -30 90 -40" stroke="#E9D9C0" stroke-width="22" fill="none" stroke-linecap="round"/>
+  <!-- vegetable patch -->
+  <rect x="190" y="150" width="100" height="42" rx="6" fill="#8B5A2B"/><g fill="#4E9F3D"><ellipse cx="206" cy="160" rx="7" ry="6"/><ellipse cx="226" cy="160" rx="7" ry="6"/><ellipse cx="246" cy="160" rx="7" ry="6"/><ellipse cx="266" cy="160" rx="7" ry="6"/><ellipse cx="206" cy="180" rx="7" ry="6"/><ellipse cx="226" cy="180" rx="7" ry="6"/><ellipse cx="246" cy="180" rx="7" ry="6"/><ellipse cx="266" cy="180" rx="7" ry="6"/></g><g fill="#D9663D"><circle cx="226" cy="163" r="3"/><circle cx="266" cy="183" r="3"/></g><circle cx="246" cy="183" r="3" fill="#8E4585"/>
+  <!-- flower bed -->
+  <path d="M296 150 h56 v40 h-56 Z" fill="#8B5A2B"/><g><circle cx="306" cy="156" r="6" fill="#E07A95"/><circle cx="322" cy="152" r="6" fill="#FFC94D"/><circle cx="338" cy="156" r="6" fill="#F4A523"/><circle cx="314" cy="172" r="6" fill="#8E4585"/><circle cx="330" cy="174" r="6" fill="#E07A95"/><circle cx="346" cy="170" r="6" fill="#FFC94D"/></g>
+  <!-- tulsi in chaura -->
+  <rect x="140" y="156" width="26" height="28" fill="#D9663D"/><rect x="136" y="152" width="34" height="6" fill="#C9472A"/><path d="M153 156 V128 M153 140 q-10 -2 -10 -10 q10 0 10 10 q10 -2 10 -10 q-10 0 -10 10 M153 130 q-8 -2 -8 -8 q8 0 8 8 q8 -2 8 -8 q-8 0 -8 8" stroke="#4E9F3D" stroke-width="2.5" fill="#8BC34A"/>
+  <!-- pond -->
+  <ellipse cx="80" cy="236" rx="56" ry="24" fill="#2E86AB"/><ellipse cx="80" cy="236" rx="46" ry="17" fill="#5BA8C9"/><circle cx="70" cy="232" r="7" fill="#E07A95"/><ellipse cx="94" cy="240" rx="9" ry="5" fill="#4E9F3D"/><circle cx="104" cy="228" r="4" fill="#4E9F3D"/><circle cx="102" cy="226" r="1" fill="#000"/>
+  <!-- fountain -->
+  <rect x="196" y="236" width="36" height="12" rx="3" fill="#A9B7BF"/><ellipse cx="214" cy="236" rx="22" ry="7" fill="#BFE6F7"/><path d="M214 234 V214 M206 222 q8 -16 16 0" stroke="#BFE6F7" stroke-width="3" fill="none"/>
+  <!-- compost -->
+  <rect x="300" y="222" width="40" height="34" rx="4" fill="#8B5A2B"/><rect x="298" y="216" width="44" height="8" rx="2" fill="#5E3A1A"/><path d="M308 230 l6 6 M322 228 l-6 8 M330 236 l-4 6" stroke="#4E9F3D" stroke-width="2"/>
+  <!-- bird feeder -->
+  <rect x="268" y="90" width="4" height="60" fill="#8B5A2B"/><rect x="254" y="84" width="32" height="8" rx="2" fill="#D9663D"/><rect x="258" y="92" width="24" height="10" fill="#C98A5B"/><circle cx="262" cy="80" r="4" fill="#8B5A2B"/><path d="M262 80 l-6 2" stroke="#F4A523" stroke-width="1.5"/>
+  <!-- butterfly -->
+  <g transform="translate(180 120)"><ellipse cx="-6" cy="0" rx="7" ry="5" fill="#F4A523" transform="rotate(-20)"/><ellipse cx="6" cy="0" rx="7" ry="5" fill="#F4A523" transform="rotate(20)"/><rect x="-1" y="-5" width="2" height="10" fill="#3A2E2A"/></g>
+  <!-- reserved shelter plot -->
+  <g transform="translate(236 262)"><path d="M0 0 h100 M0 10 h100 M0 20 h100 M10 -4 v28 M40 -4 v28 M70 -4 v28 M100 -4 v28" stroke="#C98A5B" stroke-width="3"/><rect x="24" y="-30" width="52" height="22" rx="3" fill="#FFF8EE" stroke="#8B5A2B"/><text x="50" y="-15" text-anchor="middle" font-size="8" fill="#6F5F58">${lang==='hi'?'भविष्य: पशु-आश्रय':'Future: shelter'}</text></g>
+  ${ch('gauri',10,150,110)} ${ch('dhanu',120,196,52)} ${ch('dadaji',250,176,56,true)} ${ch('gopu',300,230,40)} ${ch('kim',130,250,60,true)}
+  ${hot(153,140,'house.garden.tulsi',L('Tulsi','तुलसी'),age,lang)}
+  ${hot(100,92,'house.garden.mango_tree',L('Mango tree','आम का पेड़'),age,lang)}
+  ${hot(240,170,'house.garden.vegetables',L('Vegetables','सब्ज़ियाँ'),age,lang)}
+  ${hot(80,236,'house.garden.pond',L('Pond','तालाब'),age,lang)}
+  ${hot(320,236,'house.garden.compost',L('Compost','खाद'),age,lang)}
+  ${hot(180,120,'house.garden.butterfly',L('Butterfly','तितली'),age,lang)}
+  ${hot(270,96,'house.garden.feeder',L('Bird feeder','दाना-घर'),age,lang)}
+  ${hot(286,272,'house.garden.shelter',L('Reserved plot','आरक्षित जगह'),age,lang)}
+`); }
+
+function scenePublicGarden(age,lang){ return sceneWrap('0 0 360 300',`
+  <rect width="360" height="150" fill="#BFE6F7"/><ellipse cx="60" cy="40" rx="30" ry="12" fill="#fff" opacity=".8"/><ellipse cx="250" cy="30" rx="36" ry="12" fill="#fff" opacity=".8"/>
+  <path d="M0 150 q90 -40 180 -10 t180 -10 V300 H0 Z" fill="#8BC34A"/><rect y="200" width="360" height="100" fill="#6DAE3C"/>
+  <path d="M0 262 q180 -24 360 0 v14 q-180 -22 -360 0 Z" fill="#E9D9C0"/>
+  <!-- trees with signs -->
+  <g><rect x="24" y="120" width="10" height="60" fill="#8B5A2B"/><ellipse cx="29" cy="110" rx="30" ry="30" fill="#4E9F3D"/><rect x="40" y="150" width="28" height="12" fill="#FFF8EE" stroke="#8B5A2B"/><text x="54" y="159" text-anchor="middle" font-size="7" fill="#3A2E2A">${lang==='hi'?'नीम':'Neem'}</text></g>
+  <g><rect x="322" y="116" width="12" height="66" fill="#8B5A2B"/><ellipse cx="328" cy="104" rx="34" ry="34" fill="#5BAE3C"/><path d="M304 120 v40 M352 124 v36" stroke="#8B5A2B" stroke-width="3"/><rect x="286" y="150" width="30" height="12" fill="#FFF8EE" stroke="#8B5A2B"/><text x="301" y="159" text-anchor="middle" font-size="7" fill="#3A2E2A">${lang==='hi'?'बरगद':'Banyan'}</text></g>
+  <!-- swing -->
+  <path d="M100 196 L120 130 L140 196 M200 196 L180 130 L160 196 M120 130 H180" stroke="#D9663D" stroke-width="5" stroke-linecap="round"/><path d="M138 132 V176 M162 132 V176" stroke="#6F5F58" stroke-width="2"/><rect x="132" y="176" width="36" height="6" rx="2" fill="#8B5A2B"/>
+  <!-- slide -->
+  <path d="M230 120 V190" stroke="#2E86AB" stroke-width="6"/><path d="M226 120 h20 l40 70 h-20 Z" fill="#FFC94D"/><path d="M216 130 h12 M216 142 h12 M216 154 h12 M216 166 h12 M216 178 h12" stroke="#2E86AB" stroke-width="3"/>
+  <!-- cricket -->
+  <g><rect x="66" y="208" width="4" height="26" fill="#FFF8EE"/><rect x="73" y="208" width="4" height="26" fill="#FFF8EE"/><rect x="80" y="208" width="4" height="26" fill="#FFF8EE"/><rect x="64" y="204" width="22" height="4" fill="#FFF8EE"/><circle cx="110" cy="230" r="5" fill="#D9663D"/><path d="M120 246 l16 -22" stroke="#C98A5B" stroke-width="7" stroke-linecap="round"/></g>
+  <!-- balance beam -->
+  <rect x="150" y="236" width="90" height="8" rx="3" fill="#8B5A2B"/><rect x="156" y="244" width="8" height="10" fill="#5E3A1A"/><rect x="226" y="244" width="8" height="10" fill="#5E3A1A"/>
+  <!-- sundial -->
+  <ellipse cx="300" cy="226" rx="26" ry="10" fill="#A9B7BF"/><ellipse cx="300" cy="222" rx="26" ry="10" fill="#E9D9C0"/><path d="M300 222 L314 200" stroke="#3A2E2A" stroke-width="3"/><path d="M300 222 L282 228" stroke="#3A2E2A" stroke-width="2" opacity=".5"/>
+  <!-- butterfly bushes -->
+  <ellipse cx="300" cy="188" rx="18" ry="10" fill="#8E4585"/><ellipse cx="320" cy="192" rx="14" ry="8" fill="#E07A95"/>
+  ${ch('dadaji',20,186,52)} ${ch('gopu',176,196,40)} ${ch('kim',250,256,60)} ${ch('mitthu',326,92,18)}
+  ${hot(150,160,'town.public_garden.swing',L('Swing','झूला'),age,lang)}
+  ${hot(256,160,'town.public_garden.slide',L('Slide','फिसलपट्टी'),age,lang)}
+  ${hot(90,226,'town.public_garden.cricket',L('Cricket','क्रिकेट'),age,lang)}
+  ${hot(195,240,'town.public_garden.balance_beam',L('Balance beam','संतुलन बीम'),age,lang)}
+  ${hot(300,222,'town.public_garden.sundial',L('Sundial','धूपघड़ी'),age,lang)}
+  ${hot(40,110,'town.public_garden.trees',L('Tree trail','पेड़ पहचान'),age,lang)}
+`); }
+
+function sceneLibrary(age,lang){ return sceneWrap('0 0 360 300',`
+  <rect width="360" height="200" fill="#FFF3DC"/><rect y="200" width="360" height="100" fill="#C98A5B"/><path d="M0 230 h360 M0 262 h360" stroke="#B8794A"/>
+  ${wallBorder(360,'#8B5A2B','#FFC94D')}
+  <!-- arches -->
+  <path d="M30 200 V90 Q30 50 70 48 Q110 50 110 90 V200 Z" fill="#8B5A2B"/><path d="M36 200 V92 Q36 56 70 54 Q104 56 104 92 V200 Z" fill="#5E3A1A"/>${books(36,56,68,4)}
+  <path d="M250 200 V90 Q250 50 290 48 Q330 50 330 90 V200 Z" fill="#8B5A2B"/><path d="M256 200 V92 Q256 56 290 54 Q324 56 324 92 V200 Z" fill="#5E3A1A"/>${books(256,56,68,4)}
+  <!-- middle regional shelf with script labels -->
+  <rect x="130" y="70" width="100" height="130" fill="#8B5A2B"/><rect x="136" y="76" width="88" height="118" fill="#5E3A1A"/>${books(136,76,88,3)}
+  <rect x="112" y="40" width="136" height="24" rx="4" fill="#FFF8EE" stroke="#8B5A2B" stroke-width="2"/><text x="180" y="56" text-anchor="middle" font-size="10" fill="#2F3C7E">தமிழ் · বাংলা · ଓଡ଼ିଆ · ગુજરાતી</text>
+  <!-- desk -->
+  <rect x="120" y="212" width="120" height="30" rx="4" fill="#8B5A2B"/><rect x="128" y="206" width="30" height="8" rx="2" fill="#FFF8EE"/><rect x="200" y="202" width="24" height="12" rx="2" fill="#2E86AB"/>
+  <!-- audiobook corner -->
+  <rect x="300" y="214" width="46" height="50" rx="6" fill="#E07A95"/><path d="M312 234 q11 -16 22 0" stroke="#2F3C7E" stroke-width="4" fill="none"/><rect x="308" y="232" width="7" height="12" rx="2" fill="#2F3C7E"/><rect x="331" y="232" width="7" height="12" rx="2" fill="#2F3C7E"/>
+  <!-- reading carpet -->
+  <ellipse cx="60" cy="268" rx="50" ry="16" fill="#2E86AB"/><ellipse cx="60" cy="268" rx="36" ry="10" fill="#5BA8C9"/>
+  <!-- lamp -->
+  <rect x="170" y="186" width="20" height="14" fill="#F4A523"/><path d="M160 186 h40 l-6 -14 h-28 Z" fill="#FFC94D"/>
+  ${ch('dadaji',236,150,60)} ${ch('molly',60,210,36)} ${ch('gopu',30,180,44)} ${ch('kim',200,250,56,true)}
+  ${hot(70,120,'town.library.story_shelf',L('Story shelf','कहानी शेल्फ़'),age,lang)}
+  ${hot(180,130,'town.library.regional',L('Regional languages','क्षेत्रीय भाषाएँ'),age,lang)}
+  ${hot(290,120,'town.library.science',L('Reference','संदर्भ'),age,lang)}
+  ${hot(322,238,'town.library.audio',L('Audiobooks','ऑडियो किताबें'),age,lang)}
+  ${hot(180,226,'town.library.desk',L('Library card','लाइब्रेरी कार्ड'),age,lang)}
+`); }
+
+function sceneTemple(age,lang){ return sceneWrap('0 0 360 300',`
+  <rect width="360" height="160" fill="#FFE9C7"/><circle cx="60" cy="50" r="16" fill="#FFC94D"/>
+  <rect y="160" width="360" height="140" fill="#E9D9C0"/><path d="M0 200 h360 M0 240 h360 M0 280 h360 M60 160 v140 M180 160 v140 M300 160 v140" stroke="#D9C4A4"/>
+  <!-- shikhara (north) -->
+  <path d="M60 160 V100 L84 40 L108 100 V160 Z" fill="#D9663D"/><path d="M84 40 V26" stroke="#F4A523" stroke-width="4"/><circle cx="84" cy="24" r="5" fill="#FFC94D"/><g fill="#C9472A"><rect x="66" y="110" width="36" height="6"/><rect x="70" y="90" width="28" height="6"/><rect x="74" y="72" width="20" height="6"/></g><path d="M74 160 V128 Q84 118 94 128 V160 Z" fill="#5E3A1A"/>
+  <!-- gopuram (south) -->
+  <path d="M230 160 V110 L242 50 H306 L318 110 V160 Z" fill="#8E4585"/><g fill="#E07A95"><rect x="240" y="120" width="68" height="6"/><rect x="244" y="98" width="60" height="6"/><rect x="248" y="76" width="52" height="6"/></g><g fill="#FFC94D"><rect x="250" y="56" width="6" height="10"/><rect x="266" y="56" width="6" height="10"/><rect x="282" y="56" width="6" height="10"/><rect x="298" y="56" width="6" height="10"/></g><path d="M262 160 V126 Q274 116 286 126 V160 Z" fill="#5E3A1A"/>
+  <!-- banyan -->
+  <rect x="330" y="110" width="12" height="60" fill="#8B5A2B"/><ellipse cx="336" cy="100" rx="30" ry="28" fill="#4E9F3D"/><path d="M318 118 v30 M352 120 v26" stroke="#8B5A2B" stroke-width="2"/>
+  <!-- bell -->
+  <path d="M150 50 h40" stroke="#8B5A2B" stroke-width="5"/><path d="M170 54 V66" stroke="#6F5F58" stroke-width="2"/><path d="M158 92 Q158 68 170 66 Q182 68 182 92 Z" fill="#FFC94D" stroke="#C98310" stroke-width="2"/><rect x="154" y="92" width="32" height="5" rx="2" fill="#C98310"/><circle cx="170" cy="100" r="3" fill="#C98310"/>
+  <!-- lamp stand -->
+  <rect x="166" y="150" width="8" height="40" fill="#C98310"/><g><path d="M150 150 h40 l-6 -8 h-28 Z" fill="#F4A523"/><ellipse cx="170" cy="134" rx="3" ry="6" fill="#FFC94D"/><path d="M156 164 h28 l-4 -6 h-20 Z" fill="#F4A523"/><ellipse cx="170" cy="150" rx="0" ry="0"/></g>
+  <!-- rangoli -->
+  <g transform="translate(150 252)"><circle r="22" fill="#F4A523"/><circle r="15" fill="#FFF8EE"/><circle r="8" fill="#D9663D"/><g fill="#4E9F3D"><circle cx="0" cy="-19" r="3"/><circle cx="19" cy="0" r="3"/><circle cx="0" cy="19" r="3"/><circle cx="-19" cy="0" r="3"/></g></g>
+  <!-- regional gallery board -->
+  <rect x="14" y="196" width="100" height="44" rx="4" fill="#FFF8EE" stroke="#8B5A2B" stroke-width="2"/><text x="64" y="212" text-anchor="middle" font-size="9" fill="#2F3C7E">${lang==='hi'?'क्षेत्रीय परंपराएँ':'Regional traditions'}</text><text x="64" y="225" text-anchor="middle" font-size="6.5" fill="#6F5F58">${lang==='hi'?'जगन्नाथ · मीनाक्षी':'Jagannath · Meenakshi'}</text><text x="64" y="235" text-anchor="middle" font-size="6.5" fill="#6F5F58">${lang==='hi'?'विठोबा · नंदा देवी':'Vithoba · Nanda Devi'}</text>
+  <!-- shared heritage wing -->
+  <rect x="246" y="196" width="100" height="44" rx="4" fill="#FFF8EE" stroke="#2E86AB" stroke-width="2"/><text x="296" y="212" text-anchor="middle" font-size="9" fill="#2E86AB">${lang==='hi'?'साझा विरासत':'Shared heritage'}</text><text x="296" y="225" text-anchor="middle" font-size="6.5" fill="#6F5F58">${lang==='hi'?'बौद्ध · जैन · सिख':'Buddhist · Jain · Sikh'}</text><text x="296" y="235" text-anchor="middle" font-size="6.5" fill="#6F5F58">${lang==='hi'?'सूफ़ी · जनजातीय · ईसाई':'Sufi · Tribal · Christian'}</text>
+  <!-- label chips -->
+  <g font-size="8" font-weight="700"><rect x="120" y="266" width="44" height="14" rx="7" fill="#2F3C7E"/><text x="142" y="276" text-anchor="middle" fill="#fff">${lang==='hi'?'इतिहास':'History'}</text><rect x="168" y="266" width="50" height="14" rx="7" fill="#8E4585"/><text x="193" y="276" text-anchor="middle" fill="#fff">${lang==='hi'?'पौराणिक':'Mythology'}</text><rect x="222" y="266" width="44" height="14" rx="7" fill="#C98310"/><text x="244" y="276" text-anchor="middle" fill="#fff">${lang==='hi'?'मान्यता':'Belief'}</text></g>
+  ${ch('dadaji',196,166,56)} ${ch('gopu',20,236,40)} ${ch('dhanu',300,246,50)}
+  ${hot(170,80,'town.temple.bell',L('Bell','घंटी'),age,lang)}
+  ${hot(84,120,'town.temple.ganesha',L('Ganesha shrine','गणेश मंदिर'),age,lang)}
+  ${hot(170,140,'town.temple.lamp',L('Lamp','दीप'),age,lang)}
+  ${hot(274,100,'town.temple.architecture',L('Architecture','स्थापत्य'),age,lang)}
+  ${hot(20,196,'town.temple.regional',L('Regional gallery','क्षेत्रीय दीर्घा'),age,lang)}
+  ${hot(340,196,'town.temple.heritage',L('Shared heritage','साझा विरासत'),age,lang)}
+`); }
+
+function sceneMap(age,lang){ const lab=(x,y,t)=>`<text x="${x}" y="${y}" text-anchor="middle" font-size="${age==='little'?0:10}" font-weight="800" fill="#2F3C7E" stroke="#FFF6E5" stroke-width="3" paint-order="stroke">${tx(t,lang)}</text>`;
+ const go=(x,y,r,id,t)=>`<g class="hot go" data-go="${id}" role="button" tabindex="0" aria-label="${tx(t,lang)}"><circle class="ring" cx="${x}" cy="${y}" r="${r}" fill="#F4A523" fill-opacity=".18" stroke="#F4A523" stroke-width="3"/></g>`;
+ return sceneWrap('0 0 360 420',`
+  <defs><linearGradient id="mapsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BFE6F7"/><stop offset="1" stop-color="#E6F5E0"/></linearGradient></defs>
+  <rect width="360" height="420" fill="url(#mapsky)"/>
+  <!-- mountains with Mitthu's home -->
+  <path d="M0 90 L50 30 L90 80 L130 20 L170 76 L210 36 L250 84 L300 26 L360 90 Z" fill="#8FA6C9"/><path d="M118 38 L130 20 L142 38 Z M292 38 L300 26 L310 40 Z M42 42 L50 30 L58 42 Z" fill="#fff"/>
+  <rect y="90" width="360" height="330" fill="#9CCB6B"/>
+  <!-- river -->
+  <path d="M-10 160 q80 20 120 80 t60 120 t40 70" stroke="#5BA8C9" stroke-width="22" fill="none"/><path d="M-10 160 q80 20 120 80 t60 120 t40 70" stroke="#8CCBE0" stroke-width="10" fill="none"/>
+  <!-- lanes -->
+  <path d="M110 250 q60 -40 120 -20 M200 140 q-30 60 -40 110 M230 230 q40 40 60 100" stroke="#E9D9C0" stroke-width="10" fill="none" stroke-linecap="round"/>
+  <!-- HOUSE PLOT (massive garden) -->
+  <rect x="16" y="200" width="200" height="200" rx="18" fill="#7FBF55" stroke="#C98A5B" stroke-width="4" stroke-dasharray="8 6"/>
+  <!-- house -->
+  <rect x="60" y="226" width="80" height="54" rx="4" fill="#FFF3DC" stroke="#8B5A2B" stroke-width="2"/><path d="M54 228 L100 198 L146 228 Z" fill="#D9663D"/><rect x="92" y="256" width="16" height="24" fill="#8B5A2B"/><rect x="68" y="240" width="14" height="12" fill="#BFE6F7"/><rect x="118" y="240" width="14" height="12" fill="#BFE6F7"/>
+  <rect x="150" y="238" width="40" height="30" rx="3" fill="#C98A5B" stroke="#8B5A2B" stroke-width="2"/><path d="M146 240 L170 222 L194 240 Z" fill="#8B5A2B"/>
+  <!-- garden features -->
+  <ellipse cx="46" cy="312" rx="18" ry="12" fill="#2E86AB"/><circle cx="130" cy="312" r="16" fill="#4E9F3D"/><circle cx="160" cy="300" r="12" fill="#5BAE3C"/>
+  <rect x="30" y="340" width="60" height="26" rx="3" fill="#8B5A2B"/><g fill="#4E9F3D"><circle cx="40" cy="348" r="4"/><circle cx="54" cy="348" r="4"/><circle cx="68" cy="348" r="4"/><circle cx="82" cy="348" r="4"/><circle cx="40" cy="360" r="4"/><circle cx="54" cy="360" r="4"/><circle cx="68" cy="360" r="4"/><circle cx="82" cy="360" r="4"/></g>
+  <g fill="#E07A95"><circle cx="100" cy="340" r="4"/><circle cx="112" cy="346" r="4"/><circle cx="104" cy="356" r="4"/></g>
+  <!-- reserved shelter plots -->
+  <g stroke="#C98A5B" stroke-width="2" fill="#A8D27A"><rect x="124" y="336" width="40" height="26" rx="3"/><rect x="170" y="336" width="40" height="26" rx="3"/><rect x="124" y="368" width="40" height="26" rx="3"/><rect x="170" y="368" width="40" height="26" rx="3"/></g>
+  <text x="167" y="352" text-anchor="middle" font-size="7" fill="#6F5F58">${lang==='hi'?'भविष्य के आश्रय':'future shelters'}</text>
+  <!-- PUBLIC GARDEN -->
+  <rect x="236" y="130" width="112" height="90" rx="14" fill="#8BC34A" stroke="#6DAE3C" stroke-width="3"/><circle cx="262" cy="156" r="12" fill="#4E9F3D"/><circle cx="326" cy="196" r="12" fill="#4E9F3D"/><path d="M280 170 l10 -18 l10 18" stroke="#D9663D" stroke-width="3" fill="none"/><rect x="300" y="150" width="30" height="20" rx="2" fill="#E9D9C0"/><path d="M304 160 h22" stroke="#fff" stroke-width="2"/>
+  <!-- LIBRARY -->
+  <rect x="250" y="250" width="90" height="56" rx="4" fill="#FFF3DC" stroke="#8B5A2B" stroke-width="2"/><rect x="250" y="244" width="90" height="10" fill="#8B5A2B"/><g fill="#8B5A2B"><rect x="262" y="262" width="8" height="40"/><rect x="282" y="262" width="8" height="40"/><rect x="302" y="262" width="8" height="40"/><rect x="322" y="262" width="8" height="40"/></g>
+  <!-- TEMPLE -->
+  <path d="M276 54 L290 20 L304 54 Z" fill="#D9663D"/><rect x="270" y="54" width="40" height="30" fill="#FFE9C7" stroke="#8B5A2B" stroke-width="2"/><path d="M284 84 V70 Q290 64 296 70 V84 Z" fill="#5E3A1A"/><circle cx="290" cy="18" r="3" fill="#FFC94D"/>
+  <!-- EXCURSION BALLOON -->
+  <ellipse cx="60" cy="150" rx="22" ry="26" fill="#F4A523"/><path d="M38 150 q22 -40 44 0" fill="#D9663D"/><path d="M50 174 l10 14 l10 -14" stroke="#8B5A2B" stroke-width="2" fill="none"/><rect x="52" y="186" width="16" height="10" rx="2" fill="#8B5A2B"/>
+  <!-- characters walking the lane -->
+  ${ch('dadaji',178,150,30)} ${ch('gopu',204,166,22)} ${ch('kim',150,200,30)}
+  ${lab(100,296,L("Dadaji's house",'दादाजी का घर'))} ${lab(116,224,L('Private garden','निजी बगीचा'))} ${lab(292,228,L('Public garden','सार्वजनिक बगीचा'))} ${lab(295,318,L('Library','पुस्तकालय'))} ${lab(290,98,L('Temple courtyard','मंदिर प्रांगण'))} ${lab(60,210,L('Excursions','सैर'))} ${lab(170,260,L('Cow shed','गौशाला'))}
+  ${go(100,250,34,'living',L("Dadaji's house",'दादाजी का घर'))} ${go(100,344,34,'garden',L('Private garden','निजी बगीचा'))} ${go(292,176,36,'publicgarden',L('Public garden','सार्वजनिक बगीचा'))} ${go(295,278,34,'library',L('Library','पुस्तकालय'))} ${go(290,60,30,'temple',L('Temple courtyard','मंदिर प्रांगण'))} ${go(60,160,30,'excursion',L('Excursions','सैर'))}
+`); }
+</script>
+<script>
+/* ============ QUIZ / ACTIVITY PICTURES ============ */
+function qicon(n){
+  const P={
+   moon:'<circle cx="32" cy="32" r="20" fill="#FFE08A"/><circle cx="40" cy="28" r="20" fill="#1B2142" opacity=".0"/><path d="M36 14 a20 20 0 1 0 12 36 a16 16 0 0 1 -12 -36 Z" fill="#1B2142" opacity=".12"/><circle cx="26" cy="30" r="3" fill="#E9C76A"/><circle cx="36" cy="40" r="2" fill="#E9C76A"/>',
+   sun:'<circle cx="32" cy="32" r="14" fill="#FFC94D"/><g stroke="#F4A523" stroke-width="4" stroke-linecap="round"><path d="M32 6v8M32 50v8M6 32h8M50 32h8M13 13l6 6M45 45l6 6M13 51l6-6M45 19l6-6"/></g>',
+   leaf:'<path d="M14 50 Q14 14 50 14 Q50 50 14 50 Z" fill="#8BC34A"/><path d="M16 48 Q30 34 46 18" stroke="#4E9F3D" stroke-width="3" fill="none"/>',
+   ball:'<circle cx="32" cy="32" r="22" fill="#D9663D"/><path d="M14 24 q18 8 36 0 M14 40 q18 -8 36 0" stroke="#fff" stroke-width="2.5" fill="none"/>',
+   water:'<path d="M32 8 q20 26 12 40 a14 14 0 0 1 -24 0 q-8 -14 12 -40 Z" fill="#2E86AB"/><path d="M24 40 q2 8 8 10" stroke="#BFE6F7" stroke-width="3" fill="none" stroke-linecap="round"/>',
+   nail:'<rect x="28" y="10" width="8" height="40" fill="#8A8F99"/><rect x="22" y="8" width="20" height="6" rx="2" fill="#6F7580"/><path d="M28 50 l4 8 l4 -8 Z" fill="#8A8F99"/>',
+   mango:'<ellipse cx="32" cy="36" rx="16" ry="20" fill="#FFC94D" transform="rotate(-20 32 36)"/><path d="M36 18 q8 -8 14 -4 q-8 2 -12 8 Z" fill="#4E9F3D"/>',
+   pencil:'<rect x="26" y="10" width="12" height="36" fill="#FFC94D"/><path d="M26 46 l6 10 l6 -10 Z" fill="#E9B98E"/><path d="M30 52 l2 4 l2 -4 Z" fill="#3A2E2A"/><rect x="26" y="8" width="12" height="6" fill="#F28DA6"/>',
+   petal:'<ellipse cx="32" cy="32" rx="10" ry="22" fill="#E07A95"/><ellipse cx="32" cy="32" rx="4" ry="14" fill="#F6C6D0"/>',
+   dot:'<circle cx="32" cy="32" r="12" fill="#2F3C7E"/>',
+   star:'<path d="M32 8 l7 15 16 2 -12 11 3 16 -14 -8 -14 8 3 -16 -12 -11 16 -2 Z" fill="#FFC94D" stroke="#F4A523" stroke-width="2"/>',
+   root:'<rect x="20" y="8" width="24" height="18" rx="3" fill="#8B5A2B"/><path d="M32 26 v10 M32 32 l-10 12 M32 36 l10 14 M22 44 l-6 8 M42 50 l6 6" stroke="#E9D9C0" stroke-width="3" fill="none" stroke-linecap="round"/>',
+   flower:'<g fill="#E07A95"><circle cx="32" cy="18" r="8"/><circle cx="46" cy="28" r="8"/><circle cx="42" cy="44" r="8"/><circle cx="22" cy="44" r="8"/><circle cx="18" cy="28" r="8"/></g><circle cx="32" cy="32" r="7" fill="#FFC94D"/>',
+   arms:'<circle cx="32" cy="14" r="7" fill="#D9A070"/><path d="M32 22 v20 M8 26 h48 M32 42 l-8 14 M32 42 l8 14" stroke="#2F3C7E" stroke-width="5" stroke-linecap="round" fill="none"/>',
+   sleep:'<rect x="6" y="34" width="52" height="14" rx="4" fill="#2E86AB"/><circle cx="16" cy="28" r="7" fill="#D9A070"/><rect x="24" y="24" width="30" height="10" rx="4" fill="#FFF8EE"/>',
+   book:'<path d="M10 14 q11 -4 22 2 v34 q-11 -6 -22 -2 Z" fill="#FFF8EE" stroke="#8B5A2B" stroke-width="2"/><path d="M54 14 q-11 -4 -22 2 v34 q11 -6 22 -2 Z" fill="#FFEFD2" stroke="#8B5A2B" stroke-width="2"/>',
+   croc:'<path d="M6 36 q0 -10 10 -10 h30 l12 -8 v14 l-12 -2 h-30 q-10 0 -10 6 Z" fill="#4E9F3D"/><circle cx="24" cy="26" r="3" fill="#fff"/><circle cx="24" cy="26" r="1.5" fill="#000"/><path d="M34 34 l3 4 l3 -4 l3 4 l3 -4" stroke="#fff" stroke-width="2" fill="none"/>',
+   kim:'<use href="#f-kim" width="64" height="64"/>', elephant:'<ellipse cx="34" cy="34" rx="20" ry="16" fill="#8A8F99"/><circle cx="20" cy="28" r="12" fill="#8A8F99"/><path d="M12 32 q-6 14 2 22" stroke="#8A8F99" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="18" cy="26" r="2" fill="#000"/><ellipse cx="28" cy="24" rx="7" ry="9" fill="#A5ABB5"/>',
+   fish:'<path d="M10 32 q14 -16 32 0 q-18 16 -32 0 Z" fill="#F4A523"/><path d="M42 32 l12 -10 v20 Z" fill="#F4A523"/><circle cx="20" cy="30" r="2" fill="#000"/>',
+   shake:'<path d="M22 50 Q22 26 32 24 Q42 26 42 50 Z" fill="#FFC94D" stroke="#C98310" stroke-width="2"/><path d="M12 30 q-4 6 0 12 M52 30 q4 6 0 12 M8 24 q-6 10 0 22 M56 24 q6 10 0 22" stroke="#2E86AB" stroke-width="2.5" fill="none" stroke-linecap="round"/>',
+   lens:'<circle cx="32" cy="32" r="18" fill="#BFE6F7" stroke="#2F3C7E" stroke-width="4"/><path d="M22 24 q6 -6 14 -2" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>',
+   eye:'<rect x="18" y="20" width="28" height="24" rx="6" fill="#2F3C7E"/><circle cx="32" cy="32" r="6" fill="#BFE6F7"/>',
+   tripod:'<path d="M32 12 L16 54 M32 12 L48 54 M32 12 V54" stroke="#5E3A1A" stroke-width="4" stroke-linecap="round"/>',
+   asia:'<path d="M12 30 q6 -16 24 -14 q18 2 18 18 q-4 14 -18 16 q-10 4 -16 -4 q-10 -4 -8 -16 Z" fill="#4E9F3D"/><path d="M36 42 l4 8 l4 -8 Z" fill="#4E9F3D"/>',
+   africa:'<path d="M20 14 h22 l8 14 l-6 20 l-10 10 l-8 -12 l-8 -14 Z" fill="#F4A523"/>', europe:'<path d="M14 26 q10 -14 24 -8 l12 6 l-6 12 l-10 2 l-6 8 l-10 -6 Z" fill="#2E86AB"/>', australia:'<path d="M14 30 q10 -12 24 -8 q14 4 12 18 q-8 10 -22 8 q-14 0 -14 -18 Z" fill="#D9663D"/>',
+   copper:'<rect x="12" y="20" width="40" height="24" rx="4" fill="#C97B4A"/><text x="32" y="37" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">Cu</text>', iron:'<rect x="12" y="20" width="40" height="24" rx="4" fill="#6F7580"/><text x="32" y="37" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">Fe</text>', nickel:'<rect x="12" y="20" width="40" height="24" rx="4" fill="#9AA3AD"/><text x="32" y="37" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">Ni</text>', cobalt:'<rect x="12" y="20" width="40" height="24" rx="4" fill="#2F3C7E"/><text x="32" y="37" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">Co</text>',
+   co2:'<circle cx="18" cy="32" r="9" fill="#D9663D"/><circle cx="32" cy="32" r="10" fill="#3A2E2A"/><circle cx="46" cy="32" r="9" fill="#D9663D"/>', o2:'<circle cx="24" cy="32" r="10" fill="#D9663D"/><circle cx="40" cy="32" r="10" fill="#D9663D"/>', n2:'<circle cx="24" cy="32" r="10" fill="#2E86AB"/><circle cx="40" cy="32" r="10" fill="#2E86AB"/>', h2:'<circle cx="26" cy="32" r="7" fill="#FFF8EE" stroke="#6F5F58"/><circle cx="38" cy="32" r="7" fill="#FFF8EE" stroke="#6F5F58"/>',
+   kolam:'<g fill="#3A2E2A"><circle cx="16" cy="16" r="2"/><circle cx="32" cy="16" r="2"/><circle cx="48" cy="16" r="2"/><circle cx="16" cy="32" r="2"/><circle cx="32" cy="32" r="2"/><circle cx="48" cy="32" r="2"/><circle cx="16" cy="48" r="2"/><circle cx="32" cy="48" r="2"/><circle cx="48" cy="48" r="2"/></g><path d="M24 16 q8 8 0 16 q-8 8 0 16 q8 -8 16 0 q8 8 0 -16 q-8 -8 0 -16 q-8 8 -16 0 Z" stroke="#FFF8EE" stroke-width="2.5" fill="none"/>',
+   madhubani:'<rect x="10" y="10" width="44" height="44" fill="#FFEFD2" stroke="#D9663D" stroke-width="2"/><path d="M14 32 q10 -10 20 0 q10 10 20 0" stroke="#2E86AB" stroke-width="3" fill="none"/><circle cx="32" cy="22" r="4" fill="#D9663D"/><path d="M14 44 h36" stroke="#4E9F3D" stroke-width="2"/>', warli:'<rect x="10" y="10" width="44" height="44" fill="#A5733F"/><g stroke="#fff" stroke-width="2" fill="#fff"><path d="M26 22 l6 10 l-6 10 Z M38 22 l-6 10 l6 10 Z"/><circle cx="32" cy="18" r="3"/><path d="M26 42 l12 0" fill="none"/></g>', mandala:'<circle cx="32" cy="32" r="22" fill="#8E4585"/><circle cx="32" cy="32" r="14" fill="#E07A95"/><circle cx="32" cy="32" r="6" fill="#FFC94D"/><g stroke="#FFF8EE" stroke-width="2"><path d="M32 10v44M10 32h44M16 16l32 32M48 16L16 48"/></g>',
+   base:'<circle cx="32" cy="14" r="6" fill="#D9A070"/><path d="M32 20 v14 M14 30 h36 M32 34 l-12 10 M32 34 l12 10 M8 52 h48" stroke="#2F3C7E" stroke-width="4" stroke-linecap="round" fill="none"/><circle cx="32" cy="32" r="3" fill="#D9663D"/>', head:'<circle cx="32" cy="14" r="6" fill="#D9A070"/><circle cx="32" cy="14" r="3" fill="#D9663D"/><path d="M32 20 v20 M32 40 l-8 14 M32 40 l8 14" stroke="#2F3C7E" stroke-width="4" stroke-linecap="round" fill="none"/>', outside:'<circle cx="32" cy="14" r="6" fill="#D9A070"/><path d="M32 20 l6 20 M38 40 l-6 14 M38 40 l10 10" stroke="#2F3C7E" stroke-width="4" stroke-linecap="round" fill="none"/><circle cx="56" cy="44" r="3" fill="#D9663D"/>',
+   wit:'<circle cx="32" cy="28" r="16" fill="#FFC94D"/><path d="M24 44 h16 v6 h-16 Z" fill="#6F5F58"/><path d="M26 22 q6 -8 12 0" stroke="#fff" stroke-width="3" fill="none"/>', strength:'<rect x="10" y="28" width="44" height="8" rx="4" fill="#3A2E2A"/><rect x="6" y="20" width="10" height="24" rx="3" fill="#6F7580"/><rect x="48" y="20" width="10" height="24" rx="3" fill="#6F7580"/>', speed:'<path d="M10 24 h20 M6 32 h24 M10 40 h20" stroke="#2E86AB" stroke-width="4" stroke-linecap="round"/><circle cx="44" cy="32" r="12" fill="#D9663D"/>', luck:'<path d="M32 10 q12 0 12 12 q0 10 -12 10 q-12 0 -12 -10 q0 -12 12 -12 Z M32 32 v22" fill="#4E9F3D" stroke="#4E9F3D" stroke-width="4"/>',
+   slower:'<path d="M8 32 q12 -20 24 0 t24 0" stroke="#2F3C7E" stroke-width="4" fill="none"/>', faster:'<path d="M8 32 q6 -16 12 0 t12 0 t12 0 t12 0" stroke="#2F3C7E" stroke-width="4" fill="none"/>', same:'<path d="M8 32 h48" stroke="#2F3C7E" stroke-width="4"/>', none:'<circle cx="32" cy="32" r="18" fill="none" stroke="#D9663D" stroke-width="4"/><path d="M20 20 l24 24" stroke="#D9663D" stroke-width="4"/>',
+   sa:'<text x="32" y="42" text-anchor="middle" font-size="28" font-weight="800" fill="#E07A95">सा</text>', ma:'<text x="32" y="42" text-anchor="middle" font-size="28" font-weight="800" fill="#2E86AB">मा</text>', ni:'<text x="32" y="42" text-anchor="middle" font-size="28" font-weight="800" fill="#8E4585">नी</text>', pa:'<text x="32" y="42" text-anchor="middle" font-size="28" font-weight="800" fill="#4E9F3D">पा</text>',
+   sapa:'<text x="32" y="40" text-anchor="middle" font-size="18" font-weight="800" fill="#E07A95">सा · पा</text>', rega:'<text x="32" y="40" text-anchor="middle" font-size="18" font-weight="800" fill="#2E86AB">रे · गा</text>', mani:'<text x="32" y="40" text-anchor="middle" font-size="18" font-weight="800" fill="#8E4585">मा · नी</text>', dhani:'<text x="32" y="40" text-anchor="middle" font-size="18" font-weight="800" fill="#4E9F3D">धा · नी</text>'
+  };
+  return `<svg viewBox="0 0 64 64" aria-hidden="true">${P[n]||`<circle cx="32" cy="32" r="20" fill="#EAD9BF"/><text x="32" y="38" text-anchor="middle" font-size="16" font-weight="800" fill="#3A2E2A">${n.slice(0,2).toUpperCase()}</text>`}</svg>`;
+}
+const av = k=>`<svg viewBox="0 0 64 64"><use href="#f-${k}" width="64" height="64"/></svg>`;
+const NAMES={dadaji:L('Dadaji','दादाजी'),gopu:L('Gopu','गोपू'),kim:L('Kim','किम'),molly:L('Molly','मॉली'),gauri:L('Gauri','गौरी'),dhanu:L('Dhanu','धनु'),mitthu:L('Mitthu','मिट्ठू'),you:L('Your turn','आपकी बारी'),quiz:L('Dadaji asks','दादाजी पूछते हैं')};
+function bubble(who,text,lang){ const k=(who==='you'||who==='quiz')?(who==='you'?'gopu':'dadaji'):who; return `<div class="bubble"><div class="av">${av(k)}</div><div><div class="who">${tx(NAMES[who],lang)}</div><p>${text}</p></div></div>`; }
+const icon = (id,size)=>`<svg viewBox="0 0 64 64" width="${size||24}" height="${size||24}" aria-hidden="true"><use href="#${id}"/></svg>`;
+
+/* ============ LESSON OVERLAY ============ */
+function lessonSheet(age,lang){
+  const id=S.lesson; const Ls=LESSONS[id];
+  if(!Ls){ // preview only
+    return `<div class="overlay" data-act="closeLesson"><div class="sheet"><div class="grab"></div>
+      ${bubble('dadaji',tx(PREVIEWS[id]||L('Dadaji: "Let us look at this together."','दादाजी: "चलो इसे साथ देखें।"'),lang),lang)}
+      ${age==='explorer'?`<div class="kv"><b>Object ID</b><span><code>${id}</code></span><b>${tx(T.objective,lang)}</b><span>${lang==='hi'?'पूरा पाठ उत्पादन में जोड़ा जाएगा (देखें docs/dadu/10)।':'Full lesson scripted in production (see docs/dadu/10).'}</span></div>`:''}
+      <div class="row"><button class="big-btn ghost" data-act="closeLesson">${tx(T.close,lang)}</button></div></div></div>`;
+  }
+  const script=Ls[age][lang]||Ls[age].en; const n=script.length; const i=S.step;
+  const steps=`<div class="steps">${script.map((_,k)=>`<i class="${k<i?'done':k===i?'on':''}"></i>`).join('')}</div><div class="step-name">${tx(T.steps[i],lang)} · ${i+1}/${n}</div>`;
+  const [who,text]=script[i];
+  let body='';
+  const sec=T.sections.find(s=>s.k===Ls.section)||T.companions.find(s=>s.k===Ls.section);
+  const head=`<div class="section-h" style="color:${sec?sec.c:'#2F3C7E'}">${tx(Ls.title,lang)}<i class="bar"></i><span class="chip" style="font-size:11px">${sec?tx(sec.n,lang):''}</span></div>`;
+  if(who==='you'){ // activity: tap the right target among pictures
+    const items=Ls.quiz[age].slice(0,age==='little'?3:4);
+    body=`${bubble('you',text,lang)}<div class="choices">${items.map(([ic,lab,ok])=>`<button class="choice ${S.picked===ic?(ok?'ok':'no'):''}" data-act="pick" data-v="${ic}" data-ok="${ok}">${qicon(ic)}<span>${tx(lab,lang)}</span></button>`).join('')}</div>
+      ${S.picked&&!items.find(x=>x[0]===S.picked)[2]?bubble('dadaji',tx(T.again,lang),lang):''}
+      <div class="row"><button class="big-btn" data-act="next" ${S.picked&&items.find(x=>x[0]===S.picked)[2]?'':'disabled style="opacity:.4"'}>${tx(T.next,lang)}</button></div>`;
+  } else if(who==='quiz'){
+    const items=Ls.quiz[age];
+    const pickedOk=S.picked&&items.find(x=>x[0]===S.picked)[2];
+    body=`${bubble('quiz',text,lang)}<div class="choices">${items.map(([ic,lab,ok])=>`<button class="choice ${S.picked===ic?(ok?'ok':'no'):''}" data-act="pick" data-v="${ic}" data-ok="${ok}">${qicon(ic)}<span>${tx(lab,lang)}</span></button>`).join('')}</div>
+      ${S.picked?bubble('dadaji',tx(pickedOk?T.well:T.again,lang),lang):''}
+      <div class="row"><button class="big-btn green" data-act="next" ${pickedOk?'':'disabled style="opacity:.4"'}>${tx(T.next,lang)}</button></div>`;
+  } else if(who==='mitthu'){
+    body=`${bubble('mitthu',text,lang)}${bubble('gopu',text,lang)}
+      ${age==='explorer'?`<div class="card"><h3>${tx(T.objective,lang)}</h3><p>${tx(Ls.objective,lang)}</p></div><div class="card" style="border-color:#4E9F3D"><h3 style="color:#4E9F3D">${tx(T.realworld,lang)}</h3><p>${tx(Ls.rwa,lang)}</p></div>`:`<div class="card" style="border-color:#4E9F3D"><h3 style="color:#4E9F3D">${tx(T.realworld,lang)}</h3><p>${tx(Ls.rwa,lang)}</p></div>`}
+      <div class="row"><button class="big-btn ghost" data-act="listen">${icon('i-speaker',20)} ${tx(T.listen,lang)}</button><button class="big-btn green" data-act="finish">${tx(T.done,lang)}</button></div>`;
+  } else {
+    body=`${bubble(who,text,lang)}<div class="row"><button class="big-btn ghost" data-act="listen">${icon('i-speaker',20)} ${tx(T.listen,lang)}</button><button class="big-btn" data-act="next">${tx(T.next,lang)}</button></div>`;
+  }
+  return `<div class="overlay" data-act="closeLesson"><div class="sheet"><div class="grab"></div>${head}${steps}${body}</div></div>`;
+}
+
+/* ============ SCREENS ============ */
+const LANGS=[['en','English','English'],['hi','हिन्दी','Hindi'],['bn','বাংলা','Bengali'],['as','অসমীয়া','Assamese'],['or','ଓଡ଼ିଆ','Odia'],['mr','मराठी','Marathi'],['gu','ગુજરાતી','Gujarati'],['pa','ਪੰਜਾਬੀ','Punjabi'],['ta','தமிழ்','Tamil'],['te','తెలుగు','Telugu'],['kn','ಕನ್ನಡ','Kannada'],['ml','മലയാളം','Malayalam'],['ur','اردو','Urdu'],['sa','संस्कृतम्','Sanskrit']];
+const STORIES=[[L('Panchatantra','पंचतंत्र'),'pd'],[L('Jataka Tales','जातक कथाएँ'),'pd'],[L('Hitopadesha','हितोपदेश'),'pd'],[L('Akbar and Birbal','अकबर-बीरबल'),'pd'],[L('Tenali Raman','तेनाली रामन'),'pd'],[L('Vikram and Betaal','विक्रम-बेताल'),'pd'],[L('Gopal Bhar','गोपाल भाँड़'),'pd'],[L('Mullah Nasruddin','मुल्ला नसरुद्दीन'),'pd'],[L('Kathasaritsagara','कथासरित्सागर'),'pd'],[L('Malgudi Days','मालगुडी डेज़'),'lic'],[L("Tagore's stories",'टैगोर की कहानियाँ'),'pd'],[L("Ruskin Bond's stories",'रस्किन बॉन्ड'),'lic'],[L("Satyajit Ray's stories",'सत्यजित राय'),'lic'],[L("Grandma's Bag of Stories",'ग्रैंडमाज़ बैग ऑफ़ स्टोरीज़'),'lic'],[L("Sukumar Ray's stories",'सुकुमार राय'),'pd'],[L('The Jungle Book','द जंगल बुक'),'pd']];
+const STORY_PAGES={ en:['Once, by a wide river, a monkey lived in a jamun tree. Every day he shared his sweet jamuns with a crocodile who swam below.','The crocodile\'s wife tasted the jamuns and said: "If the fruit is this sweet, the monkey\'s heart must be sweeter. Bring it to me."','The crocodile invited the monkey for a ride. Midway he confessed. The monkey laughed: "My heart? I left it on the tree! Take me back and I will fetch it." Safe on the branch, he said: "Friend, hearts do not come off. But trust does."'],
+  hi:['एक नदी के किनारे जामुन के पेड़ पर एक बंदर रहता था। वह रोज़ अपने मीठे जामुन नीचे तैरते मगरमच्छ के साथ बाँटता था।','मगरमच्छ की पत्नी ने जामुन चखे और बोली: "फल इतने मीठे हैं तो बंदर का दिल और मीठा होगा। मेरे लिए लाओ।"','मगरमच्छ ने बंदर को सैर पर बुलाया। बीच नदी में उसने सच बता दिया। बंदर हँसा: "मेरा दिल? वह तो पेड़ पर छूट गया! वापस ले चलो, ले आता हूँ।" डाल पर सुरक्षित बैठकर बोला: "दोस्त, दिल नहीं उतरता। पर भरोसा उतर जाता है।"'] };
+function storyArt(page){ return sceneWrap('0 0 360 200',`<rect width="360" height="200" fill="${S.bedtime?'#1B2142':'#BFE6F7'}"/>${S.bedtime?'<circle cx="300" cy="40" r="16" fill="#FFE08A"/><g fill="#fff"><circle cx="40" cy="30" r="1.5"/><circle cx="120" cy="50" r="1.5"/><circle cx="200" cy="24" r="1.5"/><circle cx="260" cy="70" r="1.5"/></g>':'<circle cx="300" cy="40" r="18" fill="#FFC94D"/>'}
+  <path d="M0 150 q180 -30 360 0 V200 H0 Z" fill="#2E86AB"/><path d="M0 160 q180 -24 360 0" stroke="#8CCBE0" stroke-width="3" fill="none"/>
+  <rect x="40" y="80" width="14" height="80" fill="#8B5A2B"/><ellipse cx="47" cy="70" rx="44" ry="34" fill="#4E9F3D"/><g fill="#2F3C7E"><circle cx="30" cy="62" r="4"/><circle cx="56" cy="54" r="4"/><circle cx="70" cy="80" r="4"/><circle cx="40" cy="90" r="4"/></g>
+  <g transform="translate(${page===2?64:96} ${page===2?56:134}) scale(1.4)"><ellipse cx="0" cy="0" rx="14" ry="12" fill="#A5733F"/><circle cx="-6" cy="-12" r="9" fill="#A5733F"/><circle cx="-8" cy="-12" r="5" fill="#E9B98E"/><circle cx="-9" cy="-13" r="1.5" fill="#000"/><path d="M12 0 q16 -14 8 -26" stroke="#A5733F" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="-16" cy="-6" r="3" fill="#2F3C7E"/></g>
+  <g transform="translate(200 150)"><path d="M-50 0 q0 -14 14 -14 h50 l20 -10 v20 l-20 -2 h-50 q-14 0 -14 6 Z" fill="#4E9F3D"/><circle cx="-26" cy="-12" r="4" fill="#fff"/><circle cx="-26" cy="-12" r="2" fill="#000"/><path d="M-6 -4 l3 4 l3 -4 l3 4 l3 -4 l3 4" stroke="#fff" stroke-width="2" fill="none"/></g>
+  ${page===1?'<g transform="translate(290 150)"><path d="M-40 0 q0 -12 12 -12 h40 l16 -8 v16 l-16 -2 h-40 q-12 0 -12 6 Z" fill="#6DAE3C"/><circle cx="-20" cy="-10" r="4" fill="#fff"/><circle cx="-20" cy="-10" r="2" fill="#000"/><path d="M-30 -16 q-4 -10 4 -8" stroke="#E07A95" stroke-width="3" fill="none"/></g>':''}
+  <path d="M250 152 q50 -22 110 -8 V200 H250 Z" fill="#E9D9C0"/><path d="M250 152 q50 -22 110 -8" stroke="#8BC34A" stroke-width="6" fill="none"/>
+  ${ch('dadaji',300,92,34)} ${ch('mitthu',334,78,13)}`); }
+
+const SCREENS=[
+ {id:'language',group:L('Start','शुरुआत'),title:L('Language selection','भाषा चुनें'),tab:null,note:L('The first screen after install. Fourteen languages in their own scripts, Dadaji waving. Parents can change it later; the app also offers bilingual and comparison modes.','इंस्टॉल के बाद पहली स्क्रीन। चौदह भाषाएँ अपनी लिपि में। बाद में बदली जा सकती हैं; द्विभाषी मोड भी है।'),
+  render:(age,lang)=>`<div style="text-align:center;padding:10px 14px 0"><svg viewBox="0 0 120 210" style="width:110px;height:auto"><use href="#c-dadaji"/></svg><h3 style="font-family:var(--display);font-size:22px;color:#2F3C7E;margin:4px 0 0">${lang==='hi'?'नमस्ते! कौन-सी भाषा?':'Namaste! Which language?'}</h3><p style="margin:2px 0 6px;color:#6F5F58;font-size:13px">${lang==='hi'?'अभिभावक बाद में बदल सकते हैं':'Parents can change this later'}</p></div><div class="lang-grid">${LANGS.map(([c,n,e])=>`<button class="lang" aria-pressed="${c===lang}" data-act="pickLang" data-v="${c}"><b>${n}</b><span>${e}</span></button>`).join('')}</div>`},
+ {id:'profile',group:L('Start','शुरुआत'),title:L('Child profile (parent)','बच्चे की प्रोफ़ाइल'),tab:null,note:L('The parent creates the profile: name, age band, difficulty and language mode. Age never judges ability on its own; the difficulty control and demonstrated mastery adjust content separately.','अभिभावक प्रोफ़ाइल बनाते हैं: नाम, आयु वर्ग, कठिनाई और भाषा मोड।'),
+  render:(age,lang)=>`<div class="section-h">${lang==='hi'?'बच्चे की प्रोफ़ाइल':'Create a child profile'}<i class="bar"></i>${icon('i-lock',22)}</div>
+   <div class="card"><h3>${lang==='hi'?'नाम':'Name'}</h3><div class="chip" style="font-size:18px;margin-top:6px">Gopu</div></div>
+   <div class="card"><h3>${lang==='hi'?'आयु वर्ग':'Age band'}</h3><div class="list" style="margin-top:6px">${['0–2','2–4','4–6','6–8','8–10','10–12'].map((b,i)=>`<button class="pill" aria-pressed="${(age==='little'&&i===2)||(age==='explorer'&&i===5)}">${b}</button>`).join('')}</div><p>${lang==='hi'?'4–6: लिटिल मोड · 10–12: एक्सप्लोरर मोड':'4–6 opens Little mode · 10–12 opens Explorer mode'}</p></div>
+   <div class="card"><h3>${lang==='hi'?'कठिनाई (आयु से अलग)':'Difficulty (separate from age)'}</h3><div class="list" style="margin-top:6px"><button class="pill">${lang==='hi'?'कोमल':'Gentle'}</button><button class="pill" aria-pressed="true">${lang==='hi'?'सम':'Steady'}</button><button class="pill">${lang==='hi'?'चुनौती':'Stretch'}</button></div></div>
+   <div class="card"><h3>${lang==='hi'?'भाषा मोड':'Language mode'}</h3><div class="list" style="margin-top:6px"><button class="pill" aria-pressed="true">${lang==='hi'?'एक भाषा':'Single'}</button><button class="pill">${lang==='hi'?'द्विभाषी':'Bilingual'}</button><button class="pill">${lang==='hi'?'अंग्रेज़ी + हिंदी समझ':'English with Hindi help'}</button></div></div>
+   <div class="row" style="margin-top:6px"><button class="big-btn" data-go="map">${lang==='hi'?'दादाजी से मिलें':'Meet Dadaji'}</button></div>`},
+ {id:'characters',group:L('Start','शुरुआत'),title:L('The seven characters','सात पात्र'),tab:'me',note:L('Original character designs. Dadaji is the only permanent teacher; the others accompany him. Mitthu, the mountain parrot, exists for revision only ("Mitthu\'s Echo"). The cow\'s name is a proposal.','मूल पात्र डिज़ाइन। दादाजी एकमात्र स्थायी शिक्षक हैं।'),
+  render:(age,lang)=>`<div class="section-h">${lang==='hi'?'दादाजी का परिवार':"Dadaji's family"}<i class="bar"></i></div>`+T.chars.map(c=>`<div class="card" style="display:flex;gap:12px;align-items:center"><svg viewBox="0 0 ${({dadaji:'120 210',gopu:'100 170',kim:'150 110',molly:'90 130',gauri:'200 150',dhanu:'110 100',mitthu:'70 110'})[c.k]}" style="width:84px;height:84px;flex:0 0 auto"><use href="#c-${c.k}"/></svg><div><h3>${tx(c.n,lang)}</h3><p>${tx(c.r,lang)}</p></div></div>`).join('')},
+ {id:'map',group:L('Miniverse','मिनीवर्स'),title:L('The Miniverse map','मिनीवर्स का नक्शा'),tab:'map',note:L('The world is the dashboard. One continuous miniature India: Dadaji\'s house on a large plot with a massive garden and fenced plots reserved for future animal shelters, the lane to the public garden, the library, the temple courtyard and the excursion balloon. Tap a place to go there.','दुनिया ही डैशबोर्ड है। दादाजी का घर बड़े भूखंड पर, विशाल बगीचा, भविष्य के पशु-आश्रय के लिए आरक्षित जगह, सार्वजनिक बगीचा, पुस्तकालय, मंदिर प्रांगण और सैर का गुब्बारा।'),
+  render:(age,lang)=>sceneMap(age,lang)+bubble('dadaji',lang==='hi'?'कहाँ चलें, बेटा? घर, बगीचा, या पुस्तकालय?':'Where shall we go, beta? The house, the garden, or the library?',lang)},
+ {id:'living',group:L('Miniverse','मिनीवर्स'),title:L('Living room','बैठक'),tab:'map',note:L('The main teaching room. Every object is a lesson: the telescope (astronomy), the globe (geography), the bookshelf (reading), the radio (sound), the clock (time), carrom (angles), the diya (festivals). Open the telescope or the globe for a complete lesson that follows the teaching formula.','मुख्य शिक्षण कक्ष। हर वस्तु एक पाठ है। दूरबीन या ग्लोब खोलें: पूरा पाठ।'),
+  render:(age,lang)=>sceneLiving(age,lang)+bubble('dadaji',tx(T.tapObj,lang),lang)},
+ {id:'lab',group:L('Miniverse','मिनीवर्स'),title:L('Science laboratory','विज्ञान प्रयोगशाला'),tab:'map',note:L('Magnet, beakers (colour mixing), microscope, circuit, prism, balance. Kim joins Dadaji here. Open the magnet for a full lesson.','चुंबक, बीकर, सूक्ष्मदर्शी, परिपथ, प्रिज़्म, तराज़ू। चुंबक खोलें: पूरा पाठ।'),
+  render:(age,lang)=>sceneLab(age,lang)+bubble('kim',lang==='hi'?'भौं! दादाजी, आज कौन-सा प्रयोग?':'Woof! Dadaji, which experiment today?',lang)},
+ {id:'music',group:L('Miniverse','मिनीवर्स'),title:L('Music room','संगीत कक्ष'),tab:'map',note:L('Harmonium (swaras), tabla (taal), sitar, flute, ghungroo (Kathak). Mitthu loves this room. Open the harmonium for a full lesson: Sa Re Ga Ma for a four-year-old, raag structure for a ten-year-old.','हारमोनियम, तबला, सितार, बाँसुरी, घुँघरू। हारमोनियम खोलें: पूरा पाठ।'),
+  render:(age,lang)=>sceneMusic(age,lang)+bubble('mitthu',lang==='hi'?'सा रे गा मा! सा रे गा मा!':'Sa Re Ga Ma! Sa Re Ga Ma!',lang)},
+ {id:'art',group:L('Miniverse','मिनीवर्स'),title:L('Art and creativity room','कला कक्ष'),tab:'map',note:L('Easel, paint pots, clay wheel, origami, Madhubani border and the rangoli on the floor. Children\'s creations are saved to a personal gallery (the string of drawings). Open the rangoli for a full pattern lesson.','ईज़ल, रंग, चाक, ओरिगामी, मधुबनी, रंगोली। रंगोली खोलें: पूरा पाठ।'),
+  render:(age,lang)=>sceneArt(age,lang)+bubble('molly',lang==='hi'?'पैटर्न ढूँढो! नारंगी, हरा, नारंगी...':'Spot the pattern! Orange, green, orange...',lang)},
+ {id:'garden',group:L('Miniverse','मिनीवर्स'),title:L('Private garden','निजी बगीचा'),tab:'map',note:L('The massive family garden: mango tree, vegetable patch, flower bed, tulsi, pond, fountain, compost, bird feeder, butterflies, Gauri and Dhanu, and a fenced plot reserved for future animal shelters. Growth persists between sessions. Open the tulsi for a full plant lesson.','विशाल पारिवारिक बगीचा। तुलसी खोलें: पूरा पाठ।'),
+  render:(age,lang)=>sceneGarden(age,lang)+bubble('gauri',lang==='hi'?'हम्म... तुलसी को आज पानी मिला?':'Hmmm... has the tulsi had water today?',lang)},
+ {id:'publicgarden',group:L('Miniverse','मिनीवर्स'),title:L('Public garden','सार्वजनिक बगीचा'),tab:'map',note:L('Playground, swings, slide, cricket, balance beam, sundial, tree trail with name boards. Physical education, environment and social learning. Open the balance beam for a full lesson.','खेल का मैदान, झूले, क्रिकेट, संतुलन बीम, धूपघड़ी, पेड़ पहचान। बीम खोलें: पूरा पाठ।'),
+  render:(age,lang)=>scenePublicGarden(age,lang)+bubble('kim',lang==='hi'?'भौं! पहले कौन दौड़ेगा?':'Woof! Who will run first?',lang)},
+ {id:'library',group:L('Miniverse','मिनीवर्स'),title:L('Public library','सार्वजनिक पुस्तकालय'),tab:'map',note:L('Arched shelves, a regional-language shelf (the same story in Tamil, Bengali, Odia, Gujarati), reference, audiobooks, a library card. Dadaji stays the guide; the librarian is a guest. Open the story shelf for a Panchatantra story lesson.','मेहराबदार शेल्फ़, क्षेत्रीय भाषा शेल्फ़, ऑडियो। कहानी शेल्फ़ खोलें।'),
+  render:(age,lang)=>sceneLibrary(age,lang)+bubble('dadaji',lang==='hi'?'धीरे बोलो, बेटा। किताबें सुन रही हैं।':'Speak softly, beta. The books are listening.',lang)},
+ {id:'temple',group:L('Miniverse','मिनीवर्स'),title:L('Temple and cultural courtyard','मंदिर और सांस्कृतिक प्रांगण'),tab:'map',note:L('Optional, off by default for the youngest, parent-controlled. A north-Indian shikhara and a south-Indian gopuram, the bell, the lamp, a regional traditions gallery, and a separate Shared heritage wing so Buddhist, Jain, Sikh, Sufi and tribal traditions are never labelled as Hindu deities. Every card is tagged History, Mythology or Belief. Open the bell for a sound (vibration) lesson.','वैकल्पिक, अभिभावक-नियंत्रित। हर कार्ड पर इतिहास / पौराणिक / मान्यता का लेबल।'),
+  render:(age,lang)=>sceneTemple(age,lang)+bubble('dadaji',lang==='hi'?'यहाँ हम कहानियाँ, इतिहास और मान्यताएँ अलग-अलग रखते हैं।':'Here we keep stories, history and belief in separate boxes.',lang)},
+ {id:'excursion',group:L('Miniverse','मिनीवर्स'),title:L('Virtual excursion: space','आभासी सैर: अंतरिक्ष'),tab:'map',note:L('Excursion portals take Dadaji and the children to museums, forests, mountains, oceans, monuments and space. Here the balloon has floated above the atmosphere; tap a planet.','सैर के द्वार संग्रहालय, जंगल, पहाड़, समुद्र, स्मारक और अंतरिक्ष ले जाते हैं।'),
+  render:(age,lang)=>sceneWrap('0 0 360 300',`<rect width="360" height="300" fill="#1B2142"/><g fill="#fff">${Array.from({length:40},(_,i)=>`<circle cx="${(i*73)%360}" cy="${(i*41)%300}" r="${1+(i%3)*.5}"/>`).join('')}</g>
+    <circle cx="30" cy="150" r="40" fill="#FFC94D"/><circle cx="30" cy="150" r="50" fill="#FFC94D" opacity=".2"/>
+    ${[['Mercury','बुध',96,150,7,'#A9B7BF'],['Venus','शुक्र',124,150,10,'#F4A523'],['Earth','पृथ्वी',158,150,11,'#2E86AB'],['Mars','मंगल',190,150,8,'#D9663D'],['Jupiter','बृहस्पति',236,150,22,'#E9B98E'],['Saturn','शनि',292,150,16,'#FFE08A']].map(([n,h,x,y,r,c])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${c}"/>${n==='Saturn'?`<ellipse cx="${x}" cy="${y}" rx="28" ry="6" fill="none" stroke="#E9D9C0" stroke-width="3"/>`:''}${n==='Earth'?`<path d="M150 146 q6 -4 10 2 q4 6 8 0" stroke="#8BC34A" stroke-width="3" fill="none"/>`:''}<text x="${x}" y="${y+r+14}" text-anchor="middle" font-size="${age==='little'?0:9}" fill="#fff">${lang==='hi'?h:n}</text>`).join('')}
+    <g transform="translate(150 230)"><ellipse cx="0" cy="-30" rx="26" ry="30" fill="#F4A523"/><path d="M-26 -30 q26 -46 52 0" fill="#D9663D"/><rect x="-16" y="12" width="32" height="20" rx="4" fill="#8B5A2B"/><path d="M-14 0 l-6 12 M14 0 l6 12" stroke="#8B5A2B" stroke-width="2"/>${ch('dadaji',-16,-20,20)}${ch('gopu',2,-8,14)}</g>
+    ${hot(158,150,'exc.space.earth',L('Earth','पृथ्वी'),age,lang)}${hot(292,150,'exc.space.saturn',L('Saturn','शनि'),age,lang)}${hot(30,150,'exc.space.sun',L('Sun','सूर्य'),age,lang)}`)+bubble('dadaji',lang==='hi'?'देखो बेटा, हमारी पृथ्वी नीली है क्योंकि इस पर पानी है।':'Look, beta, our Earth is blue because it has water.',lang)},
+ {id:'dashboard',group:L('Learning tabs','सीखने के टैब'),title:L('Main dashboard (eight sections)','मुख्य डैशबोर्ड (आठ खंड)'),tab:'learn',note:L('Illustrated tabs reach everything without exploring the Miniverse. Eight learning sections plus Stories, Tests, Achievements and the Parent Dashboard. Little mode shows large tiles with no subtitles; Explorer mode adds subjects and progress.','चित्रित टैब। आठ खंड + कहानियाँ, परीक्षा, उपलब्धियाँ, अभिभावक।'),
+  render:(age,lang)=>`<div class="section-h">${lang==='hi'?'आज दादाजी के साथ':'Today with Dadaji'}<i class="bar"></i></div>
+    ${bubble('dadaji',lang==='hi'?(age==='little'?'बेटा, आज क्या सीखें?':'आज: भिन्न, फिर बगीचे में एक काम। चलें?'):(age==='little'?'Beta, what shall we learn today?':'Today: fractions, then a job in the garden. Shall we?'),lang)}
+    <div class="tiles">${T.sections.map(s=>`<button class="tile" style="background:${s.c}" data-go="section" data-v="${s.k}">${icon('i-'+s.k,56)}<span>${tx(s.n,lang)}</span><small>${tx(s.s,lang)}</small></button>`).join('')}</div>
+    <div class="section-h">${lang==='hi'?'और भी':'Also'}<i class="bar"></i></div>
+    <div class="tiles">${T.companions.map(c=>`<button class="tile" style="background:${c.c};min-height:${age==='little'?'120px':'96px'}" data-go="${c.k}">${icon('i-'+({stories:'stories',tests:'tests',achievements:'achieve',parents:'parent'})[c.k],48)}<span>${tx(c.n,lang)}</span></button>`).join('')}</div>`},
+ {id:'section',group:L('Learning tabs','सीखने के टैब'),title:L('A section: Academic Learning','एक खंड: पढ़ाई-लिखाई'),tab:'learn',note:L('Inside a section: subjects, topics, and where in the Miniverse each one is taught. Every lesson follows the same formula with Dadaji. Curriculum alignment (NCERT, CBSE, ICSE, IB, Cambridge) is tagged in the CMS.','खंड के अंदर: विषय, टॉपिक, और मिनीवर्स में कहाँ पढ़ाया जाता है।'),
+  render:(age,lang)=>{ const sec=T.sections.find(s=>s.k===(S.section||'academic')); const subj={academic:[[L('English','अंग्रेज़ी'),'house.study',62],[L('Hindi','हिन्दी'),'house.study',48],[L('Mathematics','गणित'),'house.living_room',71],[L('Science','विज्ञान'),'house.lab',35],[L('Social studies','सामाजिक अध्ययन'),'house.living_room.globe',20]],stem:[[L('Computer basics','कंप्यूटर'),'house.study',30],[L('Block coding','ब्लॉक कोडिंग'),'house.study',12],[L('Robotics','रोबोटिक्स'),'house.lab',0],[L('Digital safety','डिजिटल सुरक्षा'),'house.study',55]],music:[[L('Swar and taal','स्वर और ताल'),'house.music_room',40],[L('Tabla','तबला'),'house.music_room',10],[L('Kathak','कथक'),'house.music_room',0],[L('Storytelling','कहानी कहना'),'house.veranda',25]],art:[[L('Drawing','चित्रकला'),'house.art_room',50],[L('Rangoli','रंगोली'),'house.art_room',30],[L('Origami','ओरिगामी'),'house.art_room',15],[L('Clay','मिट्टी'),'house.art_room',0]],sports:[[L('Cricket','क्रिकेट'),'town.public_garden',30],[L('Yoga','योग'),'house.veranda',45],[L('Balance','संतुलन'),'town.public_garden',60],[L('Kabaddi','कबड्डी'),'town.public_garden',0]],nature:[[L('Gardening','बागवानी'),'house.garden',65],[L('Animal care','पशु देखभाल'),'house.cowshed',40],[L('Hygiene','स्वच्छता'),'house.bathroom',70],[L('Money','पैसा'),'house.kitchen',10]],mind:[[L('Memory','याद'),'house.playroom',40],[L('Chess','शतरंज'),'house.playroom',5],[L('Mazes','भूलभुलैया'),'house.playroom',60],[L('Empathy','सहानुभूति'),'house.veranda',30]],explore:[[L('Astronomy','खगोल'),'house.living_room.telescope',30],[L('Dinosaurs','डायनासोर'),'town.excursions',10],[L('Indian history','भारतीय इतिहास'),'town.library',20],[L('Monuments','स्मारक'),'town.excursions',0]]}[sec.k];
+    return `<div class="section-h" style="color:${sec.c}">${icon('i-'+sec.k,30)} ${tx(sec.n,lang)}<i class="bar"></i></div>${bubble('dadaji',lang==='hi'?'कहाँ से शुरू करें, बेटा?':'Where shall we begin, beta?',lang)}<div class="card">${subj.map(([n,loc,p])=>`<div class="list-row"><div class="ic" style="background:${sec.c}22">${icon('i-'+sec.k,28)}</div><div style="flex:1"><b>${tx(n,lang)}</b>${age==='explorer'?`<span>${loc}</span><div class="progress" style="margin-top:4px"><i style="width:${p}%;background:${sec.c}"></i></div>`:''}</div></div>`).join('')}</div>
+    ${age==='explorer'?`<div class="card"><h3>${lang==='hi'?'पाठ्यक्रम':'Curriculum'}</h3><p>NCERT · CBSE · ICSE · IB PYP · Cambridge Primary</p></div>`:''}<div class="row"><button class="big-btn" data-go="living">${lang==='hi'?'बैठक में चलें':'Go to the living room'}</button></div>`; }},
+ {id:'stories',group:L('Learning tabs','सीखने के टैब'),title:L("Dadaji's Story Corner",'दादाजी की कहानियाँ'),tab:'stories',note:L('Sixteen collections. Green chips are traditional or public-domain in India; orange chips need a licence before launch (Malgudi Days, Ruskin Bond, Satyajit Ray, Grandma\'s Bag of Stories). Read-along, independent and bedtime modes.','सोलह संग्रह। हरा: पारंपरिक/सार्वजनिक; नारंगी: लाइसेंस ज़रूरी।'),
+  render:(age,lang)=>`<div class="section-h">${icon('i-stories',30)} ${lang==='hi'?'कहानी का कोना':'Story Corner'}<i class="bar"></i></div>
+   <div class="card" style="display:flex;gap:10px;align-items:center;border-color:#F4A523"><svg viewBox="0 0 64 64" style="width:56px;height:56px">${qicon('croc').replace('<svg viewBox="0 0 64 64" aria-hidden="true">','').replace('</svg>','')}</svg><div style="flex:1"><h3>${lang==='hi'?'बंदर और मगरमच्छ':'The Monkey and the Crocodile'}</h3><p>${lang==='hi'?'पंचतंत्र · 3 पन्ने · दादाजी की आवाज़':'Panchatantra · 3 pages · narrated by Dadaji'}</p></div><button class="big-btn" style="flex:0 0 auto;padding:10px 14px" data-go="story">${lang==='hi'?'सुनो':'Read'}</button></div>
+   <div class="card">${STORIES.map(([n,st])=>`<div class="list-row"><div class="ic" style="background:${st==='pd'?'#EAF6E4':'#FFF0D6'}">${icon('i-stories',26)}</div><div style="flex:1"><b>${tx(n,lang)}</b>${age==='explorer'?`<span>${st==='pd'?(lang==='hi'?'पारंपरिक / सार्वजनिक':'Traditional / public domain'):(lang==='hi'?'लाइसेंस आवश्यक':'Licence required')}</span>`:''}</div><span class="chip" style="background:${st==='pd'?'#4E9F3D':'#F4A523'};color:#fff;border:0;font-size:10px">${st==='pd'?'OK':(lang==='hi'?'अनुमति':'Rights')}</span></div>`).join('')}</div>`},
+ {id:'story',group:L('Learning tabs','सीखने के टैब'),title:L('Story player','कहानी प्लेयर'),tab:'stories',note:L('Dadaji narrates; the current sentence is highlighted for read-along. Bedtime mode dims the screen, slows narration and ends with a comprehension question only in the morning.','दादाजी सुनाते हैं; पढ़ने के लिए वाक्य हाइलाइट होता है। बेडटाइम मोड।'),
+  render:(age,lang)=>{ const pages=STORY_PAGES[lang]; const p=S.storyPage; return `${storyArt(p)}<div class="timebar"><span>${p+1}/${pages.length}</span><div class="progress"><i style="width:${(p+1)/pages.length*100}%"></i></div><button class="pill" data-act="bedtime" aria-pressed="${!!S.bedtime}">${lang==='hi'?'बेडटाइम':'Bedtime'}</button></div>
+    <div class="bubble" style="${S.bedtime?'background:#272C52;color:#F6EEDC;border-color:#3B4270':''}"><div class="av">${av('dadaji')}</div><div><div class="who">${lang==='hi'?'दादाजी सुनाते हैं':'Dadaji narrates'}</div><p style="font-size:${age==='little'?'17px':'15px'}">${pages[p].split('. ').map((s,i)=>i===0?`<mark style="background:#FFE08A;color:#3A2E2A;border-radius:4px">${s}.</mark>`:s).join(' ')}</p></div></div>
+    <div class="row"><button class="big-btn ghost" data-act="storyPrev" ${p===0?'disabled style="opacity:.4"':''}>${lang==='hi'?'पीछे':'Back'}</button><button class="big-btn ghost" data-act="listen">${icon('i-speaker',20)}</button><button class="big-btn" data-act="storyNext">${p===pages.length-1?(lang==='hi'?'सवाल':'Question'):tx(T.next,lang)}</button></div>`; }},
+ {id:'tests',group:L('Learning tabs','सीखने के टैब'),title:L('Tests and Challenges','परीक्षा और चुनौतियाँ'),tab:'tests',note:L('Dadaji is the quiz master. Little mode uses picture and audio recognition; Explorer mode uses multiple-choice, reasoning and written answers. Feedback is immediate and never shaming. Tracks accuracy, mastered concepts and what needs revision.','दादाजी क्विज़ मास्टर। लिटिल मोड में चित्र पहचान; एक्सप्लोरर में बहुविकल्पी।'),
+  render:(age,lang)=>{ const qs=[['house.living_room.telescope'],['house.lab.magnet'],['house.garden.tulsi']]; const qi=S.testQ||0; const id=qs[qi%qs.length][0]; const Ls=LESSONS[id]; const items=Ls.quiz[age]; const q=Ls[age][lang].find(s=>s[0]==='quiz')[1]; const ok=S.picked&&items.find(x=>x[0]===S.picked)[2];
+   return `<div class="section-h">${icon('i-tests',30)} ${lang==='hi'?'आज का अभ्यास':'Daily practice'}<i class="bar"></i><span class="chip">${qi+1}/3</span></div>
+    ${age==='explorer'?`<div class="list" style="padding:0 14px 6px">${[L('Daily','दैनिक'),L('Chapter','अध्याय'),L('Weekly','साप्ताहिक'),L('Monthly','मासिक'),L('Olympiad','ओलंपियाड')].map((n,i)=>`<button class="pill" aria-pressed="${i===0}">${tx(n,lang)}</button>`).join('')}</div>`:''}
+    ${bubble('quiz',q,lang)}<div class="choices">${items.map(([ic,lab,isOk])=>`<button class="choice ${S.picked===ic?(isOk?'ok':'no'):''}" data-act="pick" data-v="${ic}">${qicon(ic)}<span>${tx(lab,lang)}</span></button>`).join('')}</div>
+    ${S.picked?bubble('dadaji',tx(ok?T.well:T.again,lang),lang):''}
+    <div class="row"><button class="big-btn green" data-act="testNext" ${ok?'':'disabled style="opacity:.4"'}>${qi===2?(lang==='hi'?'परिणाम':'Result'):tx(T.next,lang)}</button></div>
+    ${age==='explorer'?`<div class="card"><h3>${lang==='hi'?'महारत':'Mastery'}</h3><div class="list-row"><div style="flex:1"><b>${lang==='hi'?'ग्रह और तारे':'Planets and stars'}</b><div class="progress"><i style="width:80%"></i></div></div></div><div class="list-row"><div style="flex:1"><b>${lang==='hi'?'चुंबक':'Magnets'}</b><div class="progress"><i style="width:45%;background:#F4A523"></i></div></div></div><div class="list-row"><div style="flex:1"><b>${lang==='hi'?'पौधे के भाग':'Parts of a plant'}</b><div class="progress"><i style="width:92%"></i></div></div></div></div>`:''}`; }},
+ {id:'rwa',group:L('Learning tabs','सीखने के टैब'),title:L("Dadaji's Real World Adventures",'दादाजी के असली दुनिया के काम'),tab:'learn',note:L('Every relevant lesson extends into the real world. Each assignment carries the eight required parts: introduction, instructions, materials, duration, safety, adult supervision, completion confirmation and learning outcome. A parent confirms completion; a photo is optional and private.','हर पाठ असली दुनिया में जाता है। आठ ज़रूरी हिस्से। अभिभावक पूरा होने की पुष्टि करते हैं।'),
+  render:(age,lang)=>{ const done=S.rwaDone; return `<div class="section-h" style="color:#4E9F3D">${icon('i-nature',30)} ${lang==='hi'?'असली दुनिया का काम':'Real World Adventure'}<i class="bar"></i></div>
+    ${bubble('dadaji',lang==='hi'?'बेटा, आज एक बीज बोते हैं। किसी बड़े को साथ ले लो।':'Beta, today we plant a seed. Take an adult with you.',lang)}
+    <div class="card" style="border-color:#4E9F3D"><h3>${lang==='hi'?'एक बीज बोओ':'Plant a seed'} <span class="chip" style="font-size:10px">rwa.gardening.plant_a_seed</span></h3>
+     <div class="kv" style="padding:6px 0 0"><b>${lang==='hi'?'निर्देश':'Instructions'}</b><span>${lang==='hi'?'गमले में मिट्टी भरो, एक उँगली गहरा छेद, बीज रखो, ढको, पानी दो।':'Fill a pot with soil, make a hole one finger deep, drop the seed, cover, water.'}</span>
+     <b>${lang==='hi'?'सामग्री':'Materials'}</b><span>${lang==='hi'?'गमला, मिट्टी, मेथी या चने का बीज, पानी':'Pot, soil, a fenugreek or chickpea seed, water'}</span>
+     <b>${lang==='hi'?'समय':'Duration'}</b><span>15 ${lang==='hi'?'मिनट':'minutes'}</span>
+     <b>${lang==='hi'?'सुरक्षा':'Safety'}</b><span>${lang==='hi'?'बीज मुँह में नहीं। बाद में हाथ धोओ।':'Seeds stay out of the mouth. Wash hands after.'}</span>
+     <b>${lang==='hi'?'निगरानी':'Supervision'}</b><span>${lang==='hi'?'बड़ा साथ में':'Adult together'}</span>
+     <b>${lang==='hi'?'सीख':'Outcome'}</b><span>${lang==='hi'?'बीज को मिट्टी, पानी और समय चाहिए।':'A seed needs soil, water and time.'}</span></div></div>
+    ${done?`<div class="card" style="text-align:center;border-color:#4E9F3D">${icon('i-leafbadge',64)}<h3 style="color:#4E9F3D">${lang==='hi'?'पूरा हुआ! "नन्हा माली" बैज':'Done! "Little gardener" badge'}</h3><p>${lang==='hi'?'अभिभावक ने पुष्टि की। फ़ोटो वैकल्पिक, निजी।':'Confirmed by a parent. Photo optional, private.'}</p></div>`:`<div class="row"><button class="big-btn green" data-act="rwaDone">${icon('i-lock',20)} ${lang==='hi'?'बड़े के साथ पूरा करें':'Mark complete with a parent'}</button></div>`}`; }},
+ {id:'achievements',group:L('Learning tabs','सीखने के टैब'),title:L('My Achievements','मेरी उपलब्धियाँ'),tab:'me',note:L('Stars, coins, badges and certificates reward curiosity, consistency, creativity and effort. Coins buy garden and house decorations, books, instruments and character accessories. No gambling mechanics, no manipulative streaks.','तारे, सिक्के, बैज, प्रमाणपत्र। कोई जुआ-तंत्र नहीं।'),
+  render:(age,lang)=>`<div class="section-h">${icon('i-achieve',30)} ${lang==='hi'?'मेरी उपलब्धियाँ':'My Achievements'}<i class="bar"></i></div>
+    <div class="row"><div class="chip" style="font-size:18px;padding:8px 14px">${icon('i-star',24)} ${S.stars||12}</div><div class="chip" style="font-size:18px;padding:8px 14px">${icon('i-coin',24)} ${S.coins||40}</div></div>
+    <div class="badge-grid">${[['i-badge',L('First lesson','पहला पाठ'),1],['i-leafbadge',L('Little gardener','नन्हा माली'),S.rwaDone],['i-sunbadge',L('Star gazer','तारा-दर्शक'),S.stars>12],['i-badge',L('Seven swaras','सात स्वर'),0],['i-leafbadge',L('Pattern finder','पैटर्न खोजी'),0],['i-sunbadge',L('Curious question','जिज्ञासु सवाल'),1]].map(([ic,n,on])=>`<div class="badge ${on?'':'locked'}">${icon(ic,56)}<div>${tx(n,lang)}</div></div>`).join('')}</div>
+    <div class="section-h">${lang==='hi'?'मेरी दुनिया सजाओ':'Decorate my world'}<i class="bar"></i></div>
+    <div class="card">${[[L('Marigold bed','गेंदे की क्यारी'),8],[L('Bird bath','चिड़िया का कुंड'),15],[L('Dhanu\'s bell','धनु की घंटी'),12],[L('Bookshelf lamp','शेल्फ़ का दीपक'),10]].map(([n,c])=>`<div class="list-row"><div class="ic" style="background:#FFF3D6">${icon('i-coin',26)}</div><b style="flex:1">${tx(n,lang)}</b><span class="chip">${c}</span></div>`).join('')}</div>`},
+ {id:'echo',group:L('Learning tabs','सीखने के टैब'),title:L("Mitthu's Echo (revision)",'मिट्ठू की गूँज (दोहराव)'),tab:'learn',note:L('Once in a while Mitthu repeats the key clauses from recent lessons and Gopu listens and repeats. Mitthu never teaches new material; this is the revision mechanic requested for the mountain parrot.','मिट्ठू हाल के पाठों की मुख्य बातें दोहराता है, गोपू सुनकर दोहराता है।'),
+  render:(age,lang)=>{ const clauses=Object.values(LESSONS).slice(0,4).map(Ls=>Ls[age][lang].find(s=>s[0]==='mitthu')[1]); return `<div style="text-align:center;padding-top:8px"><svg viewBox="0 0 70 110" style="width:90px;height:auto"><use href="#c-mitthu"/></svg></div><div class="section-h" style="justify-content:center;color:#4E9F3D">${lang==='hi'?'मिट्ठू की गूँज':"Mitthu's Echo"}<span class="chip">${lang==='hi'?'1 मिनट':'1 minute'}</span></div>
+    ${clauses.map((c,i)=>`${bubble('mitthu',c,lang)}<div style="margin-left:40px">${bubble('gopu',i<=(S.echoI||0)?c:'…',lang)}</div>`).join('')}
+    <div class="row"><button class="big-btn ghost" data-act="listen">${icon('i-speaker',20)} ${tx(T.listen,lang)}</button><button class="big-btn green" data-act="echoNext">${lang==='hi'?'मैंने दोहराया':'I repeated it'}</button></div>`; }},
+ {id:'gate',group:L('Parents','अभिभावक'),title:L('Parental gate','अभिभावक द्वार'),tab:'me',note:L('A maths question and a PIN protect the parent side, purchases, data and photos. Answer 56 (7 × 8) to continue in this prototype.','गणित का सवाल और पिन। इस प्रोटोटाइप में 56 (7 × 8) लिखें।'),
+  render:(age,lang)=>`<div class="gate">${icon('i-lock',48)}<h3 style="font-family:var(--display);font-size:22px;color:#2F3C7E;margin-top:6px">${lang==='hi'?'अभिभावकों के लिए':'For parents'}</h3><p style="color:#6F5F58">${lang==='hi'?'सात गुणा आठ कितना होता है?':'What is seven times eight?'}</p><div class="pin">${[0,1].map(i=>`<i class="${S.gate.length>i?'f':''}"></i>`).join('')}</div>
+    <div class="keys">${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k=>`<button data-act="key" data-v="${k}" ${k===''?'disabled style="visibility:hidden"':''}>${k}</button>`).join('')}</div>
+    ${S.gateErr?`<p style="color:#D9663D;font-weight:700;margin-top:10px">${lang==='hi'?'फिर से कोशिश करें।':'Try again.'}</p>`:''}</div>`},
+ {id:'parents',group:L('Parents','अभिभावक'),title:L('Parent dashboard','अभिभावक डैशबोर्ड'),tab:'me',note:L('Child profiles, age and difficulty, subject-wise progress, screen time with 15/30/45/60/custom limits and warnings, weekly report, bedtime, language, content restrictions (temple courtyard toggle), downloads, privacy, data export and account deletion.','प्रोफ़ाइल, प्रगति, स्क्रीन-टाइम सीमा, साप्ताहिक रिपोर्ट, सोने का समय, भाषा, सामग्री प्रतिबंध, डाउनलोड, निजता, डेटा हटाना।'),
+  render:(age,lang)=>`<div class="section-h">${icon('i-parent',30)} ${lang==='hi'?'अभिभावक डैशबोर्ड':'Parent dashboard'}<i class="bar"></i></div>
+   <div class="list" style="padding:0 14px 6px"><button class="pill" aria-pressed="${age==='little'}">Gopu · 4</button><button class="pill" aria-pressed="${age==='explorer'}">Gopu · 10</button><button class="pill">+ ${lang==='hi'?'बच्चा जोड़ें':'Add child'}</button></div>
+   <div class="card"><h3>${lang==='hi'?'आज का स्क्रीन-टाइम':'Screen time today'}</h3><div class="timebar" style="padding:6px 0"><span>22 / 30 ${lang==='hi'?'मिनट':'min'}</span><div class="progress"><i style="width:73%;background:#F4A523"></i></div></div><div class="list">${[15,30,45,60].map(m=>`<button class="pill" aria-pressed="${m===30}">${m} ${lang==='hi'?'मि':'min'}</button>`).join('')}<button class="pill">${lang==='hi'?'कस्टम':'Custom'}</button></div><p>${lang==='hi'?'सीमा से 5 मिनट पहले दादाजी समेटना शुरू करते हैं।':'Dadaji starts winding down 5 minutes before the limit.'}</p></div>
+   <div class="card"><h3>${lang==='hi'?'विषयवार प्रगति':'Progress by section'}</h3>${T.sections.slice(0,6).map(s=>`<div class="list-row"><div class="ic" style="background:${s.c}22">${icon('i-'+s.k,26)}</div><div style="flex:1"><b>${tx(s.n,lang)}</b><div class="progress"><i style="width:${({academic:62,stem:18,music:40,art:55,sports:30,nature:71})[s.k]}%;background:${s.c}"></i></div></div></div>`).join('')}</div>
+   <div class="card"><h3>${lang==='hi'?'इस हफ़्ते':'This week'}</h3><svg viewBox="0 0 300 90" style="width:100%;height:auto"><g fill="#4E9F3D">${[18,30,25,0,28,30,22].map((v,i)=>`<rect x="${12+i*42}" y="${70-v*2}" width="24" height="${v*2}" rx="4"/>`).join('')}</g><g font-size="10" fill="#6F5F58" text-anchor="middle">${(lang==='hi'?['सो','मं','बु','गु','शु','श','र']:['M','T','W','T','F','S','S']).map((d,i)=>`<text x="${24+i*42}" y="84">${d}</text>`).join('')}</g><line x1="8" y1="70" x2="292" y2="70" stroke="#EAD9BF"/></svg><p>${lang==='hi'?'गुरुवार: कोई सत्र नहीं (अवकाश)। 5 पाठ, 2 असली काम, 1 कहानी।':'Thursday: no session (day off). 5 lessons, 2 real-world adventures, 1 story.'}</p></div>
+   <div class="card">${[[L('Bedtime','सोने का समय'),'20:30'],[L('Difficulty','कठिनाई'),lang==='hi'?'सम':'Steady'],[L('Language','भाषा'),lang==='hi'?'हिन्दी + अंग्रेज़ी':'English + Hindi'],[L('Temple courtyard','मंदिर प्रांगण'),lang==='hi'?'चालू':'On'],[L('Downloads','डाउनलोड'),'3 ' + (lang==='hi'?'पैक · 180 MB':'packs · 180 MB')],[L('Photos in adventures','कामों में फ़ोटो'),lang==='hi'?'बंद':'Off']].map(([n,v])=>`<div class="list-row"><b style="flex:1">${tx(n,lang)}</b><span class="chip">${v}</span></div>`).join('')}</div>
+   <div class="card" style="border-color:#D9663D"><h3 style="color:#D9663D">${lang==='hi'?'निजता और डेटा':'Privacy and data'}</h3><p>${lang==='hi'?'डेटा निर्यात · खाता हटाएँ · सहमति देखें (DPDP)':'Export data · Delete account · Review consent (DPDP)'}</p></div>`}
+];
+</script>
+<script>
+/* ============ APP SHELL ============ */
+const TABS=[['map','i-map'],['learn','i-house'],['stories','i-stories'],['tests','i-tests'],['me','i-me']];
+const TABGO={map:'map',learn:'dashboard',stories:'stories',tests:'tests',me:'achievements'};
+function phone(age,lang){
+  const scr=SCREENS.find(s=>s.id===S.screen)||SCREENS[0];
+  const little=age==='little';
+  const tabs=little?TABS.slice(0,3):TABS;
+  const topbar = scr.tab===null?'':`<div class="app-top"><div class="wordmark">DADU<small>${lang==='hi'?'दादाजी का मिनीवर्स':"Dadaji's Miniverse"}</small></div><div class="spacer"></div><span class="chip">${icon('i-star',18)} ${S.stars||12}</span>${little?'':`<span class="chip">${icon('i-coin',18)} ${S.coins||40}</span>`}<button class="chip" data-go="gate" aria-label="Parents" style="cursor:pointer">${icon('i-lock',18)}</button></div>`;
+  const tabbar = scr.tab===null?'':`<nav class="app-tabs ${little?'little':''}">${tabs.map(([k,ic])=>`<button data-go="${TABGO[k]}" aria-current="${scr.tab===k?'page':'false'}">${icon(ic,28)}<span>${tx(T.tabs[k],lang)}</span></button>`).join('')}</nav>`;
+  return `<div class="phone-wrap"><div class="phone ${S.bedtime&&scr.id==='story'?'bedtime':''}"><div class="screen ${little?'little':'explorer'}">
+    <div class="app-status"><span>9:41</span><span>${little?(lang==='hi'?'लिटिल मोड':'Little mode'):(lang==='hi'?'एक्सप्लोरर मोड':'Explorer mode')} · ${lang==='hi'?'हिन्दी':'EN'}</span></div>
+    ${topbar}<div class="app-body">${scr.render(age,lang)}</div>${tabbar}
+    ${S.lesson?lessonSheet(age,lang):''}${S.toast?`<div class="toast">${S.toast}</div>`:''}
+  </div></div><div class="phone-label">${little?(lang==='hi'?'लिटिल मोड · गोपू, 4 (2–6 वर्ष)':'Little mode · Gopu, 4 (ages 2–6)'):(lang==='hi'?'एक्सप्लोरर मोड · गोपू, 10 (6–12 वर्ष)':'Explorer mode · Gopu, 10 (ages 6–12)')}</div></div>`;
+}
+function render(){
+  const stage=document.getElementById('stage');
+  stage.innerHTML = S.compare ? phone('little',S.lang)+phone('explorer',S.lang) : phone(S.age,S.lang);
+  // index
+  const groups=[...new Set(SCREENS.map(s=>tx(s.group,S.lang)))];
+  document.getElementById('index').innerHTML=groups.map(g=>`<div class="group">${g}</div><div class="list">${SCREENS.filter(s=>tx(s.group,S.lang)===g).map(s=>`<button data-go="${s.id}" aria-current="${s.id===S.screen}">${tx(s.title,S.lang)}</button>`).join('')}</div>`).join('');
+  const scr=SCREENS.find(s=>s.id===S.screen);
+  document.getElementById('note').innerHTML=`<b>${tx(scr.title,S.lang)}</b><p style="margin:4px 0 0">${tx(scr.note,S.lang)}</p>`;
+  document.getElementById('ageLittle').setAttribute('aria-pressed',S.age==='little'&&!S.compare);
+  document.getElementById('ageExplorer').setAttribute('aria-pressed',S.age==='explorer'&&!S.compare);
+  document.getElementById('langEn').setAttribute('aria-pressed',S.lang==='en');
+  document.getElementById('langHi').setAttribute('aria-pressed',S.lang==='hi');
+  document.getElementById('cmp').setAttribute('aria-pressed',S.compare);
+  document.body.classList.toggle('compare',S.compare);
+}
+function go(id){ S.screen=id; S.lesson=null; S.picked=null; S.toast=''; if(id==='gate'){S.gate='';S.gateErr=false;} if(id==='tests'){S.testQ=0;} if(id==='story'){S.storyPage=0;} try{ if(location.hash!=='#'+id) history.replaceState(null,'','#'+id);}catch(e){} render(); }
+function setAge(a){ S.age=a; S.compare=false; S.lesson=null; S.picked=null; render(); }
+function setLang(l){ S.lang=l; render(); }
+function toggleCompare(){ S.compare=!S.compare; render(); }
+function toast(msg){ S.toast=msg; render(); setTimeout(()=>{ if(S.toast===msg){ S.toast=''; render(); } },2200); }
+const ACT={
+  closeLesson(){ S.lesson=null; S.picked=null; render(); },
+  next(){ S.step++; S.picked=null; render(); },
+  pick(el){ S.picked=el.dataset.v; render(); },
+  listen(){ toast(S.lang==='hi'?'ऑडियो: उत्पादन में दादाजी की रिकॉर्ड की हुई आवाज़':'Audio: recorded character voices in production'); },
+  finish(){ S.stars=(S.stars||12)+1; S.coins=(S.coins||40)+5; S.lesson=null; S.picked=null; toast(S.lang==='hi'?'⭐ एक तारा और 5 सिक्के मिले!':'⭐ One star and 5 coins earned!'); },
+  bedtime(){ S.bedtime=!S.bedtime; render(); },
+  storyPrev(){ S.storyPage=Math.max(0,S.storyPage-1); render(); },
+  storyNext(){ if(S.storyPage<STORY_PAGES.en.length-1){ S.storyPage++; render(); } else { S.lesson='town.library.story_shelf'; S.step=6; S.picked=null; render(); } },
+  testNext(){ if((S.testQ||0)<2){ S.testQ=(S.testQ||0)+1; S.picked=null; render(); } else { S.stars=(S.stars||12)+2; S.testQ=0; S.picked=null; toast(S.lang==='hi'?'3/3 · दादाजी: "शाबाश! कल फिर मिलेंगे।"':'3/3 · Dadaji: "Shabash! Same time tomorrow."'); } },
+  rwaDone(){ S.rwaDone=true; toast(S.lang==='hi'?'अभिभावक ने पुष्टि की · बैज मिला':'Parent confirmed · badge earned'); },
+  echoNext(){ S.echoI=(S.echoI||0)+1; if(S.echoI>3){ S.echoI=0; toast(S.lang==='hi'?'दोहराव पूरा!':'Revision complete!'); } else render(); },
+  key(el){ const k=el.dataset.v; if(k==='⌫'){ S.gate=S.gate.slice(0,-1); } else if(S.gate.length<2){ S.gate+=k; } S.gateErr=false; if(S.gate.length===2){ if(S.gate==='56'){ go('parents'); return; } S.gateErr=true; S.gate=''; } render(); },
+  pickLang(el){ const v=el.dataset.v; if(v==='hi'||v==='en'){ S.lang=v; } go('profile'); }
+};
+document.getElementById('stage').addEventListener('click',e=>{
+  const act=e.target.closest('[data-act]'); const goEl=e.target.closest('[data-go]'); const obj=e.target.closest('[data-obj]');
+  if(act && act.classList.contains('overlay')){ if(e.target===act) ACT.closeLesson(); return; }
+  if(act){ if(act.disabled) return; ACT[act.dataset.act](act); return; }
+  if(obj){ S.lesson=obj.dataset.obj; S.step=0; S.picked=null; render(); return; }
+  if(goEl){ if(goEl.dataset.v) S.section=goEl.dataset.v; go(goEl.dataset.go); }
+});
+document.getElementById('stage').addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ const t=e.target.closest('[data-obj],[data-go]'); if(t){ e.preventDefault(); t.click(); } } });
+document.getElementById('index').addEventListener('click',e=>{ const b=e.target.closest('[data-go]'); if(b) go(b.dataset.go); });
+window.addEventListener('hashchange',()=>{ const id=location.hash.slice(1); if(SCREENS.find(s=>s.id===id)&&id!==S.screen) go(id); });
+(function start(){ const id=location.hash.slice(1); if(SCREENS.find(s=>s.id===id)) S.screen=id; render(); })();
+</script>
