@@ -1,7 +1,7 @@
 // Interactive "Try it" and challenge activities. Each kind reads its data
 // from the lesson step and reports a result; the lesson engine counts them.
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { AppText, BigButton, Tactile } from '../../ui';
 import { palette, rainbow } from '../../theme/palette';
 import { shuffle, rng } from '../../games/engine';

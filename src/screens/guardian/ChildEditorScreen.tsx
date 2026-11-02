@@ -1,7 +1,7 @@
 // Add or edit a child: nickname, avatar, birth month, PIN (on creation),
 // and the sign-in code setting. The age bracket is computed on the server.
 import React, { useEffect, useMemo, useState } from 'react';
-import { Alert, Image, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/types';
 import { AppText, Button, Card, Screen, SegmentedControl, SettingToggle, Tactile, TextField } from '../../ui';
@@ -43,7 +43,7 @@ export function ChildEditorScreen({ navigation, route }: NativeStackScreenProps<
   }, [existing, route.params?.childId]);
 
   const birthMonth = `${year}-${String(month).padStart(2, '0')}`;
-  const years = useMemo(() => Array.from({ length: 11 }, (_, i) => now.getFullYear() - 3 - i), [now]);
+  const years = useMemo(() => Array.from({ length: 11 }, (_, i) => new Date().getFullYear() - 3 - i), []);
 
   const save = async () => {
     setError(null);

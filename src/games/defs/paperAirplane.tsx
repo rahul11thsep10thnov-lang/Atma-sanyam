@@ -75,7 +75,7 @@ function FoldGuide({ state, dispatch, width, readOnly, say, sfx }: Sub) {
 
 function FlightTest({ state, dispatch, width, readOnly, say, sfx }: Sub) {
   const W = Math.min(width - 8, 480), H = 180;
-  const [drag, setDrag] = useState<{ dx: number; dy: number } | null>(null);
+  const [, setDrag] = useState<{ dx: number; dy: number } | null>(null);
   const [anim, setAnim] = useState(0);
   const last = state.last !== null ? state.throws[state.last] : null;
   useEffect(() => {

@@ -38,7 +38,7 @@ const LIMITS = [15, 30, 45, 60, 90, 120, 180];
 const SESSIONS = [10, 15, 20, 30, 45, 60];
 const BEDTIMES: [string, string][] = [['20:00', '07:00'], ['20:30', '07:00'], ['21:00', '07:00'], ['21:30', '07:30'], ['22:00', '07:00']];
 
-export function ControlsScreen({ navigation, route }: NativeStackScreenProps<RootStackParamList, 'Controls'>) {
+export function ControlsScreen({ route }: NativeStackScreenProps<RootStackParamList, 'Controls'>) {
   const { colors } = useTheme();
   const g = useGuardian();
   const { config } = useRemoteConfig();

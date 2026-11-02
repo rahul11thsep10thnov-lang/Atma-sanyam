@@ -3,7 +3,7 @@
 // and the time limit, shows the completion screen, and streams state frames
 // to the Guardian Console while someone is watching.
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, Platform, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Platform, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { GameContext, GameDefinition, GameStatus } from '../engine';
 import { newSeed } from '../engine';

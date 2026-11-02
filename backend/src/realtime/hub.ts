@@ -162,7 +162,7 @@ export function createRealtimeHub(db: Db): RealtimeHub {
       handler = h;
       for (const m of queue.splice(0)) h(m);
     };
-    let who: Awaited<ReturnType<typeof authenticate>> = null;
+    let who: Awaited<ReturnType<typeof authenticate>>;
     try {
       who = await authenticate(req);
     } catch {

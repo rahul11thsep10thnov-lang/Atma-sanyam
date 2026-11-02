@@ -78,5 +78,6 @@ jobs:
       - run: npm audit --audit-level=critical
       - run: npm ci
       - run: npx tsc --noEmit
-      - run: npm test
+      - run: npm run lint
+      - run: npm test # includes the Hindi translation check (tests/i18n.test.ts)
       - run: npx expo export --platform android --platform ios --platform web --output-dir /tmp/expo-export

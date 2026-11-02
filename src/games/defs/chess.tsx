@@ -34,7 +34,7 @@ const def: GameDefinition<State, Action> = {
       // Practice only: step back to the last position where it was the human's turn.
       if (!PRACTICE.has(ctx.difficulty) || state.history.length === 0) return state;
       const humanTurn = (p: Position) => state.mode === 'friends' || p.turn === 'w';
-      let hist = state.history.slice();
+      const hist = state.history.slice();
       let pos = hist.pop()!;
       while (!humanTurn(pos) && hist.length) pos = hist.pop()!;
       const removed = state.history.length - hist.length;

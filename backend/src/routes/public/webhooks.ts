@@ -23,7 +23,7 @@ export function webhookRouter(deps: AppDeps, limits: ReturnType<typeof createRat
       res.status(400).json({ error: { code: 'bad_request', message: 'Not a Pub/Sub message' } });
       return;
     }
-    let notification: { subscriptionNotification?: { purchaseToken: string; notificationType: number; subscriptionId?: string }; testNotification?: unknown } = {};
+    let notification: { subscriptionNotification?: { purchaseToken: string; notificationType: number; subscriptionId?: string }; testNotification?: unknown };
     try {
       notification = JSON.parse(Buffer.from(body.data.message.data, 'base64').toString('utf8'));
     } catch {
@@ -62,7 +62,7 @@ export function webhookRouter(deps: AppDeps, limits: ReturnType<typeof createRat
       res.status(401).json({ error: { code: 'unauthorized', message: 'Bad signature' } });
       return;
     }
-    let event: { event?: string; payload?: { subscription?: { entity?: { id?: string } } } } = {};
+    let event: { event?: string; payload?: { subscription?: { entity?: { id?: string } } } };
     try {
       event = JSON.parse(rawBody);
     } catch {

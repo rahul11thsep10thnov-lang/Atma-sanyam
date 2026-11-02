@@ -54,7 +54,8 @@ function dropFloating(grid: number[]): { grid: number[]; dropped: number } {
 function land(grid: number[], angle: number, cell: number): { r: number; c: number } | null {
   const W = COLS * cell;
   let x = W / 2, y = ROWS * cell + cell / 2;
-  let vx = Math.sin(angle) * 4, vy = -Math.cos(angle) * 4;
+  let vx = Math.sin(angle) * 4;
+  const vy = -Math.cos(angle) * 4;
   for (let step = 0; step < 2000; step++) {
     x += vx;
     y += vy;

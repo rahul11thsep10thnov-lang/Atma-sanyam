@@ -13,7 +13,7 @@
 //   * we keep short extracts only, never whole articles;
 //   * delivery to children reads the database, never the live API.
 import { createHash } from 'node:crypto';
-import { and, eq, ne } from 'drizzle-orm';
+import { eq, ne } from 'drizzle-orm';
 import type { Db } from '../database/client.js';
 import { factSources, facts, sourceVerificationEvents } from '../database/schema.js';
 import { FACT_TOPICS, type FactCategoryKey } from '../catalogue/factCategories.js';

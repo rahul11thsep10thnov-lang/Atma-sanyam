@@ -39,7 +39,7 @@ function PenaltyView({ state, dispatch, width, readOnly, sfx, say }: GameViewPro
   useEffect(() => {
     if (!state.result || readOnly) return;
     sfx(state.result.startsWith('GOAL') ? 'win' : 'bad');
-    say(state.result.replace(/[!⚽🎉]/g, ''));
+    say(state.result.replace(/[!⚽🎉]/gu, ''));
     const id = setTimeout(() => dispatch({ type: 'next' }), 1500);
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps

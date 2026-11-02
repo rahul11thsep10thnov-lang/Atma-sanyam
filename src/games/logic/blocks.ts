@@ -32,12 +32,11 @@ export function canPlace(grid: number[], shape: Shape, x: number, y: number): bo
 export function place(grid: number[], shape: Shape, x: number, y: number, colour: number): { grid: number[]; cleared: number } {
   const g = grid.slice();
   for (const [dx, dy] of shape) g[(y + dy) * SIZE + x + dx] = colour;
-  let cleared = 0;
   const fullRows = [...Array(SIZE).keys()].filter((r) => [...Array(SIZE).keys()].every((c) => g[r * SIZE + c]));
   const fullCols = [...Array(SIZE).keys()].filter((c) => [...Array(SIZE).keys()].every((r) => g[r * SIZE + c]));
   for (const r of fullRows) for (let c = 0; c < SIZE; c++) g[r * SIZE + c] = 0;
   for (const c of fullCols) for (let r = 0; r < SIZE; r++) g[r * SIZE + c] = 0;
-  cleared = fullRows.length + fullCols.length;
+  const cleared = fullRows.length + fullCols.length;
   return { grid: g, cleared };
 }
 

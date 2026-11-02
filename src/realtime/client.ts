@@ -113,7 +113,7 @@ export class RealtimeClient {
       }, PING_MS);
     };
     ws.onmessage = (ev) => {
-      let msg: RealtimeMessage | null = null;
+      let msg: RealtimeMessage | null;
       try {
         msg = JSON.parse(String(ev.data));
       } catch {

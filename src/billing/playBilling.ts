@@ -32,7 +32,6 @@ function load(): IapModule | null {
   if (mod !== undefined) return mod;
   if (Platform.OS !== 'android' && Platform.OS !== 'ios') return (mod = null);
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     mod = require('expo-iap') as IapModule;
   } catch {
     mod = null;

@@ -28,8 +28,8 @@ const def: GameDefinition<State, Action> = {
     }
     // swing: timing window around t = 1 (ball at the bat)
     const d = Math.abs(state.t - 1);
-    let runs = 0;
-    let result = '';
+    let runs: number;
+    let result: string;
     if (state.t < 0.6) {
       result = 'Way too early… caught! OUT';
       return { ...state, swinging: true, result, outs: state.outs + 1, runs: [...state.runs, 0], ball: state.ball + 1 };
@@ -66,7 +66,7 @@ function CricketView({ state, dispatch, width, height, readOnly, sfx, say }: Gam
   const ballScale = 0.6 + Math.min(1, state.t) * 0.8;
   React.useEffect(() => {
     if (!state.result || readOnly) return;
-    say(state.result.replace(/[!…🎉]/g, ''));
+    say(state.result.replace(/[!…🎉]/gu, ''));
     const id = setTimeout(() => dispatch({ type: 'next' }), 1400);
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps

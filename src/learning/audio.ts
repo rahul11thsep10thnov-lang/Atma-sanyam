@@ -106,7 +106,6 @@ let nativeAudio: { createAudioPlayer: (source: { uri: string }) => { play: () =>
 function playNative(sample: Sample) {
   if (nativeAudio === undefined) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
       nativeAudio = require('expo-audio');
     } catch {
       nativeAudio = null;

@@ -98,7 +98,7 @@ export function LessonPlayer({ lesson, bracket, selectedAge, sound, narration, o
   };
 
   // The challenge must be answered before finishing; Try It must be attempted.
-  const challengeQuestions = step.kind === 'challenge' ? step.questions ?? [] : [];
+  const challengeQuestions = useMemo(() => (step.kind === 'challenge' ? step.questions ?? [] : []), [step]);
   const canAdvance = step.kind === 'tryIt' ? !!activities[index] || !step.activity : step.kind === 'challenge' ? challengeQuestions.every((_, qi) => quiz[qi] !== undefined) && (!step.activity || !!activities[index]) : true;
   const quizScore = useMemo(() => challengeQuestions.filter((q, qi) => quiz[qi] === q.correctIndex).length, [challengeQuestions, quiz]);
 

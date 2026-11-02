@@ -16,7 +16,7 @@ export interface State { pos: [number, number]; turn: 0 | 1; dice: number | null
 export type Action = { type: 'roll' } | { type: 'ai' } | { type: 'mode'; mode: 'computer' | 'friends' };
 
 function advance(p: number, dice: number): { to: number; via: 'ladder' | 'snake' | null } {
-  let to = p + dice;
+  const to = p + dice;
   if (to > 100) return { to: p, via: null };
   if (LADDERS[to]) return { to: LADDERS[to]!, via: 'ladder' };
   if (SNAKES[to]) return { to: SNAKES[to]!, via: 'snake' };

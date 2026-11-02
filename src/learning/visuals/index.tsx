@@ -394,7 +394,7 @@ function Lever({ w, props, onInteract }: R) {
   );
 }
 
-function Particles({ w, props, onInteract }: R) {
+function Particles({ props, onInteract }: R) {
   const states = ['solid', 'liquid', 'gas'] as const;
   const [state, setState] = useState<(typeof states)[number]>((str(props.state, 'solid') as typeof states[number]) ?? 'solid');
   const labels = arr<string>(props.labels);

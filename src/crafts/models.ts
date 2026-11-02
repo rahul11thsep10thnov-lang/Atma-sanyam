@@ -20,7 +20,6 @@ export interface OrigamiModel {
 }
 
 type Pt = [number, number];
-const SQ: Pt[] = [[8, 8], [92, 8], [92, 92], [8, 92]];
 const DIAMOND: Pt[] = [[50, 4], [96, 50], [50, 96], [4, 50]];
 const RECT: Pt[] = [[20, 6], [80, 6], [80, 94], [20, 94]];
 

@@ -8,7 +8,6 @@ let cached: NativeAds | null | undefined;
 export function loadNativeAds(): NativeAds | null {
   if (cached !== undefined) return cached;
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const mod = require('react-native-google-mobile-ads');
     cached = { mobileAds: mod.default ?? mod.mobileAds, InterstitialAd: mod.InterstitialAd, AdEventType: mod.AdEventType, MaxAdContentRating: mod.MaxAdContentRating };
   } catch {
