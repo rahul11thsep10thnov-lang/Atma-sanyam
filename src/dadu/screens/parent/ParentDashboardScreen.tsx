@@ -34,8 +34,10 @@ export function ParentDashboardScreen() {
   const setLimit = (patch: Partial<typeof limit>) => setParent({ limits: { ...parent.limits, [child.id]: { ...limit, ...patch } } });
   const days = Array.from({ length: 7 }, (_, i) => { const d = new Date(); d.setDate(d.getDate() - (6 - i)); const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; return { key, label: (hi ? ['र', 'सो', 'मं', 'बु', 'गु', 'शु', 'श'] : ['S', 'M', 'T', 'W', 'T', 'F', 'S'])[d.getDay()], minutes: usage.days[key] ?? 0 }; });
   const max = Math.max(30, ...days.map((d) => d.minutes));
+  const now = Date.now();
   const mastery = Object.values(world.mastery);
-  const buckets = { mastered: mastery.filter((m) => masteryState(m.score) === 'mastered').length, practising: mastery.filter((m) => ['developing', 'secure'].includes(masteryState(m.score))).length, revise: mastery.filter((m) => ['emerging', 'fading', 'new'].includes(masteryState(m.score))).length };
+  const states = mastery.map((m) => masteryState(m, now));
+  const buckets = { mastered: states.filter((x) => x === 'mastered').length, practising: states.filter((x) => x === 'nearly' || x === 'growing' || x === 'exploring').length, revise: states.filter((x) => x === 'needs-revision').length };
   const sessions = usage.sessions.slice(-7);
   const todayMin = minutesToday();
 
