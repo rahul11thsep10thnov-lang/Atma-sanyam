@@ -30,6 +30,12 @@ const TYPES: { key: AssessmentType; en: string; hi: string; bands: string[] }[] 
   { key: 'olympiad', en: 'Olympiad practice', hi: 'ओलंपियाड अभ्यास', bands: ['A4', 'A5'] },
 ];
 
+/** A concept id is shown by the title of the lesson that teaches it; falls back to the id in words. */
+function conceptLabel(concept: string, prefs: Parameters<typeof tx>[1]): string {
+  const lesson = catalog.LESSONS.find((l) => l.concept === concept);
+  return lesson ? tx(lesson.title, prefs) : concept.replace(/[._-]/g, ' ');
+}
+
 /** Dadaji is the quiz master. Feedback is immediate and never shames; the result lists concepts, never a single score. */
 export function TestsTab() {
   const nav = useNavigation<NativeStackNavigationProp<DaduStackParamList>>();
@@ -80,7 +86,7 @@ export function TestsTab() {
         <>
           <SpeechBubble who="dadaji" text={hi ? 'कौन-सा अभ्यास करें, बेटा?' : 'Which practice shall we do, beta?'} />
           <View style={s.types}>{TYPES.filter((t) => t.bands.includes(band)).map((t) => <View key={t.key} style={{ width: '47%', flexGrow: 1 }}><BigButton kind={t.key === 'daily' ? 'primary' : 'ghost'} label={`${hi ? t.hi : t.en} · ${SET_LENGTH[t.key]}`} onPress={() => start(t.key)} testID={`test-start-${t.key}`} /></View>)}</View>
-          {!little && world ? <Card><Heading size={16}>{hi ? 'अवधारणाएँ' : 'Concepts'}</Heading>{Object.values(world.mastery).length === 0 ? <Body tone="soft">{hi ? 'पहले एक पाठ पूरा करो।' : 'Complete a lesson first.'}</Body> : Object.values(world.mastery).slice(0, 8).map((m) => { const st = masteryState(m, Date.now()); return <View key={m.concept} style={{ marginTop: 6 }}><Row style={{ paddingHorizontal: 0, justifyContent: 'space-between' }}><Body size={13}>{m.concept.replace(/[._-]/g, ' ')}</Body><Chip label={st} colour={st === 'mastered' ? P.peepal : st === 'needs-revision' ? P.clay : P.saffron} /></Row><Progress value={m.score} colour={st === 'needs-revision' ? P.clay : P.peepal} /></View>; })}</Card> : null}
+          {!little && world ? <Card><Heading size={16}>{hi ? 'अवधारणाएँ' : 'Concepts'}</Heading>{Object.values(world.mastery).length === 0 ? <Body tone="soft">{hi ? 'पहले एक पाठ पूरा करो।' : 'Complete a lesson first.'}</Body> : Object.values(world.mastery).slice(0, 8).map((m) => { const st = masteryState(m, Date.now()); return <View key={m.concept} style={{ marginTop: 6 }}><Row style={{ paddingHorizontal: 0, justifyContent: 'space-between' }}><Body size={13}>{conceptLabel(m.concept, prefs)}</Body><Chip label={st} colour={st === 'mastered' ? P.peepal : st === 'needs-revision' ? P.clay : P.saffron} /></Row><Progress value={m.score} colour={st === 'needs-revision' ? P.clay : P.peepal} /></View>; })}</Card> : null}
           {echo ? <Row><BigButton kind="ghost" label={hi ? 'मिट्ठू के साथ दोहराओ' : 'Revise with Mitthu'} onPress={() => nav.navigate('Echo')} testID="tests-echo" /></Row> : null}
         </>
       ) : done ? (
@@ -89,7 +95,7 @@ export function TestsTab() {
           <Heading size={20} colour={P.ok}>{hi ? 'अभ्यास पूरा!' : 'Practice complete!'}</Heading>
           <Body tone="soft" size={13}>{hi ? `${progress.correct}/${progress.answered} सही, ${progress.firstTry} पहली बार में` : `${progress.correct} of ${progress.answered} right, ${progress.firstTry} first time`}</Body>
           <View style={{ width: '100%' }}>
-            {Object.entries(progress.byConcept).map(([c, v]) => <Row key={c} style={{ paddingHorizontal: 0, justifyContent: 'space-between', marginTop: 6 }}><Body size={13}>{c.replace(/[._-]/g, ' ')}</Body><Chip label={v.correct === v.total ? (hi ? 'पक्का' : 'Secure') : (hi ? 'फिर देखें' : 'Revisit')} colour={v.correct === v.total ? P.peepal : P.saffron} /></Row>)}
+            {Object.entries(progress.byConcept).map(([c, v]) => <Row key={c} style={{ paddingHorizontal: 0, justifyContent: 'space-between', marginTop: 6 }}><Body size={13}>{conceptLabel(c, prefs)}</Body><Chip label={v.correct === v.total ? (hi ? 'पक्का' : 'Secure') : (hi ? 'फिर देखें' : 'Revisit')} colour={v.correct === v.total ? P.peepal : P.saffron} /></Row>)}
           </View>
           <Row style={{ paddingHorizontal: 0, marginTop: 6 }}>{echo ? <BigButton kind="ghost" label={hi ? 'मिट्ठू के साथ दोहराओ' : 'Revise with Mitthu'} onPress={() => nav.navigate('Echo')} /> : null}<BigButton label={ui('common.done', prefs)} onPress={() => setSet(null)} testID="test-done" /></Row>
         </View></Card>

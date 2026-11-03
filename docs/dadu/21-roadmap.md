@@ -11,9 +11,29 @@ QA, part-time project manager. Translators and voice actors are contracted per l
 Timeline totals about 58 weeks of engineering with content produced in parallel; content
 volumes (`22-assets.md`) are the real schedule driver and can extend Phases 4–6.
 
-Phase 0 is the design stage this repository is in now: the documents in `docs/dadu/` and the
-prototype in `prototype/dadu/index.html`, waiting for approval of the visual identity, the
-characters and the navigation.
+## Status after the v3 implementation pass (November 2026)
+
+The phases below were written for the v2 design stage. The v3 master prompt reorganised the work
+into Phases 0–10 (audit, characters, hybrid Miniverse, environments, simulation, engines, stories and
+culture, language and audio, assessment and rewards, parent and admin, hardening) and this pass
+executed them as parallel workstreams. Where things stand, phase by phase:
+
+| v3 phase | Status | Evidence |
+|---|---|---|
+| 0 Audit and reconciliation | Done | `IMPLEMENTATION_AUDIT.md`, `00-visual-canon-v3.md`, character alias map |
+| 1 Character and visual foundation | Done (vector rigs; no Rive, no PNG exports) | `src/dadu/render/characters`, `CHARACTER_MASTER_REGISTRY.md` |
+| 2 Hybrid Miniverse | Done | `src/dadu/render/iso`, `side`, `camera`; `HYBRID_CAMERA_ARCHITECTURE.md` |
+| 3 Interactive environments | Done for 32 locations, 167 objects (88 preview-only) | `ENVIRONMENT_MASTER_REGISTRY.md`, `src/dadu/content/objects.ts` |
+| 4 Behaviour and simulation | Done (routines, animal needs, plants, time, weather, seasons) | `src/dadu/core/simulation.ts`, tests |
+| 5 Educational and activity engines | Done; 52 lessons across the eight sections | `src/dadu/engines`, `CONTENT_COVERAGE_MATRIX.md` |
+| 6 Stories, culture, discovery | Done for 12 public-domain stories, temple world, 6 excursions | `src/dadu/content/stories.ts`, `screens/story` |
+| 7 Language, voice, audio | Partial: en+hi, device TTS, mixer; no recordings, 12 languages untranslated | `src/dadu/i18n`, `src/dadu/audio`, `ASSET_COMPLETION_MATRIX.md` |
+| 8 Assessment, gamification, assignments | Done | `screens/tests`, `engines/rewards`, `screens/assignment` |
+| 9 Parent and admin systems | Done (gate, dashboard, screen time, CMS workflow, API) | `screens/parent`, `admin/src/app/(console)/dadu`, `backend/src/dadu` |
+| 10 Production hardening | Partial: tests and audits done; store builds, legal texts, device profiling open | `TEST_REPORT.md`, `RELEASE_READINESS.md` |
+
+The v2 phase plan that follows is kept as the detailed reference for what each area was meant to
+contain; the week estimates no longer apply.
 
 ## Every phase delivers
 
