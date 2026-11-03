@@ -26,6 +26,8 @@ export interface DaduState {
   level: Level;
   /** Characters currently held in place by an activity (not moved by routines). */
   held: Set<CharacterKey>;
+  /** True while the legacy Tame product is shown instead of DADU (App.tsx switch). */
+  legacyOpen: boolean;
 }
 
 export interface DaduActions {
@@ -43,6 +45,7 @@ export interface DaduActions {
   /** Minutes used today for the active child. */
   minutesToday: () => number;
   wipeAll: () => Promise<void>;
+  setLegacyOpen: (open: boolean) => void;
 }
 
 const Ctx = createContext<(DaduState & DaduActions) | null>(null);
@@ -60,6 +63,7 @@ export function DaduProvider({ children }: { children: React.ReactNode }) {
   const [world, setWorld] = useState<WorldState | null>(null);
   const [parent, setParentState] = useState<ParentSettings>(DEFAULT_PARENT);
   const [usage, setUsage] = useState<UsageLog>({ days: {}, sessions: [] });
+  const [legacyOpen, setLegacyOpen] = useState(false);
   const heldRef = useRef<Set<CharacterKey>>(new Set());
   const sessionRef = useRef({ startedAt: Date.now(), lessons: 0, stories: 0, activities: 0, lastMinuteAt: Date.now() });
 
@@ -175,8 +179,9 @@ export function DaduProvider({ children }: { children: React.ReactNode }) {
     mode: child ? modeForBand(child.band) : 'explorer',
     level: child ? contentLevel(child.band) : 'explorer',
     held: heldRef.current,
-    setPrefs, addProfile, updateProfile, removeProfile, selectChild, updateWorld, setParent, hold, release, logEvent, minutesToday, wipeAll,
-  }), [ready, prefs, profiles, child, world, parent, usage, setPrefs, addProfile, updateProfile, removeProfile, selectChild, updateWorld, setParent, hold, release, logEvent, minutesToday, wipeAll]);
+    legacyOpen,
+    setPrefs, addProfile, updateProfile, removeProfile, selectChild, updateWorld, setParent, hold, release, logEvent, minutesToday, wipeAll, setLegacyOpen,
+  }), [ready, prefs, profiles, child, world, parent, usage, legacyOpen, setPrefs, addProfile, updateProfile, removeProfile, selectChild, updateWorld, setParent, hold, release, logEvent, minutesToday, wipeAll]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

@@ -4,6 +4,12 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts, Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold } from '@expo-google-fonts/manrope';
 import { Caveat_700Bold } from '@expo-google-fonts/caveat';
 import { BebasNeue_400Regular } from '@expo-google-fonts/bebas-neue';
+import { Baloo2_700Bold, Baloo2_800ExtraBold } from '@expo-google-fonts/baloo-2';
+import { Nunito_400Regular, Nunito_700Bold } from '@expo-google-fonts/nunito';
+import { Pressable, Text, View } from 'react-native';
+import { DaduProvider, useDadu } from './src/dadu/state/DaduContext';
+import { DaduNavigator } from './src/dadu/navigation/DaduNavigator';
+import { DADU_ENABLED } from './src/config/features';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootNavigator } from './src/navigation/RootNavigator';
@@ -45,13 +51,30 @@ function AnalyticsConsent() {
   return null;
 }
 
+// DADU is the product; the legacy Tame navigator (its own NavigationContainer)
+// is shown instead only while a parent opened it from DADU's settings.
+function ProductSwitch() {
+  const { legacyOpen, setLegacyOpen, prefs } = useDadu();
+  if (!legacyOpen) return <DaduNavigator />;
+  return (
+    <View style={{ flex: 1 }}>
+      <RootNavigator />
+      <PokeOverlay />
+      <Pressable accessibilityRole="button" onPress={() => setLegacyOpen(false)} testID="back-to-dadu"
+        style={{ position: 'absolute', top: 44, left: 12, backgroundColor: '#2F3C7E', borderRadius: 999, paddingHorizontal: 14, paddingVertical: 8 }}>
+        <Text style={{ color: '#fff', fontFamily: 'Baloo2_700Bold', fontSize: 14 }}>{prefs.primary === 'hi' ? '← DADU पर वापस' : '← Back to DADU'}</Text>
+      </Pressable>
+    </View>
+  );
+}
+
 function ThemedStatusBar() {
   const { isDark } = useTheme();
   return <StatusBar style={isDark ? 'light' : 'dark'} />;
 }
 
 export default function App() {
-  const [fontsLoaded, fontError] = useFonts({ Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold, Caveat_700Bold, BebasNeue_400Regular });
+  const [fontsLoaded, fontError] = useFonts({ Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold, Caveat_700Bold, BebasNeue_400Regular, Baloo2_700Bold, Baloo2_800ExtraBold, Nunito_400Regular, Nunito_700Bold });
   const ready = fontsLoaded || !!fontError;
   useEffect(() => {
     if (ready) SplashScreen.hideAsync().catch(() => undefined);
@@ -69,9 +92,17 @@ export default function App() {
                   <SocialProvider>
                     <AnalyticsConsent />
                     <AppGate>
-                      <RootNavigator />
+                      {DADU_ENABLED ? (
+                        <DaduProvider>
+                          <ProductSwitch />
+                        </DaduProvider>
+                      ) : (
+                        <>
+                          <RootNavigator />
+                          <PokeOverlay />
+                        </>
+                      )}
                     </AppGate>
-                    <PokeOverlay />
                     <ThemedStatusBar />
                   </SocialProvider>
                 </AuthProvider>

@@ -44,7 +44,8 @@ export function SettingsScreen() {
       <Card><Heading size={16}>{hi ? 'विश्लेषण' : 'Analytics'}</Heading>
         <Row style={{ paddingHorizontal: 0, marginTop: 8, alignItems: 'center' }}><Body style={{ flex: 1 }}>{hi ? 'गुमनाम उपयोग-आँकड़े (कोई नाम, फ़ोटो या सामग्री नहीं)' : 'Anonymous usage statistics (no names, photos or content)'}</Body><Switch value={settings.analyticsEnabled} onValueChange={(v) => void updateSettings({ analyticsEnabled: v })} /></Row></Card>
       <Card><Heading size={16}>Tame</Heading>
-        <Row style={{ paddingHorizontal: 0, marginTop: 8, alignItems: 'center' }}><Body style={{ flex: 1 }}>{hi ? 'पुराना Tame फ़ोकस टाइमर दिखाएँ (केवल बड़ों के लिए)' : 'Show the earlier Tame focus timer (adults only)'}</Body><Switch value={parent.legacyTameVisible} onValueChange={(v) => setParent({ legacyTameVisible: v })} /></Row></Card>
+        <Row style={{ paddingHorizontal: 0, marginTop: 8, alignItems: 'center' }}><Body style={{ flex: 1 }}>{hi ? 'पुराना Tame फ़ोकस टाइमर दिखाएँ (केवल बड़ों के लिए)' : 'Show the earlier Tame focus timer (adults only)'}</Body><Switch value={parent.legacyTameVisible} onValueChange={(v) => setParent({ legacyTameVisible: v })} /></Row>
+        {parent.legacyTameVisible && <Row style={{ paddingHorizontal: 0, marginTop: 10 }}><BigButton kind="ghost" label={hi ? 'Tame खोलें' : 'Open Tame'} onPress={() => nav.navigate('LegacyTame')} testID="open-legacy" /></Row>}</Card>
       <Row style={{ marginTop: 8 }}><BigButton kind="ghost" label={ui('common.back', prefs)} onPress={() => nav.goBack()} /></Row>
     </ScrollView>
   );

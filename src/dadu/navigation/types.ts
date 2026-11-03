@@ -22,8 +22,9 @@ export type DaduStackParamList = {
   Section: { section: string };
   WorldHub: { world: string };
   Achievements: undefined;
-  ParentGate: { next: 'ParentDashboard' | 'Settings' | 'ChildProfile' } | undefined;
+  ParentGate: { next: 'ParentDashboard' | 'Settings' | 'ChildProfile' | 'Tabs' } | undefined;
   ParentDashboard: undefined;
   Settings: undefined;
   Playground: undefined;
+  LegacyTame: undefined;
 };
