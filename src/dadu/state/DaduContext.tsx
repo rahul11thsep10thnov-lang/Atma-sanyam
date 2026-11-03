@@ -41,7 +41,7 @@ export interface DaduActions {
   hold: (keys: CharacterKey[]) => void;
   release: (keys: CharacterKey[]) => void;
   /** Called by screens when a lesson/story/activity completes, for session summaries. */
-  logEvent: (kind: 'lesson' | 'story' | 'activity') => void;
+  logEvent: (kind: 'lesson' | 'story' | 'activity' | 'assessment') => void;
   /** Minutes used today for the active child. */
   minutesToday: () => number;
   wipeAll: () => Promise<void>;
@@ -158,7 +158,7 @@ export function DaduProvider({ children }: { children: React.ReactNode }) {
   const updateWorld = useCallback((fn: (w: WorldState) => WorldState) => setWorld((w) => (w ? fn(w) : w)), []);
   const hold = useCallback((keys: CharacterKey[]) => { keys.forEach((k) => heldRef.current.add(k)); }, []);
   const release = useCallback((keys: CharacterKey[]) => { keys.forEach((k) => heldRef.current.delete(k)); }, []);
-  const logEvent = useCallback((kind: 'lesson' | 'story' | 'activity') => {
+  const logEvent = useCallback((kind: 'lesson' | 'story' | 'activity' | 'assessment') => {
     const s = sessionRef.current;
     if (kind === 'lesson') s.lessons++; else if (kind === 'story') s.stories++; else s.activities++;
     if (child) setUsage((u) => {

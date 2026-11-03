@@ -68,7 +68,7 @@ export function TestsTab() {
   };
   const nextItem = () => {
     if (!set) return;
-    if (index + 1 >= set.items.length) { setDone(true); updateWorld((w) => grant(w, { stars: 1, coins: 5 })); logEvent('activity'); void speak(hi ? 'शाबाश! कल फिर मिलेंगे।' : 'Shabash! Same time tomorrow.', 'dadaji'); return; }
+    if (index + 1 >= set.items.length) { setDone(true); updateWorld((w) => grant(w, { stars: 1, coins: 5 })); logEvent('assessment'); void speak(hi ? 'शाबाश! कल फिर मिलेंगे।' : 'Shabash! Same time tomorrow.', 'dadaji'); return; }
     setIndex(index + 1); setPicked(null); setRight(false); setAttempt(0);
   };
   const echo = world && child ? nextEcho({ band, level, lessons: catalog.LESSON_BY_ID, completedInOrder: world.lessonsCompleted, mastery: world.mastery, lastOpenedAt: 0, now: Date.now(), echoedLessonIds: [], parentRequestLessonId: world.lessonsCompleted[world.lessonsCompleted.length - 1] }) : null;

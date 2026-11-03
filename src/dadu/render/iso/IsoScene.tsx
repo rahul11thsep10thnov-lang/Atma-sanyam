@@ -193,7 +193,7 @@ function ObjectInScene({ o, time, season, t, selected, little, onPress }: { o: I
   const Sprite = spriteFor(o.sprite);
   return (
     <G>
-      <G transform={`translate(${sx} ${sy})`} onPress={onPress}>
+      <G transform={`translate(${sx} ${sy})`} onPress={onPress} testID={o.interactive && !o.decorative ? `obj-${o.id}` : undefined} accessibilityLabel={o.interactive && !o.decorative ? (o.label && !o.label.includes('.') ? o.label : o.id) : undefined}>
         <Sprite t={t} flags={o.flags} stage={o.stage} season={season} time={time} w={fp.w} d={fp.d} />
       </G>
       {o.interactive && !o.decorative && <G onPress={onPress}><Glow x={o.tile.x} y={o.tile.y} big={little} strong={selected} t={t} /></G>}
