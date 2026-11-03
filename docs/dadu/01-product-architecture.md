@@ -6,6 +6,24 @@ the build order in `21-roadmap.md`, the content model behind the Miniverse in
 
 ---
 
+## Implementation notes (v3 pass, November 2026)
+
+What was built differs from the design below in these deliberate ways:
+
+| Design | Built | Why |
+|---|---|---|
+| SQLite (`expo-sqlite`) on device | AsyncStorage with versioned keys (`src/dadu/state/persistence.ts`); content bundled as TypeScript | No new native modules so Expo Go and the web export keep working; content volume (52 lessons) does not yet need a database. Move to SQLite when packs are downloaded. |
+| Rive for characters, Lottie for effects | Vector rigs in react-native-svg driven by a 10 fps clock and `Animated` (`src/dadu/render`) | Rive needs a native module outside Expo Go; the rigs are structured so a Rive export can replace them per character. |
+| Recorded voices in audio packs | Device text-to-speech per character (`expo-speech`) with pitch/rate profiles, captions always on | No recordings exist yet; the narrator adapter resolves recorded lines first when packs arrive. |
+| Pack download/install UI | Server-side pack build and publish only; app content is bundled | Packs become necessary with audio and the other twelve languages. |
+| Server parental-gate token | Client-side gate (maths + hashed PIN); every server write still needs the account token | Deferred (P1); see `SECURITY_AND_PRIVACY_AUDIT.md`. |
+| Tame removed at Phase 1 exit | Tame kept behind the parental gate and an off-by-default switch; `DADU_ENABLED` flag selects the product | Reversible change as the master prompt required; strip before the store build to drop 84 MB of legacy assets. |
+
+Module map as built: `src/dadu/core` (registries, world state, simulation), `engines`, `content`,
+`render`, `screens`, `navigation`, `state`, `i18n`, `audio`, `api`, `ui`; `backend/src/dadu` plus
+`routes/{public,admin}/dadu.ts`; `admin/src/app/(console)/dadu`. Tests: `src/dadu/__tests__`,
+`backend/tests/dadu*.test.ts`, `tools/dadu/e2e-web.js`.
+
 ## 1. One sentence
 
 DADU is an offline-first Expo app that renders one explorable Indian world (the Miniverse),
