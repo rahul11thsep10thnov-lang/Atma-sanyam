@@ -1,22 +1,35 @@
 # DADU – Dadaji's Miniverse
 
 **Learn, Play, Explore and Grow!** An immersive, multilingual Indian child-development universe for
-ages 0–12, taught by Dadaji with Gopu, Kim, Molly, the cow (name pending approval), Dhanu and Mitthu.
+ages 0–12, taught by Dadaji with Chintu, Buddy, Chikki, Gauri, Nandu and Mitthu the revision parrot.
+Premium chibi-anime art, a modern Indian villa, a hybrid isometric/side-view world, and the eight
+learning sections organised into twelve interconnected worlds.
 
-This repository is being repurposed from the Tame focus app (below) into DADU. The product is in the
-**design-before-coding** stage:
+| Part | Folder | What is there |
+|---|---|---|
+| Mobile app (Expo 57) | `src/dadu/` | core registries and world simulation, engines (lesson, activities, mastery, rewards, assignments, screen time, stories, sync), bilingual content (52 lessons, 12 stories, 51 assignments, 167 objects), SVG character rigs and scenes, screens, audio, API client |
+| API | `backend/src/dadu`, `backend/src/routes/{public,admin}/dadu.ts` | child profiles, consent, world state, progress sync, mastery, assignments, screen rules, content, packs, flags; eight-step editorial workflow; migration `drizzle/0006_dadu.sql` |
+| Admin console | `admin/src/app/(console)/dadu/` | content editor with workflow and versions, translations, assets, packs, flags, parent support |
+| Design and status docs | `docs/dadu/` | canon (`00-canon.md`, `00-visual-canon-v3.md`), 23 design documents, `IMPLEMENTATION_AUDIT.md`, `FEATURE_COMPLETION_MATRIX.md`, `TEST_REPORT.md`, `PERFORMANCE_REPORT.md`, `RELEASE_READINESS.md`, `INCOMPLETE_FEATURE_REPORT.md` and the other registries |
+| Prototype | `prototype/dadu/index.html` | the original v2 visual prototype (superseded by the app) |
 
-- **Design documents (23 + canon):** [`docs/dadu/`](docs/dadu/) – start with
-  [`docs/dadu/00-canon.md`](docs/dadu/00-canon.md), then the numbered files. Decisions waiting for a
-  yes or no are listed in [`docs/dadu/APPROVAL.md`](docs/dadu/APPROVAL.md).
-- **Visual prototype:** [`prototype/dadu/index.html`](prototype/dadu/index.html) – open it in a browser.
-  It shows the characters, the Miniverse map, the living room, science laboratory, music room, art
-  room, private and public gardens, library, temple courtyard, a space excursion, the main dashboard,
-  a learning section, stories, tests, real-world assignments, Mitthu's Echo, the parental gate and the
-  parent dashboard, switchable between a preschool child and an older child and between English and
-  Hindi. All art and text in it is original.
-- **What is reused:** the Expo 57 mobile app, the Express 5 + Drizzle + PostgreSQL API and the Next.js
-  admin console described below become DADU's foundation (`docs/dadu/01-product-architecture.md`).
+The app boots into DADU (`DADU_ENABLED` in `src/config/features.ts`); the earlier Tame focus timer
+is preserved behind the parental gate and an off-by-default switch in Settings.
+
+### Run DADU
+
+```bash
+npm install
+npm start                      # Expo Go (works fully offline, no server needed)
+npx tsc --noEmit               # typecheck
+npm run test:dadu              # 43 unit tests (engines, simulation, content validation, render maths)
+npx expo export --platform web --output-dir /tmp/dadu-web && node tools/dadu/e2e-web.js /tmp/dadu-web A2   # end-to-end drive (Playwright)
+cd backend && npm run db:migrate && npm run seed:dadu && npm test   # API with 157 tests against PostgreSQL
+```
+
+Honest status: the product is a working, tested app in English and Hindi with device text-to-speech
+narration; recorded voices, music, the other twelve languages, store builds and the legal texts are
+still open. See `docs/dadu/RELEASE_READINESS.md` and `docs/dadu/INCOMPLETE_FEATURE_REPORT.md`.
 
 ---
 
