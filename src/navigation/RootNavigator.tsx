@@ -30,6 +30,11 @@ import { track } from '../services/analytics';
 import { useTheme } from '../theme/ThemeContext';
 import { FloatingTabBar, TabSpec } from '../ui/TabBar';
 
+// Development prototype (src/prototype/solarpunk): required only when the build flag is set, so a
+// normal build neither registers nor bundles it.
+const SolarpunkPrototypeScreen: React.ComponentType | null =
+  process.env.EXPO_PUBLIC_SOLARPUNK_PROTOTYPE === '1' ? (require('../prototype/solarpunk/SolarpunkPrototypeScreen').SolarpunkPrototypeScreen as React.ComponentType) : null;
+
 const Tab = createBottomTabNavigator<RootTabParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -138,6 +143,7 @@ export function RootNavigator() {
         <Stack.Screen name="Report" component={ReportScreen} options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="GroupSetup" component={GroupSetupScreen} options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="GroupLobby" component={GroupLobbyScreen} options={{ animation: 'slide_from_right' }} />
+        {SolarpunkPrototypeScreen && <Stack.Screen name="SolarpunkPrototype" component={SolarpunkPrototypeScreen} options={{ animation: 'fade', gestureEnabled: false }} />}
       </Stack.Navigator>
     </NavigationContainer>
     {askLanguage && <LanguagePopup current={normaliseLanguage(settings.language) ?? getLanguage()} onChoose={chooseLanguage} />}

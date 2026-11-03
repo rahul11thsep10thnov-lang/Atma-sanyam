@@ -13,7 +13,7 @@ import { setPushEnabled } from '../services/device';
 import { friendlyError } from '../services/apiClient';
 import { appVersion } from '../services/appInfo';
 import { env, isBackendConfigured } from '../config/env';
-import { MONETIZATION_ENABLED } from '../config/features';
+import { MONETIZATION_ENABLED, SOLARPUNK_PROTOTYPE } from '../config/features';
 import { RootStackParamList } from '../navigation/types';
 import { Screen } from '../ui/Screen';
 import { AppText } from '../ui/AppText';
@@ -233,6 +233,7 @@ export function SettingsScreen() {
       )}
 
       <Section title={t('settings.about')}>
+        {SOLARPUNK_PROTOTYPE ? <SettingLink icon="trees" label="Solarpunk garden prototype" hint="Development build only: nothing is saved" onPress={() => navigation.navigate('SolarpunkPrototype')} /> : null}
         {env.supportEmail ? <SettingLink icon="mail" label={t('settings.support')} onPress={() => openUrl(`mailto:${env.supportEmail}`)} /> : null}
         <View style={styles.version}>
           <AppText variant="bodySmall" tone="muted">Tame {appVersion}</AppText>
