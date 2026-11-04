@@ -22,6 +22,7 @@ Every variable actually read by the app, cross-checked against the code
 
 | Variable | Read by | Notes |
 |---|---|---|
+| `SITE_ACCESS_PASSWORD` | `src/proxy.ts`, `src/lib/security/siteGate.ts`, `src/app/robots.ts` | **Private preview.** When set, every public page asks for this password (HTTP Basic auth, any user name) and sends `X-Robots-Tag: noindex`; `robots.txt` disallows everything. `/admin` keeps its own login; the payment webhook and cron route keep their own secrets. Unset → the site is public. Remove it on launch day. |
 | `NEXT_PUBLIC_SITE_URL` | `src/lib/siteConfig.ts` | Public site URL used by the sitemap, `robots.txt`, canonical URLs, and JSON-LD. Defaults to `http://localhost:3000`. **Set this in production** — the default will otherwise leak into your sitemap and structured data. |
 | `AI_EXTRACTION_PROVIDER` | `src/lib/ai/provider.ts` | Defaults to `mock` (a deterministic stub — no external calls, no cost, clearly-labeled placeholder output). Setting it to anything else throws immediately rather than silently using mock data, until a real provider is implemented in `provider.ts` and wired into `getAIProvider()`. There is currently no real provider implemented — see `DEVELOPMENT_STATUS.md`'s Phase 14 entry. |
 
