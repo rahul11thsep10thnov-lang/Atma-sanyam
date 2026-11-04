@@ -26,4 +26,6 @@ export type RootStackParamList = {
   Language: undefined;
   /** Development prototype, only registered when SOLARPUNK_PROTOTYPE is on. */
   SolarpunkPrototype: undefined;
+  /** The 3D Botanical World preview (real garden data), same flag. */
+  BotanicalWorld: undefined;
 };

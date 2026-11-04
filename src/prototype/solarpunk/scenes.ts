@@ -3,6 +3,8 @@
 // deterministic stand-in for what the user's focus sessions would grow.
 import * as THREE from 'three';
 import { buildGrandBanyan, BanyanStats } from './banyan';
+import { buildCorridor } from './corridor';
+import { Wildlife } from './wildlife';
 import { PLANTS, SPECIES, SPECIES_BY_ID, TREES, specimenGeometry } from './catalog';
 import { Diorama, DioramaCfg, PondDef } from './diorama';
 import { Garden, Slot, makeSlots } from './garden';
@@ -14,7 +16,12 @@ import { ringPoints } from './structures';
 
 const TAU = Math.PI * 2;
 
-export type SceneName = 'conservatory' | 'arboretum' | 'collection';
+export type SceneName = 'conservatory' | 'arboretum' | 'collection' | 'world-conservatory' | 'world-arboretum';
+
+/** Real-data scenes start empty: the person's own plants are added by the world screen, never fake ones. */
+export interface SceneOpts {
+  populate?: boolean;
+}
 
 export interface View {
   target: V3;
@@ -117,7 +124,8 @@ function hashRand(seed: string): number {
 // Scene 1: the Central Conservatory
 // =====================================================================================================
 
-export function createConservatory(): ProtoScene {
+export function createConservatory(opts: SceneOpts = {}): ProtoScene {
+  const populate = opts.populate !== false;
   const R = 11.6;
   const domeR = 11.2;
   const domeH = 9.2;
@@ -199,6 +207,11 @@ export function createConservatory(): ProtoScene {
   const dio = new Diorama(cfg);
   const group = new THREE.Group();
   group.add(dio.group);
+  // the glass corridor north to the Northern Arboretum (real world only)
+  const corridorC = populate ? null : buildCorridor(V(0, 0.05, -(domeR - 0.6)), V(0, 0.05, -(domeR + 9)), 1.35);
+  if (corridorC) group.add(corridorC.group);
+  const lifeC = new Wildlife(R - 1.5, height, { butterflies: 10, petals: 110, ceiling: 5, seed: 31 });
+  group.add(lifeC.group);
 
   const maxH = (x: number, z: number) => Math.max(0.9, domeH * 0.9 * Math.sqrt(Math.max(0, 1 - (Math.hypot(x, z) / domeR) ** 2)) - 0.7);
   const slots = makeSlots({
@@ -223,7 +236,7 @@ export function createConservatory(): ProtoScene {
 
   // prototype population: a deterministic spread of plants and trees
   const r: Rand = rng(99);
-  const order = slots.map((s) => s.id).sort((a, b) => hashRand(`c${a}`) - hashRand(`c${b}`));
+  const order = (populate ? slots : []).map((s) => s.id).sort((a, b) => hashRand(`c${a}`) - hashRand(`c${b}`));
   let trees = 0;
   let lotus = 0;
   let plants = 0;
@@ -251,7 +264,7 @@ export function createConservatory(): ProtoScene {
   const overview: View = { target: V(0, 1.0, 0), fit: 11.6, yaw: 45 * DEG, pitch: 42 * DEG };
   const closeup: View = { target: V(2.2, 0.7, -0.4), fit: 3.8, yaw: 40 * DEG, pitch: 30 * DEG };
   const scene: ProtoScene = {
-    name: 'conservatory',
+    name: populate ? 'conservatory' : 'world-conservatory',
     group,
     garden,
     diorama: dio,
@@ -261,15 +274,18 @@ export function createConservatory(): ProtoScene {
     minFit: 1.6,
     maxFit: 16,
     hide: [...dio.hideInReflection, garden.group],
-    extraPickables: [],
+    extraPickables: corridorC ? [corridorC.pick] : [],
     update(dt, t) {
       dio.update(dt, t);
       garden.update(t);
+      lifeC.update(t);
     },
     info: () => ({ 'planting positions': slots.length, specimens: garden.specimens.size, 'free positions': garden.free.length, 'dome triangles': dio.stats.triangles }),
     dispose() {
       garden.dispose();
       dio.dispose();
+      corridorC?.dispose();
+      lifeC.dispose();
     },
   };
   return scene;
@@ -304,7 +320,8 @@ export interface Arboretum extends ProtoScene {
   readonly banyanStats: BanyanStats;
 }
 
-export function createArboretum(): Arboretum {
+export function createArboretum(opts: SceneOpts = {}): Arboretum {
+  const populate = opts.populate !== false;
   const R = 23;
   const domeR = 22.2;
   const domeH = 17.5;
@@ -382,6 +399,11 @@ export function createArboretum(): Arboretum {
   const dio = new Diorama(cfg);
   const group = new THREE.Group();
   group.add(dio.group);
+  // the glass corridor south, back to the Central Conservatory (real world only)
+  const corridorA = populate ? null : buildCorridor(V(0, 0.05, domeR - 0.8), V(0, 0.05, domeR + 12), 1.7);
+  if (corridorA) group.add(corridorA.group);
+  const lifeA = new Wildlife(R - 3, height, { butterflies: 16, petals: 220, ceiling: 9, seed: 47 });
+  group.add(lifeA.group);
 
   // ---- the Grand Banyan: built once, never moved, never replaced ---------------------------------------
   const built = buildGrandBanyan();
@@ -471,7 +493,7 @@ export function createArboretum(): Arboretum {
   // where the planted landscape is best seen: the pond, the path and the plantings, with the banyan behind
   const landscape: View = { target: V(5.0, 1.8, 11.0), fit: 12.5, yaw: 45 * DEG, pitch: 34 * DEG };
   const scene: Arboretum = {
-    name: 'arboretum',
+    name: populate ? 'arboretum' : 'world-arboretum',
     group,
     garden,
     diorama: dio,
@@ -482,10 +504,11 @@ export function createArboretum(): Arboretum {
     maxFit: 30,
     hide: [...dio.hideInReflection, garden.group],
     landscape,
-    extraPickables: [trunkPick, canopyPick],
+    extraPickables: corridorA ? [trunkPick, canopyPick, corridorA.pick] : [trunkPick, canopyPick],
     update(dt, t) {
       dio.update(dt, t);
       garden.update(t);
+      lifeA.update(t);
     },
     info: () => ({ 'planting positions': slots.length, specimens: garden.specimens.size, 'free positions': garden.free.length, 'banyan triangles': built.stats.triangles, 'dome triangles': dio.stats.triangles }),
     setState,
@@ -498,6 +521,8 @@ export function createArboretum(): Arboretum {
       garden.dispose();
       dio.dispose();
       built.geometry.dispose();
+      corridorA?.dispose();
+      lifeA.dispose();
     },
   };
   return scene;
@@ -508,9 +533,9 @@ export function createArboretum(): Arboretum {
 // =====================================================================================================
 
 export interface Collection extends ProtoScene {
-  setMode(mode: 'shelf' | 'growth', speciesId: string, stage: number): void;
+  setMode(mode: 'shelf' | 'trees' | 'growth', speciesId: string, stage: number): void;
   labels(project: (v: THREE.Vector3) => { x: number; y: number } | null): { id: string; speciesId: string; name: string; x: number; y: number }[];
-  readonly mode: 'shelf' | 'growth';
+  readonly mode: 'shelf' | 'trees' | 'growth';
 }
 
 export function createCollection(): Collection {
@@ -547,7 +572,7 @@ export function createCollection(): Collection {
   const meshes: { id: string; speciesId: string; stage: number; pos: THREE.Vector3; top: number }[] = [];
   const pickables: THREE.Mesh[] = [];
   const proxyMat = new THREE.MeshBasicMaterial({ visible: false });
-  let mode: 'shelf' | 'growth' = 'shelf';
+  let mode: 'shelf' | 'trees' | 'growth' = 'shelf';
 
   // The gallery is laid out in SCREEN space (u across, v towards the viewer) so it
   // fits a portrait phone; plants are shown larger and trees smaller than life, on
@@ -630,11 +655,16 @@ export function createCollection(): Collection {
       clear();
       if (m === 'shelf') {
         // plants in two rows nearest the viewer, trees in two rows behind
+        // the thirty plants, six to a row
         const stg = clamp(stage, 1, 7);
-        PLANTS.forEach((p, i) => place(p.id, stg, ((i % 4) - 1.5) * 2.5, 7.4 + Math.floor(i / 4) * 2.9, 1.0));
-        TREES.forEach((t, i) => place(t.id, stg, ((i % 3) - 1) * 4.4, -5.6 + Math.floor(i / 3) * 4.6, 1.6));
-        overview.fit = 7.6;
-        overview.target.set(0, 1.6, 3.6);
+        PLANTS.forEach((p, i) => place(p.id, stg, ((i % 6) - 2.5) * 2.1, 6 - Math.floor(i / 6) * 2.6, 1.0));
+        overview.fit = 9.4;
+        overview.target.set(0, 1.2, 0.8);
+      } else if (m === 'trees') {
+        const stg = clamp(stage, 1, 7);
+        TREES.forEach((t, i) => place(t.id, stg, ((i % 5) - 2) * 4.2, 8 - Math.floor(i / 5) * 4.6, 1.6));
+        overview.fit = 13;
+        overview.target.set(0, 2.2, 1.2);
       } else {
         const sp = SPECIES_BY_ID[speciesId] ?? SPECIES[0]!;
         const tree = sp.kind === 'tree';

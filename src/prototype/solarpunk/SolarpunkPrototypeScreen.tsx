@@ -33,7 +33,8 @@ export function SolarpunkPrototypeScreen() {
   const engineRef = useRef<Engine | null>(null);
   const rafRef = useRef<number | null>(null);
   const alive = useRef(true);
-  const layout = useRef({ w: 1, h: 1 });
+  const layout = useRef({ w: 0, h: 0 });
+  const bufferW = useRef(0);
   const viewRef = useRef<View>(null);
 
   const [ready, setReady] = useState(false);
@@ -49,7 +50,7 @@ export function SolarpunkPrototypeScreen() {
   const [panMode, setPanMode] = useState(false);
   const [stats, setStats] = useState<Stats | null>(null);
   const [showStats, setShowStats] = useState(false);
-  const [cMode, setCMode] = useState<'shelf' | 'growth'>('shelf');
+  const [cMode, setCMode] = useState<'shelf' | 'trees' | 'growth'>('shelf');
   const [cSpecies, setCSpecies] = useState('rose');
   const [cStage, setCStage] = useState(5);
   const [labels, setLabels] = useState<Labels>([]);
@@ -64,7 +65,8 @@ export function SolarpunkPrototypeScreen() {
     renderer.setPixelRatio(1);
     renderer.setSize(w, h, false);
     const engine = new Engine(renderer, w, h, { quality: 'high', onStats: setStats, onSelect: setSelected, onLabels: setLabels, onPlaced: () => { setPlacing(null); setPicker(false); } });
-    engine.uiScale = w / Math.max(1, layout.current.w);
+    bufferW.current = w;
+    engine.uiScale = layout.current.w > 0 ? w / layout.current.w : 1;
     engineRef.current = engine;
     if (__DEV__ || process.env.EXPO_PUBLIC_SOLARPUNK_PROTOTYPE === '1') (globalThis as unknown as { __solarpunk?: unknown }).__solarpunk = { engine, THREE };
     // building the first scene blocks the JS thread for about a second: show the busy card first
@@ -215,7 +217,7 @@ export function SolarpunkPrototypeScreen() {
     eng()?.cancelPlacement();
     setPlacing(null);
   };
-  const setCollection = (mode: 'shelf' | 'growth', id: string, stage: number) => {
+  const setCollection = (mode: 'shelf' | 'trees' | 'growth', id: string, stage: number) => {
     setCMode(mode);
     setCSpecies(id);
     setCStage(stage);
@@ -238,7 +240,7 @@ export function SolarpunkPrototypeScreen() {
       onLayout={(e) => {
         layout.current = { w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height };
         const en = engineRef.current;
-        if (en) en.uiScale = en.renderer.domElement ? en.renderer.domElement.width / Math.max(1, layout.current.w) : en.uiScale;
+        if (en && bufferW.current > 0 && layout.current.w > 0) en.uiScale = bufferW.current / layout.current.w;
       }}
     >
       <GLView style={StyleSheet.absoluteFill} onContextCreate={onContextCreate} />
@@ -367,25 +369,26 @@ export function SolarpunkPrototypeScreen() {
         {scene === 'collection' && (
           <View style={[styles.panel, glass]}>
             {cMode === 'growth' && <AppText variant="caption" tone="muted">Stages 1 to 7 of {speciesName(cSpecies)}, left to right. Each stage is its own shape.</AppText>}
-            <SegmentedControl<'shelf' | 'growth'>
+            <SegmentedControl<'shelf' | 'trees' | 'growth'>
               value={cMode}
               onChange={(m) => setCollection(m, cSpecies, cStage)}
               accessibilityLabel="Collection view"
               segments={[
-                { value: 'shelf', label: 'All 18' },
+                { value: 'shelf', label: '30 plants' },
+                { value: 'trees', label: `${TREES.length} trees` },
                 { value: 'growth', label: 'Growth stages' },
               ]}
             />
-            {cMode === 'shelf' && (
+            {cMode !== 'growth' && (
               <SegmentedControl<string>
                 value={String(cStage)}
-                onChange={(s) => setCollection('shelf', cSpecies, Number(s))}
+                onChange={(s) => setCollection(cMode, cSpecies, Number(s))}
                 accessibilityLabel="Growth stage of every specimen"
                 segments={[1, 2, 3, 4, 5, 6, 7].map((n) => ({ value: String(n), label: `${n}` }))}
               />
             )}
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6 }}>
-              {SPECIES.map((s) => (
+              {SPECIES.filter((s) => !s.hidden).map((s) => (
                 <Tactile key={s.id} onPress={() => setCollection('growth', s.id, cStage)} accessibilityRole="button" accessibilityLabel={s.name} style={chip(cMode === 'growth' && cSpecies === s.id)}>
                   <AppText variant="caption" style={{ color: cMode === 'growth' && cSpecies === s.id ? '#fff' : colors.text }}>
                     {s.name}

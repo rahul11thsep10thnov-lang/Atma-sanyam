@@ -120,7 +120,7 @@ export class Garden {
   }
 
   /** Plant a specimen. Returns null if the slot is taken or blocked. */
-  add(speciesId: string, stage: number, slotId: number, o: { animate?: boolean; time?: number; days?: number; id?: string; force?: boolean } = {}): Specimen | null {
+  add(speciesId: string, stage: number, slotId: number, o: { animate?: boolean; time?: number; days?: number; id?: string; force?: boolean; at?: { x: number; z: number } } = {}): Specimen | null {
     const slot = this.slots[slotId];
     const sp = SPECIES_BY_ID[speciesId];
     if (!slot || !sp || slot.taken || (slot.blocked && !o.force)) return null;
@@ -129,7 +129,8 @@ export class Garden {
     const built = specimenGeometry(speciesId, stage, variant, 2);
     const baseScale = this.scaleFor(sp.kind, slot, built.height);
     const mesh = new THREE.Mesh(built.geometry, this.material);
-    mesh.position.set(slot.x, slot.y, slot.z);
+    // a saved specimen stands exactly where it was planted, even if the floor's positions are ever regenerated
+    mesh.position.set(o.at?.x ?? slot.x, slot.y, o.at?.z ?? slot.z);
     mesh.rotation.y = (hashStr(`${slotId}`) % 628) / 100;
     mesh.castShadow = true;
     mesh.receiveShadow = true;

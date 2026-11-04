@@ -57,7 +57,8 @@
     "build:android:production": "eas build --profile production --platform android",
     "build:ios:production": "eas build --profile production --platform ios",
     "submit:android": "eas submit --profile production --platform android",
-    "submit:ios": "eas submit --profile production --platform ios"
+    "submit:ios": "eas submit --profile production --platform ios",
+    "test:world": "rm -rf .test-out && tsc --ignoreConfig --outDir .test-out --target es2020 --module node16 --moduleResolution node16 --esModuleInterop --skipLibCheck --strict --types node src/world/__tests__/world.test.ts && node --require ./src/world/__tests__/node-shims.cjs --test .test-out/world/__tests__/world.test.js"
   },
   "private": true
 }

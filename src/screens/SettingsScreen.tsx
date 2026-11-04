@@ -233,6 +233,7 @@ export function SettingsScreen() {
       )}
 
       <Section title={t('settings.about')}>
+        {SOLARPUNK_PROTOTYPE ? <SettingLink icon="trees" label="3D Botanical World (preview)" hint="Your real garden in 3D. Your Garden tab is unchanged" onPress={() => navigation.navigate('BotanicalWorld')} /> : null}
         {SOLARPUNK_PROTOTYPE ? <SettingLink icon="trees" label="Solarpunk garden prototype" hint="Development build only: nothing is saved" onPress={() => navigation.navigate('SolarpunkPrototype')} /> : null}
         {env.supportEmail ? <SettingLink icon="mail" label={t('settings.support')} onPress={() => openUrl(`mailto:${env.supportEmail}`)} /> : null}
         <View style={styles.version}>

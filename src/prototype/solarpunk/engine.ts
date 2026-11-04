@@ -37,7 +37,9 @@ const LOOKS: Record<TimeOfDay, Look> = {
 };
 
 export interface PickInfo {
-  kind: 'specimen' | 'banyan' | 'collection' | 'slot' | 'ground';
+  kind: 'specimen' | 'banyan' | 'collection' | 'slot' | 'ground' | 'corridor';
+  /** Where a tap met the floor (wing coordinates), for zone taps. */
+  at?: { x: number; z: number };
   id?: string;
   speciesId?: string;
   name?: string;
@@ -72,6 +74,8 @@ export interface EngineOptions {
   onStats?: (s: Stats) => void;
   onSelect?: (p: PickInfo | null) => void;
   onPlaced?: (p: PickInfo) => void;
+  /** Report taps on bare ground (for zone information). */
+  groundTaps?: boolean;
   onLabels?: (l: { id: string; speciesId: string; name: string; x: number; y: number }[]) => void;
 }
 
@@ -101,6 +105,8 @@ export class Engine {
   hasEnv = false;
   private envTex: THREE.Texture | null = null;
   paused = false;
+  /** 0 freezes wind, water and wildlife (reduce motion); the camera still moves on request. */
+  motion = 1;
   /** Drawing-buffer pixels per layout unit (touch coordinates arrive in layout units). */
   uiScale = 1;
 
@@ -219,7 +225,16 @@ export class Engine {
   ensureScene(name: SceneName): ProtoScene {
     let s = this.cache[name];
     if (!s) {
-      s = name === 'conservatory' ? createConservatory() : name === 'arboretum' ? createArboretum() : createCollection();
+      s =
+        name === 'conservatory'
+          ? createConservatory()
+          : name === 'arboretum'
+            ? createArboretum()
+            : name === 'world-conservatory'
+              ? createConservatory({ populate: false })
+              : name === 'world-arboretum'
+                ? createArboretum({ populate: false })
+                : createCollection();
       this.cache[name] = s;
       const halo = s.group.getObjectByName('halo') as THREE.Points | undefined;
       if (halo) (halo.material as THREE.PointsMaterial).opacity = LOOKS[this.look].halo;
@@ -382,10 +397,24 @@ export class Engine {
     const h = hits[0];
     if (!h) {
       this.select(null);
+      if (this.opts.groundTaps) {
+        const hit = this.raycaster.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), new THREE.Vector3());
+        if (hit) {
+          const info: PickInfo = { kind: 'ground', at: { x: hit.x, z: hit.z }, screen: { x: xIn, y: yIn } };
+          this.opts.onSelect?.(info);
+          return info;
+        }
+      }
       this.opts.onSelect?.(null);
       return null;
     }
     const ud = h.object.userData as { kind: string; id: string; speciesId?: string; stage?: number };
+    if (ud.kind === 'corridor') {
+      this.select(null);
+      const info: PickInfo = { kind: 'corridor', screen: { x: xIn, y: yIn } };
+      this.opts.onSelect?.(info);
+      return info;
+    }
     if (ud.kind === 'banyan') {
       this.select(null);
       const info: PickInfo = { kind: 'banyan', id: 'grand-banyan', name: 'The Grand Banyan', screen: { x: xIn, y: yIn } };
@@ -471,7 +500,7 @@ export class Engine {
     }
   }
 
-  setCollection(mode: 'shelf' | 'growth', speciesId: string, stage: number) {
+  setCollection(mode: 'shelf' | 'trees' | 'growth', speciesId: string, stage: number) {
     const c = this.current as Collection | null;
     if (c && c.name === 'collection') {
       c.setMode(mode, speciesId, stage);
@@ -490,11 +519,12 @@ export class Engine {
   frame(dtIn: number) {
     if (this.paused || !this.current) return;
     const dt = Math.min(0.1, dtIn);
-    this.t += dt;
+    this.t += dt * this.motion;
     clock.uTime.value = this.t;
     this.updateCamera(dt);
+    this.cutaway();
     this.placeSunLater();
-    this.current.update(dt, this.t);
+    this.current.update(dt * this.motion, this.t);
     if (this.frameN % 10 === 0) this.updateLod();
     if (this.placing && this.current.garden && Math.abs(this.goal.fit / (this.markerFit || 1) - 1) > 0.12) {
       this.markerFit = this.goal.fit;
@@ -542,6 +572,18 @@ export class Engine {
         this.labelClock = 0;
         this.opts.onLabels((this.current as Collection).labels((v) => this.project(v)));
       }
+    }
+  }
+
+  /** Close in, the dome's glass and ribs would stand between the camera and the plants:
+   * like a cutaway model, they fade away as you zoom in and return for the overview. */
+  private cutaway() {
+    const s = this.current;
+    if (!s || s.name === 'collection') return;
+    const show = this.cur.fit > s.maxFit * 0.42;
+    for (const n of ['dome-frame', 'glass']) {
+      const o = s.group.getObjectByName(n);
+      if (o && o.visible !== show) o.visible = show;
     }
   }
 

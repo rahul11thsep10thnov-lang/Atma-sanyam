@@ -299,77 +299,93 @@ export function buildDome(R: number, height: number, detail: number, y0: number,
       nodes.set(kc, clampC.clone());
     }
   }
-  const white = hex(0xe6e0d2);
-  const brass = hex(0xb58a3c);
-  for (const [a, c] of edges.values()) {
-    const A = scale(a);
-    const C = scale(c);
-    const mid = new THREE.Vector3().addVectors(A, C).multiplyScalar(0.5);
-    // bow the strut out to the surface so the dome stays round
-    const out = V(mid.x / R, (mid.y - y0) / height, mid.z / R).normalize();
-    mid.set(out.x * R, out.y * height + y0, out.z * R);
-    b.tube([A, mid, C], () => 0.032, 4, white, white, 0, { colorFn: () => jitter(white, r, 0.03) });
-  }
-  for (const n of nodes.values()) {
-    const P = scale(n);
-    b.blob(P, 0.075, 0.075, 0.075, brass, hex(0x8c6a2a), 6, 4);
-  }
-  // arch ribs: thick meridians from the ring to the oculus
-  const ribs = 6;
-  for (let i = 0; i < ribs; i++) {
-    const a = (i / ribs) * TAU + TAU / 16;
+  // A Victorian palm-house dome (as in the owner's reference): a short glazed drum of
+  // upright mullions, then a fine rectangular grid of cream glazing bars, arched main
+  // ribs, and a lantern with a finial at the crown.
+  void edges;
+  void nodes;
+  void tris;
+  void panels;
+  const cream = hex(0xefe9dc);
+  const creamShade = hex(0xd8cfbd);
+  const brass = hex(0xc29a52);
+  const drumH = height * 0.16;
+  const dy = y0 + drumH;
+  const domeH = height - drumH;
+  const at = (a: number, ph: number, k = 1.004) => V(Math.cos(a) * Math.cos(ph) * R * k, Math.sin(ph) * domeH * k + dy, Math.sin(a) * Math.cos(ph) * R * k);
+  const lantern = 0.085; // crown opening (radians from the top)
+  const bars = R > 15 ? 64 : 48;
+  for (let i = 0; i < bars; i++) {
+    const a = (i / bars) * TAU;
+    const main = i % 8 === 0;
     const path: V3[] = [];
-    for (let k = 0; k <= 18; k++) {
-      const ph = (k / 18) * (Math.PI / 2 - 0.12);
-      path.push(V(Math.cos(a) * Math.cos(ph) * R * 1.004, Math.sin(ph) * height * 1.004 + y0, Math.sin(a) * Math.cos(ph) * R * 1.004));
-    }
-    b.tube(path, (t) => 0.1 * (1 - t * 0.45), 8, hex(0xa9772f), hex(0xd8b25a), 0, { colorFn: (t) => mix(hex(0x9a6f2e), hex(0xd9b660), 0.4 + 0.6 * Math.sin(t * 3)) });
+    for (let k = 0; k <= 16; k++) path.push(at(a, (k / 16) * (Math.PI / 2 - lantern), main ? 1.008 : 1.004));
+    b.tube(path, (t) => (main ? 0.075 * (1 - t * 0.4) : 0.018), main ? 6 : 3, cream, creamShade, 0, { colorFn: () => jitter(cream, r, 0.02) });
+    // the drum: an upright mullion under every bar, a pier under every main rib
+    b.tube([V(Math.cos(a) * R * 1.004, y0, Math.sin(a) * R * 1.004), V(Math.cos(a) * R * 1.004, dy, Math.sin(a) * R * 1.004)], () => (main ? 0.09 : 0.022), main ? 6 : 3, cream, creamShade);
   }
-  // latitude rings
-  for (const lat of [0.0, 0.5]) {
-    const ph = lat * (Math.PI / 2);
+  // horizontal glazing bars, closer together towards the crown
+  const rings = R > 15 ? 12 : 9;
+  for (let j = 0; j <= rings; j++) {
+    const ph = Math.pow(j / rings, 0.9) * (Math.PI / 2 - lantern);
     const path: V3[] = [];
-    for (let k = 0; k <= 72; k++) {
-      const a = (k / 72) * TAU;
-      path.push(V(Math.cos(a) * Math.cos(ph) * R * 1.004, Math.sin(ph) * height * 1.004 + y0 + 0.02, Math.sin(a) * Math.cos(ph) * R * 1.004));
+    for (let k = 0; k <= 96; k++) path.push(at((k / 96) * TAU, ph, 1.005));
+    b.tube(path, () => (j === 0 ? 0.1 : 0.016), j === 0 ? 6 : 3, j === 0 ? brass : cream, cream);
+  }
+  for (const yy of [y0 + 0.04, y0 + drumH * 0.5]) {
+    const path: V3[] = [];
+    for (let k = 0; k <= 96; k++) {
+      const a = (k / 96) * TAU;
+      path.push(V(Math.cos(a) * R * 1.006, yy, Math.sin(a) * R * 1.006));
     }
-    path.push(path[0]!.clone());
-    b.tube(path, () => (lat === 0 ? 0.2 : 0.07), 6, hex(0xc8a24e), hex(0xe2c070));
+    b.tube(path, () => (yy === y0 + 0.04 ? 0.16 : 0.03), 5, yy === y0 + 0.04 ? hex(0xb8ad98) : cream, cream);
   }
-  // oculus ring and finial
-  const topY = height * Math.sin(Math.PI / 2 - 0.0) + y0;
-  const ring: V3[] = [];
-  for (let k = 0; k <= 36; k++) {
-    const a = (k / 36) * TAU;
-    ring.push(V(Math.cos(a) * R * Math.cos(Math.PI / 2 - 0.12) * 1.01, Math.sin(Math.PI / 2 - 0.12) * height * 1.004 + y0, Math.sin(a) * R * Math.cos(Math.PI / 2 - 0.12) * 1.01));
+  // the lantern: a small glazed drum, a cap and a finial
+  const lr = Math.cos(Math.PI / 2 - lantern) * R;
+  const ly = Math.sin(Math.PI / 2 - lantern) * domeH + dy;
+  const lh = R * 0.07;
+  for (let i = 0; i < 16; i++) {
+    const a = (i / 16) * TAU;
+    b.tube([V(Math.cos(a) * lr, ly, Math.sin(a) * lr), V(Math.cos(a) * lr, ly + lh, Math.sin(a) * lr)], () => 0.03, 3, cream, cream);
   }
-  b.tube(ring, () => 0.12, 7, hex(0xc8a24e), hex(0xe2c070));
-  b.blob(V(0, topY + 0.05, 0), R * 0.035, R * 0.05, R * 0.035, hex(0xe2c070), hex(0xa9772f), 8, 6);
-  // solar petals set into the upper shell of the dome
-  const pick = tris.filter((t) => {
-    const cy = (t[0]!.y + t[1]!.y + t[2]!.y) / 3;
-    return cy > 0.52 && cy < 0.82;
-  });
-  for (let i = 0; i < Math.min(panels, pick.length); i++) {
-    const t = pick[Math.floor((i / panels) * pick.length + r() * 2) % pick.length]!;
-    const cen = new THREE.Vector3().add(t[0]).add(t[1]).add(t[2]).multiplyScalar(1 / 3);
-    const verts = t.map((v) => {
-      const q = new THREE.Vector3().lerpVectors(v, cen, 0.42).normalize();
-      return V(q.x * R * 1.012, q.y * height * 1.012 + y0, q.z * R * 1.012);
-    });
-    const nrm = V(cen.x / (R / R), cen.y, cen.z).normalize();
-    const base = b.vertexCount;
-    const dark = hex(0x0d2036);
-    const mid = hex(0x1f4f88);
-    verts.forEach((v, k) => b.vert(v.x, v.y, v.z, k === 0 ? dark : k === 1 ? mid : dark));
-    b.triH(base, base + 1, base + 2, nrm);
+  for (const yy of [ly, ly + lh]) {
+    const path: V3[] = [];
+    for (let k = 0; k <= 32; k++) path.push(V(Math.cos((k / 32) * TAU) * lr, yy, Math.sin((k / 32) * TAU) * lr));
+    b.tube(path, () => 0.05, 4, brass, cream);
   }
+  b.blob(V(0, ly + lh, 0), lr * 1.04, lr * 0.4, lr * 1.04, cream, creamShade, 16, 6);
+  b.tube([V(0, ly + lh + lr * 0.5, 0), V(0, ly + lh + lr * 0.5 + R * 0.06, 0)], (t) => 0.05 * (1 - t * 0.7), 5, brass, brass);
+  b.blob(V(0, ly + lh + lr * 0.5 + R * 0.065, 0), 0.09, 0.12, 0.09, brass, hex(0x8c6a2a), 6, 4);
+  const topY = ly + lh + lr * 0.5 + R * 0.07;
   const frame = b.build({ wind: false });
-  // glass skin, a hair outside the struts
-  const glass = new THREE.SphereGeometry(1, 56, 22, 0, TAU, 0, Math.PI / 2);
-  glass.scale(R * 1.001, height * 1.001, R * 1.001);
-  glass.translate(0, y0, 0);
+  // glass skin: the drum, then the dome, a hair inside the bars
+  const drum = new THREE.CylinderGeometry(R, R, drumH, 64, 1, true);
+  drum.translate(0, y0 + drumH / 2, 0);
+  const cap = new THREE.SphereGeometry(1, 64, 20, 0, TAU, 0, Math.PI / 2);
+  cap.scale(R * 1.001, domeH * 1.001, R * 1.001);
+  cap.translate(0, dy, 0);
+  const glass = joinGeometries([drum.toNonIndexed(), cap.toNonIndexed()]);
+  drum.dispose();
+  cap.dispose();
   return { frame, glass, topY };
+}
+
+/** Two or more non-indexed geometries as one (position, normal and uv). */
+function joinGeometries(gs: THREE.BufferGeometry[]): THREE.BufferGeometry {
+  const out = new THREE.BufferGeometry();
+  for (const name of ['position', 'normal', 'uv']) {
+    const parts = gs.map((g) => g.getAttribute(name) as THREE.BufferAttribute);
+    const size = parts[0]!.itemSize;
+    const arr = new Float32Array(parts.reduce((n, a) => n + a.count * size, 0));
+    let o = 0;
+    for (const a of parts) {
+      arr.set(a.array as Float32Array, o);
+      o += a.count * size;
+    }
+    out.setAttribute(name, new THREE.BufferAttribute(arr, size));
+  }
+  for (const g of gs) g.dispose();
+  return out;
 }
 
 // ---- small helpers for the scenes ----------------------------------------------------------------------

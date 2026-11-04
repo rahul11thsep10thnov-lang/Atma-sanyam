@@ -65,7 +65,7 @@ export class Diorama {
     this.disposables.push(bump);
     this.plantMat = makePlantMaterial();
     const rockMat = makeRockMaterial(bump, 0.88);
-    const metalMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.36, metalness: caps.env ? 0.85 : 0.35 });
+    const metalMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.42, metalness: caps.env ? 0.25 : 0.1 });
 
     // ---- path distance (terrain colouring and grass rejection) -----------------------------------
     const samples: { x: number; z: number; hw: number }[] = [];
