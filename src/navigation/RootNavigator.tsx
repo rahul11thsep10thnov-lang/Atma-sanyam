@@ -1,12 +1,16 @@
 import React, { useRef, useState } from 'react';
-import { View } from 'react-native';
-import { NavigationContainer, DefaultTheme, DarkTheme, NavigationState, useNavigationContainerRef } from '@react-navigation/native';
+import { Pressable, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { NavigationContainer, DefaultTheme, DarkTheme, NavigationState, useNavigationContainerRef, useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { RootStackParamList, RootTabParamList } from './types';
 import { HomeScreen } from '../screens/HomeScreen';
 import { SpaceScreen } from '../spaces/ui/SpaceScreen';
 import { ParadiseScreen } from '../paradise/ui/ParadiseScreen';
+import { GardenOverviewScreen } from '../garden/overview/GardenOverviewScreen';
+import { AppText } from '../ui/AppText';
+import { Icon } from '../ui/Icon';
 import { MuseumScreen } from '../museum/ui/MuseumScreen';
 import { LanguageScreen } from '../screens/LanguageScreen';
 import { useSettings } from '../context/SettingsContext';
@@ -34,7 +38,33 @@ const Tab = createBottomTabNavigator<RootTabParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const BalconyTab = () => <SpaceScreen space="balcony" />;
-const GardenTab = () => <ParadiseScreen />;
+/** The Garden tab: the new overview (island, statistics, planting record) with the painted garden scene one tap away.
+ * Arriving with a freshly grown plant opens the scene, where it is welcomed. */
+function GardenTab() {
+  const route = useRoute<{ key: string; name: string; params?: { arrival?: string } }>();
+  const insets = useSafeAreaInsets();
+  const [scene, setScene] = React.useState(!!route.params?.arrival);
+  React.useEffect(() => {
+    if (route.params?.arrival) setScene(true);
+  }, [route.params?.arrival]);
+  if (!scene) return <GardenOverviewScreen onOpenScene={() => setScene(true)} />;
+  return (
+    <View style={{ flex: 1 }}>
+      <ParadiseScreen />
+      <Pressable
+        onPress={() => setScene(false)}
+        accessibilityRole="button"
+        accessibilityLabel="Back to the garden overview"
+        style={{ position: 'absolute', left: 12, top: insets.top + 4, flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 999, backgroundColor: 'rgba(15,59,44,0.85)' }}
+      >
+        <Icon name="chevronLeft" size={16} color="#fff" />
+        <AppText variant="caption" style={{ color: '#fff' }}>
+          Overview
+        </AppText>
+      </Pressable>
+    </View>
+  );
+}
 
 function Tabs() {
   useLanguage();
