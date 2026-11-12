@@ -142,7 +142,7 @@ function chooseSlot(slots: Slot[], taken: Set<number>, species: Species, size: P
 function occupiedIn(state: ParadiseState, segment: SegmentId, slots: Slot[]): { taken: Set<number>; points: { x: number; y: number }[] } {
   const taken = new Set<number>();
   const points: { x: number; y: number }[] = [];
-  for (const p of [...state.plants.filter(inGarden), ...state.penalties]) {
+  for (const p of [...state.plants.filter((x) => inGarden(x) && isKnown(x)), ...state.penalties]) {
     if (p.segment !== segment || p.slot < 0) continue;
     taken.add(p.slot);
     const s = slots[p.slot];
@@ -151,6 +151,8 @@ function occupiedIn(state: ParadiseState, segment: SegmentId, slots: Slot[]): { 
   return { taken, points };
 }
 
+/** A plant of a species the app still has. Plants of species that were removed from the catalogue stay in storage but are not shown or counted. */
+export const isKnown = (p: { speciesId?: string }) => !p.speciesId || !!SPECIES_BY_ID[p.speciesId];
 export const inGarden = (p: { place?: PlantPlace }) => (p.place ?? 'garden') === 'garden';
 export const onBalcony = (p: { place?: PlantPlace }) => p.place === 'balcony';
 
@@ -275,17 +277,17 @@ export function clearPenalty(state: ParadiseState, id: string): ParadiseState {
 // ---- queries ---------------------------------------------------------------------------
 
 export function plantsIn(state: ParadiseState, segment: SegmentId): PlantInstance[] {
-  return state.plants.filter((p) => p.segment === segment && inGarden(p));
+  return state.plants.filter((p) => p.segment === segment && inGarden(p) && isKnown(p));
 }
 
 /** Plants of a segment's species grown anywhere (garden or balcony): this opens rarer species. */
 export function grownIn(state: ParadiseState, segment: SegmentId): number {
-  return state.plants.filter((p) => p.segment === segment).length;
+  return state.plants.filter((p) => p.segment === segment && isKnown(p)).length;
 }
 
 export function counts(state: ParadiseState): Record<SegmentId, number> {
   const c = Object.fromEntries(SEGMENTS.map((s) => [s, 0])) as Record<SegmentId, number>;
-  for (const p of state.plants) if (inGarden(p)) c[p.segment]++;
+  for (const p of state.plants) if (inGarden(p) && isKnown(p)) c[p.segment]++;
   return c;
 }
 

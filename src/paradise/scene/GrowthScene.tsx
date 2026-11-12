@@ -26,7 +26,7 @@ const POTS: Record<string, [number, number]> = {
   lotus: [0.16, 0.34], orchid: [0.14, 0.09], monstera: [0.3, 0.18], areca_palm: [0.46, 0.24], snake_plant: [0.36, 0.17],
   peace_lily: [0.3, 0.17], fiddle_leaf_fig: [0.4, 0.22], rubber_plant: [0.38, 0.22], philodendron: [0.24, 0.16], calathea: [0.2, 0.15],
   croton: [0.26, 0.17], zz_plant: [0.22, 0.14], fern: [0.18, 0.17], bonsai: [0.1, 0.26], bamboo: [0.34, 0.2], spider_plant: [0.18, 0.14],
-  anthurium: [0.18, 0.13], tulsi: [0.32, 0.19], mint: [0.17, 0.15],
+  anthurium: [0.18, 0.13], tulsi: [0.32, 0.19],
 };
 /** How far above the sprite's foot the plant leaves the soil, in metres on screen (22° view). */
 function emergeM(speciesId: string): number {

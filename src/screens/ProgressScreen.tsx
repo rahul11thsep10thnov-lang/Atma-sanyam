@@ -19,6 +19,7 @@ import { radii } from '../theme/radii';
 import { useTheme } from '../theme/ThemeContext';
 import { RootStackParamList } from '../navigation/types';
 import { t, useLanguage } from '../i18n';
+import { FocusInsights } from '../garden/overview/FocusInsights';
 
 const COLUMNS = 3;
 const GAP = space.md;
@@ -135,6 +136,7 @@ export function ProgressScreen() {
         <StatTile icon="trophy" value={stats.longest ? formatMinutes(stats.longest) : '—'} label={t('progress.longest')} />
       </View>
       <WeekBars week={stats.week} />
+      <FocusInsights history={history} />
       {history.length > 0 && (
         <AppText variant="overline" tone="muted" style={styles.gridLabel}>{t('progress.recent').toUpperCase()}</AppText>
       )}

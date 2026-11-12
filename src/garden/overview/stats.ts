@@ -187,32 +187,6 @@ export function peak(values: number[]): number {
   return best > 0 ? at : -1;
 }
 
-// ---- trend -----------------------------------------------------------------------------------------
-
-export interface TrendRow {
-  year: number;
-  minutes: number;
-}
-
-/** Focus from 1 January to the same calendar day, this year and the two before it. The range is the same in each year. */
-export function trend(sessions: FocusSession[], now: Date): { rows: TrendRow[]; through: string } {
-  const rows: TrendRow[] = [];
-  for (let back = 0; back < 3; back++) {
-    const y = now.getFullYear() - back;
-    const start = new Date(y, 0, 1).getTime();
-    // same month and day; 29 February in a leap year maps to 1 March in others (the day after)
-    const end = new Date(y, now.getMonth(), now.getDate() + 1).getTime();
-    let m = 0;
-    for (const s of sessions) if (s.focusEnd > start && s.start < end) m += overlapMinutes(s, start, end);
-    rows.push({ year: y, minutes: Math.round(m) });
-  }
-  return { rows, through: `${now.getDate()} ${MONTHS[now.getMonth()]}` };
-}
-
-export function delta(now: number, before: number): { minutes: number; percent: number | null } {
-  return { minutes: now - before, percent: before > 0 ? Math.round(((now - before) / before) * 100) : null };
-}
-
 // ---- extras ----------------------------------------------------------------------------------------
 
 const dayKey = (t: number) => {

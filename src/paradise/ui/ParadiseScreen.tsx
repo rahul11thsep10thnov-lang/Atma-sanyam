@@ -25,7 +25,7 @@ import { duration, easing } from '../../theme/motion';
 import { t, useLanguage } from '../../i18n';
 import { SEGMENTS, SPECIES_BY_ID, SegmentId, Species, plantName, plantText } from '../catalog';
 import { SEGMENT_RANGE } from '../layout';
-import { PlantInstance, PlantPlace, Penalty, clearPenalty, counts, grownIn, removePlant, shuffleSegment } from '../model';
+import { PlantInstance, PlantPlace, Penalty, clearPenalty, isKnown, counts, grownIn, removePlant, shuffleSegment } from '../model';
 import { useParadise } from '../repository';
 import { Ambience } from '../scene/Ambience';
 import { MotionLevel, ParadiseScene, SceneView } from '../scene/ParadiseScene';
@@ -160,7 +160,7 @@ export function ParadiseScreen() {
     say(t('space.penaltyCleared'));
   };
 
-  const total = useMemo(() => (state ? state.plants.filter((p) => p.place !== 'balcony').length : 0), [state]);
+  const total = useMemo(() => (state ? state.plants.filter((p) => p.place !== 'balcony' && isKnown(p)).length : 0), [state]);
   const perSegment = useMemo(() => (state ? counts(state) : null), [state]);
 
   if (!state || !rewards) return <View style={styles.screen} />;

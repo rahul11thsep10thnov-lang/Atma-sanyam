@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { SessionRecord } from '../../../types';
-import { buckets, completedSessions, delta, distribution, extras, hourTotals, peak, rangeOf, shiftAnchor, startOfWeek, trend, weekdayTotals } from '../stats';
+import { buckets, completedSessions, distribution, extras, hourTotals, peak, rangeOf, shiftAnchor, startOfWeek, weekdayTotals } from '../stats';
 import { arrange, pathDistance } from '../layout';
 
 let n = 0;
@@ -75,16 +75,6 @@ test('weekday and hour habits find the peak', () => {
   const h = hourTotals(s);
   assert.equal(peak(h), 9);
   assert.equal(peak(new Array(24).fill(0)), -1);
-});
-
-test('trend compares the same date range in each year and handles incomplete years', () => {
-  const now = new Date(2026, 5, 15); // 15 Jun 2026
-  const s = completedSessions([rec(2026, 2, 1, 9, 0, 100), rec(2026, 8, 1, 9, 0, 999), rec(2025, 2, 1, 9, 0, 60), rec(2025, 8, 1, 9, 0, 500), rec(2024, 5, 15, 9, 0, 30), rec(2024, 5, 16, 9, 0, 70)]);
-  const t = trend(s, now);
-  assert.deepEqual(t.rows.map((r) => r.year), [2026, 2025, 2024]);
-  assert.deepEqual(t.rows.map((r) => r.minutes), [100, 60, 30]); // Sept is outside 1 Jan–15 Jun; 16 Jun 2024 too
-  assert.deepEqual(delta(100, 60), { minutes: 40, percent: 67 });
-  assert.equal(delta(10, 0).percent, null);
 });
 
 test('extras: streaks, averages, longest, best and least day', () => {
