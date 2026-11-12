@@ -1,6 +1,6 @@
 // Disk cache for remote content-library images, keyed by imageId+variant so
 // a thumbnail and its full-res sibling never collide. Backed by expo-file-system's
-// SDK 57 File/Directory API (the legacy function-based API is gone in this SDK —
+// SDK 57/58 File/Directory API (the legacy function-based API is gone in this SDK —
 // see AGENTS.md). Everything above this (repository.ts) only calls
 // getCachedImageUri(); it never touches File/Directory directly.
 //

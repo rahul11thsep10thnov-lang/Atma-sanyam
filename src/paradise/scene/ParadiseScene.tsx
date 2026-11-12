@@ -432,7 +432,7 @@ export function ParadiseScene(props: ParadiseSceneProps) {
           const selected = p.key === selectedId;
           const arriving = p.key === arrivalId;
           const glowSize = Math.max(p.w, p.h) * 1.3;
-          const transform: Animated.WithAnimatedArray<unknown> = [];
+          const transform: Record<string, unknown>[] = [];
           const mv = moves.get(p.key);
           if (mv) {
             transform.push({ translateX: glide.interpolate({ inputRange: [0, 1], outputRange: [mv.dx, 0] }) });

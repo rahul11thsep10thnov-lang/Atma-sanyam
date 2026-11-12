@@ -1,6 +1,6 @@
 // Text input with label, hint and error, on the theme.
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, TextInputProps, View } from 'react-native';
+import { StyleSheet, TextInput, TextInputInstance, TextInputProps, View } from 'react-native';
 import { AppText } from './AppText';
 import { Icon, IconName } from './Icon';
 import { radii } from '../theme/radii';
@@ -15,7 +15,7 @@ export interface TextFieldProps extends TextInputProps {
   icon?: IconName;
 }
 
-export const TextField = React.forwardRef<TextInput, TextFieldProps>(function TextField({ label, hint, error, icon, style, editable = true, ...rest }, ref) {
+export const TextField = React.forwardRef<TextInputInstance, TextFieldProps>(function TextField({ label, hint, error, icon, style, editable = true, ...rest }, ref) {
   const { colors } = useTheme();
   const [focused, setFocused] = useState(false);
   const border = error ? colors.danger : focused ? colors.primary : colors.border;

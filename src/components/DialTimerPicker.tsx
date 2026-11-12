@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { PanResponder, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { PanResponder, Platform, Pressable, StyleSheet, Text, TextInput, TextInputInstance, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import { typography } from '../theme/colors';
 import { useTheme } from '../theme/ThemeContext';
@@ -44,7 +44,7 @@ export function DialTimerPicker({ value, onChange, size = 260 }: DialTimerPicker
 
   // Tap the number to type the minutes instead of turning the dial.
   const [draft, setDraft] = useState<string | null>(null);
-  const inputRef = useRef<TextInput>(null);
+  const inputRef = useRef<TextInputInstance>(null);
   const editing = draft !== null;
   const typed = draft ? parseInt(draft, 10) : NaN;
   const willUse = Number.isFinite(typed) ? snapMinutes(typed) : null;

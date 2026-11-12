@@ -7,7 +7,7 @@ learning sections organised into twelve interconnected worlds.
 
 | Part | Folder | What is there |
 |---|---|---|
-| Mobile app (Expo 57) | `src/dadu/` | core registries and world simulation, engines (lesson, activities, mastery, rewards, assignments, screen time, stories, sync), bilingual content (52 lessons, 12 stories, 51 assignments, 167 objects), SVG character rigs and scenes, screens, audio, API client |
+| Mobile app (Expo 58) | `src/dadu/` | core registries and world simulation, engines (lesson, activities, mastery, rewards, assignments, screen time, stories, sync), bilingual content (52 lessons, 12 stories, 51 assignments, 167 objects), SVG character rigs and scenes, screens, audio, API client |
 | API | `backend/src/dadu`, `backend/src/routes/{public,admin}/dadu.ts` | child profiles, consent, world state, progress sync, mastery, assignments, screen rules, content, packs, flags; eight-step editorial workflow; migration `drizzle/0006_dadu.sql` |
 | Admin console | `admin/src/app/(console)/dadu/` | content editor with workflow and versions, translations, assets, packs, flags, parent support |
 | Design and status docs | `docs/dadu/` | canon (`00-canon.md`, `00-visual-canon-v3.md`), 23 design documents, `IMPLEMENTATION_AUDIT.md`, `FEATURE_COMPLETION_MATRIX.md`, `TEST_REPORT.md`, `PERFORMANCE_REPORT.md`, `RELEASE_READINESS.md`, `INCOMPLETE_FEATURE_REPORT.md` and the other registries |
@@ -42,7 +42,7 @@ This repository contains the whole product:
 
 | Part | Folder | Stack | Runs on |
 |---|---|---|---|
-| **Mobile app** (Android + iOS) | `/` (repo root) | Expo SDK 57, React Native 0.86, TypeScript | Phones (EAS Build → Play Store / App Store) |
+| **Mobile app** (Android + iOS) | `/` (repo root) | Expo SDK 58, React Native 0.88, TypeScript | Phones (EAS Build → Play Store / App Store) |
 | **API** | [`/backend`](backend) | Node 22, Express 5, Drizzle ORM, PostgreSQL | Any container host (Render, Railway, Fly…) |
 | **Admin console** | [`/admin`](admin) | Next.js 16, React 19, TypeScript | Vercel (or any Node host) |
 

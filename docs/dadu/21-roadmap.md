@@ -244,7 +244,7 @@ Content production runs from week 4 to release; translation and voice from week 
 | Copyright for literary collections (Malgudi Days, Ruskin Bond, Satyajit Ray, Sudha Murty, Tagore translations) | High | Medium | Public-domain and original retellings first; licensed collections gated by the copyright step and a stored permission document; legal review before Phase 6 |
 | Cultural and religious content errors | Medium | High | Named cultural reviewers per region; history / mythology / belief labelling; optional and parent-restricted section |
 | DPDP compliance detail changes | Medium | Medium | Consent versioning; deletion jobs; legal review at Phase 1 and Phase 10 |
-| Expo SDK or React Native upgrade during the project | Medium | Medium | Pin SDK 57 for the project; upgrade only between phases with a full regression |
+| Expo SDK or React Native upgrade during the project | Medium | Medium | Pin the SDK for the project (now SDK 58, upgraded from 57 on 2026-11-12); upgrade only between phases with a full regression |
 | Pack sizes exceed what budget devices will store | Medium | Medium | Per-section and per-language packs; WebP and Opus; delta updates; storage view for parents |
 | The cow's name (Gauri, proposed) changes after recording | Low | Medium | Approve names before Phase 3 recording starts; the key and display names change together in one migration |
 | Team size smaller than assumed | Medium | High | Phases are sequential and self-contained; a smaller team lengthens the timeline rather than breaking the plan |

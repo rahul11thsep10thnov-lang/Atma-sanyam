@@ -181,7 +181,7 @@ export function ContentBrowserScreen() {
             showsVerticalScrollIndicator={false}
             onEndReachedThreshold={0.4}
             onEndReached={() => hasMore && loadMore()}
-            ListFooterComponent={loadingMore ? <ActivityIndicator style={{ marginVertical: space.lg }} color={colors.primary} /> : null}
+            ListFooterComponent={loadingMore ? <ActivityIndicator style={{ marginVertical: space.lg }} color={colors.primary} /> : undefined}
             renderItem={({ item }) => (
               <View style={{ marginBottom: GRID_GAP }}>
                 <RemoteThumb image={item} size={thumb} onPress={() => handlePick(item)} selected={resolvingId === item.imageId} />
