@@ -66,7 +66,7 @@ export function ParentDashboardScreen() {
       <Card><Heading size={17}>{hi ? 'इस हफ़्ते' : 'This week'}</Heading>
         <Svg viewBox="0 0 300 90" width="100%" height={100} accessibilityLabel="screen time by day">
           {days.map((d, i) => <Rect key={d.key} x={12 + i * 42} y={70 - (d.minutes / max) * 60} width={24} height={(d.minutes / max) * 60} rx={4} fill={P.peepal} />)}
-          {days.map((d, i) => <SvgText key={d.key + 'l'} x={24 + i * 42} y={84} fontSize={10} fill={P.inkSoft} textAnchor="middle">{d.label}</SvgText>)}
+          {days.map((d, i) => <SvgText key={d.key + 'l'} x={24 + i * 42} y={84} fontSize={10} fontFamily={FONT.body} fill={P.inkSoft} textAnchor="middle">{d.label}</SvgText>)}
           <Line x1={8} y1={70} x2={292} y2={70} stroke={P.line} />
         </Svg>
         <Body tone="soft" size={12}>{hi ? `${sessions.reduce((a, x) => a + x.lessons, 0)} पाठ · ${sessions.reduce((a, x) => a + x.stories, 0)} कहानियाँ · ${sessions.reduce((a, x) => a + x.activities, 0)} गतिविधियाँ (हाल के सत्र)` : `${sessions.reduce((a, x) => a + x.lessons, 0)} lessons · ${sessions.reduce((a, x) => a + x.stories, 0)} stories · ${sessions.reduce((a, x) => a + x.activities, 0)} activities (recent sessions)`}</Body></Card>

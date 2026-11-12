@@ -93,7 +93,7 @@ export function LocationScreen() {
   const sideCharacters: SideCharacter[] = [
     { key: 'dadaji', x: 80, pose: 'teach', expression: 'happy', facing: 'right', talking: !!bubble },
     { key: 'chintu', x: 200, pose: 'stand', expression: 'happy', facing: 'left' },
-    ...(activity?.kind === 'animal' ? [{ key: animalForLocation(loc.id, loc.idlers), x: 290, pose: 'stand' as const, expression: 'happy' as const, facing: 'left' as const }] : loc.idlers.slice(0, 1).map((k) => ({ key: k, x: 300, facing: 'left' as const }))),
+    ...(activity?.kind === 'animal' ? [{ key: animalForLocation(loc.id, loc.idlers), x: 290, pose: 'stand' as const, expression: 'happy' as const, facing: 'left' as const }] : loc.idlers.filter((k) => k !== 'dadaji' && k !== 'chintu').slice(0, 1).map((k) => ({ key: k, x: 300, facing: 'left' as const }))),
   ];
   const background = backgroundForLocation(loc.id);
   const name = hi ? loc.name.hi : loc.name.en;
