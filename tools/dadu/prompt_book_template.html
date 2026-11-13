@@ -1,0 +1,137 @@
+<title>DADU Prompt Book</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: one narrow column built for a phone. A sticky progress bar, then collapsible groups (one per ChatGPT chat), then one card per prompt with a big Copy button. */
+:root{
+  --bg:#FFF6E5; --card:#FFFFFF; --ink:#3A2E2A; --soft:#6F5F58; --line:#EAD9BF; --well:#FBF0DA;
+  --head:#2F3C7E; --accent:#F4A523; --accent-ink:#2A1A05; --ok:#3F8A31; --ok-soft:#E4F2DF; --focus:#2E86AB;
+  --display:'Baloo 2','Nunito',system-ui,sans-serif; --body:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#1B2142; --card:#262C55; --ink:#F6EEDC; --soft:#C9BFAE; --line:#3B4270; --well:#1F2549; --head:#FFE08A; --accent:#F4A523; --accent-ink:#2A1A05; --ok:#8BD07A; --ok-soft:#27402F; --focus:#7CC4E0; color-scheme:dark } }
+:root[data-theme="dark"]{ --bg:#1B2142; --card:#262C55; --ink:#F6EEDC; --soft:#C9BFAE; --line:#3B4270; --well:#1F2549; --head:#FFE08A; --accent:#F4A523; --accent-ink:#2A1A05; --ok:#8BD07A; --ok-soft:#27402F; --focus:#7CC4E0; color-scheme:dark }
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:720px;margin:0 auto}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--bg);padding-block:12px 10px;border-bottom:2px solid var(--line)}
+h1{font-family:var(--display);font-weight:800;font-size:26px;line-height:1.1;margin:0;color:var(--head);letter-spacing:.3px}
+.sub{margin:2px 0 8px;color:var(--soft);font-size:14px}
+.bar{display:flex;align-items:center;gap:10px}
+.track{flex:1;height:10px;border-radius:999px;background:var(--well);border:1px solid var(--line);overflow:hidden;min-width:0}
+.fill{height:100%;background:var(--ok);width:0;transition:width .25s}
+.count{font-variant-numeric:tabular-nums;font-weight:800;font-size:14px;white-space:nowrap}
+.toggle{font:inherit;font-weight:700;font-size:13px;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
+.toggle[aria-pressed="true"]{background:var(--head);border-color:var(--head);color:var(--bg)}
+.how{margin:14px 0 6px;padding:12px 14px;border:2px solid var(--line);border-radius:16px;background:var(--card)}
+.how b{font-family:var(--display);font-size:17px;color:var(--head)}
+.how ol{margin:6px 0 0;padding-left:20px;display:grid;gap:4px;font-size:15px}
+details.group{margin-top:12px;border:2px solid var(--line);border-radius:18px;background:var(--card);overflow:hidden}
+details.group>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px;min-height:56px}
+details.group>summary::-webkit-details-marker{display:none}
+details.group>summary::after{content:"";width:10px;height:10px;margin-left:auto;flex:0 0 auto;border-right:3px solid var(--soft);border-bottom:3px solid var(--soft);transform:rotate(45deg);transition:transform .2s}
+details.group[open]>summary::after{transform:rotate(-135deg)}
+.gt{font-family:var(--display);font-weight:700;font-size:18px;line-height:1.2;color:var(--head);min-width:0;flex:1}
+.chip{font-variant-numeric:tabular-nums;font-size:13px;font-weight:800;padding:3px 9px;border-radius:999px;background:var(--well);border:1px solid var(--line);white-space:nowrap}
+.chip.full{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.gnote{margin:0;padding:0 14px 10px;color:var(--soft);font-size:14px}
+.cards{display:grid;gap:10px;padding:0 10px 12px}
+.card{border:2px solid var(--line);border-radius:14px;padding:12px;background:var(--bg);display:grid;gap:8px}
+.card.done{opacity:.62}
+.top{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.num{font-variant-numeric:tabular-nums;font-weight:800;font-size:13px;background:var(--head);color:var(--bg);border-radius:8px;padding:2px 8px}
+.lab{font-weight:800;min-width:0;overflow-wrap:anywhere}
+.tgt{font-size:12px;color:var(--soft);overflow-wrap:anywhere}
+.prompt{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.45;background:var(--well);border:1px solid var(--line);border-radius:10px;padding:10px;max-height:6.6em;overflow:hidden;position:relative;cursor:pointer;user-select:text;-webkit-user-select:text}
+.prompt.open{max-height:none}
+.prompt:not(.open)::after{content:"Tap to read all";position:absolute;right:0;bottom:0;padding:14px 10px 4px 36px;font-size:12px;font-weight:800;color:var(--soft);background:linear-gradient(90deg,transparent,var(--well) 40%)}
+.act{display:flex;gap:8px}
+.btn{font:inherit;font-weight:800;font-size:16px;border-radius:12px;border:2px solid var(--accent);min-height:48px;padding:8px 14px;cursor:pointer}
+.copy{flex:1;background:var(--accent);color:var(--accent-ink);box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.copy.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.donebtn{background:transparent;color:var(--ink);border-color:var(--line);min-width:96px}
+.donebtn[aria-pressed="true"]{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.btn:active{transform:translateY(2px);box-shadow:none}
+button:focus-visible,summary:focus-visible,.prompt:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.hint{font-size:13px;color:var(--soft);min-height:1.2em}
+@media (prefers-reduced-motion:reduce){.fill,details.group>summary::after{transition:none}}
+</style>
+<div class="wrap">
+  <header>
+    <h1>DADU Prompt Book</h1>
+    <p class="sub" id="sub"></p>
+    <div class="bar"><div class="track" role="progressbar" aria-label="Prompts done" aria-valuemin="0" aria-valuemax="100" id="track"><div class="fill" id="fill"></div></div><span class="count" id="count"></span><button class="toggle" id="hide" aria-pressed="false">Hide done</button></div>
+  </header>
+  <section class="how" aria-label="How to use this page">
+    <b>How to use it</b>
+    <ol>
+      <li>Open a group below. Each group is one ChatGPT chat.</li>
+      <li>Tap <b>Copy prompt</b>, open ChatGPT, paste, send.</li>
+      <li>When the picture is ready, press and hold it and tap Save.</li>
+      <li>Send me the saved pictures here. Write the numbers, for example "014 to 025".</li>
+    </ol>
+  </section>
+  <main id="groups"></main>
+</div>
+<script>
+const DATA = __DATA__;
+const KEY = 'dadu-prompt-book-done-v1';
+let done = new Set();
+try { done = new Set(JSON.parse(localStorage.getItem(KEY) || '[]')); } catch (e) {}
+let hideDone = false;
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify([...done])); } catch (e) {} };
+const el = (t, c, txt) => { const x = document.createElement(t); if (c) x.className = c; if (txt !== undefined) x.textContent = txt; return x; };
+document.getElementById('sub').textContent = DATA.total + ' prompts, every one complete. Nothing to fill in.';
+const root = document.getElementById('groups');
+const cards = new Map(), chips = new Map();
+
+DATA.groups.forEach((g, gi) => {
+  const d = el('details', 'group'); if (gi === 0) d.open = true;
+  const s = el('summary'); s.append(el('span', 'gt', g.title)); const chip = el('span', 'chip'); s.append(chip); chips.set(g.id, chip); d.append(s);
+  d.append(el('p', 'gnote', g.note));
+  const list = el('div', 'cards');
+  g.items.forEach((it) => {
+    const c = el('article', 'card');
+    const top = el('div', 'top'); top.append(el('span', 'num', it.n), el('span', 'lab', it.label)); c.append(top);
+    c.append(el('div', 'tgt', 'Send me as: ' + it.target));
+    const p = el('div', 'prompt', it.text); p.tabIndex = 0; p.setAttribute('role', 'button'); p.setAttribute('aria-expanded', 'false');
+    const toggleOpen = () => { const o = p.classList.toggle('open'); p.setAttribute('aria-expanded', String(o)); };
+    p.addEventListener('click', () => { if (String(window.getSelection())) return; toggleOpen(); });
+    p.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleOpen(); } });
+    c.append(p);
+    const act = el('div', 'act');
+    const copy = el('button', 'btn copy', 'Copy prompt'); copy.type = 'button'; copy.id = 'copy-' + it.n;
+    const dn = el('button', 'btn donebtn', 'Done'); dn.type = 'button'; dn.id = 'done-' + it.n; dn.setAttribute('aria-pressed', 'false');
+    const hint = el('div', 'hint'); hint.setAttribute('aria-live', 'polite');
+    copy.addEventListener('click', async () => {
+      let ok = false;
+      try { await navigator.clipboard.writeText(it.text); ok = true; } catch (e) {}
+      if (!ok) { p.classList.add('open'); const r = document.createRange(); r.selectNodeContents(p); const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); try { ok = document.execCommand('copy'); } catch (e) {} }
+      copy.textContent = ok ? 'Copied' : 'Selected: press and hold, then Copy'; copy.classList.toggle('ok', ok);
+      hint.textContent = ok ? 'Now paste it into ChatGPT.' : '';
+      setTimeout(() => { copy.textContent = 'Copy prompt'; copy.classList.remove('ok'); }, 2200);
+    });
+    dn.addEventListener('click', () => { if (done.has(it.n)) done.delete(it.n); else done.add(it.n); save(); refresh(); });
+    act.append(copy, dn); c.append(act, hint);
+    cards.set(it.n, { c, dn });
+    list.append(c);
+  });
+  d.append(list); root.append(d);
+});
+
+function refresh() {
+  let total = 0, n = 0;
+  DATA.groups.forEach((g) => {
+    let gd = 0;
+    g.items.forEach((it) => { const x = cards.get(it.n); const isDone = done.has(it.n); x.c.classList.toggle('done', isDone); x.c.hidden = hideDone && isDone; x.dn.setAttribute('aria-pressed', String(isDone)); x.dn.textContent = isDone ? 'Done' : 'Mark done'; if (isDone) gd++; });
+    const chip = chips.get(g.id); chip.textContent = gd + ' of ' + g.items.length; chip.classList.toggle('full', gd === g.items.length);
+    total += g.items.length; n += gd;
+  });
+  document.getElementById('count').textContent = n + ' of ' + total;
+  document.getElementById('fill').style.width = (total ? (n / total) * 100 : 0) + '%';
+  document.getElementById('track').setAttribute('aria-valuenow', String(Math.round(total ? (n / total) * 100 : 0)));
+}
+document.getElementById('hide').addEventListener('click', (e) => { hideDone = !hideDone; e.currentTarget.setAttribute('aria-pressed', String(hideDone)); refresh(); });
+refresh();
+</script>

@@ -1,0 +1,1320 @@
+{
+ "style": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark.",
+ "aliases": {
+  "mango_tree": "tree_mango",
+  "flower_bed": "bed_flower",
+  "veg_bed": "bed_veg",
+  "cycle": "bicycle",
+  "stumps": "cricket_stumps",
+  "wash_basin": "washbasin",
+  "compost": "compost_bin",
+  "lamp_stand": "lamp",
+  "food_bowl": "feed_bowl",
+  "hay_pile": "hay",
+  "toothbrush_shelf": "toothbrush"
+ },
+ "skipped": [
+  "activity_mat",
+  "banyan_platform",
+  "compound_wall",
+  "fence",
+  "footprints",
+  "hill",
+  "hopscotch",
+  "kolam",
+  "path_stone",
+  "rangoli",
+  "reading_carpet",
+  "river",
+  "rug",
+  "track",
+  "villa_exterior",
+  "yoga_mat"
+ ],
+ "groups": [
+  {
+   "id": "start",
+   "title": "Start here: the style picture",
+   "note": "Open a new ChatGPT chat and paste this. It sets the look. Save the picture and send it to me.",
+   "items": [
+    {
+     "n": "001",
+     "label": "Style board",
+     "target": "style",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Make one style board image: the head of an elderly Indian grandfather with a thick curved white moustache and large rectangular tinted glasses, the head of a naughty 6-year-old Indian boy with messy black hair, a red sofa, a corner of a modern living room, and a row of six colour swatches. Wide image."
+    }
+   ]
+  },
+  {
+   "id": "dadaji",
+   "title": "Dadaji: sheet and 11 pictures",
+   "note": "Open ONE new ChatGPT chat for Dadaji. Paste the prompts below one after another in that same chat, so the pictures match. If you have the real photo of the grandfather, attach it to the first prompt only.",
+   "items": [
+    {
+     "n": "002",
+     "label": "Dadaji character sheet",
+     "target": "characters/dadaji/sheet",
+     "text": "If a photo of the grandfather is attached to this message, copy his face from it exactly (the moustache, the glasses, the forehead wrinkles). If no photo is attached, draw him from this description. Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Character reference sheet of Dadaji, an elderly Indian grandfather in chibi proportions (large head, small body): bald crown, white hair only around the sides and back of the head, a prominent thick curved white moustache, large rectangular slightly tinted spectacles, distinct forehead wrinkles, a defined nose, a slightly lean body, a plain cream kurta, a white dhoti, green traditional sandals, a kind dignified expression and expressive hands. No waistcoat, no scarf, no cap, no round glasses. Show the same character in front view, side view and back view, plus six face close-ups with different expressions: happy, laughing, surprised, thinking, sad and sleepy. Arranged neatly on a plain white background, no text, no labels. Wide image."
+    },
+    {
+     "n": "003",
+     "label": "Dadaji: idle",
+     "target": "characters/dadaji/idle",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Dadaji, an elderly Indian grandfather in chibi proportions (large head, small body): bald crown, white hair only around the sides and back of the head, a prominent thick curved white moustache, large rectangular slightly tinted spectacles, distinct forehead wrinkles, a defined nose, a slightly lean body, a plain cream kurta, a white dhoti, green traditional sandals, a kind dignified expression and expressive hands. No waistcoat, no scarf, no cap, no round glasses. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: standing relaxed and facing the viewer, mouth closed, calm friendly expression. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "004",
+     "label": "Dadaji: talk",
+     "target": "characters/dadaji/talk",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Dadaji, an elderly Indian grandfather in chibi proportions (large head, small body): bald crown, white hair only around the sides and back of the head, a prominent thick curved white moustache, large rectangular slightly tinted spectacles, distinct forehead wrinkles, a defined nose, a slightly lean body, a plain cream kurta, a white dhoti, green traditional sandals, a kind dignified expression and expressive hands. No waistcoat, no scarf, no cap, no round glasses. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: standing and facing the viewer, mouth open as if speaking warmly, one hand slightly raised. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "005",
+     "label": "Dadaji: happy",
+     "target": "characters/dadaji/happy",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Dadaji, an elderly Indian grandfather in chibi proportions (large head, small body): bald crown, white hair only around the sides and back of the head, a prominent thick curved white moustache, large rectangular slightly tinted spectacles, distinct forehead wrinkles, a defined nose, a slightly lean body, a plain cream kurta, a white dhoti, green traditional sandals, a kind dignified expression and expressive hands. No waistcoat, no scarf, no cap, no round glasses. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: a big happy smile, both arms slightly raised in joy. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "006",
+     "label": "Dadaji: think",
+     "target": "characters/dadaji/think",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Dadaji, an elderly Indian grandfather in chibi proportions (large head, small body): bald crown, white hair only around the sides and back of the head, a prominent thick curved white moustache, large rectangular slightly tinted spectacles, distinct forehead wrinkles, a defined nose, a slightly lean body, a plain cream kurta, a white dhoti, green traditional sandals, a kind dignified expression and expressive hands. No waistcoat, no scarf, no cap, no round glasses. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: one hand on the chin, eyes looking up, thinking. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "007",
+     "label": "Dadaji: sad",
+     "target": "characters/dadaji/sad",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Dadaji, an elderly Indian grandfather in chibi proportions (large head, small body): bald crown, white hair only around the sides and back of the head, a prominent thick curved white moustache, large rectangular slightly tinted spectacles, distinct forehead wrinkles, a defined nose, a slightly lean body, a plain cream kurta, a white dhoti, green traditional sandals, a kind dignified expression and expressive hands. No waistcoat, no scarf, no cap, no round glasses. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: a small downcast sad expression, shoulders slumped. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "008",
+     "label": "Dadaji: surprised",
+     "target": "characters/dadaji/surprised",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Dadaji, an elderly Indian grandfather in chibi proportions (large head, small body): bald crown, white hair only around the sides and back of the head, a prominent thick curved white moustache, large rectangular slightly tinted spectacles, distinct forehead wrinkles, a defined nose, a slightly lean body, a plain cream kurta, a white dhoti, green traditional sandals, a kind dignified expression and expressive hands. No waistcoat, no scarf, no cap, no round glasses. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: wide eyes and open mouth, hands raised in surprise. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "009",
+     "label": "Dadaji: sleepy",
+     "target": "characters/dadaji/sleepy",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Dadaji, an elderly Indian grandfather in chibi proportions (large head, small body): bald crown, white hair only around the sides and back of the head, a prominent thick curved white moustache, large rectangular slightly tinted spectacles, distinct forehead wrinkles, a defined nose, a slightly lean body, a plain cream kurta, a white dhoti, green traditional sandals, a kind dignified expression and expressive hands. No waistcoat, no scarf, no cap, no round glasses. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: half-closed sleepy eyes and a big yawn. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "010",
+     "label": "Dadaji: walk",
+     "target": "characters/dadaji/walk",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Dadaji, an elderly Indian grandfather in chibi proportions (large head, small body): bald crown, white hair only around the sides and back of the head, a prominent thick curved white moustache, large rectangular slightly tinted spectacles, distinct forehead wrinkles, a defined nose, a slightly lean body, a plain cream kurta, a white dhoti, green traditional sandals, a kind dignified expression and expressive hands. No waistcoat, no scarf, no cap, no round glasses. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: mid-step walking pose seen from the front three-quarter side, one foot forward, arms swinging. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "011",
+     "label": "Dadaji: wave",
+     "target": "characters/dadaji/wave",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Dadaji, an elderly Indian grandfather in chibi proportions (large head, small body): bald crown, white hair only around the sides and back of the head, a prominent thick curved white moustache, large rectangular slightly tinted spectacles, distinct forehead wrinkles, a defined nose, a slightly lean body, a plain cream kurta, a white dhoti, green traditional sandals, a kind dignified expression and expressive hands. No waistcoat, no scarf, no cap, no round glasses. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: waving one hand hello with a smile. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "012",
+     "label": "Dadaji: teach",
+     "target": "characters/dadaji/teach",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Dadaji, an elderly Indian grandfather in chibi proportions (large head, small body): bald crown, white hair only around the sides and back of the head, a prominent thick curved white moustache, large rectangular slightly tinted spectacles, distinct forehead wrinkles, a defined nose, a slightly lean body, a plain cream kurta, a white dhoti, green traditional sandals, a kind dignified expression and expressive hands. No waistcoat, no scarf, no cap, no round glasses. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: one finger raised as if explaining something important, kind expression. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "013",
+     "label": "Dadaji: face",
+     "target": "characters/dadaji/face",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Dadaji, an elderly Indian grandfather in chibi proportions (large head, small body): bald crown, white hair only around the sides and back of the head, a prominent thick curved white moustache, large rectangular slightly tinted spectacles, distinct forehead wrinkles, a defined nose, a slightly lean body, a plain cream kurta, a white dhoti, green traditional sandals, a kind dignified expression and expressive hands. No waistcoat, no scarf, no cap, no round glasses. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: head and shoulders only, smiling, facing the viewer, filling the picture. Head only, centred and filling most of the picture, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    }
+   ]
+  },
+  {
+   "id": "chintu",
+   "title": "Chintu: sheet and 6 pictures",
+   "note": "Open ONE new ChatGPT chat for Chintu. Paste the prompts below one after another in that same chat, so the pictures match.",
+   "items": [
+    {
+     "n": "014",
+     "label": "Chintu character sheet",
+     "target": "characters/chintu/sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Character reference sheet of Chintu, a naughty, curious Indian boy about 6 years old in chibi proportions: messy black hair with a cowlick, large expressive brown eyes, a yellow T-shirt, blue shorts, colourful sneakers and a playful affectionate expression. Show the same character in front view, side view and back view, plus six face close-ups with different expressions: happy, laughing, surprised, thinking, sad and sleepy. Arranged neatly on a plain white background, no text, no labels. Wide image."
+    },
+    {
+     "n": "015",
+     "label": "Chintu: idle",
+     "target": "characters/chintu/idle",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Chintu, a naughty, curious Indian boy about 6 years old in chibi proportions: messy black hair with a cowlick, large expressive brown eyes, a yellow T-shirt, blue shorts, colourful sneakers and a playful affectionate expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: standing relaxed and facing the viewer, mouth closed, calm friendly expression. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "016",
+     "label": "Chintu: talk",
+     "target": "characters/chintu/talk",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Chintu, a naughty, curious Indian boy about 6 years old in chibi proportions: messy black hair with a cowlick, large expressive brown eyes, a yellow T-shirt, blue shorts, colourful sneakers and a playful affectionate expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: standing and facing the viewer, mouth open as if speaking warmly, one hand slightly raised. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "017",
+     "label": "Chintu: happy",
+     "target": "characters/chintu/happy",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Chintu, a naughty, curious Indian boy about 6 years old in chibi proportions: messy black hair with a cowlick, large expressive brown eyes, a yellow T-shirt, blue shorts, colourful sneakers and a playful affectionate expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: a big happy smile, both arms slightly raised in joy. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "018",
+     "label": "Chintu: think",
+     "target": "characters/chintu/think",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Chintu, a naughty, curious Indian boy about 6 years old in chibi proportions: messy black hair with a cowlick, large expressive brown eyes, a yellow T-shirt, blue shorts, colourful sneakers and a playful affectionate expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: one hand on the chin, eyes looking up, thinking. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "019",
+     "label": "Chintu: walk",
+     "target": "characters/chintu/walk",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Chintu, a naughty, curious Indian boy about 6 years old in chibi proportions: messy black hair with a cowlick, large expressive brown eyes, a yellow T-shirt, blue shorts, colourful sneakers and a playful affectionate expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: mid-step walking pose seen from the front three-quarter side, one foot forward, arms swinging. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "020",
+     "label": "Chintu: face",
+     "target": "characters/chintu/face",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Chintu, a naughty, curious Indian boy about 6 years old in chibi proportions: messy black hair with a cowlick, large expressive brown eyes, a yellow T-shirt, blue shorts, colourful sneakers and a playful affectionate expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: head and shoulders only, smiling, facing the viewer, filling the picture. Head only, centred and filling most of the picture, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    }
+   ]
+  },
+  {
+   "id": "buddy",
+   "title": "Buddy: sheet and 5 pictures",
+   "note": "Open ONE new ChatGPT chat for Buddy. Paste the prompts below one after another in that same chat, so the pictures match.",
+   "items": [
+    {
+     "n": "021",
+     "label": "Buddy character sheet",
+     "target": "characters/buddy/sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Character reference sheet of Buddy, a playful dog in chibi proportions: warm golden-brown coat with a cream muzzle and belly, floppy ears, large expressive eyes, a red collar with a small tag and a friendly open expression. Show the same character in front view and side view, plus four face close-ups with different expressions: happy, surprised, sleepy and sad. Arranged neatly on a plain white background, no text, no labels. Wide image."
+    },
+    {
+     "n": "022",
+     "label": "Buddy: idle",
+     "target": "characters/buddy/idle",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Buddy, a playful dog in chibi proportions: warm golden-brown coat with a cream muzzle and belly, floppy ears, large expressive eyes, a red collar with a small tag and a friendly open expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: standing relaxed and facing the viewer, mouth closed, calm friendly expression, tail relaxed. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "023",
+     "label": "Buddy: talk",
+     "target": "characters/buddy/talk",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Buddy, a playful dog in chibi proportions: warm golden-brown coat with a cream muzzle and belly, floppy ears, large expressive eyes, a red collar with a small tag and a friendly open expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: standing and facing the viewer, mouth open as if making its happy sound. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "024",
+     "label": "Buddy: happy",
+     "target": "characters/buddy/happy",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Buddy, a playful dog in chibi proportions: warm golden-brown coat with a cream muzzle and belly, floppy ears, large expressive eyes, a red collar with a small tag and a friendly open expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: a big happy expression, ears lifted, tail wagging. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "025",
+     "label": "Buddy: walk",
+     "target": "characters/buddy/walk",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Buddy, a playful dog in chibi proportions: warm golden-brown coat with a cream muzzle and belly, floppy ears, large expressive eyes, a red collar with a small tag and a friendly open expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: mid-step walking pose seen from the side, one leg forward. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "026",
+     "label": "Buddy: face",
+     "target": "characters/buddy/face",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Buddy, a playful dog in chibi proportions: warm golden-brown coat with a cream muzzle and belly, floppy ears, large expressive eyes, a red collar with a small tag and a friendly open expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: head and neck only, smiling, facing the viewer, filling the picture. Head only, centred and filling most of the picture, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    }
+   ]
+  },
+  {
+   "id": "chikki",
+   "title": "Chikki: sheet and 5 pictures",
+   "note": "Open ONE new ChatGPT chat for Chikki. Paste the prompts below one after another in that same chat, so the pictures match.",
+   "items": [
+    {
+     "n": "027",
+     "label": "Chikki character sheet",
+     "target": "characters/chikki/sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Character reference sheet of Chikki, a white rabbit in chibi proportions: soft white fur, pink inner ears, a round soft body, large eyes, a tiny pink nose and a curious, slightly shy expression. Show the same character in front view and side view, plus four face close-ups with different expressions: happy, surprised, sleepy and sad. Arranged neatly on a plain white background, no text, no labels. Wide image."
+    },
+    {
+     "n": "028",
+     "label": "Chikki: idle",
+     "target": "characters/chikki/idle",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Chikki, a white rabbit in chibi proportions: soft white fur, pink inner ears, a round soft body, large eyes, a tiny pink nose and a curious, slightly shy expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: standing relaxed and facing the viewer, mouth closed, calm friendly expression, tail relaxed. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "029",
+     "label": "Chikki: talk",
+     "target": "characters/chikki/talk",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Chikki, a white rabbit in chibi proportions: soft white fur, pink inner ears, a round soft body, large eyes, a tiny pink nose and a curious, slightly shy expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: standing and facing the viewer, mouth open as if making its happy sound. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "030",
+     "label": "Chikki: happy",
+     "target": "characters/chikki/happy",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Chikki, a white rabbit in chibi proportions: soft white fur, pink inner ears, a round soft body, large eyes, a tiny pink nose and a curious, slightly shy expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: a big happy expression, ears lifted, tail wagging. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "031",
+     "label": "Chikki: walk",
+     "target": "characters/chikki/walk",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Chikki, a white rabbit in chibi proportions: soft white fur, pink inner ears, a round soft body, large eyes, a tiny pink nose and a curious, slightly shy expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: mid-step walking pose seen from the side, one leg forward. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "032",
+     "label": "Chikki: face",
+     "target": "characters/chikki/face",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Chikki, a white rabbit in chibi proportions: soft white fur, pink inner ears, a round soft body, large eyes, a tiny pink nose and a curious, slightly shy expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: head and neck only, smiling, facing the viewer, filling the picture. Head only, centred and filling most of the picture, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    }
+   ]
+  },
+  {
+   "id": "gauri",
+   "title": "Gauri: sheet and 5 pictures",
+   "note": "Open ONE new ChatGPT chat for Gauri. Paste the prompts below one after another in that same chat, so the pictures match.",
+   "items": [
+    {
+     "n": "033",
+     "label": "Gauri character sheet",
+     "target": "characters/gauri/sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Character reference sheet of Gauri, a gentle Indian domestic cow in chibi proportions: white coat with brown patches, a friendly kind face, two distinctive curved horns, a pink muzzle, a small brass bell on a red collar and a calm protective expression. Show the same character in front view and side view, plus four face close-ups with different expressions: happy, surprised, sleepy and sad. Arranged neatly on a plain white background, no text, no labels. Wide image."
+    },
+    {
+     "n": "034",
+     "label": "Gauri: idle",
+     "target": "characters/gauri/idle",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Gauri, a gentle Indian domestic cow in chibi proportions: white coat with brown patches, a friendly kind face, two distinctive curved horns, a pink muzzle, a small brass bell on a red collar and a calm protective expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: standing relaxed and facing the viewer, mouth closed, calm friendly expression, tail relaxed. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "035",
+     "label": "Gauri: talk",
+     "target": "characters/gauri/talk",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Gauri, a gentle Indian domestic cow in chibi proportions: white coat with brown patches, a friendly kind face, two distinctive curved horns, a pink muzzle, a small brass bell on a red collar and a calm protective expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: standing and facing the viewer, mouth open as if making its happy sound. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "036",
+     "label": "Gauri: happy",
+     "target": "characters/gauri/happy",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Gauri, a gentle Indian domestic cow in chibi proportions: white coat with brown patches, a friendly kind face, two distinctive curved horns, a pink muzzle, a small brass bell on a red collar and a calm protective expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: a big happy expression, ears lifted, tail wagging. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "037",
+     "label": "Gauri: walk",
+     "target": "characters/gauri/walk",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Gauri, a gentle Indian domestic cow in chibi proportions: white coat with brown patches, a friendly kind face, two distinctive curved horns, a pink muzzle, a small brass bell on a red collar and a calm protective expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: mid-step walking pose seen from the side, one leg forward. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "038",
+     "label": "Gauri: face",
+     "target": "characters/gauri/face",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Gauri, a gentle Indian domestic cow in chibi proportions: white coat with brown patches, a friendly kind face, two distinctive curved horns, a pink muzzle, a small brass bell on a red collar and a calm protective expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: head and neck only, smiling, facing the viewer, filling the picture. Head only, centred and filling most of the picture, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    }
+   ]
+  },
+  {
+   "id": "nandu",
+   "title": "Nandu: sheet and 5 pictures",
+   "note": "Open ONE new ChatGPT chat for Nandu. Paste the prompts below one after another in that same chat, so the pictures match.",
+   "items": [
+    {
+     "n": "039",
+     "label": "Nandu character sheet",
+     "target": "characters/nandu/sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Character reference sheet of Nandu, a small brown-and-white calf in chibi proportions: brown coat with white patches, a white blaze on the face, a tuft of hair on the forehead, large shining eyes, short stubby legs and a playful expression. Show the same character in front view and side view, plus four face close-ups with different expressions: happy, surprised, sleepy and sad. Arranged neatly on a plain white background, no text, no labels. Wide image."
+    },
+    {
+     "n": "040",
+     "label": "Nandu: idle",
+     "target": "characters/nandu/idle",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Nandu, a small brown-and-white calf in chibi proportions: brown coat with white patches, a white blaze on the face, a tuft of hair on the forehead, large shining eyes, short stubby legs and a playful expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: standing relaxed and facing the viewer, mouth closed, calm friendly expression, tail relaxed. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "041",
+     "label": "Nandu: talk",
+     "target": "characters/nandu/talk",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Nandu, a small brown-and-white calf in chibi proportions: brown coat with white patches, a white blaze on the face, a tuft of hair on the forehead, large shining eyes, short stubby legs and a playful expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: standing and facing the viewer, mouth open as if making its happy sound. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "042",
+     "label": "Nandu: happy",
+     "target": "characters/nandu/happy",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Nandu, a small brown-and-white calf in chibi proportions: brown coat with white patches, a white blaze on the face, a tuft of hair on the forehead, large shining eyes, short stubby legs and a playful expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: a big happy expression, ears lifted, tail wagging. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "043",
+     "label": "Nandu: walk",
+     "target": "characters/nandu/walk",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Nandu, a small brown-and-white calf in chibi proportions: brown coat with white patches, a white blaze on the face, a tuft of hair on the forehead, large shining eyes, short stubby legs and a playful expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: mid-step walking pose seen from the side, one leg forward. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "044",
+     "label": "Nandu: face",
+     "target": "characters/nandu/face",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Nandu, a small brown-and-white calf in chibi proportions: brown coat with white patches, a white blaze on the face, a tuft of hair on the forehead, large shining eyes, short stubby legs and a playful expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: head and neck only, smiling, facing the viewer, filling the picture. Head only, centred and filling most of the picture, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    }
+   ]
+  },
+  {
+   "id": "mitthu",
+   "title": "Mitthu: sheet and 5 pictures",
+   "note": "Open ONE new ChatGPT chat for Mitthu. Paste the prompts below one after another in that same chat, so the pictures match.",
+   "items": [
+    {
+     "n": "045",
+     "label": "Mitthu character sheet",
+     "target": "characters/mitthu/sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Character reference sheet of Mitthu, a small Indian mountain parrot in chibi proportions: bright green body, a slate-blue head, a red-orange beak, a long blue-green tail, large bright eyes and a cheerful expression. Show the same character in front view and side view, plus four face close-ups with different expressions: happy, surprised, sleepy and sad. Arranged neatly on a plain white background, no text, no labels. Wide image."
+    },
+    {
+     "n": "046",
+     "label": "Mitthu: idle",
+     "target": "characters/mitthu/idle",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Mitthu, a small Indian mountain parrot in chibi proportions: bright green body, a slate-blue head, a red-orange beak, a long blue-green tail, large bright eyes and a cheerful expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: standing relaxed and facing the viewer, mouth closed, calm friendly expression, tail relaxed. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "047",
+     "label": "Mitthu: talk",
+     "target": "characters/mitthu/talk",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Mitthu, a small Indian mountain parrot in chibi proportions: bright green body, a slate-blue head, a red-orange beak, a long blue-green tail, large bright eyes and a cheerful expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: standing and facing the viewer, mouth open as if making its happy sound. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "048",
+     "label": "Mitthu: happy",
+     "target": "characters/mitthu/happy",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Mitthu, a small Indian mountain parrot in chibi proportions: bright green body, a slate-blue head, a red-orange beak, a long blue-green tail, large bright eyes and a cheerful expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: a big happy expression, ears lifted, tail wagging. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "049",
+     "label": "Mitthu: walk",
+     "target": "characters/mitthu/walk",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Mitthu, a small Indian mountain parrot in chibi proportions: bright green body, a slate-blue head, a red-orange beak, a long blue-green tail, large bright eyes and a cheerful expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: mid-step walking pose seen from the side, one leg forward. Full figure, centred, the whole figure visible with empty space all around it, same size and position in the picture as the front view of the sheet, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    },
+    {
+     "n": "050",
+     "label": "Mitthu: face",
+     "target": "characters/mitthu/face",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Mitthu, a small Indian mountain parrot in chibi proportions: bright green body, a slate-blue head, a red-orange beak, a long blue-green tail, large bright eyes and a cheerful expression. This is the same character as in the reference sheet earlier in this chat: same colours, same proportions. Pose: head and neck only, smiling, facing the viewer, filling the picture. Head only, centred and filling most of the picture, square image, on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
+    }
+   ]
+  },
+  {
+   "id": "props-household",
+   "title": "Household objects (94 objects)",
+   "note": "Open one ChatGPT chat. Paste these sheets one after another. Each makes a grid of up to 9 objects. Send me the pictures in this order.",
+   "items": [
+    {
+     "n": "051",
+     "label": "Objects sheet: alarm_clock, bed, bookshelf and 6 more",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 9 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 a round retro alarm clock with two bells, 2 a double bed with a colourful Indian bedspread and two pillows, 3 a tall wooden bookshelf full of colourful books, 4 a round wooden-framed wall clock, 5 a wooden study desk with drawers and a desk lamp, 6 a library service counter with a stamp and a pile of books, 7 a small child's study desk with a notebook and pencils, 8 a modern two-door refrigerator, 9 a world globe on a wooden stand. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "alarm_clock",
+      "bed",
+      "bookshelf",
+      "clock",
+      "desk",
+      "desk_counter",
+      "desk_small",
+      "fridge",
+      "globe"
+     ]
+    },
+    {
+     "n": "052",
+     "label": "Objects sheet: kitchen_island, librarian_desk, sofa and 6 more",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 9 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 a modern kitchen island with a marble top and two stools, 2 a wide wooden librarian desk with a computer and a pile of books, 3 a three-seat sofa with colourful cushions, 4 a modern gas stove with a pot on it, 5 a telescope on a tripod, 6 a colourful children's abacus, 7 a comfortable reading armchair with a cushion, 8 a small wooden table with an open atlas on it, 9 a woven harvest basket full of fresh vegetables. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "kitchen_island",
+      "librarian_desk",
+      "sofa",
+      "stove",
+      "telescope",
+      "abacus",
+      "armchair",
+      "atlas",
+      "basket"
+     ]
+    },
+    {
+     "n": "053",
+     "label": "Objects sheet: bee_box, bench, binoculars and 6 more",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 9 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 a white wooden beehive box with a few bees, 2 a wooden garden bench, 3 a pair of binoculars, 4 three waste bins in green, blue and yellow for waste sorting, 5 a wooden bird feeder on a pole with seeds, 6 a steel bucket, 7 a festival wall calendar with a picture of a diya, 8 a square wooden carrom board with coins and a striker, 9 a small table with a chess board and pieces. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "bee_box",
+      "bench",
+      "binoculars",
+      "bins_three",
+      "bird_feeder",
+      "bucket",
+      "calendar",
+      "carrom",
+      "chess_table"
+     ]
+    },
+    {
+     "n": "054",
+     "label": "Objects sheet: circuit_kit, clay_table, dandiya and 6 more",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 9 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 a children's electronics kit with a battery, a bulb and wires on a board, 2 a table with a lump of clay and a half-made clay pot, 3 a pair of decorated dandiya sticks, 4 a thick dictionary on a small stand, 5 a wooden dining table laid with steel plates, glasses and a water jug, 6 a small shelf with two glowing brass diyas, 7 a stack of round dung cakes for fuel, 8 a wooden painting easel with a colourful painting, 9 a bamboo flute. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "circuit_kit",
+      "clay_table",
+      "dandiya",
+      "dictionary",
+      "dining_table",
+      "diya",
+      "dung_cakes",
+      "easel",
+      "flute"
+     ]
+    },
+    {
+     "n": "055",
+     "label": "Objects sheet: front_door, gallery_board, ghungroo and 6 more",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 9 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 a saffron-coloured front door with a brass nameplate and a small bell, 2 a wooden display board with colourful traditional paintings, 3 a string of brass ghungroo dance bells, 4 a wooden harmonium, 5 a pair of big headphones on a small stand, 6 a wooden rack holding folk instruments (dholak, ektara, manjira), 7 a science lab bench with beakers and test tubes, 8 a wooden ladder, 9 a standing floor lamp with a cream shade. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "front_door",
+      "gallery_board",
+      "ghungroo",
+      "harmonium",
+      "headphones",
+      "instrument_rack",
+      "lab_bench",
+      "ladder",
+      "lamp"
+     ]
+    },
+    {
+     "n": "056",
+     "label": "Objects sheet: laptop, letterbox, magnifier and 6 more",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 9 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 an open laptop on a small stand, 2 a red Indian post letterbox on a post, 3 a big magnifying glass with a wooden handle, 4 a framed wall map of India, 5 a set of steel measuring cups and spoons, 6 a set of face-down memory game cards with a few turned up, 7 a brass house nameplate that says DADU, 8 a tray of colourful folded origami paper and a paper crane, 9 a row of colourful paint pots with brushes. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "laptop",
+      "letterbox",
+      "magnifier",
+      "map_india",
+      "measuring_cups",
+      "memory_cards",
+      "nameplate",
+      "origami_tray",
+      "paint_pots"
+     ]
+    },
+    {
+     "n": "057",
+     "label": "Objects sheet: perch, photo_frame, piggy_bank and 6 more",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 9 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 a wooden parrot perch on a stand, 2 a wall shelf with three framed family photos, 3 a pink piggy bank, 4 a potter's wheel with a wet clay pot, 5 a retro wooden radio with two knobs, 6 a rainwater downpipe with a water barrel, 7 a coding mat with a small toy robot, 8 a shelf with glass jars of different seeds, 9 trays of tiny seedlings. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "perch",
+      "photo_frame",
+      "piggy_bank",
+      "potter_wheel",
+      "radio",
+      "rain_pipe",
+      "robot_mat",
+      "seed_jars",
+      "seed_trays"
+     ]
+    },
+    {
+     "n": "058",
+     "label": "Objects sheet: shoe_rack, sign_post, sink and 6 more",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 9 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 a wooden shoe rack with a few pairs of shoes, 2 a friendly scarecrow with a straw hat in a field, 3 a modern kitchen sink with a tap, 4 a small stargazing stool with a star chart, 5 a rooftop solar panel on a stand, 6 a round steel masala dabba spice box with small bowls, 7 a plant mister spray bottle, 8 a star-shaped night lamp glowing softly, 9 a stone sundial. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "shoe_rack",
+      "sign_post",
+      "sink",
+      "sky_spot",
+      "solar_panel",
+      "spice_box",
+      "spray_bottle",
+      "star_lamp",
+      "sundial"
+     ]
+    },
+    {
+     "n": "059",
+     "label": "Objects sheet: tabla, thali, thermometer and 6 more",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 9 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 a pair of tabla drums, 2 a steel thali with roti, dal, rice and vegetables, 3 a big weather thermometer on a post, 4 a wall rack with garden tools, 5 a wooden toy box overflowing with toys, 6 a colourful fabric play tunnel, 7 a wooden wardrobe with two doors, 8 a steel water jug with two glasses, 9 a round black rooftop water tank on a stand. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "tabla",
+      "thali",
+      "thermometer",
+      "tool_rack",
+      "toy_box",
+      "tunnel",
+      "wardrobe",
+      "water_jug",
+      "water_tank"
+     ]
+    },
+    {
+     "n": "060",
+     "label": "Objects sheet: watering_can, weighing_scale, workbench and 6 more",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 9 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 a green metal watering can, 2 an old-fashioned weighing scale with two pans, 3 a garden workshop workbench with tools, 4 a cosy audiobook corner with a beanbag and headphones, 5 a low wooden bookcase with a few books, 6 a simple wooden dining chair, 7 a wooden door with a brass handle, 8 a modern garden path lamp on a post, 9 a small wooden bird-watching hide hut with a viewing slot. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "watering_can",
+      "weighing_scale",
+      "workbench",
+      "audio_corner",
+      "bookcase_low",
+      "chair",
+      "door",
+      "garden_lamp",
+      "hide"
+     ]
+    },
+    {
+     "n": "061",
+     "label": "Objects sheet: paint_table, reading_table, sitar and 1 more",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 4 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 a craft table with paper and paint, 2 a long wooden reading table with books and a lamp, 3 a sitar, 4 a modern wash basin with a tap and a mirror. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The remaining cells stay empty. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "paint_table",
+      "reading_table",
+      "sitar",
+      "washbasin",
+      "-",
+      "-",
+      "-",
+      "-",
+      "-"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "props-garden",
+   "title": "Garden and nature (20 objects)",
+   "note": "Open one ChatGPT chat. Paste these sheets one after another. Each makes a grid of up to 9 objects. Send me the pictures in this order.",
+   "items": [
+    {
+     "n": "062",
+     "label": "Objects sheet: bed_empty, bed_flower, bed_kid and 6 more",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 9 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 an empty raised garden bed with fresh brown soil, 2 a raised garden bed full of pink and orange flowers, 3 a child's single bed with a bright blue bedspread and a cuddly toy, 4 a raised garden bed with tomato, brinjal and spinach plants, 5 a mango tree full of green leaves and yellow mangoes, 6 a banana plant with a bunch of bananas, 7 a flowering butterfly bush with three butterflies, 8 a small garden patch with carrots showing their orange tops, 9 a small guava tree with green guavas. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "bed_empty",
+      "bed_flower",
+      "bed_kid",
+      "bed_veg",
+      "tree_mango",
+      "banana_plant",
+      "butterfly_bush",
+      "carrot_patch",
+      "guava_tree"
+     ]
+    },
+    {
+     "n": "063",
+     "label": "Objects sheet: leaf_caterpillar, lotus, planter and 6 more",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 9 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 a big green leaf with a friendly caterpillar on it, 2 a pink lotus flower on a lily pad, 3 a modern terracotta planter with flowering plants, 4 a small wooden tree-name board on a post, 5 a tulsi plant in a decorated square tulsi planter, 6 a round green bush, 7 a wooden compost bin with a lid and vegetable peels, 8 a balcony railing planter box full of flowers, 9 a tall coconut palm with coconuts. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "leaf_caterpillar",
+      "lotus",
+      "planter",
+      "tree_sign",
+      "tulsi_pot",
+      "bush",
+      "compost_bin",
+      "planter_rail",
+      "tree_coconut"
+     ]
+    },
+    {
+     "n": "064",
+     "label": "Objects sheet",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 2 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 a gulmohar tree with red-orange flowers, 2 a neem tree with fine green leaves. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The remaining cells stay empty. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "tree_gulmohar",
+      "tree_neem",
+      "-",
+      "-",
+      "-",
+      "-",
+      "-",
+      "-",
+      "-"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "props-animals",
+   "title": "Animals and care (19 objects)",
+   "note": "Open one ChatGPT chat. Paste these sheets one after another. Each makes a grid of up to 9 objects. Send me the pictures in this order.",
+   "items": [
+    {
+     "n": "065",
+     "label": "Objects sheet: ball_big, bell_small, brush and 6 more",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 9 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 a big red-and-yellow play ball, 2 a small brass cow bell on a red strap, 3 a small grooming brush with a wooden handle, 4 a large stiff cow brush with a wooden handle, 5 a small wooden dog house with a red roof, 6 a golden-orange pond fish, 7 a long wooden cattle fodder trough full of green fodder, 8 a black-and-white football, 9 a steel bowl of mangoes, bananas and guavas. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "ball_big",
+      "bell_small",
+      "brush",
+      "brush_big",
+      "dog_house",
+      "fish",
+      "fodder_trough",
+      "football",
+      "fruit_bowl"
+     ]
+    },
+    {
+     "n": "066",
+     "label": "Objects sheet: milk_pail, nest_box, rabbit_hutch and 6 more",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 9 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 a steel milk pail with a little milk in it, 2 a small wooden bird nest box with a round hole, 3 a wooden rabbit hutch with a wire front and a slanted roof, 4 a pale pink salt lick block for cattle, 5 a big friendly toothbrush with toothpaste on the bristles, 6 a steel pet water bowl full of water, 7 a stone cattle water trough full of water, 8 a wooden cricket bat leaning against a red cricket ball, 9 a steel pet food bowl full of kibble. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "milk_pail",
+      "nest_box",
+      "rabbit_hutch",
+      "salt_lick",
+      "toothbrush",
+      "water_bowl",
+      "water_trough",
+      "cricket_bat_ball",
+      "feed_bowl"
+     ]
+    },
+    {
+     "n": "067",
+     "label": "Objects sheet",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 1 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 a neat pile of golden hay with a pitchfork. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The remaining cells stay empty. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "hay",
+      "-",
+      "-",
+      "-",
+      "-",
+      "-",
+      "-",
+      "-",
+      "-"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "props-sports,",
+   "title": "Sports, play and shops (21 objects)",
+   "note": "Open one ChatGPT chat. Paste these sheets one after another. Each makes a grid of up to 9 objects. Send me the pictures in this order.",
+   "items": [
+    {
+     "n": "068",
+     "label": "Objects sheet: bazaar_stall, gate, library_arch_shelf and 6 more",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 9 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 an Indian bazaar stall with a striped orange awning and a wooden counter, 2 a modern Indian front garden gate with brick pillars and a black metal gate, 3 an arched wooden story bookshelf full of colourful picture books, 4 a long wooden library bookshelf with labelled sections full of books, 5 a vegetable stall with baskets of tomatoes, brinjals and spinach under a green awning, 6 a bangle stall with stacks of colourful glass bangles, 7 a cloth stall with rolls of bright Indian fabrics, 8 an Indian sweet shop counter with trays of laddoos and jalebi, 9 a wooden swing seat (jhoola) hanging from chains on a frame. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "bazaar_stall",
+      "gate",
+      "library_arch_shelf",
+      "library_shelf",
+      "stall",
+      "stall_bangles",
+      "stall_cloth",
+      "stall_sweets",
+      "swing_seat"
+     ]
+    },
+    {
+     "n": "069",
+     "label": "Objects sheet: tv_wall, badminton_net, balance_beam and 6 more",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 9 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 a living room TV unit with a flat TV on a low wooden cabinet and a decorative panel behind it, 2 a badminton net with a racket and shuttlecock, 3 a low wooden balance beam, 4 three cricket stumps with a bat and a ball, 5 a chalk-marked kabaddi court corner with a centre line, 6 a colourful diamond kite with a long tail, 7 a red horseshoe magnet with a few paper clips, 8 a small stone Ganesha shrine with a brass lamp, 9 a small raised wooden festival stage with a coloured cloth backdrop. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "tv_wall",
+      "badminton_net",
+      "balance_beam",
+      "cricket_stumps",
+      "kabaddi_court",
+      "kite",
+      "magnet",
+      "shrine",
+      "stage"
+     ]
+    },
+    {
+     "n": "070",
+     "label": "Objects sheet",
+     "target": "props-sheet",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A 3 by 3 grid sprite sheet of 3 separate objects for an isometric children's game, in reading order from top-left to bottom-right: 1 a hanging brass temple bell on a wooden frame, 2 a white modern bathtub, 3 a small child's bicycle. Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. The remaining cells stay empty. The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.",
+     "names": [
+      "temple_bell",
+      "bathtub",
+      "bicycle",
+      "-",
+      "-",
+      "-",
+      "-",
+      "-",
+      "-"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "props-large",
+   "title": "Large buildings and trees (17 pictures)",
+   "note": "One picture each. Paste them one after another in one chat.",
+   "items": [
+    {
+     "n": "071",
+     "label": "Villa building",
+     "target": "props/villa_building",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. One single object for an isometric children's game: a modern two-storey Indian family villa with a flat roof terrace and wooden pergola, a first-floor balcony with planters, large glass windows, cream and warm-white walls with a stone accent wall, a saffron front door, an entrance veranda with a swing. Drawn from an isometric three-quarter view from above, front and right, lit from the upper right, centred with wide empty space around it and filling about 80 percent of the picture. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image."
+    },
+    {
+     "n": "072",
+     "label": "Villa mini",
+     "target": "props/villa_mini",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. One single object for an isometric children's game: a small simple picture of a modern two-storey Indian family villa with a flat roof, for a map. Drawn from an isometric three-quarter view from above, front and right, lit from the upper right, centred with wide empty space around it and filling about 80 percent of the picture. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image."
+    },
+    {
+     "n": "073",
+     "label": "Cow shed",
+     "target": "props/cow_shed",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. One single object for an isometric children's game: an open cow shelter with a tiled roof on wooden pillars, hay, a fodder trough, a water trough and a hanging brass bell. Drawn from an isometric three-quarter view from above, front and right, lit from the upper right, centred with wide empty space around it and filling about 80 percent of the picture. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image."
+    },
+    {
+     "n": "074",
+     "label": "Gopuram",
+     "target": "props/gopuram",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. One single object for an isometric children's game: a colourful South Indian temple gopuram tower with tiered carved levels. Drawn from an isometric three-quarter view from above, front and right, lit from the upper right, centred with wide empty space around it and filling about 80 percent of the picture. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image."
+    },
+    {
+     "n": "075",
+     "label": "Shikhara",
+     "target": "props/shikhara",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. One single object for an isometric children's game: a North Indian temple with a tall curved shikhara spire and a small entrance. Drawn from an isometric three-quarter view from above, front and right, lit from the upper right, centred with wide empty space around it and filling about 80 percent of the picture. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image."
+    },
+    {
+     "n": "076",
+     "label": "Library building",
+     "target": "props/library_building",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. One single object for an isometric children's game: a public library building with arched windows, a front veranda, stone steps and a sign with a book symbol (no words). Drawn from an isometric three-quarter view from above, front and right, lit from the upper right, centred with wide empty space around it and filling about 80 percent of the picture. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image."
+    },
+    {
+     "n": "077",
+     "label": "Pandal",
+     "target": "props/pandal",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. One single object for an isometric children's game: a colourful festival pandal tent with fabric canopy, marigold garlands and bunting. Drawn from an isometric three-quarter view from above, front and right, lit from the upper right, centred with wide empty space around it and filling about 80 percent of the picture. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image."
+    },
+    {
+     "n": "078",
+     "label": "Park mini",
+     "target": "props/park_mini",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. One single object for an isometric children's game: a small simple picture of a public park with swings, a slide and trees, for a map. Drawn from an isometric three-quarter view from above, front and right, lit from the upper right, centred with wide empty space around it and filling about 80 percent of the picture. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image."
+    },
+    {
+     "n": "079",
+     "label": "Pond",
+     "target": "props/pond",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. One single object for an isometric children's game: a garden pond with lotus flowers, lily pads, a frog and reeds. Drawn from an isometric three-quarter view from above, front and right, lit from the upper right, centred with wide empty space around it and filling about 80 percent of the picture. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image."
+    },
+    {
+     "n": "080",
+     "label": "Pergola",
+     "target": "props/pergola",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. One single object for an isometric children's game: a wooden garden pergola with climbing creepers and a bench. Drawn from an isometric three-quarter view from above, front and right, lit from the upper right, centred with wide empty space around it and filling about 80 percent of the picture. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image."
+    },
+    {
+     "n": "081",
+     "label": "Slide",
+     "target": "props/slide",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. One single object for an isometric children's game: a colourful playground slide with a ladder. Drawn from an isometric three-quarter view from above, front and right, lit from the upper right, centred with wide empty space around it and filling about 80 percent of the picture. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image."
+    },
+    {
+     "n": "082",
+     "label": "Swing set",
+     "target": "props/swing_set",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. One single object for an isometric children's game: a playground swing set with two swings. Drawn from an isometric three-quarter view from above, front and right, lit from the upper right, centred with wide empty space around it and filling about 80 percent of the picture. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image."
+    },
+    {
+     "n": "083",
+     "label": "Fountain",
+     "target": "props/fountain",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. One single object for an isometric children's game: a stone garden fountain with a tiered bowl and splashing water. Drawn from an isometric three-quarter view from above, front and right, lit from the upper right, centred with wide empty space around it and filling about 80 percent of the picture. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image."
+    },
+    {
+     "n": "084",
+     "label": "Tree banyan",
+     "target": "props/tree_banyan",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. One single object for an isometric children's game: a big banyan tree with hanging aerial roots and a circular stone platform around the trunk. Drawn from an isometric three-quarter view from above, front and right, lit from the upper right, centred with wide empty space around it and filling about 80 percent of the picture. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image."
+    },
+    {
+     "n": "085",
+     "label": "Balloon portal",
+     "target": "props/balloon_portal",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. One single object for an isometric children's game: a colourful hot-air balloon with a small basket. Drawn from an isometric three-quarter view from above, front and right, lit from the upper right, centred with wide empty space around it and filling about 80 percent of the picture. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image."
+    },
+    {
+     "n": "086",
+     "label": "Temple building",
+     "target": "props/temple_building",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. One single object for an isometric children's game: a small Indian temple building with a carved entrance and a flag on top. Drawn from an isometric three-quarter view from above, front and right, lit from the upper right, centred with wide empty space around it and filling about 80 percent of the picture. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image."
+    },
+    {
+     "n": "087",
+     "label": "Bazaar mini",
+     "target": "props/bazaar_mini",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. One single object for an isometric children's game: a small simple picture of an Indian bazaar with coloured awnings, for a map. Drawn from an isometric three-quarter view from above, front and right, lit from the upper right, centred with wide empty space around it and filling about 80 percent of the picture. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image."
+    }
+   ]
+  },
+  {
+   "id": "rooms",
+   "title": "Side-view rooms and places (24)",
+   "note": "Open one ChatGPT chat and paste these one after another. Each is a wide picture of a room or place.",
+   "items": [
+    {
+     "n": "088",
+     "label": "Living",
+     "target": "rooms/living",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of a modern Indian villa living room: a sofa, a TV unit, a tall bookshelf full of books, a telescope by a large window, a globe, a wall clock, a colourful rug, a potted plant, warm afternoon light through the window, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "089",
+     "label": "Kitchen",
+     "target": "rooms/kitchen",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of a modern Indian kitchen: a kitchen island with stools, a fridge, a gas stove, shelves with steel containers and a masala box, a window, warm light, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "090",
+     "label": "Dining",
+     "target": "rooms/dining",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of a modern Indian dining room: a wooden dining table laid with steel plates and a water jug, chairs, a fruit bowl, a hanging lamp, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "091",
+     "label": "Study",
+     "target": "rooms/study",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of a study room: a wooden desk with a laptop and a lamp, a bookshelf, a framed map of India on the wall, a globe, a small chess table, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "092",
+     "label": "Activity art",
+     "target": "rooms/activity_art",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of an art and craft corner: an easel with a painting, pots of paint, a clay table, an origami tray, children's drawings hanging on a string, a Madhubani painting on the wall, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "093",
+     "label": "Activity music",
+     "target": "rooms/activity_music",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of a music room: a harmonium, a pair of tabla, a sitar leaning on the wall, a bamboo flute on the wall, ghungroo bells, a colourful rug, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "094",
+     "label": "Activity lab",
+     "target": "rooms/activity_lab",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of a children's science corner: a lab bench with beakers, a magnet, a microscope, a circuit kit, a glass prism, a colourful science poster, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "095",
+     "label": "Bedroom",
+     "target": "rooms/bedroom",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of a child's bedroom at night: a bed with a colourful bedspread, a glowing star-shaped lamp, a toy box, a wardrobe, a window with a moon and stars outside, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "096",
+     "label": "Veranda",
+     "target": "rooms/veranda",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of the entrance veranda of a modern Indian villa: a wooden swing (jhoola), a tulsi plant in a pot, a rangoli at the doorway, a shoe rack, a parrot perch, a saffron-coloured front door, morning light, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "097",
+     "label": "Terrace",
+     "target": "rooms/terrace",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of a roof terrace of a modern villa: a wooden pergola with climbing plants, planters, a telescope, a view of the evening sky, colourful kites, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "098",
+     "label": "Garden bed",
+     "target": "rooms/garden_bed",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of a vegetable garden: raised beds with tomato, brinjal and spinach plants, a watering can, a scarecrow, a mango tree, a compost bin, soft morning light, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "099",
+     "label": "Cowshed",
+     "target": "rooms/cowshed",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of an open cow shelter: a tiled roof on wooden pillars, hay, a fodder trough, a water trough, a milk pail, a hanging brass bell, a soil floor, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "100",
+     "label": "Rabbit",
+     "target": "rooms/rabbit",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of a rabbit enclosure in a garden: a wooden hutch, a carrot patch, a food bowl, a low wooden fence, soft grass, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "101",
+     "label": "Dog",
+     "target": "rooms/dog",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of a dog's corner in a garden: a wooden dog house, a food bowl, a water bowl, a ball, a low fence, soft grass, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "102",
+     "label": "Pond",
+     "target": "rooms/pond",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of a garden pond: lotus flowers, lily pads, a frog, a fish, a small wooden bench, tall reeds, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "103",
+     "label": "Public garden",
+     "target": "rooms/public_garden",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of a public playground park: swings, a slide, a balance beam, cricket stumps, trees with name boards, a sundial, butterflies, a winding path, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "104",
+     "label": "Library",
+     "target": "rooms/library",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of a public library: tall arched wooden bookshelves full of books, a librarian desk, a reading corner with cushions, a reading lamp, a wooden ladder, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "105",
+     "label": "Temple",
+     "target": "rooms/temple",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of an Indian temple courtyard: a North Indian shikhara and a South Indian gopuram, a hanging temple bell, brass lamps, a rangoli, a banyan tree, a stone floor, peaceful golden light, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "106",
+     "label": "Bazaar",
+     "target": "rooms/bazaar",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of an Indian bazaar lane: colourful awning stalls selling vegetables, bangles, cloth and sweets, a potter's wheel, strings of marigold flowers, warm lively light, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "107",
+     "label": "Space",
+     "target": "rooms/space",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of outer space: stars, the Sun on the left, planets in a row including Saturn with its rings, the Moon, a deep blue-purple sky, and a flat grey moon-surface at the bottom, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "108",
+     "label": "Forest",
+     "target": "rooms/forest",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of a green Indian forest: tall sal trees, ferns, sunbeams, a small stream, a hidden deer, colourful birds, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "109",
+     "label": "Mountains",
+     "target": "rooms/mountains",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of the Himalayan mountains: snowy peaks, pine trees, a glacier, a clear blue sky, a mountain path at the bottom, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "110",
+     "label": "Ocean",
+     "target": "rooms/ocean",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of a tropical ocean scene: blue water with sunbeams, coral, colourful fish, a turtle and a seal, and a sandy sea floor at the bottom, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    },
+    {
+     "n": "111",
+     "label": "Monument",
+     "target": "rooms/monument",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. A straight-on side view of an ancient Indian monument: a sandstone fort gate with arches, a stone courtyard, a blue sky, a few trees, like a stage set, used as the background of a children's game. No people and no animals. Wide 3:2 image, flat front view, no perspective tilt. The floor, where characters will stand, starts about 83 percent of the way down the picture, with clear open floor in the lowest part of the picture. Keep the main items in the middle so the left and right edges can be cropped. No text."
+    }
+   ]
+  },
+  {
+   "id": "story.panchatantra.monkey_and_crocodile",
+   "title": "Story: Panchatantra: Monkey And Crocodile (4 pages)",
+   "note": "Open ONE new ChatGPT chat for this story. Paste the pages in order in the same chat so the characters stay the same.",
+   "items": [
+    {
+     "n": "112",
+     "label": "Page 1",
+     "target": "story/river_tree",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: Once, by a wide river, a monkey lived in a jamun tree. Every day he shared his sweet jamuns with a crocodile who swam below. The people and animals are friendly chibi-anime characters. Design the characters now. They must look exactly the same in the next pictures of this story."
+    },
+    {
+     "n": "113",
+     "label": "Page 2",
+     "target": "story/croc_wife",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: The crocodile's wife tasted the jamuns and said: \"If the fruit is this sweet, the monkey's heart must be sweeter. Bring it to me.\" The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    },
+    {
+     "n": "114",
+     "label": "Page 3",
+     "target": "story/river_ride",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: The crocodile invited the monkey for a ride. Midway he confessed. The monkey laughed: \"My heart? I left it on the tree! Take me back and I will fetch it.\" The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    },
+    {
+     "n": "115",
+     "label": "Page 4",
+     "target": "story/tree_safe",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: Safe on his branch, the monkey said: \"Friend, hearts do not come off. But trust does.\" And the crocodile swam away, ashamed. The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    }
+   ]
+  },
+  {
+   "id": "story.panchatantra.blue_jackal",
+   "title": "Story: Panchatantra: Blue Jackal (3 pages)",
+   "note": "Open ONE new ChatGPT chat for this story. Paste the pages in order in the same chat so the characters stay the same.",
+   "items": [
+    {
+     "n": "116",
+     "label": "Page 1",
+     "target": "story/jackal_vat",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: A hungry jackal crept into a town at night and fell into a dyer's vat of blue colour. He climbed out blue from nose to tail. The people and animals are friendly chibi-anime characters. Design the characters now. They must look exactly the same in the next pictures of this story."
+    },
+    {
+     "n": "117",
+     "label": "Page 2",
+     "target": "story/blue_king",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: Back in the forest, no animal had seen a blue creature. \"I am sent by the gods to be your king,\" said the jackal, and even the lions bowed. The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    },
+    {
+     "n": "118",
+     "label": "Page 3",
+     "target": "story/howl_moon",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: One full-moon night the jackals howled. The blue king forgot himself and howled too. \"A jackal!\" cried the animals, and the king ran away. The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    }
+   ]
+  },
+  {
+   "id": "story.panchatantra.lion_and_rabbit",
+   "title": "Story: Panchatantra: Lion And Rabbit (3 pages)",
+   "note": "Open ONE new ChatGPT chat for this story. Paste the pages in order in the same chat so the characters stay the same.",
+   "items": [
+    {
+     "n": "119",
+     "label": "Page 1",
+     "target": "story/lion_den",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: A lion hunted so greedily that the animals made a deal: one animal would come to him each day, and he would leave the rest alone. The people and animals are friendly chibi-anime characters. Design the characters now. They must look exactly the same in the next pictures of this story."
+    },
+    {
+     "n": "120",
+     "label": "Page 2",
+     "target": "story/rabbit_late",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: When the rabbit's turn came, she walked slowly and arrived late. \"Another lion stopped me on the way,\" she said. \"He says he is the real king.\" The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    },
+    {
+     "n": "121",
+     "label": "Page 3",
+     "target": "story/lion_well",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: Furious, the lion followed her to a well. He looked in, saw his own reflection, roared, and jumped at the \"rival\". The forest was free. The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    }
+   ]
+  },
+  {
+   "id": "story.panchatantra.four_friends",
+   "title": "Story: Panchatantra: Four Friends (3 pages)",
+   "note": "Open ONE new ChatGPT chat for this story. Paste the pages in order in the same chat so the characters stay the same.",
+   "items": [
+    {
+     "n": "122",
+     "label": "Page 1",
+     "target": "story/four_friends",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: A crow, a mouse, a tortoise and a deer were friends. One day the deer did not come to the lake. The crow flew up and saw him caught in a hunter's net. The people and animals are friendly chibi-anime characters. Design the characters now. They must look exactly the same in the next pictures of this story."
+    },
+    {
+     "n": "123",
+     "label": "Page 2",
+     "target": "story/mouse_net",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: The mouse gnawed the net. The deer was free, but the slow tortoise had followed and now the hunter grabbed him instead. The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    },
+    {
+     "n": "124",
+     "label": "Page 3",
+     "target": "story/escape_together",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: The deer lay down as if dead; the crow sat on him pecking. The hunter dropped the tortoise and ran for the deer. The deer leapt up, and all four escaped together. The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    }
+   ]
+  },
+  {
+   "id": "story.jataka.monkey_king",
+   "title": "Story: Jataka: Monkey King (3 pages)",
+   "note": "Open ONE new ChatGPT chat for this story. Paste the pages in order in the same chat so the characters stay the same.",
+   "items": [
+    {
+     "n": "125",
+     "label": "Page 1",
+     "target": "story/ganga_mango",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: In a Buddhist Jataka tale, a great monkey king led his troop in a mango tree by the Ganga. One mango floated downstream to a human king, who tasted it and wanted the tree. The people and animals are friendly chibi-anime characters. Design the characters now. They must look exactly the same in the next pictures of this story."
+    },
+    {
+     "n": "126",
+     "label": "Page 2",
+     "target": "story/body_bridge",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: The king's soldiers surrounded the tree with arrows. The monkey king leapt across the river with a rope, tied it to a branch, and made a bridge of his own body. The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    },
+    {
+     "n": "127",
+     "label": "Page 3",
+     "target": "story/king_learns",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: Every monkey crossed over him to safety. Exhausted, he fell. The human king caught him and asked why. \"A leader's life is for his people,\" said the monkey king. The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    }
+   ]
+  },
+  {
+   "id": "story.jataka.banyan_deer",
+   "title": "Story: Jataka: Banyan Deer (3 pages)",
+   "note": "Open ONE new ChatGPT chat for this story. Paste the pages in order in the same chat so the characters stay the same.",
+   "items": [
+    {
+     "n": "128",
+     "label": "Page 1",
+     "target": "story/deer_kings",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: In a Jataka tale, a king hunted deer every day, so two deer kings agreed to send one deer by turns and spare the rest. The people and animals are friendly chibi-anime characters. Design the characters now. They must look exactly the same in the next pictures of this story."
+    },
+    {
+     "n": "129",
+     "label": "Page 2",
+     "target": "story/golden_deer",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: When a mother deer's turn came, the golden Banyan Deer king went in her place and laid his head on the block. The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    },
+    {
+     "n": "130",
+     "label": "Page 3",
+     "target": "story/bow_down",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: The human king asked why. \"She has a fawn,\" said the deer. The king put down his bow and promised never to hunt again. The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    }
+   ]
+  },
+  {
+   "id": "story.akbar_birbal.well",
+   "title": "Story: Akbar Birbal: Well (3 pages)",
+   "note": "Open ONE new ChatGPT chat for this story. Paste the pages in order in the same chat so the characters stay the same.",
+   "items": [
+    {
+     "n": "131",
+     "label": "Page 1",
+     "target": "story/farmer_well",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: A folk tale: a farmer bought a well from a rich man. When he came to draw water, the rich man said: \"I sold you the well, not the water in it!\" The people and animals are friendly chibi-anime characters. Design the characters now. They must look exactly the same in the next pictures of this story."
+    },
+    {
+     "n": "132",
+     "label": "Page 2",
+     "target": "story/birbal_court",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: The farmer went to Emperor Akbar's court. Birbal listened, then said to the rich man: \"Fine. The water is yours. Then remove it from the farmer's well today, or pay him rent for keeping it there.\" The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    },
+    {
+     "n": "133",
+     "label": "Page 3",
+     "target": "story/court_laugh",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: The rich man had no answer. He gave up his claim, and the whole court laughed. The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    }
+   ]
+  },
+  {
+   "id": "story.akbar_birbal.line",
+   "title": "Story: Akbar Birbal: Line (2 pages)",
+   "note": "Open ONE new ChatGPT chat for this story. Paste the pages in order in the same chat so the characters stay the same.",
+   "items": [
+    {
+     "n": "134",
+     "label": "Page 1",
+     "target": "story/akbar_line",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: Akbar drew a line on the floor. \"Make this line shorter without touching it,\" he told his courtiers. They stared. The people and animals are friendly chibi-anime characters. Design the characters now. They must look exactly the same in the next pictures of this story."
+    },
+    {
+     "n": "135",
+     "label": "Page 2",
+     "target": "story/birbal_line",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: Birbal picked up the chalk and drew a longer line beside it. \"There,\" he said. \"Now yours is the shorter one.\" The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    }
+   ]
+  },
+  {
+   "id": "story.tenali.cat",
+   "title": "Story: Tenali: Cat (3 pages)",
+   "note": "Open ONE new ChatGPT chat for this story. Paste the pages in order in the same chat so the characters stay the same.",
+   "items": [
+    {
+     "n": "136",
+     "label": "Page 1",
+     "target": "story/king_kittens",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: King Krishnadevaraya gave every courtier a kitten and a cow, ordering them to raise fat cats. Tenali Raman's cat stayed thin. The people and animals are friendly chibi-anime characters. Design the characters now. They must look exactly the same in the next pictures of this story."
+    },
+    {
+     "n": "137",
+     "label": "Page 2",
+     "target": "story/cat_runs",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: \"Why?\" asked the king. \"She will not touch milk, Your Majesty.\" The king did not believe him. Tenali put a bowl of milk before the cat, and she ran away hissing. The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    },
+    {
+     "n": "138",
+     "label": "Page 3",
+     "target": "story/king_laughs",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: Tenali had once given her hot milk; she never trusted a bowl again. \"The milk,\" he said, \"fed my family instead.\" The king laughed and let it be. The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    }
+   ]
+  },
+  {
+   "id": "story.tenali.thieves",
+   "title": "Story: Tenali: Thieves (3 pages)",
+   "note": "Open ONE new ChatGPT chat for this story. Paste the pages in order in the same chat so the characters stay the same.",
+   "items": [
+    {
+     "n": "139",
+     "label": "Page 1",
+     "target": "story/thieves_garden",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: One night Tenali heard thieves whispering in his garden. He said loudly to his wife: \"Thieves are about. Let us hide our gold in the well!\" The people and animals are friendly chibi-anime characters. Design the characters now. They must look exactly the same in the next pictures of this story."
+    },
+    {
+     "n": "140",
+     "label": "Page 2",
+     "target": "story/thieves_well",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: He dropped a heavy box into the well with a splash. The thieves waited, then spent all night drawing water to empty the well. The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    },
+    {
+     "n": "141",
+     "label": "Page 3",
+     "target": "story/garden_watered",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: At dawn the box came up: full of stones. The whole garden was watered. \"Thank you for your help,\" called Tenali from the window, and the thieves fled. The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    }
+   ]
+  },
+  {
+   "id": "story.hitopadesha.old_tiger",
+   "title": "Story: Hitopadesha: Old Tiger (3 pages)",
+   "note": "Open ONE new ChatGPT chat for this story. Paste the pages in order in the same chat so the characters stay the same.",
+   "items": [
+    {
+     "n": "142",
+     "label": "Page 1",
+     "target": "story/tiger_bangle",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: From the Hitopadesha: an old tiger stood by a muddy pond holding a golden bangle. \"Take this gift, traveller,\" he called to a passing man. The people and animals are friendly chibi-anime characters. Design the characters now. They must look exactly the same in the next pictures of this story."
+    },
+    {
+     "n": "143",
+     "label": "Page 2",
+     "target": "story/traveller_mud",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: \"I am old and harmless now,\" said the tiger. \"I only want to give.\" The greedy traveller stepped into the pond to take it and sank in the mud. The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    },
+    {
+     "n": "144",
+     "label": "Page 3",
+     "target": "story/dadaji_warns",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: \"Do not worry, I will help you out,\" said the tiger, and he did, in his own way. Dadaji says: when a gift is too good, ask why it is being given. The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    }
+   ]
+  },
+  {
+   "id": "story.original.mitthu_first_echo",
+   "title": "Story: Original: Mitthu First Echo (3 pages)",
+   "note": "Open ONE new ChatGPT chat for this story. Paste the pages in order in the same chat so the characters stay the same.",
+   "items": [
+    {
+     "n": "145",
+     "label": "Page 1",
+     "target": "story/mitthu_arrives",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: When Mitthu first flew down from the mountains to the villa, he could only say one thing: \"Say it again!\" Chintu laughed and Buddy barked. The people and animals are friendly chibi-anime characters. Design the characters now. They must look exactly the same in the next pictures of this story."
+    },
+    {
+     "n": "146",
+     "label": "Page 2",
+     "target": "story/mitthu_sings",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: Dadaji was teaching Chintu the seven swaras. Chintu forgot \"Dha\". Mitthu tilted his head and sang: \"Sa Re Ga Ma Pa DHA Ni Sa!\" The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    },
+    {
+     "n": "147",
+     "label": "Page 3",
+     "target": "story/mitthu_job",
+     "text": "Premium chibi-anime children's game art. Soft painterly shading with clean highlights, warm cinematic light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family home setting. No text, no logos, no watermark. Picture-book illustration for a children's story, wide 3:2 image, no text and no speech bubbles. The moment to illustrate: \"Mitthu remembers everything he hears,\" said Dadaji. \"He will be our Echo. When you forget, he will say it again, and you will say it after him.\" And that is how Mitthu found his job. The people and animals are friendly chibi-anime characters. Keep every character looking exactly the same as in the earlier pictures of this story in this chat."
+    }
+   ]
+  }
+ ]
+}

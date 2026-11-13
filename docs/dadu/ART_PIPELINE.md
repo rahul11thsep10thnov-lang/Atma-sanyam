@@ -50,6 +50,8 @@ Use this fixed text at the start of every prompt (the "style line"). Do not chan
 > light from the upper right, rounded friendly shapes, rich but balanced colours, modern Indian family
 > home setting. No text, no logos, no watermark.
 
+> Easiest on a phone: open the **DADU Prompt Book** page. It has every prompt below already written out in full, with a Copy button on each. The same prompts are in `docs/dadu/art-brief/chatgpt-prompts.json`. Regenerate them with `python3 tools/dadu/gen_prompt_book.py`.
+
 ## Step 2: prompts
 
 Work in one conversation per asset type, one request at a time. Ask for square or 3:2 images.
