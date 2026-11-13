@@ -30,8 +30,12 @@ export default function GameEditorPage() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
-  useEffect(() => { if (data) setForm(data); }, [data]);
+  // The JSON fields below take their starting text from `form` when they first render, so the form must not
+  // render until the saved record has replaced the empty template (otherwise Save would overwrite it).
+  const [loaded, setLoaded] = useState(isNew);
+  useEffect(() => { if (data) { setForm(data); setLoaded(true); } }, [data]);
   if (!can('content:read')) return <Forbidden />;
+  if (!loaded) return error ? <div className="alert alert-error">{errorMessage(error)}</div> : <p className="small">Loading…</p>;
   const set = <K extends keyof Game>(k: K, v: Game[K]) => setForm((f) => ({ ...f, [k]: v }));
   const canEdit = can('content:write');
   const canPublish = can('content:publish');
