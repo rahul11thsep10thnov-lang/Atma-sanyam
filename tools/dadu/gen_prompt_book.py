@@ -14,8 +14,8 @@ STYLE = ("Premium chibi-anime children's game art. Soft painterly shading with c
 CUTOUT = "on a perfectly flat solid pure magenta (#FF00FF) background. No ground, no shadow on the background, no text, no magenta anywhere on the subject."
 
 CHARS = {
- 'dadaji': ("Dadaji", "Dadaji, an elderly Indian grandfather in chibi proportions (large head, small body): bald crown, white hair only around the sides and back of the head, a prominent thick curved white moustache, large rectangular slightly tinted spectacles, distinct forehead wrinkles, a defined nose, a slightly lean body, a plain cream kurta, a white dhoti, green traditional sandals, a kind dignified expression and expressive hands. No waistcoat, no scarf, no cap, no round glasses", True),
- 'chintu': ("Chintu", "Chintu, a naughty, curious Indian boy about 6 years old in chibi proportions: messy black hair with a cowlick, large expressive brown eyes, a yellow T-shirt, blue shorts, colourful sneakers and a playful affectionate expression", True),
+ 'dadaji': ("Dadaji", "Dadaji, an elderly Indian grandfather in chibi proportions (large head, small body): bald crown, white hair only around the sides and back of the head, a prominent thick curved white moustache, large rectangular spectacles with thick dark-brown frames and slightly tinted lenses, distinct forehead wrinkles, a defined nose, a slightly lean body, a plain cream kurta, a white dhoti, green traditional sandals, a kind dignified expression and expressive hands. No waistcoat, no scarf, no cap, no round glasses", True),
+ 'chintu': ("Chintu", "Chintu, a naughty, curious little Indian boy, clearly only about 6 years old, with a small body, a big head and a round young face, in chibi proportions: messy black hair with a cowlick, large expressive brown eyes, a yellow T-shirt, blue shorts, colourful sneakers and a playful affectionate expression", True),
  'buddy': ("Buddy", "Buddy, a playful dog in chibi proportions: warm golden-brown coat with a cream muzzle and belly, floppy ears, large expressive eyes, a red collar with a small tag and a friendly open expression", False),
  'chikki': ("Chikki", "Chikki, a white rabbit in chibi proportions: soft white fur, pink inner ears, a round soft body, large eyes, a tiny pink nose and a curious, slightly shy expression", False),
  'gauri': ("Gauri", "Gauri, a gentle Indian domestic cow in chibi proportions: white coat with brown patches, a friendly kind face, two distinctive curved horns, a pink muzzle, a small brass bell on a red collar and a calm protective expression", False),
@@ -177,12 +177,12 @@ def sheet_prompt(keys):
     rest = " The remaining cells stay empty." if n < 9 else ''
     return (f"{STYLE} A 3 by 3 grid sprite sheet of {n} separate objects for an isometric children's game, in reading order from top-left to bottom-right: {items}. "
             f"Every object is drawn from the same isometric three-quarter view from above, front and right, lit from the upper right. Each object sits alone in the centre of its own equal square cell "
-            f"and fills about 70 percent of the cell, with wide empty space around it, whatever its real size.{rest} "
+            f"and fills about 70 percent of the cell, with wide empty space around it, whatever its real size. Use bold clean shapes, simple shading and clear outlines so each object still reads well when shown small.{rest} "
             f"The whole picture has a perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadows on the background, no grid lines, no text, and no magenta on the objects. Square image.")
 
 def single_prompt(k):
     return (f"{STYLE} One single object for an isometric children's game: {DESC[k]}. Drawn from an isometric three-quarter view from above, front and right, lit from the upper right, "
-            f"centred with wide empty space around it and filling about 80 percent of the picture. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image.")
+            f"centred with wide empty space around it and filling about 80 percent of the picture. Use bold clean shapes, simple shading and clear outlines so it still reads well when shown small. Perfectly flat solid pure magenta (#FF00FF) background, no ground, no shadow on the background, no text, no magenta on the object. Square image.")
 
 def build():
     groups, n = [], [0]
