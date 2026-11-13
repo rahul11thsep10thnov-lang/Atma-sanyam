@@ -9,12 +9,23 @@ import { FURNITURE } from './furniture';
 import { NATURE } from './nature';
 import { BUILDINGS } from './buildings';
 import { VILLA, VILLA_FOOTPRINT } from '../villa/VillaExterior';
+import { ART } from '../../../art';
+import { bitmapSprite } from './bitmap';
 
 export const SPRITES: Record<string, SpriteFn> = { ...FURNITURE, ...NATURE, ...BUILDINGS, ...VILLA };
 
 export const placeholder: SpriteFn = () => React.createElement(Box, { w: 0.6, d: 0.6, h: 20, colour: '#C9B698' });
 
+const bitmapCache = new Map<string, SpriteFn>();
+
+/** A picture from assets/dadu-art/props wins over the vector sprite of the same name. */
 export function spriteFor(name: string): SpriteFn {
+  const art = ART.props[name];
+  if (art) {
+    let fn = bitmapCache.get(name);
+    if (!fn) { fn = bitmapSprite(art); bitmapCache.set(name, fn); }
+    return fn;
+  }
   return SPRITES[name] ?? placeholder;
 }
 

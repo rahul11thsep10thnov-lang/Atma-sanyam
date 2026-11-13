@@ -3,7 +3,7 @@
 // back) and mirrors west-facing sprites. Heights follow HEIGHT_CHART so
 // characters keep their relative sizes in any scene.
 import React from 'react';
-import { G, Svg } from 'react-native-svg';
+import { G, Image as SvgImage, Svg } from 'react-native-svg';
 import type { CharacterKey } from '../../core/characters';
 import { CHARACTERS, canonicalCharacter } from '../../core/characters';
 import type { CharacterSpriteProps, RigProps, SpriteView } from '../types';
@@ -16,15 +16,17 @@ import { GauriRig } from './Gauri';
 import { NanduRig } from './Nandu';
 import { MitthuRig, MITTHU_BOX } from './Mitthu';
 import { QUAD_BOX } from './quadruped';
+import { withArt } from './artRig';
+import { ART } from '../../art';
 
 export const RIGS: Record<CharacterKey, { Rig: (p: RigProps) => React.ReactElement; box: { w: number; h: number }; /** Fraction of the box height that is the drawn body (shadow excluded). */ bodyFrac: number }> = {
-  dadaji: { Rig: DadajiRig, box: DADAJI_BOX, bodyFrac: 1 },
-  chintu: { Rig: ChintuRig, box: CHINTU_BOX, bodyFrac: 1 },
-  buddy: { Rig: BuddyRig, box: QUAD_BOX, bodyFrac: 0.8 },
-  chikki: { Rig: ChikkiRig, box: CHIKKI_BOX, bodyFrac: 0.95 },
-  gauri: { Rig: GauriRig, box: QUAD_BOX, bodyFrac: 1 },
-  nandu: { Rig: NanduRig, box: QUAD_BOX, bodyFrac: 0.72 },
-  mitthu: { Rig: MitthuRig, box: MITTHU_BOX, bodyFrac: 0.9 },
+  dadaji: { Rig: withArt('dadaji', DadajiRig, DADAJI_BOX), box: DADAJI_BOX, bodyFrac: 1 },
+  chintu: { Rig: withArt('chintu', ChintuRig, CHINTU_BOX), box: CHINTU_BOX, bodyFrac: 1 },
+  buddy: { Rig: withArt('buddy', BuddyRig, QUAD_BOX), box: QUAD_BOX, bodyFrac: 0.8 },
+  chikki: { Rig: withArt('chikki', ChikkiRig, CHIKKI_BOX), box: CHIKKI_BOX, bodyFrac: 0.95 },
+  gauri: { Rig: withArt('gauri', GauriRig, QUAD_BOX), box: QUAD_BOX, bodyFrac: 1 },
+  nandu: { Rig: withArt('nandu', NanduRig, QUAD_BOX), box: QUAD_BOX, bodyFrac: 0.72 },
+  mitthu: { Rig: withArt('mitthu', MitthuRig, MITTHU_BOX), box: MITTHU_BOX, bodyFrac: 0.9 },
 };
 
 /** Relative heights (Dadaji = 1) from the character registry. */
@@ -66,6 +68,8 @@ export function CharacterFace({ characterKey, expression = 'neutral', size, talk
   const clock = useClock();
   const t = animate && !reducedMotion ? clock : 0;
   const { Rig } = RIGS[key];
+  const facePicture = ART.characters[key]?.face;
+  if (facePicture) return <Svg width={size} height={size} viewBox="0 0 100 100"><SvgImage href={facePicture.src} x={0} y={0} width={100} height={100} preserveAspectRatio="xMidYMid meet" /></Svg>;
   const crop: Record<CharacterKey, string> = {
     dadaji: '18 0 64 64', chintu: '18 0 64 62', buddy: '40 10 60 60', chikki: '22 0 56 56', gauri: '38 6 64 64', nandu: '42 12 56 56', mitthu: '14 8 52 52',
   };

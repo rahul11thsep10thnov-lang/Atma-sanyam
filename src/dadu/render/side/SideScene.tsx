@@ -5,7 +5,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import type { ViewStyle } from 'react-native';
-import { G, Rect, Svg } from 'react-native-svg';
+import { G, Image as SvgImage, Rect, Svg } from 'react-native-svg';
+import { ART } from '../../art';
 import type { CharacterKey } from '../../core/characters';
 import { canonicalCharacter } from '../../core/characters';
 import type { Season, TimeOfDay, Weather } from '../../core/worldState';
@@ -81,6 +82,8 @@ function Character({ c, onPress }: { c: SideCharacter; onPress?: () => void }) {
 function Background({ bg, time, weather, season, id }: { bg: SideBackgroundKey; time: TimeOfDay; weather?: Weather; season?: Season; id: string }) {
   const t = useClock();
   const Bg = BACKGROUNDS[bg];
+  const picture = ART.rooms[bg];
+  if (picture) return <G><SvgImage href={picture.src} x={0} y={0} width={SIDE_W} height={SIDE_H} preserveAspectRatio="xMidYMid slice" /></G>;
   return <G><Bg time={time} weather={weather} season={season} t={t} id={id} /></G>;
 }
 

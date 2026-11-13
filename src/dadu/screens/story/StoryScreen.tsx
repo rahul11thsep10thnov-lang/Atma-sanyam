@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ART } from '../../art';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
@@ -66,6 +67,7 @@ export function StoryScreen() {
   if (!story || !rs || !world) return <View style={s.center}><Body>{hi ? 'कहानी नहीं मिली।' : 'Story not found.'}</Body><Row style={{ marginTop: 10 }}><BigButton label={ui('common.back', prefs)} onPress={() => nav.goBack()} /></Row></View>;
 
   const scene = sceneForIllustration(page?.illustration ?? '');
+  const storyArt = page ? ART.story[page.illustration] : undefined;
   const chars: SideCharacter[] = [{ key: 'dadaji', x: 60, pose: 'sit', expression: 'talk', facing: 'right', talking: true }, ...scene.extras.map((k, i) => ({ key: k, x: 230 + i * 70, facing: 'left' as const, expression: rs.bedtime ? ('sleepy' as const) : ('listen' as const) }))];
   const questions = questionsFor(story, level, rs.bedtime);
   const q = questions[qIndex];
@@ -78,7 +80,9 @@ export function StoryScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: bg }} testID="screen-story">
-      <SideScene background={scene.background} time={night ? 'night' : world.time} weather={world.weather} season={world.season} characters={chars} reducedMotion={reduced} style={{ height: little ? 190 : 170 }} />
+      {storyArt
+        ? <Image source={storyArt.src} style={{ width: '100%', height: little ? 190 : 170 }} resizeMode="cover" accessibilityLabel={page ? tx(page.text, prefs) : undefined} testID="story-art" />
+        : <SideScene background={scene.background} time={night ? 'night' : world.time} weather={world.weather} season={world.season} characters={chars} reducedMotion={reduced} style={{ height: little ? 190 : 170 }} />}
       <View style={s.head}><Text style={[s.title, { color: night ? '#FFE08A' : P.indigo }]} numberOfLines={1}>{tx(story.title, prefs)}</Text><Chip label={`${Math.min(rs.page + 1, story.pages.length)}/${story.pages.length}`} /></View>
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 30 }}>
         {!rs.finished && page ? (
