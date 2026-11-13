@@ -1,0 +1,21 @@
+# Unreal Engine generated / local files
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+Build/
+.vs/
+.vscode/
+.idea/
+*.sln
+*.suo
+*.xcworkspace
+*.xcodeproj
+*.VC.db
+*.opensdf
+*.sdf
+*.opendb
+Plugins/*/Binaries/
+Plugins/*/Intermediate/
+# Headless core test build
+CoreTests/build/
