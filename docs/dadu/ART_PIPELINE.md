@@ -130,9 +130,9 @@ Ask for the whole story in one conversation so the look carries across pages.
 Install Python 3.9 or newer, then once: `pip install pillow numpy`. Put raw downloads in a folder `raw/`.
 
 ```bash
-# a single picture on magenta (add --keep for characters so every pose keeps the same frame)
+# a single picture on magenta (add --keep for characters so every pose keeps the same frame, and --holes 60 to also clear magenta trapped between an arm and the body)
 python tools/dadu/art_import.py chroma raw/sofa.png assets/dadu-art/props/sofa.png
-python tools/dadu/art_import.py chroma raw/chintu_idle.png assets/dadu-art/characters/chintu/idle.png --keep --max 1024
+python tools/dadu/art_import.py chroma raw/chintu_idle.png assets/dadu-art/characters/chintu/idle.png --keep --holes 60 --max 640
 
 # a 3 by 3 sheet, names in reading order; use - for an empty cell
 python tools/dadu/art_import.py slice raw/sheet1.png --grid 3x3 \

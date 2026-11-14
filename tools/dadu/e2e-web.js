@@ -1,6 +1,7 @@
 // End-to-end drive of the DADU web export with Playwright (Chromium).
 // Usage: npx expo export --platform web --output-dir /tmp/dadu-web && node tools/dadu/e2e-web.js /tmp/dadu-web [A2|A5]
 // Pins the clock to 10:30 local time so the bedtime guard does not block the drive; screenshots land in ./e2e-shots.
+const { chromium } = require('playwright');
 const path = require('path');
 const http = require('http');
 const fs = require('fs');

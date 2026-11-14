@@ -41,7 +41,7 @@ def hex_rgb(h):
     return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
 
 
-def remove_background(img, key=(255, 0, 255), tol=70):
+def remove_background(img, key=(255, 0, 255), tol=70, holes=0):
     """Make the flat key colour transparent. Only background connected to the picture's edge is removed,
     so a magenta detail inside the subject survives. Edges are softened and colour-spill is cleaned."""
     rgb = np.asarray(img.convert('RGB')).astype(np.int32)
@@ -54,6 +54,23 @@ def remove_background(img, key=(255, 0, 255), tol=70):
     padded.paste(mask, (1, 1))
     ImageDraw.floodfill(padded, (0, 0), 128, thresh=0)
     bg = np.asarray(padded)[1:-1, 1:-1] == 128
+    if holes:
+        # enclosed pockets (between an arm and the body, inside a handle...): also remove key-coloured
+        # regions that do not touch the edge, when they are at least `holes` pixels in area
+        todo = near & ~bg
+        seen = np.zeros_like(todo)
+        for y0, x0 in zip(*np.nonzero(todo)):
+            if seen[y0, x0]:
+                continue
+            comp, q = [], deque([(y0, x0)])
+            seen[y0, x0] = True
+            while q:
+                y, x = q.popleft(); comp.append((y, x))
+                for ny, nx in ((y - 1, x), (y + 1, x), (y, x - 1), (y, x + 1)):
+                    if 0 <= ny < h and 0 <= nx < w and todo[ny, nx] and not seen[ny, nx]:
+                        seen[ny, nx] = True; q.append((ny, nx))
+            if len(comp) >= holes:
+                ys, xs = zip(*comp); bg[list(ys), list(xs)] = True
     alpha = np.where(bg, 0, 255).astype(np.float32)
     # soften the 2-pixel rim around the removed area
     grow = bg.copy()
@@ -90,7 +107,7 @@ def fit_max(img, maxside):
 
 def cmd_chroma(a):
     img = Image.open(a.src)
-    cut = remove_background(img, hex_rgb(a.key), a.tol)
+    cut = remove_background(img, hex_rgb(a.key), a.tol, a.holes)
     out = fit_max(cut if a.keep else trim(cut), a.max)
     os.makedirs(os.path.dirname(os.path.abspath(a.dst)), exist_ok=True)
     out.save(a.dst, optimize=True)
@@ -110,7 +127,7 @@ def cmd_slice(a):
             continue
         c, r = i % cols, i // cols
         cell = sheet.crop((round(c * cw), round(r * ch), round((c + 1) * cw), round((r + 1) * ch)))
-        cut = remove_background(cell, hex_rgb(a.key), a.tol)
+        cut = remove_background(cell, hex_rgb(a.key), a.tol, a.holes)
         out = fit_max(cut if a.keep else trim(cut), a.max)
         dst = os.path.join(a.out, name + '.png')
         out.save(dst, optimize=True)
@@ -221,8 +238,8 @@ def cmd_check(_):
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     s = p.add_subparsers(dest='cmd', required=True)
-    c = s.add_parser('chroma'); c.add_argument('src'); c.add_argument('dst'); c.add_argument('--key', default='ff00ff'); c.add_argument('--tol', type=int, default=70); c.add_argument('--max', type=int, default=768); c.add_argument('--keep', action='store_true', help='keep the full canvas (use for characters so every pose has the same frame)'); c.set_defaults(f=cmd_chroma)
-    c = s.add_parser('slice'); c.add_argument('src'); c.add_argument('--grid', required=True); c.add_argument('--names', required=True); c.add_argument('--out', default=os.path.join(ART, 'props')); c.add_argument('--key', default='ff00ff'); c.add_argument('--tol', type=int, default=70); c.add_argument('--max', type=int, default=768); c.add_argument('--keep', action='store_true'); c.set_defaults(f=cmd_slice)
+    c = s.add_parser('chroma'); c.add_argument('src'); c.add_argument('dst'); c.add_argument('--key', default='ff00ff'); c.add_argument('--tol', type=int, default=70); c.add_argument('--max', type=int, default=768); c.add_argument('--keep', action='store_true', help='keep the full canvas (use for characters so every pose has the same frame)'); c.add_argument('--holes', type=int, default=0, help='also remove enclosed key-coloured pockets of at least this many pixels (use 60 for characters)'); c.set_defaults(f=cmd_chroma)
+    c = s.add_parser('slice'); c.add_argument('src'); c.add_argument('--grid', required=True); c.add_argument('--names', required=True); c.add_argument('--out', default=os.path.join(ART, 'props')); c.add_argument('--key', default='ff00ff'); c.add_argument('--tol', type=int, default=70); c.add_argument('--max', type=int, default=768); c.add_argument('--keep', action='store_true'); c.add_argument('--holes', type=int, default=0); c.set_defaults(f=cmd_slice)
     c = s.add_parser('scene'); c.add_argument('src'); c.add_argument('dst'); c.add_argument('--kind', choices=['room', 'story'], help='room = side-view backdrop, story = story page (default: chosen from the folder name)'); c.set_defaults(f=cmd_scene)
     c = s.add_parser('manifest'); c.set_defaults(f=cmd_manifest)
     c = s.add_parser('check'); c.set_defaults(f=cmd_check)

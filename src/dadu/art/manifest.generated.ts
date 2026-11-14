@@ -5,6 +5,8 @@ export const ART: ArtManifest = {
   props: {},
   rooms: {},
   story: {},
-  characters: {},
+  characters: {
+    "dadaji": { "face": { src: require('../../../assets/dadu-art/characters/dadaji/face.png'), w: 380, h: 384 }, "happy": { src: require('../../../assets/dadu-art/characters/dadaji/happy.png'), w: 640, h: 640 }, "idle": { src: require('../../../assets/dadu-art/characters/dadaji/idle.png'), w: 640, h: 640 }, "sad": { src: require('../../../assets/dadu-art/characters/dadaji/sad.png'), w: 640, h: 640 }, "sleepy": { src: require('../../../assets/dadu-art/characters/dadaji/sleepy.png'), w: 640, h: 640 }, "surprised": { src: require('../../../assets/dadu-art/characters/dadaji/surprised.png'), w: 640, h: 640 }, "talk": { src: require('../../../assets/dadu-art/characters/dadaji/talk.png'), w: 640, h: 640 }, "teach": { src: require('../../../assets/dadu-art/characters/dadaji/teach.png'), w: 640, h: 640 }, "think": { src: require('../../../assets/dadu-art/characters/dadaji/think.png'), w: 640, h: 640 }, "walk": { src: require('../../../assets/dadu-art/characters/dadaji/walk.png'), w: 640, h: 640 }, "wave": { src: require('../../../assets/dadu-art/characters/dadaji/wave.png'), w: 640, h: 640 } },
+  },
   ui: {},
 };
