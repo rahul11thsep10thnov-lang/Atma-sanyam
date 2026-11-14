@@ -89,6 +89,38 @@ def remove_background(img, key=(255, 0, 255), tol=70, holes=0):
     return Image.fromarray(rgba, 'RGBA')
 
 
+def drop_edge_strays(img, ratio=0.15):
+    """In a sliced sheet, remove small fragments that touch the cell edge: they are slivers of the neighbouring object.
+    A fragment is kept if it is at least `ratio` of the largest piece."""
+    a = np.array(img.split()[-1])
+    solid = a > 12
+    h, w = solid.shape
+    seen = np.zeros_like(solid)
+    comps = []
+    for y0, x0 in zip(*np.nonzero(solid)):
+        if seen[y0, x0]:
+            continue
+        pts, q, edge = [], deque([(y0, x0)]), False
+        seen[y0, x0] = True
+        while q:
+            y, x = q.popleft(); pts.append((y, x))
+            if y in (0, h - 1) or x in (0, w - 1):
+                edge = True
+            for dy in (-1, 0, 1):
+                for dx in (-1, 0, 1):
+                    ny, nx = y + dy, x + dx
+                    if 0 <= ny < h and 0 <= nx < w and solid[ny, nx] and not seen[ny, nx]:
+                        seen[ny, nx] = True; q.append((ny, nx))
+        comps.append((len(pts), edge, pts))
+    if not comps:
+        return img
+    biggest = max(c[0] for c in comps)
+    for n, edge, pts in comps:
+        if edge and n < biggest * ratio:
+            ys, xs = zip(*pts); a[list(ys), list(xs)] = 0
+    out = img.copy(); out.putalpha(Image.fromarray(a)); return out
+
+
 def trim(img, pad=4):
     a = np.asarray(img.split()[-1])
     ys, xs = np.where(a > 12)
@@ -127,7 +159,7 @@ def cmd_slice(a):
             continue
         c, r = i % cols, i // cols
         cell = sheet.crop((round(c * cw), round(r * ch), round((c + 1) * cw), round((r + 1) * ch)))
-        cut = remove_background(cell, hex_rgb(a.key), a.tol, a.holes)
+        cut = drop_edge_strays(remove_background(cell, hex_rgb(a.key), a.tol, a.holes))
         out = fit_max(cut if a.keep else trim(cut), a.max)
         dst = os.path.join(a.out, name + '.png')
         out.save(dst, optimize=True)
