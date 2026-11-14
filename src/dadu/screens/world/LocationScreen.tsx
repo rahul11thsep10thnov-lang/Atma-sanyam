@@ -154,7 +154,7 @@ export function LocationScreen() {
 const s = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 14, paddingTop: 44, paddingBottom: 6, flexWrap: 'wrap' },
   scene: { height: 220, marginHorizontal: 14, borderRadius: 20, overflow: 'hidden', borderWidth: 3, borderColor: P.line },
-  sideScene: { height: 200, borderBottomWidth: 3, borderBottomColor: P.line },
+  sideScene: { aspectRatio: 360 / 220, borderBottomWidth: 3, borderBottomColor: P.line },
   footer: { maxHeight: 260 },
   rooms: { gap: 6, paddingHorizontal: 14, paddingBottom: 6 },
 });

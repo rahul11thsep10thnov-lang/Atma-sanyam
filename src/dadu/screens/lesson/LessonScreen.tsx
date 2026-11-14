@@ -162,7 +162,7 @@ export function LessonScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: P.paper }} testID="screen-lesson">
-      <SideScene background={backgroundForLocation(host)} time={world.time} weather={world.weather} season={world.season} characters={chars} reducedMotion={reduced} style={{ height: little ? 190 : 170 }} />
+      <SideScene background={backgroundForLocation(host)} time={world.time} weather={world.weather} season={world.season} characters={chars} reducedMotion={reduced} style={{ height: little ? 230 : 210 }} />
       <View style={s.head}><Text style={[s.title, { color: section?.colour ?? P.indigo }]} numberOfLines={1}>{tx(lesson.title, prefs)}</Text><Chip label={section ? tx(section.name, prefs) : ''} colour={section?.colour} /></View>
       <View style={s.steps}>{ph.map((p, i) => <View key={i} style={[s.stepBar, i < state.stepIndex && { backgroundColor: P.ok }, i === state.stepIndex && { backgroundColor: P.saffron }]} />)}</View>
       <Text style={s.phase}>{ui(PHASE_KEY[state.phase], prefs)} · {Math.min(state.stepIndex + 1, steps.length)}/{steps.length}</Text>

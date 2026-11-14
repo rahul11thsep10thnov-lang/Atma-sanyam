@@ -82,7 +82,7 @@ export function StoryScreen() {
     <View style={{ flex: 1, backgroundColor: bg }} testID="screen-story">
       {storyArt
         ? <Image source={storyArt.src} style={{ width: '100%', height: little ? 190 : 170 }} resizeMode="cover" accessibilityLabel={page ? tx(page.text, prefs) : undefined} testID="story-art" />
-        : <SideScene background={scene.background} time={night ? 'night' : world.time} weather={world.weather} season={world.season} characters={chars} reducedMotion={reduced} style={{ height: little ? 190 : 170 }} />}
+        : <SideScene background={scene.background} time={night ? 'night' : world.time} weather={world.weather} season={world.season} characters={chars} reducedMotion={reduced} style={{ height: little ? 230 : 210 }} />}
       <View style={s.head}><Text style={[s.title, { color: night ? '#FFE08A' : P.indigo }]} numberOfLines={1}>{tx(story.title, prefs)}</Text><Chip label={`${Math.min(rs.page + 1, story.pages.length)}/${story.pages.length}`} /></View>
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 30 }}>
         {!rs.finished && page ? (
