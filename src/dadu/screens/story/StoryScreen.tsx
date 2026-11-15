@@ -83,7 +83,7 @@ export function StoryScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: bg }} testID="screen-story">
-      <EpisodeStage page={page?.illustration} fallbackBackground={scene.background} cast={cast} motion={MOTIONS[rs.page % 4]} reducedMotion={reduced} night={night}
+      <EpisodeStage page={page?.illustration} playVideo={auto} fallbackBackground={scene.background} cast={cast} motion={MOTIONS[rs.page % 4]} reducedMotion={reduced} night={night}
         caption={!rs.finished && page ? current : undefined} speaker={!rs.finished && page ? tx(story.title, prefs) : undefined} testID="story-art">
         <View style={s.overlay} pointerEvents="box-none">
           <Pressable accessibilityRole="button" accessibilityLabel={ui('common.back', prefs)} onPress={() => { stop(); nav.goBack(); }} style={s.round} testID="story-exit"><Text style={s.roundText}>←</Text></Pressable>

@@ -17,4 +17,6 @@ export interface ArtManifest {
   /** Character pictures: characters/<key>/<pose or expression>.png */
   characters: Record<string, Record<string, ArtImage>>;
   ui: Record<string, ArtImage>;
+  /** Short looping clips for story pages, by the same name as the page picture (videos/<art_file_name>.mp4). w and h are 0. */
+  video: Record<string, ArtImage>;
 }

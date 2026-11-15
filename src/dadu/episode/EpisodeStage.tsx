@@ -7,6 +7,7 @@ import { ART } from '../art';
 import { pickCharacterImage } from '../art/logic';
 import { CHARACTERS } from '../core/characters';
 import { SideScene } from '../render';
+import { StageVideo } from './StageVideo';
 import type { SideBackgroundKey, SideCharacter } from '../render';
 import { P, FONT } from '../ui/palette';
 import { placeCast, stageHeight } from './logic';
@@ -18,6 +19,8 @@ export interface EpisodeStageProps {
   /** A painted room (rooms/<key>) or story page (story/<key>). */
   room?: string;
   page?: string;
+  /** Play the clip for this story page (ART.video) over the painted picture, when one exists. */
+  playVideo?: boolean;
   /** Used only when no painted picture exists. */
   fallbackBackground?: SideBackgroundKey;
   cast: StageCast[];
@@ -69,7 +72,7 @@ function Member({ p, c, reduced }: { p: Placed; c: StageCast; reduced?: boolean 
   );
 }
 
-export function EpisodeStage({ room, page, fallbackBackground = 'living', cast, motion = 'push', height, reducedMotion, caption, speaker, night, floor, children, testID }: EpisodeStageProps) {
+export function EpisodeStage({ room, page, playVideo, fallbackBackground = 'living', cast, motion = 'push', height, reducedMotion, caption, speaker, night, floor, children, testID }: EpisodeStageProps) {
   const { width, height: screenH } = useWindowDimensions();
   const H = height ?? stageHeight(width, screenH);
   const art = (page ? ART.story[page] : undefined) ?? (room ? ART.rooms[room] : undefined);
@@ -92,6 +95,7 @@ export function EpisodeStage({ room, page, fallbackBackground = 'living', cast, 
       ) : (
         <SideScene background={fallbackBackground} time={night ? 'night' : 'morning'} characters={sideChars} reducedMotion={reducedMotion} style={{ height: H }} />
       )}
+      {page && playVideo && ART.video[page] ? <StageVideo key={page} source={ART.video[page].src} /> : null}
       {art ? cast.map((c, i) => <Member key={`${c.key}-${i}`} p={placed[i]} c={c} reduced={reducedMotion} />) : null}
       {night ? <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(20,24,60,0.38)' }]} /> : null}
       {caption ? (

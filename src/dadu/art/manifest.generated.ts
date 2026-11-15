@@ -249,4 +249,5 @@ export const ART: ArtManifest = {
     "nandu": { "face": { src: require('../../../assets/dadu-art/characters/nandu/face.png'), w: 384, h: 379 }, "happy": { src: require('../../../assets/dadu-art/characters/nandu/happy.png'), w: 640, h: 640 }, "idle": { src: require('../../../assets/dadu-art/characters/nandu/idle.png'), w: 640, h: 640 }, "talk": { src: require('../../../assets/dadu-art/characters/nandu/talk.png'), w: 640, h: 640 }, "walk": { src: require('../../../assets/dadu-art/characters/nandu/walk.png'), w: 640, h: 640 } },
   },
   ui: {},
+  video: {},
 };

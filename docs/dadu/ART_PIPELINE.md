@@ -187,3 +187,18 @@ edges, a character that looks different from the sheet).
 Every character rig is wrapped by `withArt` (`render/characters/artRig.tsx`), which picks a picture with
 `pickCharacterImage` (`art/logic.ts`), adds breathing and walking motion, and falls back to the vector
 rig. Unit tests: `src/dadu/__tests__/art.test.ts`.
+
+## Story videos (optional, per page)
+
+Each story page can have a short silent looping clip. A page without a clip simply shows its painted picture (with the slow pan), so clips can be added one at a time.
+
+1. Open `docs/dadu/art-brief/video-prompt-book.html` (36 prompts, one per story page, with Copy buttons).
+2. In an image-to-video tool, upload the page's painted picture (`assets/dadu-art/story/<name>.jpg`) as the **first frame**, paste the prompt, make a 5 to 8 second clip. Starting from the painted picture keeps the chibi style identical.
+3. Save the clip as `<name>.mp4` (the name shown in the prompt book, e.g. `river_tree.mp4`).
+4. Convert and register it (re-encodes to a small H.264 file without sound):
+   ```
+   python tools/dadu/art_import.py video raw/river_tree.mp4 assets/dadu-art/video/river_tree.mp4
+   python tools/dadu/art_import.py manifest
+   python tools/dadu/art_import.py check
+   ```
+Clips are played by `src/dadu/episode/StageVideo.tsx` (expo-video), muted and looping under the subtitles; the app narrates. The Pause button on the story screen pauses the clip as well.
