@@ -206,7 +206,7 @@ class EnvironmentManifest(BaseManifest):
     layers: list[EnvironmentLayer]
     anchors: dict[str, Anchor] = Field(default_factory=dict)
     lighting_presets: list[str] = Field(default_factory=lambda: ["day"])
-    default_anchor_by_role: dict[str, str] = Field(default_factory=dict)
+    default_anchor_by_role: dict[str, list[str]] = Field(default_factory=dict, description="habitat -> anchors a character of that habitat stands at by default")
 
     @model_validator(mode="after")
     def _unique_layers(self) -> "EnvironmentManifest":
