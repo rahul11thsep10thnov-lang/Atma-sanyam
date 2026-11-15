@@ -21,7 +21,11 @@ import { ChildProfileScreen } from '../screens/onboarding/ChildProfileScreen';
 import { ParentGateScreen } from '../screens/parent/ParentGateScreen';
 import { ParentDashboardScreen } from '../screens/parent/ParentDashboardScreen';
 import { SettingsScreen } from '../screens/parent/SettingsScreen';
-import { WorldTab } from '../screens/world/WorldTab';
+import { HomeScreen } from '../screens/home/HomeScreen';
+import { WatchScreen } from '../screens/home/WatchScreen';
+import { PlayScreen } from '../screens/home/PlayScreen';
+import { StoryListScreen } from '../screens/home/StoryListScreen';
+import { GameScreen } from '../screens/home/GameScreen';
 import { LocationScreen } from '../screens/world/LocationScreen';
 import { ScreenTimeGuard } from '../screens/world/ScreenTimeGuard';
 import { LearnTab } from '../screens/learn/LearnTab';
@@ -61,18 +65,11 @@ function DaduTabBar({ state, navigation }: BottomTabBarProps) {
   );
 }
 
+/** The home screen keeps the old route name `Tabs` so every existing navigate('Tabs') still lands on it. */
 function Tabs() {
-  const { mode } = useDadu();
-  const little = mode !== 'explorer';
   return (
     <ScreenTimeGuard>
-      <Tab.Navigator tabBar={(p) => <DaduTabBar {...p} />} screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: P.paper } }}>
-        <Tab.Screen name="World" component={WorldTab} />
-        <Tab.Screen name="Learn" component={LearnTab} />
-        <Tab.Screen name="Stories" component={StoriesTab} />
-        {!little && <Tab.Screen name="Tests" component={TestsTab} />}
-        {!little && <Tab.Screen name="Me" component={MeTab} />}
-      </Tab.Navigator>
+      <HomeScreen />
     </ScreenTimeGuard>
   );
 }
@@ -109,6 +106,12 @@ export function DaduNavigator() {
         <Stack.Screen name="Story" component={StoryScreen} options={{ animation: 'slide_from_bottom' }} />
         <Stack.Screen name="Assignment" component={AssignmentScreen} options={{ animation: 'slide_from_bottom' }} />
         <Stack.Screen name="Echo" component={EchoScreen} options={{ animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="Watch" component={WatchScreen} />
+        <Stack.Screen name="Play" component={PlayScreen} />
+        <Stack.Screen name="StoryList" component={StoryListScreen} />
+        <Stack.Screen name="Game" component={GameScreen} options={{ animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="TestsScreen" component={TestsTab} />
+        <Stack.Screen name="MeScreen" component={MeTab} />
         <Stack.Screen name="Section" component={SectionScreen} />
         <Stack.Screen name="WorldHub" component={WorldHubScreen} />
         <Stack.Screen name="Achievements" component={AchievementsScreen} />

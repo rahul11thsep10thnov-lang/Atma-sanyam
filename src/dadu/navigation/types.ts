@@ -19,6 +19,12 @@ export type DaduStackParamList = {
   Story: { storyId: string; bedtime?: boolean };
   Assignment: { assignmentId: string };
   Echo: undefined;
+  Watch: undefined;
+  Play: undefined;
+  StoryList: undefined;
+  Game: { lessonId: string };
+  TestsScreen: undefined;
+  MeScreen: undefined;
   Section: { section: string };
   WorldHub: { world: string };
   Achievements: undefined;

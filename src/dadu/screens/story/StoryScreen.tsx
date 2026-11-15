@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ART } from '../../art';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -12,8 +12,10 @@ import { catalog } from '../../content';
 import { startReader, nextSentence, nextPage, prevPage, paceMs, questionsFor, sentencesOf } from '../../engines/stories';
 import type { ReaderState } from '../../engines/stories';
 import { grant } from '../../engines/rewards';
-import { SideScene, CharacterSprite } from '../../render';
-import type { SideCharacter } from '../../render';
+import { CharacterSprite } from '../../render';
+import { EpisodeStage } from '../../episode/EpisodeStage';
+import type { StageMotion } from '../../episode/EpisodeStage';
+import type { StageCast } from '../../episode/logic';
 import { useReducedMotion } from '../../../hooks/useReducedMotion';
 import { P, FONT } from '../../ui/palette';
 import { BigButton, Body, Card, Chip, Heading, Row, SpeechBubble, useLittle } from '../../ui';
@@ -68,7 +70,8 @@ export function StoryScreen() {
 
   const scene = sceneForIllustration(page?.illustration ?? '');
   const storyArt = page ? ART.story[page.illustration] : undefined;
-  const chars: SideCharacter[] = [{ key: 'dadaji', x: 60, pose: 'sit', expression: 'talk', facing: 'right', talking: true }, ...scene.extras.map((k, i) => ({ key: k, x: 230 + i * 70, facing: 'left' as const, expression: rs.bedtime ? ('sleepy' as const) : ('listen' as const) }))];
+  const cast: StageCast[] = storyArt ? [] : [{ key: 'dadaji', slot: 'left', talking: true, expression: 'idle' }, ...scene.extras.map((k, i) => ({ key: k, slot: (i === 0 ? 'right' : 'far') as 'right' | 'far', expression: 'idle' }))];
+  const MOTIONS: StageMotion[] = ['push', 'panLeft', 'push', 'panRight'];
   const questions = questionsFor(story, level, rs.bedtime);
   const q = questions[qIndex];
   const night = rs.bedtime;
@@ -80,18 +83,17 @@ export function StoryScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: bg }} testID="screen-story">
-      {storyArt
-        ? <Image source={storyArt.src} style={{ width: '100%', height: little ? 190 : 170 }} resizeMode="cover" accessibilityLabel={page ? tx(page.text, prefs) : undefined} testID="story-art" />
-        : <SideScene background={scene.background} time={night ? 'night' : world.time} weather={world.weather} season={world.season} characters={chars} reducedMotion={reduced} style={{ height: little ? 230 : 210 }} />}
-      <View style={s.head}><Text style={[s.title, { color: night ? '#FFE08A' : P.indigo }]} numberOfLines={1}>{tx(story.title, prefs)}</Text><Chip label={`${Math.min(rs.page + 1, story.pages.length)}/${story.pages.length}`} /></View>
+      <EpisodeStage page={page?.illustration} fallbackBackground={scene.background} cast={cast} motion={MOTIONS[rs.page % 4]} reducedMotion={reduced} night={night}
+        caption={!rs.finished && page ? current : undefined} speaker={!rs.finished && page ? tx(story.title, prefs) : undefined} testID="story-art">
+        <View style={s.overlay} pointerEvents="box-none">
+          <Pressable accessibilityRole="button" accessibilityLabel={ui('common.back', prefs)} onPress={() => { stop(); nav.goBack(); }} style={s.round} testID="story-exit"><Text style={s.roundText}>←</Text></Pressable>
+          <View style={{ flex: 1 }} />
+          <View style={s.pageChip}><Text style={s.pageChipText}>{Math.min(rs.page + 1, story.pages.length)}/{story.pages.length}</Text></View>
+        </View>
+      </EpisodeStage>
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 30 }}>
         {!rs.finished && page ? (
           <>
-            <View style={[s.pageBox, night && { backgroundColor: '#272C52', borderColor: '#3B4270' }]}>
-              <Text style={[s.pageText, { color: ink }, little && { fontSize: 19, lineHeight: 28 }]} accessibilityLabel={tx(page.text, prefs)}>
-                {sentences.map((sn, i) => <Text key={i} style={i === rs.sentence ? s.hl : undefined}>{sn}{' '}</Text>)}
-              </Text>
-            </View>
             {story.vocabulary.length ? <View style={s.vocab}>{story.vocabulary.map((v) => <Chip key={v.word.en} label={tx(v.word, prefs)} selected={vocab === v.word.en} onPress={() => setVocab(vocab === v.word.en ? null : v.word.en)} />)}</View> : null}
             {vocab ? <SpeechBubble who="dadaji" text={tx(story.vocabulary.find((v) => v.word.en === vocab)!.meaning, prefs)} /> : null}
             <Row style={{ marginTop: 8 }}>
@@ -127,6 +129,11 @@ const s = StyleSheet.create({
   center: { flex: 1, backgroundColor: P.paper, alignItems: 'center', justifyContent: 'center', padding: 20 },
   head: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 14, paddingTop: 8 },
   title: { fontFamily: FONT.displayHeavy, fontSize: 18, flex: 1 },
+  overlay: { position: 'absolute', top: 10, left: 10, right: 10, flexDirection: 'row', alignItems: 'center', gap: 10 },
+  round: { width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(255,246,229,0.92)', alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: P.line },
+  roundText: { fontFamily: FONT.displayHeavy, fontSize: 20, color: P.indigo },
+  pageChip: { backgroundColor: 'rgba(255,246,229,0.92)', borderRadius: 16, paddingHorizontal: 12, paddingVertical: 6, borderWidth: 2, borderColor: P.line },
+  pageChipText: { fontFamily: FONT.displayHeavy, fontSize: 13, color: P.indigo },
   pageBox: { margin: 14, marginBottom: 6, backgroundColor: P.card, borderWidth: 3, borderColor: P.line, borderRadius: 22, padding: 14 },
   pageText: { fontFamily: FONT.body, fontSize: 16, lineHeight: 24 },
   hl: { backgroundColor: '#FFE08A', color: P.ink, borderRadius: 4, fontFamily: FONT.bodyBold },
