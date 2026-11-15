@@ -8,6 +8,7 @@
 #include "UCDebugHUD.h"
 #include "UCDefinitions.h"
 #include "UCGameFramework.h"
+#include "UCVehicleHealthComponent.h"
 #include "UCVehiclePawn.h"
 #include "UnrealCombat.h"
 
@@ -77,7 +78,7 @@ void AUCGameMode::StartPlay()
 	}
 	else
 	{
-		const UUCVehicleDefinition* Vehicle = BotVehicle != nullptr ? BotVehicle.Get() : DefaultVehicle.Get();
+		UUCVehicleDefinition* Vehicle = BotVehicle != nullptr ? BotVehicle.Get() : DefaultVehicle.Get();
 		for (int32 Index = 0; Index < NumBots; ++Index)
 		{
 			SpawnBot(Vehicle, false);
@@ -86,7 +87,7 @@ void AUCGameMode::StartPlay()
 	SyncReplicatedState();
 }
 
-void AUCGameMode::RegisterParticipant(AController* Controller, int32 Team, bool bIsBot, bool bIsBoss, const UUCVehicleDefinition* Vehicle)
+void AUCGameMode::RegisterParticipant(AController* Controller, int32 Team, bool bIsBot, bool bIsBoss, UUCVehicleDefinition* Vehicle)
 {
 	AUCPlayerState* State = Controller != nullptr ? Controller->GetPlayerState<AUCPlayerState>() : nullptr;
 	if (State == nullptr || State->ParticipantId != INDEX_NONE)
@@ -109,7 +110,7 @@ void AUCGameMode::HandleStartingNewPlayer_Implementation(APlayerController* NewP
 	SyncReplicatedState();
 }
 
-void AUCGameMode::SpawnBot(const UUCVehicleDefinition* Vehicle, bool bIsBoss)
+void AUCGameMode::SpawnBot(UUCVehicleDefinition* Vehicle, bool bIsBoss)
 {
 	UWorld* World = GetWorld();
 	if (World == nullptr || Vehicle == nullptr || BotControllerClass == nullptr)
@@ -129,9 +130,9 @@ void AUCGameMode::SpawnBot(const UUCVehicleDefinition* Vehicle, bool bIsBoss)
 	RestartPlayer(Bot);
 }
 
-const UUCVehicleDefinition* AUCGameMode::ResolveVehicle(AController* Controller) const
+UUCVehicleDefinition* AUCGameMode::ResolveVehicle(AController* Controller) const
 {
-	if (const TObjectPtr<const UUCVehicleDefinition>* Assigned = AssignedVehicles.Find(Controller))
+	if (const TObjectPtr<UUCVehicleDefinition>* Assigned = AssignedVehicles.Find(Controller))
 	{
 		if (*Assigned != nullptr)
 		{
@@ -148,7 +149,7 @@ void AUCGameMode::RestartPlayer(AController* NewPlayer)
 	{
 		return;
 	}
-	const UUCVehicleDefinition* Vehicle = ResolveVehicle(NewPlayer);
+	UUCVehicleDefinition* Vehicle = ResolveVehicle(NewPlayer);
 	if (Vehicle == nullptr || Vehicle->PawnClass == nullptr)
 	{
 		UE_LOG(LogUnrealCombat, Warning, TEXT("No vehicle definition / pawn class for %s; set DefaultVehicle on the game mode."), *NewPlayer->GetName());
@@ -213,7 +214,18 @@ void AUCGameMode::NotifyVehicleDestroyed(AUCVehiclePawn* Victim, AController* Ki
 		return;
 	}
 	const AUCPlayerState* KillerState = Killer != nullptr ? Killer->GetPlayerState<AUCPlayerState>() : nullptr;
+	// Assists: opponents who damaged the victim in the last 10 s, other than the killer.
+	TArray<AController*> Damagers;
+	Victim->Health->GetRecentDamagers(10.f, Damagers);
+	for (AController* Damager : Damagers)
+	{
+		const AUCPlayerState* DamagerState = Damager->GetPlayerState<AUCPlayerState>();
+		if (DamagerState != nullptr && Damager != Killer && Damager != VictimController && DamagerState->GetTeamId() != VictimState->GetTeamId())
+		{
+			Match.RecordAssist(DamagerState->ParticipantId);
+		}
 	Match.RecordKill(KillerState != nullptr ? KillerState->ParticipantId : INDEX_NONE, VictimState->ParticipantId, VictimState->bIsBoss);
+	}
 	SyncReplicatedState();
 
 	// The wreck stays in the world for the respawn delay, then is cleaned up.

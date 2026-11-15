@@ -130,5 +130,5 @@ private:
 	bool bLoaded = false;
 
 	UPROPERTY()
-	TObjectPtr<const UUCCatalog> Catalog;
+	TObjectPtr<UUCCatalog> Catalog;
 };

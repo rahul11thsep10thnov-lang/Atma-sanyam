@@ -58,7 +58,7 @@ public:
 	UUCWeaponComponent();
 
 	/** Server only. */
-	void SetDefinition(const UUCWeaponDefinition* InDefinition);
+	void SetDefinition(UUCWeaponDefinition* InDefinition);
 
 	UFUNCTION(BlueprintCallable, Category = "Unreal Combat|Weapon")
 	void SetTriggerHeld(bool bHeld);
@@ -116,7 +116,7 @@ private:
 	AController* GetInstigatorController() const;
 
 	UPROPERTY(Replicated)
-	TObjectPtr<const UUCWeaponDefinition> Definition;
+	TObjectPtr<UUCWeaponDefinition> Definition;
 
 	UPROPERTY(ReplicatedUsing = OnRep_State)
 	FUCWeaponState State;

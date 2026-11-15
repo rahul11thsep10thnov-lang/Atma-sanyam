@@ -40,7 +40,7 @@ float UUCWeaponComponent::GetRange() const
 	return Definition != nullptr ? Definition->Range : 0.f;
 }
 
-void UUCWeaponComponent::SetDefinition(const UUCWeaponDefinition* InDefinition)
+void UUCWeaponComponent::SetDefinition(UUCWeaponDefinition* InDefinition)
 {
 	if (!HasAuthority())
 	{

@@ -10,6 +10,12 @@
   with local persistence, placeholder HUD, automation tests.
 * Visual implementation register, architecture, editor setup and backend design documents.
 
+## Since the first commit
+
+* Static review of the uncompiled module: removed `TObjectPtr<const T>` properties, added a missing
+  forward declaration, replaced an unverified wheel-count call.
+* Assists are now credited (opponents who damaged a vehicle in the 10 s before it died).
+
 ## Next, in order
 
 1. **First engine build** - compile the Unreal module on a machine with UE 5.7 and fix errors.
@@ -27,7 +33,6 @@
 | Upgrades / consumables | Purchasable and stored, but have no in-match effect yet. |
 | Weapons | Fixed forward-firing mounts; no turret aiming or lock-on. |
 | AI | Direct steering with obstacle probe; no navmesh path following, so mazes and tight streets will defeat it. |
-| Assists | Supported by the rules, not yet reported by the Unreal layer. |
 | Terrain | No surface-dependent grip or destructible scenery yet. |
 | Multiplayer | Written for dedicated servers but untested over a network; no lobby, matchmaking or reconnect. |
 | Rewards trust | Applied on the client (see backend doc). |

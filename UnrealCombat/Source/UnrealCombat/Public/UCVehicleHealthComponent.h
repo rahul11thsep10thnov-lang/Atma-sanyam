@@ -7,6 +7,7 @@
 #include "UCTypes.h"
 #include "UCVehicleHealthComponent.generated.h"
 
+class AController;
 class UUCVehicleDefinition;
 class UUCVehicleHealthComponent;
 
@@ -84,6 +85,8 @@ public:
 	/** Seconds since this vehicle last took damage (large if never). Server only. */
 	float GetTimeSinceDamaged() const;
 	AController* GetLastDamageInstigator() const { return LastInstigator.Get(); }
+	/** Server only: controllers that damaged this vehicle within the last WithinSeconds. */
+	void GetRecentDamagers(float WithinSeconds, TArray<AController*>& OutControllers) const;
 	uc::FPerformanceModifiers GetPerformanceModifiers() const { return Model.GetPerformanceModifiers(); }
 
 	/** Which armour face a shot travelling in ShotDirection (world space) strikes. */
@@ -127,5 +130,6 @@ private:
 	uc::FVehicleDamageModel Model;
 	uc::FShield Shield;
 	TWeakObjectPtr<AController> LastInstigator;
+	TMap<TWeakObjectPtr<AController>, double> DamageTimes;
 	double LastDamageTime = -1.0;
 };

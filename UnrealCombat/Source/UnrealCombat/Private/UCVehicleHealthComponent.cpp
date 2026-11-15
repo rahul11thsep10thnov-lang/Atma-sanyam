@@ -70,6 +70,7 @@ float UUCVehicleHealthComponent::ApplyHit(const FUCHitInfo& Hit, AController* In
 	if (InstigatorController != nullptr)
 	{
 		LastInstigator = InstigatorController;
+		DamageTimes.Add(InstigatorController, LastDamageTime);
 	}
 
 	PushState();
@@ -157,6 +158,23 @@ float UUCVehicleHealthComponent::GetHealthFraction(EUCVehicleComponent Component
 float UUCVehicleHealthComponent::GetArmorFraction(EUCArmorFacing Facing) const
 {
 	return Model.GetArmorFraction(static_cast<uc::EArmorFacing>(Facing));
+}
+
+void UUCVehicleHealthComponent::GetRecentDamagers(float WithinSeconds, TArray<AController*>& OutControllers) const
+{
+	const UWorld* World = GetWorld();
+	if (World == nullptr)
+	{
+		return;
+	}
+	const double Now = World->GetTimeSeconds();
+	for (const TPair<TWeakObjectPtr<AController>, double>& Pair : DamageTimes)
+	{
+		if (AController* Controller = Pair.Key.Get(); Controller != nullptr && Now - Pair.Value <= WithinSeconds)
+		{
+			OutControllers.Add(Controller);
+		}
+	}
 }
 
 float UUCVehicleHealthComponent::GetTimeSinceDamaged() const

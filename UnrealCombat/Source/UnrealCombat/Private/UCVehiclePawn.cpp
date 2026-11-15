@@ -41,7 +41,7 @@ void AUCVehiclePawn::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 	DOREPLIFETIME(AUCVehiclePawn, Definition);
 }
 
-void AUCVehiclePawn::InitFromDefinition(const UUCVehicleDefinition* InDefinition)
+void AUCVehiclePawn::InitFromDefinition(UUCVehicleDefinition* InDefinition)
 {
 	if (HasAuthority())
 	{
@@ -272,7 +272,7 @@ void AUCVehiclePawn::ApplyPerformanceModifiers()
 	const uc::FPerformanceModifiers Modifiers = Health->GetPerformanceModifiers();
 	Movement->SetMaxEngineTorque(BaseMaxEngineTorque * Modifiers.EnginePowerScale * Abilities->GetBoostScale() * AISpeedScale);
 
-	const int32 WheelCount = FMath::Min3(BaseWheelFriction.Num(), Movement->GetNumWheels(), uc::NumWheels);
+	const int32 WheelCount = FMath::Min3(BaseWheelFriction.Num(), Movement->WheelSetups.Num(), uc::NumWheels);
 	for (int32 Wheel = 0; Wheel < WheelCount; ++Wheel)
 	{
 		Movement->SetWheelFrictionMultiplier(Wheel, BaseWheelFriction[Wheel] * Modifiers.WheelGripScale[Wheel]);

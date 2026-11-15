@@ -78,13 +78,13 @@ public:
 	virtual void RestartPlayer(AController* NewPlayer) override;
 
 private:
-	void RegisterParticipant(AController* Controller, int32 Team, bool bIsBot, bool bIsBoss, const UUCVehicleDefinition* Vehicle);
-	void SpawnBot(const UUCVehicleDefinition* Vehicle, bool bIsBoss);
+	void RegisterParticipant(AController* Controller, int32 Team, bool bIsBot, bool bIsBoss, UUCVehicleDefinition* Vehicle);
+	void SpawnBot(UUCVehicleDefinition* Vehicle, bool bIsBoss);
 	void RespawnController(TWeakObjectPtr<AController> Controller);
 	void RemoveController(TWeakObjectPtr<AController> Controller);
 	void SyncReplicatedState();
 	void HandleMatchFinished();
-	const UUCVehicleDefinition* ResolveVehicle(AController* Controller) const;
+	UUCVehicleDefinition* ResolveVehicle(AController* Controller) const;
 
 	uc::FMatch Match;
 	FString MatchId;
@@ -92,5 +92,5 @@ private:
 
 	/** Vehicle assigned to each controller (players and bots). */
 	UPROPERTY()
-	TMap<TObjectPtr<AController>, TObjectPtr<const UUCVehicleDefinition>> AssignedVehicles;
+	TMap<TObjectPtr<AController>, TObjectPtr<UUCVehicleDefinition>> AssignedVehicles;
 };

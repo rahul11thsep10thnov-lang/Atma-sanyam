@@ -29,7 +29,7 @@ public:
 	AUCVehiclePawn(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	/** Server: call between deferred spawn and FinishSpawning. */
-	void InitFromDefinition(const UUCVehicleDefinition* InDefinition);
+	void InitFromDefinition(UUCVehicleDefinition* InDefinition);
 
 	/**
 	 * Driving input shared by players and AI.
@@ -133,7 +133,7 @@ private:
 	void ApplyPerformanceModifiers();
 
 	UPROPERTY(ReplicatedUsing = OnRep_Definition)
-	TObjectPtr<const UUCVehicleDefinition> Definition;
+	TObjectPtr<UUCVehicleDefinition> Definition;
 
 	float PlayerThrottle = 0.f;
 	float PlayerSteering = 0.f;
