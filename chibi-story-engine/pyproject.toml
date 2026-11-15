@@ -1,0 +1,44 @@
+[project]
+name = "chibi-story-engine"
+version = "0.1.0"
+description = "Reusable Chibi Story Animation Engine (CSAE): story JSON -> 2.5D cutout animation -> MP4"
+requires-python = ">=3.12"
+dependencies = [
+  "pydantic>=2.7",
+  "pydantic-settings>=2.3",
+  "numpy>=1.26",
+  "pillow>=10",
+]
+
+[project.optional-dependencies]
+# Blender as a Python module. The wheel pins its own Python version (5.3.x -> CPython 3.13).
+render = ["bpy>=5.0"]
+backend = [
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.30",
+  "sqlalchemy>=2.0",
+  "alembic>=1.13",
+  "psycopg[binary]>=3.2",
+  "python-multipart>=0.0.9",
+  "bcrypt>=4.1",
+  "pyjwt>=2.8",
+]
+forge = ["cairosvg>=2.7"]
+llm = ["anthropic>=0.40"]
+dev = ["pytest>=8", "httpx>=0.27"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["engine*", "backend*", "tools*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q -ra"
+markers = [
+  "render: needs Blender (bpy) and FFmpeg; produces real frames/video",
+  "db: needs PostgreSQL (CSAE_TEST_DATABASE_URL)",
+  "tts: needs a local speech synthesiser (espeak-ng)",
+]

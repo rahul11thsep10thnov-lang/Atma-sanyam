@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+*.egg-info/
+node_modules/
+frontend/dist/
+frontend/test-results/
+# Render working data (kept on disk between runs, never committed)
+renders/temporary/
+renders/cache/
+renders/scenes/
+renders/previews/
+renders/audio/
+renders/jobs/
