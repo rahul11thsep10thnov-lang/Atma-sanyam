@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.chrome
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -160,8 +161,8 @@ private fun TopBarTab(
     ) {
         Icon(imageVector = icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(18.dp))
         Text(
-            text = text.uppercase(),
-            style = RoyalLabelStyle.copy(fontSize = 13.sp, letterSpacing = 0.6.sp),
+            text = text,
+            style = AppType.SecondaryLabel,
             color = ParchmentText,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,

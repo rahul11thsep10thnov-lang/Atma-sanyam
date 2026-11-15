@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.language
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -136,7 +137,7 @@ private fun LanguageTile(
             textAlign = TextAlign.Center
         )
         Text(
-            text = language.englishName.uppercase(),
+            text = language.englishName,
             style = RoyalLabelStyle,
             color = if (isSelected) GoldBevelLight else ParchmentTextDim,
             textAlign = TextAlign.Center

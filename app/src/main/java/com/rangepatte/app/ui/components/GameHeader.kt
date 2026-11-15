@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.components
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -63,8 +64,8 @@ fun GameHeader(
                 )
             }
             Text(
-                text = title.uppercase(),
-                style = RoyalTitleStyle,
+                text = title,
+                style = AppType.ScreenTitle,
                 color = GoldBevelLight,
                 textAlign = TextAlign.Center,
                 maxLines = 1,

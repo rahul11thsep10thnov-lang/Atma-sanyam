@@ -82,7 +82,7 @@ private fun TitleCrest() {
         )
         Text(
             text = stringResource(R.string.app_tagline),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.bodyLarge,
             color = ParchmentTextDim,
             textAlign = TextAlign.Center
         )

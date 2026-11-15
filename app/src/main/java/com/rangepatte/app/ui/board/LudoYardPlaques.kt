@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.board
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -83,17 +84,17 @@ fun CornerPlaque(player: CornerPlayer?, alignEnd: Boolean, onTop: Boolean, pulse
                 if (!alignEnd) Avatar(player)
                 Column(horizontalAlignment = if (alignEnd) Alignment.End else Alignment.Start, modifier = Modifier.padding(horizontal = 4.dp)) {
                     Text(
-                        text = player.name, fontSize = 14.sp, lineHeight = 16.sp, fontWeight = FontWeight.Bold,
+                        text = player.name, style = AppType.PlayerName,
                         color = if (turn) Color.White else Color(0xFFEDE3CF), maxLines = 1, overflow = TextOverflow.Ellipsis
                     )
                     when {
-                        player.awayLeft != null -> Text(stringResource(R.string.ludo_away_format, player.awayLeft), fontSize = 11.sp, color = Color(0xFFEDE3CF))
+                        player.awayLeft != null -> Text(stringResource(R.string.ludo_away_format, player.awayLeft), style = AppType.Metadata, color = Color(0xFFEDE3CF))
                         player.filled != null -> Row(horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.padding(top = 3.dp)) {
                             repeat(4) { i ->
                                 Box(Modifier.size(11.dp).background(if (i < player.filled) GoldenGlow else player.tint, CircleShape).border(1.dp, Color.White.copy(alpha = 0.8f), CircleShape))
                             }
                         }
-                        player.detail != null -> Text(player.detail, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = if (turn) GoldenGlow else Color(0xFFEDE3CF), maxLines = 1)
+                        player.detail != null -> Text(player.detail, style = AppType.Metadata, fontWeight = FontWeight.Bold, color = if (turn) GoldenGlow else Color(0xFFEDE3CF), maxLines = 1)
                     }
                 }
                 if (alignEnd) Avatar(player)
@@ -134,18 +135,18 @@ private fun SidePlaque(player: CornerPlayer?, pulse: Float, rightSide: Boolean, 
             ) {
                 Avatar(player)
                 Text(
-                    text = player.name, fontSize = 12.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold,
+                    text = player.name, style = AppType.PlayerNameCompact,
                     color = if (turn) Color.White else Color(0xFFEDE3CF), maxLines = 1, overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(top = 2.dp)
                 )
                 when {
-                    player.awayLeft != null -> Text(stringResource(R.string.ludo_away_format, player.awayLeft), fontSize = 10.sp, color = Color(0xFFEDE3CF), maxLines = 1)
+                    player.awayLeft != null -> Text(stringResource(R.string.ludo_away_format, player.awayLeft), style = AppType.Metadata, color = Color(0xFFEDE3CF), maxLines = 1)
                     player.filled != null -> Row(horizontalArrangement = Arrangement.spacedBy(3.dp), modifier = Modifier.padding(top = 2.dp)) {
                         repeat(4) { i ->
                             Box(Modifier.size(9.dp).background(if (i < player.filled) GoldenGlow else player.tint, CircleShape).border(1.dp, Color.White.copy(alpha = 0.8f), CircleShape))
                         }
                     }
-                    player.detail != null -> Text(player.detail, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = if (turn) GoldenGlow else Color(0xFFEDE3CF), maxLines = 1)
+                    player.detail != null -> Text(player.detail, style = AppType.Metadata, fontWeight = FontWeight.Bold, color = if (turn) GoldenGlow else Color(0xFFEDE3CF), maxLines = 1)
                 }
             }
         }
@@ -169,7 +170,7 @@ private fun Avatar(player: CornerPlayer) {
                 else -> PersonAvatar(player.avatarId, online = true, size = 34.dp)
             }
         }
-        Text(player.suit, fontSize = 10.sp, color = Color.White, fontWeight = FontWeight.Black, modifier = Modifier.offset(x = 3.dp, y = 3.dp).background(player.tint, CircleShape).padding(horizontal = 3.dp))
+        Text(player.suit, style = AppType.Metadata, color = Color.White, fontWeight = FontWeight.Black, modifier = Modifier.offset(x = 3.dp, y = 3.dp).background(player.tint, CircleShape).padding(horizontal = 3.dp))
     }
 }
 
@@ -177,7 +178,7 @@ private fun Avatar(player: CornerPlayer) {
 private fun TurnTag(isYou: Boolean, pulse: Float) {
     Text(
         text = stringResource(if (isYou) R.string.board_your_turn_tag else R.string.board_turn_tag),
-        fontSize = 12.sp, fontWeight = FontWeight.Black, color = Color(0xFF3A2208),
+        style = AppType.SecondaryLabel, fontWeight = FontWeight.Black, color = Color(0xFF3A2208),
         modifier = Modifier
             .padding(vertical = 3.dp)
             .background(lerp(Color(0xFFFFD54F), Color.White, pulse * 0.35f), RoundedCornerShape(10.dp))

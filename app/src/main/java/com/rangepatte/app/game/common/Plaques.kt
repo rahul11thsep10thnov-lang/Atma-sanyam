@@ -1,5 +1,6 @@
 package com.rangepatte.app.game.common
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -50,8 +51,7 @@ fun SeatPlaque(
         }
         Text(
             text = name,
-            style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.Bold,
+            style = AppType.PlayerName,
             color = if (dimmed) ParchmentTextDim else if (isTurn) GoldenGlow else ParchmentText,
             textAlign = TextAlign.Center,
             maxLines = 1,

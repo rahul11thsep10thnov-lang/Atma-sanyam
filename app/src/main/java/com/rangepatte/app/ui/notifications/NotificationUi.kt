@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.notifications
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -65,7 +66,7 @@ fun NotificationBell(unread: Int, onClick: () -> Unit, modifier: Modifier = Modi
             Text(
                 text = if (unread > 9) "9+" else "$unread",
                 color = Color.White,
-                fontSize = 10.sp,
+                style = AppType.Metadata,
                 fontWeight = FontWeight.Black,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -110,8 +111,8 @@ fun NotificationScroll(
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             Text(
-                text = stringResource(R.string.notif_title).uppercase(),
-                style = MaterialTheme.typography.labelMedium.copy(letterSpacing = 1.5.sp),
+                text = stringResource(R.string.notif_title),
+                style = MaterialTheme.typography.labelMedium,
                 color = ink.copy(alpha = 0.7f)
             )
             if (items.isEmpty()) {
@@ -137,7 +138,7 @@ fun NotificationScroll(
 
 @Composable
 private fun Section(text: String, ink: Color) {
-    Text(text.uppercase(), style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 1.2.sp), color = ink.copy(alpha = 0.6f), modifier = Modifier.padding(top = 4.dp))
+    Text(text, style = MaterialTheme.typography.labelSmall, color = ink.copy(alpha = 0.6f), modifier = Modifier.padding(top = 4.dp))
 }
 
 /** The sentence for a notice, in the player's language. */

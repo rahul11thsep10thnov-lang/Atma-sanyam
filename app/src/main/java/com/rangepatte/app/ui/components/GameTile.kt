@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,24 +21,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.rangepatte.app.R
 import com.rangepatte.app.domain.model.GameInfo
-import com.rangepatte.app.ui.theme.BodyFont
+import com.rangepatte.app.ui.theme.AppType
 import com.rangepatte.app.ui.theme.ButtonCrimsonBottom
 import com.rangepatte.app.ui.theme.ButtonCrimsonTop
 import com.rangepatte.app.ui.theme.GoldBevelDark
 import com.rangepatte.app.ui.theme.GoldBevelLight
 import com.rangepatte.app.ui.theme.ParchmentText
 import com.rangepatte.app.ui.theme.ParchmentTextDim
-import com.rangepatte.app.ui.theme.RoyalLabelStyle
 import com.rangepatte.app.ui.thumbnails.GameThumbnail
 
 /** Portrait backdrops cycle through four royal colours, like the coloured portrait cards of a strategy game. */
@@ -93,16 +92,16 @@ fun GameTile(
         NamePlaque(text = stringResource(game.nameRes))
         Text(
             text = stringResource(game.descriptionRes),
-            style = TextStyle(fontFamily = BodyFont, fontSize = 14.sp, lineHeight = 18.sp),
+            style = AppType.BodyText,
             color = ParchmentTextDim,
             textAlign = TextAlign.Center,
-            maxLines = 2,
+            maxLines = 4,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(top = 6.dp)
         )
         Text(
             text = playerCountLabel(game.minPlayers, game.maxPlayers, stringResource(R.string.players_suffix)),
-            style = RoyalLabelStyle.copy(fontSize = 12.sp),
+            style = AppType.Metadata,
             color = GoldBevelDark,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 2.dp)
@@ -113,21 +112,26 @@ fun GameTile(
 @Composable
 private fun NamePlaque(text: String) {
     val shape = RoundedCornerShape(2.dp)
+    val style = AppType.GameTitle
+    // Game names are large (21 sp), so the plaque always has room for two lines. Every plaque in a grid
+    // is the same height, and a one-line name sits in the middle of it.
+    val twoLines = with(LocalDensity.current) { style.lineHeight.toDp() * 2 }
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 4.dp)
             .background(Brush.verticalGradient(listOf(ButtonCrimsonTop, ButtonCrimsonBottom)), shape)
             .border(1.dp, GoldBevelDark, shape)
+            .heightIn(min = twoLines + 10.dp)
             .padding(horizontal = 6.dp, vertical = 5.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = text.uppercase(),
-            style = RoyalLabelStyle.copy(fontSize = 14.sp),
+            text = text,
+            style = style,
             color = ParchmentText,
             textAlign = TextAlign.Center,
-            maxLines = 1,
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
     }
@@ -167,7 +171,7 @@ fun BoardGameTile(
             // The familiar name under the plaque (Moksha Patam · Snakes & Ladders).
             Text(
                 text = stringResource(alt),
-                style = RoyalLabelStyle.copy(fontSize = 11.sp),
+                style = AppType.Metadata,
                 color = GoldBevelLight,
                 textAlign = TextAlign.Center,
                 maxLines = 1,
@@ -176,16 +180,16 @@ fun BoardGameTile(
         }
         Text(
             text = stringResource(game.descriptionRes),
-            style = TextStyle(fontFamily = BodyFont, fontSize = 14.sp, lineHeight = 18.sp),
+            style = AppType.BodyText,
             color = ParchmentTextDim,
             textAlign = TextAlign.Center,
-            maxLines = 2,
+            maxLines = 4,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(top = if (game.altNameRes != null) 2.dp else 6.dp)
         )
         Text(
             text = playerCountLabel(game.minPlayers, game.maxPlayers, stringResource(R.string.players_suffix)),
-            style = RoyalLabelStyle.copy(fontSize = 12.sp),
+            style = AppType.Metadata,
             color = GoldBevelDark,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 2.dp)

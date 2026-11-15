@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.components.royal
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -100,8 +101,8 @@ fun RoyalButton(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = text.uppercase(),
-            style = if (compact) RoyalLabelStyle.copy(fontSize = 12.sp, letterSpacing = 0.2.sp) else RoyalLabelStyle,
+            text = text,
+            style = if (compact) AppType.SecondaryLabel else AppType.PrimaryButton,
             color = ParchmentText,
             textAlign = TextAlign.Center,
             maxLines = 1,

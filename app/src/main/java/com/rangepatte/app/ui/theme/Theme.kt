@@ -34,7 +34,7 @@ private val RoyalCourtColors: ColorScheme = darkColorScheme(
 fun RangEPatteTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = RoyalCourtColors,
-        typography = RangEPatteTypography,
+        typography = rememberAppTypography(),
         shapes = RangEPatteShapes,
         content = content
     )

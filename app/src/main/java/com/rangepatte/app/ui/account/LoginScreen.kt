@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.account
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -56,7 +57,6 @@ import com.rangepatte.app.ui.theme.GoldBevelDark
 import com.rangepatte.app.ui.theme.GoldenGlow
 import com.rangepatte.app.ui.language.LocalAppLanguage
 import com.rangepatte.app.ui.language.findActivity
-import com.rangepatte.app.ui.theme.BodyFont
 import com.rangepatte.app.ui.theme.GoldBevelLight
 import com.rangepatte.app.ui.theme.PanelWoodDark
 import com.rangepatte.app.ui.theme.ParchmentText
@@ -211,7 +211,7 @@ private fun LoginForm(uiState: LoginUiState, viewModel: LoginViewModel) {
                     onValueChange = viewModel::onOtpChange,
                     label = stringResource(R.string.login_otp_label),
                     isError = uiState.errorRes == R.string.login_invalid_otp,
-                    textStyle = TextStyle(fontFamily = BodyFont, fontSize = 24.sp, letterSpacing = 8.sp, color = ParchmentText),
+                    textStyle = AppType.CodeDigits.copy(fontSize = 24.sp, letterSpacing = 8.sp, color = ParchmentText),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = { verify() }),
                     modifier = Modifier.padding(top = 12.dp)

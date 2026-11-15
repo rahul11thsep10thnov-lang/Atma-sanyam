@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.board
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
@@ -264,8 +265,8 @@ private fun ModeSlots(selected: PlayMode, onSelect: (PlayMode) -> Unit) {
                 RoyalSlot(selected = isSelected, onClick = { onSelect(option.mode) }, contentDescription = if (option.available) label else "$label, $comingSoon", enabled = option.available) {
                     Icon(if (option.available) option.icon else Icons.Filled.Lock, contentDescription = null, tint = if (isSelected) GoldenGlow else ParchmentText, modifier = Modifier.size(26.dp))
                 }
-                Text(label, style = RoyalLabelStyle.copy(fontSize = 12.sp, letterSpacing = 0.4.sp, lineHeight = 15.sp), color = if (isSelected) GoldBevelLight else ParchmentTextDim, textAlign = TextAlign.Center, maxLines = 3, modifier = Modifier.padding(top = 4.dp))
-                if (!option.available) Text(comingSoon, style = RoyalLabelStyle.copy(fontSize = 11.sp, letterSpacing = 0.sp), color = GoldBevelDark, textAlign = TextAlign.Center)
+                Text(label, style = AppType.SecondaryLabel, color = if (isSelected) GoldBevelLight else ParchmentTextDim, textAlign = TextAlign.Center, maxLines = 3, modifier = Modifier.padding(top = 4.dp))
+                if (!option.available) Text(comingSoon, style = AppType.Metadata, color = GoldBevelDark, textAlign = TextAlign.Center)
             }
         }
     }

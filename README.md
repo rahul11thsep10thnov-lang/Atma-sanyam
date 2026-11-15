@@ -58,8 +58,8 @@ any size and adds nothing to the download):
 - **Responsive hands** (`game/common/HandLayout.kt`): `fanLayout` / `groupPlan` pick the largest cards
   that fit the table (`LocalTableArea`, provided by `GameFrame`) — one fanned row, or two overlapped
   rows for 13 cards when that makes the cards clearly bigger. Selected cards rise with a warm glow.
-- **Typography** (`ui/theme/Type.kt`): bundled Cinzel and Marcellus for titles, a legible serif for
-  information (see [Typography & fonts](#typography--fonts)).
+- **Typography** (`ui/theme/Type.kt`): Noto Sans / Noto Sans Devanagari for the interface, Cinzel for the brand,
+  Marcellus for headings (see [Typography & fonts](#typography--fonts)).
 - **Honest limitation**: the K/Q/J are hand-built vector illustrations, not painted artwork — there is
   no image tool here. They read as ornamental court miniatures at card size; for painted art, replace
   the body of `drawBust` in `RoyalPortraits.kt` (or draw a bitmap there); no calling code changes.
@@ -242,15 +242,35 @@ there changes the whole app.
 
 ## Typography & fonts
 
-`ui/theme/Type.kt` defines three role tokens — `DisplayFont` (titles/headers), `TitleFont`
-(buttons/player names), `BodyFont` (scores/settings/small text) — used everywhere instead of
-inlining a `FontFamily`. `DisplayFont`/`TitleFont` are backed by two real font files bundled under
-`app/src/main/res/font/` (Cinzel, a variable font, and Marcellus, static regular) — both fetched
-from Google's open-source `google/fonts` repository and licensed SIL OFL 1.1; see
-`THIRD_PARTY_NOTICES.md` and `licenses/fonts/` for the full license text and provenance.
-`BodyFont` stays on the zero-cost platform serif for legibility at small sizes without adding a
-third bundled font. To swap either font, replace the `.ttf` under `res/font/`, update the
-`Font(R.font....)` reference in `Type.kt`, and update the license notice accordingly.
+All text styles come from one place: `ui/theme/TypeScale.kt` (the sizes, as plain numbers that are unit-tested)
+and `ui/theme/Type.kt` (the styles). Screens use the semantic styles `AppType.BrandDisplay`, `ScreenTitle`,
+`SectionTitle`, `GameTitle`, `PlayerName`, `PlayerNameCompact`, `BodyText`, `GameplayText`, `ScoreText`,
+`PrimaryButton`, `SecondaryLabel`, `NavigationLabel`, `Metadata` and `CodeDigits` instead of typing a size.
+The Material roles (`MaterialTheme.typography.*`) are built from the same styles.
+
+| Token | Size (sp) | English font | Hindi / Marathi font |
+|---|---|---|---|
+| BrandDisplay | 34 | Cinzel Bold | Noto Sans Devanagari Bold |
+| SectionTitle | 23 | Marcellus Regular | Noto Sans Devanagari SemiBold |
+| ScreenTitle | 21 | Noto Sans SemiBold | Noto Sans Devanagari SemiBold |
+| GameTitle | 21 | Noto Sans Bold | Noto Sans Devanagari Bold |
+| PlayerName / compact | 16 / 14 | Noto Sans SemiBold | Noto Sans Devanagari SemiBold |
+| BodyText, GameplayText | 15 | Noto Sans Regular / Medium | Noto Sans Devanagari |
+| ScoreText (tabular numerals) | 17 | Noto Sans SemiBold | Noto Sans Devanagari SemiBold |
+| PrimaryButton | 15 | Noto Sans SemiBold | Noto Sans Devanagari SemiBold |
+| SecondaryLabel | 13 | Noto Sans Medium | Noto Sans Devanagari Medium |
+| NavigationLabel, Metadata | 12 | Noto Sans Medium | Noto Sans Devanagari Medium |
+
+The font follows the language the player chose (`LocalAppLanguage`), switching instantly. Letter-spacing is
+used only on the English brand, because spacing splits Devanagari conjuncts; Devanagari lines are 0.1x taller
+so matras are not clipped. Other scripts (Tamil, Telugu, Kannada, Bengali, Punjabi) use Noto Sans for Latin and
+Android's own Noto fonts for their script. Capitals are used only for the brand. The older `RoyalTitleStyle`,
+`RoyalLabelStyle` and `BodyFont` names still exist and now point at these tokens.
+
+Fonts are bundled locally in `app/src/main/res/font/` (SIL OFL 1.1; see `THIRD_PARTY_NOTICES.md` and
+`licenses/fonts/`). The eight Noto files are subset to the characters the app uses (about 1 MB in total).
+Sizes still typed by hand are only icon glyphs/emoji, the room-code and OTP entry boxes, and sizes that scale
+with the board or a card (`TypographyTest` keeps it that way).
 
 ## How to add a new background
 

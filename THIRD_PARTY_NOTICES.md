@@ -2,7 +2,7 @@
 
 ## Fonts
 
-Bundled under `app/src/main/res/font/`, both licensed under the SIL Open Font License 1.1
+Bundled under `app/src/main/res/font/`, all licensed under the SIL Open Font License 1.1
 (full text in `licenses/fonts/`):
 
 - **Cinzel** (`cinzel_variable.ttf`) — Copyright 2020 The Cinzel Project Authors.
@@ -10,8 +10,16 @@ Bundled under `app/src/main/res/font/`, both licensed under the SIL Open Font Li
 - **Marcellus** (`marcellus_regular.ttf`) — Copyright 2012 Brian J. Bonislawsky DBA Astigmatic.
   Source: https://github.com/google/fonts/tree/main/ofl/marcellus
 
-Both were fetched from Google's `google/fonts` GitHub repository, which mirrors Google Fonts
-under its original open-source license. No modifications were made to either font file.
+- **Noto Sans** (`noto_sans_{regular,medium,semibold,bold}.ttf`) — Copyright 2022 The Noto Project
+  Authors (https://github.com/notofonts/latin-greek-cyrillic).
+- **Noto Sans Devanagari** (`noto_sans_devanagari_{regular,medium,semibold,bold}.ttf`) — Copyright 2022
+  The Noto Project Authors (https://github.com/notofonts/devanagari).
+
+Cinzel and Marcellus were fetched from Google's `google/fonts` GitHub repository, which mirrors Google
+Fonts under its original open-source license, and are unmodified. The eight Noto files are Google Fonts'
+static weights **reduced to the characters the app uses** (Latin, Latin-1/Extended-A, punctuation, ₹, and the
+Devanagari block with its OpenType layout tables intact) to keep the app small; no glyph was redrawn. The
+OFL permits this, and Noto has no Reserved Font Name.
 
 ## Audio
 

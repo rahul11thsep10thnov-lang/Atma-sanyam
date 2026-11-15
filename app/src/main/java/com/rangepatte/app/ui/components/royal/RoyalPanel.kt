@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.components.royal
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -58,8 +59,8 @@ fun RoyalPanel(
         CompositionLocalProvider(LocalContentColor provides ParchmentText) {
             if (title != null) {
                 Text(
-                    text = title.uppercase(),
-                    style = RoyalTitleStyle,
+                    text = title,
+                    style = AppType.SectionTitle,
                     color = GoldBevelLight,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()

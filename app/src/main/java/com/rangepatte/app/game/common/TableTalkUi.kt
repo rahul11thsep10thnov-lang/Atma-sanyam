@@ -1,5 +1,6 @@
 package com.rangepatte.app.game.common
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -127,8 +128,8 @@ fun TalkTray(control: TalkControl, onClose: () -> Unit, modifier: Modifier = Mod
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = stringResource(R.string.talk_say_something).uppercase(),
-                style = MaterialTheme.typography.labelMedium.copy(letterSpacing = 1.5.sp),
+                text = stringResource(R.string.talk_say_something),
+                style = MaterialTheme.typography.labelMedium,
                 color = ink.copy(alpha = 0.7f),
                 modifier = Modifier.weight(1f)
             )

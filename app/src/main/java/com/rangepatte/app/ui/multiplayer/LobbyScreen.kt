@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.multiplayer
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -50,7 +51,6 @@ import com.rangepatte.app.ui.components.royal.RoyalButtonStyle
 import com.rangepatte.app.ui.components.royal.RoyalPanel
 import com.rangepatte.app.ui.components.royal.RoyalSectionTitle
 import com.rangepatte.app.ui.components.royal.RoyalTextField
-import com.rangepatte.app.ui.theme.BodyFont
 import com.rangepatte.app.ui.theme.GoldBevelDark
 import com.rangepatte.app.ui.theme.GoldBevelLight
 import com.rangepatte.app.ui.theme.GoldenGlow
@@ -139,7 +139,7 @@ fun LobbyScreen(
                                 onValueChange = { code = it.uppercase().filter { c -> c.isLetterOrDigit() }.take(6) },
                                 label = stringResource(R.string.net_enter_code),
                                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Characters),
-                                textStyle = TextStyle(fontFamily = BodyFont, fontSize = 22.sp, letterSpacing = 4.sp, color = ParchmentText),
+                                textStyle = AppType.CodeDigits.copy(fontSize = 22.sp, letterSpacing = 4.sp, color = ParchmentText),
                                 modifier = Modifier.padding(top = 10.dp)
                             )
                             RoyalButton(
@@ -189,7 +189,7 @@ private fun HostSection(lobby: LobbyUi, onShareCode: (String) -> Unit, decor: Lo
         RoyalSectionTitle(stringResource(R.string.net_room_code))
         Text(
             text = roomCode,
-            style = TextStyle(fontFamily = BodyFont, fontSize = 40.sp, letterSpacing = 8.sp, color = GoldenGlow),
+            style = AppType.CodeDigits.copy(fontSize = 40.sp, letterSpacing = 8.sp, color = GoldenGlow),
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )

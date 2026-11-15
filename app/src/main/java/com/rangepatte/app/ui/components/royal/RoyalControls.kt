@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.components.royal
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -57,7 +58,7 @@ fun RoyalPlaque(text: String, modifier: Modifier = Modifier) {
             .padding(horizontal = 14.dp, vertical = 4.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = text.uppercase(), style = RoyalLabelStyle, color = GoldBevelLight, textAlign = TextAlign.Center)
+        Text(text = text, style = AppType.PrimaryButton, color = GoldBevelLight, textAlign = TextAlign.Center)
     }
 }
 
@@ -65,8 +66,8 @@ fun RoyalPlaque(text: String, modifier: Modifier = Modifier) {
 @Composable
 fun RoyalSectionTitle(text: String, modifier: Modifier = Modifier) {
     Text(
-        text = text.uppercase(),
-        style = RoyalTitleStyle.copy(fontSize = 18.sp),
+        text = text,
+        style = AppType.ScreenTitle,
         color = ParchmentText,
         textAlign = TextAlign.Center,
         modifier = modifier
@@ -102,8 +103,8 @@ fun RoyalOptionRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = label.uppercase(),
-                style = RoyalLabelStyle.copy(fontSize = 14.sp),
+                text = label,
+                style = AppType.GameplayText,
                 color = ParchmentText,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,

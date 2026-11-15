@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.components
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -46,8 +47,8 @@ fun BottomNavigationBar(
                 icon = { Icon(imageVector = item.icon, contentDescription = null) },
                 label = {
                     Text(
-                        text = stringResource(item.labelRes).uppercase(),
-                        style = RoyalLabelStyle.copy(fontSize = 12.sp, letterSpacing = 0.8.sp),
+                        text = stringResource(item.labelRes),
+                        style = AppType.NavigationLabel,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

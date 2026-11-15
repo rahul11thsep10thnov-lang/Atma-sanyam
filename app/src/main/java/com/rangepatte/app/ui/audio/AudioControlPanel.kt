@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.audio
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -106,8 +107,8 @@ fun AudioControlsContent(modifier: Modifier = Modifier) {
 private fun SwitchRow(label: String, checked: Boolean, onChange: (Boolean) -> Unit) {
     RoyalOptionRow(label = label) {
         Text(
-            text = stringResource(if (checked) R.string.audio_on else R.string.audio_off).uppercase(),
-            style = RoyalLabelStyle.copy(fontSize = 13.sp),
+            text = stringResource(if (checked) R.string.audio_on else R.string.audio_off),
+            style = AppType.SecondaryLabel,
             color = if (checked) GoldBevelLight else ParchmentTextDim,
             modifier = Modifier.padding(end = 6.dp)
         )

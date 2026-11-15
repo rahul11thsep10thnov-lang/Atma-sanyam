@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.components
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -46,14 +47,13 @@ fun ScorePanel(
                 Row {
                     Text(
                         text = name,
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = AppType.PlayerName,
                         color = ParchmentText,
                         modifier = Modifier.weight(1f)
                     )
                     Text(
                         text = score.toString(),
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold,
+                        style = AppType.ScoreText,
                         color = GoldenGlow,
                         modifier = Modifier.padding(start = 12.dp)
                     )

@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.components
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -55,7 +56,7 @@ fun PlayerAvatar(
         }
         Text(
             text = if (isAI) stringResource(R.string.player_ai_format, name) else name,
-            style = MaterialTheme.typography.labelMedium,
+            style = AppType.PlayerNameCompact,
             color = MaterialTheme.colorScheme.onBackground,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,

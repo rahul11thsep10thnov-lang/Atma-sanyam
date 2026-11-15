@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.setup
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -293,7 +294,7 @@ private fun ModeSlots(selected: PlayMode, onSelect: (PlayMode) -> Unit, withOthe
                 }
                 Text(
                     text = label,
-                    style = RoyalLabelStyle.copy(fontSize = 12.sp, letterSpacing = 0.4.sp, lineHeight = 15.sp),
+                    style = AppType.SecondaryLabel,
                     color = if (isSelected) GoldBevelLight else ParchmentTextDim,
                     textAlign = TextAlign.Center,
                     maxLines = 3,
@@ -302,7 +303,7 @@ private fun ModeSlots(selected: PlayMode, onSelect: (PlayMode) -> Unit, withOthe
                 if (!option.available) {
                     Text(
                         text = comingSoon,
-                        style = RoyalLabelStyle.copy(fontSize = 11.sp, letterSpacing = 0.sp),
+                        style = AppType.Metadata,
                         color = GoldBevelDark,
                         textAlign = TextAlign.Center
                     )

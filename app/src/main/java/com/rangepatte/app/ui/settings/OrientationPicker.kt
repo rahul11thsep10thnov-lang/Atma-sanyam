@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.settings
 
+import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -57,7 +58,7 @@ fun OrientationPicker(modifier: Modifier = Modifier) {
                     .padding(vertical = 10.dp, horizontal = 4.dp)
             ) {
                 Canvas(modifier = Modifier.size(44.dp)) { drawModeIcon(mode, if (selected) GoldBevelLight else GoldBevelLight.copy(alpha = 0.7f)) }
-                Text(text = label, color = GoldBevelLight, fontSize = 13.sp, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal, modifier = Modifier.padding(top = 4.dp))
+                Text(text = label, style = AppType.SecondaryLabel, color = GoldBevelLight, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal, modifier = Modifier.padding(top = 4.dp))
             }
         }
     }
