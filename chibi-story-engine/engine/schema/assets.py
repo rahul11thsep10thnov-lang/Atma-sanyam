@@ -75,7 +75,7 @@ class BaseManifest(Model):
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat(timespec="seconds"))
     change_summary: str = ""
 
-    def file(self, path: str) -> AssetFile | None:
+    def file_entry(self, path: str) -> AssetFile | None:
         for f in self.files:
             if f.path == path:
                 return f
