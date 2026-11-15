@@ -224,8 +224,8 @@ void AUCGameMode::NotifyVehicleDestroyed(AUCVehiclePawn* Victim, AController* Ki
 		{
 			Match.RecordAssist(DamagerState->ParticipantId);
 		}
-	Match.RecordKill(KillerState != nullptr ? KillerState->ParticipantId : INDEX_NONE, VictimState->ParticipantId, VictimState->bIsBoss);
 	}
+	Match.RecordKill(KillerState != nullptr ? KillerState->ParticipantId : INDEX_NONE, VictimState->ParticipantId, VictimState->bIsBoss);
 	SyncReplicatedState();
 
 	// The wreck stays in the world for the respawn delay, then is cleaned up.
