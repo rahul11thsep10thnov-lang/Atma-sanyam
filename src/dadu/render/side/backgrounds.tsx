@@ -226,7 +226,7 @@ export const SIDE_BACKGROUND_KEYS = Object.keys(BACKGROUNDS) as SideBackgroundKe
 export function backgroundForLocation(locationId: string): SideBackgroundKey {
   const table: Record<string, SideBackgroundKey> = {
     'villa.living': 'living', 'villa.kitchen': 'kitchen', 'villa.dining': 'dining', 'villa.bedroom_dadaji': 'bedroom', 'villa.bedroom_chintu': 'bedroom', 'villa.study': 'study', 'villa.activity': 'activity_art',
-    'villa.bathroom': 'bathroom', 'villa.veranda': 'veranda', 'villa.terrace': 'terrace', 'villa.exterior': 'public_garden', 'villa.driveway': 'public_garden',
+    'villa.bathroom': 'bathroom', 'villa.veranda': 'veranda', 'villa.terrace': 'terrace', 'villa.exterior': 'veranda', 'villa.driveway': 'veranda',
     'garden.flowers': 'garden_bed', 'garden.vegetables': 'garden_bed', 'garden.fruit': 'garden_bed', 'garden.butterfly': 'garden_bed', 'garden.greenhouse': 'garden_bed', 'garden.pond': 'pond', 'garden.fountain': 'pond', 'garden.workshop': 'garden_bed', 'garden.compost': 'garden_bed',
     'animalia.dog': 'dog', 'animalia.rabbit': 'rabbit', 'animalia.cowshed': 'cowshed', 'animalia.calf': 'cowshed', 'animalia.wild': 'forest',
     'town.public_garden': 'public_garden', 'town.library': 'library', 'town.temple': 'temple', 'town.bazaar': 'bazaar', 'town.festival_ground': 'bazaar',

@@ -18,11 +18,27 @@ for budget Android devices (small bundle, resolution-independent, themeable by t
 | Character voice lines | ~34,000 lines, 14 languages | none recorded; device text-to-speech reads every line in en/hi with per-character pitch and rate | `src/dadu/audio/narrator.ts` | BLOCKED BY EXTERNAL DEPENDENCY (voice actors, studio) | all recorded audio and the audio packs |
 | Music and ambience | 75 tracks, ambience loops | none bundled; mixer, ducking and ambience keys implemented | `src/dadu/audio/mixer.ts` | BLOCKED BY EXTERNAL DEPENDENCY (composer / licensing) | original or licensed tracks |
 | Sound effects | ~360 | none | — | MISSING | — |
-| Story illustrations | ~1,540 at launch | 12 stories use side-view backgrounds plus character rigs as scenes; no per-page illustration files | `src/dadu/content/stories.ts` (illustration keys) | PARTIALLY IMPLEMENTED | per-page illustrations |
+| Story illustrations | ~1,540 at launch | 36 painted pages (12 stories); remaining pages fall back to side-view backgrounds plus character sprites | `assets/dadu-art/story/` | PARTIALLY IMPLEMENTED | pages beyond the first 36, ~1,500 more at full launch scale |
 | Lesson media | ~3,200 pieces | activity pictures from the inline SVG icon set in `screens/activities/icons.tsx` | | PARTIALLY IMPLEMENTED | subject illustrations, diagrams |
 | Localisation strings | ~39,000 keys, 14 languages | en + hi complete for UI, 52 lessons, 12 stories, 51 assignments, 167 objects; other 12 languages 0 % | `src/dadu/i18n`, `src/dadu/content` | PARTIALLY IMPLEMENTED | 12 languages (CMS translation workflow exists) |
 | Video | minimal | none | — | MISSING (not required for launch) | — |
 | Offline packs | core, language, world, section, stories, audio | pack build and publish on the server (manifests of published items); no downloadable binary packs because all content is bundled in the app today | `backend/src/routes/admin/dadu.ts` | PARTIALLY IMPLEMENTED | pack download/install UI, binary audio packs |
+
+## Painted art (ChatGPT, imported 2026-11)
+
+All pictures were produced from `docs/dadu/art-brief/prompt-book.html`, cut out with `tools/dadu/art_import.py`
+and wired through `src/dadu/art/manifest.generated.ts`. The vector rigs and props remain as automatic fallbacks.
+
+| Group | Done | Notes |
+|---|---|---|
+| Characters | 7 of 7 | Dadaji 10 poses + face; Chintu, Buddy, Chikki, Gauri, Nandu, Mitthu 4-5 poses + face each. Not yet: back / side views, Dadaji reference-photo comparison |
+| Props and buildings | 171 of 197 sprite keys | remaining keys are variant / alias names |
+| Side-view rooms | 24 of 24 | JPEG, 8 MB total |
+| Story pages | 36 of 36 | JPEG, 8 MB total |
+| Isometric floor / wall shells | 0 | iso rooms still use the vector shell, sky and grass |
+| Per-state props (`@on`, `@open`) | 0 | base picture only |
+
+Optional redo: Mitthu `walk` (flatter style, different wing colours).
 
 ## Asset QA
 

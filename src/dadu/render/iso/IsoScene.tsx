@@ -62,7 +62,7 @@ export interface IsoSceneProps {
   little?: boolean;
 }
 
-export const DADAJI_PX = TILE_H * 3.4;
+export const DADAJI_PX = TILE_H * 4.2;
 
 export const ACTIVITY_POSE: Record<CharacterPosition['activity'], SpritePose> = {
   idle: 'stand', walk: 'walk', sit: 'sit', sleep: 'sleep', read: 'sit', garden: 'think', cook: 'clap', play: 'run', graze: 'graze', teach: 'teach',
