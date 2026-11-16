@@ -187,6 +187,7 @@ class EnvironmentLayer(Model):
     parallax: float = Field(1.0, gt=0.05, le=2.5, description="how much the layer shifts when the camera does; < 1 is far away")
     order: int = Field(0, description="draw order among layers at the same depth; characters default to 100")
     cover: bool = Field(False, description="the layer must fill the frame at every camera position")
+    cover_horizontal: bool = Field(False, description="the layer must span the frame's width (its top or bottom may show)")
     motion: list[LayerMotion] = Field(default_factory=list)
     tint_group: Literal["background", "character", "none"] = "background"
 
@@ -206,6 +207,8 @@ class EnvironmentManifest(BaseManifest):
     layers: list[EnvironmentLayer]
     anchors: dict[str, Anchor] = Field(default_factory=dict)
     lighting_presets: list[str] = Field(default_factory=lambda: ["day"])
+    camera_bounds: tuple[float, float, float, float] | None = Field(
+        None, description="left, bottom, right, top on the stage plane: the painted world the camera must stay inside")
     default_anchor_by_role: dict[str, list[str]] = Field(default_factory=dict, description="habitat -> anchors a character of that habitat stands at by default")
 
     @model_validator(mode="after")

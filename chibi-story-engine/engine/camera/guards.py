@@ -16,13 +16,14 @@ class CoverLayer:
     right: float
     top: float
     parallax: float
+    vertical: bool = True          # False: only the left and right edges are guarded
 
 
 def min_zoom_for(layers: list[CoverLayer]) -> float:
     """Smallest zoom at which every covering layer can still fill the frame."""
     need = 0.0
     for layer in layers:
-        for extent, frame in ((layer.right - layer.left, STAGE_W), (layer.top - layer.bottom, STAGE_H)):
+        for extent, frame in ((layer.right - layer.left, STAGE_W), (layer.top - layer.bottom, STAGE_H))[: 2 if layer.vertical else 1]:
             k_max = extent / (frame * layer.parallax)          # largest depth factor the layer can cover
             inv_zoom = k_max - 1.0 / layer.parallax + 1.0
             need = max(need, 1.0 / inv_zoom if inv_zoom > 0 else MAX_ZOOM)
@@ -41,8 +42,9 @@ def constrain(cam: CameraState, layers: list[CoverLayer]) -> CameraState:
         half_w, half_h = STAGE_W / 2 * k * p, STAGE_H / 2 * k * p
         lo_x = max(lo_x, REST_X + (layer.left + half_w - REST_X) / p)
         hi_x = min(hi_x, REST_X + (layer.right - half_w - REST_X) / p)
-        lo_y = max(lo_y, REST_Y + (layer.bottom + half_h - REST_Y) / p)
-        hi_y = min(hi_y, REST_Y + (layer.top - half_h - REST_Y) / p)
+        if layer.vertical:
+            lo_y = max(lo_y, REST_Y + (layer.bottom + half_h - REST_Y) / p)
+            hi_y = min(hi_y, REST_Y + (layer.top - half_h - REST_Y) / p)
     x = (lo_x + hi_x) / 2 if lo_x > hi_x else min(hi_x, max(lo_x, cam.x))
     y = (lo_y + hi_y) / 2 if lo_y > hi_y else min(hi_y, max(lo_y, cam.y))
     return CameraState(x, y, zoom)
@@ -53,7 +55,8 @@ def uncovered(cam: CameraState, layers: list[CoverLayer], tolerance: float = 0.5
     out = []
     for layer in layers:
         left, bottom, right, top = visible_rect(layer.parallax, cam)
-        if left < layer.left - tolerance or right > layer.right + tolerance or bottom < layer.bottom - tolerance or top > layer.top + tolerance:
+        if left < layer.left - tolerance or right > layer.right + tolerance or (
+                layer.vertical and (bottom < layer.bottom - tolerance or top > layer.top + tolerance)):
             out.append(layer.id)
     return out
 

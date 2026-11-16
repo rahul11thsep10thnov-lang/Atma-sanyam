@@ -32,9 +32,9 @@
       "role": "layer",
       "path": "layers/far_bank.png",
       "format": "png",
-      "checksum": "6fdcd431878576401f7a34745e4ee3392a2fbd1693c1116b47279dbcbd85b2c3",
+      "checksum": "17e983a5d48bd466190faad99683def4a47c6b4620106e8f45566d106abdf64c",
       "width": 2720,
-      "height": 1480,
+      "height": 1030,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -44,9 +44,9 @@
       "role": "layer",
       "path": "layers/far_hills.png",
       "format": "png",
-      "checksum": "478c3c7d41a78456f26db9e1061a7feb67c7fa89424633cc136cfdec4a71bf53",
+      "checksum": "26758951aba609ae542e14726140209ad3286751fe44d17270dbb08b309b0ba7",
       "width": 1360,
-      "height": 740,
+      "height": 445,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -56,9 +56,9 @@
       "role": "layer",
       "path": "layers/ripples_far.png",
       "format": "png",
-      "checksum": "0c35481fe6342efae6a79504eed9d19b1f29cd4401f90c9cb6e10aac7900251e",
+      "checksum": "ba77013ed8c68cf5bf2e7393bc460964aac908e5f0df496df0dd4432203e5811",
       "width": 3400,
-      "height": 1480,
+      "height": 196,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -68,9 +68,9 @@
       "role": "layer",
       "path": "layers/ripples_near.png",
       "format": "png",
-      "checksum": "89b895644eff5006a0a0435002b4d6f6c6b0e1f3278c3baf9246532cc1a0ff84",
+      "checksum": "e24962bf7974718086a069ee3d5f0758f6cc17ade67ad949ae48e377b171d1c1",
       "width": 3400,
-      "height": 1480,
+      "height": 284,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -80,9 +80,9 @@
       "role": "layer",
       "path": "layers/river.png",
       "format": "png",
-      "checksum": "2b0f6ff32d9cfc9eadb2527a1bac4b88de453eed392441a9547e123dbf756e59",
-      "width": 1360,
-      "height": 740,
+      "checksum": "1f0f7235315277f8cdc046ca895a7674e689d0dd8b0e19d50a10da87f53a50de",
+      "width": 1352,
+      "height": 378,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -104,16 +104,16 @@
       "role": "layer",
       "path": "layers/water_front.png",
       "format": "png",
-      "checksum": "dff0b7c95485df11ed03d4098dac6703ac09f33c7bed0856bb6908e7f8f2f989",
-      "width": 1360,
-      "height": 740,
+      "checksum": "7ad63b06e094428a09c835c3240e1a768dc5be43aa01a0bd5bd7264f637aaa92",
+      "width": 1354,
+      "height": 210,
       "duration_seconds": null,
       "view": null,
       "expression": null,
       "pose": null
     }
   ],
-  "created_at": "2026-11-15T18:20:36+00:00",
+  "created_at": "2026-11-16T18:36:09+00:00",
   "change_summary": "",
   "stage": [
     1920,
@@ -133,6 +133,7 @@
       "parallax": 0.12,
       "order": 0,
       "cover": true,
+      "cover_horizontal": false,
       "motion": [],
       "tint_group": "background"
     },
@@ -144,11 +145,12 @@
         -400.0,
         -200.0,
         2720.0,
-        1480.0
+        890.0
       ],
       "parallax": 0.28,
       "order": 1,
       "cover": false,
+      "cover_horizontal": false,
       "motion": [],
       "tint_group": "background"
     },
@@ -160,11 +162,12 @@
         -400.0,
         -200.0,
         2720.0,
-        1480.0
+        1030.0
       ],
       "parallax": 0.5,
       "order": 2,
       "cover": false,
+      "cover_horizontal": false,
       "motion": [],
       "tint_group": "background"
     },
@@ -175,12 +178,13 @@
       "rect": [
         -400.0,
         -200.0,
-        2720.0,
-        1480.0
+        2704.0,
+        756.0
       ],
       "parallax": 1.0,
       "order": 10,
-      "cover": true,
+      "cover": false,
+      "cover_horizontal": true,
       "motion": [],
       "tint_group": "background"
     },
@@ -190,13 +194,14 @@
       "file": "layers/ripples_far.png",
       "rect": [
         -400.0,
-        -200.0,
+        338.0,
         3400.0,
-        1480.0
+        196.0
       ],
       "parallax": 1.0,
       "order": 12,
       "cover": false,
+      "cover_horizontal": false,
       "motion": [
         {
           "type": "scroll",
@@ -216,13 +221,14 @@
       "file": "layers/ripples_near.png",
       "rect": [
         -400.0,
-        -200.0,
+        29.0,
         3400.0,
-        1480.0
+        284.0
       ],
       "parallax": 1.0,
       "order": 14,
       "cover": false,
+      "cover_horizontal": false,
       "motion": [
         {
           "type": "scroll",
@@ -252,12 +258,13 @@
       "rect": [
         -400.0,
         -200.0,
-        2720.0,
-        1480.0
+        2708.0,
+        420.0
       ],
       "parallax": 1.0,
       "order": 130,
       "cover": false,
+      "cover_horizontal": false,
       "motion": [
         {
           "type": "bob",
@@ -323,6 +330,12 @@
     "sunset",
     "night",
     "overcast"
+  ],
+  "camera_bounds": [
+    -400.0,
+    -200.0,
+    2320.0,
+    1280.0
   ],
   "default_anchor_by_role": {
     "aquatic": [

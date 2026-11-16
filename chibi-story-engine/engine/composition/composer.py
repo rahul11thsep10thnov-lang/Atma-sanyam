@@ -15,7 +15,8 @@ from ..animation.player import Catalogue
 from ..animation.timeline import PoseTimeline, schedule
 from ..asset_manager.library import AssetLibrary
 from ..audio.timing import ShotTiming, layout_shot, scene_offsets, synthetic_envelope
-from ..camera.guards import CoverLayer, constrain, frame_fraction
+from ..camera.guards import constrain, frame_fraction
+from ..environment_manager.bounds import cover_layers
 from ..camera.presets import CAMERA_PRESETS, Target, evaluate_camera
 from ..camera.projection import CameraState
 from ..character_manager.registry import CharacterRegistry
@@ -181,8 +182,7 @@ class SceneComposer:
             states = [CameraState()] * n
         else:
             states = evaluate_camera(shot.camera, n, fps, target)
-        covers = [CoverLayer(l.id, l.rect[0], l.rect[1], l.rect[0] + l.rect[2] - self._scroll_margin(l), l.rect[1] + l.rect[3], l.parallax)
-                  for l in env.layers if l.cover]
+        covers = cover_layers(env)
         clamped = 0
         for i, state in enumerate(states):
             safe = constrain(state, covers)
@@ -193,10 +193,6 @@ class SceneComposer:
             plan.notes.append(f"camera limited on {clamped} of {n} frames to stay inside the environment")
         self._visibility(shot, actors, plan, timing, fps, path)
         return plan
-
-    @staticmethod
-    def _scroll_margin(layer) -> float:
-        return max((m.amplitude for m in layer.motion if m.type == "scroll"), default=0.0)
 
     def _layer(self, env, version, layer, n, times, wind, tint) -> SpriteTrack:
         x, y, w, h = layer.rect

@@ -1,0 +1,182 @@
+[
+  {
+    "id": "narrator_hi",
+    "name": "Narrator (Hindi)",
+    "language": "hi-IN",
+    "description": "Calm, warm storyteller",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "f2",
+        "pitch": 48,
+        "speed": 138
+      },
+      "sarvam": {
+        "speaker": "meera"
+      },
+      "tone": {
+        "frequency": 200
+      }
+    }
+  },
+  {
+    "id": "monkey_hi",
+    "name": "Monkey",
+    "language": "hi-IN",
+    "description": "Bright, quick, playful",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "m3",
+        "pitch": 78,
+        "speed": 158
+      },
+      "sarvam": {
+        "speaker": "amol"
+      },
+      "tone": {
+        "frequency": 320
+      }
+    }
+  },
+  {
+    "id": "crocodile_hi",
+    "name": "Crocodile",
+    "language": "hi-IN",
+    "description": "Low, slow, gentle",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "m7",
+        "pitch": 22,
+        "speed": 128
+      },
+      "sarvam": {
+        "speaker": "arvind"
+      },
+      "tone": {
+        "frequency": 110
+      }
+    }
+  },
+  {
+    "id": "crocodile_wife_hi",
+    "name": "Crocodile's wife",
+    "language": "hi-IN",
+    "description": "Sharp and insistent",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "f4",
+        "pitch": 62,
+        "speed": 150
+      },
+      "sarvam": {
+        "speaker": "pavithra"
+      },
+      "tone": {
+        "frequency": 260
+      }
+    }
+  },
+  {
+    "id": "lion_hi",
+    "name": "Lion",
+    "language": "hi-IN",
+    "description": "Deep and booming",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "m6",
+        "pitch": 12,
+        "speed": 122
+      },
+      "sarvam": {
+        "speaker": "amartya"
+      },
+      "tone": {
+        "frequency": 90
+      }
+    }
+  },
+  {
+    "id": "rabbit_hi",
+    "name": "Rabbit",
+    "language": "hi-IN",
+    "description": "Small, high and clever",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "f5",
+        "pitch": 88,
+        "speed": 162
+      },
+      "sarvam": {
+        "speaker": "maitreyi"
+      },
+      "tone": {
+        "frequency": 380
+      }
+    }
+  },
+  {
+    "id": "jackal_hi",
+    "name": "Jackal",
+    "language": "hi-IN",
+    "description": "Sly, nasal",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "m4",
+        "pitch": 58,
+        "speed": 152
+      },
+      "sarvam": {
+        "speaker": "amol"
+      },
+      "tone": {
+        "frequency": 240
+      }
+    }
+  },
+  {
+    "id": "farmer_hi",
+    "name": "Farmer",
+    "language": "hi-IN",
+    "description": "Plain and kind",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "m1",
+        "pitch": 42,
+        "speed": 140
+      },
+      "sarvam": {
+        "speaker": "arvind"
+      },
+      "tone": {
+        "frequency": 150
+      }
+    }
+  },
+  {
+    "id": "rich_man_hi",
+    "name": "Rich man",
+    "language": "hi-IN",
+    "description": "Pompous, heavy",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "m5",
+        "pitch": 30,
+        "speed": 132
+      },
+      "sarvam": {
+        "speaker": "amartya"
+      },
+      "tone": {
+        "frequency": 125
+      }
+    }
+  }
+]

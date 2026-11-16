@@ -6,6 +6,7 @@ Assets are looked up, never invented: anything missing is reported in `missing_a
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 
 from pydantic import BaseModel, Field
@@ -80,6 +81,7 @@ class StoryboardBuilder:
         self.warnings: list[str] = []
         self.missing: list[MissingAsset] = []
         self.pack = pack_for(analysis.language)
+        self.fps = (output or OutputSpec()).fps
         spw = self.pack.seconds_per_word if self.pack else 0.4
         overrides = character_overrides or {}
 
@@ -190,7 +192,7 @@ class StoryboardBuilder:
                     focus = focus or actor.cid
                 if beat.kind == "narration" and not focus:
                     focus = next((chars[k].cid for k in beat.emotions if k in chars and chars[k].cid in placed), None)
-            duration = round(max(speech + 0.4, draft.cursor + 0.4, 2.0), 1)
+            duration = round(math.ceil(max(speech + 0.4, draft.cursor + 0.4, 2.0) * self.fps - 1e-6) / self.fps, 4)   # whole frames
             draft.data["duration_seconds"] = duration
 
             is_dialogue = any(b.kind == "dialogue" for b in beats)

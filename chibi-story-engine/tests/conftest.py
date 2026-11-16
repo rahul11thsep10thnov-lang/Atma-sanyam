@@ -113,3 +113,38 @@ def admin_auth(client, app) -> dict[str, str]:
 @pytest.fixture(scope="session")
 def viewer_auth(client, app) -> dict[str, str]:
     return _login(client, app, "viewer@example.com", "viewer")
+
+
+# ------------------------------------------------------------------ engine fixtures
+@pytest.fixture(scope="session")
+def library():
+    """The real asset library shipped in the repository."""
+    from engine.asset_manager.library import AssetLibrary
+    return AssetLibrary(ROOT / "asset_library")
+
+
+@pytest.fixture(scope="session")
+def composer(library):
+    from engine.composition.composer import SceneComposer
+    return SceneComposer(library)
+
+
+@pytest.fixture(scope="session")
+def engine_paths(tmp_path_factory, library):
+    from engine.common.paths import EnginePaths
+    base = EnginePaths.under(tmp_path_factory.mktemp("engine_data"))
+    return EnginePaths(library.root, base.stories, base.renders, base.cache).ensure()
+
+
+@pytest.fixture(scope="session")
+def render_service(library, engine_paths):
+    from engine.rendering.service import RenderService
+    return RenderService(library, engine_paths, timeout=600, retries=1)
+
+
+@pytest.fixture(scope="session")
+def artifacts() -> Path:
+    """Where tests leave the renders and audio they produce, for a human to look at."""
+    out = Path(os.environ.get("CSAE_TEST_ARTIFACTS", ROOT / "renders" / "test_artifacts"))
+    out.mkdir(parents=True, exist_ok=True)
+    return out

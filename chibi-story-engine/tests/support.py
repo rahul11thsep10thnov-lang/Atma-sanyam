@@ -153,3 +153,34 @@ def make_library(root: Path):
     from tools.asset_forge.templates import write_templates
     write_templates(root)
     return AssetLibrary(root)
+
+
+# ------------------------------------------------------------------ small stories on the real library
+def shot(shot_id="sh1", seconds=2.0, characters=None, actions=None, dialogue=None, camera=None, effects=None, props=None, audio=None):
+    return {"shot_id": shot_id, "duration_seconds": seconds, "camera": camera or {"preset": "establishing_wide"},
+            "characters": characters if characters is not None else [MONKEY_ON_BRANCH, CROC_IN_RIVER], "actions": actions or [],
+            "dialogue": dialogue or [], "effects": effects or [], "props": props or [], "audio": audio or []}
+
+
+MONKEY_ON_BRANCH = {"character_id": "monkey_001", "position": {"anchor": "tree_branch"}, "facing": "right", "state": "sitting"}
+MONKEY_ON_BANK = {"character_id": "monkey_001", "position": {"anchor": "riverbank"}, "facing": "right", "state": "standing"}
+CROC_IN_RIVER = {"character_id": "crocodile_001", "position": {"anchor": "river_near"}, "facing": "left", "state": "in_water"}
+
+
+def scene(scene_id="scene_a", shots=None, environment="forest_river_001", **extra):
+    return {"scene_id": scene_id, "environment_id": environment, "shots": shots or [shot()], **extra}
+
+
+def story(scenes=None, story_id="test_story", width=1920, height=1080, fps=24, characters=("monkey_001", "crocodile_001"), **extra):
+    from engine.schema.story import parse_story
+    return parse_story({"story_id": story_id, "output": {"width": width, "height": height, "fps": fps},
+                        "characters": [{"character_id": c} for c in characters], "scenes": scenes or [scene()], **extra})
+
+
+def frame_difference(a, b) -> float:
+    """Mean absolute difference of two images, 0..255."""
+    import numpy as np
+    from PIL import Image
+    x = np.asarray(Image.open(a).convert("RGB") if not hasattr(a, "size") else a.convert("RGB"), dtype=float)
+    y = np.asarray(Image.open(b).convert("RGB") if not hasattr(b, "size") else b.convert("RGB"), dtype=float)
+    return float(np.abs(x - y).mean())

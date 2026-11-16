@@ -18,9 +18,9 @@ from engine.common.paths import PROJECT_ROOT
 from engine.rendering.raster import contact_sheet, render_character
 from engine.schema.assets import AssetType, CharacterManifest
 
-from . import animations, audio_synth, characters, environments, props, templates
+from . import animations, audio_synth, characters, environments, props, templates, voices
 
-GROUPS = ("templates", "animations", "characters", "environments", "props", "effects", "audio")
+GROUPS = ("templates", "animations", "voices", "characters", "environments", "props", "effects", "audio")
 
 
 def _fresh(library: AssetLibrary, asset_type: str, asset_id: str, force: bool) -> bool:
@@ -95,6 +95,8 @@ def build(library_root: Path, only: set[str], force: bool = False, log=print) ->
         if "animations" in only:
             log(f"animations  {animations.write_animations(library_root)}")
             library.animations()                                  # validates every clip
+        if "voices" in only:
+            log(f"voices      {voices.write_voices(library_root)}")
         if "characters" in only:
             for spec in characters.BIPEDS + characters.REPTILES:
                 if _fresh(library, "character", spec.id, force):

@@ -207,14 +207,25 @@ def rock(a: Layer, points: list[tuple[float, float]], colour: str = "#8d8f98") -
     a.blob(points, a.shaded(colour), darken(colour, 0.5), 7)
 
 
+_RECTS: dict[str, list[float]] = {}
+
+
 def _save(layer: Art, path: Path, scale: float = 1.0) -> None:
+    """Render a layer and crop it to what is painted (vertically only for wide scrolling layers)."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    layer.render(scale).save(path, optimize=True)
+    im = layer.render(scale)
+    box = im.getbbox() or (0, 0, im.width, im.height)
+    if layer.w > LW:
+        box = (0, box[1], im.width, box[3])
+    pad = 2
+    box = (max(0, box[0] - pad), max(0, box[1] - pad), min(im.width, box[2] + pad), min(im.height, box[3] + pad))
+    im.crop(box).save(path, optimize=True)
+    _RECTS[path.stem] = [X0 + box[0] / scale, Y0 + LH - box[3] / scale, (box[2] - box[0]) / scale, (box[3] - box[1]) / scale]
 
 
-def _layer(lid, ltype, order, parallax, cover=False, motion=None, extra_w=0, tint="background"):
-    return {"id": lid, "type": ltype, "file": f"layers/{lid}.png", "rect": [X0, Y0, LW + extra_w, LH], "parallax": parallax,
-            "order": order, "cover": cover, "motion": motion or [], "tint_group": tint}
+def _layer(lid, ltype, order, parallax, cover=False, motion=None, extra_w=0, tint="background", cover_x=False):
+    return {"id": lid, "type": ltype, "file": f"layers/{lid}.png", "rect": _RECTS[lid], "parallax": parallax,
+            "order": order, "cover": cover, "cover_horizontal": cover_x, "motion": motion or [], "tint_group": tint}
 
 
 def _scroll(speed: float) -> dict:
@@ -223,7 +234,7 @@ def _scroll(speed: float) -> dict:
 
 def _manifest(eid, name, description, tags, aliases, layers, anchors, roles, habitats, ambience="river_ambience_001"):
     return {"id": eid, "asset_type": "environment", "name": name, "description": description, "tags": tags, "aliases": aliases,
-            "stage": [1920, 1080], "layers": layers, "anchors": anchors, "default_anchor_by_role": roles,
+            "stage": [1920, 1080], "camera_bounds": [X0, Y0, X0 + LW, Y0 + LH], "layers": layers, "anchors": anchors, "default_anchor_by_role": roles,
             "lighting_presets": ["day", "morning", "sunset", "night", "overcast"],
             "compatibility": {"habitats": habitats, "style": "premium_chibi_anime", "ambience": ambience}}
 
@@ -265,7 +276,7 @@ def forest_river(out: Path) -> dict:
         _layer("sky", "background", 0, 0.12, cover=True),
         _layer("far_hills", "far", 1, 0.3),
         _layer("far_trees", "middle", 2, 0.55),
-        _layer("river", "middle", 10, 1.0, cover=True),
+        _layer("river", "middle", 10, 1.0, cover_x=True),
         _layer("ripples_far", "middle", 12, 1.0, motion=[_scroll(26)], extra_w=TILE),
         _layer("ripples_near", "middle", 14, 1.0, motion=[_scroll(-38), {"type": "bob", "amplitude": 3, "period": 3.2}], extra_w=TILE),
         _layer("bank", "middle", 40, 1.0),
@@ -310,7 +321,7 @@ def river_open(out: Path) -> dict:
         _layer("sky", "background", 0, 0.12, cover=True),
         _layer("far_hills", "far", 1, 0.28),
         _layer("far_bank", "middle", 2, 0.5),
-        _layer("river", "middle", 10, 1.0, cover=True),
+        _layer("river", "middle", 10, 1.0, cover_x=True),
         _layer("ripples_far", "middle", 12, 1.0, motion=[_scroll(34)], extra_w=TILE),
         _layer("ripples_near", "middle", 14, 1.0, motion=[_scroll(-52), {"type": "bob", "amplitude": 4, "period": 3.0}], extra_w=TILE),
         _layer("water_front", "foreground", 130, 1.0, motion=[{"type": "bob", "amplitude": 5, "period": 2.4}]),
@@ -353,7 +364,7 @@ def crocodile_home(out: Path) -> dict:
         _layer("sky", "background", 0, 0.12, cover=True),
         _layer("far_hills", "far", 1, 0.3),
         _layer("far_trees", "middle", 2, 0.55),
-        _layer("shore", "middle", 8, 1.0, cover=True),
+        _layer("shore", "middle", 8, 1.0, cover_x=True),
         _layer("cave", "middle", 9, 1.0),
         _layer("river", "middle", 10, 1.0),
         _layer("ripples_near", "middle", 14, 1.0, motion=[_scroll(-30), {"type": "bob", "amplitude": 3, "period": 3.4}], extra_w=TILE),

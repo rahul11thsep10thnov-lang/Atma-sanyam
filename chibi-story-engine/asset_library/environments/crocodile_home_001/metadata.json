@@ -33,9 +33,9 @@
       "role": "layer",
       "path": "layers/cave.png",
       "format": "png",
-      "checksum": "8dde9307ed0f9b9d675dbd68e2e64080660f8843ab3e81e598f209c0b9f6732d",
-      "width": 2720,
-      "height": 1480,
+      "checksum": "d9c58f9ace8466ae3051a32e7c3b9188d0fcb50a72afce19a4c53106021ed42d",
+      "width": 1705,
+      "height": 867,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -45,9 +45,9 @@
       "role": "layer",
       "path": "layers/far_hills.png",
       "format": "png",
-      "checksum": "ba60ef587917d188567092b46a44db4a5183a0bfa48b5626c212ed27b3908157",
+      "checksum": "d3be823c059c065c9b844169f0deaaa7388d94dd8df1fbb40bcb8858c10f0de7",
       "width": 1360,
-      "height": 740,
+      "height": 417,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -57,9 +57,9 @@
       "role": "layer",
       "path": "layers/far_trees.png",
       "format": "png",
-      "checksum": "a1b7b96b88746c7fdc4aa5f36a31a3875067f993799110b07bdaa132407cae41",
+      "checksum": "bd29a4407d881283c129ab978564d945202dcfb219db15b676607d40f9463b65",
       "width": 2720,
-      "height": 1480,
+      "height": 978,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -69,9 +69,9 @@
       "role": "layer",
       "path": "layers/reeds.png",
       "format": "png",
-      "checksum": "b370317511a67f91e10f912e2f0daa5a2b0115498502f8b98a069cabab6de0b5",
-      "width": 2720,
-      "height": 1480,
+      "checksum": "3a87aecde467f8e658cc567290120a5ad99da486ac6d6b02125d782f306e2d2e",
+      "width": 2707,
+      "height": 338,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -81,9 +81,9 @@
       "role": "layer",
       "path": "layers/ripples_near.png",
       "format": "png",
-      "checksum": "a734cc1a4247dffd1843b2bf39668e8ef9d9865c24ec192e7bddf09be3886266",
+      "checksum": "3dc3fffdfdf96b44ce471342bd10f395e80fb028c5ef6c14906b7c1a8475f3e0",
       "width": 3400,
-      "height": 1480,
+      "height": 254,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -93,9 +93,9 @@
       "role": "layer",
       "path": "layers/river.png",
       "format": "png",
-      "checksum": "c98cb2154b0d5fddaa550908c8d746ee9af2beff0a13ef413f42e251b2b93f39",
-      "width": 1360,
-      "height": 740,
+      "checksum": "edf244e03cc52542dc98eaeab6422043130adf8e6a09da41e6f8d4f146d8bf23",
+      "width": 1352,
+      "height": 255,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -105,9 +105,9 @@
       "role": "layer",
       "path": "layers/shore.png",
       "format": "png",
-      "checksum": "a94ad96a0a867f91bc9127c5f4e6a83fae447b314167dd080681d80c9143b590",
+      "checksum": "3007f39436cd341d3a4314d0965c6dd7d3af3325ae2eecb749173ac4c802786f",
       "width": 2720,
-      "height": 1480,
+      "height": 525,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -129,16 +129,16 @@
       "role": "layer",
       "path": "layers/water_front.png",
       "format": "png",
-      "checksum": "3d57cad54698b1c8edfea6efaaa1d678a2b480b7960dd9f235524e4f5e604d2f",
-      "width": 1360,
-      "height": 740,
+      "checksum": "5efe0e0034ea2fbef4cc0f312b09af36727cd8f49a4ea19a126677f872de58df",
+      "width": 1354,
+      "height": 182,
       "duration_seconds": null,
       "view": null,
       "expression": null,
       "pose": null
     }
   ],
-  "created_at": "2026-11-15T18:20:39+00:00",
+  "created_at": "2026-11-16T18:36:13+00:00",
   "change_summary": "",
   "stage": [
     1920,
@@ -158,6 +158,7 @@
       "parallax": 0.12,
       "order": 0,
       "cover": true,
+      "cover_horizontal": false,
       "motion": [],
       "tint_group": "background"
     },
@@ -169,11 +170,12 @@
         -400.0,
         -200.0,
         2720.0,
-        1480.0
+        834.0
       ],
       "parallax": 0.3,
       "order": 1,
       "cover": false,
+      "cover_horizontal": false,
       "motion": [],
       "tint_group": "background"
     },
@@ -185,11 +187,12 @@
         -400.0,
         -200.0,
         2720.0,
-        1480.0
+        978.0
       ],
       "parallax": 0.55,
       "order": 2,
       "cover": false,
+      "cover_horizontal": false,
       "motion": [],
       "tint_group": "background"
     },
@@ -201,11 +204,12 @@
         -400.0,
         -200.0,
         2720.0,
-        1480.0
+        525.0
       ],
       "parallax": 1.0,
       "order": 8,
-      "cover": true,
+      "cover": false,
+      "cover_horizontal": true,
       "motion": [],
       "tint_group": "background"
     },
@@ -214,14 +218,15 @@
       "type": "middle",
       "file": "layers/cave.png",
       "rect": [
-        -400.0,
-        -200.0,
-        2720.0,
-        1480.0
+        150.0,
+        263.0,
+        1705.0,
+        867.0
       ],
       "parallax": 1.0,
       "order": 9,
       "cover": false,
+      "cover_horizontal": false,
       "motion": [],
       "tint_group": "background"
     },
@@ -232,12 +237,13 @@
       "rect": [
         -400.0,
         -200.0,
-        2720.0,
-        1480.0
+        2704.0,
+        510.0
       ],
       "parallax": 1.0,
       "order": 10,
       "cover": false,
+      "cover_horizontal": false,
       "motion": [],
       "tint_group": "background"
     },
@@ -247,13 +253,14 @@
       "file": "layers/ripples_near.png",
       "rect": [
         -400.0,
-        -200.0,
+        27.0,
         3400.0,
-        1480.0
+        254.0
       ],
       "parallax": 1.0,
       "order": 14,
       "cover": false,
+      "cover_horizontal": false,
       "motion": [
         {
           "type": "scroll",
@@ -283,12 +290,13 @@
       "rect": [
         -400.0,
         -200.0,
-        2720.0,
-        1480.0
+        2708.0,
+        364.0
       ],
       "parallax": 1.0,
       "order": 130,
       "cover": false,
+      "cover_horizontal": false,
       "motion": [
         {
           "type": "bob",
@@ -307,14 +315,15 @@
       "type": "foreground",
       "file": "layers/reeds.png",
       "rect": [
-        -400.0,
+        -387.0,
         -200.0,
-        2720.0,
-        1480.0
+        2707.0,
+        338.0
       ],
       "parallax": 1.3,
       "order": 800,
       "cover": false,
+      "cover_horizontal": false,
       "motion": [
         {
           "type": "sway",
@@ -384,6 +393,12 @@
     "sunset",
     "night",
     "overcast"
+  ],
+  "camera_bounds": [
+    -400.0,
+    -200.0,
+    2320.0,
+    1280.0
   ],
   "default_anchor_by_role": {
     "aquatic": [

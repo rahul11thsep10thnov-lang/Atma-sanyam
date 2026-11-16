@@ -16,7 +16,7 @@ from pathlib import Path
 import numpy as np
 
 UNIT = 0.01                 # Blender units per stage pixel
-ORDER_STEP = 0.05           # stage pixels of depth per unit of draw order
+DEPTH_STEP = 0.5            # stage pixels of real depth between consecutive sprites (avoids coplanar surfaces)
 
 
 def build_scene(width: int, height: int, samples: int):
@@ -35,8 +35,16 @@ def build_scene(width: int, height: int, samples: int):
     scene.cycles.transparent_max_bounces = 96
     scene.cycles.seed = 0
     scene.cycles.use_animated_seed = False
-    scene.cycles.pixel_filter_type = "BLACKMAN_HARRIS"
-    scene.cycles.filter_width = 1.5
+    # Every layer is an unlit cutout, so a path is a chain of transparent hits. Never terminate it at random
+    # (that is what makes translucent areas grainy); with that off, one sample is already the exact colour.
+    scene.cycles.min_transparent_bounces = 96
+    scene.cycles.min_light_bounces = 0
+    if samples <= 1:
+        scene.cycles.pixel_filter_type = "BOX"          # sample the pixel centre: textures arrive already anti-aliased
+        scene.cycles.filter_width = 0.01
+    else:
+        scene.cycles.pixel_filter_type = "BLACKMAN_HARRIS"
+        scene.cycles.filter_width = 1.5
     scene.render.use_persistent_data = True
     scene.render.resolution_x, scene.render.resolution_y = width, height
     scene.render.resolution_percentage = 100
@@ -59,7 +67,7 @@ def build_scene(width: int, height: int, samples: int):
     cam_data.lens = LENS_MM
     cam_data.sensor_width = SENSOR_MM
     cam_data.sensor_fit = "HORIZONTAL"
-    cam_data.clip_start = 0.5
+    cam_data.clip_start = 0.2
     cam_data.clip_end = 100000.0
     camera = bpy.data.objects.new("camera", cam_data)
     scene.collection.objects.link(camera)
@@ -137,6 +145,8 @@ def render(plan_dir: Path, out_dir: Path, samples: int, width: int | None, heigh
         for mat in list(bpy.data.materials):
             bpy.data.materials.remove(mat)
         objects = []
+        ranked = sorted(range(len(shot.sprites)), key=lambda i: (shot.sprites[i].parallax, shot.sprites[i].order, i))
+        rank = {i: r for r, i in enumerate(ranked)}
         for i, sprite in enumerate(shot.sprites):
             image = images.get(sprite.image)
             if image is None:
@@ -150,26 +160,31 @@ def render(plan_dir: Path, out_dir: Path, samples: int, width: int | None, heigh
             obj.material_slots[0].link = "OBJECT"
             obj.material_slots[0].material = mat
             scene.collection.objects.link(obj)
-            p = sprite.parallax
-            z = (-CAMERA_DISTANCE * (1.0 / p - 1.0) + sprite.order * ORDER_STEP) * UNIT
-            objects.append((obj, opacity, sprite, p, z))
+            objects.append((obj, opacity, sprite, sprite.parallax, rank[i] * DEPTH_STEP))
 
         for f in todo:
-            for obj, opacity, sprite, p, z in objects:
+            cx, cy, zoom = (float(v) for v in shot.camera[f])
+            cam_z = CAMERA_DISTANCE / zoom
+            for obj, opacity, sprite, p, lift in objects:
                 alpha = float(sprite.opacity[f])
                 hidden = alpha <= 0.003
                 obj.hide_render = hidden
                 if hidden:
                     continue
                 a, b, c, d, tx, ty = (float(v) for v in sprite.affine[f])
+                # nominal placement for this parallax ...
                 wx, wy = REST_X + (tx - REST_X) / p, REST_Y + (ty - REST_Y) / p
-                obj.matrix_world = Matrix(((a / p * UNIT, c / p * UNIT, 0.0, wx * UNIT),
-                                           (b / p * UNIT, d / p * UNIT, 0.0, wy * UNIT),
-                                           (0.0, 0.0, 1.0, z),
+                nominal = cam_z + CAMERA_DISTANCE * (1.0 / p - 1.0)       # camera-to-layer distance
+                # ... then moved `lift` pixels towards the camera and shrunk about the view axis by the same
+                # ratio, so it projects to exactly the same pixels while no two sprites share a plane.
+                k = (nominal - lift) / nominal
+                g = k / p
+                obj.matrix_world = Matrix(((a * g * UNIT, c * g * UNIT, 0.0, (cx + (wx - cx) * k) * UNIT),
+                                           (b * g * UNIT, d * g * UNIT, 0.0, (cy + (wy - cy) * k) * UNIT),
+                                           (0.0, 0.0, 1.0, (cam_z - (nominal - lift)) * UNIT),
                                            (0.0, 0.0, 0.0, 1.0)))
                 opacity.inputs[1].default_value = alpha
-            cx, cy, zoom = (float(v) for v in shot.camera[f])
-            camera.matrix_world = Matrix.Translation((cx * UNIT, cy * UNIT, CAMERA_DISTANCE / zoom * UNIT))
+            camera.matrix_world = Matrix.Translation((cx * UNIT, cy * UNIT, cam_z * UNIT))
             target = out_dir / f"frame_{index + f:06d}.png"
             scene.render.filepath = str(target.with_suffix(".tmp.png"))
             bpy.ops.render.render(write_still=True)
