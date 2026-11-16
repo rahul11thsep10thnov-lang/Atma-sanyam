@@ -76,7 +76,7 @@ def retime_story(story: Story, durations: dict[str, float], fps: int | None = No
         for shot, hd in zip(scene.shots, sd["shots"]):
             need = required_duration(shot, layout_shot(shot, durations))
             new = math.ceil(max(need, 1.0) * fps) / fps
-            if abs(new - shot.duration_seconds) > 1e-6:
+            if abs(new - shot.duration_seconds) > 1e-3:        # durations are stored to 4 decimals
                 changes.append({"shot_id": shot.shot_id, "from": shot.duration_seconds, "to": round(new, 4)})
                 hd["duration_seconds"] = round(new, 4)
                 for key in ("effects", "audio"):

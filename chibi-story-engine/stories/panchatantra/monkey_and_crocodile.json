@@ -1,0 +1,2539 @@
+{
+ "schema_version": "1.0",
+ "story_id": "monkey_and_crocodile",
+ "title": "बंदर और मगरमच्छ",
+ "language": "hi-IN",
+ "genre": null,
+ "moral": "संकट के समय बुद्धि से काम लेना चाहिए।",
+ "visual_style": "premium_chibi_anime",
+ "output": {
+  "width": 1920,
+  "height": 1080,
+  "fps": 24
+ },
+ "audio": {
+  "narrator_voice": "narrator_hi",
+  "music": {
+   "track_id": "gentle_story_001",
+   "volume": 0.5,
+   "duck_under_speech": true
+  }
+ },
+ "characters": [
+  {
+   "character_id": "monkey_001",
+   "asset_version": 1,
+   "voice_id": "monkey_hi",
+   "role": null
+  },
+  {
+   "character_id": "crocodile_001",
+   "asset_version": 1,
+   "voice_id": "crocodile_hi",
+   "role": null
+  },
+  {
+   "character_id": "crocodile_wife_001",
+   "asset_version": 1,
+   "voice_id": "crocodile_wife_hi",
+   "role": null
+  }
+ ],
+ "scenes": [
+  {
+   "scene_id": "scene_01",
+   "title": "एक नदी के किनारे जामुन का एक बड़ा पेड़ था।",
+   "description": "एक नदी के किनारे जामुन का एक बड़ा पेड़ था।",
+   "environment_id": "forest_river_001",
+   "environment_version": 1,
+   "time_of_day": "day",
+   "weather": "clear",
+   "duration_seconds": null,
+   "depends_on": [],
+   "transition_in": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "transition_out": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "approval_status": "pending",
+   "shots": [
+    {
+     "shot_id": "sc01_sh01",
+     "duration_seconds": 8.375,
+     "description": "एक नदी के किनारे जामुन का एक बड़ा पेड़ था।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "slow_push_in",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "tree_branch",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc01_sh01_l1",
+       "speaker": "narrator",
+       "text": "एक नदी के किनारे जामुन का एक बड़ा पेड़ था।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      },
+      {
+       "line_id": "sc01_sh01_l2",
+       "speaker": "narrator",
+       "text": "उस पेड़ पर एक चतुर बंदर रहता था।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [
+      {
+       "effect_id": "sc01_sh01_fx1",
+       "type": "falling_leaves",
+       "start_seconds": 0.0,
+       "duration_seconds": 8.375,
+       "position": null,
+       "follow_character": null,
+       "params": {}
+      }
+     ],
+     "audio": [
+      {
+       "cue_id": "sc01_sh01_amb1",
+       "type": "ambience",
+       "asset_id": "river_ambience_001",
+       "start_seconds": 0.0,
+       "duration_seconds": null,
+       "volume": 0.5,
+       "loop": true
+      }
+     ]
+    },
+    {
+     "shot_id": "sc01_sh02",
+     "duration_seconds": 4.7917,
+     "description": "वह रोज़ मीठे जामुन खाता और खुश रहता था।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "parallax_drift",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "tree_branch",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "happy",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [
+      {
+       "prop_id": "jamun_bunch_001",
+       "instance_id": "sc01_sh02_p1",
+       "asset_version": 1,
+       "position": {
+        "anchor": "tree_branch",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "scale": 1.0,
+       "rotation": 0.0,
+       "order": 0,
+       "held_by": {
+        "character_id": "monkey_001",
+        "part": "mouth",
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "visible_from": 0.3,
+       "visible_until": 1.9
+      }
+     ],
+     "actions": [
+      {
+       "action_id": "sc01_sh02_a1",
+       "character_id": "monkey_001",
+       "animation": "eat",
+       "start_seconds": 0.3,
+       "duration_seconds": 2.0,
+       "loop": null,
+       "move_to": null,
+       "target_character": null,
+       "prop_id": "sc01_sh02_p1",
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc01_sh02_l1",
+       "speaker": "narrator",
+       "text": "वह रोज़ मीठे जामुन खाता और खुश रहता था।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": [
+      {
+       "cue_id": "sc01_sh02_sfx1",
+       "type": "sfx",
+       "asset_id": "munch_001",
+       "start_seconds": 0.6,
+       "duration_seconds": null,
+       "volume": 1.0,
+       "loop": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "scene_id": "scene_02",
+   "title": "एक दिन एक मगरमच्छ तैरता हुआ पेड़ के नीचे आया।",
+   "description": "एक दिन एक मगरमच्छ तैरता हुआ पेड़ के नीचे आया।",
+   "environment_id": "forest_river_001",
+   "environment_version": 1,
+   "time_of_day": "day",
+   "weather": "clear",
+   "duration_seconds": null,
+   "depends_on": [],
+   "transition_in": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "transition_out": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "approval_status": "pending",
+   "shots": [
+    {
+     "shot_id": "sc02_sh01",
+     "duration_seconds": 5.1667,
+     "description": "एक दिन एक मगरमच्छ तैरता हुआ पेड़ के नीचे आया।",
+     "animation_level": 3,
+     "camera": {
+      "preset": "tracking_shot",
+      "target": "crocodile_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "offstage_river_right",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "tree_branch",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc02_sh01_a1",
+       "character_id": "crocodile_001",
+       "animation": "crocodile_swim",
+       "start_seconds": 0.3,
+       "duration_seconds": 3.0,
+       "loop": true,
+       "move_to": {
+        "anchor": "river_near",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc02_sh01_l1",
+       "speaker": "narrator",
+       "text": "एक दिन एक मगरमच्छ तैरता हुआ पेड़ के नीचे आया।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [
+      {
+       "effect_id": "sc02_sh01_fx1",
+       "type": "ripples",
+       "start_seconds": 0.3,
+       "duration_seconds": 3.0,
+       "position": null,
+       "follow_character": "crocodile_001",
+       "params": {}
+      },
+      {
+       "effect_id": "sc02_sh01_fx2",
+       "type": "falling_leaves",
+       "start_seconds": 0.0,
+       "duration_seconds": 5.1667,
+       "position": null,
+       "follow_character": null,
+       "params": {}
+      }
+     ],
+     "audio": [
+      {
+       "cue_id": "sc02_sh01_sfx1",
+       "type": "sfx",
+       "asset_id": "swim_001",
+       "start_seconds": 0.3,
+       "duration_seconds": null,
+       "volume": 1.0,
+       "loop": false
+      },
+      {
+       "cue_id": "sc02_sh01_amb1",
+       "type": "ambience",
+       "asset_id": "river_ambience_001",
+       "start_seconds": 0.0,
+       "duration_seconds": null,
+       "volume": 0.5,
+       "loop": true
+      }
+     ]
+    },
+    {
+     "shot_id": "sc02_sh02",
+     "duration_seconds": 5.1667,
+     "description": "मित्र, तुम थके लगते हो। लो, ये मीठे जामुन खाओ।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "character_closeup",
+      "target": "monkey_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "river_near",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "tree_branch",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc02_sh02_l1",
+       "speaker": "monkey_001",
+       "text": "मित्र, तुम थके लगते हो। लो, ये मीठे जामुन खाओ।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc02_sh03",
+     "duration_seconds": 3.375,
+     "description": "बंदर ने जामुन नीचे फेंके।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "parallax_drift",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "river_near",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "tree_branch",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [
+      {
+       "prop_id": "jamun_bunch_001",
+       "instance_id": "sc02_sh03_p1",
+       "asset_version": 1,
+       "position": {
+        "anchor": "tree_branch",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "scale": 1.0,
+       "rotation": 0.0,
+       "order": 0,
+       "held_by": {
+        "character_id": "monkey_001",
+        "part": "hand",
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "visible_from": 0.3,
+       "visible_until": 1.7
+      }
+     ],
+     "actions": [
+      {
+       "action_id": "sc02_sh03_a1",
+       "character_id": "monkey_001",
+       "animation": "throw",
+       "start_seconds": 0.3,
+       "duration_seconds": 1.4,
+       "loop": null,
+       "move_to": null,
+       "target_character": "crocodile_001",
+       "prop_id": "sc02_sh03_p1",
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc02_sh03_l1",
+       "speaker": "narrator",
+       "text": "बंदर ने जामुन नीचे फेंके।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": [
+      {
+       "cue_id": "sc02_sh03_sfx1",
+       "type": "sfx",
+       "asset_id": "whoosh_001",
+       "start_seconds": 0.7,
+       "duration_seconds": null,
+       "volume": 1.0,
+       "loop": false
+      }
+     ]
+    },
+    {
+     "shot_id": "sc02_sh04",
+     "duration_seconds": 4.7083,
+     "description": "मगरमच्छ ने जामुन खाए और खुश होकर बोला।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "horizontal_pan",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "river_near",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "happy",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "tree_branch",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [
+      {
+       "prop_id": "jamun_bunch_001",
+       "instance_id": "sc02_sh04_p1",
+       "asset_version": 1,
+       "position": {
+        "anchor": "river_near",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "scale": 1.0,
+       "rotation": 0.0,
+       "order": 0,
+       "held_by": {
+        "character_id": "crocodile_001",
+        "part": "mouth",
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "visible_from": 0.3,
+       "visible_until": 1.9
+      }
+     ],
+     "actions": [
+      {
+       "action_id": "sc02_sh04_a1",
+       "character_id": "crocodile_001",
+       "animation": "crocodile_jaw_open",
+       "start_seconds": 0.3,
+       "duration_seconds": 2.0,
+       "loop": null,
+       "move_to": null,
+       "target_character": null,
+       "prop_id": "sc02_sh04_p1",
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc02_sh04_l1",
+       "speaker": "narrator",
+       "text": "मगरमच्छ ने जामुन खाए और खुश होकर बोला।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": [
+      {
+       "cue_id": "sc02_sh04_sfx1",
+       "type": "sfx",
+       "asset_id": "munch_001",
+       "start_seconds": 0.6,
+       "duration_seconds": null,
+       "volume": 1.0,
+       "loop": false
+      }
+     ]
+    },
+    {
+     "shot_id": "sc02_sh05",
+     "duration_seconds": 6.0417,
+     "description": "वाह! ये तो बहुत मीठे हैं। धन्यवाद, मित्र!",
+     "animation_level": 2,
+     "camera": {
+      "preset": "character_closeup",
+      "target": "crocodile_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "river_near",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "happy",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "tree_branch",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc02_sh05_l1",
+       "speaker": "crocodile_001",
+       "text": "वाह! ये तो बहुत मीठे हैं। धन्यवाद, मित्र!",
+       "emotion": "happy",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc02_sh06",
+     "duration_seconds": 3.7917,
+     "description": "उस दिन से दोनों पक्के दोस्त बन गए।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "slow_push_in",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "river_near",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "happy",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "tree_branch",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc02_sh06_l1",
+       "speaker": "narrator",
+       "text": "उस दिन से दोनों पक्के दोस्त बन गए।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    }
+   ]
+  },
+  {
+   "scene_id": "scene_03",
+   "title": "मगरमच्छ कुछ जामुन अपनी पत्नी के लिए घर ले गया।",
+   "description": "मगरमच्छ कुछ जामुन अपनी पत्नी के लिए घर ले गया।",
+   "environment_id": "crocodile_home_001",
+   "environment_version": 1,
+   "time_of_day": "day",
+   "weather": "clear",
+   "duration_seconds": null,
+   "depends_on": [],
+   "transition_in": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "transition_out": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "approval_status": "pending",
+   "shots": [
+    {
+     "shot_id": "sc03_sh01",
+     "duration_seconds": 5.0833,
+     "description": "मगरमच्छ कुछ जामुन अपनी पत्नी के लिए घर ले गया।",
+     "animation_level": 3,
+     "camera": {
+      "preset": "tracking_shot",
+      "target": "crocodile_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "offstage_left",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "crocodile_wife_001",
+       "position": {
+        "anchor": "home_right",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc03_sh01_a1",
+       "character_id": "crocodile_001",
+       "animation": "crocodile_swim",
+       "start_seconds": 0.3,
+       "duration_seconds": 3.0,
+       "loop": true,
+       "move_to": {
+        "anchor": "home_left",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc03_sh01_l1",
+       "speaker": "narrator",
+       "text": "मगरमच्छ कुछ जामुन अपनी पत्नी के लिए घर ले गया।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [
+      {
+       "effect_id": "sc03_sh01_fx1",
+       "type": "ripples",
+       "start_seconds": 0.3,
+       "duration_seconds": 3.0,
+       "position": null,
+       "follow_character": "crocodile_001",
+       "params": {}
+      }
+     ],
+     "audio": [
+      {
+       "cue_id": "sc03_sh01_sfx1",
+       "type": "sfx",
+       "asset_id": "swim_001",
+       "start_seconds": 0.3,
+       "duration_seconds": null,
+       "volume": 1.0,
+       "loop": false
+      },
+      {
+       "cue_id": "sc03_sh01_amb1",
+       "type": "ambience",
+       "asset_id": "river_ambience_001",
+       "start_seconds": 0.0,
+       "duration_seconds": null,
+       "volume": 0.5,
+       "loop": true
+      }
+     ]
+    },
+    {
+     "shot_id": "sc03_sh02",
+     "duration_seconds": 4.5833,
+     "description": "मगरमच्छ की पत्नी ने जामुन खाए और बोली।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "parallax_drift",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "home_left",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "crocodile_wife_001",
+       "position": {
+        "anchor": "home_right",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [
+      {
+       "prop_id": "jamun_bunch_001",
+       "instance_id": "sc03_sh02_p1",
+       "asset_version": 1,
+       "position": {
+        "anchor": "home_right",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "scale": 1.0,
+       "rotation": 0.0,
+       "order": 0,
+       "held_by": {
+        "character_id": "crocodile_wife_001",
+        "part": "mouth",
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "visible_from": 0.3,
+       "visible_until": 1.9
+      }
+     ],
+     "actions": [
+      {
+       "action_id": "sc03_sh02_a1",
+       "character_id": "crocodile_wife_001",
+       "animation": "crocodile_jaw_open",
+       "start_seconds": 0.3,
+       "duration_seconds": 2.0,
+       "loop": null,
+       "move_to": null,
+       "target_character": null,
+       "prop_id": "sc03_sh02_p1",
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc03_sh02_l1",
+       "speaker": "narrator",
+       "text": "मगरमच्छ की पत्नी ने जामुन खाए और बोली।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": [
+      {
+       "cue_id": "sc03_sh02_sfx1",
+       "type": "sfx",
+       "asset_id": "munch_001",
+       "start_seconds": 0.6,
+       "duration_seconds": null,
+       "volume": 1.0,
+       "loop": false
+      }
+     ]
+    },
+    {
+     "shot_id": "sc03_sh03",
+     "duration_seconds": 9.7083,
+     "description": "जो बंदर रोज़ इतने मीठे जामुन खाता है, उसका कलेजा कितना मीठा होगा! मुझे उस बंदर का कलेजा चाहिए।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "character_closeup",
+      "target": "crocodile_wife_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "home_left",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "crocodile_wife_001",
+       "position": {
+        "anchor": "home_right",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc03_sh03_l1",
+       "speaker": "crocodile_wife_001",
+       "text": "जो बंदर रोज़ इतने मीठे जामुन खाता है, उसका कलेजा कितना मीठा होगा! मुझे उस बंदर का कलेजा चाहिए।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc03_sh04",
+     "duration_seconds": 5.0417,
+     "description": "वह मेरा मित्र है। मैं उसे धोखा कैसे दूँ?",
+     "animation_level": 2,
+     "camera": {
+      "preset": "character_closeup",
+      "target": "crocodile_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "home_left",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "sad",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "crocodile_wife_001",
+       "position": {
+        "anchor": "home_right",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc03_sh04_l1",
+       "speaker": "crocodile_001",
+       "text": "वह मेरा मित्र है। मैं उसे धोखा कैसे दूँ?",
+       "emotion": "sad",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc03_sh05",
+     "duration_seconds": 2.6667,
+     "description": "पर पत्नी नहीं मानी।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "horizontal_pan",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "home_left",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "sad",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "crocodile_wife_001",
+       "position": {
+        "anchor": "home_right",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc03_sh05_l1",
+       "speaker": "narrator",
+       "text": "पर पत्नी नहीं मानी।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    }
+   ]
+  },
+  {
+   "scene_id": "scene_04",
+   "title": "अगले दिन मगरमच्छ उदास मन से बंदर के पास गया।",
+   "description": "अगले दिन मगरमच्छ उदास मन से बंदर के पास गया।",
+   "environment_id": "forest_river_001",
+   "environment_version": 1,
+   "time_of_day": "day",
+   "weather": "clear",
+   "duration_seconds": null,
+   "depends_on": [],
+   "transition_in": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "transition_out": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "approval_status": "pending",
+   "shots": [
+    {
+     "shot_id": "sc04_sh01",
+     "duration_seconds": 5.0417,
+     "description": "अगले दिन मगरमच्छ उदास मन से बंदर के पास गया।",
+     "animation_level": 3,
+     "camera": {
+      "preset": "tracking_shot",
+      "target": "crocodile_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "offstage_river_right",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "sad",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "tree_branch",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc04_sh01_a1",
+       "character_id": "crocodile_001",
+       "animation": "crocodile_swim",
+       "start_seconds": 0.3,
+       "duration_seconds": 3.0,
+       "loop": true,
+       "move_to": {
+        "anchor": "river_near",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc04_sh01_l1",
+       "speaker": "narrator",
+       "text": "अगले दिन मगरमच्छ उदास मन से बंदर के पास गया।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [
+      {
+       "effect_id": "sc04_sh01_fx1",
+       "type": "ripples",
+       "start_seconds": 0.3,
+       "duration_seconds": 3.0,
+       "position": null,
+       "follow_character": "crocodile_001",
+       "params": {}
+      },
+      {
+       "effect_id": "sc04_sh01_fx2",
+       "type": "falling_leaves",
+       "start_seconds": 0.0,
+       "duration_seconds": 5.0417,
+       "position": null,
+       "follow_character": null,
+       "params": {}
+      }
+     ],
+     "audio": [
+      {
+       "cue_id": "sc04_sh01_sfx1",
+       "type": "sfx",
+       "asset_id": "swim_001",
+       "start_seconds": 0.3,
+       "duration_seconds": null,
+       "volume": 1.0,
+       "loop": false
+      },
+      {
+       "cue_id": "sc04_sh01_amb1",
+       "type": "ambience",
+       "asset_id": "river_ambience_001",
+       "start_seconds": 0.0,
+       "duration_seconds": null,
+       "volume": 0.5,
+       "loop": true
+      }
+     ]
+    },
+    {
+     "shot_id": "sc04_sh02",
+     "duration_seconds": 8.2917,
+     "description": "मित्र, मेरी पत्नी ने तुम्हें भोजन पर बुलाया है। मेरी पीठ पर बैठ जाओ।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "character_closeup",
+      "target": "crocodile_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "river_near",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "sad",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "tree_branch",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc04_sh02_l1",
+       "speaker": "crocodile_001",
+       "text": "मित्र, मेरी पत्नी ने तुम्हें भोजन पर बुलाया है। मेरी पीठ पर बैठ जाओ।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc04_sh03",
+     "duration_seconds": 6.5,
+     "description": "बंदर खुश होकर पेड़ से कूदा और मगरमच्छ की पीठ पर बैठ गया।",
+     "animation_level": 3,
+     "camera": {
+      "preset": "action_follow",
+      "target": "monkey_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "river_near",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "sad",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "tree_branch",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "happy",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc04_sh03_a1",
+       "character_id": "monkey_001",
+       "animation": "jump",
+       "start_seconds": 0.3,
+       "duration_seconds": 1.2,
+       "loop": null,
+       "move_to": null,
+       "target_character": "crocodile_001",
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {
+        "attach_part": "back"
+       },
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc04_sh03_l1",
+       "speaker": "narrator",
+       "text": "बंदर खुश होकर पेड़ से कूदा और मगरमच्छ की पीठ पर बैठ गया।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [
+      {
+       "effect_id": "sc04_sh03_fx1",
+       "type": "splash",
+       "start_seconds": 1.3,
+       "duration_seconds": 0.9,
+       "position": null,
+       "follow_character": "crocodile_001",
+       "params": {}
+      }
+     ],
+     "audio": [
+      {
+       "cue_id": "sc04_sh03_sfx1",
+       "type": "sfx",
+       "asset_id": "boing_001",
+       "start_seconds": 0.3,
+       "duration_seconds": null,
+       "volume": 1.0,
+       "loop": false
+      },
+      {
+       "cue_id": "sc04_sh03_sfx2",
+       "type": "sfx",
+       "asset_id": "splash_001",
+       "start_seconds": 1.3,
+       "duration_seconds": null,
+       "volume": 1.0,
+       "loop": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "scene_id": "scene_05",
+   "title": "नदी के बीच पहुँचकर मगरमच्छ बोला।",
+   "description": "नदी के बीच पहुँचकर मगरमच्छ बोला।",
+   "environment_id": "river_open_001",
+   "environment_version": 1,
+   "time_of_day": "day",
+   "weather": "clear",
+   "duration_seconds": null,
+   "depends_on": [],
+   "transition_in": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "transition_out": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "approval_status": "pending",
+   "shots": [
+    {
+     "shot_id": "sc05_sh01",
+     "duration_seconds": 4.25,
+     "description": "नदी के बीच पहुँचकर मगरमच्छ बोला।",
+     "animation_level": 3,
+     "camera": {
+      "preset": "tracking_shot",
+      "target": "crocodile_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "offstage_right",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "river_mid",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 2,
+       "attach_to": {
+        "character_id": "crocodile_001",
+        "part": "back",
+        "offset": [
+         0.0,
+         0.0
+        ]
+       }
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc05_sh01_a1",
+       "character_id": "crocodile_001",
+       "animation": "crocodile_swim",
+       "start_seconds": 0.3,
+       "duration_seconds": 3.0,
+       "loop": true,
+       "move_to": {
+        "anchor": "river_mid",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc05_sh01_l1",
+       "speaker": "narrator",
+       "text": "नदी के बीच पहुँचकर मगरमच्छ बोला।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [
+      {
+       "effect_id": "sc05_sh01_fx1",
+       "type": "ripples",
+       "start_seconds": 0.3,
+       "duration_seconds": 3.0,
+       "position": null,
+       "follow_character": "crocodile_001",
+       "params": {}
+      }
+     ],
+     "audio": [
+      {
+       "cue_id": "sc05_sh01_sfx1",
+       "type": "sfx",
+       "asset_id": "swim_001",
+       "start_seconds": 0.3,
+       "duration_seconds": null,
+       "volume": 1.0,
+       "loop": false
+      },
+      {
+       "cue_id": "sc05_sh01_amb1",
+       "type": "ambience",
+       "asset_id": "river_ambience_001",
+       "start_seconds": 0.0,
+       "duration_seconds": null,
+       "volume": 0.5,
+       "loop": true
+      }
+     ]
+    },
+    {
+     "shot_id": "sc05_sh02",
+     "duration_seconds": 7.7917,
+     "description": "मित्र, मुझे क्षमा करना। मेरी पत्नी तुम्हारा कलेजा खाना चाहती है।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "character_closeup",
+      "target": "crocodile_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "river_mid",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "sad",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "river_mid",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 2,
+       "attach_to": {
+        "character_id": "crocodile_001",
+        "part": "back",
+        "offset": [
+         0.0,
+         0.0
+        ]
+       }
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc05_sh02_l1",
+       "speaker": "crocodile_001",
+       "text": "मित्र, मुझे क्षमा करना। मेरी पत्नी तुम्हारा कलेजा खाना चाहती है।",
+       "emotion": "sad",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc05_sh03",
+     "duration_seconds": 4.0417,
+     "description": "बंदर डर गया, पर उसने तुरंत सोचा।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "reaction_closeup",
+      "target": "monkey_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "river_mid",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "sad",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "river_mid",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "worried",
+       "pose": null,
+       "visible": true,
+       "order": 2,
+       "attach_to": {
+        "character_id": "crocodile_001",
+        "part": "back",
+        "offset": [
+         0.0,
+         0.0
+        ]
+       }
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc05_sh03_l1",
+       "speaker": "narrator",
+       "text": "बंदर डर गया, पर उसने तुरंत सोचा।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc05_sh04",
+     "duration_seconds": 9.9583,
+     "description": "अरे मित्र, यह पहले क्यों नहीं बताया? मैं तो अपना कलेजा पेड़ पर ही छोड़ आया हूँ। चलो, वापस चलकर ले आते हैं।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "character_closeup",
+      "target": "monkey_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "river_mid",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "sad",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "river_mid",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "laughing",
+       "pose": null,
+       "visible": true,
+       "order": 2,
+       "attach_to": {
+        "character_id": "crocodile_001",
+        "part": "back",
+        "offset": [
+         0.0,
+         0.0
+        ]
+       }
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc05_sh04_a1",
+       "character_id": "monkey_001",
+       "animation": "happy_reaction",
+       "start_seconds": 0.3,
+       "duration_seconds": 1.2,
+       "loop": false,
+       "move_to": null,
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc05_sh04_l1",
+       "speaker": "monkey_001",
+       "text": "अरे मित्र, यह पहले क्यों नहीं बताया? मैं तो अपना कलेजा पेड़ पर ही छोड़ आया हूँ। चलो, वापस चलकर ले आते हैं।",
+       "emotion": "laughing",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    }
+   ]
+  },
+  {
+   "scene_id": "scene_06",
+   "title": "मूर्ख मगरमच्छ बंदर को वापस पेड़ के पास ले आया।",
+   "description": "मूर्ख मगरमच्छ बंदर को वापस पेड़ के पास ले आया।",
+   "environment_id": "forest_river_001",
+   "environment_version": 1,
+   "time_of_day": "day",
+   "weather": "clear",
+   "duration_seconds": null,
+   "depends_on": [],
+   "transition_in": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "transition_out": {
+    "type": "fade",
+    "duration_seconds": 1.0
+   },
+   "approval_status": "pending",
+   "shots": [
+    {
+     "shot_id": "sc06_sh01",
+     "duration_seconds": 5.25,
+     "description": "मूर्ख मगरमच्छ बंदर को वापस पेड़ के पास ले आया।",
+     "animation_level": 3,
+     "camera": {
+      "preset": "tracking_shot",
+      "target": "crocodile_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "offstage_river_right",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "river_near",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 2,
+       "attach_to": {
+        "character_id": "crocodile_001",
+        "part": "back",
+        "offset": [
+         0.0,
+         0.0
+        ]
+       }
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc06_sh01_a1",
+       "character_id": "crocodile_001",
+       "animation": "crocodile_swim",
+       "start_seconds": 0.3,
+       "duration_seconds": 3.0,
+       "loop": true,
+       "move_to": {
+        "anchor": "river_near",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc06_sh01_l1",
+       "speaker": "narrator",
+       "text": "मूर्ख मगरमच्छ बंदर को वापस पेड़ के पास ले आया।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [
+      {
+       "effect_id": "sc06_sh01_fx1",
+       "type": "ripples",
+       "start_seconds": 0.3,
+       "duration_seconds": 3.0,
+       "position": null,
+       "follow_character": "crocodile_001",
+       "params": {}
+      },
+      {
+       "effect_id": "sc06_sh01_fx2",
+       "type": "falling_leaves",
+       "start_seconds": 0.0,
+       "duration_seconds": 5.25,
+       "position": null,
+       "follow_character": null,
+       "params": {}
+      }
+     ],
+     "audio": [
+      {
+       "cue_id": "sc06_sh01_sfx1",
+       "type": "sfx",
+       "asset_id": "swim_001",
+       "start_seconds": 0.3,
+       "duration_seconds": null,
+       "volume": 1.0,
+       "loop": false
+      },
+      {
+       "cue_id": "sc06_sh01_amb1",
+       "type": "ambience",
+       "asset_id": "river_ambience_001",
+       "start_seconds": 0.0,
+       "duration_seconds": null,
+       "volume": 0.5,
+       "loop": true
+      }
+     ]
+    },
+    {
+     "shot_id": "sc06_sh02",
+     "duration_seconds": 4.25,
+     "description": "बंदर झट से कूदकर पेड़ पर चढ़ गया।",
+     "animation_level": 3,
+     "camera": {
+      "preset": "action_follow",
+      "target": "monkey_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "river_near",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "river_near",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 2,
+       "attach_to": {
+        "character_id": "crocodile_001",
+        "part": "back",
+        "offset": [
+         0.0,
+         0.0
+        ]
+       }
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc06_sh02_a1",
+       "character_id": "monkey_001",
+       "animation": "jump",
+       "start_seconds": 0.3,
+       "duration_seconds": 1.3,
+       "loop": null,
+       "move_to": {
+        "anchor": "tree_branch",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc06_sh02_l1",
+       "speaker": "narrator",
+       "text": "बंदर झट से कूदकर पेड़ पर चढ़ गया।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": [
+      {
+       "cue_id": "sc06_sh02_sfx1",
+       "type": "sfx",
+       "asset_id": "boing_001",
+       "start_seconds": 0.3,
+       "duration_seconds": null,
+       "volume": 1.0,
+       "loop": false
+      }
+     ]
+    },
+    {
+     "shot_id": "sc06_sh03",
+     "duration_seconds": 8.75,
+     "description": "मूर्ख मगरमच्छ! कलेजा भी कभी पेड़ पर रहता है? तुमने मित्रता तोड़ दी। अब यहाँ कभी मत आना।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "reaction_closeup",
+      "target": "monkey_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "river_near",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "tree_branch",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "angry",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc06_sh03_l1",
+       "speaker": "monkey_001",
+       "text": "मूर्ख मगरमच्छ! कलेजा भी कभी पेड़ पर रहता है? तुमने मित्रता तोड़ दी। अब यहाँ कभी मत आना।",
+       "emotion": "angry",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc06_sh04",
+     "duration_seconds": 3.7083,
+     "description": "मगरमच्छ शर्मिंदा होकर लौट गया।",
+     "animation_level": 3,
+     "camera": {
+      "preset": "tracking_shot",
+      "target": "crocodile_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "crocodile_001",
+       "position": {
+        "anchor": "river_near",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "in_water",
+       "expression": "sad",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "tree_branch",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "angry",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc06_sh04_a1",
+       "character_id": "crocodile_001",
+       "animation": "crocodile_swim",
+       "start_seconds": 0.3,
+       "duration_seconds": 3.0,
+       "loop": true,
+       "move_to": {
+        "anchor": "offstage_river_right",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": "right",
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc06_sh04_l1",
+       "speaker": "narrator",
+       "text": "मगरमच्छ शर्मिंदा होकर लौट गया।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [
+      {
+       "effect_id": "sc06_sh04_fx1",
+       "type": "ripples",
+       "start_seconds": 0.3,
+       "duration_seconds": 3.0,
+       "position": null,
+       "follow_character": "crocodile_001",
+       "params": {}
+      }
+     ],
+     "audio": [
+      {
+       "cue_id": "sc06_sh04_sfx1",
+       "type": "sfx",
+       "asset_id": "swim_001",
+       "start_seconds": 0.3,
+       "duration_seconds": null,
+       "volume": 1.0,
+       "loop": false
+      }
+     ]
+    },
+    {
+     "shot_id": "sc06_sh05",
+     "duration_seconds": 4.4583,
+     "description": "संकट के समय बुद्धि से काम लेना चाहिए।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "slow_pull_out",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "monkey_001",
+       "position": {
+        "anchor": "tree_branch",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "sitting",
+       "expression": "angry",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc06_sh05_l1",
+       "speaker": "narrator",
+       "text": "संकट के समय बुद्धि से काम लेना चाहिए।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    }
+   ]
+  }
+ ],
+ "metadata": {
+  "analyser": "rule_based",
+  "generated_by": "storyboard_builder/1"
+ }
+}

@@ -99,6 +99,9 @@ class StoryService:
             row.environment_id = env_ids.get(scene.environment_id)
             row.status = scene.approval_status.value
             row.scene_json = scene.model_dump(mode="json")
+            if row.shots:
+                row.shots.clear()
+                self.s.flush()                 # old shot rows go before the new ones (same shot codes) arrive
             row.shots = [
                 Shot(shot_code=shot.shot_id, shot_number=i, duration=shot.duration_seconds,
                      camera_configuration=shot.camera.model_dump(mode="json"),

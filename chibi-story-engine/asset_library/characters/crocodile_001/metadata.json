@@ -56,9 +56,9 @@
       "role": "rig_part",
       "path": "rig/eyes_angry.png",
       "format": "png",
-      "checksum": "8633483586082fe1053afaaac483fe5ecb23f6d0d72ba3c895739f44add8a1b7",
-      "width": 92,
-      "height": 89,
+      "checksum": "c9e404a24ac0bf31c67a3cb606d3ef607fc52ba8fc941e593f2d20f437e1aaeb",
+      "width": 72,
+      "height": 80,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -104,9 +104,9 @@
       "role": "rig_part",
       "path": "rig/eyes_sad.png",
       "format": "png",
-      "checksum": "36390fc63fb930d0535fa90b77711dd0e75f21fef7ec54bfcccd51d96640dd53",
-      "width": 92,
-      "height": 89,
+      "checksum": "02ea2fb259a99b0f5e9d9d9838926b552533c36c69c6ba62df5400ad6c11944d",
+      "width": 72,
+      "height": 80,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -236,7 +236,7 @@
       "role": "expression",
       "path": "expressions/angry.png",
       "format": "png",
-      "checksum": "a429fcbadf98bb19f154b5943292dc2003091d5bb9be5c5b530a359238b99b4e",
+      "checksum": "a11c8fb9f4026c31f65a120f56a40034f9dac50412e5e4057484e142ebdecf3e",
       "width": 460,
       "height": 240,
       "duration_seconds": null,
@@ -284,7 +284,7 @@
       "role": "expression",
       "path": "expressions/sad.png",
       "format": "png",
-      "checksum": "dd60f13c0384937815a60a028e2761cb4e6625f6a753e5413cc61135b240bb85",
+      "checksum": "16ee0cc124b47925d6b5b9bdff48033e666884bb32b65cf875e2da07f6d4f47a",
       "width": 460,
       "height": 240,
       "duration_seconds": null,
@@ -356,7 +356,7 @@
       "role": "reference",
       "path": "references/expression_sheet.png",
       "format": "png",
-      "checksum": "b82c35b87ad643befd0e3ac08f0a53ac495837e3bb744ccf38d52e8ebd6882db",
+      "checksum": "1372c66b44e0a8efd7672a6d9880d1810c3db7cd525cf20cb9eec84c9e66c40f",
       "width": 1500,
       "height": 656,
       "duration_seconds": null,
@@ -389,7 +389,7 @@
       "pose": null
     }
   ],
-  "created_at": "2026-11-15T18:14:32+00:00",
+  "created_at": "2026-11-16T18:40:11+00:00",
   "change_summary": "",
   "species": "crocodile",
   "visual_identity": {
@@ -714,23 +714,23 @@
           "sad": {
             "file": "rig/eyes_sad.png",
             "origin": [
-              622.0,
-              147.0
+              632.0,
+              156.0
             ],
             "size": [
-              92.0,
-              89.0
+              72.0,
+              80.0
             ]
           },
           "angry": {
             "file": "rig/eyes_angry.png",
             "origin": [
-              622.0,
-              147.0
+              632.0,
+              156.0
             ],
             "size": [
-              92.0,
-              89.0
+              72.0,
+              80.0
             ]
           }
         },

@@ -75,8 +75,11 @@ def app(migrated_db, data_root):
     from backend.app import create_app
     from backend.settings import Settings
 
-    settings = Settings(env="test", database_url=migrated_db, data_root=data_root, asset_library=ROOT / "asset_library",
-                        log_level="WARNING")
+    library_copy = data_root / "asset_library"          # API tests upload and approve assets: never touch the shipped library
+    if not library_copy.exists():
+        shutil.copytree(ROOT / "asset_library", library_copy)
+    settings = Settings(env="test", database_url=migrated_db, data_root=data_root, asset_library=library_copy, log_level="WARNING",
+                        voice_provider="espeak" if shutil.which("espeak-ng") else "tone", llm_provider="none")
     return create_app(settings)
 
 
@@ -113,6 +116,11 @@ def admin_auth(client, app) -> dict[str, str]:
 @pytest.fixture(scope="session")
 def viewer_auth(client, app) -> dict[str, str]:
     return _login(client, app, "viewer@example.com", "viewer")
+
+
+@pytest.fixture(scope="session")
+def reviewer_auth(client, app) -> dict[str, str]:
+    return _login(client, app, "reviewer@example.com", "reviewer")
 
 
 # ------------------------------------------------------------------ engine fixtures

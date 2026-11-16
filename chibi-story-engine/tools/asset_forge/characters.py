@@ -193,8 +193,13 @@ def biped_eyes(s: BipedSpec, variant: str) -> Art:
             # an eyelid slanting down towards the outside (sad) or the nose (angry)
             outer, inner = (cy - 14, cy - 44) if variant == "sad" else (cy - 46, cy - 12)
             xo, xi = cx + sign * 48, cx - sign * 48
+            clip = f"lid{i}"
+            a.defs.append(f'<clipPath id="{clip}"><ellipse cx="{cx}" cy="{cy}" rx="38" ry="48"/></clipPath>')
+            a.raw(f'<g clip-path="url(#{clip})">')
             a.poly([(xo, cy - 60), (xi, cy - 60), (xi, inner), (xo, outer)], _lid_colour(s))
             a.path(f"M {xi} {inner} L {xo} {outer}", None, INK, 6)
+            a.raw("</g>")
+            a.ellipse(cx, cy, 38, 48, None, INK, 6)
     return a
 
 
@@ -416,8 +421,12 @@ def reptile_eyes(s: ReptileSpec, variant: str) -> Art:
             left, right = cy - 34, cy - 6
         else:
             left, right = cy - 6, cy - 34
+        a.defs.append(f'<clipPath id="lid"><ellipse cx="{cx}" cy="{cy}" rx="30" ry="34"/></clipPath>')
+        a.raw('<g clip-path="url(#lid)">')
         a.poly([(cx - 40, cy - 46), (cx + 40, cy - 46), (cx + 40, right), (cx - 40, left)], s.skin)
         a.path(f"M {cx - 40} {left} L {cx + 40} {right}", None, INK, 6)
+        a.raw("</g>")
+        a.ellipse(cx, cy, 30, 34, None, INK, 6)
     if s.lashes and variant in ("open", "wide", "sad", "angry"):
         for dx, dy in ((-30, -22), (-20, -34), (-6, -40)):
             a.path(f"M {cx + dx * 0.8} {cy + dy * 0.8} L {cx + dx * 1.3} {cy + dy * 1.3}", None, INK, 5)
