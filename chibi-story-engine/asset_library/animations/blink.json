@@ -1,0 +1,54 @@
+{
+ "code": "blink",
+ "name": "Blink",
+ "category": "basic",
+ "level": 2,
+ "rig_compatibility": [
+  "biped_chibi",
+  "quadruped_reptile"
+ ],
+ "duration": 0.16,
+ "loop": false,
+ "additive": true,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "Eyes close for a moment.",
+ "channels": {},
+ "variant_tracks": {
+  "eyes": [
+   {
+    "t": 0,
+    "variant": "closed"
+   },
+   {
+    "t": 0.13,
+    "variant": "@"
+   }
+  ],
+  "pupils": [
+   {
+    "t": 0,
+    "variant": "none"
+   },
+   {
+    "t": 0.13,
+    "variant": "@"
+   }
+  ]
+ },
+ "metadata": {
+  "semantics": []
+ }
+}

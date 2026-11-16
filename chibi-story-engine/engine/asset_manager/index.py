@@ -53,6 +53,7 @@ class EnvironmentEntry(BaseModel):
     default_anchor_by_role: dict[str, list[str]] = Field(default_factory=dict)
     habitats: list[str] = Field(default_factory=list)
     lighting_presets: list[str] = Field(default_factory=lambda: ["day"])
+    ambience: str | None = None
     approved: bool = False
 
     def anchor_with(self, feature: str) -> str | None:

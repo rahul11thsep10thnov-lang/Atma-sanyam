@@ -1,0 +1,159 @@
+{
+ "code": "run",
+ "name": "Run",
+ "category": "locomotion",
+ "level": 3,
+ "rig_compatibility": [
+  "biped_chibi"
+ ],
+ "duration": 0.36,
+ "loop": true,
+ "additive": false,
+ "start_states": [
+  "standing"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "linear",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "leg_l.rotation": [
+   {
+    "t": 0,
+    "v": -44,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.18,
+    "v": 44,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.36,
+    "v": -44,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_r.rotation": [
+   {
+    "t": 0,
+    "v": 44,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.18,
+    "v": -44,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.36,
+    "v": 44,
+    "ease": "ease_in_out"
+   }
+  ],
+  "arm_l.rotation": [
+   {
+    "t": 0,
+    "v": 50,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.18,
+    "v": -50,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.36,
+    "v": 50,
+    "ease": "ease_in_out"
+   }
+  ],
+  "arm_r.rotation": [
+   {
+    "t": 0,
+    "v": -50,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.18,
+    "v": 50,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.36,
+    "v": -50,
+    "ease": "ease_in_out"
+   }
+  ],
+  "body.y": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.09,
+    "v": 18,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.18,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.27,
+    "v": 18,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.36,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "body.rotation": [
+   {
+    "t": 0,
+    "v": -6,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.36,
+    "v": -6,
+    "ease": "ease_in_out"
+   }
+  ],
+  "tail.rotation": [
+   {
+    "t": 0,
+    "v": -12,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.18,
+    "v": 12,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.36,
+    "v": -12,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "run"
+  ]
+ }
+}

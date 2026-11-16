@@ -1,0 +1,188 @@
+{
+ "code": "fear_reaction",
+ "name": "Fear reaction",
+ "category": "emotional",
+ "level": 2,
+ "rig_compatibility": [
+  "biped_chibi"
+ ],
+ "duration": 1.2,
+ "loop": false,
+ "additive": false,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": "worried",
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "body.x": [
+   {
+    "t": 0.0,
+    "v": -5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.075,
+    "v": 5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.15,
+    "v": -5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.22499999999999998,
+    "v": 5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": -5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.375,
+    "v": 5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.44999999999999996,
+    "v": -5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.525,
+    "v": 5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": -5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6749999999999999,
+    "v": 5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.75,
+    "v": -5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.825,
+    "v": 5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8999999999999999,
+    "v": -5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.975,
+    "v": 5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.05,
+    "v": -5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.125,
+    "v": 5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": -5,
+    "ease": "ease_in_out"
+   }
+  ],
+  "body.sy": [
+   {
+    "t": 0,
+    "v": 1,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.2,
+    "v": 0.94,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": 0.94,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 1,
+    "ease": "ease_in_out"
+   }
+  ],
+  "arm_l.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.2,
+    "v": 40,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": 40,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "arm_r.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.2,
+    "v": -40,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": -40,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "fear_reaction"
+  ]
+ }
+}

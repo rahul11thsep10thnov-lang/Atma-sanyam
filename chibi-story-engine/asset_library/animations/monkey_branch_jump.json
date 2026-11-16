@@ -1,0 +1,179 @@
+{
+ "code": "monkey_branch_jump",
+ "name": "Branch jump",
+ "category": "animal",
+ "level": 3,
+ "rig_compatibility": [
+  "biped_chibi"
+ ],
+ "duration": 1.1,
+ "loop": false,
+ "additive": false,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "arc",
+  "arc_height": 300,
+  "ease": "ease_in_out"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [
+  "tail"
+ ],
+ "description": "",
+ "channels": {
+  "body.sy": [
+   {
+    "t": 0,
+    "v": 1,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.14,
+    "v": 0.84,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": 1.1,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": 1.0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": 0.92,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.1,
+    "v": 1,
+    "ease": "ease_in_out"
+   }
+  ],
+  "arm_l.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": -165,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": -140,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.1,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "arm_r.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": 165,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": 140,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.1,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_l.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": -46,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": -30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.1,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_r.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": 46,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": 30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.1,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "tail.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.4,
+    "v": -40,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": 20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.1,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "branch_jump"
+  ]
+ }
+}

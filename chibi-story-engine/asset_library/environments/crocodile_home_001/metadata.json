@@ -1,0 +1,394 @@
+{
+  "manifest_version": "1.0",
+  "id": "crocodile_home_001",
+  "asset_type": "environment",
+  "name": "Crocodile home",
+  "version": 1,
+  "description": "A cave among rocks on the riverside at dusk: the crocodiles' home.",
+  "aliases": [
+    "मगरमच्छ का घर",
+    "crocodile home"
+  ],
+  "tags": [
+    "home",
+    "cave",
+    "river"
+  ],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedurally generated)",
+    "source": "generated",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {
+    "habitats": [
+      "aquatic"
+    ],
+    "style": "premium_chibi_anime",
+    "ambience": "river_ambience_001"
+  },
+  "files": [
+    {
+      "role": "layer",
+      "path": "layers/cave.png",
+      "format": "png",
+      "checksum": "8dde9307ed0f9b9d675dbd68e2e64080660f8843ab3e81e598f209c0b9f6732d",
+      "width": 2720,
+      "height": 1480,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/far_hills.png",
+      "format": "png",
+      "checksum": "ba60ef587917d188567092b46a44db4a5183a0bfa48b5626c212ed27b3908157",
+      "width": 1360,
+      "height": 740,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/far_trees.png",
+      "format": "png",
+      "checksum": "a1b7b96b88746c7fdc4aa5f36a31a3875067f993799110b07bdaa132407cae41",
+      "width": 2720,
+      "height": 1480,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/reeds.png",
+      "format": "png",
+      "checksum": "b370317511a67f91e10f912e2f0daa5a2b0115498502f8b98a069cabab6de0b5",
+      "width": 2720,
+      "height": 1480,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/ripples_near.png",
+      "format": "png",
+      "checksum": "a734cc1a4247dffd1843b2bf39668e8ef9d9865c24ec192e7bddf09be3886266",
+      "width": 3400,
+      "height": 1480,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/river.png",
+      "format": "png",
+      "checksum": "c98cb2154b0d5fddaa550908c8d746ee9af2beff0a13ef413f42e251b2b93f39",
+      "width": 1360,
+      "height": 740,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/shore.png",
+      "format": "png",
+      "checksum": "a94ad96a0a867f91bc9127c5f4e6a83fae447b314167dd080681d80c9143b590",
+      "width": 2720,
+      "height": 1480,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/sky.png",
+      "format": "png",
+      "checksum": "1327ae74ea754e526b570464ef65115448c1510a148d59a121e97455046c875c",
+      "width": 1360,
+      "height": 740,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/water_front.png",
+      "format": "png",
+      "checksum": "3d57cad54698b1c8edfea6efaaa1d678a2b480b7960dd9f235524e4f5e604d2f",
+      "width": 1360,
+      "height": 740,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-15T18:20:39+00:00",
+  "change_summary": "",
+  "stage": [
+    1920,
+    1080
+  ],
+  "layers": [
+    {
+      "id": "sky",
+      "type": "background",
+      "file": "layers/sky.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        1480.0
+      ],
+      "parallax": 0.12,
+      "order": 0,
+      "cover": true,
+      "motion": [],
+      "tint_group": "background"
+    },
+    {
+      "id": "far_hills",
+      "type": "far",
+      "file": "layers/far_hills.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        1480.0
+      ],
+      "parallax": 0.3,
+      "order": 1,
+      "cover": false,
+      "motion": [],
+      "tint_group": "background"
+    },
+    {
+      "id": "far_trees",
+      "type": "middle",
+      "file": "layers/far_trees.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        1480.0
+      ],
+      "parallax": 0.55,
+      "order": 2,
+      "cover": false,
+      "motion": [],
+      "tint_group": "background"
+    },
+    {
+      "id": "shore",
+      "type": "middle",
+      "file": "layers/shore.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        1480.0
+      ],
+      "parallax": 1.0,
+      "order": 8,
+      "cover": true,
+      "motion": [],
+      "tint_group": "background"
+    },
+    {
+      "id": "cave",
+      "type": "middle",
+      "file": "layers/cave.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        1480.0
+      ],
+      "parallax": 1.0,
+      "order": 9,
+      "cover": false,
+      "motion": [],
+      "tint_group": "background"
+    },
+    {
+      "id": "river",
+      "type": "middle",
+      "file": "layers/river.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        1480.0
+      ],
+      "parallax": 1.0,
+      "order": 10,
+      "cover": false,
+      "motion": [],
+      "tint_group": "background"
+    },
+    {
+      "id": "ripples_near",
+      "type": "middle",
+      "file": "layers/ripples_near.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        3400.0,
+        1480.0
+      ],
+      "parallax": 1.0,
+      "order": 14,
+      "cover": false,
+      "motion": [
+        {
+          "type": "scroll",
+          "amplitude": 680.0,
+          "period": 4.0,
+          "phase": 0.0,
+          "speed": -30.0,
+          "pivot": null,
+          "wind_scaled": false
+        },
+        {
+          "type": "bob",
+          "amplitude": 3.0,
+          "period": 3.4,
+          "phase": 0.0,
+          "speed": 0.0,
+          "pivot": null,
+          "wind_scaled": false
+        }
+      ],
+      "tint_group": "background"
+    },
+    {
+      "id": "water_front",
+      "type": "foreground",
+      "file": "layers/water_front.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        1480.0
+      ],
+      "parallax": 1.0,
+      "order": 130,
+      "cover": false,
+      "motion": [
+        {
+          "type": "bob",
+          "amplitude": 4.0,
+          "period": 2.8,
+          "phase": 0.0,
+          "speed": 0.0,
+          "pivot": null,
+          "wind_scaled": false
+        }
+      ],
+      "tint_group": "background"
+    },
+    {
+      "id": "reeds",
+      "type": "foreground",
+      "file": "layers/reeds.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        1480.0
+      ],
+      "parallax": 1.3,
+      "order": 800,
+      "cover": false,
+      "motion": [
+        {
+          "type": "sway",
+          "amplitude": 0.8,
+          "period": 4.4,
+          "phase": 0.0,
+          "speed": 0.0,
+          "pivot": [
+            960.0,
+            -200.0
+          ],
+          "wind_scaled": true
+        }
+      ],
+      "tint_group": "background"
+    }
+  ],
+  "anchors": {
+    "home_left": {
+      "x": 660.0,
+      "y": 88.0,
+      "order": 120,
+      "scale": 1.0,
+      "features": [
+        "water",
+        "home"
+      ],
+      "description": ""
+    },
+    "home_right": {
+      "x": 1340.0,
+      "y": 88.0,
+      "order": 121,
+      "scale": 1.0,
+      "features": [
+        "water",
+        "home"
+      ],
+      "description": ""
+    },
+    "offstage_left": {
+      "x": -430.0,
+      "y": 88.0,
+      "order": 120,
+      "scale": 1.0,
+      "features": [
+        "offstage",
+        "water"
+      ],
+      "description": ""
+    },
+    "offstage_right": {
+      "x": 2350.0,
+      "y": 88.0,
+      "order": 120,
+      "scale": 1.0,
+      "features": [
+        "offstage",
+        "water"
+      ],
+      "description": ""
+    }
+  },
+  "lighting_presets": [
+    "day",
+    "morning",
+    "sunset",
+    "night",
+    "overcast"
+  ],
+  "default_anchor_by_role": {
+    "aquatic": [
+      "home_left",
+      "home_right"
+    ]
+  }
+}

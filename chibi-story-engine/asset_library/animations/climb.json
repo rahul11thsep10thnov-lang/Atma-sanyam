@@ -1,0 +1,120 @@
+{
+ "code": "climb",
+ "name": "Climb",
+ "category": "locomotion",
+ "level": 3,
+ "rig_compatibility": [
+  "biped_chibi"
+ ],
+ "duration": 0.8,
+ "loop": true,
+ "additive": false,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "linear",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "arm_l.rotation": [
+   {
+    "t": 0,
+    "v": -160,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.4,
+    "v": -100,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": -160,
+    "ease": "ease_in_out"
+   }
+  ],
+  "arm_r.rotation": [
+   {
+    "t": 0,
+    "v": 100,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.4,
+    "v": 160,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": 100,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_l.rotation": [
+   {
+    "t": 0,
+    "v": -30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.4,
+    "v": 10,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": -30,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_r.rotation": [
+   {
+    "t": 0,
+    "v": -10,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.4,
+    "v": 30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": -10,
+    "ease": "ease_in_out"
+   }
+  ],
+  "body.rotation": [
+   {
+    "t": 0,
+    "v": -4,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.4,
+    "v": 4,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": -4,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "climb"
+  ]
+ }
+}

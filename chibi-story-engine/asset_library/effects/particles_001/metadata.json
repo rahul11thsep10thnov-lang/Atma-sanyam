@@ -1,0 +1,121 @@
+{
+  "manifest_version": "1.0",
+  "id": "particles_001",
+  "asset_type": "effect",
+  "name": "Particle sprites",
+  "version": 1,
+  "description": "Sprites used by the built-in effects (splash, ripples, leaves, sparkles, hearts, dust, rain).",
+  "aliases": [],
+  "tags": [
+    "particles"
+  ],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedurally generated)",
+    "source": "generated",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "sprite",
+      "path": "sprites/droplet.png",
+      "format": "png",
+      "checksum": "362fecdfc5b04425d7f9dcd48fd686c7714304b9886e78bca9cdb8aaa01d40f5",
+      "width": 64,
+      "height": 64,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "sprite",
+      "path": "sprites/heart.png",
+      "format": "png",
+      "checksum": "76b1dade65a04df6aedbc8d72a9dcbde38accbb1bf63a37084aa2aeb13675c8b",
+      "width": 64,
+      "height": 64,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "sprite",
+      "path": "sprites/leaf.png",
+      "format": "png",
+      "checksum": "1e4d34ba3a4e37cf505a0d3517b75e648ab050e33701134dae23ef195b6aa4c4",
+      "width": 96,
+      "height": 64,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "sprite",
+      "path": "sprites/puff.png",
+      "format": "png",
+      "checksum": "78837f8fab17ff3233eace06c190822ea956cb3afd8de00604ae4004d74418a6",
+      "width": 96,
+      "height": 96,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "sprite",
+      "path": "sprites/ring.png",
+      "format": "png",
+      "checksum": "e1100c169df329a446bff2edc6f6d68e94f42b4aff94ba94d5e3cc5496abeca3",
+      "width": 256,
+      "height": 64,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "sprite",
+      "path": "sprites/sparkle.png",
+      "format": "png",
+      "checksum": "b160c896f87f07674f24766906bccd829eb53ddaa01579a63ed347121fd0d7a6",
+      "width": 64,
+      "height": 64,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "sprite",
+      "path": "sprites/streak.png",
+      "format": "png",
+      "checksum": "b7a68a2fb4c516b84fe0f196eaff68aa15eaf56801b9fb9e94bc7d9ab192f29e",
+      "width": 8,
+      "height": 96,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-15T18:14:45+00:00",
+  "change_summary": "",
+  "sprites": {
+    "droplet": "sprites/droplet.png",
+    "ring": "sprites/ring.png",
+    "leaf": "sprites/leaf.png",
+    "sparkle": "sprites/sparkle.png",
+    "heart": "sprites/heart.png",
+    "puff": "sprites/puff.png",
+    "streak": "sprites/streak.png"
+  },
+  "sprite_size": [
+    64.0,
+    64.0
+  ]
+}

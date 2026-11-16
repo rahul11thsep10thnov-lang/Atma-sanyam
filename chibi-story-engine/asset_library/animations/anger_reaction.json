@@ -1,0 +1,133 @@
+{
+ "code": "anger_reaction",
+ "name": "Anger reaction",
+ "category": "emotional",
+ "level": 2,
+ "rig_compatibility": [
+  "biped_chibi"
+ ],
+ "duration": 1.0,
+ "loop": false,
+ "additive": false,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": "angry",
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "leg_r.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.2,
+    "v": 36,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.32,
+    "v": 0,
+    "ease": "ease_in"
+   },
+   {
+    "t": 0.55,
+    "v": 36,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.67,
+    "v": 0,
+    "ease": "ease_in"
+   },
+   {
+    "t": 1.0,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "arm_l.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.2,
+    "v": -34,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": -34,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "arm_r.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.2,
+    "v": 34,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": 34,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "head.y": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.2,
+    "v": -8,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": -8,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "anger_reaction"
+  ]
+ }
+}

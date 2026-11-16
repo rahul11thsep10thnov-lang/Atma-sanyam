@@ -108,13 +108,17 @@ class CharacterRegistry:
             raise IncompatibleAsset(
                 f"Animation '{clip.code}' is for rig {clip.rig_compatibility}, but '{manifest.id}' uses '{manifest.rig.template}'",
                 details={"animation": clip.code, "character": manifest.id, "rig": manifest.rig.template})
-        missing = [p for p in clip.driven_parts() if manifest.rig.part(p) is None]
+        template = self.library.rig_templates().get(manifest.rig.template)
+        optional = set(template.optional_parts) if template else set()
+        missing = [p for p in clip.driven_parts() if manifest.rig.part(p) is None and (p in clip.required_parts or p not in optional)]
         if missing:
             raise IncompatibleAsset(f"Animation '{clip.code}' drives parts that '{manifest.id}' does not have: {', '.join(missing)}",
                                     details={"animation": clip.code, "character": manifest.id, "missing_parts": missing})
         for part, keys in clip.variant_tracks.items():
+            if manifest.rig.part(part) is None:
+                continue
             have = manifest.rig.part(part).variants  # type: ignore[union-attr]
-            bad = sorted({k.variant for k in keys if k.variant not in have and k.variant != "none"})
+            bad = sorted({k.variant for k in keys if k.variant not in have and k.variant not in ("none", "@")})
             if bad:
                 raise IncompatibleAsset(f"Animation '{clip.code}' needs images {bad} for part '{part}' that '{manifest.id}' lacks")
 

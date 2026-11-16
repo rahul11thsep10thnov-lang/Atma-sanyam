@@ -1,0 +1,151 @@
+{
+ "code": "eat",
+ "name": "Eat",
+ "category": "interaction",
+ "level": 2,
+ "rig_compatibility": [
+  "biped_chibi"
+ ],
+ "duration": 1.0,
+ "loop": false,
+ "additive": false,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "arm_r.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.25,
+    "v": -128,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.75,
+    "v": -128,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "head.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": 4,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": -2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.7,
+    "v": 4,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "head.y": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.4,
+    "v": -5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": -5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.7,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {
+  "mouth": [
+   {
+    "t": 0,
+    "variant": "@"
+   },
+   {
+    "t": 0.25,
+    "variant": "open"
+   },
+   {
+    "t": 0.4,
+    "variant": "closed"
+   },
+   {
+    "t": 0.5,
+    "variant": "small"
+   },
+   {
+    "t": 0.6,
+    "variant": "closed"
+   },
+   {
+    "t": 0.7,
+    "variant": "small"
+   },
+   {
+    "t": 0.8,
+    "variant": "closed"
+   },
+   {
+    "t": 0.95,
+    "variant": "@"
+   }
+  ]
+ },
+ "metadata": {
+  "semantics": [
+   "eat"
+  ]
+ }
+}

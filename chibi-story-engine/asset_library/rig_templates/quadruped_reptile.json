@@ -1,0 +1,49 @@
+{
+  "id": "quadruped_reptile",
+  "name": "Low four-legged reptile",
+  "description": "Long-bodied animal seen from the side with a hinged jaw: crocodiles, lizards.",
+  "components": {
+    "root": [
+      "root"
+    ],
+    "body": [
+      "body"
+    ],
+    "head": [
+      "head"
+    ],
+    "eyes": [
+      "eyes",
+      "pupils"
+    ],
+    "eyebrows": [
+      "brow"
+    ],
+    "mouth": [
+      "jaw"
+    ],
+    "left_arm": [
+      "leg_fl"
+    ],
+    "right_arm": [
+      "leg_fr"
+    ],
+    "left_leg": [
+      "leg_bl"
+    ],
+    "right_leg": [
+      "leg_br"
+    ],
+    "tail": [
+      "tail"
+    ]
+  },
+  "optional_parts": [
+    "accessory"
+  ],
+  "has_tail": true,
+  "states": [
+    "standing",
+    "in_water"
+  ]
+}

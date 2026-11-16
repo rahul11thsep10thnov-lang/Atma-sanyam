@@ -520,6 +520,8 @@ class StoryboardBuilder:
     def _ambience(self, env: EnvironmentEntry | None) -> str | None:
         if not env:
             return None
+        if env.ambience and any(s.id == env.ambience for s in self.index.sound_effects):
+            return env.ambience
         for sfx in self.index.sound_effects:
             if "ambience" in sfx.tags and set(sfx.tags) & set(env.tags):
                 return sfx.id

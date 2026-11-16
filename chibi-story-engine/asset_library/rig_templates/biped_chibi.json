@@ -1,0 +1,50 @@
+{
+  "id": "biped_chibi",
+  "name": "Chibi biped",
+  "description": "Upright big-headed character seen three-quarter front: animals that stand, and people.",
+  "components": {
+    "root": [
+      "root"
+    ],
+    "body": [
+      "body"
+    ],
+    "head": [
+      "head"
+    ],
+    "eyes": [
+      "eyes",
+      "pupils"
+    ],
+    "eyebrows": [
+      "brow_l",
+      "brow_r"
+    ],
+    "mouth": [
+      "mouth"
+    ],
+    "left_arm": [
+      "arm_l"
+    ],
+    "right_arm": [
+      "arm_r"
+    ],
+    "left_leg": [
+      "leg_l"
+    ],
+    "right_leg": [
+      "leg_r"
+    ]
+  },
+  "optional_parts": [
+    "tail",
+    "mane",
+    "hat"
+  ],
+  "has_tail": false,
+  "states": [
+    "standing",
+    "sitting",
+    "in_air"
+  ]
+}

@@ -1,0 +1,122 @@
+{
+ "code": "monkey_branch_climb",
+ "name": "Branch climb",
+ "category": "animal",
+ "level": 3,
+ "rig_compatibility": [
+  "biped_chibi"
+ ],
+ "duration": 0.7,
+ "loop": true,
+ "additive": false,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "linear",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [
+  "tail"
+ ],
+ "description": "",
+ "channels": {
+  "arm_l.rotation": [
+   {
+    "t": 0,
+    "v": -170,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.35,
+    "v": -110,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.7,
+    "v": -170,
+    "ease": "ease_in_out"
+   }
+  ],
+  "arm_r.rotation": [
+   {
+    "t": 0,
+    "v": 110,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.35,
+    "v": 170,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.7,
+    "v": 110,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_l.rotation": [
+   {
+    "t": 0,
+    "v": -36,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.35,
+    "v": 6,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.7,
+    "v": -36,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_r.rotation": [
+   {
+    "t": 0,
+    "v": -6,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.35,
+    "v": 36,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.7,
+    "v": -6,
+    "ease": "ease_in_out"
+   }
+  ],
+  "tail.rotation": [
+   {
+    "t": 0,
+    "v": -20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.35,
+    "v": 20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.7,
+    "v": -20,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "branch_climb"
+  ]
+ }
+}

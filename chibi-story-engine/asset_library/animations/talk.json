@@ -1,0 +1,116 @@
+{
+ "code": "talk",
+ "name": "Talk",
+ "category": "basic",
+ "level": 2,
+ "rig_compatibility": [
+  "biped_chibi"
+ ],
+ "duration": 1.2,
+ "loop": true,
+ "additive": true,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "head.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": 3,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": -2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": 2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "head.y": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.15,
+    "v": 4,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.75,
+    "v": 3,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "arm_r.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.4,
+    "v": 32,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": 18,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "talk"
+  ]
+ }
+}

@@ -1,0 +1,63 @@
+{
+ "code": "shake_head",
+ "name": "Shake head",
+ "category": "basic",
+ "level": 2,
+ "rig_compatibility": [
+  "biped_chibi",
+  "quadruped_reptile"
+ ],
+ "duration": 0.9,
+ "loop": false,
+ "additive": true,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "head.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.2,
+    "v": 9,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.45,
+    "v": -9,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.7,
+    "v": 6,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "refuse"
+  ]
+ }
+}

@@ -1,0 +1,102 @@
+{
+ "code": "crocodile_droop",
+ "name": "Crocodile droop",
+ "category": "animal",
+ "level": 2,
+ "rig_compatibility": [
+  "quadruped_reptile"
+ ],
+ "duration": 1.4,
+ "loop": false,
+ "additive": false,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": "sad",
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "head.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": -10,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.1,
+    "v": -10,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.4,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "tail.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": -12,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.1,
+    "v": -12,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.4,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "body.sy": [
+   {
+    "t": 0,
+    "v": 1,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": 0.95,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.1,
+    "v": 0.95,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.4,
+    "v": 1,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "cry",
+   "sad_reaction"
+  ]
+ }
+}

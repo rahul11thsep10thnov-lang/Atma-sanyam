@@ -1,0 +1,96 @@
+{
+ "code": "crocodile_jaw_open",
+ "name": "Jaw open",
+ "category": "animal",
+ "level": 2,
+ "rig_compatibility": [
+  "quadruped_reptile"
+ ],
+ "duration": 1.0,
+ "loop": false,
+ "additive": false,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "jaw.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.2,
+    "v": -26,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.4,
+    "v": -2,
+    "ease": "ease_in"
+   },
+   {
+    "t": 0.6,
+    "v": -20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": -2,
+    "ease": "ease_in"
+   },
+   {
+    "t": 1.0,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "head.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.2,
+    "v": 7,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.4,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "eat",
+   "drink",
+   "jaw_open"
+  ]
+ }
+}

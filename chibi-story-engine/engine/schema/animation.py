@@ -77,8 +77,6 @@ class AnimationClip(Model):
         for name, keys in self.variant_tracks.items():
             if keys and keys[-1].t > self.duration + 1e-6:
                 raise ValueError(f"variant track '{name}' has a key after the clip ends")
-        if self.root_motion.path != "none" and not self.requires_move_to:
-            self.requires_move_to = False  # travel is optional: without move_to the clip plays in place
         return self
 
     def driven_parts(self) -> list[str]:

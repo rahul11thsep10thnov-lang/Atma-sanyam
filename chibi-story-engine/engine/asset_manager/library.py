@@ -320,7 +320,7 @@ class AssetLibrary:
                 aliases=e.aliases, anchors={n: AnchorEntry(x=a.x, y=a.y, order=a.order, scale=a.scale, features=a.features)
                                             for n, a in e.anchors.items()},
                 default_anchor_by_role=e.default_anchor_by_role, habitats=list(e.compatibility.get("habitats", [])),
-                lighting_presets=e.lighting_presets, approved=e.approval_status == ApprovalStatus.approved))
+                lighting_presets=e.lighting_presets, ambience=e.compatibility.get("ambience"), approved=e.approval_status == ApprovalStatus.approved))
         anims = [AnimationEntry(code=c.code, category=c.category, level=c.level, rigs=c.rig_compatibility,
                                 semantics=list(c.metadata.get("semantics", [])), duration=c.duration, loop=c.loop, additive=c.additive,
                                 start_states=c.start_states, end_state=c.end_state, requires_feature=c.requires_feature,

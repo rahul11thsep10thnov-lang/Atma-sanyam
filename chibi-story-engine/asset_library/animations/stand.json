@@ -1,0 +1,71 @@
+{
+ "code": "stand",
+ "name": "Stand up",
+ "category": "locomotion",
+ "level": 2,
+ "rig_compatibility": [
+  "biped_chibi"
+ ],
+ "duration": 0.6,
+ "loop": false,
+ "additive": false,
+ "start_states": [
+  "sitting"
+ ],
+ "end_state": "standing",
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "root.y": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 66,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_l.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 68,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_r.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": -68,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "stand"
+  ]
+ }
+}

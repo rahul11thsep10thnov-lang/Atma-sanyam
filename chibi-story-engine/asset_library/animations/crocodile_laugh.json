@@ -1,0 +1,149 @@
+{
+ "code": "crocodile_laugh",
+ "name": "Crocodile laugh",
+ "category": "animal",
+ "level": 2,
+ "rig_compatibility": [
+  "quadruped_reptile"
+ ],
+ "duration": 1.2,
+ "loop": false,
+ "additive": false,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": "laughing",
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "head.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.2,
+    "v": 9,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": 9,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "jaw.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.2,
+    "v": -18,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.4,
+    "v": -8,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": -18,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": -8,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": -18,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "root.y": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": 10,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": 10,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "tail.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": 16,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": -16,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": 16,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "laugh",
+   "happy_reaction"
+  ]
+ }
+}

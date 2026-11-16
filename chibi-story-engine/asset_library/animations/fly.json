@@ -1,0 +1,86 @@
+{
+ "code": "fly",
+ "name": "Fly",
+ "category": "locomotion",
+ "level": 3,
+ "rig_compatibility": [
+  "biped_chibi"
+ ],
+ "duration": 0.5,
+ "loop": true,
+ "additive": false,
+ "start_states": [
+  "*"
+ ],
+ "end_state": "in_air",
+ "root_motion": {
+  "path": "linear",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "arm_l.rotation": [
+   {
+    "t": 0,
+    "v": -60,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.25,
+    "v": -130,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": -60,
+    "ease": "ease_in_out"
+   }
+  ],
+  "arm_r.rotation": [
+   {
+    "t": 0,
+    "v": 60,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.25,
+    "v": 130,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": 60,
+    "ease": "ease_in_out"
+   }
+  ],
+  "body.y": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.25,
+    "v": 14,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "fly"
+  ]
+ }
+}

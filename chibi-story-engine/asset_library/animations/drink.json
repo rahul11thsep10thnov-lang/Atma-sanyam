@@ -1,0 +1,94 @@
+{
+ "code": "drink",
+ "name": "Drink",
+ "category": "interaction",
+ "level": 2,
+ "rig_compatibility": [
+  "biped_chibi"
+ ],
+ "duration": 1.5,
+ "loop": false,
+ "additive": false,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "arm_r.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.4,
+    "v": -122,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.1,
+    "v": -122,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.5,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "head.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": 9,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.1,
+    "v": 9,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.5,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {
+  "mouth": [
+   {
+    "t": 0,
+    "variant": "@"
+   },
+   {
+    "t": 0.4,
+    "variant": "small"
+   },
+   {
+    "t": 1.1,
+    "variant": "@"
+   }
+  ]
+ },
+ "metadata": {
+  "semantics": [
+   "drink"
+  ]
+ }
+}

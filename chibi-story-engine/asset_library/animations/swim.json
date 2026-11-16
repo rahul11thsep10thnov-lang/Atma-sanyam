@@ -1,0 +1,115 @@
+{
+ "code": "swim",
+ "name": "Swim",
+ "category": "locomotion",
+ "level": 3,
+ "rig_compatibility": [
+  "biped_chibi"
+ ],
+ "duration": 0.9,
+ "loop": true,
+ "additive": false,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "linear",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": "water",
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "body.rotation": [
+   {
+    "t": 0,
+    "v": -18,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": -18,
+    "ease": "ease_in_out"
+   }
+  ],
+  "arm_l.rotation": [
+   {
+    "t": 0,
+    "v": -150,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.45,
+    "v": -30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": -150,
+    "ease": "ease_in_out"
+   }
+  ],
+  "arm_r.rotation": [
+   {
+    "t": 0,
+    "v": 30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.45,
+    "v": 150,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": 30,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_l.rotation": [
+   {
+    "t": 0,
+    "v": -20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.45,
+    "v": 20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": -20,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_r.rotation": [
+   {
+    "t": 0,
+    "v": 20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.45,
+    "v": -20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": 20,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "swim"
+  ]
+ }
+}

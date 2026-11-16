@@ -1,0 +1,182 @@
+{
+ "code": "jump",
+ "name": "Jump",
+ "category": "locomotion",
+ "level": 3,
+ "rig_compatibility": [
+  "biped_chibi"
+ ],
+ "duration": 1.0,
+ "loop": false,
+ "additive": false,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "arc",
+  "arc_height": 230,
+  "ease": "ease_in_out"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "body.sy": [
+   {
+    "t": 0,
+    "v": 1,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.16,
+    "v": 0.86,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": 1.08,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": 1.0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": 0.9,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": 1,
+    "ease": "ease_in_out"
+   }
+  ],
+  "arm_l.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.16,
+    "v": 20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.35,
+    "v": -150,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": -110,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "arm_r.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.16,
+    "v": -20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.35,
+    "v": 150,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": 110,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_l.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": -30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": -18,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_r.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": 30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": 18,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "tail.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.4,
+    "v": -28,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.0,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "jump"
+  ]
+ }
+}

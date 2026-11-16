@@ -1,0 +1,103 @@
+{
+ "code": "crocodile_float",
+ "name": "Crocodile float",
+ "category": "animal",
+ "level": 1,
+ "rig_compatibility": [
+  "quadruped_reptile"
+ ],
+ "duration": 2.6,
+ "loop": true,
+ "additive": false,
+ "start_states": [
+  "in_water"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "root.y": [
+   {
+    "t": 0,
+    "v": -5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.3,
+    "v": 5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 2.6,
+    "v": -5,
+    "ease": "ease_in_out"
+   }
+  ],
+  "body.rotation": [
+   {
+    "t": 0,
+    "v": -1.2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.3,
+    "v": 1.2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 2.6,
+    "v": -1.2,
+    "ease": "ease_in_out"
+   }
+  ],
+  "tail.rotation": [
+   {
+    "t": 0,
+    "v": -9,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.3,
+    "v": 9,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 2.6,
+    "v": -9,
+    "ease": "ease_in_out"
+   }
+  ],
+  "head.rotation": [
+   {
+    "t": 0,
+    "v": 1,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.3,
+    "v": -1,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 2.6,
+    "v": 1,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "float"
+  ]
+ }
+}

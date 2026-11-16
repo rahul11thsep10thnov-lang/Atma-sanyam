@@ -1,0 +1,51 @@
+{
+ "code": "breathe",
+ "name": "Breathe",
+ "category": "basic",
+ "level": 2,
+ "rig_compatibility": [
+  "biped_chibi",
+  "quadruped_reptile"
+ ],
+ "duration": 2.8,
+ "loop": true,
+ "additive": true,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "body.sy": [
+   {
+    "t": 0,
+    "v": 1,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.4,
+    "v": 1.03,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 2.8,
+    "v": 1,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": []
+ }
+}

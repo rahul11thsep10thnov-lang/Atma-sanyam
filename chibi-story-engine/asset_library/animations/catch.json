@@ -1,0 +1,96 @@
+{
+ "code": "catch",
+ "name": "Catch",
+ "category": "interaction",
+ "level": 2,
+ "rig_compatibility": [
+  "biped_chibi"
+ ],
+ "duration": 0.9,
+ "loop": false,
+ "additive": false,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "arm_l.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": -120,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": -90,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "arm_r.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": 120,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 90,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "body.sy": [
+   {
+    "t": 0,
+    "v": 1,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": 1.04,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": 1,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "catch"
+  ]
+ }
+}
