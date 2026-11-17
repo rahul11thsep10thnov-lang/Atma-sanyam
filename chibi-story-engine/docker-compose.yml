@@ -1,0 +1,46 @@
+# Production-style deployment on one machine. Set the secrets in a .env file next to this file:
+#   POSTGRES_PASSWORD=...        CSAE_JWT_SECRET=...        (optional) CSAE_SARVAM_API_KEY=...  ANTHROPIC_API_KEY=...
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: csae
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      POSTGRES_DB: csae
+    volumes:
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U csae"]
+      interval: 5s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      CSAE_DATABASE_URL: postgresql+psycopg://csae:${POSTGRES_PASSWORD}@db:5432/csae
+      CSAE_JWT_SECRET: ${CSAE_JWT_SECRET:?set CSAE_JWT_SECRET}
+      CSAE_CORS_ORIGINS: ${CSAE_CORS_ORIGINS:-}
+      CSAE_VOICE_PROVIDER: ${CSAE_VOICE_PROVIDER:-espeak}
+      CSAE_SARVAM_API_KEY: ${CSAE_SARVAM_API_KEY:-}
+      CSAE_LLM_PROVIDER: ${CSAE_LLM_PROVIDER:-none}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      CSAE_RENDER_TIMEOUT_SECONDS: ${CSAE_RENDER_TIMEOUT_SECONDS:-3600}
+    volumes:
+      - data:/data
+    ports:
+      - "8000:8000"
+    # Rendering is CPU-bound: give the container real limits so one job cannot starve the host.
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 8G
+
+volumes:
+  db:
+  data:

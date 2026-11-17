@@ -170,7 +170,7 @@ class RuleBasedAnalyser:
         represented = sum(_letters(b.text) for sc in scenes for b in sc.beats if not b.is_moral)
         total = sum(_letters(p) for p in body)
         coverage = round(represented / total, 3) if total else 0.0
-        if coverage < 0.9:
+        if coverage < 0.8:      # short "X said," lead-ins are dropped on purpose, so some shortfall is normal
             warnings.append(f"Only {coverage:.0%} of the story text is represented in beats")
         if not any(e.kind == "character" for e in entities):
             warnings.append("No characters were recognised; add them to the lexicon or the character library aliases")
@@ -322,7 +322,10 @@ class RuleBasedAnalyser:
                 if not any(abs(m.start() - p) < 2 for p, _ in found):
                     found.append((m.start(), semantic))
         found.sort()
-        targets = [(m.start(), tag) for pat, tag in pack.targets for m in re.finditer(pat, text)]
+        spans = [(m.start(), m.end(), tag) for pat, tag in pack.targets for m in re.finditer(pat, text)]
+        # "X के पास" beats the bare "के पास" inside it: keep only phrases not contained in a longer one
+        targets = [(a, tag) for a, b, tag in spans if not any((c <= a and b <= d) and (d - c) > (b - a) for c, d, _ in spans)]
+        objects = [finder.resolve(m) for m in mentions if re.match(r"\s*को(?![\u0900-\u097F])", text[m.end:])] if pack.code == "hi" else []
         prop = next((tag for pat, tag in pack.props if re.search(pat, text)), None)
         others = [(m.start, finder.resolve(m)) for m in mentions if finder.resolve(m) not in (None, subject)]
         out: list[ActionBeat] = []
@@ -340,6 +343,10 @@ class RuleBasedAnalyser:
                 target_entity = near[-1] if near else None
             out.append(ActionBeat(actor=subject, semantic=semantic, target=target, target_entity=target_entity,
                                   prop=prop if semantic in ("eat", "throw", "give", "pick_up", "drink") else None))
+            if semantic == "arrive" and re.search(r"ले (?:गया|गई|गए|आया|आई|चला)", text):
+                # "took X along": whoever was taken arrives too
+                out += [ActionBeat(actor=k, semantic="arrive", target=target) for k in objects
+                        if k and k != subject and finder.entities.get(k) and finder.entities[k].kind == "character"]
         return out
 
     @staticmethod

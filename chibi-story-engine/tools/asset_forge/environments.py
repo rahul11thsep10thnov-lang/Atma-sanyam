@@ -382,4 +382,215 @@ def crocodile_home(out: Path) -> dict:
                      {"aquatic": ["home_left", "home_right"]}, ["aquatic"])
 
 
-ENVIRONMENTS = [forest_river, river_open, crocodile_home]
+def big_tree(a: Layer, x: float, base: float, height: float, seed: int, colour: str = "#3f9447") -> None:
+    bark = "#8a5a33"
+    a.blob([(x - 60, base), (x - 34, base + height * 0.5), (x - 40, base + height), (x + 40, base + height), (x + 34, base + height * 0.5), (x + 70, base)],
+           a.shaded(bark), "#4a2c17", 7)
+    foliage(a, x, base + height + 110, 250, colour, seed, n=14)
+
+
+def stone_ring(a: Layer, cx: float, base: float, width: float, height: float, front: bool, liquid: str | None = None,
+               stone: str = "#a9a59c") -> None:
+    """A round wall (well or vat) drawn in two halves so a character can drop in between them."""
+    o = darken(stone, 0.5)
+    rx, ry = width / 2, width * 0.16
+    top = base + height
+    if not front:
+        a.disc(cx, top, rx, a.shaded(darken(stone, 0.18)), o, 7, ry=ry)                  # the far rim
+        a.disc(cx, top - 6, rx - 26, liquid or "#1f2a3a", None, ry=ry - 12)               # what is inside
+    else:
+        a.blob([(cx - rx, top), (cx - rx, base + 14), (cx - rx * 0.6, base - ry * 0.7), (cx, base - ry), (cx + rx * 0.6, base - ry * 0.7),
+                (cx + rx, base + 14), (cx + rx, top), (cx + rx * 0.6, top - ry * 0.8), (cx, top - ry), (cx - rx * 0.6, top - ry * 0.8)],
+               a.shaded(stone), o, 7)
+        for row in range(1, int(height // 46)):
+            y = base + row * 46
+            a.path(f"M {a.X(cx - rx + 8):.0f} {a.Y(y):.0f} Q {a.X(cx):.0f} {a.Y(y - ry * 1.6):.0f} {a.X(cx + rx - 8):.0f} {a.Y(y):.0f}", None, darken(stone, 0.25), 4)
+
+
+def hut(a: Layer, x: float, base: float, w: float, h: float, wall: str = "#e8c79a", roof: str = "#b9783c", door: bool = True) -> None:
+    a.rect(a.X(x - w / 2), a.Y(base + h), w, h, a.shaded(wall), darken(wall, 0.5), 6, rx=8)
+    a.poly([(a.X(x - w / 2 - 40), a.Y(base + h - 6)), (a.X(x), a.Y(base + h + h * 0.62)), (a.X(x + w / 2 + 40), a.Y(base + h - 6))], a.shaded(roof), darken(roof, 0.5), 7)
+    for i in range(1, 5):
+        a.path(f"M {a.X(x - w / 2 - 40 + i * 30):.0f} {a.Y(base + h + i * 8):.0f} L {a.X(x):.0f} {a.Y(base + h + h * 0.6):.0f}", None, darken(roof, 0.25), 3, 0.6)
+    if door:
+        a.rect(a.X(x - w * 0.12), a.Y(base + h * 0.62), w * 0.24, h * 0.62, "#6b4226", "#3b2414", 5, rx=6)
+    a.rect(a.X(x + w * 0.22), a.Y(base + h * 0.7), w * 0.16, h * 0.22, "#5b7fa6", "#3b2414", 5, rx=4)
+
+
+def flat_ground(grass: str, top: float = 330, seed: int = 3, soil: str = "#8a6238", tufts: int = 60) -> Layer:
+    return ground([(x, top + 10 * math.sin(x / 260)) for x in range(X0, X0 + LW + 1, 80)], grass, soil, tufts, seed)
+
+
+def _ground_anchors(names: dict[str, tuple[float, float, list[str]]], y: float = 215) -> dict:
+    out = {name: {"x": x, "y": yy, "order": 100, "features": feats} for name, (x, yy, feats) in names.items()}
+    out["offstage_left"] = {"x": OFF_L, "y": y, "order": 100, "features": ["offstage", "ground"]}
+    out["offstage_right"] = {"x": OFF_R, "y": y, "order": 100, "features": ["offstage", "ground"]}
+    return out
+
+
+def forest_well(out: Path) -> dict:
+    """A forest clearing with a rocky den on the left and an old stone well on the right."""
+    den = Layer()
+    rock(den, [(-80, 300), (-120, 560), (40, 760), (300, 800), (520, 640), (560, 300)], "#8f8a80")
+    den.blob([(120, 300), (110, 480), (200, 610), (330, 610), (410, 480), (400, 300)], "#2c2620", "#1c1814", 7)
+    trees = Layer()
+    big_tree(trees, 820, 300, 330, 71)
+    big_tree(trees, 2050, 300, 380, 72, "#4aa550")
+    back, front = Layer(), Layer()
+    stone_ring(back, 1500, 190, 330, 170, False, "#3e7fa8")
+    stone_ring(front, 1500, 190, 330, 170, True)
+    posts = Layer()
+    for x in (1360, 1640):
+        posts.rect(posts.X(x - 12), posts.Y(620), 24, 270, "#7a5230", "#3b2414", 5, rx=5)
+    posts.rect(posts.X(1340), posts.Y(640), 320, 28, "#8a5a33", "#3b2414", 5, rx=8)
+    drawings = {
+        "sky": (sky("#74c6f2", "#e3f6ff", sun=(1250, 940), seed=12), 0.5),
+        "far_hills": (hills("#9fd3a6", 560, 70, 31), 0.5),
+        "far_trees": (tree_line("#4f9a55", 440, 33, height=230), 1.0),
+        "ground": (flat_ground("#84c463", 330, 34), 1.0),
+        "den": (den, 1.0), "trees": (trees, 1.0), "well_posts": (posts, 1.0), "well_back": (back, 1.0), "well_front": (front, 1.0),
+        "bushes": (reeds(35, ("left", "right"), "#3f8a3c"), 1.0),
+    }
+    for name, (art, scale) in drawings.items():
+        _save(art, out / "layers" / f"{name}.png", scale)
+    sway = [{"type": "sway", "amplitude": 0.7, "period": 5.0, "pivot": [1400, 300], "wind_scaled": True}]
+    layers = [
+        _layer("sky", "background", 0, 0.12, cover=True), _layer("far_hills", "far", 1, 0.3), _layer("far_trees", "middle", 2, 0.55),
+        _layer("ground", "middle", 10, 1.0, cover_x=True), _layer("den", "middle", 30, 1.0), _layer("trees", "middle", 40, 1.0, motion=sway),
+        _layer("well_posts", "middle", 60, 1.0), _layer("well_back", "middle", 62, 1.0),
+        _layer("well_front", "foreground", 130, 1.0),
+        _layer("bushes", "foreground", 800, 1.3, motion=[{"type": "sway", "amplitude": 0.8, "period": 4.0, "pivot": [960, -200], "wind_scaled": True}]),
+    ]
+    anchors = _ground_anchors({
+        "den": (430, 225, ["ground", "cave"]), "clearing": (900, 205, ["ground"]),
+        "well_side_left": (1150, 200, ["ground", "well_side"]), "well_side_far": (1850, 215, ["ground", "well_side"]),
+    })
+    anchors["well"] = {"x": 1500, "y": 150, "order": 110, "features": ["well", "pit"], "description": "inside the well, behind its front wall"}
+    return _manifest("forest_well_001", "Forest clearing with an old well", "A sunny clearing deep in the forest: a rocky den, tall trees and a stone well.",
+                     ["forest", "well", "cave"], ["जंगल", "कुआँ", "forest clearing", "well"], layers, anchors,
+                     {"ground": ["den", "clearing", "well_side_left"]}, ["ground"], ambience="forest_ambience_001")
+
+
+def village(out: Path) -> dict:
+    """A village lane with huts and a dyer's vat of indigo."""
+    huts = Layer()
+    hut(huts, 300, 320, 420, 300)
+    hut(huts, 960, 330, 380, 270, "#efd6ae", "#a8662e")
+    hut(huts, 1980, 320, 440, 310, "#e2bd8c")
+    line = Layer()
+    for x in (1150, 1420):
+        line.rect(line.X(x - 8), line.Y(640), 16, 330, "#7a5230", "#3b2414", 4, rx=4)
+    line.path(f"M {line.X(1150):.0f} {line.Y(630):.0f} Q {line.X(1285):.0f} {line.Y(590):.0f} {line.X(1420):.0f} {line.Y(630):.0f}", None, "#5a4630", 4)
+    for x, c in ((1200, "#3f6fd8"), (1270, "#e8eef8"), (1345, "#3f6fd8")):
+        line.rect(line.X(x - 26), line.Y(612), 52, 120, c, darken(c, 0.5), 4, rx=4)
+    back, front = Layer(), Layer()
+    stone_ring(back, 1560, 185, 360, 150, False, "#2f5fd0", stone="#b98a5a")
+    stone_ring(front, 1560, 185, 360, 150, True, stone="#b98a5a")
+    front.path(f"M {front.X(1420):.0f} {front.Y(330):.0f} q 10 40 0 70", None, "#2f5fd0", 9)          # a drip of dye
+    drawings = {
+        "sky": (sky("#7fc8f0", "#fde9c9", sun=(300, 900), seed=21), 0.5),
+        "far_hills": (hills("#b7d9a4", 540, 50, 41), 0.5),
+        "far_trees": (tree_line("#5a9a58", 430, 43, height=170), 1.0),
+        "ground": (flat_ground("#d9b98a", 330, 44, soil="#a8845a", tufts=14), 1.0),
+        "huts": (huts, 1.0), "clothes_line": (line, 1.0), "vat_back": (back, 1.0), "vat_front": (front, 1.0),
+    }
+    for name, (art, scale) in drawings.items():
+        _save(art, out / "layers" / f"{name}.png", scale)
+    layers = [
+        _layer("sky", "background", 0, 0.12, cover=True), _layer("far_hills", "far", 1, 0.3), _layer("far_trees", "middle", 2, 0.55),
+        _layer("ground", "middle", 10, 1.0, cover_x=True), _layer("huts", "middle", 30, 1.0), _layer("clothes_line", "middle", 40, 1.0),
+        _layer("vat_back", "middle", 62, 1.0), _layer("vat_front", "foreground", 130, 1.0),
+    ]
+    anchors = _ground_anchors({"lane": (640, 205, ["ground"]), "lane_far": (1050, 215, ["ground"]), "vat_side": (1180, 200, ["ground", "vat_side"])})
+    anchors["vat"] = {"x": 1560, "y": 150, "order": 110, "features": ["vat", "pit"], "description": "inside the dye vat"}
+    return _manifest("village_001", "Village lane with a dyer's vat", "A quiet village lane: mud huts, washing on a line and a big vat of indigo dye.",
+                     ["village", "home", "market"], ["गाँव", "village"], layers, anchors, {"ground": ["lane", "vat_side", "lane_far"]}, ["ground"],
+                     ambience="forest_ambience_001")
+
+
+def farm_field(out: Path) -> dict:
+    """Ploughed fields at the edge of a village."""
+    field = Layer()
+    field.band([(x, 330 + 8 * math.sin(x / 300)) for x in range(X0, X0 + LW + 1, 80)], field.linear([(0, "#b98a52"), (1, "#8a6238")]), "#5a3d18", 5)
+    for i in range(9):
+        y = 300 - i * 34
+        field.path(f"M {field.X(X0):.0f} {field.Y(y):.0f} Q {field.X(960):.0f} {field.Y(y - 26):.0f} {field.X(X0 + LW):.0f} {field.Y(y):.0f}", None, "#6f4c22", 5, 0.55)
+    rng = random.Random(55)
+    for _ in range(90):
+        _tuft(field, rng.uniform(X0, X0 + LW), rng.uniform(-150, 290), 22, "#5fae4e")
+    far = Layer()
+    hut(far, 1650, 420, 260, 190)
+    hut(far, 1980, 425, 220, 170, "#efd6ae", "#a8662e")
+    big_tree(far, 380, 400, 300, 56)
+    crow = Layer()
+    crow.rect(crow.X(1240), crow.Y(600), 18, 300, "#7a5230", "#3b2414", 4)
+    crow.rect(crow.X(1150), crow.Y(540), 200, 16, "#7a5230", "#3b2414", 4)
+    crow.rect(crow.X(1195), crow.Y(545), 110, 140, "#c0392b", "#6a1f16", 5, rx=10)
+    crow.disc(1249, 640, 44, "#f2d9a0", "#7a5a2a", 5)
+    crow.poly([(crow.X(1195), crow.Y(672)), (crow.X(1249), crow.Y(740)), (crow.X(1303), crow.Y(672))], "#d8a23a", "#7a5a2a", 5)
+    drawings = {
+        "sky": (sky("#7ecbf5", "#e9f8ff", sun=(1500, 920), seed=31), 0.5),
+        "far_hills": (hills("#a8d79f", 560, 60, 51), 0.5),
+        "far_trees": (tree_line("#5a9f5a", 450, 53, height=150), 1.0),
+        "village_edge": (far, 1.0), "field": (field, 1.0), "scarecrow": (crow, 1.0),
+        "crops": (reeds(57, ("left", "right"), "#6fae3f"), 1.0),
+    }
+    for name, (art, scale) in drawings.items():
+        _save(art, out / "layers" / f"{name}.png", scale)
+    layers = [
+        _layer("sky", "background", 0, 0.12, cover=True), _layer("far_hills", "far", 1, 0.3), _layer("far_trees", "middle", 2, 0.55),
+        _layer("village_edge", "middle", 6, 0.8), _layer("field", "middle", 10, 1.0, cover_x=True),
+        _layer("scarecrow", "middle", 40, 1.0, motion=[{"type": "sway", "amplitude": 1.2, "period": 3.4, "pivot": [1249, 300], "wind_scaled": True}]),
+        _layer("crops", "foreground", 800, 1.3, motion=[{"type": "sway", "amplitude": 1.0, "period": 3.6, "pivot": [960, -200], "wind_scaled": True}]),
+    ]
+    anchors = _ground_anchors({"field_middle": (820, 210, ["ground", "field"]), "field_right": (1500, 215, ["ground"])})
+    return _manifest("farm_field_001", "Farm field", "Ploughed fields with a scarecrow at the edge of a village.", ["field", "village"],
+                     ["खेत", "field", "farm"], layers, anchors, {"ground": ["field_middle", "field_right"]}, ["ground"], ambience="forest_ambience_001")
+
+
+def mansion(out: Path) -> dict:
+    """The courtyard of a rich man's haveli."""
+    house = Layer()
+    wall, o = "#f3dcb0", "#7a5a2a"
+    house.rect(house.X(120), house.Y(1010), 1680, 700, house.shaded(wall), o, 7, rx=10)
+    house.rect(house.X(60), house.Y(1060), 1800, 70, house.shaded("#c0392b"), "#6a1f16", 7, rx=12)
+    for x in range(170, 1800, 96):
+        house.poly([(house.X(x), house.Y(1060)), (house.X(x + 30), house.Y(1110)), (house.X(x + 60), house.Y(1060))], "#d8a23a", "#7a5a2a", 4)
+    for x in (300, 620, 1300, 1620):                                  # arched windows
+        house.blob([(x - 60, 620), (x - 60, 800), (x, 880), (x + 60, 800), (x + 60, 620)], "#5b7fa6", o, 6)
+        house.path(f"M {house.X(x):.0f} {house.Y(880):.0f} L {house.X(x):.0f} {house.Y(620):.0f}", None, o, 5)
+    house.blob([(830, 310), (830, 700), (960, 820), (1090, 700), (1090, 310)], "#6b4226", "#3b2414", 7)      # the great door
+    house.disc(1050, 520, 12, "#ffd84a", "#7a5a2a", 3)
+    pillars = Layer()
+    for x in (700, 1220):
+        pillars.rect(pillars.X(x - 34), pillars.Y(900), 68, 600, pillars.shaded("#fbeed2"), o, 6, rx=10)
+        pillars.rect(pillars.X(x - 52), pillars.Y(930), 104, 44, "#e6c98f", o, 5, rx=8)
+        pillars.rect(pillars.X(x - 52), pillars.Y(330), 104, 40, "#e6c98f", o, 5, rx=8)
+    floor = Layer()
+    floor.band([(X0, 320), (X0 + LW, 320)], floor.linear([(0, "#e9d2a6"), (1, "#c9a877")]), o, 5)
+    for i in range(1, 7):
+        y = 320 - i * 70
+        floor.path(f"M {floor.X(X0):.0f} {floor.Y(y):.0f} L {floor.X(X0 + LW):.0f} {floor.Y(y):.0f}", None, "#b0905e", 3, 0.6)
+    pots = Layer()
+    for x in (130, 1790):
+        pots.blob([(x - 70, -60), (x - 90, 110), (x - 50, 190), (x + 50, 190), (x + 90, 110), (x + 70, -60)], pots.shaded("#b9623a"), "#5a2c16", 6)
+        foliage(pots, x, 300, 120, "#3f9447", 60 + x, n=7)
+    drawings = {
+        "sky": (sky("#86cdf5", "#f3fbff", sun=None, clouds=5, seed=41), 0.5),
+        "garden": (tree_line("#5a9f5a", 520, 61, height=260), 1.0),
+        "house": (house, 1.0), "floor": (floor, 1.0), "pillars": (pillars, 1.0), "pots": (pots, 1.0),
+    }
+    for name, (art, scale) in drawings.items():
+        _save(art, out / "layers" / f"{name}.png", scale)
+    layers = [
+        _layer("sky", "background", 0, 0.12, cover=True), _layer("garden", "middle", 2, 0.6), _layer("house", "middle", 6, 0.92),
+        _layer("floor", "middle", 10, 1.0, cover_x=True), _layer("pillars", "middle", 30, 1.0),
+        _layer("pots", "foreground", 800, 1.25, motion=[{"type": "sway", "amplitude": 0.5, "period": 4.5, "pivot": [960, -200], "wind_scaled": True}]),
+    ]
+    anchors = _ground_anchors({"doorway": (1080, 215, ["ground", "home"]), "courtyard": (700, 205, ["ground"]), "courtyard_far": (1450, 215, ["ground"])})
+    return _manifest("mansion_001", "Courtyard of a haveli", "The paved courtyard of a wealthy landlord's house.", ["mansion", "home"],
+                     ["हवेली", "mansion", "haveli"], layers, anchors, {"ground": ["doorway", "courtyard", "courtyard_far"]}, ["ground"],
+                     ambience="forest_ambience_001")
+
+
+ENVIRONMENTS = [forest_river, river_open, crocodile_home, forest_well, village, farm_field, mansion]

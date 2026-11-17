@@ -1,0 +1,1105 @@
+{
+ "schema_version": "1.0",
+ "story_id": "blue_jackal",
+ "title": "नीला सियार",
+ "language": "hi-IN",
+ "genre": null,
+ "moral": "झूठ ज़्यादा दिन नहीं छिपता।",
+ "visual_style": "premium_chibi_anime",
+ "output": {
+  "width": 1920,
+  "height": 1080,
+  "fps": 24
+ },
+ "audio": {
+  "narrator_voice": "narrator_hi",
+  "music": {
+   "track_id": "gentle_story_001",
+   "volume": 0.5,
+   "duck_under_speech": true
+  }
+ },
+ "characters": [
+  {
+   "character_id": "jackal_001",
+   "asset_version": 1,
+   "voice_id": "jackal_hi",
+   "role": null
+  },
+  {
+   "character_id": "jackal_blue_001",
+   "asset_version": 1,
+   "voice_id": "jackal_hi",
+   "role": null
+  },
+  {
+   "character_id": "lion_001",
+   "asset_version": 1,
+   "voice_id": "lion_hi",
+   "role": null
+  }
+ ],
+ "scenes": [
+  {
+   "scene_id": "scene_01",
+   "title": "एक रात एक भूखा सियार भोजन खोजता हुआ गाँव में…",
+   "description": "एक रात एक भूखा सियार भोजन खोजता हुआ गाँव में आया।",
+   "environment_id": "village_001",
+   "environment_version": 1,
+   "time_of_day": "night",
+   "weather": "clear",
+   "duration_seconds": null,
+   "depends_on": [],
+   "transition_in": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "transition_out": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "approval_status": "pending",
+   "shots": [
+    {
+     "shot_id": "sc01_sh01",
+     "duration_seconds": 5.6667,
+     "description": "एक रात एक भूखा सियार भोजन खोजता हुआ गाँव में आया।",
+     "animation_level": 3,
+     "camera": {
+      "preset": "tracking_shot",
+      "target": "jackal_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "jackal_001",
+       "position": {
+        "anchor": "offstage_left",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc01_sh01_a1",
+       "character_id": "jackal_001",
+       "animation": "walk",
+       "start_seconds": 0.3,
+       "duration_seconds": 3.0,
+       "loop": true,
+       "move_to": {
+        "anchor": "lane",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc01_sh01_l1",
+       "speaker": "narrator",
+       "text": "एक रात एक भूखा सियार भोजन खोजता हुआ गाँव में आया।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": [
+      {
+       "cue_id": "sc01_sh01_amb1",
+       "type": "ambience",
+       "asset_id": "forest_ambience_001",
+       "start_seconds": 0.0,
+       "duration_seconds": null,
+       "volume": 0.5,
+       "loop": true
+      }
+     ]
+    },
+    {
+     "shot_id": "sc01_sh02",
+     "duration_seconds": 5.7083,
+     "description": "वहाँ एक घर के बाहर नील से भरी एक बड़ी नाँद रखी थी।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "parallax_drift",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "jackal_001",
+       "position": {
+        "anchor": "lane",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc01_sh02_l1",
+       "speaker": "narrator",
+       "text": "वहाँ एक घर के बाहर नील से भरी एक बड़ी नाँद रखी थी।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc01_sh03",
+     "duration_seconds": 4.375,
+     "description": "सियार अँधेरे में फिसला और नाँद में गिर गया।",
+     "animation_level": 3,
+     "camera": {
+      "preset": "action_follow",
+      "target": "jackal_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "jackal_001",
+       "position": {
+        "anchor": "lane",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc01_sh03_a1",
+       "character_id": "jackal_001",
+       "animation": "jump",
+       "start_seconds": 0.3,
+       "duration_seconds": 1.2,
+       "loop": null,
+       "move_to": {
+        "anchor": "vat",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc01_sh03_l1",
+       "speaker": "narrator",
+       "text": "सियार अँधेरे में फिसला और नाँद में गिर गया।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [
+      {
+       "effect_id": "sc01_sh03_fx1",
+       "type": "splash",
+       "start_seconds": 1.35,
+       "duration_seconds": 0.9,
+       "position": {
+        "anchor": "vat",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         60.0
+        ]
+       },
+       "follow_character": null,
+       "params": {}
+      }
+     ],
+     "audio": [
+      {
+       "cue_id": "sc01_sh03_sfx1",
+       "type": "sfx",
+       "asset_id": "boing_001",
+       "start_seconds": 0.3,
+       "duration_seconds": null,
+       "volume": 1.0,
+       "loop": false
+      },
+      {
+       "cue_id": "sc01_sh03_sfx2",
+       "type": "sfx",
+       "asset_id": "splash_001",
+       "start_seconds": 1.35,
+       "duration_seconds": null,
+       "volume": 1.0,
+       "loop": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "scene_id": "scene_02",
+   "title": "जब वह बाहर निकला, तो वह नीला सियार बन चुका था।",
+   "description": "जब वह बाहर निकला, तो वह नीला सियार बन चुका था।",
+   "environment_id": "village_001",
+   "environment_version": 1,
+   "time_of_day": "night",
+   "weather": "clear",
+   "duration_seconds": null,
+   "depends_on": [],
+   "transition_in": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "transition_out": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "approval_status": "pending",
+   "shots": [
+    {
+     "shot_id": "sc02_sh01",
+     "duration_seconds": 5.2917,
+     "description": "जब वह बाहर निकला, तो वह नीला सियार बन चुका था।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "establishing_wide",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "jackal_blue_001",
+       "position": {
+        "anchor": "lane",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc02_sh01_l1",
+       "speaker": "narrator",
+       "text": "जब वह बाहर निकला, तो वह नीला सियार बन चुका था।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": [
+      {
+       "cue_id": "sc02_sh01_amb1",
+       "type": "ambience",
+       "asset_id": "forest_ambience_001",
+       "start_seconds": 0.0,
+       "duration_seconds": null,
+       "volume": 0.5,
+       "loop": true
+      }
+     ]
+    },
+    {
+     "shot_id": "sc02_sh02",
+     "duration_seconds": 4.875,
+     "description": "नीला सियार हैरान होकर अपने आप को देखने लगा।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "reaction_closeup",
+      "target": "jackal_blue_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "jackal_blue_001",
+       "position": {
+        "anchor": "lane",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "surprised",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc02_sh02_a1",
+       "character_id": "jackal_blue_001",
+       "animation": "turn_head",
+       "start_seconds": 0.3,
+       "duration_seconds": 1.2,
+       "loop": false,
+       "move_to": null,
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc02_sh02_l1",
+       "speaker": "narrator",
+       "text": "नीला सियार हैरान होकर अपने आप को देखने लगा।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc02_sh03",
+     "duration_seconds": 3.2917,
+     "description": "अब मुझे कोई नहीं पहचानेगा।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "character_closeup",
+      "target": "jackal_blue_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "jackal_blue_001",
+       "position": {
+        "anchor": "lane",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "thinking",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc02_sh03_l1",
+       "speaker": "jackal_blue_001",
+       "text": "अब मुझे कोई नहीं पहचानेगा।",
+       "emotion": "thinking",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    }
+   ]
+  },
+  {
+   "scene_id": "scene_03",
+   "title": "अगले दिन नीला सियार जंगल में पहुँचा।",
+   "description": "अगले दिन नीला सियार जंगल में पहुँचा।",
+   "environment_id": "forest_well_001",
+   "environment_version": 1,
+   "time_of_day": "day",
+   "weather": "clear",
+   "duration_seconds": null,
+   "depends_on": [],
+   "transition_in": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "transition_out": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "approval_status": "pending",
+   "shots": [
+    {
+     "shot_id": "sc03_sh01",
+     "duration_seconds": 4.0833,
+     "description": "अगले दिन नीला सियार जंगल में पहुँचा।",
+     "animation_level": 3,
+     "camera": {
+      "preset": "tracking_shot",
+      "target": "jackal_blue_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "jackal_blue_001",
+       "position": {
+        "anchor": "offstage_left",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc03_sh01_a1",
+       "character_id": "jackal_blue_001",
+       "animation": "walk",
+       "start_seconds": 0.3,
+       "duration_seconds": 3.0,
+       "loop": true,
+       "move_to": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc03_sh01_l1",
+       "speaker": "narrator",
+       "text": "अगले दिन नीला सियार जंगल में पहुँचा।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [
+      {
+       "effect_id": "sc03_sh01_fx1",
+       "type": "falling_leaves",
+       "start_seconds": 0.0,
+       "duration_seconds": 4.0833,
+       "position": null,
+       "follow_character": null,
+       "params": {}
+      }
+     ],
+     "audio": [
+      {
+       "cue_id": "sc03_sh01_amb1",
+       "type": "ambience",
+       "asset_id": "forest_ambience_001",
+       "start_seconds": 0.0,
+       "duration_seconds": null,
+       "volume": 0.5,
+       "loop": true
+      }
+     ]
+    },
+    {
+     "shot_id": "sc03_sh02",
+     "duration_seconds": 4.2917,
+     "description": "जंगल के सब जानवर उसे देखकर डर गए।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "parallax_drift",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "jackal_blue_001",
+       "position": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc03_sh02_l1",
+       "speaker": "narrator",
+       "text": "जंगल के सब जानवर उसे देखकर डर गए।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc03_sh03",
+     "duration_seconds": 5.7083,
+     "description": "डरो मत। मुझे भगवान ने तुम्हारा राजा बनाकर भेजा है।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "character_closeup",
+      "target": "jackal_blue_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "jackal_blue_001",
+       "position": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc03_sh03_l1",
+       "speaker": "jackal_blue_001",
+       "text": "डरो मत। मुझे भगवान ने तुम्हारा राजा बनाकर भेजा है।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    }
+   ]
+  },
+  {
+   "scene_id": "scene_04",
+   "title": "कुछ दिन बाद एक रात दूर से हुआ-हुआ की आवाज़ आई।",
+   "description": "कुछ दिन बाद एक रात दूर से हुआ-हुआ की आवाज़ आई।",
+   "environment_id": "forest_well_001",
+   "environment_version": 1,
+   "time_of_day": "night",
+   "weather": "clear",
+   "duration_seconds": null,
+   "depends_on": [],
+   "transition_in": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "transition_out": {
+    "type": "fade",
+    "duration_seconds": 1.0
+   },
+   "approval_status": "pending",
+   "shots": [
+    {
+     "shot_id": "sc04_sh01",
+     "duration_seconds": 5.125,
+     "description": "कुछ दिन बाद एक रात दूर से हुआ-हुआ की आवाज़ आई।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "establishing_wide",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "jackal_blue_001",
+       "position": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "lion_001",
+       "position": {
+        "anchor": "clearing",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc04_sh01_l1",
+       "speaker": "narrator",
+       "text": "कुछ दिन बाद एक रात दूर से हुआ-हुआ की आवाज़ आई।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [
+      {
+       "effect_id": "sc04_sh01_fx1",
+       "type": "falling_leaves",
+       "start_seconds": 0.0,
+       "duration_seconds": 5.125,
+       "position": null,
+       "follow_character": null,
+       "params": {}
+      }
+     ],
+     "audio": [
+      {
+       "cue_id": "sc04_sh01_amb1",
+       "type": "ambience",
+       "asset_id": "forest_ambience_001",
+       "start_seconds": 0.0,
+       "duration_seconds": null,
+       "volume": 0.5,
+       "loop": true
+      }
+     ]
+    },
+    {
+     "shot_id": "sc04_sh02",
+     "duration_seconds": 9.4167,
+     "description": "नीला सियार अपने को रोक न सका और ज़ोर से हुआ-हुआ करने लगा।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "parallax_drift",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "jackal_blue_001",
+       "position": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "lion_001",
+       "position": {
+        "anchor": "clearing",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc04_sh02_l1",
+       "speaker": "narrator",
+       "text": "नीला सियार अपने को रोक न सका और ज़ोर से हुआ-हुआ करने लगा।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      },
+      {
+       "line_id": "sc04_sh02_l2",
+       "speaker": "narrator",
+       "text": "शेर ने उसकी आवाज़ पहचान ली।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc04_sh03",
+     "duration_seconds": 4.2083,
+     "description": "अरे, यह तो एक साधारण सियार है!",
+     "animation_level": 2,
+     "camera": {
+      "preset": "reaction_closeup",
+      "target": "lion_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "jackal_blue_001",
+       "position": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "lion_001",
+       "position": {
+        "anchor": "clearing",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "angry",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc04_sh03_l1",
+       "speaker": "lion_001",
+       "text": "अरे, यह तो एक साधारण सियार है!",
+       "emotion": "angry",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc04_sh04",
+     "duration_seconds": 3.9167,
+     "description": "नीला सियार डरकर जंगल से भाग गया।",
+     "animation_level": 3,
+     "camera": {
+      "preset": "tracking_shot",
+      "target": "jackal_blue_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "jackal_blue_001",
+       "position": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "worried",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "lion_001",
+       "position": {
+        "anchor": "clearing",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "angry",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc04_sh04_a1",
+       "character_id": "jackal_blue_001",
+       "animation": "walk",
+       "start_seconds": 0.3,
+       "duration_seconds": 3.0,
+       "loop": true,
+       "move_to": {
+        "anchor": "offstage_left",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": "left",
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc04_sh04_l1",
+       "speaker": "narrator",
+       "text": "नीला सियार डरकर जंगल से भाग गया।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc04_sh05",
+     "duration_seconds": 3.125,
+     "description": "झूठ ज़्यादा दिन नहीं छिपता।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "slow_pull_out",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "lion_001",
+       "position": {
+        "anchor": "clearing",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "angry",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc04_sh05_l1",
+       "speaker": "narrator",
+       "text": "झूठ ज़्यादा दिन नहीं छिपता।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    }
+   ]
+  }
+ ],
+ "metadata": {
+  "analyser": "rule_based",
+  "generated_by": "storyboard_builder/1"
+ }
+}

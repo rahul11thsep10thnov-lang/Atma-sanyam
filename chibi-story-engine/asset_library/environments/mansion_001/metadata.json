@@ -1,0 +1,303 @@
+{
+  "manifest_version": "1.0",
+  "id": "mansion_001",
+  "asset_type": "environment",
+  "name": "Courtyard of a haveli",
+  "version": 1,
+  "description": "The paved courtyard of a wealthy landlord's house.",
+  "aliases": [
+    "हवेली",
+    "mansion",
+    "haveli"
+  ],
+  "tags": [
+    "mansion",
+    "home"
+  ],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedurally generated)",
+    "source": "generated",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {
+    "habitats": [
+      "ground"
+    ],
+    "style": "premium_chibi_anime",
+    "ambience": "forest_ambience_001"
+  },
+  "files": [
+    {
+      "role": "layer",
+      "path": "layers/floor.png",
+      "format": "png",
+      "checksum": "eed77a2840c6a70a7b8e1587be79bb47159e53b8e0a5763ac04bbacc29d62eb6",
+      "width": 2720,
+      "height": 525,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/garden.png",
+      "format": "png",
+      "checksum": "c8c15920e76042d7feb7f1aecbb9206a84947e23c30ab4a746ad1deb94a4e4cf",
+      "width": 2720,
+      "height": 1148,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/house.png",
+      "format": "png",
+      "checksum": "eb73636cceb00c91143443c6baeb5f45f260d6eb1881d4d28c8fcf8e44847fe7",
+      "width": 1812,
+      "height": 859,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/pillars.png",
+      "format": "png",
+      "checksum": "8e5553db5b9950132f48dd19972770d9d6ff825da5e55314351591a387d15a40",
+      "width": 634,
+      "height": 650,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/pots.png",
+      "format": "png",
+      "checksum": "9d8546fdcc70d667cd0b2162c26814cf4c63140d431c7fce5c8466885585d6c3",
+      "width": 2011,
+      "height": 516,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/sky.png",
+      "format": "png",
+      "checksum": "de1bb57ebb68e5daa7f0b4e20fe005567b1b63c9b7b6af60ba7f10bd5906129d",
+      "width": 1360,
+      "height": 740,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-17T03:43:16+00:00",
+  "change_summary": "",
+  "stage": [
+    1920,
+    1080
+  ],
+  "layers": [
+    {
+      "id": "sky",
+      "type": "background",
+      "file": "layers/sky.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        1480.0
+      ],
+      "parallax": 0.12,
+      "order": 0,
+      "cover": true,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background"
+    },
+    {
+      "id": "garden",
+      "type": "middle",
+      "file": "layers/garden.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        1148.0
+      ],
+      "parallax": 0.6,
+      "order": 2,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background"
+    },
+    {
+      "id": "house",
+      "type": "middle",
+      "file": "layers/house.png",
+      "rect": [
+        54.0,
+        255.0,
+        1812.0,
+        859.0
+      ],
+      "parallax": 0.92,
+      "order": 6,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background"
+    },
+    {
+      "id": "floor",
+      "type": "middle",
+      "file": "layers/floor.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        525.0
+      ],
+      "parallax": 1.0,
+      "order": 10,
+      "cover": false,
+      "cover_horizontal": true,
+      "motion": [],
+      "tint_group": "background"
+    },
+    {
+      "id": "pillars",
+      "type": "middle",
+      "file": "layers/pillars.png",
+      "rect": [
+        643.0,
+        285.0,
+        634.0,
+        650.0
+      ],
+      "parallax": 1.0,
+      "order": 30,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background"
+    },
+    {
+      "id": "pots",
+      "type": "foreground",
+      "file": "layers/pots.png",
+      "rect": [
+        -48.0,
+        -87.0,
+        2011.0,
+        516.0
+      ],
+      "parallax": 1.25,
+      "order": 800,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [
+        {
+          "type": "sway",
+          "amplitude": 0.5,
+          "period": 4.5,
+          "phase": 0.0,
+          "speed": 0.0,
+          "pivot": [
+            960.0,
+            -200.0
+          ],
+          "wind_scaled": true
+        }
+      ],
+      "tint_group": "background"
+    }
+  ],
+  "anchors": {
+    "doorway": {
+      "x": 1080.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "ground",
+        "home"
+      ],
+      "description": ""
+    },
+    "courtyard": {
+      "x": 700.0,
+      "y": 205.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "courtyard_far": {
+      "x": 1450.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "offstage_left": {
+      "x": -430.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "offstage",
+        "ground"
+      ],
+      "description": ""
+    },
+    "offstage_right": {
+      "x": 2350.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "offstage",
+        "ground"
+      ],
+      "description": ""
+    }
+  },
+  "lighting_presets": [
+    "day",
+    "morning",
+    "sunset",
+    "night",
+    "overcast"
+  ],
+  "camera_bounds": [
+    -400.0,
+    -200.0,
+    2320.0,
+    1280.0
+  ],
+  "default_anchor_by_role": {
+    "ground": [
+      "doorway",
+      "courtyard",
+      "courtyard_far"
+    ]
+  }
+}

@@ -66,7 +66,7 @@ class Position(Model):
 
 
 class Attachment(Model):
-    """Carry one character on a part of another (the monkey riding on the crocodile's back)."""
+    """Carry one character on a part of another (a rider on a mount's back)."""
 
     character_id: str = Field(pattern=ID_PATTERN)
     part: str = "body"

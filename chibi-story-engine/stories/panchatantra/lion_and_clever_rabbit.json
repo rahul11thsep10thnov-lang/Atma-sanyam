@@ -1,0 +1,1282 @@
+{
+ "schema_version": "1.0",
+ "story_id": "lion_and_clever_rabbit",
+ "title": "शेर और चतुर खरगोश",
+ "language": "hi-IN",
+ "genre": null,
+ "moral": "बुद्धि बल से बड़ी होती है।",
+ "visual_style": "premium_chibi_anime",
+ "output": {
+  "width": 1920,
+  "height": 1080,
+  "fps": 24
+ },
+ "audio": {
+  "narrator_voice": "narrator_hi",
+  "music": {
+   "track_id": "gentle_story_001",
+   "volume": 0.5,
+   "duck_under_speech": true
+  }
+ },
+ "characters": [
+  {
+   "character_id": "lion_001",
+   "asset_version": 1,
+   "voice_id": "lion_hi",
+   "role": null
+  },
+  {
+   "character_id": "rabbit_001",
+   "asset_version": 1,
+   "voice_id": "rabbit_hi",
+   "role": null
+  }
+ ],
+ "scenes": [
+  {
+   "scene_id": "scene_01",
+   "title": "एक जंगल में एक बलवान शेर रहता था।",
+   "description": "एक जंगल में एक बलवान शेर रहता था।",
+   "environment_id": "forest_well_001",
+   "environment_version": 1,
+   "time_of_day": "day",
+   "weather": "clear",
+   "duration_seconds": null,
+   "depends_on": [],
+   "transition_in": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "transition_out": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "approval_status": "pending",
+   "shots": [
+    {
+     "shot_id": "sc01_sh01",
+     "duration_seconds": 8.7917,
+     "description": "एक जंगल में एक बलवान शेर रहता था।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "slow_push_in",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "lion_001",
+       "position": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "worried",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc01_sh01_l1",
+       "speaker": "narrator",
+       "text": "एक जंगल में एक बलवान शेर रहता था।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      },
+      {
+       "line_id": "sc01_sh01_l2",
+       "speaker": "narrator",
+       "text": "वह बहुत घमंडी था और सब जानवरों को डराता था।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [
+      {
+       "effect_id": "sc01_sh01_fx1",
+       "type": "falling_leaves",
+       "start_seconds": 0.0,
+       "duration_seconds": 8.7917,
+       "position": null,
+       "follow_character": null,
+       "params": {}
+      }
+     ],
+     "audio": [
+      {
+       "cue_id": "sc01_sh01_amb1",
+       "type": "ambience",
+       "asset_id": "forest_ambience_001",
+       "start_seconds": 0.0,
+       "duration_seconds": null,
+       "volume": 0.5,
+       "loop": true
+      }
+     ]
+    },
+    {
+     "shot_id": "sc01_sh02",
+     "duration_seconds": 3.0833,
+     "description": "सब जानवर उससे दुखी थे।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "parallax_drift",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "lion_001",
+       "position": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "worried",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc01_sh02_l1",
+       "speaker": "narrator",
+       "text": "सब जानवर उससे दुखी थे।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    }
+   ]
+  },
+  {
+   "scene_id": "scene_02",
+   "title": "एक दिन एक छोटा खरगोश धीरे-धीरे शेर के पास आया।",
+   "description": "एक दिन एक छोटा खरगोश धीरे-धीरे शेर के पास आया।",
+   "environment_id": "forest_well_001",
+   "environment_version": 1,
+   "time_of_day": "day",
+   "weather": "clear",
+   "duration_seconds": null,
+   "depends_on": [],
+   "transition_in": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "transition_out": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "approval_status": "pending",
+   "shots": [
+    {
+     "shot_id": "sc02_sh01",
+     "duration_seconds": 5.4583,
+     "description": "एक दिन एक छोटा खरगोश धीरे-धीरे शेर के पास आया।",
+     "animation_level": 3,
+     "camera": {
+      "preset": "tracking_shot",
+      "target": "rabbit_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "rabbit_001",
+       "position": {
+        "anchor": "offstage_right",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "lion_001",
+       "position": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc02_sh01_a1",
+       "character_id": "rabbit_001",
+       "animation": "walk",
+       "start_seconds": 0.3,
+       "duration_seconds": 3.0,
+       "loop": true,
+       "move_to": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc02_sh01_l1",
+       "speaker": "narrator",
+       "text": "एक दिन एक छोटा खरगोश धीरे-धीरे शेर के पास आया।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [
+      {
+       "effect_id": "sc02_sh01_fx1",
+       "type": "falling_leaves",
+       "start_seconds": 0.0,
+       "duration_seconds": 5.4583,
+       "position": null,
+       "follow_character": null,
+       "params": {}
+      }
+     ],
+     "audio": [
+      {
+       "cue_id": "sc02_sh01_amb1",
+       "type": "ambience",
+       "asset_id": "forest_ambience_001",
+       "start_seconds": 0.0,
+       "duration_seconds": null,
+       "volume": 0.5,
+       "loop": true
+      }
+     ]
+    },
+    {
+     "shot_id": "sc02_sh02",
+     "duration_seconds": 3.3333,
+     "description": "तुम इतनी देर से क्यों आए?",
+     "animation_level": 2,
+     "camera": {
+      "preset": "reaction_closeup",
+      "target": "lion_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "rabbit_001",
+       "position": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "lion_001",
+       "position": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "angry",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc02_sh02_l1",
+       "speaker": "lion_001",
+       "text": "तुम इतनी देर से क्यों आए?",
+       "emotion": "angry",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc02_sh03",
+     "duration_seconds": 8.25,
+     "description": "महाराज, रास्ते में एक दूसरे शेर ने मुझे रोक लिया था। वह कहता है कि जंगल का राजा वही है।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "reaction_closeup",
+      "target": "rabbit_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "rabbit_001",
+       "position": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "worried",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "lion_001",
+       "position": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "angry",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc02_sh03_l1",
+       "speaker": "rabbit_001",
+       "text": "महाराज, रास्ते में एक दूसरे शेर ने मुझे रोक लिया था। वह कहता है कि जंगल का राजा वही है।",
+       "emotion": "worried",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc02_sh04",
+     "duration_seconds": 5.2917,
+     "description": "दूसरा शेर? मुझे अभी उसके पास ले चलो!",
+     "animation_level": 2,
+     "camera": {
+      "preset": "reaction_closeup",
+      "target": "lion_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "rabbit_001",
+       "position": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "worried",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "lion_001",
+       "position": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "surprised",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc02_sh04_l1",
+       "speaker": "lion_001",
+       "text": "दूसरा शेर? मुझे अभी उसके पास ले चलो!",
+       "emotion": "surprised",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    }
+   ]
+  },
+  {
+   "scene_id": "scene_03",
+   "title": "खरगोश शेर को एक पुराने कुएँ के पास ले गया।",
+   "description": "खरगोश शेर को एक पुराने कुएँ के पास ले गया।",
+   "environment_id": "forest_well_001",
+   "environment_version": 1,
+   "time_of_day": "day",
+   "weather": "clear",
+   "duration_seconds": null,
+   "depends_on": [],
+   "transition_in": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "transition_out": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "approval_status": "pending",
+   "shots": [
+    {
+     "shot_id": "sc03_sh01",
+     "duration_seconds": 5.4583,
+     "description": "खरगोश शेर को एक पुराने कुएँ के पास ले गया।",
+     "animation_level": 3,
+     "camera": {
+      "preset": "tracking_shot",
+      "target": "rabbit_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "rabbit_001",
+       "position": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "lion_001",
+       "position": {
+        "anchor": "den",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc03_sh01_a1",
+       "character_id": "rabbit_001",
+       "animation": "walk",
+       "start_seconds": 0.3,
+       "duration_seconds": 2.4,
+       "loop": true,
+       "move_to": {
+        "anchor": "well_side_left",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      },
+      {
+       "action_id": "sc03_sh01_a2",
+       "character_id": "lion_001",
+       "animation": "walk",
+       "start_seconds": 2.85,
+       "duration_seconds": 2.4,
+       "loop": true,
+       "move_to": {
+        "anchor": "well_side_far",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc03_sh01_l1",
+       "speaker": "narrator",
+       "text": "खरगोश शेर को एक पुराने कुएँ के पास ले गया।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [
+      {
+       "effect_id": "sc03_sh01_fx1",
+       "type": "falling_leaves",
+       "start_seconds": 0.0,
+       "duration_seconds": 5.4583,
+       "position": null,
+       "follow_character": null,
+       "params": {}
+      }
+     ],
+     "audio": [
+      {
+       "cue_id": "sc03_sh01_amb1",
+       "type": "ambience",
+       "asset_id": "forest_ambience_001",
+       "start_seconds": 0.0,
+       "duration_seconds": null,
+       "volume": 0.5,
+       "loop": true
+      }
+     ]
+    },
+    {
+     "shot_id": "sc03_sh02",
+     "duration_seconds": 3.75,
+     "description": "महाराज, वह इसी कुएँ में रहता है।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "character_closeup",
+      "target": "rabbit_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "rabbit_001",
+       "position": {
+        "anchor": "well_side_left",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "lion_001",
+       "position": {
+        "anchor": "well_side_far",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc03_sh02_l1",
+       "speaker": "rabbit_001",
+       "text": "महाराज, वह इसी कुएँ में रहता है।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc03_sh03",
+     "duration_seconds": 3.0417,
+     "description": "शेर ने कुएँ में झाँका।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "parallax_drift",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "rabbit_001",
+       "position": {
+        "anchor": "well_side_left",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "lion_001",
+       "position": {
+        "anchor": "well_side_far",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc03_sh03_a1",
+       "character_id": "lion_001",
+       "animation": "turn_head",
+       "start_seconds": 0.3,
+       "duration_seconds": 1.2,
+       "loop": false,
+       "move_to": null,
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc03_sh03_l1",
+       "speaker": "narrator",
+       "text": "शेर ने कुएँ में झाँका।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc03_sh04",
+     "duration_seconds": 4.625,
+     "description": "उसे पानी में अपनी ही परछाईं दिखाई दी।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "horizontal_pan",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "rabbit_001",
+       "position": {
+        "anchor": "well_side_left",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "lion_001",
+       "position": {
+        "anchor": "well_side_far",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc03_sh04_l1",
+       "speaker": "narrator",
+       "text": "उसे पानी में अपनी ही परछाईं दिखाई दी।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc03_sh05",
+     "duration_seconds": 4.5417,
+     "description": "शेर गुस्से से दहाड़ा और कुएँ में कूद गया।",
+     "animation_level": 3,
+     "camera": {
+      "preset": "action_follow",
+      "target": "lion_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "rabbit_001",
+       "position": {
+        "anchor": "well_side_left",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "lion_001",
+       "position": {
+        "anchor": "well_side_far",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "angry",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc03_sh05_a1",
+       "character_id": "lion_001",
+       "animation": "jump",
+       "start_seconds": 0.3,
+       "duration_seconds": 1.2,
+       "loop": null,
+       "move_to": {
+        "anchor": "well",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc03_sh05_l1",
+       "speaker": "narrator",
+       "text": "शेर गुस्से से दहाड़ा और कुएँ में कूद गया।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [
+      {
+       "effect_id": "sc03_sh05_fx1",
+       "type": "splash",
+       "start_seconds": 1.35,
+       "duration_seconds": 0.9,
+       "position": {
+        "anchor": "well",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         60.0
+        ]
+       },
+       "follow_character": null,
+       "params": {}
+      }
+     ],
+     "audio": [
+      {
+       "cue_id": "sc03_sh05_sfx1",
+       "type": "sfx",
+       "asset_id": "boing_001",
+       "start_seconds": 0.3,
+       "duration_seconds": null,
+       "volume": 1.0,
+       "loop": false
+      },
+      {
+       "cue_id": "sc03_sh05_sfx2",
+       "type": "sfx",
+       "asset_id": "splash_001",
+       "start_seconds": 1.35,
+       "duration_seconds": null,
+       "volume": 1.0,
+       "loop": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "scene_id": "scene_04",
+   "title": "खरगोश खुश होकर हँसा।",
+   "description": "खरगोश खुश होकर हँसा।",
+   "environment_id": "forest_well_001",
+   "environment_version": 1,
+   "time_of_day": "day",
+   "weather": "clear",
+   "duration_seconds": null,
+   "depends_on": [],
+   "transition_in": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "transition_out": {
+    "type": "fade",
+    "duration_seconds": 1.0
+   },
+   "approval_status": "pending",
+   "shots": [
+    {
+     "shot_id": "sc04_sh01",
+     "duration_seconds": 3.125,
+     "description": "खरगोश खुश होकर हँसा।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "establishing_wide",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "rabbit_001",
+       "position": {
+        "anchor": "well_side_left",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "happy",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc04_sh01_a1",
+       "character_id": "rabbit_001",
+       "animation": "happy_reaction",
+       "start_seconds": 0.3,
+       "duration_seconds": 1.2,
+       "loop": false,
+       "move_to": null,
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc04_sh01_l1",
+       "speaker": "narrator",
+       "text": "खरगोश खुश होकर हँसा।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [
+      {
+       "effect_id": "sc04_sh01_fx1",
+       "type": "falling_leaves",
+       "start_seconds": 0.0,
+       "duration_seconds": 3.125,
+       "position": null,
+       "follow_character": null,
+       "params": {}
+      }
+     ],
+     "audio": [
+      {
+       "cue_id": "sc04_sh01_amb1",
+       "type": "ambience",
+       "asset_id": "forest_ambience_001",
+       "start_seconds": 0.0,
+       "duration_seconds": null,
+       "volume": 0.5,
+       "loop": true
+      }
+     ]
+    },
+    {
+     "shot_id": "sc04_sh02",
+     "duration_seconds": 3.9167,
+     "description": "घमंडी शेर अपनी ही परछाईं से हार गया।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "character_closeup",
+      "target": "rabbit_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "rabbit_001",
+       "position": {
+        "anchor": "well_side_left",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "happy",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc04_sh02_l1",
+       "speaker": "rabbit_001",
+       "text": "घमंडी शेर अपनी ही परछाईं से हार गया।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc04_sh03",
+     "duration_seconds": 5.125,
+     "description": "उस दिन से जंगल के सब जानवर सुख से रहने लगे।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "parallax_drift",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "rabbit_001",
+       "position": {
+        "anchor": "well_side_left",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "happy",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc04_sh03_l1",
+       "speaker": "narrator",
+       "text": "उस दिन से जंगल के सब जानवर सुख से रहने लगे।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc04_sh04",
+     "duration_seconds": 3.1667,
+     "description": "बुद्धि बल से बड़ी होती है।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "slow_pull_out",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "rabbit_001",
+       "position": {
+        "anchor": "well_side_left",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "happy",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc04_sh04_l1",
+       "speaker": "narrator",
+       "text": "बुद्धि बल से बड़ी होती है।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    }
+   ]
+  }
+ ],
+ "metadata": {
+  "analyser": "rule_based",
+  "generated_by": "storyboard_builder/1"
+ }
+}

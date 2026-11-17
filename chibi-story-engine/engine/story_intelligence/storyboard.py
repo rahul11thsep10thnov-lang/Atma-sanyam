@@ -7,6 +7,7 @@ Assets are looked up, never invented: anything missing is reported in `missing_a
 from __future__ import annotations
 
 import math
+import re
 from dataclasses import dataclass, field
 
 from pydantic import BaseModel, Field
@@ -19,7 +20,7 @@ from .text import word_count
 
 STAGE_W, STAGE_H = 1920, 1080
 TRAVEL_SEMANTICS = {"aquatic": ["swim"], "arboreal": ["walk", "run"], "ground": ["walk", "run"]}
-NIGHT_MARKERS = {"रात को": "night", "शाम को": "sunset", "सुबह": "morning"}
+NIGHT_MARKERS = {"रात": "night", "शाम": "sunset", "सुबह": "morning", "night": "night", "evening": "sunset", "morning": "morning"}
 PLAIN_CAMERAS = ["parallax_drift", "horizontal_pan", "slow_push_in"]
 
 
@@ -79,6 +80,7 @@ class StoryboardBuilder:
               visual_style: str = "premium_chibi_anime", genre: str | None = None,
               character_overrides: dict[str, str] | None = None) -> StoryboardResult:
         self.warnings: list[str] = []
+        self._prev_env, self._prev_time, self._prev_env_id = None, "day", None
         self.missing: list[MissingAsset] = []
         self.pack = pack_for(analysis.language)
         self.fps = (output or OutputSpec()).fps
@@ -229,9 +231,15 @@ class StoryboardBuilder:
                 if c.cid in placed and c.env_id is not None:
                     c.on_stage = True
 
-        time_of_day = next((v for k, v in NIGHT_MARKERS.items() if sa.time_marker and k in sa.time_marker), "day")
+        told = " ".join(b.text for b in sa.beats if b.kind == "narration")
+        time_of_day = next((v for k, v in NIGHT_MARKERS.items()
+                            if re.search(rf"(?<![\w\u0900-\u097F]){re.escape(k)}(?![\u0900-\u097Fa-z])", told)), None)   # whole words only
+        if time_of_day is None:                       # nothing said: a new day after a time jump, otherwise as before
+            same_place = getattr(self, "_prev_env_id", None) == env_id
+            time_of_day = self._prev_time if same_place and not sa.time_marker else "day"
         if time_of_day not in self.index.lighting_presets:
             time_of_day = "day"
+        self._prev_time, self._prev_env_id = time_of_day, env_id
         fade = 0.5
         return {"scene_id": sid, "title": sa.title, "description": sa.summary, "environment_id": env_id,
                 "environment_version": env.version if env else 1, "time_of_day": time_of_day,
@@ -248,7 +256,9 @@ class StoryboardBuilder:
             if c.key not in present_keys:
                 c.on_stage = False
                 c.env_id = None
-        entering = {c.key for c in present if self._first_action(c, sa) in ("arrive", "swim", "walk", "run")}
+        # someone whose first act is to arrive comes in from off stage, unless they were already here
+        entering = {c.key for c in present if self._first_action(c, sa) in ("arrive", "swim", "walk", "run")
+                    and not (c.env_id == env_id and c.anchor is not None)}
         for i, c in enumerate(present):
             c.expression = "neutral"
             if c.rider_of and c.rider_of in present_keys:
@@ -310,7 +320,7 @@ class StoryboardBuilder:
 
     @staticmethod
     def _enters(c: _Char, beats: list[Beat]) -> bool:
-        return any(a.actor == c.key and a.semantic in ("arrive", "swim", "walk", "run") for b in beats for a in b.actions)
+        return c.env_id is not None and any(a.actor == c.key and a.semantic in ("arrive", "swim", "walk", "run") for b in beats for a in b.actions)
 
     @staticmethod
     def _group(beats: list[Beat]) -> list[list[Beat]]:
@@ -396,6 +406,31 @@ class StoryboardBuilder:
 
         if sem in ("swim", "walk", "run") and not c.on_stage:
             return None                                  # the manner of an arrival; the "arrive" action moves the character
+        occupied = {o.anchor for o in present if o.key != c.key and o.on_stage and o.anchor}
+        place = env.anchor_with(a.target, occupied) if env and a.target else None
+        is_pit = bool(place) and "pit" in env.anchors[place].features        # somewhere a character disappears into
+        if sem in ("jump", "fall") and is_pit and c.on_stage and not c.rider_of:
+            clip = self._clip(c, ["jump", "fall"])
+            if clip:
+                start = draft.cursor
+                self._add(draft, c, clip, 1.2, move_to={"anchor": place})
+                self._sfx(draft, "jump", start)
+                if "splash" in self.index.effects:
+                    draft.data["effects"].append({"effect_id": draft.next_id("fx"), "type": "splash", "start_seconds": round(start + 1.05, 2),
+                                                  "duration_seconds": 0.9, "position": {"anchor": place, "offset": [0, 60]}})
+                self._sfx(draft, "splash", start + 1.05)
+            c.on_stage, c.env_id, c.anchor = False, None, None      # gone: not in the following shots
+            return "jump"
+        if sem in ("arrive", "walk", "run") and c.on_stage and not c.rider_of and place and place != c.anchor \
+                and "offstage" not in env.anchors[place].features and not is_pit:
+            clip = self._clip(c, TRAVEL_SEMANTICS.get(c.habitat, ["walk"]) if sem == "arrive" else [sem])
+            if clip:
+                self._add(draft, c, clip, 2.4, move_to={"anchor": place}, loop=True)
+                c.anchor, c.xy = place, None
+                c.state = self._state_at(c, env)
+                self._face(c, present, env)
+                return "travel"
+            return None
         if sem == "arrive":
             if c.on_stage:
                 return None
@@ -477,6 +512,19 @@ class StoryboardBuilder:
                 self._add(draft, c, clip, 1.4, **extra)
                 self._sfx(draft, "throw", start + 0.4)
             return None
+        if sem == "pick_up":
+            clip = self._clip(c, ["pick_up"])
+            prop = self._prop(a.prop)
+            if clip:
+                start = draft.cursor
+                extra = {}
+                if prop:
+                    inst = draft.next_id("p")
+                    draft.data["props"].append({"prop_id": prop, "instance_id": inst, "position": self._pos(c),
+                                                "held_by": {"character_id": c.cid, "part": "hand"}, "visible_from": round(start + 0.5, 2)})
+                    extra = {"prop_id": inst}
+                self._add(draft, c, clip, 1.2, **extra)
+            return None
         if sem in ("eat", "drink"):
             clip = self._clip(c, [sem, "eat"])
             prop = self._prop(a.prop)
@@ -493,8 +541,7 @@ class StoryboardBuilder:
                 self._sfx(draft, "eat", start + 0.3)
             return None
         simple = {"laugh": ["happy_reaction"], "cry": ["sad_reaction"], "sit": ["sit"], "fall": ["fall"], "fly": ["fly"],
-                  "run": ["run"], "walk": ["walk"], "swim": ["swim"], "look": ["look_left", "turn_head"], "pick_up": ["pick_up"],
-                  "sleep": ["sit"]}
+                  "run": ["run"], "walk": ["walk"], "swim": ["swim"], "look": ["turn_head", "look_left"], "sleep": ["sit"]}
         if sem in simple:
             clip = self._clip(c, simple[sem])
             if clip:

@@ -56,11 +56,11 @@ class EnvironmentEntry(BaseModel):
     ambience: str | None = None
     approved: bool = False
 
-    def anchor_with(self, feature: str) -> str | None:
-        for name, a in self.anchors.items():
-            if feature in a.features:
-                return name
-        return None
+    def anchor_with(self, feature: str, exclude: set[str] | None = None) -> str | None:
+        """First anchor that has a feature, preferring ones nobody stands on."""
+        names = [name for name, a in self.anchors.items() if feature in a.features]
+        free = [n for n in names if not exclude or n not in exclude]
+        return (free or names or [None])[0]
 
 
 class AnimationEntry(BaseModel):

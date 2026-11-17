@@ -1,0 +1,1008 @@
+{
+ "schema_version": "1.0",
+ "story_id": "farmer_and_rich_man",
+ "title": "किसान और सेठ",
+ "language": "hi-IN",
+ "genre": null,
+ "moral": "ईमानदारी का फल मीठा होता है।",
+ "visual_style": "premium_chibi_anime",
+ "output": {
+  "width": 1920,
+  "height": 1080,
+  "fps": 24
+ },
+ "audio": {
+  "narrator_voice": "narrator_hi",
+  "music": {
+   "track_id": "gentle_story_001",
+   "volume": 0.5,
+   "duck_under_speech": true
+  }
+ },
+ "characters": [
+  {
+   "character_id": "farmer_001",
+   "asset_version": 1,
+   "voice_id": "farmer_hi",
+   "role": null
+  },
+  {
+   "character_id": "rich_man_001",
+   "asset_version": 1,
+   "voice_id": "rich_man_hi",
+   "role": null
+  }
+ ],
+ "scenes": [
+  {
+   "scene_id": "scene_01",
+   "title": "एक गाँव में एक गरीब किसान रहता था।",
+   "description": "एक गाँव में एक गरीब किसान रहता था।",
+   "environment_id": "farm_field_001",
+   "environment_version": 1,
+   "time_of_day": "day",
+   "weather": "clear",
+   "duration_seconds": null,
+   "depends_on": [],
+   "transition_in": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "transition_out": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "approval_status": "pending",
+   "shots": [
+    {
+     "shot_id": "sc01_sh01",
+     "duration_seconds": 8.4583,
+     "description": "एक गाँव में एक गरीब किसान रहता था।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "slow_push_in",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "farmer_001",
+       "position": {
+        "anchor": "field_middle",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc01_sh01_l1",
+       "speaker": "narrator",
+       "text": "एक गाँव में एक गरीब किसान रहता था।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      },
+      {
+       "line_id": "sc01_sh01_l2",
+       "speaker": "narrator",
+       "text": "एक दिन किसान अपने खेत में काम कर रहा था।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": [
+      {
+       "cue_id": "sc01_sh01_amb1",
+       "type": "ambience",
+       "asset_id": "forest_ambience_001",
+       "start_seconds": 0.0,
+       "duration_seconds": null,
+       "volume": 0.5,
+       "loop": true
+      }
+     ]
+    },
+    {
+     "shot_id": "sc01_sh02",
+     "duration_seconds": 5.875,
+     "description": "तभी उसे मिट्टी में सोने के सिक्कों से भरी एक थैली मिली।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "parallax_drift",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "farmer_001",
+       "position": {
+        "anchor": "field_middle",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc01_sh02_l1",
+       "speaker": "narrator",
+       "text": "तभी उसे मिट्टी में सोने के सिक्कों से भरी एक थैली मिली।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc01_sh03",
+     "duration_seconds": 2.875,
+     "description": "किसान ने थैली उठाई।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "horizontal_pan",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "farmer_001",
+       "position": {
+        "anchor": "field_middle",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [
+      {
+       "prop_id": "money_bag_001",
+       "instance_id": "sc01_sh03_p1",
+       "asset_version": 1,
+       "position": {
+        "anchor": "field_middle",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "scale": 1.0,
+       "rotation": 0.0,
+       "order": 0,
+       "held_by": {
+        "character_id": "farmer_001",
+        "part": "hand",
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "visible_from": 0.8,
+       "visible_until": null
+      }
+     ],
+     "actions": [
+      {
+       "action_id": "sc01_sh03_a1",
+       "character_id": "farmer_001",
+       "animation": "pick_up",
+       "start_seconds": 0.3,
+       "duration_seconds": 1.2,
+       "loop": null,
+       "move_to": null,
+       "target_character": null,
+       "prop_id": "sc01_sh03_p1",
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc01_sh03_l1",
+       "speaker": "narrator",
+       "text": "किसान ने थैली उठाई।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc01_sh04",
+     "duration_seconds": 5.6667,
+     "description": "यह धन मेरा नहीं है। यह ज़रूर गाँव के सेठ का होगा।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "character_closeup",
+      "target": "farmer_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "farmer_001",
+       "position": {
+        "anchor": "field_middle",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "thinking",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc01_sh04_l1",
+       "speaker": "farmer_001",
+       "text": "यह धन मेरा नहीं है। यह ज़रूर गाँव के सेठ का होगा।",
+       "emotion": "thinking",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    }
+   ]
+  },
+  {
+   "scene_id": "scene_02",
+   "title": "किसान थैली लेकर सेठ की हवेली पर पहुँचा।",
+   "description": "किसान थैली लेकर सेठ की हवेली पर पहुँचा।",
+   "environment_id": "mansion_001",
+   "environment_version": 1,
+   "time_of_day": "day",
+   "weather": "clear",
+   "duration_seconds": null,
+   "depends_on": [],
+   "transition_in": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "transition_out": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "approval_status": "pending",
+   "shots": [
+    {
+     "shot_id": "sc02_sh01",
+     "duration_seconds": 5.0417,
+     "description": "किसान थैली लेकर सेठ की हवेली पर पहुँचा।",
+     "animation_level": 3,
+     "camera": {
+      "preset": "tracking_shot",
+      "target": "farmer_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "farmer_001",
+       "position": {
+        "anchor": "offstage_right",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "rich_man_001",
+       "position": {
+        "anchor": "courtyard",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc02_sh01_a1",
+       "character_id": "farmer_001",
+       "animation": "walk",
+       "start_seconds": 0.3,
+       "duration_seconds": 3.0,
+       "loop": true,
+       "move_to": {
+        "anchor": "doorway",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc02_sh01_l1",
+       "speaker": "narrator",
+       "text": "किसान थैली लेकर सेठ की हवेली पर पहुँचा।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": [
+      {
+       "cue_id": "sc02_sh01_amb1",
+       "type": "ambience",
+       "asset_id": "forest_ambience_001",
+       "start_seconds": 0.0,
+       "duration_seconds": null,
+       "volume": 0.5,
+       "loop": true
+      }
+     ]
+    },
+    {
+     "shot_id": "sc02_sh02",
+     "duration_seconds": 6.4167,
+     "description": "सेठ जी, यह थैली मुझे अपने खेत में मिली है। यह आपकी है।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "character_closeup",
+      "target": "farmer_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "farmer_001",
+       "position": {
+        "anchor": "doorway",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "rich_man_001",
+       "position": {
+        "anchor": "courtyard",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc02_sh02_l1",
+       "speaker": "farmer_001",
+       "text": "सेठ जी, यह थैली मुझे अपने खेत में मिली है। यह आपकी है।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc02_sh03",
+     "duration_seconds": 6.1667,
+     "description": "तुम चाहते तो इसे रख सकते थे। तुम बहुत ईमानदार हो!",
+     "animation_level": 2,
+     "camera": {
+      "preset": "reaction_closeup",
+      "target": "rich_man_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "farmer_001",
+       "position": {
+        "anchor": "doorway",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "rich_man_001",
+       "position": {
+        "anchor": "courtyard",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "surprised",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc02_sh03_l1",
+       "speaker": "rich_man_001",
+       "text": "तुम चाहते तो इसे रख सकते थे। तुम बहुत ईमानदार हो!",
+       "emotion": "surprised",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    }
+   ]
+  },
+  {
+   "scene_id": "scene_03",
+   "title": "सेठ ने खुश होकर किसान को भोजन कराया।",
+   "description": "सेठ ने खुश होकर किसान को भोजन कराया।",
+   "environment_id": "mansion_001",
+   "environment_version": 1,
+   "time_of_day": "day",
+   "weather": "clear",
+   "duration_seconds": null,
+   "depends_on": [],
+   "transition_in": {
+    "type": "fade",
+    "duration_seconds": 0.5
+   },
+   "transition_out": {
+    "type": "fade",
+    "duration_seconds": 1.0
+   },
+   "approval_status": "pending",
+   "shots": [
+    {
+     "shot_id": "sc03_sh01",
+     "duration_seconds": 4.6667,
+     "description": "सेठ ने खुश होकर किसान को भोजन कराया।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "establishing_wide",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "rich_man_001",
+       "position": {
+        "anchor": "courtyard",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "happy",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "farmer_001",
+       "position": {
+        "anchor": "doorway",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc03_sh01_l1",
+       "speaker": "narrator",
+       "text": "सेठ ने खुश होकर किसान को भोजन कराया।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": [
+      {
+       "cue_id": "sc03_sh01_amb1",
+       "type": "ambience",
+       "asset_id": "forest_ambience_001",
+       "start_seconds": 0.0,
+       "duration_seconds": null,
+       "volume": 0.5,
+       "loop": true
+      }
+     ]
+    },
+    {
+     "shot_id": "sc03_sh02",
+     "duration_seconds": 5.3333,
+     "description": "सेठ ने किसान को थैली से सोने के कुछ सिक्के दिए।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "parallax_drift",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "rich_man_001",
+       "position": {
+        "anchor": "courtyard",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "happy",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "farmer_001",
+       "position": {
+        "anchor": "doorway",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [
+      {
+       "prop_id": "money_bag_001",
+       "instance_id": "sc03_sh02_p1",
+       "asset_version": 1,
+       "position": {
+        "anchor": "courtyard",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "scale": 1.0,
+       "rotation": 0.0,
+       "order": 0,
+       "held_by": {
+        "character_id": "rich_man_001",
+        "part": "hand",
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "visible_from": 0.3,
+       "visible_until": 1.7
+      }
+     ],
+     "actions": [
+      {
+       "action_id": "sc03_sh02_a1",
+       "character_id": "rich_man_001",
+       "animation": "give",
+       "start_seconds": 0.3,
+       "duration_seconds": 1.4,
+       "loop": null,
+       "move_to": null,
+       "target_character": "farmer_001",
+       "prop_id": "sc03_sh02_p1",
+       "expression": null,
+       "facing": null,
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc03_sh02_l1",
+       "speaker": "narrator",
+       "text": "सेठ ने किसान को थैली से सोने के कुछ सिक्के दिए।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": [
+      {
+       "cue_id": "sc03_sh02_sfx1",
+       "type": "sfx",
+       "asset_id": "whoosh_001",
+       "start_seconds": 0.7,
+       "duration_seconds": null,
+       "volume": 1.0,
+       "loop": false
+      }
+     ]
+    },
+    {
+     "shot_id": "sc03_sh03",
+     "duration_seconds": 4.625,
+     "description": "आज से तुम मेरे खेतों की देखभाल करोगे।",
+     "animation_level": 2,
+     "camera": {
+      "preset": "character_closeup",
+      "target": "rich_man_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "rich_man_001",
+       "position": {
+        "anchor": "courtyard",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "happy",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "farmer_001",
+       "position": {
+        "anchor": "doorway",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "neutral",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc03_sh03_l1",
+       "speaker": "rich_man_001",
+       "text": "आज से तुम मेरे खेतों की देखभाल करोगे।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc03_sh04",
+     "duration_seconds": 3.8333,
+     "description": "किसान खुश होकर अपने घर लौट गया।",
+     "animation_level": 3,
+     "camera": {
+      "preset": "tracking_shot",
+      "target": "farmer_001",
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "rich_man_001",
+       "position": {
+        "anchor": "courtyard",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "happy",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      },
+      {
+       "character_id": "farmer_001",
+       "position": {
+        "anchor": "doorway",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "left",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "happy",
+       "pose": null,
+       "visible": true,
+       "order": 1,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [
+      {
+       "action_id": "sc03_sh04_a1",
+       "character_id": "farmer_001",
+       "animation": "walk",
+       "start_seconds": 0.3,
+       "duration_seconds": 3.0,
+       "loop": true,
+       "move_to": {
+        "anchor": "offstage_right",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "target_character": null,
+       "prop_id": null,
+       "expression": null,
+       "facing": "right",
+       "params": {},
+       "children": []
+      }
+     ],
+     "dialogue": [
+      {
+       "line_id": "sc03_sh04_l1",
+       "speaker": "narrator",
+       "text": "किसान खुश होकर अपने घर लौट गया।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    },
+    {
+     "shot_id": "sc03_sh05",
+     "duration_seconds": 3.7083,
+     "description": "ईमानदारी का फल मीठा होता है।",
+     "animation_level": 1,
+     "camera": {
+      "preset": "slow_pull_out",
+      "target": null,
+      "params": {},
+      "keyframes": []
+     },
+     "characters": [
+      {
+       "character_id": "rich_man_001",
+       "position": {
+        "anchor": "courtyard",
+        "x": null,
+        "y": null,
+        "offset": [
+         0.0,
+         0.0
+        ]
+       },
+       "facing": "right",
+       "scale": 1.0,
+       "state": "standing",
+       "expression": "happy",
+       "pose": null,
+       "visible": true,
+       "order": 0,
+       "attach_to": null
+      }
+     ],
+     "props": [],
+     "actions": [],
+     "dialogue": [
+      {
+       "line_id": "sc03_sh05_l1",
+       "speaker": "narrator",
+       "text": "ईमानदारी का फल मीठा होता है।",
+       "emotion": "neutral",
+       "start_seconds": null,
+       "voice_id": null
+      }
+     ],
+     "effects": [],
+     "audio": []
+    }
+   ]
+  }
+ ],
+ "metadata": {
+  "analyser": "rule_based",
+  "generated_by": "storyboard_builder/1"
+ }
+}

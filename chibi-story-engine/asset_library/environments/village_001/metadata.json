@@ -1,0 +1,359 @@
+{
+  "manifest_version": "1.0",
+  "id": "village_001",
+  "asset_type": "environment",
+  "name": "Village lane with a dyer's vat",
+  "version": 1,
+  "description": "A quiet village lane: mud huts, washing on a line and a big vat of indigo dye.",
+  "aliases": [
+    "गाँव",
+    "village"
+  ],
+  "tags": [
+    "village",
+    "home",
+    "market"
+  ],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedurally generated)",
+    "source": "generated",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {
+    "habitats": [
+      "ground"
+    ],
+    "style": "premium_chibi_anime",
+    "ambience": "forest_ambience_001"
+  },
+  "files": [
+    {
+      "role": "layer",
+      "path": "layers/clothes_line.png",
+      "format": "png",
+      "checksum": "b958fa24e6abe4056839d0bbe073d0856f818596f5766eb9917eb845c4c59880",
+      "width": 294,
+      "height": 338,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/far_hills.png",
+      "format": "png",
+      "checksum": "ecf6d7606df5317111dece982039d96bcb8fea829fd5bbffde02514de516f5ae",
+      "width": 1360,
+      "height": 397,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/far_trees.png",
+      "format": "png",
+      "checksum": "bb873118e5c690b3d7c52cdfaeaaf0abd91d41d2c28751e0607c5c1993295064",
+      "width": 2720,
+      "height": 950,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/ground.png",
+      "format": "png",
+      "checksum": "f23239a4d7f5044601fdfe9c8d48d583fae450a62e5dbac1a256b05d99e819ad",
+      "width": 2720,
+      "height": 545,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/huts.png",
+      "format": "png",
+      "checksum": "d4ba004cbbae8f8caa1f9616ce88e40c619e912d39c2015daf18ce8f3b14c49d",
+      "width": 2202,
+      "height": 513,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/sky.png",
+      "format": "png",
+      "checksum": "5b61173434c26b14c3e42d3962eb28b2aa504f70b55c5314068a937b2af08b2d",
+      "width": 1360,
+      "height": 740,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/vat_back.png",
+      "format": "png",
+      "checksum": "25a7733e6a207bf84a6dc834ebc2456f5458b20e1b0cc927537329bffcb20b26",
+      "width": 372,
+      "height": 128,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/vat_front.png",
+      "format": "png",
+      "checksum": "e42f46c8e1ad1e10c2106ecccd1e390f917f578509e2cecc2981031e4fbdfeae",
+      "width": 390,
+      "height": 223,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-17T03:43:12+00:00",
+  "change_summary": "",
+  "stage": [
+    1920,
+    1080
+  ],
+  "layers": [
+    {
+      "id": "sky",
+      "type": "background",
+      "file": "layers/sky.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        1480.0
+      ],
+      "parallax": 0.12,
+      "order": 0,
+      "cover": true,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background"
+    },
+    {
+      "id": "far_hills",
+      "type": "far",
+      "file": "layers/far_hills.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        794.0
+      ],
+      "parallax": 0.3,
+      "order": 1,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background"
+    },
+    {
+      "id": "far_trees",
+      "type": "middle",
+      "file": "layers/far_trees.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        950.0
+      ],
+      "parallax": 0.55,
+      "order": 2,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background"
+    },
+    {
+      "id": "ground",
+      "type": "middle",
+      "file": "layers/ground.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        545.0
+      ],
+      "parallax": 1.0,
+      "order": 10,
+      "cover": false,
+      "cover_horizontal": true,
+      "motion": [],
+      "tint_group": "background"
+    },
+    {
+      "id": "huts",
+      "type": "middle",
+      "file": "layers/huts.png",
+      "rect": [
+        44.0,
+        315.0,
+        2202.0,
+        513.0
+      ],
+      "parallax": 1.0,
+      "order": 30,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background"
+    },
+    {
+      "id": "clothes_line",
+      "type": "middle",
+      "file": "layers/clothes_line.png",
+      "rect": [
+        1138.0,
+        306.0,
+        294.0,
+        338.0
+      ],
+      "parallax": 1.0,
+      "order": 40,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background"
+    },
+    {
+      "id": "vat_back",
+      "type": "middle",
+      "file": "layers/vat_back.png",
+      "rect": [
+        1374.0,
+        271.0,
+        372.0,
+        128.0
+      ],
+      "parallax": 1.0,
+      "order": 62,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background"
+    },
+    {
+      "id": "vat_front",
+      "type": "foreground",
+      "file": "layers/vat_front.png",
+      "rect": [
+        1365.0,
+        121.0,
+        390.0,
+        223.0
+      ],
+      "parallax": 1.0,
+      "order": 130,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background"
+    }
+  ],
+  "anchors": {
+    "lane": {
+      "x": 640.0,
+      "y": 205.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "lane_far": {
+      "x": 1050.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "vat_side": {
+      "x": 1180.0,
+      "y": 200.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "ground",
+        "vat_side"
+      ],
+      "description": ""
+    },
+    "offstage_left": {
+      "x": -430.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "offstage",
+        "ground"
+      ],
+      "description": ""
+    },
+    "offstage_right": {
+      "x": 2350.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "offstage",
+        "ground"
+      ],
+      "description": ""
+    },
+    "vat": {
+      "x": 1560.0,
+      "y": 150.0,
+      "order": 110,
+      "scale": 1.0,
+      "features": [
+        "vat",
+        "pit"
+      ],
+      "description": "inside the dye vat"
+    }
+  },
+  "lighting_presets": [
+    "day",
+    "morning",
+    "sunset",
+    "night",
+    "overcast"
+  ],
+  "camera_bounds": [
+    -400.0,
+    -200.0,
+    2320.0,
+    1280.0
+  ],
+  "default_anchor_by_role": {
+    "ground": [
+      "lane",
+      "vat_side",
+      "lane_far"
+    ]
+  }
+}

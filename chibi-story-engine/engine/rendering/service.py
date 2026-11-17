@@ -252,6 +252,29 @@ class RenderService:
             # a crash (signal, out of memory) may succeed on a second attempt; a reported error will not
             raise RenderError(f"scene '{scene_id}': {message}", recoverable=not errors)
 
+    def render_stills(self, story: Story, scene_id: str, times: list[float], out_dir: Path, width: int = 480, height: int = 270,
+                      samples: int = 1, speech: StorySpeech | None = None) -> list[Path]:
+        """Single frames of a scene, rendered by Blender (for reference frames and visual checks)."""
+        plan, _ = self.plan_scene(story, scene_id, speech)
+        out_dir = Path(out_dir)
+        plan_dir = plan.save(out_dir / "_plan")
+        stills = []
+        for t in times:
+            frame = min(plan.n_frames - 1, max(0, int(round(t * plan.fps))))
+            proc = subprocess.run([self.python, "-m", "engine.rendering.blender_worker", "--plan", str(plan_dir), "--out", str(out_dir / "_frames"),
+                                   "--samples", str(samples), "--width", str(width), "--height", str(height),
+                                   "--first", str(frame), "--last", str(frame + 1)], cwd=str(PROJECT_ROOT), capture_output=True, text=True,
+                                  timeout=self.timeout)
+            source = out_dir / "_frames" / f"frame_{frame:06d}.png"
+            if proc.returncode != 0 or not source.is_file():
+                raise RenderError(f"could not render a still of '{scene_id}' at {t}s", details={"stderr": proc.stdout[-300:]})
+            target = out_dir / f"{scene_id}_{frame:06d}.png"
+            source.replace(target)
+            stills.append(target)
+        shutil.rmtree(out_dir / "_plan", ignore_errors=True)
+        shutil.rmtree(out_dir / "_frames", ignore_errors=True)
+        return stills
+
     # -------------------------------------------------------------- preview
     def preview_scene(self, story: Story, scene_id: str, speech: StorySpeech | None = None, settings: RenderSettings | None = None,
                       progress: Progress | None = None, cancel: threading.Event | None = None) -> tuple[SceneResult, Path | None]:
