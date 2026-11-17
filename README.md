@@ -64,6 +64,8 @@ Leave `EXPO_PUBLIC_API_URL` empty to run the app without any server.
 - [docs/SPACES.md](docs/SPACES.md) — the balcony, the garden, the museum, jigsaws, coins
 - [docs/PARADISE_GARDEN.md](docs/PARADISE_GARDEN.md) — the Paradise Garden: views, segments, growth sizes, placement, rendering
 
+A separate project also lives in this repository: [chibi-story-engine/](chibi-story-engine) (a story animation engine; not part of the app).
+
 ## Tests
 
 ```bash

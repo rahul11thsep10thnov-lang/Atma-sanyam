@@ -60,8 +60,10 @@ Consequences:
   with parallax *p* is placed at distance D/p from the resting camera and scaled by 1/p, so it looks as
   authored at rest and shifts by *p*× the camera movement. Zoom is a dolly, so push-ins produce real
   depth parallax.
-- The camera is a perspective camera (45 mm). `camera/guards.py` clamps moves so covering layers always
-  fill the frame, and reports characters that leave the safe area.
+- The camera is a perspective camera (45 mm). `camera/guards.py` clamps every frame so the view stays inside the
+  environment's `camera_bounds` and covering layers; the composer warns when a speaker is off screen.
+- In Blender no two sprites share a plane: each is lifted 0.5 px towards the camera by its rank and scaled about the
+  view axis by the matching ratio, so the projection is exactly the planned one and there is no depth fighting.
 - Draw order inside a depth is an explicit `order` (characters default to 100; an environment layer with
   a higher order, such as the front of a river, draws over them).
 

@@ -22,6 +22,11 @@
 | `llm` | anthropic | optional LLM story analysis |
 | `dev` | pytest, httpx | tests |
 
+## Dashboard packages (`frontend/package.json`)
+
+react 19, react-dom, react-router-dom 7; dev: vite 7, @vitejs/plugin-react, typescript 5, tailwindcss 4 (`@tailwindcss/vite`).
+The browser test uses Playwright (resolved from a global or local install).
+
 ## Deliberately not used
 
 | Suggested | Decision | Why |
