@@ -50,6 +50,15 @@ python -m tools.asset_forge.progress_register
 
 `GET /components`, `GET /library/stats`, `GET /environments/{id}/preview?lighting=&weather=&season=&scare=`, `GET /stories/{id}/asset-report`; asset and environment payloads gain the catalogue fields.
 
+## Legacy gap closure (second specification)
+
+- **Views.** `CharacterManifest.views` holds extra rigs (`side`, `three_quarter`, `back`) that reuse the front rig's part ids, so every existing clip drives them; `CharacterPlacement.view` chooses one (omitted = the character's `compatibility.primary_view`, `front` for people and animals, `side` for reptiles). A missing view is a composer error, never a silent substitute. Side and back are drawn per angle (`tools/asset_forge/characters_views.py`); three-quarter is the front art turned about the vertical axis (near half kept, far half foreshortened).
+- **Versioned upgrades.** `tools/asset_forge/upgrade_originals.py` re-runs the original drawing code, refuses to proceed unless every front part matches version 1 pixel for pixel, then registers version 2 through `AssetLibrary.update`; version 1 stays in `versions/v1` with its checksums and stories pinned to it keep using it. `build_reptiles.py` does the same for the crocodiles (rest pose compared with v1).
+- **Reptile rigs.** `quadruped_reptile` (extended, optional chest / neck / three tail segments; version 1 still loads), `chelonian` (shell, neck that retracts behind a shell lip) and `serpentine_reptile` (chain of segments, tongue); templates may declare `optional_components` (a snake has no limbs). 20 new clips. `tests/acceptance/test_species_rigs.py` checks validity, runs the clips through the composer and checks that parts stay attached.
+- **Compositions.** `env_kit.recompose` builds medium and close-up variants (`env-xxx-0001-medium`, `-closeup`, `composition_group` = the wide id): far layers thinned or dropped, mid-ground limited to a focal window and redrawn larger with fewer elements, anchors pulled together and scaled up. Sky, wall and ground are shared across compositions (they are the place's identity). Built for the 45 backgrounds the tracked stories resolve to plus the three most general of each category.
+- **Research.** `python -m tools.catalogue.research` fetches real contents pages and indexes, parses them and writes `stories/research/` (sources with sha256, records, register) and `docs/generated/STORY_RESEARCH_REGISTER.md`. Evidence levels and verification statuses are defined in the script's docstring; a Wikipedia mention alone never verifies a story.
+- **Completion register.** `engine/asset_manager/completion.py`, `GET /library/completion` and the dashboard card count what is registered and validated.
+
 ## Honest limits
 
 See "Known gaps" in the progress register. In short: front views only; no wide/medium/close-up variants; original characters were not redrawn; a story catalogue seed, not a complete or verified one; every new asset is `pending` and needs human review. Several background designs reuse the same component vocabulary (the interiors especially); they differ in composition, not in a hand-drawn way.
