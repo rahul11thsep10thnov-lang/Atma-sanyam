@@ -82,7 +82,9 @@ test("2. user enters a Hindi story", async () => {
   await page.getByLabel("Story text").fill(STORY);
   await page.getByRole("button", { name: "Save story" }).click();
   await page.getByRole("heading", { name: "Edit story" }).waitFor();
-  assert.equal(await page.getByLabel("Current story").locator("option:checked").innerText(), "बंदर और मगरमच्छ");
+  const current = page.getByLabel("Current story").locator("option:checked");      // the story list refreshes just after the heading appears
+  for (let i = 0; i < 40 && (await current.innerText()) !== "बंदर और मगरमच्छ"; i++) await page.waitForTimeout(250);
+  assert.equal(await current.innerText(), "बंदर और मगरमच्छ");
 });
 
 test("3. user generates a storyboard", async () => {

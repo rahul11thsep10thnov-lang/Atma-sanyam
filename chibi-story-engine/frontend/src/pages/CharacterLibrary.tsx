@@ -19,7 +19,8 @@ export function CharacterLibrary() {
   const [shown, setShown] = useState(36);
 
   const current = characters.data?.find((c) => c.id === selected) ?? null;
-  const all = [...(characters.data ?? [])].sort((a, b) => Number(!!a.catalog_code) - Number(!!b.catalog_code)); // original characters first
+  const isOriginal = (c: Character) => !c.catalog_code || c.catalog_code.startsWith("CHAR-ORG-");
+  const all = [...(characters.data ?? [])].sort((a, b) => Number(!isOriginal(a)) - Number(!isOriginal(b))); // the characters the library shipped with come first
   const categories = countBy(all, (c) => c.category ?? "original");
   const visible = all.filter((c) => matches({ ...c, name: c.display_name }, filter));
   const entities = story?.analysis_json?.entities ?? [];
