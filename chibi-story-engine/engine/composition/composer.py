@@ -22,7 +22,7 @@ from ..camera.projection import CameraState
 from ..character_manager.registry import CharacterRegistry
 from ..character_manager.rig import Pose, Rig, apply, rotate, scale, translate
 from ..common.errors import AssetIntegrityError, AssetNotFound, EngineError, RigError, ValidationFailed
-from ..environment_manager.lighting import LIGHTING_PRESETS, WEATHER_PRESETS, grade
+from ..environment_manager.lighting import LIGHTING_PRESETS, SEASON_PRESETS, WEATHER_PRESETS, foliage_tint, grade
 from ..schema.assets import AssetType, CharacterManifest, EnvironmentManifest
 from ..schema.story import Easing, Position, Scene, Shot, Story, iter_actions
 from .effects import EFFECT_ASSET, EFFECT_SPRITES, EFFECT_TYPES, EffectContext
@@ -84,6 +84,8 @@ class SceneComposer:
         env = self._environment(scene)
         if scene.time_of_day not in LIGHTING_PRESETS:
             self._err("unknown_lighting", self._scene_path, f"unknown time_of_day '{scene.time_of_day}' (have: {', '.join(LIGHTING_PRESETS)})")
+        if scene.season not in SEASON_PRESETS:
+            self._err("unknown_season", self._scene_path, f"unknown season '{scene.season}' (have: {', '.join(SEASON_PRESETS)})")
         if scene.weather not in WEATHER_PRESETS:
             self._err("unknown_weather", self._scene_path, f"unknown weather '{scene.weather}' (have: {', '.join(WEATHER_PRESETS)})")
         versions = {c.character_id: c.asset_version for c in story.characters}
@@ -159,15 +161,21 @@ class SceneComposer:
         fps = config.fps
         n = max(1, int(round(shot.duration_seconds * fps)))
         path = f"{self._scene_path}.shot({shot.shot_id})"
-        bg_tint, char_tint = grade(scene.time_of_day if scene.time_of_day in LIGHTING_PRESETS else "day",
-                                   scene.weather if scene.weather in WEATHER_PRESETS else "clear")
+        tod = scene.time_of_day if scene.time_of_day in LIGHTING_PRESETS else "day"
+        wx = scene.weather if scene.weather in WEATHER_PRESETS else "clear"
+        sea = scene.season if scene.season in SEASON_PRESETS else "summer"
+        bg_tint, char_tint = grade(tod, wx, sea)
+        leaf_tint = foliage_tint(tod, wx, sea)
         wind = WEATHER_PRESETS.get(scene.weather, WEATHER_PRESETS["clear"]).wind
         plan = ShotPlan(shot.shot_id, n, np.zeros((n, 3)))
         times = offset + np.arange(n) / fps
 
         for layer in env.layers:
+            if layer.scare > scene.scare_level:
+                continue                                  # a scarier layer of a haunted place, hidden for a gentler scene
             plan.sprites.append(self._layer(env, scene.environment_version, layer, n, times, wind,
-                                            {"background": bg_tint, "character": char_tint, "none": (1.0, 1.0, 1.0)}[layer.tint_group]))
+                                            {"background": bg_tint, "character": char_tint, "foliage": leaf_tint,
+                                             "none": (1.0, 1.0, 1.0)}[layer.tint_group]))
 
         actors = self._actors(story, shot, env, versions, timing, offset, n, fps, path)
         for actor in actors.values():
@@ -487,6 +495,8 @@ class SceneComposer:
         weather = WEATHER_PRESETS.get(scene.weather)
         if weather and weather.effect:
             effects.append((f"{shot.shot_id}_weather", weather.effect, 0.0, n / fps, None, None, {}))
+        for i, (extra_type, extra_params) in enumerate(weather.extra if weather else ()):
+            effects.append((f"{shot.shot_id}_weather{i + 2}", extra_type, 0.0, n / fps, None, None, dict(extra_params)))
         if not effects:
             return
         try:

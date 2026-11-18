@@ -188,9 +188,46 @@ def rain(ctx: EffectContext) -> list[Particle]:
     return out
 
 
+def fog(ctx: EffectContext) -> list[Particle]:
+    """Slow banks of mist drifting across the lower half of the picture."""
+    rng, out = ctx.rng(), []
+    for _ in range(int(ctx.params.get("count", 9))):
+        affine, opacity = _blank(ctx)
+        x0, y0, size = rng.uniform(-300, 2200), rng.uniform(120, 620), rng.uniform(520, 980)
+        drift, phase = rng.uniform(14, 40), rng.uniform(0, 6.28)
+        for i in range(ctx.length):
+            f = ctx.start + i
+            if f >= ctx.n_frames:
+                break
+            t = i / ctx.fps
+            _place(affine, f, x0 + drift * t + 30 * math.sin(phase + t * 0.4), y0 + 16 * math.sin(phase + t * 0.7), size, size * 0.34)
+            opacity[f] = 0.26 + 0.1 * math.sin(phase + t * 0.5)
+        out.append(Particle("puff", affine, opacity, parallax=1.15, order=930))
+    return out
+
+
+def snow(ctx: EffectContext) -> list[Particle]:
+    rng, out = ctx.rng(), []
+    for _ in range(int(ctx.params.get("count", 70))):
+        affine, opacity = _blank(ctx)
+        x0, offset, speed, size = rng.uniform(-200, 2120), rng.uniform(0, 1300), rng.uniform(70, 150), rng.uniform(12, 26)
+        sway, phase = rng.uniform(20, 60), rng.uniform(0, 6.28)
+        for i in range(ctx.length):
+            f = ctx.start + i
+            if f >= ctx.n_frames:
+                break
+            t = i / ctx.fps
+            y = 1180 - ((offset + speed * t) % 1300)
+            _place(affine, f, x0 + sway * math.sin(phase + t * 1.1), y, size, size)
+            opacity[f] = 0.9
+        out.append(Particle("puff", affine, opacity, parallax=1.2, order=940))
+    return out
+
+
 EFFECT_TYPES: dict[str, Callable[[EffectContext], list[Particle]]] = {
+    "fog": fog, "snow": snow,
     "splash": splash, "ripples": ripples, "falling_leaves": falling_leaves, "sparkles": sparkles,
     "hearts": hearts, "dust": dust, "rain": rain,
 }
-EFFECT_SPRITES = {"splash": ["droplet", "ring"], "ripples": ["ring"], "falling_leaves": ["leaf"], "sparkles": ["sparkle"],
+EFFECT_SPRITES = {"fog": ["puff"], "snow": ["puff"], "splash": ["droplet", "ring"], "ripples": ["ring"], "falling_leaves": ["leaf"], "sparkles": ["sparkle"],
                   "hearts": ["heart"], "dust": ["puff"], "rain": ["streak"]}

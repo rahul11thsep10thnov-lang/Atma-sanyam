@@ -18,24 +18,25 @@ from ..common.errors import AssetIntegrityError, AssetNotFound, ValidationFailed
 from ..common.paths import require_id, safe_join, sha256_file
 from ..schema.animation import AnimationClip
 from ..schema.assets import (MANIFEST_MODELS, AssetFile, AssetType, AudioManifest, BaseManifest, CharacterManifest,
-                             EffectManifest, EnvironmentManifest, PropManifest, RigTemplate)
+                             ComponentManifest, EffectManifest, EnvironmentManifest, PropManifest, RigTemplate)
 from ..schema.story import ApprovalStatus, format_validation_error
 from .index import (AnchorEntry, AnimationEntry, CharacterEntry, EnvironmentEntry, LibraryIndex, SimpleEntry, norm_name)
 
 TYPE_DIRS: dict[AssetType, str] = {
     AssetType.character: "characters", AssetType.environment: "environments", AssetType.prop: "props",
-    AssetType.effect: "effects", AssetType.music: "music", AssetType.sound_effect: "sound_effects",
+    AssetType.effect: "effects", AssetType.component: "components", AssetType.music: "music", AssetType.sound_effect: "sound_effects",
     AssetType.background: "backgrounds",
 }
 MANIFEST_NAME = "metadata.json"
 IMAGE_FORMATS = {".png": "png", ".webp": "webp", ".jpg": "jpeg", ".jpeg": "jpeg"}
+VECTOR_FORMATS = {".svg": "svg"}
 AUDIO_FORMATS = {".wav": "wav"}
 
 
 def describe_file(path: Path, rel: str, role: str, **meta: Any) -> AssetFile:
     """Build a manifest entry for a file on disk: format, size or duration, checksum."""
     suffix = path.suffix.lower()
-    fmt = IMAGE_FORMATS.get(suffix) or AUDIO_FORMATS.get(suffix) or suffix.lstrip(".") or "bin"
+    fmt = IMAGE_FORMATS.get(suffix) or VECTOR_FORMATS.get(suffix) or AUDIO_FORMATS.get(suffix) or suffix.lstrip(".") or "bin"
     width = height = duration = None
     if suffix in IMAGE_FORMATS:
         from PIL import Image
@@ -347,10 +348,14 @@ def referenced_files(manifest: BaseManifest) -> list[str]:
     if isinstance(manifest, CharacterManifest):
         for part in manifest.rig.parts:
             out.extend(v.file for v in part.variants.values())
+            out.extend(v.svg for v in part.variants.values() if v.svg)
     elif isinstance(manifest, EnvironmentManifest):
         out.extend(layer.file for layer in manifest.layers)
+        out.extend(layer.svg for layer in manifest.layers if layer.svg)
     elif isinstance(manifest, (PropManifest, AudioManifest)):
         out.append(manifest.file)
+    elif isinstance(manifest, ComponentManifest):
+        out.extend([manifest.file, manifest.svg])
     elif isinstance(manifest, EffectManifest):
         out.extend(manifest.sprites.values())
     return list(dict.fromkeys(out))

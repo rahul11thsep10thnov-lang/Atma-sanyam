@@ -25,6 +25,7 @@ class AssetType(str, Enum):
     environment = "environment"
     prop = "prop"
     effect = "effect"
+    component = "component"
     background = "background"
     music = "music"
     sound_effect = "sound_effect"
@@ -68,6 +69,10 @@ class BaseManifest(Model):
     description: str = ""
     aliases: list[str] = Field(default_factory=list, description="names this asset is known by, in any language; used for matching")
     tags: list[str] = Field(default_factory=list)
+    catalog_code: str | None = Field(None, description="human-facing catalogue code such as CHAR-HUM-0001")
+    category: str | None = None
+    subcategory: str | None = None
+    related_stories: list[str] = Field(default_factory=list, description="story ids from the master story catalogue that use this asset")
     licence: Licence = Field(default_factory=Licence)
     approval_status: ApprovalStatus = ApprovalStatus.pending
     compatibility: dict[str, Any] = Field(default_factory=dict)
@@ -89,6 +94,7 @@ class BaseManifest(Model):
 
 class PartImage(Model):
     file: str
+    svg: str | None = Field(None, description="editable SVG master this runtime PNG was rasterised from")
     origin: tuple[float, float] = Field(description="top-left of the image on the rig canvas, in canvas pixels (y down)")
     size: tuple[float, float]
 
@@ -189,7 +195,9 @@ class EnvironmentLayer(Model):
     cover: bool = Field(False, description="the layer must fill the frame at every camera position")
     cover_horizontal: bool = Field(False, description="the layer must span the frame's width (its top or bottom may show)")
     motion: list[LayerMotion] = Field(default_factory=list)
-    tint_group: Literal["background", "character", "none"] = "background"
+    tint_group: Literal["background", "character", "foliage", "none"] = "background"
+    scare: int = Field(0, ge=0, le=2, description="shown only when the scene's scare_level is at least this (0 = always)")
+    svg: str | None = Field(None, description="editable SVG master this runtime PNG was rasterised from")
 
 
 class Anchor(Model):
@@ -243,6 +251,16 @@ class AudioManifest(BaseManifest):
     gain_db: float = 0.0
 
 
+class ComponentManifest(BaseManifest):
+    """A reusable vector component (tree, rock, building, lamp, ...) with its editable SVG master."""
+
+    asset_type: Literal[AssetType.component] = AssetType.component
+    kind: str
+    file: str = Field(description="transparent runtime PNG")
+    svg: str = Field(description="editable SVG master")
+    size: tuple[float, float] = Field(description="size of the PNG in pixels")
+
+
 class RigTemplate(Model):
     """What a family of rigs has in common; animations target templates, not characters."""
 
@@ -266,6 +284,7 @@ MANIFEST_MODELS: dict[AssetType, type[BaseManifest]] = {
     AssetType.environment: EnvironmentManifest,
     AssetType.prop: PropManifest,
     AssetType.effect: EffectManifest,
+    AssetType.component: ComponentManifest,
     AssetType.music: AudioManifest,
     AssetType.sound_effect: AudioManifest,
 }

@@ -219,6 +219,8 @@ class Scene(Model):
     environment_version: int = Field(1, ge=1)
     time_of_day: str = "day"
     weather: str = "clear"
+    season: str = "summer"
+    scare_level: int = Field(2, ge=0, le=2, description="0 gentle, 1 mild, 2 full: haunted environments hide their scarier layers below 2")
     duration_seconds: float | None = Field(None, gt=0, description="must equal the sum of shot durations when given")
     depends_on: list[str] = Field(default_factory=list)
     transition_in: Transition = Field(default_factory=Transition)
