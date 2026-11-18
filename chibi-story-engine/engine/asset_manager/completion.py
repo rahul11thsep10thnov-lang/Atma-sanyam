@@ -15,7 +15,7 @@ from .library import AssetLibrary
 
 FACES = {"neutral", "happy", "sad", "angry", "surprised", "worried", "thinking", "laughing", "speaking", "crying", "frightened", "suspicious", "excited", "disappointed", "determined"}
 POSES = {"standing", "walking", "running", "sitting", "sleeping", "jumping", "talking", "pointing", "waving", "fighting", "dancing", "kneeling", "falling", "climbing", "holding_object"}
-ORIGINAL_NINE = ["monkey_001", "lion_001", "rabbit_001", "jackal_001", "jackal_blue_001", "farmer_001", "rich_man_001", "crocodile_001", "crocodile_wife_001"]
+ORIGINAL_PREFIX = "CHAR-ORG-"          # catalogue code given to the characters the library shipped with
 VIEWS = {"front", "side", "three_quarter", "back"}
 
 
@@ -44,10 +44,11 @@ def characters(lib: AssetLibrary) -> dict[str, Any]:
         out["by_rig_template"][m.rig.template] = out["by_rig_template"].get(m.rig.template, 0) + 1
         if not four:
             out["without_four_views"].append(cid)
-        if cid in ORIGINAL_NINE:
+        if (m.catalog_code or "").startswith(ORIGINAL_PREFIX):
             out["originals"][cid] = {"version": m.version, "svg_masters": svg, "four_views": four, "expressions_15": FACES <= set(m.expressions), "poses_15": POSES <= set(m.poses),
                                      "validated_rig": ok_rig, "v1_intact": not lib.verify(AssetType.character, cid, 1) if m.version > 1 else None, "approval": m.approval_status.value}
     out["original_nine_fully_upgraded"] = sum(1 for v in out["originals"].values() if v["version"] >= 2 and v["svg_masters"] and v["four_views"] and v["expressions_15"] and v["poses_15"] and v["validated_rig"])
+    out["original_total"] = len(out["originals"])
     out["original_nine_upgraded_to_v2"] = sum(1 for v in out["originals"].values() if v["version"] >= 2)
     return out
 

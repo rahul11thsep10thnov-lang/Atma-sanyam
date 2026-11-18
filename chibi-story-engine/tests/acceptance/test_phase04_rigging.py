@@ -124,7 +124,9 @@ def test_7_8_tail_and_jaw(registry):
     assert (after @ [*tip, 1])[1] < (before @ [*tip, 1])[1] - 60
     tail = Pose()
     tail.add("tail", rotation=20)
-    assert _moved(rest, _matrices(croc, tail)) == {"tail"}
+    # the upgraded crocodile's tail is a three-segment chain: turning the base carries the segments after it
+    chain = {p.id for p in croc.definition.parts if p.id in ("tail", "tail_mid", "tail_tip")}
+    assert _moved(rest, _matrices(croc, tail)) == chain
 
 
 def test_10_no_unexpected_deformation(registry):

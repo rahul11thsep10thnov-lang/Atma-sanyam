@@ -45,7 +45,7 @@ def test_2_3_correct_characters_and_environment(plan, library):
     assert owners == {"monkey_001", "crocodile_001"}
     for sprite in first.sprites:
         if sprite.id.startswith("char.monkey_001."):
-            assert "/characters/monkey_001/rig/" in sprite.image and len(sprite.checksum) == 64
+            assert "/characters/monkey_001/" in sprite.image and "/rig/" in sprite.image and len(sprite.checksum) == 64   # version 1 now lives in versions/v1
     layers = [s.id[4:] for s in first.sprites if s.id.startswith("env.")]
     assert layers == [l.id for l in library.environment("forest_river_001").layers]
     assert {s.parallax for s in first.sprites if s.id.startswith("env.")} >= {0.12, 0.3, 0.55, 1.0, 1.3}

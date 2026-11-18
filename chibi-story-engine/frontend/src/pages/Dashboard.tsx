@@ -135,7 +135,7 @@ function CompletionCard({ c }: { c: Completion }) {
             {row("15 expressions", ch.with_15_expressions, ch.total)}
             {row("15 poses", ch.with_15_poses, ch.total)}
             {row("Validated rigs", ch.with_validated_rigs, ch.total)}
-            {row("Original nine fully upgraded", ch.original_nine_fully_upgraded, 9)}
+            {row("Original characters fully upgraded", ch.original_nine_fully_upgraded, ch.original_total)}
             {row("Approved", ch.approved, ch.total)}
           </ul>
           <p className="mt-1 text-xs text-stone-500">Pending {ch.pending} · rejected {ch.rejected}. No four views yet: {ch.without_four_views.join(", ") || "none"}.</p>

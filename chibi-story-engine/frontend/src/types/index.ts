@@ -256,7 +256,7 @@ export interface AudioClip {
 
 export interface Completion {
   characters: { total: number; with_svg_masters: number; with_four_views: number; with_15_expressions: number; with_15_poses: number; with_validated_rigs: number; approved: number; pending: number;
-    rejected: number; original_nine_fully_upgraded: number; original_nine_upgraded_to_v2: number; without_four_views: string[] };
+    rejected: number; original_nine_fully_upgraded: number; original_total: number; original_nine_upgraded_to_v2: number; without_four_views: string[] };
   environments: { total: number; wide: number; medium: number; closeup: number; with_complete_layer_files: number; with_validated_camera_and_anchors: number; approved: number; pending: number;
     rejected: number; wide_with_all_three_compositions: number; wide_without_variants: number };
   rigs: { rigs: { template: string; label: string; defined: boolean; characters: number; note?: string }[]; rig_test_results: { passed?: number; failed?: number; run_at?: string } };
