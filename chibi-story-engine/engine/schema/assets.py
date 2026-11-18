@@ -168,6 +168,7 @@ class CharacterManifest(BaseManifest):
     continuity_rules: list[str] = Field(default_factory=list)
     default_voice: str | None = None
     rig: RigDefinition
+    views: dict[str, RigDefinition] = Field(default_factory=dict, description="extra viewing angles of the same character (side, three_quarter, back); `rig` is the front view")
     expressions: dict[str, FacialPose] = Field(default_factory=dict)
     poses: dict[str, dict[str, PartPose]] = Field(default_factory=dict)
     states: list[str] = Field(default_factory=lambda: ["standing"])
@@ -269,6 +270,7 @@ class RigTemplate(Model):
     description: str = ""
     components: dict[str, list[str]] = Field(description="standard component -> part ids that realise it")
     optional_parts: list[str] = Field(default_factory=list)
+    optional_components: list[str] = Field(default_factory=list, description="standard components this family may leave out (a snake has no limbs)")
     has_tail: bool = True
     states: list[str] = Field(default_factory=lambda: ["standing"])
 

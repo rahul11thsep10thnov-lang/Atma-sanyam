@@ -1,0 +1,150 @@
+{
+ "code": "chelonian_crawl",
+ "name": "Turtle / tortoise crawl",
+ "category": "animal",
+ "level": 3,
+ "rig_compatibility": [
+  "chelonian"
+ ],
+ "duration": 1.6,
+ "loop": true,
+ "additive": false,
+ "start_states": [
+  "standing",
+  "resting"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "linear",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "root.y": [
+   {
+    "t": 0,
+    "v": -6,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.6,
+    "v": -6,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_fl.rotation": [
+   {
+    "t": 0,
+    "v": -28,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": 28,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.6,
+    "v": -28,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_br.rotation": [
+   {
+    "t": 0,
+    "v": -28,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": 28,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.6,
+    "v": -28,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_fr.rotation": [
+   {
+    "t": 0,
+    "v": 28,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": -28,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.6,
+    "v": 28,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_bl.rotation": [
+   {
+    "t": 0,
+    "v": 28,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": -28,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.6,
+    "v": 28,
+    "ease": "ease_in_out"
+   }
+  ],
+  "neck.x": [
+   {
+    "t": 0,
+    "v": 8,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": 18,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.6,
+    "v": 8,
+    "ease": "ease_in_out"
+   }
+  ],
+  "tail.rotation": [
+   {
+    "t": 0,
+    "v": -10,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": 10,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.6,
+    "v": -10,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "crawl"
+  ]
+ }
+}

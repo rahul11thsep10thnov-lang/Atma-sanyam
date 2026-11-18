@@ -1,0 +1,171 @@
+{
+ "code": "serpent_idle",
+ "name": "Snake idle",
+ "category": "animal",
+ "level": 1,
+ "rig_compatibility": [
+  "serpentine_reptile"
+ ],
+ "duration": 3.0,
+ "loop": true,
+ "additive": false,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "seg1.rotation": [
+   {
+    "t": 0,
+    "v": -2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.5,
+    "v": 2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 3.0,
+    "v": -2,
+    "ease": "ease_in_out"
+   }
+  ],
+  "seg2.rotation": [
+   {
+    "t": 0,
+    "v": 2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.5,
+    "v": -2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 3.0,
+    "v": 2,
+    "ease": "ease_in_out"
+   }
+  ],
+  "seg3.rotation": [
+   {
+    "t": 0,
+    "v": -2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.5,
+    "v": 2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 3.0,
+    "v": -2,
+    "ease": "ease_in_out"
+   }
+  ],
+  "seg4.rotation": [
+   {
+    "t": 0,
+    "v": 2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.5,
+    "v": -2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 3.0,
+    "v": 2,
+    "ease": "ease_in_out"
+   }
+  ],
+  "seg5.rotation": [
+   {
+    "t": 0,
+    "v": -2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.5,
+    "v": 2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 3.0,
+    "v": -2,
+    "ease": "ease_in_out"
+   }
+  ],
+  "seg6.rotation": [
+   {
+    "t": 0,
+    "v": 2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.5,
+    "v": -2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 3.0,
+    "v": 2,
+    "ease": "ease_in_out"
+   }
+  ],
+  "seg7.rotation": [
+   {
+    "t": 0,
+    "v": -2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.5,
+    "v": 2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 3.0,
+    "v": -2,
+    "ease": "ease_in_out"
+   }
+  ],
+  "head.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.5,
+    "v": 3,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 3.0,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "idle"
+  ]
+ }
+}

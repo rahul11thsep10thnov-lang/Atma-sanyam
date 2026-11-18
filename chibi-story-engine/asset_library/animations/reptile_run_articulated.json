@@ -1,0 +1,215 @@
+{
+ "code": "reptile_run_articulated",
+ "name": "Reptile run (spine and tail)",
+ "category": "animal",
+ "level": 3,
+ "rig_compatibility": [
+  "quadruped_reptile"
+ ],
+ "duration": 0.5,
+ "loop": true,
+ "additive": false,
+ "start_states": [
+  "standing"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "linear",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "leg_fl.rotation": [
+   {
+    "t": 0,
+    "v": -40,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.25,
+    "v": 40,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": -40,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_br.rotation": [
+   {
+    "t": 0,
+    "v": -40,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.25,
+    "v": 40,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": -40,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_fr.rotation": [
+   {
+    "t": 0,
+    "v": 40,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.25,
+    "v": -40,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": 40,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_bl.rotation": [
+   {
+    "t": 0,
+    "v": 40,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.25,
+    "v": -40,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": 40,
+    "ease": "ease_in_out"
+   }
+  ],
+  "chest.rotation": [
+   {
+    "t": 0,
+    "v": 6,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.25,
+    "v": -6,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": 6,
+    "ease": "ease_in_out"
+   }
+  ],
+  "neck.rotation": [
+   {
+    "t": 0,
+    "v": -4,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.25,
+    "v": 4,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": -4,
+    "ease": "ease_in_out"
+   }
+  ],
+  "tail.rotation": [
+   {
+    "t": 0,
+    "v": -14,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.25,
+    "v": 14,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": -14,
+    "ease": "ease_in_out"
+   }
+  ],
+  "tail_mid.rotation": [
+   {
+    "t": 0,
+    "v": 16,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.25,
+    "v": -16,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": 16,
+    "ease": "ease_in_out"
+   }
+  ],
+  "tail_tip.rotation": [
+   {
+    "t": 0,
+    "v": -18,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.25,
+    "v": 18,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": -18,
+    "ease": "ease_in_out"
+   }
+  ],
+  "body.y": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.12,
+    "v": 10,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.25,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.37,
+    "v": 10,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "run_spine"
+  ]
+ }
+}

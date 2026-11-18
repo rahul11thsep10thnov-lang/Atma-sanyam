@@ -15,6 +15,8 @@ from .characters import (B_GROUND, BH, BW, EYE_L, EYE_R, INK, MOUTH_DARK, TONGUE
                          biped_head, biped_leg, biped_mouth, biped_pupils, biped_tail)
 from .svg import Art, darken, lighten, mix
 
+QUANTIZE = True            # PNG-8 for new characters; the upgrade of the original characters keeps full colour so their art is unchanged
+
 SKIN = {"fair": "#f0c8a0", "light": "#e8b887", "wheat": "#d99a63", "tan": "#c98a55", "brown": "#a8693f", "dark": "#7a4a2a", "deep": "#5a3520"}
 
 
@@ -85,9 +87,8 @@ def _o(c: str) -> str:
 
 
 # ------------------------------------------------------------------------------------------------ head
-def fig_head(s: FigSpec) -> Art:
-    b = _sub(1)          # behind the head
-    f = _sub(3)          # in front of the head
+def head_behind(s: FigSpec, b: Art) -> None:
+    """Ears, horns, hood, long hair, crest, halo: everything drawn behind the head (shared by the front and back views)."""
     fur, o = s.fur, _o(s.fur)
     # ears
     e = s.ears_ext
@@ -164,6 +165,14 @@ def fig_head(s: FigSpec) -> Art:
         b.circle(300, 120, 78, None, s.halo, 8, 0.8)
     if s.glow:
         b.ellipse(300, 260, 220, 200, b.radial(s.glow, s.glow), None, opacity=0.18)
+
+
+def fig_head(s: FigSpec) -> Art:
+    b = _sub(1)          # behind the head
+    f = _sub(3)          # in front of the head
+    fur, o = s.fur, _o(s.fur)
+    hw = s.headwear
+    head_behind(s, b)
     # base head
     head = biped_head(_base(s))
     # face pattern
@@ -556,7 +565,7 @@ POSES = {
 
 
 # ------------------------------------------------------------------------------------------------ build
-def _save_part(art: Art, out: Path, name: str) -> tuple[list[float], list[float]]:
+def _save_part(art: Art, out: Path, name: str, folder: str = "rig") -> tuple[list[float], list[float]]:
     """Write the SVG master and the PNG rasterised from it, both cropped to the same box (+3px padding)."""
     from PIL import Image  # noqa: F401
     import io
@@ -568,13 +577,16 @@ def _save_part(art: Art, out: Path, name: str) -> tuple[list[float], list[float]
     if box is None:
         raise ValueError(f"nothing was drawn for {name}")
     box = (max(0, box[0] - 3), max(0, box[1] - 3), min(im.width, box[2] + 3), min(im.height, box[3] + 3))
-    (out / "rig").mkdir(parents=True, exist_ok=True)
-    im.crop(box).quantize(colors=256, method=Image.Quantize.FASTOCTREE, dither=Image.Dither.NONE).save(out / "rig" / f"{name}.png", optimize=True)
+    (out / folder).mkdir(parents=True, exist_ok=True)
+    crop = im.crop(box)
+    if QUANTIZE:
+        crop = crop.quantize(colors=256, method=Image.Quantize.FASTOCTREE, dither=Image.Dither.NONE)
+    crop.save(out / folder / f"{name}.png", optimize=True)
     w, h = box[2] - box[0], box[3] - box[1]
     svg = art.svg()
     head = re.match(r"<svg [^>]*>", svg).group(0)
     svg = svg.replace(head, f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="{box[0]} {box[1]} {w} {h}">', 1)
-    (out / "rig" / f"{name}.svg").write_text(svg, encoding="utf-8")
+    (out / folder / f"{name}.svg").write_text(svg, encoding="utf-8")
     return [float(box[0]), float(box[1])], [float(w), float(h)]
 
 

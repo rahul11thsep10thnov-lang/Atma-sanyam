@@ -9,7 +9,7 @@ from ..common.errors import AssetIntegrityError, IncompatibleAsset, RigError, Va
 from ..common.paths import require_id
 from ..schema.animation import AnimationClip
 from ..schema.assets import AssetType, CharacterManifest, FacialPose, PartPose
-from .rig import Rig, validate_rig
+from .rig import Rig, validate_rig, validate_views
 
 
 class CharacterRegistry:
@@ -33,7 +33,7 @@ class CharacterRegistry:
         return Rig(manifest.rig)
 
     def rig_issues(self, manifest: CharacterManifest) -> list[dict[str, str]]:
-        return validate_rig(manifest, self.library.rig_templates().get(manifest.rig.template))
+        return validate_rig(manifest, self.library.rig_templates().get(manifest.rig.template)) + validate_views(manifest)
 
     def missing_assets(self, character_id: str, version: int | None = None) -> list[dict[str, str]]:
         """Rig problems plus files that are absent or altered."""

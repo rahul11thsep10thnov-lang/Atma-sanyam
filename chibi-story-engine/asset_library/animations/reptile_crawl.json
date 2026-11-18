@@ -1,0 +1,218 @@
+{
+ "code": "reptile_crawl",
+ "name": "Reptile crawl (belly low)",
+ "category": "animal",
+ "level": 3,
+ "rig_compatibility": [
+  "quadruped_reptile"
+ ],
+ "duration": 1.2,
+ "loop": true,
+ "additive": false,
+ "start_states": [
+  "standing",
+  "resting"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "linear",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "root.y": [
+   {
+    "t": 0,
+    "v": -12,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": -12,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_fl.rotation": [
+   {
+    "t": 0,
+    "v": -30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": -30,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_br.rotation": [
+   {
+    "t": 0,
+    "v": -30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": -30,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_fr.rotation": [
+   {
+    "t": 0,
+    "v": 30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": -30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 30,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_bl.rotation": [
+   {
+    "t": 0,
+    "v": 30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": -30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 30,
+    "ease": "ease_in_out"
+   }
+  ],
+  "body.rotation": [
+   {
+    "t": 0,
+    "v": -4,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 4,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": -4,
+    "ease": "ease_in_out"
+   }
+  ],
+  "chest.rotation": [
+   {
+    "t": 0,
+    "v": 6,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": -6,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 6,
+    "ease": "ease_in_out"
+   }
+  ],
+  "neck.rotation": [
+   {
+    "t": 0,
+    "v": -5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": -5,
+    "ease": "ease_in_out"
+   }
+  ],
+  "tail.rotation": [
+   {
+    "t": 0,
+    "v": -14,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 14,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": -14,
+    "ease": "ease_in_out"
+   }
+  ],
+  "tail_mid.rotation": [
+   {
+    "t": 0,
+    "v": 16,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": -16,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 16,
+    "ease": "ease_in_out"
+   }
+  ],
+  "tail_tip.rotation": [
+   {
+    "t": 0,
+    "v": -18,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 18,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": -18,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "crawl"
+  ]
+ }
+}

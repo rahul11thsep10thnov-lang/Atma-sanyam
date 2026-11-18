@@ -1,0 +1,165 @@
+{
+ "code": "serpent_strike",
+ "name": "Strike",
+ "category": "animal",
+ "level": 3,
+ "rig_compatibility": [
+  "serpentine_reptile"
+ ],
+ "duration": 0.8,
+ "loop": false,
+ "additive": false,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": "angry",
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "seg4.rotation": [
+   {
+    "t": 0,
+    "v": 20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.25,
+    "v": 26,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.4,
+    "v": -18,
+    "ease": "ease_in"
+   },
+   {
+    "t": 0.8,
+    "v": 20,
+    "ease": "ease_in_out"
+   }
+  ],
+  "seg5.rotation": [
+   {
+    "t": 0,
+    "v": 22,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.25,
+    "v": 30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.4,
+    "v": -20,
+    "ease": "ease_in"
+   },
+   {
+    "t": 0.8,
+    "v": 22,
+    "ease": "ease_in_out"
+   }
+  ],
+  "seg6.rotation": [
+   {
+    "t": 0,
+    "v": 22,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.25,
+    "v": 30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.4,
+    "v": -16,
+    "ease": "ease_in"
+   },
+   {
+    "t": 0.8,
+    "v": 22,
+    "ease": "ease_in_out"
+   }
+  ],
+  "seg7.rotation": [
+   {
+    "t": 0,
+    "v": 18,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.25,
+    "v": 24,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.4,
+    "v": -10,
+    "ease": "ease_in"
+   },
+   {
+    "t": 0.8,
+    "v": 18,
+    "ease": "ease_in_out"
+   }
+  ],
+  "jaw.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.35,
+    "v": -30,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "head.x": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.4,
+    "v": 40,
+    "ease": "ease_in"
+   },
+   {
+    "t": 0.8,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "strike",
+   "bite",
+   "attack",
+   "anger_reaction"
+  ]
+ }
+}

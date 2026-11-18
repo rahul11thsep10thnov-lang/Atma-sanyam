@@ -18,6 +18,7 @@ from engine.schema.assets import CharacterManifest
 
 from .build import _fresh, _roles
 from .characters_ext import build_fig
+from .characters_views import build_views
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
@@ -26,8 +27,11 @@ def _small(im: Image.Image, scale: float) -> Image.Image:
     return im.resize((max(1, int(im.width * scale)), max(1, int(im.height * scale))), Image.LANCZOS)
 
 
-def draw_character(spec, work: Path) -> tuple[dict, CharacterManifest]:
-    data = build_fig(spec, work)
+def draw_character(spec, work: Path, builder=None, views_builder=None) -> tuple[dict, CharacterManifest]:
+    data = (builder or build_fig)(spec, work)
+    vb = views_builder if builder is not None else build_views
+    if vb is not None:
+        data["views"] = vb(spec, work)
     manifest = CharacterManifest.model_validate({**data, "files": []})
     rig = Rig(manifest.rig)
     rest = Pose()
@@ -36,6 +40,14 @@ def draw_character(spec, work: Path) -> tuple[dict, CharacterManifest]:
     for sub in ("references", "views"):
         (work / sub).mkdir(exist_ok=True)
         front.save(work / sub / "front.png", optimize=True)
+    view_images = [("front", front)]
+    for vname, vdef in manifest.views.items():
+        vpose = Pose()
+        vpose.apply_facial(manifest.expressions["neutral"])
+        vim = render_character(work, Rig(vdef), vpose)
+        vim.save(work / "views" / f"{vname}.png", optimize=True)
+        view_images.append((vname, vim))
+    contact_sheet(view_images, columns=4, cell=(300, 360)).convert("RGB").save(work / "references" / "view_sheet.jpg", quality=84)
     sheet = []
     (work / "expressions").mkdir(exist_ok=True)
     for name, face in manifest.expressions.items():
@@ -60,15 +72,19 @@ def draw_character(spec, work: Path) -> tuple[dict, CharacterManifest]:
 def role_for(rel: str) -> dict:
     folder, _, name = rel.partition("/")
     stem = Path(name).stem
-    if folder == "rig":
+    if folder == "rig" or (folder == "views" and "/rig/" in rel):
         return {"role": "svg_master"} if name.endswith(".svg") else {"role": "rig_part"}
+    if folder == "references" and name == "view_sheet.jpg":
+        return {"role": "reference", "view": "all"}
+    if folder == "views":
+        return {"role": "view", "view": stem}
     return {"references": {"role": "reference", "view": "front"}, "views": {"role": "view", "view": "front"},
             "expressions": {"role": "expression", "expression": stem}, "poses": {"role": "pose", "pose": stem}}[folder]
 
 
 def register(library: AssetLibrary, spec, work: Path, data: dict) -> None:
     files, roles = _roles(work, role_for)
-    part_files = {k: v for k, v in files.items() if k.startswith("rig/") and roles[k]["role"] == "rig_part"}
+    part_files = {k: v for k, v in files.items() if roles[k]["role"] == "rig_part"}
     extra = {k: (v, roles[k]) for k, v in files.items() if k not in part_files}
     CharacterRegistry(library).create(data, part_files, extra)
 

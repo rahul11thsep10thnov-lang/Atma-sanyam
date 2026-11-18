@@ -351,6 +351,10 @@ def referenced_files(manifest: BaseManifest) -> list[str]:
         for part in manifest.rig.parts:
             out.extend(v.file for v in part.variants.values())
             out.extend(v.svg for v in part.variants.values() if v.svg)
+        for view in manifest.views.values():
+            for part in view.parts:
+                out.extend(v.file for v in part.variants.values())
+                out.extend(v.svg for v in part.variants.values() if v.svg)
     elif isinstance(manifest, EnvironmentManifest):
         out.extend(layer.file for layer in manifest.layers)
         out.extend(layer.svg for layer in manifest.layers if layer.svg)

@@ -1,0 +1,70 @@
+{
+ "code": "chelonian_extend_head",
+ "name": "Extend head out of the shell",
+ "category": "animal",
+ "level": 2,
+ "rig_compatibility": [
+  "chelonian"
+ ],
+ "duration": 0.9,
+ "loop": false,
+ "additive": false,
+ "start_states": [
+  "retracted"
+ ],
+ "end_state": "standing",
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "neck.x": [
+   {
+    "t": 0,
+    "v": -96,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 8,
+    "ease": "ease_out"
+   },
+   {
+    "t": 0.9,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "head.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.5,
+    "v": 4,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "extend_head",
+   "emerge"
+  ]
+ }
+}

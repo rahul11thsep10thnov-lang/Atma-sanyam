@@ -10,7 +10,8 @@ import json
 from pathlib import Path
 
 BIPED, REPTILE = "biped_chibi", "quadruped_reptile"
-BOTH = [BIPED, REPTILE]
+CHEL, SERP = "chelonian", "serpentine_reptile"
+BOTH = [BIPED, REPTILE, CHEL, SERP]
 
 
 def _keys(points):
@@ -194,6 +195,79 @@ CLIPS = [
     clip("crocodile_snap", "Crocodile snap", "animal", [REPTILE], 1.0, {
         "jaw.rotation": [(0, 0), (0.25, -28), (0.35, 0, "ease_in"), (0.6, -28), (0.7, 0, "ease_in"), (1.0, 0)],
         "body.x": [(0, 0), (0.3, 14), (0.5, 0), (0.65, 14), (1.0, 0)]}, semantics=["anger_reaction"], expression="angry"),
+
+    # ------------------------------------------------- articulated reptile rigs (new clips; the original crocodile clips are unchanged)
+    clip("reptile_walk_articulated", "Reptile walk (spine and tail)", "animal", [REPTILE], 0.9, {
+        "leg_fl.rotation": _cycle(24, 0.9), "leg_br.rotation": _cycle(24, 0.9), "leg_fr.rotation": _cycle(-24, 0.9), "leg_bl.rotation": _cycle(-24, 0.9),
+        "body.rotation": _cycle(2.5, 0.9), "chest.rotation": _cycle(-4, 0.9), "neck.rotation": _cycle(3, 0.9), "head.rotation": _cycle(-2, 0.9),
+        "tail.rotation": _cycle(9, 0.9), "tail_mid.rotation": [(0, 12), (0.45, -12), (0.9, 12)], "tail_tip.rotation": [(0, -14), (0.45, 14), (0.9, -14)],
+        "body.y": [(0, 0), (0.22, 4), (0.45, 0), (0.67, 4), (0.9, 0)]},
+        loop=True, motion="linear", semantics=["walk_spine"], start=("standing",), level=3),
+    clip("reptile_run_articulated", "Reptile run (spine and tail)", "animal", [REPTILE], 0.5, {
+        "leg_fl.rotation": _cycle(40, 0.5), "leg_br.rotation": _cycle(40, 0.5), "leg_fr.rotation": _cycle(-40, 0.5), "leg_bl.rotation": _cycle(-40, 0.5),
+        "chest.rotation": _cycle(-6, 0.5), "neck.rotation": _cycle(4, 0.5), "tail.rotation": _cycle(14, 0.5), "tail_mid.rotation": [(0, 16), (0.25, -16), (0.5, 16)],
+        "tail_tip.rotation": [(0, -18), (0.25, 18), (0.5, -18)], "body.y": [(0, 0), (0.12, 10), (0.25, 0), (0.37, 10), (0.5, 0)]},
+        loop=True, motion="linear", semantics=["run_spine"], start=("standing",), level=3),
+    clip("reptile_crawl", "Reptile crawl (belly low)", "animal", [REPTILE], 1.2, {
+        "root.y": [(0, -12), (1.2, -12)], "leg_fl.rotation": _cycle(30, 1.2), "leg_br.rotation": _cycle(30, 1.2), "leg_fr.rotation": _cycle(-30, 1.2), "leg_bl.rotation": _cycle(-30, 1.2),
+        "body.rotation": _cycle(4, 1.2), "chest.rotation": _cycle(-6, 1.2), "neck.rotation": _cycle(5, 1.2),
+        "tail.rotation": _cycle(14, 1.2), "tail_mid.rotation": [(0, 16), (0.6, -16), (1.2, 16)], "tail_tip.rotation": [(0, -18), (0.6, 18), (1.2, -18)]},
+        loop=True, motion="linear", semantics=["crawl"], start=("standing", "resting"), level=3),
+    clip("reptile_turn", "Reptile turn (head leads, tail follows)", "animal", [REPTILE], 1.4, {
+        "head.rotation": [(0, 0), (0.35, 14), (1.0, 14), (1.4, 0)], "neck.rotation": [(0, 0), (0.4, 16), (1.0, 12), (1.4, 0)], "chest.rotation": [(0, 0), (0.5, 9), (1.1, 6), (1.4, 0)],
+        "body.rotation": [(0, 0), (0.6, -6), (1.2, -3), (1.4, 0)], "tail.rotation": [(0, 0), (0.6, -14), (1.2, -8), (1.4, 0)], "tail_mid.rotation": [(0, 0), (0.7, -18), (1.3, -8), (1.4, 0)],
+        "tail_tip.rotation": [(0, 0), (0.8, -22), (1.4, 0)], "leg_fl.rotation": _cycle(14, 1.4), "leg_fr.rotation": _cycle(-14, 1.4)},
+        semantics=["turn"], level=3),
+    clip("reptile_rest", "Reptile rest", "animal", [REPTILE], 1.2, {
+        "root.y": [(0, 0), (1.2, -10)], "leg_fl.rotation": [(0, 0), (1.2, 55)], "leg_fr.rotation": [(0, 0), (1.2, 55)], "leg_bl.rotation": [(0, 0), (1.2, 55)], "leg_br.rotation": [(0, 0), (1.2, 55)],
+        "head.rotation": [(0, 0), (1.2, -10)], "neck.rotation": [(0, 0), (1.2, -6)]}, semantics=["rest", "sleep_reptile"], start=("standing",), end="resting"),
+    clip("reptile_tail_chain", "Tail wave (three segments)", "animal", [REPTILE], 1.6, {
+        "tail.rotation": [(0, -8), (0.8, 8), (1.6, -8)], "tail_mid.rotation": [(0, 10), (0.8, -10), (1.6, 10)], "tail_tip.rotation": [(0, -12), (0.8, 12), (1.6, -12)]},
+        loop=True, additive=True, semantics=["tail_chain"]),
+    clip("chelonian_walk", "Turtle / tortoise walk", "animal", [CHEL], 1.2, {
+        "leg_fl.rotation": _cycle(20, 1.2), "leg_br.rotation": _cycle(20, 1.2), "leg_fr.rotation": _cycle(-20, 1.2), "leg_bl.rotation": _cycle(-20, 1.2),
+        "body.y": [(0, 0), (0.3, 4), (0.6, 0), (0.9, 4), (1.2, 0)], "body.rotation": _cycle(1.5, 1.2), "neck.rotation": _cycle(3, 1.2), "tail.rotation": _cycle(8, 1.2)},
+        loop=True, motion="linear", semantics=["walk", "run"], start=("standing",), level=3),
+    clip("chelonian_crawl", "Turtle / tortoise crawl", "animal", [CHEL], 1.6, {
+        "root.y": [(0, -6), (1.6, -6)], "leg_fl.rotation": _cycle(28, 1.6), "leg_br.rotation": _cycle(28, 1.6), "leg_fr.rotation": _cycle(-28, 1.6), "leg_bl.rotation": _cycle(-28, 1.6),
+        "neck.x": [(0, 8), (0.8, 18), (1.6, 8)], "tail.rotation": _cycle(10, 1.6)}, loop=True, motion="linear", semantics=["crawl"], start=("standing", "resting"), level=3),
+    clip("chelonian_rest", "Turtle / tortoise rest", "animal", [CHEL], 1.2, {
+        "root.y": [(0, 0), (1.2, -8)], "leg_fl.rotation": [(0, 0), (1.2, 50)], "leg_fr.rotation": [(0, 0), (1.2, 50)], "leg_bl.rotation": [(0, 0), (1.2, 50)], "leg_br.rotation": [(0, 0), (1.2, 50)],
+        "neck.x": [(0, 0), (1.2, -12)]}, semantics=["rest", "sit", "sleep"], start=("standing",), end="resting"),
+    clip("chelonian_retract_head", "Retract head into the shell", "animal", [CHEL], 0.8, {
+        "neck.x": [(0, 0), (0.55, -96, "ease_in"), (0.8, -96)], "head.sx": [(0, 1), (0.8, 0.92)], "head.rotation": [(0, 0), (0.4, -6), (0.8, 0)],
+        "leg_fl.rotation": [(0, 0), (0.8, 30)], "leg_fr.rotation": [(0, 0), (0.8, 30)]},
+        semantics=["retract_head", "hide", "fear_reaction"], start=("standing", "resting"), end="retracted", expression="frightened"),
+    clip("chelonian_extend_head", "Extend head out of the shell", "animal", [CHEL], 0.9, {
+        "neck.x": [(0, -96), (0.6, 8, "ease_out"), (0.9, 0)], "head.rotation": [(0, 0), (0.5, 4), (0.9, 0)]},
+        semantics=["extend_head", "emerge"], start=("retracted",), end="standing"),
+    clip("chelonian_idle", "Turtle / tortoise idle", "animal", [CHEL], 3.0, {
+        "neck.x": [(0, 0), (1.5, 6), (3.0, 0)], "body.sy": [(0, 1), (1.5, 1.015), (3.0, 1)], "head.rotation": [(0, 0), (1.0, 3), (2.0, -2), (3.0, 0)]},
+        loop=True, semantics=["idle"], level=1),
+    clip("chelonian_talk", "Turtle / tortoise talk", "animal", [CHEL], 1.2, {
+        "head.rotation": [(0, 0), (0.3, 3), (0.6, -1), (0.9, 2), (1.2, 0)], "neck.x": [(0, 4), (0.6, 8), (1.2, 4)]}, loop=True, additive=True, semantics=["talk"]),
+    clip("serpent_slither", "Slither", "animal", [SERP], 1.2, {
+        **{f"seg{i}.rotation": [(0, 12 * (-1) ** i), (0.6, -12 * (-1) ** i), (1.2, 12 * (-1) ** i)] for i in range(1, 8)},
+        "body.rotation": [(0, 8), (0.6, -8), (1.2, 8)], "tail.rotation": [(0, -10), (0.6, 10), (1.2, -10)], "head.rotation": [(0, -6), (0.6, 6), (1.2, -6)]},
+        loop=True, motion="linear", semantics=["walk", "run", "crawl", "slither"], level=3),
+    clip("serpent_coil", "Coil up", "animal", [SERP], 1.4, {
+        **{f"seg{i}.rotation": [(0, 0), (1.4, 14)] for i in range(1, 8)}, "body.rotation": [(0, 0), (1.4, 14)], "tail.rotation": [(0, 0), (1.4, 14)], "head.rotation": [(0, 0), (1.4, -14)]},
+        semantics=["coil", "sit", "rest", "sleep"], end="coiled"),
+    clip("serpent_rear_up", "Raise the front of the body", "animal", [SERP], 1.0, {
+        "seg3.rotation": [(0, 0), (1.0, 14)], "seg4.rotation": [(0, 0), (1.0, 20)], "seg5.rotation": [(0, 0), (1.0, 22)], "seg6.rotation": [(0, 0), (1.0, 22)], "seg7.rotation": [(0, 0), (1.0, 18)],
+        "head.rotation": [(0, 0), (1.0, -14)]}, semantics=["rear_up", "stand", "climb"], end="raised"),
+    clip("serpent_strike", "Strike", "animal", [SERP], 0.8, {
+        "seg4.rotation": [(0, 20), (0.25, 26), (0.4, -18, "ease_in"), (0.8, 20)], "seg5.rotation": [(0, 22), (0.25, 30), (0.4, -20, "ease_in"), (0.8, 22)],
+        "seg6.rotation": [(0, 22), (0.25, 30), (0.4, -16, "ease_in"), (0.8, 22)], "seg7.rotation": [(0, 18), (0.25, 24), (0.4, -10, "ease_in"), (0.8, 18)],
+        "jaw.rotation": [(0, 0), (0.35, -30), (0.5, 0), (0.8, 0)], "head.x": [(0, 0), (0.4, 40, "ease_in"), (0.8, 0)]},
+        semantics=["strike", "bite", "attack", "anger_reaction"], expression="angry", level=3),
+    clip("serpent_tongue_flick", "Tongue flick", "animal", [SERP], 0.6, {}, additive=True, semantics=["tongue", "taste"],
+         variants={"tongue": [(0, "out"), (0.2, "in"), (0.3, "out"), (0.5, "in")]}),
+    clip("serpent_idle", "Snake idle", "animal", [SERP], 3.0, {
+        **{f"seg{i}.rotation": [(0, 2 * (-1) ** i), (1.5, -2 * (-1) ** i), (3.0, 2 * (-1) ** i)] for i in range(1, 8)}, "head.rotation": [(0, 0), (1.5, 3), (3.0, 0)]},
+        loop=True, semantics=["idle"], level=1),
+    clip("serpent_talk", "Snake talk", "animal", [SERP], 1.2, {"head.rotation": [(0, 0), (0.3, 3), (0.6, -1), (0.9, 2), (1.2, 0)]},
+         loop=True, additive=True, semantics=["talk"]),
 ]
 
 

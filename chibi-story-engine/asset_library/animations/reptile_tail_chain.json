@@ -1,0 +1,86 @@
+{
+ "code": "reptile_tail_chain",
+ "name": "Tail wave (three segments)",
+ "category": "animal",
+ "level": 2,
+ "rig_compatibility": [
+  "quadruped_reptile"
+ ],
+ "duration": 1.6,
+ "loop": true,
+ "additive": true,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "tail.rotation": [
+   {
+    "t": 0,
+    "v": -8,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": 8,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.6,
+    "v": -8,
+    "ease": "ease_in_out"
+   }
+  ],
+  "tail_mid.rotation": [
+   {
+    "t": 0,
+    "v": 10,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": -10,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.6,
+    "v": 10,
+    "ease": "ease_in_out"
+   }
+  ],
+  "tail_tip.rotation": [
+   {
+    "t": 0,
+    "v": -12,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.8,
+    "v": 12,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.6,
+    "v": -12,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "tail_chain"
+  ]
+ }
+}

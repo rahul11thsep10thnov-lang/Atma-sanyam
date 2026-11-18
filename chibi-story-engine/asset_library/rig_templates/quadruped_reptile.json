@@ -39,11 +39,16 @@
     ]
   },
   "optional_parts": [
-    "accessory"
+    "accessory",
+    "chest",
+    "neck",
+    "tail_mid",
+    "tail_tip"
   ],
   "has_tail": true,
   "states": [
     "standing",
-    "in_water"
+    "in_water",
+    "resting"
   ]
 }

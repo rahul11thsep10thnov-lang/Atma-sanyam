@@ -26,9 +26,35 @@ RIG_TEMPLATES = {
             "mouth": ["jaw"], "left_arm": ["leg_fl"], "right_arm": ["leg_fr"], "left_leg": ["leg_bl"], "right_leg": ["leg_br"],
             "tail": ["tail"],
         },
-        "optional_parts": ["accessory"],
+        "optional_parts": ["accessory", "chest", "neck", "tail_mid", "tail_tip"],
         "has_tail": True,
-        "states": ["standing", "in_water"],
+        "states": ["standing", "in_water", "resting"],
+    },
+    "chelonian": {
+        "id": "chelonian",
+        "name": "Turtle and tortoise",
+        "description": "Shelled animal seen from the side: a domed or flat shell, a neck that extends and retracts, four limbs, a tail and a hinged jaw.",
+        "components": {
+            "root": ["root"], "body": ["body"], "head": ["head"], "eyes": ["eyes", "pupils"], "eyebrows": ["brow"],
+            "mouth": ["jaw"], "left_arm": ["leg_fl"], "right_arm": ["leg_fr"], "left_leg": ["leg_bl"], "right_leg": ["leg_br"],
+            "tail": ["tail"],
+        },
+        "optional_parts": ["neck", "shell_lip"],
+        "has_tail": True,
+        "states": ["standing", "in_water", "resting", "retracted"],
+    },
+    "serpentine_reptile": {
+        "id": "serpentine_reptile",
+        "name": "Snake",
+        "description": "Limbless reptile as a chain of body segments from tail to head, with a hinged jaw and a forked tongue.",
+        "components": {
+            "root": ["root"], "body": ["body"], "head": ["head"], "eyes": ["eyes", "pupils"], "eyebrows": ["brow"], "mouth": ["jaw"],
+            "tail": ["tail"],
+        },
+        "optional_parts": ["seg1", "seg2", "seg3", "seg4", "seg5", "seg6", "seg7", "neck", "tongue"],
+        "optional_components": ["left_arm", "right_arm", "left_leg", "right_leg"],
+        "has_tail": True,
+        "states": ["slithering", "coiled", "raised", "resting"],
     },
 }
 

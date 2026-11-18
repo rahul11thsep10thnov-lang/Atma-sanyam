@@ -1,0 +1,120 @@
+{
+ "code": "reptile_rest",
+ "name": "Reptile rest",
+ "category": "animal",
+ "level": 2,
+ "rig_compatibility": [
+  "quadruped_reptile"
+ ],
+ "duration": 1.2,
+ "loop": false,
+ "additive": false,
+ "start_states": [
+  "standing"
+ ],
+ "end_state": "resting",
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "root.y": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": -10,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_fl.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 55,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_fr.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 55,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_bl.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 55,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_br.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 55,
+    "ease": "ease_in_out"
+   }
+  ],
+  "head.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": -10,
+    "ease": "ease_in_out"
+   }
+  ],
+  "neck.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": -6,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "rest",
+   "sleep_reptile"
+  ]
+ }
+}

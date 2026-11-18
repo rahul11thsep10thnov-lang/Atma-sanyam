@@ -1,0 +1,79 @@
+{
+ "code": "chelonian_talk",
+ "name": "Turtle / tortoise talk",
+ "category": "animal",
+ "level": 2,
+ "rig_compatibility": [
+  "chelonian"
+ ],
+ "duration": 1.2,
+ "loop": true,
+ "additive": true,
+ "start_states": [
+  "*"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "none",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "head.rotation": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": 3,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": -1,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": 2,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "neck.x": [
+   {
+    "t": 0,
+    "v": 4,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 8,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 4,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "talk"
+  ]
+ }
+}

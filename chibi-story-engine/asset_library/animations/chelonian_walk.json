@@ -1,0 +1,182 @@
+{
+ "code": "chelonian_walk",
+ "name": "Turtle / tortoise walk",
+ "category": "animal",
+ "level": 3,
+ "rig_compatibility": [
+  "chelonian"
+ ],
+ "duration": 1.2,
+ "loop": true,
+ "additive": false,
+ "start_states": [
+  "standing"
+ ],
+ "end_state": null,
+ "root_motion": {
+  "path": "linear",
+  "arc_height": 0.0,
+  "ease": "linear"
+ },
+ "requires_feature": null,
+ "requires_prop": false,
+ "expression": null,
+ "blend_in": 0.15,
+ "required_parts": [],
+ "description": "",
+ "channels": {
+  "leg_fl.rotation": [
+   {
+    "t": 0,
+    "v": -20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": -20,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_br.rotation": [
+   {
+    "t": 0,
+    "v": -20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": -20,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_fr.rotation": [
+   {
+    "t": 0,
+    "v": 20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": -20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 20,
+    "ease": "ease_in_out"
+   }
+  ],
+  "leg_bl.rotation": [
+   {
+    "t": 0,
+    "v": 20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": -20,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 20,
+    "ease": "ease_in_out"
+   }
+  ],
+  "body.y": [
+   {
+    "t": 0,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.3,
+    "v": 4,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 0,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.9,
+    "v": 4,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": 0,
+    "ease": "ease_in_out"
+   }
+  ],
+  "body.rotation": [
+   {
+    "t": 0,
+    "v": -1.5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 1.5,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": -1.5,
+    "ease": "ease_in_out"
+   }
+  ],
+  "neck.rotation": [
+   {
+    "t": 0,
+    "v": -3,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 3,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": -3,
+    "ease": "ease_in_out"
+   }
+  ],
+  "tail.rotation": [
+   {
+    "t": 0,
+    "v": -8,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 0.6,
+    "v": 8,
+    "ease": "ease_in_out"
+   },
+   {
+    "t": 1.2,
+    "v": -8,
+    "ease": "ease_in_out"
+   }
+  ]
+ },
+ "variant_tracks": {},
+ "metadata": {
+  "semantics": [
+   "walk",
+   "run"
+  ]
+ }
+}

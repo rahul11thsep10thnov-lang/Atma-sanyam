@@ -129,8 +129,8 @@ class SceneComposer:
                       f"environment '{scene.environment_id}' v{scene.environment_version}: {exc.message}")
             return None
 
-    def _character(self, cid: str, version: int, path: str) -> tuple[CharacterManifest, Rig] | None:
-        key = (cid, version)
+    def _character(self, cid: str, version: int, path: str, view: str | None = None) -> tuple[CharacterManifest, Rig] | None:
+        key = (cid, version, view or "")
         if key not in self._rigs:
             try:
                 manifest = self.library.character(cid, version)
@@ -138,6 +138,12 @@ class SceneComposer:
                 if rig_issues:
                     raise RigError(f"rig is not usable: {rig_issues[0]['message']}")
                 self.library.require_intact(AssetType.character, cid, version)
+                primary = manifest.compatibility.get("primary_view", "front")
+                if view and view != primary:
+                    if view not in manifest.views:
+                        have = ", ".join([primary, *manifest.views])
+                        raise RigError(f"has no '{view}' view (has: {have})")
+                    manifest = manifest.model_copy(update={"rig": manifest.views[view]})     # every later step reads manifest.rig
                 self._rigs[key] = (manifest, Rig(manifest.rig))
             except EngineError as exc:
                 code = "missing_asset" if isinstance(exc, AssetNotFound) else exc.code
@@ -258,7 +264,7 @@ class SceneComposer:
         for index, cid in enumerate(order):
             placement = placements[cid]
             cpath = f"{path}.character({cid})"
-            loaded = self._character(cid, versions.get(cid, 1), cpath)
+            loaded = self._character(cid, versions.get(cid, 1), cpath, placement.view)
             if loaded is None:
                 continue
             manifest, rig = loaded

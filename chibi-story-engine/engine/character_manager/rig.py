@@ -191,7 +191,8 @@ def validate_rig(manifest: CharacterManifest, template: RigTemplate | None) -> l
         for component in STANDARD_COMPONENTS + (("tail",) if template.has_tail else ()):
             wanted = template.components.get(component)
             if not wanted:
-                add("rig.template", f"template '{template.id}' does not define the component '{component}'")
+                if component not in template.optional_components:
+                    add("rig.template", f"template '{template.id}' does not define the component '{component}'")
                 continue
             for pid in wanted:
                 if pid not in ids:
@@ -240,4 +241,47 @@ def validate_rig(manifest: CharacterManifest, template: RigTemplate | None) -> l
         for pid in pose:
             if pid not in ids:
                 add(f"poses.{name}", f"refers to unknown part '{pid}'")
+    return issues
+
+
+VIEWS = ("front", "side", "three_quarter", "back")
+FACE_PARTS = {"eyes", "pupils", "brow_l", "brow_r", "mouth"}
+
+
+def validate_views(manifest: CharacterManifest) -> list[dict[str, str]]:
+    """Extra viewing angles: same part ids and attach points as the front rig, valid images, a buildable rig.
+
+    A view may leave out face parts it cannot show (a back view has no face); it may not leave out body parts.
+    """
+    issues: list[dict[str, str]] = []
+    front = manifest.rig
+    body_ids = {p.id for p in front.parts if p.id not in FACE_PARTS}
+    for name, view in manifest.views.items():
+        def add(path: str, message: str) -> None:
+            issues.append({"path": f"views.{name}.{path}", "message": message})
+
+        primary = manifest.compatibility.get("primary_view", "front")
+        if name not in VIEWS or name == primary:
+            add("", f"'{name}' is not an extra view (use the angles other than the primary view '{primary}')")
+            continue
+        ids = set(view.part_ids())
+        missing = body_ids - ids
+        if missing:
+            add("parts", f"missing body parts {sorted(missing)}")
+        extra = ids - {p.id for p in front.parts}
+        if extra:
+            add("parts", f"parts not in the front rig: {sorted(extra)}")
+        for part in view.parts:
+            if part.component != "root" and not part.variants:
+                add(part.id, "a visible part needs at least one image variant")
+        for ap_name in front.attach_points:
+            if ap_name not in view.attach_points:
+                add("attach_points", f"missing attach point '{ap_name}'")
+        for ap_name, ap in view.attach_points.items():
+            if ap.part not in ids:
+                add("attach_points", f"'{ap_name}' refers to unknown part '{ap.part}'")
+        try:
+            Rig(view)
+        except RigError as exc:
+            add("parts", exc.message)
     return issues

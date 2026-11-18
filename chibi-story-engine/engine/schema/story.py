@@ -86,6 +86,7 @@ class CharacterPlacement(Model):
     character_id: str = Field(pattern=ID_PATTERN)
     position: Position
     facing: Literal["left", "right"] = "right"
+    view: Literal["front", "side", "three_quarter", "back"] | None = Field(None, description="which drawn view to use; omitted means the character's primary view (front for people and animals, side for reptiles)")
     scale: float = Field(1.0, gt=0.05, le=5)
     state: str = "standing"
     expression: str = "neutral"

@@ -1,0 +1,52 @@
+{
+  "id": "chelonian",
+  "name": "Turtle and tortoise",
+  "description": "Shelled animal seen from the side: a domed or flat shell, a neck that extends and retracts, four limbs, a tail and a hinged jaw.",
+  "components": {
+    "root": [
+      "root"
+    ],
+    "body": [
+      "body"
+    ],
+    "head": [
+      "head"
+    ],
+    "eyes": [
+      "eyes",
+      "pupils"
+    ],
+    "eyebrows": [
+      "brow"
+    ],
+    "mouth": [
+      "jaw"
+    ],
+    "left_arm": [
+      "leg_fl"
+    ],
+    "right_arm": [
+      "leg_fr"
+    ],
+    "left_leg": [
+      "leg_bl"
+    ],
+    "right_leg": [
+      "leg_br"
+    ],
+    "tail": [
+      "tail"
+    ]
+  },
+  "optional_parts": [
+    "neck",
+    "shell_lip"
+  ],
+  "has_tail": true,
+  "states": [
+    "standing",
+    "in_water",
+    "resting",
+    "retracted"
+  ]
+}
