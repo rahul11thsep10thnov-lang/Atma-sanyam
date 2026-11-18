@@ -235,11 +235,25 @@ def list_components(ctx: Ctx, _: AnyUser, kind: str | None = Query(None, max_len
     return out
 
 
+def _catalogue_totals(ctx) -> dict[str, Any] | None:
+    """Story coverage from the generated master catalogue (stories/master_catalogue.json), if it has been built."""
+    import json
+    path = Path(__file__).resolve().parents[3] / "stories" / "master_catalogue.json"
+    if not path.exists():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except ValueError:
+        return None
+    return {**data["totals"], "unmatched_needs": data["unmatched_needs"]}
+
+
 @router.get("/library/stats", summary="Counts computed from the files on disk: by type, category, kind and approval status")
 def library_stats(ctx: Ctx, _: AnyUser) -> dict[str, Any]:
     library = _lib(ctx)
     by_type, approval, env_cats, char_cats, comp_kinds = {}, {}, {}, {}, {}
-    layers = svg = scare = 0
+    layers = svg = scare = png = multi = 0
+    signatures: dict[tuple[str, ...], list[str]] = {}
     for t in AssetType:
         ids = library.list_ids(t)
         by_type[t.value] = len(ids)
@@ -248,6 +262,10 @@ def library_stats(ctx: Ctx, _: AnyUser) -> dict[str, Any]:
             key = f"{t.value}:{m.approval_status.value}"
             approval[key] = approval.get(key, 0) + 1
             svg += len(m.files_by_role("svg_master"))
+            png += sum(1 for f in m.files if f.format == "png" and f.role in ("layer", "rig_part", "image", "sprite"))
+            multi += 1 if len(m.related_stories) > 1 else 0
+            if t in (AssetType.environment, AssetType.character, AssetType.component) and m.files:
+                signatures.setdefault(tuple(sorted(f.checksum for f in m.files if f.role in ("layer", "rig_part", "image"))), []).append(f"{t.value}:{m.id}")
             if t == AssetType.environment:
                 env_cats[m.category or "uncategorised"] = env_cats.get(m.category or "uncategorised", 0) + 1
                 layers += len(m.layers)
@@ -256,7 +274,10 @@ def library_stats(ctx: Ctx, _: AnyUser) -> dict[str, Any]:
                 char_cats[m.category or "original"] = char_cats.get(m.category or "original", 0) + 1
             elif t == AssetType.component:
                 comp_kinds[m.kind] = comp_kinds.get(m.kind, 0) + 1
-    return {"by_type": by_type, "approval": approval, "environment_categories": env_cats, "character_categories": char_cats,
+    duplicates = [ids for key, ids in signatures.items() if key and len(ids) > 1]
+    catalogue = _catalogue_totals(ctx)
+    return {"by_type": by_type, "approval": approval, "png_layers": png, "duplicate_asset_groups": duplicates, "assets_used_by_several_stories": multi,
+            "stories": catalogue, "environment_categories": env_cats, "character_categories": char_cats,
             "component_kinds": comp_kinds, "environment_layers": layers, "scare_layers": scare, "svg_masters": svg,
             "expressions_per_character": 15, "poses_per_character": 15,
             "not_delivered": ["side, three-quarter and back character views", "separate medium / close-up background compositions"]}

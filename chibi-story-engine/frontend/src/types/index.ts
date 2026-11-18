@@ -158,6 +158,10 @@ export interface LibraryStats {
   character_categories: Record<string, number>;
   component_kinds: Record<string, number>;
   environment_layers: number;
+  png_layers: number;
+  duplicate_asset_groups: string[][];
+  assets_used_by_several_stories: number;
+  stories: { stories: number; implemented: number; fully_covered: number; unmatched_needs: Record<string, string[]> } | null;
   scare_layers: number;
   svg_masters: number;
   not_delivered: string[];

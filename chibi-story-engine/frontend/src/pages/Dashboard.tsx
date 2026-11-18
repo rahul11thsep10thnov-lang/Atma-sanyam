@@ -38,8 +38,22 @@ export function Dashboard() {
             ))}
           </div>
           <p className="mt-2 text-xs text-stone-500">
-            {stats.data.environment_layers} background layers · {stats.data.svg_masters} SVG masters · {stats.data.scare_layers} adjustable-scare layers ·{" "}
-            {stats.data.approval["environment:approved"] ?? 0} approved / {stats.data.approval["environment:pending"] ?? 0} pending backgrounds. Not yet delivered: {stats.data.not_delivered.join("; ")}.
+            {stats.data.environment_layers} background layers · {stats.data.png_layers} runtime PNGs · {stats.data.svg_masters} SVG masters · {stats.data.scare_layers} adjustable-scare layers
+          </p>
+          <p className="text-xs text-stone-500" data-testid="library-approval">
+            Approved {Object.entries(stats.data.approval).filter(([k]) => k.endsWith(":approved")).reduce((n, [, v]) => n + v, 0)} · pending{" "}
+            {Object.entries(stats.data.approval).filter(([k]) => k.endsWith(":pending")).reduce((n, [, v]) => n + v, 0)} · rejected{" "}
+            {Object.entries(stats.data.approval).filter(([k]) => k.endsWith(":rejected")).reduce((n, [, v]) => n + v, 0)} · duplicate groups {stats.data.duplicate_asset_groups.length} ·
+            used by several stories {stats.data.assets_used_by_several_stories}
+          </p>
+          {stats.data.stories && (
+            <p className="text-xs text-stone-500">
+              Stories tracked {stats.data.stories.stories} (built {stats.data.stories.implemented}; every asset matched for {stats.data.stories.fully_covered}). Missing:{" "}
+              {Object.entries(stats.data.stories.unmatched_needs).filter(([, v]) => v.length).map(([k, v]) => `${k}: ${v.join(", ")}`).join(" · ") || "none"}.
+            </p>
+          )}
+          <p className="text-xs text-stone-500">
+            Not yet delivered: {stats.data.not_delivered.join("; ")}.
           </p>
         </Card>
       )}
