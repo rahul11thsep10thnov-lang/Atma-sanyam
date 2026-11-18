@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "door-arched",
+  "asset_type": "component",
+  "name": "Arched wooden door",
+  "version": 1,
+  "description": "Arched wooden door (opening); vector component, base point at the bottom centre.",
+  "aliases": [
+    "DOOR-ARCHED"
+  ],
+  "tags": [
+    "door",
+    "house",
+    "opening"
+  ],
+  "catalog_code": "CMP-OPN-0001",
+  "category": "doors and windows",
+  "subcategory": "opening",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "e4c69802389d63315e95de8b8d80058a59d9612b64a94fb44a022336dd1f150c",
+      "width": 220,
+      "height": 300,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "6b79b928097059fd3783406790b24221296f19caec8c360e2234fb00ed77140a",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:50+00:00",
+  "change_summary": "",
+  "kind": "opening",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    220.0,
+    300.0
+  ]
+}

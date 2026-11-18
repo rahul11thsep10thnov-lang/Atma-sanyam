@@ -1,0 +1,458 @@
+{
+  "manifest_version": "1.0",
+  "id": "env-vil-0003",
+  "asset_type": "environment",
+  "name": "Mud house courtyard",
+  "version": 1,
+  "description": "A swept earthen courtyard with a charpai, tulsi plant and hay.",
+  "aliases": [
+    "ENV-VIL-0003",
+    "मिट्टी के घर का आँगन",
+    "courtyard"
+  ],
+  "tags": [
+    "charpai",
+    "courtyard",
+    "hut",
+    "india",
+    "mud",
+    "rural",
+    "tulsi",
+    "village"
+  ],
+  "catalog_code": "ENV-VIL-0003",
+  "category": "VIL",
+  "subcategory": "courtyard",
+  "related_stories": [
+    "folk",
+    "panchatantra"
+  ],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {
+    "habitats": [
+      "ground"
+    ],
+    "style": "premium_chibi_anime",
+    "ambience": "forest_ambience_001",
+    "composition": "wide",
+    "composition_group": "env-vil-0003",
+    "scare_levels": false,
+    "seasons": [
+      "spring",
+      "summer",
+      "monsoon",
+      "autumn",
+      "winter"
+    ],
+    "weather": [
+      "clear",
+      "cloudy",
+      "rain",
+      "fog",
+      "storm",
+      "snow"
+    ]
+  },
+  "files": [
+    {
+      "role": "layer",
+      "path": "layers/sky.png",
+      "format": "png",
+      "checksum": "0bb690856cbee26db307dff6282c5200091713483b1243374bc86c195ca0351b",
+      "width": 1088,
+      "height": 592,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/sky.svg",
+      "format": "svg",
+      "checksum": "c5aec02e37c24ba373c28a1d51e77a597d33b47fa5b25b0f8aefaeeb2ca26d8f",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/back.png",
+      "format": "png",
+      "checksum": "8bc3f1edcffd28b0062e4b7ab1147e2fc93f4f2ac3132bb94e382ef42a936e50",
+      "width": 935,
+      "height": 330,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/back.svg",
+      "format": "svg",
+      "checksum": "b74624419667e524c7568161f5e8f8a7ad3c42bbf54858ccef56a660fe67df6c",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/ground.png",
+      "format": "png",
+      "checksum": "888dc2ca758e5a0a1755a19ef69bc6e044e739618a238aa3b11ed3f79006a828",
+      "width": 2448,
+      "height": 504,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/ground.svg",
+      "format": "svg",
+      "checksum": "9446662aff007e38cdf953c46dfa08b80d08e422c0d4b8c81048d2c59fb14b2e",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/main_scenery.png",
+      "format": "png",
+      "checksum": "f06ddf29386831755b7e04c0b53d1608ff35fcda86314b949b893e0811f12978",
+      "width": 1449,
+      "height": 392,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/main_scenery.svg",
+      "format": "svg",
+      "checksum": "40e2346c6f399a7d6c141cd5d6334bae53ff5e5455331a126920ac9ec411b34c",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/vegetation.png",
+      "format": "png",
+      "checksum": "daf22b02e8f2f872109eb84c84e6c1643c178b24eb84f06d2873826b1a6b2cc7",
+      "width": 350,
+      "height": 371,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/vegetation.svg",
+      "format": "svg",
+      "checksum": "7fe05173f7731d1a2a10c6f462428bd6a9952f3f55fdafebe2e3409c6a987831",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/foreground.png",
+      "format": "png",
+      "checksum": "11ccaeaa28966ce8eefcdcfdcf7277065d6ff0655a9e6e37667cc57325bf7224",
+      "width": 1540,
+      "height": 230,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/foreground.svg",
+      "format": "svg",
+      "checksum": "5f9ff164018525bfd70c9050d8c9d3a462526889479705c6a29430adba472342",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "preview",
+      "path": "previews/composite.jpg",
+      "format": "jpeg",
+      "checksum": "a8c445f18233a536c072dfca937c45e1a6b2daae488517df7c56e2cd14e54040",
+      "width": 960,
+      "height": 540,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:58+00:00",
+  "change_summary": "",
+  "stage": [
+    1920,
+    1080
+  ],
+  "layers": [
+    {
+      "id": "sky",
+      "type": "background",
+      "file": "layers/sky.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        1480.0
+      ],
+      "parallax": 0.12,
+      "order": 0,
+      "cover": true,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/sky.svg"
+    },
+    {
+      "id": "back",
+      "type": "far",
+      "file": "layers/back.png",
+      "rect": [
+        -240.0,
+        360.0,
+        1700.0,
+        600.0
+      ],
+      "parallax": 0.55,
+      "order": 2,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "foliage",
+      "scare": 0,
+      "svg": "masters/back.svg"
+    },
+    {
+      "id": "ground",
+      "type": "middle",
+      "file": "layers/ground.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        560.0
+      ],
+      "parallax": 1.0,
+      "order": 10,
+      "cover": false,
+      "cover_horizontal": true,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/ground.svg"
+    },
+    {
+      "id": "main_scenery",
+      "type": "middle",
+      "file": "layers/main_scenery.png",
+      "rect": [
+        -60.0,
+        180.0,
+        2070.0,
+        560.0
+      ],
+      "parallax": 1.0,
+      "order": 40,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/main_scenery.svg"
+    },
+    {
+      "id": "vegetation",
+      "type": "middle",
+      "file": "layers/vegetation.png",
+      "rect": [
+        -130.0,
+        320.0,
+        500.0,
+        530.0
+      ],
+      "parallax": 1.0,
+      "order": 45,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "foliage",
+      "scare": 0,
+      "svg": "masters/vegetation.svg"
+    },
+    {
+      "id": "foreground",
+      "type": "foreground",
+      "file": "layers/foreground.png",
+      "rect": [
+        130.0,
+        -110.0,
+        1540.0,
+        230.0
+      ],
+      "parallax": 1.3,
+      "order": 800,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [
+        {
+          "type": "sway",
+          "amplitude": 0.8,
+          "period": 4.2,
+          "phase": 0.0,
+          "speed": 0.0,
+          "pivot": [
+            960.0,
+            -200.0
+          ],
+          "wind_scaled": true
+        }
+      ],
+      "tint_group": "foliage",
+      "scare": 0,
+      "svg": "masters/foreground.svg"
+    }
+  ],
+  "anchors": {
+    "left": {
+      "x": 560.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "center": {
+      "x": 960.0,
+      "y": 205.0,
+      "order": 101,
+      "scale": 1.0,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "right": {
+      "x": 1380.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "far_left": {
+      "x": 300.0,
+      "y": 245.0,
+      "order": 99,
+      "scale": 0.92,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "far_right": {
+      "x": 1650.0,
+      "y": 245.0,
+      "order": 99,
+      "scale": 0.92,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "offstage_left": {
+      "x": -430.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "offstage",
+        "ground"
+      ],
+      "description": ""
+    },
+    "offstage_right": {
+      "x": 2350.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "offstage",
+        "ground"
+      ],
+      "description": ""
+    }
+  },
+  "lighting_presets": [
+    "day",
+    "morning",
+    "noon",
+    "evening",
+    "sunset",
+    "night",
+    "moonlight",
+    "overcast"
+  ],
+  "camera_bounds": [
+    -400.0,
+    -200.0,
+    2320.0,
+    1280.0
+  ],
+  "default_anchor_by_role": {
+    "ground": [
+      "center",
+      "left",
+      "right",
+      "far_left",
+      "far_right"
+    ],
+    "arboreal": [
+      "center",
+      "left"
+    ]
+  }
+}

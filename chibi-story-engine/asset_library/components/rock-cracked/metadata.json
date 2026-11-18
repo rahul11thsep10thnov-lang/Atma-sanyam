@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "rock-cracked",
+  "asset_type": "component",
+  "name": "Cracked boulder",
+  "version": 1,
+  "description": "Cracked boulder (rock); vector component, base point at the bottom centre.",
+  "aliases": [
+    "ROCK-CRACKED"
+  ],
+  "tags": [
+    "cave",
+    "rock"
+  ],
+  "catalog_code": "CMP-RCK-0005",
+  "category": "rock",
+  "subcategory": "rock",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "e51a76307c259ad22763c48feece6810746c24addee036cf9fa69c2101616834",
+      "width": 310,
+      "height": 220,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "acb8fb8d47e7242216b2e335e20bb0f17e50241c0d10681bddf0accce9ed1a22",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:46+00:00",
+  "change_summary": "",
+  "kind": "rock",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    310.0,
+    220.0
+  ]
+}

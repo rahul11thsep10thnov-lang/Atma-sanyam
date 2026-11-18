@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "grass-fern-floor",
+  "asset_type": "component",
+  "name": "Forest-floor sprouts",
+  "version": 1,
+  "description": "Forest-floor sprouts (grass); vector component, base point at the bottom centre.",
+  "aliases": [
+    "GRASS-FERN-FLOOR"
+  ],
+  "tags": [
+    "forest",
+    "grass"
+  ],
+  "catalog_code": "CMP-GRS-0015",
+  "category": "grass",
+  "subcategory": "grass",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "2c04ab67bb224d6f6c91906631b8d8bce9b7086330d490ec050b27e35976b8e0",
+      "width": 80,
+      "height": 90,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "34480d79e2bd4491e95d43ca21b1df35278066bd12534e76c133599956de0ec4",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:45+00:00",
+  "change_summary": "",
+  "kind": "grass",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    80.0,
+    90.0
+  ]
+}

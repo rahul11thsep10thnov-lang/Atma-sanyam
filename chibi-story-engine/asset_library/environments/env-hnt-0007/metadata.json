@@ -1,0 +1,579 @@
+{
+  "manifest_version": "1.0",
+  "id": "env-hnt-0007",
+  "asset_type": "environment",
+  "name": "Moonlit graveyard",
+  "version": 1,
+  "description": "A fenced graveyard of leaning stones under the moon.",
+  "aliases": [
+    "ENV-HNT-0007",
+    "चाँदनी में कब्रिस्तान",
+    "moonlit graveyard"
+  ],
+  "tags": [
+    "graveyard",
+    "iron gate",
+    "mist",
+    "moon",
+    "night",
+    "tombstones"
+  ],
+  "catalog_code": "ENV-HNT-0007",
+  "category": "HNT",
+  "subcategory": "graveyard",
+  "related_stories": [
+    "folk",
+    "vikram_betal"
+  ],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {
+    "habitats": [
+      "ground"
+    ],
+    "style": "premium_chibi_anime",
+    "ambience": "forest_ambience_001",
+    "composition": "wide",
+    "composition_group": "env-hnt-0007",
+    "scare_levels": false,
+    "seasons": [
+      "spring",
+      "summer",
+      "monsoon",
+      "autumn",
+      "winter"
+    ],
+    "weather": [
+      "clear",
+      "cloudy",
+      "rain",
+      "fog",
+      "storm",
+      "snow"
+    ]
+  },
+  "files": [
+    {
+      "role": "layer",
+      "path": "layers/sky.png",
+      "format": "png",
+      "checksum": "0181a23945df1e30fc2e741cc65f177a5e0e776d901a781a983dc61d9eca0dec",
+      "width": 1088,
+      "height": 592,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/sky.svg",
+      "format": "svg",
+      "checksum": "51809c6336942e77cd4f7b604b34eb436d4432ffb1ede8c7a61b41abb8c6bc10",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/back.png",
+      "format": "png",
+      "checksum": "fcf84b89ab8c1ef7aaa4a4d5f71c17e194a714079a7f6f1ebd2457a23d2b476c",
+      "width": 1358,
+      "height": 297,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/back.svg",
+      "format": "svg",
+      "checksum": "416eb8b7a1ec4ce5b135ba131e59974fa2f09d34633b4be1e340a972dcc0b374",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/ground.png",
+      "format": "png",
+      "checksum": "f30a9980006f3f7767bf805756e5ebcde77a6d7b996670dfd535f9e2e214226a",
+      "width": 2448,
+      "height": 504,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/ground.svg",
+      "format": "svg",
+      "checksum": "419dca1e585cb09e6c9d737c43621b62e71eed6c0a71b289e38689d55a100f31",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/main_scenery.png",
+      "format": "png",
+      "checksum": "f8c55bdd475c201560b6c3b3c3be144d335cae08919f55d76303f880d66e5b8d",
+      "width": 1386,
+      "height": 420,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/main_scenery.svg",
+      "format": "svg",
+      "checksum": "976770de52b0e4695ac31230675be29a6c4374ef697eb5214ca02d462d7e5078",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/vegetation.png",
+      "format": "png",
+      "checksum": "51fc338ff2784b67d47efa72670952f5189835cb0f8824c1d5b547629a6e42ba",
+      "width": 1554,
+      "height": 637,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/vegetation.svg",
+      "format": "svg",
+      "checksum": "451f99d7630c0035d645279641d5d4ede5d167bcfcd1b0302d32956e96aee766",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/foreground.png",
+      "format": "png",
+      "checksum": "4e30028733780a8ae1e6318ee4bcbf09996d19f60094012fb681ca570d1cfc6b",
+      "width": 1810,
+      "height": 240,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/foreground.svg",
+      "format": "svg",
+      "checksum": "b4d3948e7032cbca03375b4e407570d054e3968788dd4acf0dda2d3c98a1dbdc",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/atmosphere.png",
+      "format": "png",
+      "checksum": "5310303ba810255b42502667419f2eceda9316b7c903e4cf4f3bf684a113fdce",
+      "width": 1614,
+      "height": 150,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/atmosphere.svg",
+      "format": "svg",
+      "checksum": "f8c90148dd9db390cdaae28b51ebf035efec3167f68ec07e54985d8a949ef610",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/spooky.png",
+      "format": "png",
+      "checksum": "563374d5dd01ed679a6a709672be20a7104c8b71211e465322aea84d2ca91509",
+      "width": 750,
+      "height": 144,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/spooky.svg",
+      "format": "svg",
+      "checksum": "003d14be11c155181fbd49ce7b90a9dae77c4ac24f8175edcc98361584d1f82e",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/spooky_strong.png",
+      "format": "png",
+      "checksum": "3a633629b0bf3f2f94c6debd1a7eb72f545761829601dd409a5db224af46ada0",
+      "width": 324,
+      "height": 264,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/spooky_strong.svg",
+      "format": "svg",
+      "checksum": "b7eae2fe62a8d54861f7de87edf34307b6d817d54aa6ee84af2c378e531d8b27",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "preview",
+      "path": "previews/composite.jpg",
+      "format": "jpeg",
+      "checksum": "752274e573c51e1d23ec4ac555407eecbe038fa7f652cd66e0ebec5e4d697f9f",
+      "width": 960,
+      "height": 540,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:57:56+00:00",
+  "change_summary": "",
+  "stage": [
+    1920,
+    1080
+  ],
+  "layers": [
+    {
+      "id": "sky",
+      "type": "background",
+      "file": "layers/sky.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        1480.0
+      ],
+      "parallax": 0.12,
+      "order": 0,
+      "cover": true,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/sky.svg"
+    },
+    {
+      "id": "back",
+      "type": "far",
+      "file": "layers/back.png",
+      "rect": [
+        -310.0,
+        360.0,
+        2470.0,
+        540.0
+      ],
+      "parallax": 0.55,
+      "order": 2,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/back.svg"
+    },
+    {
+      "id": "ground",
+      "type": "middle",
+      "file": "layers/ground.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        560.0
+      ],
+      "parallax": 1.0,
+      "order": 10,
+      "cover": false,
+      "cover_horizontal": true,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/ground.svg"
+    },
+    {
+      "id": "main_scenery",
+      "type": "middle",
+      "file": "layers/main_scenery.png",
+      "rect": [
+        30.0,
+        160.0,
+        1980.0,
+        600.0
+      ],
+      "parallax": 1.0,
+      "order": 40,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/main_scenery.svg"
+    },
+    {
+      "id": "vegetation",
+      "type": "middle",
+      "file": "layers/vegetation.png",
+      "rect": [
+        -280.0,
+        290.0,
+        2220.0,
+        910.0
+      ],
+      "parallax": 1.0,
+      "order": 45,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "foliage",
+      "scare": 0,
+      "svg": "masters/vegetation.svg"
+    },
+    {
+      "id": "foreground",
+      "type": "foreground",
+      "file": "layers/foreground.png",
+      "rect": [
+        -80.0,
+        -90.0,
+        1810.0,
+        240.0
+      ],
+      "parallax": 1.3,
+      "order": 800,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [
+        {
+          "type": "sway",
+          "amplitude": 0.8,
+          "period": 4.2,
+          "phase": 0.0,
+          "speed": 0.0,
+          "pivot": [
+            960.0,
+            -200.0
+          ],
+          "wind_scaled": true
+        }
+      ],
+      "tint_group": "foliage",
+      "scare": 0,
+      "svg": "masters/foreground.svg"
+    },
+    {
+      "id": "atmosphere",
+      "type": "effects",
+      "file": "layers/atmosphere.png",
+      "rect": [
+        -370.0,
+        170.0,
+        2690.0,
+        250.0
+      ],
+      "parallax": 1.0,
+      "order": 920,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "none",
+      "scare": 0,
+      "svg": "masters/atmosphere.svg"
+    },
+    {
+      "id": "spooky",
+      "type": "effects",
+      "file": "layers/spooky.png",
+      "rect": [
+        420.0,
+        830.0,
+        1250.0,
+        240.0
+      ],
+      "parallax": 1.0,
+      "order": 925,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "none",
+      "scare": 1,
+      "svg": "masters/spooky.svg"
+    },
+    {
+      "id": "spooky_strong",
+      "type": "effects",
+      "file": "layers/spooky_strong.png",
+      "rect": [
+        1060.0,
+        330.0,
+        540.0,
+        440.0
+      ],
+      "parallax": 1.0,
+      "order": 926,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "none",
+      "scare": 2,
+      "svg": "masters/spooky_strong.svg"
+    }
+  ],
+  "anchors": {
+    "left": {
+      "x": 560.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "center": {
+      "x": 960.0,
+      "y": 205.0,
+      "order": 101,
+      "scale": 1.0,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "right": {
+      "x": 1380.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "far_left": {
+      "x": 300.0,
+      "y": 245.0,
+      "order": 99,
+      "scale": 0.92,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "far_right": {
+      "x": 1650.0,
+      "y": 245.0,
+      "order": 99,
+      "scale": 0.92,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "offstage_left": {
+      "x": -430.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "offstage",
+        "ground"
+      ],
+      "description": ""
+    },
+    "offstage_right": {
+      "x": 2350.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "offstage",
+        "ground"
+      ],
+      "description": ""
+    }
+  },
+  "lighting_presets": [
+    "night",
+    "moonlight"
+  ],
+  "camera_bounds": [
+    -400.0,
+    -200.0,
+    2320.0,
+    1280.0
+  ],
+  "default_anchor_by_role": {
+    "ground": [
+      "center",
+      "left",
+      "right",
+      "far_left",
+      "far_right"
+    ],
+    "arboreal": [
+      "center",
+      "left"
+    ]
+  }
+}

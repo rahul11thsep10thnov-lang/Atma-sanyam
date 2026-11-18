@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "lamp-candelabra",
+  "asset_type": "component",
+  "name": "Candelabra",
+  "version": 1,
+  "description": "Candelabra (lamp); vector component, base point at the bottom centre.",
+  "aliases": [
+    "LAMP-CANDELABRA"
+  ],
+  "tags": [
+    "court",
+    "lamp",
+    "palace"
+  ],
+  "catalog_code": "CMP-LMP-0010",
+  "category": "lamps and lights",
+  "subcategory": "lamp",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "75179956aab53af02c590cd8b7be10251ae9055a13dc0b15a3c49ce7901085c7",
+      "width": 260,
+      "height": 300,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "0837f7de5058f745c41adef60d96ebdb73e4f80ebef51a4acc5d1088fc4c9f4e",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:04+00:00",
+  "change_summary": "",
+  "kind": "lamp",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    260.0,
+    300.0
+  ]
+}

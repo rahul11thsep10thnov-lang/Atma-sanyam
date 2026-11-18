@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "wall-stone",
+  "asset_type": "component",
+  "name": "Stone wall",
+  "version": 1,
+  "description": "Stone wall (barrier); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WALL-STONE"
+  ],
+  "tags": [
+    "barrier",
+    "garden",
+    "mountain",
+    "wall"
+  ],
+  "catalog_code": "CMP-BAR-0007",
+  "category": "fences and walls",
+  "subcategory": "barrier",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "8a4ab42532804baa28347ce1201fc07c791ae94144ce0cfed4b68fa034917e60",
+      "width": 690,
+      "height": 210,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "a2b9a156a94bc7e5a4a1a21de55a56eb57a927ff3a9cb0648d51562359316463",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:01+00:00",
+  "change_summary": "",
+  "kind": "barrier",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    690.0,
+    210.0
+  ]
+}

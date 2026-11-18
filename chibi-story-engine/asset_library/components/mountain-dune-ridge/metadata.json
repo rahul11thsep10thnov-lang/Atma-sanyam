@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "mountain-dune-ridge",
+  "asset_type": "component",
+  "name": "Sand dune ridge",
+  "version": 1,
+  "description": "Sand dune ridge (mountain); vector component, base point at the bottom centre.",
+  "aliases": [
+    "MOUNTAIN-DUNE-RIDGE"
+  ],
+  "tags": [
+    "desert",
+    "dune",
+    "mountain"
+  ],
+  "catalog_code": "CMP-MTN-0009",
+  "category": "mountain",
+  "subcategory": "mountain",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "fff9b932fb255488c254dac8f42e7f06194508b09d3aa9b263725d6a4a710de8",
+      "width": 1440,
+      "height": 290,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "27beb1db1ee0257da907b100abc9fae2f2bfe2c034daf6afeb1c02bc25d9428f",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:49+00:00",
+  "change_summary": "",
+  "kind": "mountain",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    1440.0,
+    290.0
+  ]
+}

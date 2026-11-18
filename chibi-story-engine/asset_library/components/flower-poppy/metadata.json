@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "flower-poppy",
+  "asset_type": "component",
+  "name": "Poppy",
+  "version": 1,
+  "description": "Poppy (flower); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FLOWER-POPPY"
+  ],
+  "tags": [
+    "farm",
+    "flower",
+    "meadow"
+  ],
+  "catalog_code": "CMP-FLW-0010",
+  "category": "flower",
+  "subcategory": "flower",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "1c9d562ec9470ded8868b8f98a38567b630945f1a932eff3d47104a23e3057a8",
+      "width": 120,
+      "height": 230,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "afd0c8d225fbb3879a91862003cb3d741c0666a7a6ae48be956cc476cda6a297",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:44+00:00",
+  "change_summary": "",
+  "kind": "flower",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    120.0,
+    230.0
+  ]
+}

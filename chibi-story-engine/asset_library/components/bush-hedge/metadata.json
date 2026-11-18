@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "bush-hedge",
+  "asset_type": "component",
+  "name": "Clipped hedge",
+  "version": 1,
+  "description": "Clipped hedge (bush); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BUSH-HEDGE"
+  ],
+  "tags": [
+    "bush",
+    "garden",
+    "hedge",
+    "palace"
+  ],
+  "catalog_code": "CMP-BSH-0020",
+  "category": "bush",
+  "subcategory": "bush",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "76340e0bd24cc75c363dd1b42c69a74f9d578536c7a98a1364761394a06cd6cb",
+      "width": 460,
+      "height": 190,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "21a7fb853a68145990590ce0750c7acac30d72328873d14792c5d92d438bc6be",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:44+00:00",
+  "change_summary": "",
+  "kind": "bush",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    460.0,
+    190.0
+  ]
+}

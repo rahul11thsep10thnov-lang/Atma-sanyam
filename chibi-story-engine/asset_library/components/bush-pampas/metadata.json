@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "bush-pampas",
+  "asset_type": "component",
+  "name": "Pampas grass",
+  "version": 1,
+  "description": "Pampas grass (bush); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BUSH-PAMPAS"
+  ],
+  "tags": [
+    "bush",
+    "grass",
+    "marsh",
+    "riverside"
+  ],
+  "catalog_code": "CMP-BSH-0019",
+  "category": "bush",
+  "subcategory": "bush",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "a5bcbcdc1da563113dad4084d0232c14e44f69a578d70e25dc2c8cea096f1852",
+      "width": 280,
+      "height": 380,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "0e5e3d29213062e59be1ed5cce9cb612a60df1421a1b1ae12eddf9f22ce1e240",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:44+00:00",
+  "change_summary": "",
+  "kind": "bush",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    280.0,
+    380.0
+  ]
+}

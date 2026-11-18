@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "water-fountain",
+  "asset_type": "component",
+  "name": "Stone fountain",
+  "version": 1,
+  "description": "Stone fountain (water); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WATER-FOUNTAIN"
+  ],
+  "tags": [
+    "garden",
+    "palace",
+    "water"
+  ],
+  "catalog_code": "CMP-WTR-0011",
+  "category": "water features",
+  "subcategory": "water",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "d6ddcc27e8a3ad9533a15c04d4ef4b84af7073ec5ddb936f0162bdb11038c0fe",
+      "width": 460,
+      "height": 430,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "24efc9b2499ed276606fcfb2f377144762a01738e079ebdc70bb78f97ce2d3b5",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:50+00:00",
+  "change_summary": "",
+  "kind": "water",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    460.0,
+    430.0
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "grass-rice-paddy",
+  "asset_type": "component",
+  "name": "Rice paddy",
+  "version": 1,
+  "description": "Rice paddy (grass); vector component, base point at the bottom centre.",
+  "aliases": [
+    "GRASS-RICE-PADDY"
+  ],
+  "tags": [
+    "farm",
+    "field",
+    "grass",
+    "water"
+  ],
+  "catalog_code": "CMP-GRS-0006",
+  "category": "grass",
+  "subcategory": "grass",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "360814b5cf92f5652458f0e1096f5248546ee10cd5d406d711d92e75b09072f6",
+      "width": 500,
+      "height": 160,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "140ab8bb463b1550fc75239e44d484f1d6c13cd7c461fb2989735047b9649099",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:45+00:00",
+  "change_summary": "",
+  "kind": "grass",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    500.0,
+    160.0
+  ]
+}

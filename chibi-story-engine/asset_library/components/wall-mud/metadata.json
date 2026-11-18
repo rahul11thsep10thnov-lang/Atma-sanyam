@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "wall-mud",
+  "asset_type": "component",
+  "name": "Mud wall",
+  "version": 1,
+  "description": "Mud wall (barrier); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WALL-MUD"
+  ],
+  "tags": [
+    "barrier",
+    "house",
+    "village",
+    "wall"
+  ],
+  "catalog_code": "CMP-BAR-0006",
+  "category": "fences and walls",
+  "subcategory": "barrier",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "ccc1f94ab7a5adfc82a4cf46854a102386f77c3f127acee6c707e81e0033a068",
+      "width": 720,
+      "height": 230,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "aaea10fd056b54fa5c12dcc6e4393c6864298ccf4541f8eedfdc89be3efcd8ec",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:01+00:00",
+  "change_summary": "",
+  "kind": "barrier",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    720.0,
+    230.0
+  ]
+}

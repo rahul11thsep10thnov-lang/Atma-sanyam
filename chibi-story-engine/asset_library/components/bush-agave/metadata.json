@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "bush-agave",
+  "asset_type": "component",
+  "name": "Agave",
+  "version": 1,
+  "description": "Agave (bush); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BUSH-AGAVE"
+  ],
+  "tags": [
+    "bush",
+    "desert",
+    "dry"
+  ],
+  "catalog_code": "CMP-BSH-0017",
+  "category": "bush",
+  "subcategory": "bush",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "794563999ff42e1b5d9c3140e58ff23f70669320bb996ebd82acfdfd4dd79616",
+      "width": 320,
+      "height": 230,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "f306aa7e165b2ce5ee13c59c56c09a6652ceb398e16311c7f1e5967005e8214e",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:43+00:00",
+  "change_summary": "",
+  "kind": "bush",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    320.0,
+    230.0
+  ]
+}

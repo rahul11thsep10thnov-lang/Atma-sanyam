@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "mountain-terraced",
+  "asset_type": "component",
+  "name": "Terraced green hill",
+  "version": 1,
+  "description": "Terraced green hill (mountain); vector component, base point at the bottom centre.",
+  "aliases": [
+    "MOUNTAIN-TERRACED"
+  ],
+  "tags": [
+    "farm",
+    "hill",
+    "mountain",
+    "village"
+  ],
+  "catalog_code": "CMP-MTN-0007",
+  "category": "mountain",
+  "subcategory": "mountain",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "8225accaea543150de3fcd9b29126d46ea701e850e4753fd6d10ce5dda079c3c",
+      "width": 1500,
+      "height": 410,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "08915709b62ba8deafb3951aafb0cda4a326e8d8b545a9c6b9ae54b9b603a36c",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:49+00:00",
+  "change_summary": "",
+  "kind": "mountain",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    1500.0,
+    410.0
+  ]
+}

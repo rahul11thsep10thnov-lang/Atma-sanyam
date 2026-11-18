@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "water-boat",
+  "asset_type": "component",
+  "name": "Wooden rowing boat",
+  "version": 1,
+  "description": "Wooden rowing boat (water); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WATER-BOAT"
+  ],
+  "tags": [
+    "boat",
+    "lake",
+    "river",
+    "water"
+  ],
+  "catalog_code": "CMP-WTR-0009",
+  "category": "water features",
+  "subcategory": "water",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "48226338103b62b42ba97a5943443957aef969234ffaf303fed4c147ee72700a",
+      "width": 460,
+      "height": 130,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "55fbfdaf0feb036741ec7fb74506c660b4bcb387cfba163f16d22f31d9361f07",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:50+00:00",
+  "change_summary": "",
+  "kind": "water",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    460.0,
+    130.0
+  ]
+}

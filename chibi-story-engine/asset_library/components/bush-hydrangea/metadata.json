@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "bush-hydrangea",
+  "asset_type": "component",
+  "name": "Hydrangea bush",
+  "version": 1,
+  "description": "Hydrangea bush (bush); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BUSH-HYDRANGEA"
+  ],
+  "tags": [
+    "bush",
+    "flowering"
+  ],
+  "catalog_code": "CMP-BSH-0009",
+  "category": "bush",
+  "subcategory": "bush",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "2a1cacf00398626a84d2742aa8bb2e65287d5234b89888cc8d385bc89069f0ee",
+      "width": 290,
+      "height": 240,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "6f0cdf3be5aa3d87c61d38add4ebf946095713c60d7a8859acca6a04d270dd36",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:42+00:00",
+  "change_summary": "",
+  "kind": "bush",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    290.0,
+    240.0
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "bld-village-well",
+  "asset_type": "component",
+  "name": "Village well with roof",
+  "version": 1,
+  "description": "Village well with roof (building); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BLD-VILLAGE-WELL"
+  ],
+  "tags": [
+    "building",
+    "village",
+    "well"
+  ],
+  "catalog_code": "CMP-BLD-0032",
+  "category": "buildings",
+  "subcategory": "building",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "0a3d5e14205137efed93823b6f0d00094f1c78e8ce6a20eb6aeec54f61c527bc",
+      "width": 340,
+      "height": 400,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "36ae8ca0bc2d72c88b757d8552a509c4060623c536135057cdba868555bdd06b",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:00+00:00",
+  "change_summary": "",
+  "kind": "building",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    340.0,
+    400.0
+  ]
+}

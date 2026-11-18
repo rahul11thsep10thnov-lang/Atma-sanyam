@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "grass-reed-tall",
+  "asset_type": "component",
+  "name": "Tall river reeds",
+  "version": 1,
+  "description": "Tall river reeds (grass); vector component, base point at the bottom centre.",
+  "aliases": [
+    "GRASS-REED-TALL"
+  ],
+  "tags": [
+    "grass",
+    "reed",
+    "river"
+  ],
+  "catalog_code": "CMP-GRS-0008",
+  "category": "grass",
+  "subcategory": "grass",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "14922b8b57d975955469ed0a65e66fcbce19e900fb008294865e0bf5700404c5",
+      "width": 240,
+      "height": 420,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "70383ea8e4f80929697e3eb2013b40ce6d2e524c3a3f7c18a1f51177516f9fc7",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:45+00:00",
+  "change_summary": "",
+  "kind": "grass",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    240.0,
+    420.0
+  ]
+}

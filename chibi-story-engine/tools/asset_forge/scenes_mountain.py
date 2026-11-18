@@ -71,41 +71,41 @@ def build() -> list:
     # ---------------------------------------------------------------------------------------------- F: caves
     cave_floor = ("rock", 250, {"profile": [(-400, 260), (2400, 250)]})
     ly, an, ro = scene(wall=("cave", {"dado": False, "floor_y": 235}), back=[At("rock-stalactite", 300, 1100, 1.3), At("rock-stalactite", 1000, 1150, 1.5), At("rock-stalactite", 1700, 1120, 1.2)], ground=cave_floor, mid=[At("rock-big", 200, 260, 1.5), At("rock-boulder", 1700, 260, 1.3), At("rock-stalagmite", 900, 255, 1.1)],
-                       fx=[Shape("shafts", [1500], top=1260, bottom=250, w=260, col="#fff3c0", op=0.2), Shape("light_pool", 1560, 260, 280, "#fff3c0", 0.4)], fg=gr(), seed=501, anchor_y=230)
+                       fx=[Shape("shafts", [1500], top=1260, bottom=250, w=260, col="#fff3c0", op=0.2), Shape("light_pool", 1560, 260, 280, 39, "#fff3c0", 0.4)], fg=gr(), seed=501, anchor_y=230)
     env(1, "Natural rocky cave", "rocky", "A large natural cave with stalactites and a shaft of daylight.", ["cave", "rock", "stalactite", "light", "shelter", "natural"], ["प्राकृतिक चट्टानी गुफा", "rocky cave"], ["panchatantra", "jataka", "folk"], ly, an, ro, code="CAV")
 
     ly, an, ro = scene(wall=("cave", {"dado": False, "floor_y": 235}), back=[At("rock-stalactite", 400, 1100, 1.4), At("rock-stalactite", 1300, 1130, 1.6)], ground=("dark", 250), mid=[At("rock-big", 100, 260, 1.5), At("rock-stalagmite", 1000, 255, 1.2), At("rock-stalagmite", 1600, 255, 1.0)],
-                       fx=[Shape("mist", 270, 3, col="#4a4a6a", op=0.3), Shape("light_pool", 400, 260, 300, "#e8b050", 0.25)], seed=502, anchor_y=230)
+                       fx=[Shape("mist", 270, 3, col="#4a4a6a", op=0.3), Shape("light_pool", 400, 260, 300, 42, "#e8b050", 0.25)], seed=502, anchor_y=230)
     env(2, "Dark underground cave", "dark", "A deep, dark cavern lit only by a small ember glow.", ["cave", "dark", "underground", "deep", "night", "gloomy"], ["अँधेरी भूमिगत गुफा", "dark cave"], ["panchatantra", "vikram_betal"], ly, an, ro, code="CAV", lighting=["night"])
 
     ly, an, ro = scene(wall=("cave", {"dado": False, "floor_y": 235}), back=[At("rock-stalactite", 500, 1100, 1.3), At("rock-stalactite", 1500, 1120, 1.3)], ground=cave_floor, mid=[Shape("chest", 700, 258, 1.4), Shape("chest", 1200, 258, 1.1), Shape("coins", 960, 258, 1.5), Shape("coins", 1500, 258, 1.3), At("rock-gold-ore", 200, 260, 1.4), At("rock-gold-ore", 1800, 260, 1.3)],
-                       fx=[Shape("light_pool", 960, 300, 700, "#ffd060", 0.4), Shape("light_pool", 1500, 280, 400, "#ffd060", 0.3)], seed=503, anchor_y=230)
+                       fx=[Shape("light_pool", 960, 300, 700, 98, "#ffd060", 0.4), Shape("light_pool", 1500, 280, 400, 56, "#ffd060", 0.3)], seed=503, anchor_y=230)
     env(3, "Treasure cave", "treasure", "A cave with chests, heaped coins and gold-veined rock, glowing in torchlight.", ["treasure", "gold", "cave", "chest", "coins", "hidden"], ["खजाने की गुफा", "treasure cave"], ["panchatantra", "arabian_nights", "folk"], ly, an, ro, code="CAV")
 
     ly, an, ro = scene(wall=("cave", {"dado": False, "floor_y": 235}), back=[At("rock-stalactite", 400, 1080, 1.2)], ground=("mud", 250), mid=[At("rock-big", 120, 260, 1.7), At("rock-big", 1820, 260, 1.7), Shape("haystack", 960, 255, 1.0), At("grass-dry", 650, 255, 1.2), At("grass-dry", 1350, 255, 1.1)],
-                       fx=[Shape("light_pool", 1000, 270, 500, "#fff3c0", 0.25)], fg=gr(), seed=504, anchor_y=230)
+                       fx=[Shape("light_pool", 1000, 270, 500, 70, "#fff3c0", 0.25)], fg=gr(), seed=504, anchor_y=230)
     env(4, "Bear's den", "den", "A bear's den: a low cave floored with dry grass and moss.", ["den", "bear", "cave", "animal", "lair", "winter"], ["भालू की माँद", "bear's den"], ["panchatantra", "jataka"], ly, an, ro, code="CAV")
 
     ly, an, ro = scene(wall=("mud", {"dado": False, "floor_y": 235}), back=[At("tree-bare", 300, 1000, 1.6), At("tree-bare", 1500, 1100, 1.8)], ground=("mud", 250), mid=[At("rock-small", 300, 255, 1.2), At("rock-small", 1600, 255, 1.0), At("grass-weeds", 900, 255, 1.0)],
-                       fx=[Shape("light_pool", 400, 260, 300, "#fff3c0", 0.3)], fg=[Scatter(["grass-weeds", "rock-small"], 6, (-100, 2050), (-100, 20), (1.0, 1.6), 6)], seed=505, anchor_y=230)
+                       fx=[Shape("light_pool", 400, 260, 300, 42, "#fff3c0", 0.3)], fg=[Scatter(["grass-weeds", "rock-small"], 6, (-100, 2050), (-100, 20), (1.0, 1.6), 6)], seed=505, anchor_y=230)
     env(5, "Animal burrow", "burrow", "A burrow under the earth: rounded tunnel walls, roots and soft light from the exit.", ["burrow", "hole", "underground", "rabbit", "fox", "earth"], ["जानवर का बिल", "burrow"], ["panchatantra", "jataka"], ly, an, ro, ("ground", "burrow"), code="CAV")
 
     ly, an, ro = scene(wall=("cave", {"dado": False, "floor_y": 235}), back=[At("rock-stalactite", 300, 1100, 1.4), At("rock-stalactite", 1500, 1130, 1.4)], ground=("dark", 250), mid=[At("rock-boulder", 160, 260, 1.4), At("rock-slab", 1700, 255, 1.0), At("rock-cracked", 960, 255, 1.0)],
-                       fx=[Shape("light_pool", 800, 260, 400, "#c0f0a0", 0.18)], scare=[Shape("eyes", 3, 300, 600)], seed=506, anchor_y=230)
+                       fx=[Shape("light_pool", 800, 260, 400, 56, "#c0f0a0", 0.18)], scare=[Shape("eyes", 3, 300, 600)], seed=506, anchor_y=230)
     env(6, "Snake cave", "snake", "A damp cave with cracked rocks and a dark crevice, a home for snakes.", ["snake", "cave", "damp", "crevice", "cobra", "lair"], ["साँप की गुफा", "snake cave"], ["panchatantra", "jataka"], ly, an, ro, code="CAV")
 
     ly, an, ro = scene(wall=("crystal", {"dado": False, "floor_y": 235}), back=[At("rock-crystal-cluster", 300, 900, 1.6), At("rock-crystal-spikes", 1600, 950, 1.5), At("rock-stalactite", 960, 1130, 1.4)], ground=("dark", 250), mid=[At("rock-crystal-cluster", 400, 255, 1.7), At("rock-crystal-cluster", 1500, 255, 2.0), At("rock-crystal-spikes", 960, 255, 1.4), At("lamp-magic-orb", 1050, 300, 1.0)],
-                       fx=[Shape("light_pool", 960, 300, 800, "#8ad6f0", 0.3), Shape("fireflies", 14, 300, 900, "#a0f0ff")], seed=507, anchor_y=230)
+                       fx=[Shape("light_pool", 960, 300, 800, 112, "#8ad6f0", 0.3), Shape("fireflies", 14, 300, 900, "#a0f0ff")], seed=507, anchor_y=230)
     env(7, "Magical crystal cave", "crystal", "A cave of glowing crystal clusters and floating motes of light.", ["crystal", "magic", "cave", "glow", "gems", "fantasy"], ["जादुई क्रिस्टल गुफा", "crystal cave"], ["arabian_nights", "vikram_betal", "folk"], ly, an, ro, code="CAV")
 
-    ly, an, ro = scene(wall=("stone", {"dado": False, "floor_y": 235}), back=[At("lamp-wall-torch", 400, 560, 1.0), At("lamp-wall-torch", 1500, 560, 1.0), At("door-arched", 960, 255, 1.0)], ground=("stone", 250), mid=[At("rock-slab", 160, 255, 1.0), At("rock-small", 1750, 255, 1.2)], fx=[Shape("light_pool", 400, 560, 360, "#ffb050", 0.4), Shape("light_pool", 1500, 560, 360, "#ffb050", 0.4)], seed=508, anchor_y=230)
+    ly, an, ro = scene(wall=("stone", {"dado": False, "floor_y": 235}), back=[At("lamp-wall-torch", 400, 560, 1.0), At("lamp-wall-torch", 1500, 560, 1.0), At("door-arched", 960, 255, 1.0)], ground=("stone", 250), mid=[At("rock-slab", 160, 255, 1.0), At("rock-small", 1750, 255, 1.2)], fx=[Shape("light_pool", 400, 560, 360, 50, "#ffb050", 0.4), Shape("light_pool", 1500, 560, 360, 50, "#ffb050", 0.4)], seed=508, anchor_y=230)
     env(8, "Underground passage", "passage", "A stone-lined underground passage lit by wall torches.", ["passage", "tunnel", "underground", "torch", "secret", "corridor"], ["भूमिगत सुरंग", "underground passage"], ["vikram_betal", "arabian_nights", "folk"], ly, an, ro, code="CAV")
 
     ly, an, ro = scene(wall=("cave", {"dado": False, "floor_y": 235}), water={"top": 220.0, "front": False, "ripples": (100.0, 210.0), "n": 12, "c1": "#7fb8c8", "c2": "#1f4f78"}, back=[At("rock-stalactite", 400, 1100, 1.4), At("rock-stalactite", 1400, 1120, 1.5)],
                        ground=("rock", 180, {"profile": [(-400, 280), (600, 270), (900, 60), (1900, 60), (2400, 280)]}), mid=[At("rock-big", 160, 285, 1.4), At("rock-stalagmite", 1750, 150, 1.0)], fx=[Shape("shafts", [1400], top=1260, bottom=220, w=300, col="#fff3c0", op=0.2)], seed=509, anchor_y=230)
     env(9, "Riverside cave", "riverside", "A cavern opening to an underground stream running along its floor.", ["cave", "river", "water", "stream", "cavern", "riverside"], ["नदी किनारे गुफा", "riverside cave"], ["panchatantra", "jataka"], ly, an, ro, ("ground", "aquatic"), code="CAV")
 
-    ly, an, ro = scene(wall=("haunted", {"dado": False, "floor_y": 235}), back=[At("rock-stalactite", 400, 1100, 1.4), At("rock-stalactite", 1400, 1120, 1.5)], ground=("haunted", 250), mid=[At("rock-slab", 160, 255, 1.1), Shape("chest", 1500, 258, 1.2), Shape("light_pool", 960, 270, 360, "#8af0b8", 0.25)],
+    ly, an, ro = scene(wall=("haunted", {"dado": False, "floor_y": 235}), back=[At("rock-stalactite", 400, 1100, 1.4), At("rock-stalactite", 1400, 1120, 1.5)], ground=("haunted", 250), mid=[At("rock-slab", 160, 255, 1.1), Shape("chest", 1500, 258, 1.2), Shape("light_pool", 960, 270, 360, 50, "#8af0b8", 0.25)],
                        decor=[], fx=[Shape("mist", 270, 3, col="#5a5a8a", op=0.3)], scare=[Shape("ghost", 1300, 420, 1.0), Shape("eyes", 2, 400, 800), Shape("bats", 3)], seed=510, anchor_y=230)
     env(10, "Haunted underground chamber", "haunted-chamber", "A cold crypt-like chamber; the ghost and eyes appear only at higher scare levels.", ["haunted", "chamber", "crypt", "ghost", "underground", "spooky"], ["भुतहा तहखाना", "haunted chamber"], ["vikram_betal", "folk"], ly, an, ro, code="CAV", lighting=["night"])
     return E

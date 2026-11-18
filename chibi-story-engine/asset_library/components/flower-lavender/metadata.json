@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "flower-lavender",
+  "asset_type": "component",
+  "name": "Lavender",
+  "version": 1,
+  "description": "Lavender (flower); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FLOWER-LAVENDER"
+  ],
+  "tags": [
+    "flower",
+    "meadow"
+  ],
+  "catalog_code": "CMP-FLW-0009",
+  "category": "flower",
+  "subcategory": "flower",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "0e6054941501f68e2cb3e47a051d8c930f2d8927998f0becd46a47c6ca18e618",
+      "width": 90,
+      "height": 310,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "30097895d133c23cf13232696ec8cdc747dbef9917aa4ea80520d5a67df1b310",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:44+00:00",
+  "change_summary": "",
+  "kind": "flower",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    90.0,
+    310.0
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "bld-grocery-stall",
+  "asset_type": "component",
+  "name": "Grocery stall",
+  "version": 1,
+  "description": "Grocery stall (building); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BLD-GROCERY-STALL"
+  ],
+  "tags": [
+    "building",
+    "grocery",
+    "market",
+    "stall"
+  ],
+  "catalog_code": "CMP-BLD-0027",
+  "category": "buildings",
+  "subcategory": "building",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "0de686e73a3b05bacf84da2b4e2593ad2a4d0f4f4fe3250daa0e4d38a24ed3a7",
+      "width": 400,
+      "height": 270,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "ab88081849955eb0d0c31128cb6966142eaa358f92dbf0e9ba2252d52f8d980e",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:59+00:00",
+  "change_summary": "",
+  "kind": "building",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    400.0,
+    270.0
+  ]
+}

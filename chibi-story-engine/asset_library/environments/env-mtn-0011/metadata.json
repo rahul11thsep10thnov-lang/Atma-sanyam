@@ -1,0 +1,501 @@
+{
+  "manifest_version": "1.0",
+  "id": "env-mtn-0011",
+  "asset_type": "environment",
+  "name": "Mountain valley",
+  "version": 1,
+  "description": "A wide green valley between mountain walls, wildflowers in the meadow.",
+  "aliases": [
+    "ENV-MTN-0011",
+    "पहाड़ी घाटी",
+    "mountain valley"
+  ],
+  "tags": [
+    "flowers",
+    "grazing",
+    "meadow",
+    "mountain",
+    "valley",
+    "wide"
+  ],
+  "catalog_code": "ENV-MTN-0011",
+  "category": "MTN",
+  "subcategory": "valley",
+  "related_stories": [
+    "panchatantra",
+    "folk",
+    "jataka"
+  ],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {
+    "habitats": [
+      "ground",
+      "arboreal"
+    ],
+    "style": "premium_chibi_anime",
+    "ambience": "forest_ambience_001",
+    "composition": "wide",
+    "composition_group": "env-mtn-0011",
+    "scare_levels": false,
+    "seasons": [
+      "spring",
+      "summer",
+      "monsoon",
+      "autumn",
+      "winter"
+    ],
+    "weather": [
+      "clear",
+      "cloudy",
+      "rain",
+      "fog",
+      "storm",
+      "snow"
+    ]
+  },
+  "files": [
+    {
+      "role": "layer",
+      "path": "layers/sky.png",
+      "format": "png",
+      "checksum": "758bc74e94114ed5e94e2baec6dd5beeb69edd31fc95f974946ec59c1471c44c",
+      "width": 1088,
+      "height": 592,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/sky.svg",
+      "format": "svg",
+      "checksum": "b91cc9772809a89d62ac5ad7baa53d84ef9064384cd7c58561c3c9377f232b29",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/far.png",
+      "format": "png",
+      "checksum": "33eeeddac3d4a78a3586b22a3d69c1730b0eacc802f49b34fc83c7870e38889d",
+      "width": 1496,
+      "height": 495,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/far.svg",
+      "format": "svg",
+      "checksum": "a4c90f11fb31bbd7c0008b82d62043d399fc0dc8585d659b4c2b3ea6900b5e02",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/back.png",
+      "format": "png",
+      "checksum": "7d1403c3f753ac7a1928c89da2a570fb9e0c96c594a2d48d2e2f999ce20bfcbc",
+      "width": 1496,
+      "height": 286,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/back.svg",
+      "format": "svg",
+      "checksum": "8f1d4df6bef80d0473b038ed38978edda476416560d072d228351437137362e9",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/ground.png",
+      "format": "png",
+      "checksum": "21a6eb11963e5f120eed23ca6980cb3f75a8bd1d11e28eae6dbe625e9913807e",
+      "width": 2448,
+      "height": 495,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/ground.svg",
+      "format": "svg",
+      "checksum": "1b4a813f5cdb647913a42603e413ca11852f8646f1c917cc24ae9f15cc3dd4e5",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/main_scenery.png",
+      "format": "png",
+      "checksum": "e62a534638f2a869406fcc2ce200a3588eb12b340b3b30c80739f2a07e0e534c",
+      "width": 1127,
+      "height": 532,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/main_scenery.svg",
+      "format": "svg",
+      "checksum": "7d9f65eeb3c745b2a8bb62f88fad6518fce60167c9fee51a2b2db0b0cf657b85",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/vegetation.png",
+      "format": "png",
+      "checksum": "0384c1aea2f2af31701688e90ec37c1f054ff49fe0055037795a963048cb7736",
+      "width": 1547,
+      "height": 714,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/vegetation.svg",
+      "format": "svg",
+      "checksum": "ea7bffe83c2526fa527c5531413bc943836d25f09e928375acbc8dc07a9085f3",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/foreground.png",
+      "format": "png",
+      "checksum": "a403b248fc9fcc1a7fd60b139b6b294e4677f8ce55008245e2999a16fac78985",
+      "width": 1140,
+      "height": 230,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/foreground.svg",
+      "format": "svg",
+      "checksum": "12fce05875963910a5b969ff98c631aaae961d611fdb6b52baa818a57097af10",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "preview",
+      "path": "previews/composite.jpg",
+      "format": "jpeg",
+      "checksum": "21f877b54a6650af5664456a71431157541ad93c4adaefed11372b801dc103fb",
+      "width": 960,
+      "height": 540,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:56:45+00:00",
+  "change_summary": "",
+  "stage": [
+    1920,
+    1080
+  ],
+  "layers": [
+    {
+      "id": "sky",
+      "type": "background",
+      "file": "layers/sky.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        1480.0
+      ],
+      "parallax": 0.12,
+      "order": 0,
+      "cover": true,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/sky.svg"
+    },
+    {
+      "id": "far",
+      "type": "far",
+      "file": "layers/far.png",
+      "rect": [
+        -400.0,
+        380.0,
+        2720.0,
+        900.0
+      ],
+      "parallax": 0.3,
+      "order": 1,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/far.svg"
+    },
+    {
+      "id": "back",
+      "type": "far",
+      "file": "layers/back.png",
+      "rect": [
+        -400.0,
+        350.0,
+        2720.0,
+        520.0
+      ],
+      "parallax": 0.55,
+      "order": 2,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "foliage",
+      "scare": 0,
+      "svg": "masters/back.svg"
+    },
+    {
+      "id": "ground",
+      "type": "middle",
+      "file": "layers/ground.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        550.0
+      ],
+      "parallax": 1.0,
+      "order": 10,
+      "cover": false,
+      "cover_horizontal": true,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/ground.svg"
+    },
+    {
+      "id": "main_scenery",
+      "type": "middle",
+      "file": "layers/main_scenery.png",
+      "rect": [
+        40.0,
+        290.0,
+        1610.0,
+        760.0
+      ],
+      "parallax": 1.0,
+      "order": 40,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/main_scenery.svg"
+    },
+    {
+      "id": "vegetation",
+      "type": "middle",
+      "file": "layers/vegetation.png",
+      "rect": [
+        -100.0,
+        220.0,
+        2210.0,
+        1020.0
+      ],
+      "parallax": 1.0,
+      "order": 45,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "foliage",
+      "scare": 0,
+      "svg": "masters/vegetation.svg"
+    },
+    {
+      "id": "foreground",
+      "type": "foreground",
+      "file": "layers/foreground.png",
+      "rect": [
+        840.0,
+        -80.0,
+        1140.0,
+        230.0
+      ],
+      "parallax": 1.3,
+      "order": 800,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [
+        {
+          "type": "sway",
+          "amplitude": 0.8,
+          "period": 4.2,
+          "phase": 0.0,
+          "speed": 0.0,
+          "pivot": [
+            960.0,
+            -200.0
+          ],
+          "wind_scaled": true
+        }
+      ],
+      "tint_group": "foliage",
+      "scare": 0,
+      "svg": "masters/foreground.svg"
+    }
+  ],
+  "anchors": {
+    "left": {
+      "x": 560.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "center": {
+      "x": 960.0,
+      "y": 205.0,
+      "order": 101,
+      "scale": 1.0,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "right": {
+      "x": 1380.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "far_left": {
+      "x": 300.0,
+      "y": 245.0,
+      "order": 99,
+      "scale": 0.92,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "far_right": {
+      "x": 1650.0,
+      "y": 245.0,
+      "order": 99,
+      "scale": 0.92,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "offstage_left": {
+      "x": -430.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "offstage",
+        "ground"
+      ],
+      "description": ""
+    },
+    "offstage_right": {
+      "x": 2350.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "offstage",
+        "ground"
+      ],
+      "description": ""
+    }
+  },
+  "lighting_presets": [
+    "day",
+    "morning",
+    "noon",
+    "evening",
+    "sunset",
+    "night",
+    "moonlight",
+    "overcast"
+  ],
+  "camera_bounds": [
+    -400.0,
+    -200.0,
+    2320.0,
+    1280.0
+  ],
+  "default_anchor_by_role": {
+    "ground": [
+      "center",
+      "left",
+      "right",
+      "far_left",
+      "far_right"
+    ],
+    "arboreal": [
+      "center",
+      "left"
+    ]
+  }
+}

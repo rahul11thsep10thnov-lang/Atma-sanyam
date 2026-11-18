@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "mountain-cliff",
+  "asset_type": "component",
+  "name": "Cliff face",
+  "version": 1,
+  "description": "Cliff face (mountain); vector component, base point at the bottom centre.",
+  "aliases": [
+    "MOUNTAIN-CLIFF"
+  ],
+  "tags": [
+    "cliff",
+    "mountain",
+    "rocky"
+  ],
+  "catalog_code": "CMP-MTN-0010",
+  "category": "mountain",
+  "subcategory": "mountain",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "8d1fd3983cc2795f90b61d514e73418820acd52a1352ad685a7d32f19c78b75d",
+      "width": 660,
+      "height": 800,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "f6c7aa64db68779a563c00563f76738124a98124842b83eacf1b5321b86f8bd3",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:49+00:00",
+  "change_summary": "",
+  "kind": "mountain",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    660.0,
+    800.0
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "rock-stalagmite",
+  "asset_type": "component",
+  "name": "Stalagmite",
+  "version": 1,
+  "description": "Stalagmite (rock); vector component, base point at the bottom centre.",
+  "aliases": [
+    "ROCK-STALAGMITE"
+  ],
+  "tags": [
+    "cave",
+    "rock"
+  ],
+  "catalog_code": "CMP-RCK-0017",
+  "category": "rock",
+  "subcategory": "rock",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "8533bf123f24b63367fb7188ff41302a4d744a4439f2c1dccedcd73eaa8ad457",
+      "width": 220,
+      "height": 360,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "6411f4b5ec5245b0ae1a82e1a1974627f32e48649d3f27568b17a72965efb01b",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:47+00:00",
+  "change_summary": "",
+  "kind": "rock",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    220.0,
+    360.0
+  ]
+}

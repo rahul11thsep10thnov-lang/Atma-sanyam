@@ -1,0 +1,65 @@
+{
+  "manifest_version": "1.0",
+  "id": "door-curtain",
+  "asset_type": "component",
+  "name": "Curtained doorway",
+  "version": 1,
+  "description": "Curtained doorway (opening); vector component, base point at the bottom centre.",
+  "aliases": [
+    "DOOR-CURTAIN"
+  ],
+  "tags": [
+    "door",
+    "opening",
+    "palace",
+    "shop",
+    "tent"
+  ],
+  "catalog_code": "CMP-OPN-0006",
+  "category": "doors and windows",
+  "subcategory": "opening",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "bc10ec7c8d43f9f19e13376488fdcd96496bc107da19f3a4d29386a6d386f4df",
+      "width": 200,
+      "height": 280,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "6ec092322b2c8434c5c6c7027e1e518afc4a2eb58d53b0dbb9448c2b4ecd000b",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:51+00:00",
+  "change_summary": "",
+  "kind": "opening",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    200.0,
+    280.0
+  ]
+}

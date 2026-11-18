@@ -92,7 +92,7 @@ from .environments import ripples, water_body, water_front  # noqa: E402
 
 
 def scene(*, sky=None, wall=None, far=(), back=(), decor=(), ground=("grass", FLOOR), water=None, mid=(), veg=(), occl=(), fg=(), fx=(), scare=(),
-          beams=None, seed=1, anchor_y=215.0, anchors=None, roles=None, arboreal=None, far_parallax=0.3, back_parallax=0.55, ground_amp=8.0, framing=(),
+          beams=None, scare2=(), seed=1, anchor_y=215.0, anchors=None, roles=None, arboreal=None, far_parallax=0.3, back_parallax=0.55, ground_amp=8.0, framing=(),
           back_tint="foliage", fg_tint="foliage", far_tint="background"):
     """Compose a scene from layers. `sky` = (kind, kwargs) for outdoors, `wall` = (kind, kwargs) for interiors."""
     layers = []
@@ -135,6 +135,8 @@ def scene(*, sky=None, wall=None, far=(), back=(), decor=(), ground=("grass", FL
         layers.append(L_fx(list(fx), "atmosphere", 920))
     if scare:
         layers.append(L_fx(list(scare), "spooky", 925, scare=1))
+    if scare2:
+        layers.append(L_fx(list(scare2), "spooky_strong", 926, scare=2))
     an = anchors if anchors is not None else (water_anchors(105.0, anchor_y) if water else ground_anchors(anchor_y))
     return layers, an, (roles or std_roles(an, arboreal))
 
@@ -333,6 +335,9 @@ def sh_tent_flags(v, k, rng, x, y, s=1.0, col="#c0392b"):
     s *= k ** 0.5
     v.R(x - 4 * s, y, 8 * s, 360 * s, "#7a5a3a", ol("#7a5a3a"), 3)
     v.P([(x + 4 * s, y + 360 * s), (x + 130 * s, y + 330 * s), (x + 4 * s, y + 290 * s)], v.shaded(col), ol(col), 3)
+
+
+from .env_kit import sh_tombstone  # noqa: E402
 
 
 def sh_graves(v, k, rng, n=7, y0=190.0, y1=320.0):

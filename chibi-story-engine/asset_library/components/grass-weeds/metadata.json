@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "grass-weeds",
+  "asset_type": "component",
+  "name": "Wild weeds",
+  "version": 1,
+  "description": "Wild weeds (grass); vector component, base point at the bottom centre.",
+  "aliases": [
+    "GRASS-WEEDS"
+  ],
+  "tags": [
+    "grass",
+    "wild"
+  ],
+  "catalog_code": "CMP-GRS-0014",
+  "category": "grass",
+  "subcategory": "grass",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "b1a0e601c6a24c35be0ff0694a628c732fe7e86a453978f3d330e15dde8ecb99",
+      "width": 210,
+      "height": 150,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "b304b952d40c346f40b8689d4b3f9fff66034870d1f865b2d6a811fd60b41ec1",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:45+00:00",
+  "change_summary": "",
+  "kind": "grass",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    210.0,
+    150.0
+  ]
+}

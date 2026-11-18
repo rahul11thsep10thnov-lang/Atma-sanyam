@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "bush-lantana",
+  "asset_type": "component",
+  "name": "Lantana bush",
+  "version": 1,
+  "description": "Lantana bush (bush); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BUSH-LANTANA"
+  ],
+  "tags": [
+    "bush",
+    "flowering"
+  ],
+  "catalog_code": "CMP-BSH-0008",
+  "category": "bush",
+  "subcategory": "bush",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "3c5884d3894cc919ecb3fd45a5da512ed8ccfcfdfc0a9a8f19e560f3092a64f2",
+      "width": 300,
+      "height": 200,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "f907aa01cb4128075fde88de63e51a66f1d4504d2aef926bf769be4c45f4070b",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:42+00:00",
+  "change_summary": "",
+  "kind": "bush",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    300.0,
+    200.0
+  ]
+}

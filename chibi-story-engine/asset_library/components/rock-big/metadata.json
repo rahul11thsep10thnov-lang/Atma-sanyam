@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "rock-big",
+  "asset_type": "component",
+  "name": "Large boulder",
+  "version": 1,
+  "description": "Large boulder (rock); vector component, base point at the bottom centre.",
+  "aliases": [
+    "ROCK-BIG"
+  ],
+  "tags": [
+    "mountain",
+    "rock"
+  ],
+  "catalog_code": "CMP-RCK-0006",
+  "category": "rock",
+  "subcategory": "rock",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "99779164c2b429ae73eb7b18a027d3b482c52ee9aaa940afbbf1252eda119c0f",
+      "width": 520,
+      "height": 370,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "c5c85cd1c29b8b372245b3217d2f9624737938ea303d88a47ad8cb8cc8406b8a",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:46+00:00",
+  "change_summary": "",
+  "kind": "rock",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    520.0,
+    370.0
+  ]
+}

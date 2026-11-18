@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "lamp-string-lights",
+  "asset_type": "component",
+  "name": "Festival string lights",
+  "version": 1,
+  "description": "Festival string lights (lamp); vector component, base point at the bottom centre.",
+  "aliases": [
+    "LAMP-STRING-LIGHTS"
+  ],
+  "tags": [
+    "festival",
+    "lamp",
+    "market",
+    "wedding"
+  ],
+  "catalog_code": "CMP-LMP-0015",
+  "category": "lamps and lights",
+  "subcategory": "lamp",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "a8848a4f113faaa328d5057cc845defcb499d3cae91519e593e6f4bb2849bbaf",
+      "width": 720,
+      "height": 150,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "ac509c2745d470378542d0d6a412a23775b8a3d4dad4294f2afb2c5a6fd92545",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:05+00:00",
+  "change_summary": "",
+  "kind": "lamp",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    720.0,
+    150.0
+  ]
+}

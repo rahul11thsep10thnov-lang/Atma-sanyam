@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "grass-wheat",
+  "asset_type": "component",
+  "name": "Wheat stalks",
+  "version": 1,
+  "description": "Wheat stalks (grass); vector component, base point at the bottom centre.",
+  "aliases": [
+    "GRASS-WHEAT"
+  ],
+  "tags": [
+    "farm",
+    "field",
+    "grass"
+  ],
+  "catalog_code": "CMP-GRS-0004",
+  "category": "grass",
+  "subcategory": "grass",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "83cc31ff9c3c5fc9796b742040d1c48e23abf3b1a2cb236e88112dcc0a55ec6f",
+      "width": 190,
+      "height": 250,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "f261f8bf51c2e9ba3e0ffef73aa68a3847800d14bd89ffb6339b8da6e6f61844",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:45+00:00",
+  "change_summary": "",
+  "kind": "grass",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    190.0,
+    250.0
+  ]
+}

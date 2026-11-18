@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-pine-snow",
+  "asset_type": "component",
+  "name": "Snow-covered pine",
+  "version": 1,
+  "description": "Snow-covered pine (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-PINE-SNOW"
+  ],
+  "tags": [
+    "pine",
+    "snow",
+    "tree",
+    "winter"
+  ],
+  "catalog_code": "CMP-TRE-0012",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "feea98582ff5080b88fd52503a0060a10bff95ee6910417966a9d5a69b2758e8",
+      "width": 400,
+      "height": 780,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "f047e5a3a176c7f3beeb6caf22c8deab2265ac1520af9e1ba3a38f049e5a7ff9",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:36+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    400.0,
+    780.0
+  ]
+}

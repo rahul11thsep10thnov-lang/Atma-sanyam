@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "fence-picket",
+  "asset_type": "component",
+  "name": "Picket fence",
+  "version": 1,
+  "description": "Picket fence (barrier); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FENCE-PICKET"
+  ],
+  "tags": [
+    "barrier",
+    "fence",
+    "garden",
+    "village"
+  ],
+  "catalog_code": "CMP-BAR-0001",
+  "category": "fences and walls",
+  "subcategory": "barrier",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "5d978b43fddc4c161911d7b1cde57968dd1764b2095bb765cc0617a880269bce",
+      "width": 470,
+      "height": 160,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "51862860d5bd0ab9f7ec4d3d2673b1f0874f5bfcb2a34449193d8c4ec3405801",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:00+00:00",
+  "change_summary": "",
+  "kind": "barrier",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    470.0,
+    160.0
+  ]
+}

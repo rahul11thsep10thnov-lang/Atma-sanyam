@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-mango",
+  "asset_type": "component",
+  "name": "Mango tree with fruit",
+  "version": 1,
+  "description": "Mango tree with fruit (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-MANGO"
+  ],
+  "tags": [
+    "fruit",
+    "mango",
+    "orchard",
+    "tree"
+  ],
+  "catalog_code": "CMP-TRE-0002",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "295fd73f62aef5303c8e8b9fe577fee4a2edb883877f4ebed6ee6921b2f3e170",
+      "width": 600,
+      "height": 680,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "925ed9badfab17eed6850c6310ede9346e5deda3e0ecfcc91fc7b2b512facf14",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:33+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    600.0,
+    680.0
+  ]
+}

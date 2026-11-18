@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-oak",
+  "asset_type": "component",
+  "name": "Oak-like broadleaf tree",
+  "version": 1,
+  "description": "Oak-like broadleaf tree (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-OAK"
+  ],
+  "tags": [
+    "forest",
+    "tree"
+  ],
+  "catalog_code": "CMP-TRE-0001",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "0c0457148422f1acf9c7c60c3260c8b7fe633726d96320ed067ee2035e285914",
+      "width": 590,
+      "height": 710,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "7cd567b64b6833bc5d8af9568a6c5c545cb89a5534c1001bf06e24f15f249e90",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:33+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    590.0,
+    710.0
+  ]
+}

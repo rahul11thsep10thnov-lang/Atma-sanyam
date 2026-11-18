@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "bld-wooden-bridge",
+  "asset_type": "component",
+  "name": "Wooden bridge",
+  "version": 1,
+  "description": "Wooden bridge (building); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BLD-WOODEN-BRIDGE"
+  ],
+  "tags": [
+    "bridge",
+    "building",
+    "river"
+  ],
+  "catalog_code": "CMP-BLD-0034",
+  "category": "buildings",
+  "subcategory": "building",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "b3b093a58d2332c41d15bd65b0ceea5ba1de58739b705a7a4f7c1d3cd0b75bb8",
+      "width": 800,
+      "height": 130,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "cda8f3ac2d561d5ac8fd6e74d673d01e571237cd7a6abdf74477b0f120069efe",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:00+00:00",
+  "change_summary": "",
+  "kind": "building",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    800.0,
+    130.0
+  ]
+}

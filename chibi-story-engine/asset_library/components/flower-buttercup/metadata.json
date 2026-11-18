@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "flower-buttercup",
+  "asset_type": "component",
+  "name": "Buttercup",
+  "version": 1,
+  "description": "Buttercup (flower); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FLOWER-BUTTERCUP"
+  ],
+  "tags": [
+    "flower",
+    "meadow"
+  ],
+  "catalog_code": "CMP-FLW-0011",
+  "category": "flower",
+  "subcategory": "flower",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "401a42f37a964d870f9f4fe21e1ecef4c91c47b66bcebf03f9b0c5c5aa4f91ec",
+      "width": 100,
+      "height": 160,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "a92d566b72e9dff0810c7291241b3ac2572f15a17434254ba64d0153fb8c5188",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:44+00:00",
+  "change_summary": "",
+  "kind": "flower",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    100.0,
+    160.0
+  ]
+}

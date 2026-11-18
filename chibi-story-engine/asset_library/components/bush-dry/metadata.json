@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "bush-dry",
+  "asset_type": "component",
+  "name": "Dry thorny scrub",
+  "version": 1,
+  "description": "Dry thorny scrub (bush); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BUSH-DRY"
+  ],
+  "tags": [
+    "bush",
+    "desert",
+    "dry"
+  ],
+  "catalog_code": "CMP-BSH-0010",
+  "category": "bush",
+  "subcategory": "bush",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "ce92da9d64ebe99b8d8eb664ef22c99487e6d6081d4ecf39ce7e96d808f0948c",
+      "width": 340,
+      "height": 190,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "11d44697ae138d3d124c60bf2da658e7c5e69a846462add7dcd7722b2635d7c1",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:42+00:00",
+  "change_summary": "",
+  "kind": "bush",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    340.0,
+    190.0
+  ]
+}

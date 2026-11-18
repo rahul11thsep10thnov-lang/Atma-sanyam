@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-fanpalm",
+  "asset_type": "component",
+  "name": "Fan palm",
+  "version": 1,
+  "description": "Fan palm (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-FANPALM"
+  ],
+  "tags": [
+    "palm",
+    "tree",
+    "tropical"
+  ],
+  "catalog_code": "CMP-TRE-0016",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "3153ccff09c177fcc245ec5079112fe7d708f8726682a537efe862d88dfe9185",
+      "width": 500,
+      "height": 640,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "97fcb3ea2e5718d6d01498e89d7d08c68c4aeeeb2b67fa9a784ef1d79b3801b1",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:37+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    500.0,
+    640.0
+  ]
+}

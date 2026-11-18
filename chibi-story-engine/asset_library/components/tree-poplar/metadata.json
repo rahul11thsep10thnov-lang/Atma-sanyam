@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-poplar",
+  "asset_type": "component",
+  "name": "Tall poplar",
+  "version": 1,
+  "description": "Tall poplar (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-POPLAR"
+  ],
+  "tags": [
+    "garden",
+    "poplar",
+    "tree"
+  ],
+  "catalog_code": "CMP-TRE-0029",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "e40aad0ad544fd7fcf0dc636918c38e0df72c8860bc6e05c43c3d54abd1b5d1a",
+      "width": 240,
+      "height": 730,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "0293029dce0be2ea9c40648b0528fb471728889948e4e80b08aaa010a397042e",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:40+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    240.0,
+    730.0
+  ]
+}

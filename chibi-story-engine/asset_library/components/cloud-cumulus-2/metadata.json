@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "cloud-cumulus-2",
+  "asset_type": "component",
+  "name": "Wide cumulus",
+  "version": 1,
+  "description": "Wide cumulus (cloud); vector component, base point at the bottom centre.",
+  "aliases": [
+    "CLOUD-CUMULUS-2"
+  ],
+  "tags": [
+    "cloud",
+    "day"
+  ],
+  "catalog_code": "CMP-CLD-0002",
+  "category": "cloud",
+  "subcategory": "cloud",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "86593871c0c232713f7ac41f399d655d031bfdc86bd147dc6a609076f030050b",
+      "width": 840,
+      "height": 470,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "f99c25f1924bded61eee03f5974def81ff7881a72aa835b7bfb9610b9ef749f7",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:47+00:00",
+  "change_summary": "",
+  "kind": "cloud",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    840.0,
+    470.0
+  ]
+}

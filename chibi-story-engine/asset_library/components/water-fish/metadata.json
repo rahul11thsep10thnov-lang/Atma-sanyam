@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "water-fish",
+  "asset_type": "component",
+  "name": "Fish",
+  "version": 1,
+  "description": "Fish (water); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WATER-FISH"
+  ],
+  "tags": [
+    "pond",
+    "underwater",
+    "water"
+  ],
+  "catalog_code": "CMP-WTR-0015",
+  "category": "water features",
+  "subcategory": "water",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "17e15de596c38fac1de3535e369700a0b44c77fe43495252474a1acf56b43060",
+      "width": 210,
+      "height": 100,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "75ab24d1e9dc569133c9c5193a3c18d2230ef47097324f0986156e41095c876a",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:50+00:00",
+  "change_summary": "",
+  "kind": "water",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    210.0,
+    100.0
+  ]
+}

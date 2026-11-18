@@ -1,0 +1,65 @@
+{
+  "manifest_version": "1.0",
+  "id": "fence-jali-screen",
+  "asset_type": "component",
+  "name": "Lattice screen",
+  "version": 1,
+  "description": "Lattice screen (barrier); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FENCE-JALI-SCREEN"
+  ],
+  "tags": [
+    "barrier",
+    "fence",
+    "haveli",
+    "palace",
+    "temple"
+  ],
+  "catalog_code": "CMP-BAR-0014",
+  "category": "fences and walls",
+  "subcategory": "barrier",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "e5437fce838431f5da3a6dc36ff5b0e51deb112cb77fda5c0cd278164f5065dd",
+      "width": 480,
+      "height": 250,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "3342c95ba8d3b3fbc0063bfbfe6f68d2105028c841119393f2d99ea75d552b5f",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:02+00:00",
+  "change_summary": "",
+  "kind": "barrier",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    480.0,
+    250.0
+  ]
+}

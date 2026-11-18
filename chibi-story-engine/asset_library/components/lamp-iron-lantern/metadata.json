@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "lamp-iron-lantern",
+  "asset_type": "component",
+  "name": "Iron lantern",
+  "version": 1,
+  "description": "Iron lantern (lamp); vector component, base point at the bottom centre.",
+  "aliases": [
+    "LAMP-IRON-LANTERN"
+  ],
+  "tags": [
+    "house",
+    "lamp",
+    "road",
+    "village"
+  ],
+  "catalog_code": "CMP-LMP-0004",
+  "category": "lamps and lights",
+  "subcategory": "lamp",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "33e61ff0c2939c892d6ca498c80287894c3a27959fa824ac67c47c0ec977aaa2",
+      "width": 260,
+      "height": 320,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "c0940c72411808038d4c34604b4b588a3b2e2841c718ed0dd6835f4042bb4956",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:02+00:00",
+  "change_summary": "",
+  "kind": "lamp",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    260.0,
+    320.0
+  ]
+}

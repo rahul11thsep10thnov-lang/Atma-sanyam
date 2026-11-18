@@ -1,0 +1,65 @@
+{
+  "manifest_version": "1.0",
+  "id": "lamp-diya",
+  "asset_type": "component",
+  "name": "Clay diya",
+  "version": 1,
+  "description": "Clay diya (lamp); vector component, base point at the bottom centre.",
+  "aliases": [
+    "LAMP-DIYA"
+  ],
+  "tags": [
+    "diya",
+    "festival",
+    "house",
+    "lamp",
+    "temple"
+  ],
+  "catalog_code": "CMP-LMP-0001",
+  "category": "lamps and lights",
+  "subcategory": "lamp",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "2bfaa3fa3000204d0e03bd381a68182b84e322a9ccfbe8106de2c4d5c997b437",
+      "width": 240,
+      "height": 250,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "ecb70e6e758db0111130b1629e6e118a8bdc7cbae048ee17c55fb38ad86e608f",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:02+00:00",
+  "change_summary": "",
+  "kind": "lamp",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    240.0,
+    250.0
+  ]
+}

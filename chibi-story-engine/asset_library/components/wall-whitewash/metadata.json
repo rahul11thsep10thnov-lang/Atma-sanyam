@@ -1,0 +1,65 @@
+{
+  "manifest_version": "1.0",
+  "id": "wall-whitewash",
+  "asset_type": "component",
+  "name": "Whitewashed courtyard wall",
+  "version": 1,
+  "description": "Whitewashed courtyard wall (barrier); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WALL-WHITEWASH"
+  ],
+  "tags": [
+    "barrier",
+    "house",
+    "palace",
+    "temple",
+    "wall"
+  ],
+  "catalog_code": "CMP-BAR-0009",
+  "category": "fences and walls",
+  "subcategory": "barrier",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "31d1f888e3957aa6155909f54e28604f35ebab210197643938fdf41ad0250522",
+      "width": 600,
+      "height": 210,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "5ecedfad80876c585badf39a903bbc847497fe0904650d7b317c23122aa9e69f",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:01+00:00",
+  "change_summary": "",
+  "kind": "barrier",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    600.0,
+    210.0
+  ]
+}

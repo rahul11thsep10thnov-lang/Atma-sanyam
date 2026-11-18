@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-jamun",
+  "asset_type": "component",
+  "name": "Jamun tree with berries",
+  "version": 1,
+  "description": "Jamun tree with berries (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-JAMUN"
+  ],
+  "tags": [
+    "fruit",
+    "jamun",
+    "tree"
+  ],
+  "catalog_code": "CMP-TRE-0003",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "9c0c269906f34d285bc68eaf17f1b0520b53b40e3d1ddafc72c8069994ff3080",
+      "width": 560,
+      "height": 650,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "876638a0cfa3ef425d82ebae6bfebfe3f1fa1d2688d7b81b1df278daf8bb8c28",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:33+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    560.0,
+    650.0
+  ]
+}

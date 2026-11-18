@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "lamp-magic-orb",
+  "asset_type": "component",
+  "name": "Magic light orb",
+  "version": 1,
+  "description": "Magic light orb (lamp); vector component, base point at the bottom centre.",
+  "aliases": [
+    "LAMP-MAGIC-ORB"
+  ],
+  "tags": [
+    "cave",
+    "enchanted",
+    "lamp",
+    "magic"
+  ],
+  "catalog_code": "CMP-LMP-0014",
+  "category": "lamps and lights",
+  "subcategory": "lamp",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "3ac2403b84cb948e321f6066e504496ca65bc7d2724c49efd0ed3664d1d3a1ca",
+      "width": 340,
+      "height": 340,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "549770981b4ea10c8d99ac11a7201fce42793194884f0163dbd19139ab7e8561",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:04+00:00",
+  "change_summary": "",
+  "kind": "lamp",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    340.0,
+    340.0
+  ]
+}

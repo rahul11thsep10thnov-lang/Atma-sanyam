@@ -1,0 +1,61 @@
+{
+  "manifest_version": "1.0",
+  "id": "grass-tuft",
+  "asset_type": "component",
+  "name": "Grass tuft",
+  "version": 1,
+  "description": "Grass tuft (grass); vector component, base point at the bottom centre.",
+  "aliases": [
+    "GRASS-TUFT"
+  ],
+  "tags": [
+    "grass"
+  ],
+  "catalog_code": "CMP-GRS-0001",
+  "category": "grass",
+  "subcategory": "grass",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "8ac5eaf07254c0b2911730d51799ac62d491b20f0ac628c2e3b6553ee07a2fb4",
+      "width": 100,
+      "height": 110,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "b15d60af4eeb73e8276090957d4cb54caf1b69fa9e7cec980b5ee2abf02465e0",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:44+00:00",
+  "change_summary": "",
+  "kind": "grass",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    100.0,
+    110.0
+  ]
+}

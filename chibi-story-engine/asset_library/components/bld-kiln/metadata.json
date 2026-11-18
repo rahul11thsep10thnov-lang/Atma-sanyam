@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "bld-kiln",
+  "asset_type": "component",
+  "name": "Potter's kiln",
+  "version": 1,
+  "description": "Potter's kiln (building); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BLD-KILN"
+  ],
+  "tags": [
+    "building",
+    "potter",
+    "village",
+    "workshop"
+  ],
+  "catalog_code": "CMP-BLD-0030",
+  "category": "buildings",
+  "subcategory": "building",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "4557f04ed0b7582eb9209035fab9603b66b421ab2dbb7148a9251a88d6e2bd69",
+      "width": 380,
+      "height": 320,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "f79b85872ca208ba9813c8496e62b3c1f5f7120b43673b6d8d299d21f5756b83",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:00+00:00",
+  "change_summary": "",
+  "kind": "building",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    380.0,
+    320.0
+  ]
+}

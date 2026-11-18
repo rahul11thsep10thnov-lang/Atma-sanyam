@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "water-seaweed",
+  "asset_type": "component",
+  "name": "Seaweed",
+  "version": 1,
+  "description": "Seaweed (water); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WATER-SEAWEED"
+  ],
+  "tags": [
+    "underwater",
+    "water"
+  ],
+  "catalog_code": "CMP-WTR-0014",
+  "category": "water features",
+  "subcategory": "water",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "7e6d6d5cd4964e8ef2ac2334dd46095c77751f24cc1b876bbd31acc32775d385",
+      "width": 220,
+      "height": 350,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "296916fa112033878535410ac175b21c5ec218d54d612d65749cd7b554f828fe",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:50+00:00",
+  "change_summary": "",
+  "kind": "water",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    220.0,
+    350.0
+  ]
+}

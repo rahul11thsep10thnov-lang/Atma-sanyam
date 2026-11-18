@@ -1,0 +1,65 @@
+{
+  "manifest_version": "1.0",
+  "id": "fence-cattle-pen",
+  "asset_type": "component",
+  "name": "Cattle pen",
+  "version": 1,
+  "description": "Cattle pen (barrier); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FENCE-CATTLE-PEN"
+  ],
+  "tags": [
+    "barrier",
+    "farm",
+    "fence",
+    "shed",
+    "village"
+  ],
+  "catalog_code": "CMP-BAR-0015",
+  "category": "fences and walls",
+  "subcategory": "barrier",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "528d2f9d15bc298f09b77eb108fa9fdc51cc1fc2de70c52b882015e662bffb30",
+      "width": 530,
+      "height": 160,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "581015043a01a5c361bb7071b619e10aa85fbd0b65255c1bd9447c284fe563a3",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:02+00:00",
+  "change_summary": "",
+  "kind": "barrier",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    530.0,
+    160.0
+  ]
+}

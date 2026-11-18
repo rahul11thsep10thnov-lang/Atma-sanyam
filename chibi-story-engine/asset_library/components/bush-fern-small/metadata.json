@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "bush-fern-small",
+  "asset_type": "component",
+  "name": "Small fern",
+  "version": 1,
+  "description": "Small fern (bush); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BUSH-FERN-SMALL"
+  ],
+  "tags": [
+    "bush",
+    "fern"
+  ],
+  "catalog_code": "CMP-BSH-0014",
+  "category": "bush",
+  "subcategory": "bush",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "7a7e615342d56bb1b86896e2198b100a58e74d6510474ea04af832cf343a180a",
+      "width": 280,
+      "height": 170,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "4d8ab6f8c7845ad5b0cd1362639ac5bcd85cfba4f064824973a08f3c13d2dad7",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:43+00:00",
+  "change_summary": "",
+  "kind": "bush",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    280.0,
+    170.0
+  ]
+}

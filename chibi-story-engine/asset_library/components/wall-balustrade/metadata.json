@@ -1,0 +1,65 @@
+{
+  "manifest_version": "1.0",
+  "id": "wall-balustrade",
+  "asset_type": "component",
+  "name": "Marble balustrade",
+  "version": 1,
+  "description": "Marble balustrade (barrier); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WALL-BALUSTRADE"
+  ],
+  "tags": [
+    "balcony",
+    "barrier",
+    "garden",
+    "palace",
+    "wall"
+  ],
+  "catalog_code": "CMP-BAR-0011",
+  "category": "fences and walls",
+  "subcategory": "barrier",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "bb250a1b7bf5c34ada73a542ca87537db31f6b79342fe9670ed2de0734e335e9",
+      "width": 560,
+      "height": 160,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "9327db336933913620b0e46d0c8e3f2f3973ffff8bc2f8a877ca9a0a715d767a",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:01+00:00",
+  "change_summary": "",
+  "kind": "barrier",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    560.0,
+    160.0
+  ]
+}

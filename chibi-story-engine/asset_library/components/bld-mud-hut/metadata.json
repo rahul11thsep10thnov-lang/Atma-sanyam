@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "bld-mud-hut",
+  "asset_type": "component",
+  "name": "Mud hut",
+  "version": 1,
+  "description": "Mud hut (building); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BLD-MUD-HUT"
+  ],
+  "tags": [
+    "building",
+    "house",
+    "hut",
+    "village"
+  ],
+  "catalog_code": "CMP-BLD-0001",
+  "category": "buildings",
+  "subcategory": "building",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "c1bcf4e3a540a941e861d90ad7bbcd062e5e3ff97b5778afdcaaa662a473dba2",
+      "width": 440,
+      "height": 380,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "f93071e6317c229d29079311dcb5f56e648bb9cb9bd4bdd844a9751c32af679d",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:52+00:00",
+  "change_summary": "",
+  "kind": "building",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    440.0,
+    380.0
+  ]
+}

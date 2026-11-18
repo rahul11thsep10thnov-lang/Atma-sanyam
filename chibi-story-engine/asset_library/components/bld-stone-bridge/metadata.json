@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "bld-stone-bridge",
+  "asset_type": "component",
+  "name": "Stone arch bridge",
+  "version": 1,
+  "description": "Stone arch bridge (building); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BLD-STONE-BRIDGE"
+  ],
+  "tags": [
+    "bridge",
+    "building",
+    "river",
+    "road"
+  ],
+  "catalog_code": "CMP-BLD-0035",
+  "category": "buildings",
+  "subcategory": "building",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "28c27bcd88f1746a0950c759dc4fb2e4be60f7846fa897f570bb1ea6fae967dc",
+      "width": 800,
+      "height": 200,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "74781a0dc8f13fca6e58fc149215380b2a82f2e72c1a1ee2658c0b4047193f1c",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:00+00:00",
+  "change_summary": "",
+  "kind": "building",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    800.0,
+    200.0
+  ]
+}

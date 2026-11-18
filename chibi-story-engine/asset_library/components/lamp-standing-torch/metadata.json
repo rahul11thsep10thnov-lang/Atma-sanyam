@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "lamp-standing-torch",
+  "asset_type": "component",
+  "name": "Standing torch",
+  "version": 1,
+  "description": "Standing torch (lamp); vector component, base point at the bottom centre.",
+  "aliases": [
+    "LAMP-STANDING-TORCH"
+  ],
+  "tags": [
+    "camp",
+    "lamp",
+    "palace",
+    "torch"
+  ],
+  "catalog_code": "CMP-LMP-0006",
+  "category": "lamps and lights",
+  "subcategory": "lamp",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "39e8aebc46b633fbf0f8f09b35580f2ed3fda94563eeaa45af642fe0258ff3f6",
+      "width": 640,
+      "height": 640,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "e0c424a1466122daa1a1fd418a9d0fc444fef7d76b1b8f1571f16034cfcda729",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:03+00:00",
+  "change_summary": "",
+  "kind": "lamp",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    640.0,
+    640.0
+  ]
+}

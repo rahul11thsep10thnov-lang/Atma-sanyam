@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-bare",
+  "asset_type": "component",
+  "name": "Bare winter tree",
+  "version": 1,
+  "description": "Bare winter tree (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-BARE"
+  ],
+  "tags": [
+    "bare",
+    "dry",
+    "tree",
+    "winter"
+  ],
+  "catalog_code": "CMP-TRE-0024",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "cc9a7f2314f3e43760d62d24288a8ce98a11558473fdf852b9115985fa8cc46e",
+      "width": 690,
+      "height": 770,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "d983039bc2f5fd052dd11e58a5d2c7d07ccd78c64ee7b752a2adc1077ecf907e",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:39+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    690.0,
+    770.0
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "manifest_version": "1.0",
+  "id": "fence-iron",
+  "asset_type": "component",
+  "name": "Iron railing",
+  "version": 1,
+  "description": "Iron railing (barrier); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FENCE-IRON"
+  ],
+  "tags": [
+    "barrier",
+    "dark",
+    "fence",
+    "garden",
+    "palace"
+  ],
+  "catalog_code": "CMP-BAR-0012",
+  "category": "fences and walls",
+  "subcategory": "barrier",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "0e105fd16025b755f460fa9801ae28b48bbf4255eb8ff31b365d8e2ba825a5fd",
+      "width": 520,
+      "height": 230,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "02c510604ae2595307eda6a765a3c8b2c174668c275b3e8dcc32c4fd23b0221f",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:01+00:00",
+  "change_summary": "",
+  "kind": "barrier",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    520.0,
+    230.0
+  ]
+}

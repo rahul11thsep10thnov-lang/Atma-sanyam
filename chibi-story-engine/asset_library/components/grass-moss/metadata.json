@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "grass-moss",
+  "asset_type": "component",
+  "name": "Moss patch",
+  "version": 1,
+  "description": "Moss patch (grass); vector component, base point at the bottom centre.",
+  "aliases": [
+    "GRASS-MOSS"
+  ],
+  "tags": [
+    "cave",
+    "forest",
+    "grass",
+    "moss"
+  ],
+  "catalog_code": "CMP-GRS-0010",
+  "category": "grass",
+  "subcategory": "grass",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "32be0e7686745bdd8b536b12c0b104a1b11d768456aee7a5ee1ac0874e999677",
+      "width": 300,
+      "height": 70,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "87fd99090a4c112b008cdf6b413a8aa07aa321172831859da34c5d92fa340826",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:45+00:00",
+  "change_summary": "",
+  "kind": "grass",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    300.0,
+    70.0
+  ]
+}

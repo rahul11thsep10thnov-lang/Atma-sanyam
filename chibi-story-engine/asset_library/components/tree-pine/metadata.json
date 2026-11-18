@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-pine",
+  "asset_type": "component",
+  "name": "Pine tree",
+  "version": 1,
+  "description": "Pine tree (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-PINE"
+  ],
+  "tags": [
+    "mountain",
+    "pine",
+    "tree"
+  ],
+  "catalog_code": "CMP-TRE-0009",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "7f95fb9684b4a944876231e4e5b5241ca5e9772d217017bfb97a5e611e611319",
+      "width": 380,
+      "height": 780,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "3caef45a6bc52ca71d59c71ce3db5f50f74f1e6129ff9534979829980c69cd8d",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:35+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    380.0,
+    780.0
+  ]
+}

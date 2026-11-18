@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "grass-clover",
+  "asset_type": "component",
+  "name": "Clover patch",
+  "version": 1,
+  "description": "Clover patch (grass); vector component, base point at the bottom centre.",
+  "aliases": [
+    "GRASS-CLOVER"
+  ],
+  "tags": [
+    "grass",
+    "meadow"
+  ],
+  "catalog_code": "CMP-GRS-0009",
+  "category": "grass",
+  "subcategory": "grass",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "ba7146dc2bb8321fa6821904efd05a1c3ca13b321fbbe846a2b28cf6523086a7",
+      "width": 270,
+      "height": 80,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "8f8d760ee936be3a82436a173069acf7ec583ba65df1bbf2d1c1c6cc4eefd072",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:45+00:00",
+  "change_summary": "",
+  "kind": "grass",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    270.0,
+    80.0
+  ]
+}

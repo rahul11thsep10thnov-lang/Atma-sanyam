@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "window-triple",
+  "asset_type": "component",
+  "name": "Triple arched window",
+  "version": 1,
+  "description": "Triple arched window (opening); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WINDOW-TRIPLE"
+  ],
+  "tags": [
+    "court",
+    "opening",
+    "palace",
+    "window"
+  ],
+  "catalog_code": "CMP-OPN-0019",
+  "category": "doors and windows",
+  "subcategory": "opening",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "fbeeb69d62ff2d02cfdc5972e7082d16a6dbb205d593e8ba23e3a186c9d1c942",
+      "width": 380,
+      "height": 250,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "3863dab5929b199794fbd24a8ac7997e7f2cd77421a066f1f0f9d64ec16068d1",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:52+00:00",
+  "change_summary": "",
+  "kind": "opening",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    380.0,
+    250.0
+  ]
+}

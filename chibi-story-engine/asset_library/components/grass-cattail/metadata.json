@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "grass-cattail",
+  "asset_type": "component",
+  "name": "Cattail reeds",
+  "version": 1,
+  "description": "Cattail reeds (grass); vector component, base point at the bottom centre.",
+  "aliases": [
+    "GRASS-CATTAIL"
+  ],
+  "tags": [
+    "grass",
+    "marsh",
+    "pond",
+    "reed"
+  ],
+  "catalog_code": "CMP-GRS-0007",
+  "category": "grass",
+  "subcategory": "grass",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "e8a5e2a2604a455f1fa808305fc6b6af1d485fffbfe0162f2c0156cc03578da9",
+      "width": 170,
+      "height": 300,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "8fb15eecabdfaeb266b8e53243e5a5e6a26c594316287ef03c17df24e5de6d8d",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:45+00:00",
+  "change_summary": "",
+  "kind": "grass",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    170.0,
+    300.0
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "window-slit",
+  "asset_type": "component",
+  "name": "Arrow slit",
+  "version": 1,
+  "description": "Arrow slit (opening); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WINDOW-SLIT"
+  ],
+  "tags": [
+    "dark",
+    "fort",
+    "opening",
+    "window"
+  ],
+  "catalog_code": "CMP-OPN-0017",
+  "category": "doors and windows",
+  "subcategory": "opening",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "6b255dbeac3a03e97489f3c810bc6fb280c8e6d32c86f05534070a3e057544c5",
+      "width": 80,
+      "height": 180,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "1ffa832032a6a85deed68e021c327f8ffd4b8209e0b3658536b18658d938b115",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:51+00:00",
+  "change_summary": "",
+  "kind": "opening",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    80.0,
+    180.0
+  ]
+}

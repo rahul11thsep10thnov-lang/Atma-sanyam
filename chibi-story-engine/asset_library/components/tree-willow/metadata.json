@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-willow",
+  "asset_type": "component",
+  "name": "Weeping willow",
+  "version": 1,
+  "description": "Weeping willow (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-WILLOW"
+  ],
+  "tags": [
+    "pond",
+    "riverside",
+    "tree",
+    "willow"
+  ],
+  "catalog_code": "CMP-TRE-0019",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "11e30f5f8e9ace18c4f92cd72ddf6529afdee9bf458d77dc6ebd4e6027060618",
+      "width": 420,
+      "height": 580,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "51da1f69c8102e13273f0c18707079d54daa12327cbb4385efc6cebdf49990d0",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:38+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    420.0,
+    580.0
+  ]
+}

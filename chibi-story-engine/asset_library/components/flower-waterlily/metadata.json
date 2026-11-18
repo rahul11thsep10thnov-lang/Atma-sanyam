@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "flower-waterlily",
+  "asset_type": "component",
+  "name": "Water lily on a pad",
+  "version": 1,
+  "description": "Water lily on a pad (flower); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FLOWER-WATERLILY"
+  ],
+  "tags": [
+    "flower",
+    "lake",
+    "pond"
+  ],
+  "catalog_code": "CMP-FLW-0018",
+  "category": "flower",
+  "subcategory": "flower",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "b81e3178f7bd284e37c0f24fb3a6774a778442737d946da3c4fbc0b707878d2d",
+      "width": 260,
+      "height": 130,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "35217eaa994d43df57c3c253a8679213432f53e35a0afce7d4c245b020777f99",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:44+00:00",
+  "change_summary": "",
+  "kind": "flower",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    260.0,
+    130.0
+  ]
+}

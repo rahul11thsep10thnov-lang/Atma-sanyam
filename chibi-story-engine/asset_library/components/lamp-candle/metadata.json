@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "lamp-candle",
+  "asset_type": "component",
+  "name": "Candle",
+  "version": 1,
+  "description": "Candle (lamp); vector component, base point at the bottom centre.",
+  "aliases": [
+    "LAMP-CANDLE"
+  ],
+  "tags": [
+    "candle",
+    "dark",
+    "house",
+    "lamp"
+  ],
+  "catalog_code": "CMP-LMP-0009",
+  "category": "lamps and lights",
+  "subcategory": "lamp",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "c052f3c24ea3dd24b890f586b218de8c3d9a2de3c3c815e572e3063587691587",
+      "width": 200,
+      "height": 220,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "4caa5058027432470d01042d2e6c1d7f1f11b29840c36425e3dfd36de2ed58bd",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:03+00:00",
+  "change_summary": "",
+  "kind": "lamp",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    200.0,
+    220.0
+  ]
+}

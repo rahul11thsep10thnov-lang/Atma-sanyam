@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-blossom",
+  "asset_type": "component",
+  "name": "Flowering blossom tree",
+  "version": 1,
+  "description": "Flowering blossom tree (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-BLOSSOM"
+  ],
+  "tags": [
+    "flowering",
+    "garden",
+    "spring",
+    "tree"
+  ],
+  "catalog_code": "CMP-TRE-0006",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "52e88b2df82634a0ae7f87ee940e2d301581163cedfae8337a03e9c6dc77dca9",
+      "width": 640,
+      "height": 610,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "6621f645b489c9779301ccea46c227fe9b4c27edc5e71930ee4bf06f4d7b8fc3",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:34+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    640.0,
+    610.0
+  ]
+}

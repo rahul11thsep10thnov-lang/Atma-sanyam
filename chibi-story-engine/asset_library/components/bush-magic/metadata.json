@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "bush-magic",
+  "asset_type": "component",
+  "name": "Glowing magic bush",
+  "version": 1,
+  "description": "Glowing magic bush (bush); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BUSH-MAGIC"
+  ],
+  "tags": [
+    "bush",
+    "magic"
+  ],
+  "catalog_code": "CMP-BSH-0012",
+  "category": "bush",
+  "subcategory": "bush",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "a1292ee6acb8eee1c98831c337c05e347d2a2b44acb2be5e54b426435562ad27",
+      "width": 380,
+      "height": 390,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "4fdbd04d68dc424446b21772cf02f23f92067b902720aeeb888307c62a72eee4",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:43+00:00",
+  "change_summary": "",
+  "kind": "bush",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    380.0,
+    390.0
+  ]
+}

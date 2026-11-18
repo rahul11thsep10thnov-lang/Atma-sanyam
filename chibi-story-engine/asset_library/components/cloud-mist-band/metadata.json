@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "cloud-mist-band",
+  "asset_type": "component",
+  "name": "Low mist band",
+  "version": 1,
+  "description": "Low mist band (cloud); vector component, base point at the bottom centre.",
+  "aliases": [
+    "CLOUD-MIST-BAND"
+  ],
+  "tags": [
+    "cloud",
+    "fog",
+    "mist"
+  ],
+  "catalog_code": "CMP-CLD-0012",
+  "category": "cloud",
+  "subcategory": "cloud",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "e4e9aad5a25465b527b31e5715739f907f430ae63f78248ce09fb36b6eef2627",
+      "width": 1120,
+      "height": 120,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "10bc125417d4343f53f0567adde9c0dc12ea2c4b75022b0f0f3a507fe896d5e3",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:48+00:00",
+  "change_summary": "",
+  "kind": "cloud",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    1120.0,
+    120.0
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "mountain-mesa-range",
+  "asset_type": "component",
+  "name": "Desert mesa ridge",
+  "version": 1,
+  "description": "Desert mesa ridge (mountain); vector component, base point at the bottom centre.",
+  "aliases": [
+    "MOUNTAIN-MESA-RANGE"
+  ],
+  "tags": [
+    "desert",
+    "mountain"
+  ],
+  "catalog_code": "CMP-MTN-0006",
+  "category": "mountain",
+  "subcategory": "mountain",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "9a5c2b20f05ffd2130b5f00189920d2b8d0e88043a488ada44a9a25306444f10",
+      "width": 1340,
+      "height": 400,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "4a3e3464dc5786e0e7f5a6287eb6710b4cd08425c54aebb9fa048a22f6580fe2",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:49+00:00",
+  "change_summary": "",
+  "kind": "mountain",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    1340.0,
+    400.0
+  ]
+}

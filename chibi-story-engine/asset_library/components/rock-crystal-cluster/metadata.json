@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "rock-crystal-cluster",
+  "asset_type": "component",
+  "name": "Rock with crystals",
+  "version": 1,
+  "description": "Rock with crystals (rock); vector component, base point at the bottom centre.",
+  "aliases": [
+    "ROCK-CRYSTAL-CLUSTER"
+  ],
+  "tags": [
+    "cave",
+    "crystal",
+    "magic",
+    "rock"
+  ],
+  "catalog_code": "CMP-RCK-0013",
+  "category": "rock",
+  "subcategory": "rock",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "dd3089ee4218712b480dd84a686d6d4df44748942e1cf48bf7fccdcffb6df88d",
+      "width": 310,
+      "height": 280,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "13bd43200e7445b5a41c6a6ac9410f53aeac56789ae7d151455d3ed1eefd52d6",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:46+00:00",
+  "change_summary": "",
+  "kind": "rock",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    310.0,
+    280.0
+  ]
+}

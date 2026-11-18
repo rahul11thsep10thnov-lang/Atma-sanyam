@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "bld-stupa",
+  "asset_type": "component",
+  "name": "Buddhist stupa",
+  "version": 1,
+  "description": "Buddhist stupa (building); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BLD-STUPA"
+  ],
+  "tags": [
+    "buddhist",
+    "building",
+    "monastery",
+    "temple"
+  ],
+  "catalog_code": "CMP-BLD-0015",
+  "category": "buildings",
+  "subcategory": "building",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "73cebfed911a80ebcb8b6188a8e09108dfdc58d5f55ab30d00c64a77df59ef8b",
+      "width": 620,
+      "height": 560,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "50c277d0473d37f4203267c097d86c45084d985e19319e287a6b1e937744f6c7",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:56+00:00",
+  "change_summary": "",
+  "kind": "building",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    620.0,
+    560.0
+  ]
+}

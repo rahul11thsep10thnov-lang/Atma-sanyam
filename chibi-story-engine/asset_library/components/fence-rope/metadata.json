@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "fence-rope",
+  "asset_type": "component",
+  "name": "Rope-and-post fence",
+  "version": 1,
+  "description": "Rope-and-post fence (barrier); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FENCE-ROPE"
+  ],
+  "tags": [
+    "barrier",
+    "fence",
+    "festival",
+    "market"
+  ],
+  "catalog_code": "CMP-BAR-0004",
+  "category": "fences and walls",
+  "subcategory": "barrier",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "e496e184fc640380f2502c3d0e87b802810cc814924c0d00a1bdb2b03b7f3908",
+      "width": 520,
+      "height": 130,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "ea3af4587ddb2e44396671a089ee78bb758c38f82686c2d2f64aeda5bc362697",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:00+00:00",
+  "change_summary": "",
+  "kind": "barrier",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    520.0,
+    130.0
+  ]
+}

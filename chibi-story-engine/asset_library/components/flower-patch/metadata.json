@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "flower-patch",
+  "asset_type": "component",
+  "name": "Wildflower patch",
+  "version": 1,
+  "description": "Wildflower patch (flower); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FLOWER-PATCH"
+  ],
+  "tags": [
+    "flower",
+    "forest",
+    "meadow"
+  ],
+  "catalog_code": "CMP-FLW-0019",
+  "category": "flower",
+  "subcategory": "flower",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "0258c24580345a6942fe43ac812961e90952fc92a27a7db3808d5e5d35cc4124",
+      "width": 210,
+      "height": 140,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "27900be586a8f0fdea94f833020f6e8b1c51434ed7fe0ab220a5c826c590c9ba",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:44+00:00",
+  "change_summary": "",
+  "kind": "flower",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    210.0,
+    140.0
+  ]
+}

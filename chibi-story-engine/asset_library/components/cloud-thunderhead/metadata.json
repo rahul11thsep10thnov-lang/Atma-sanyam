@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "cloud-thunderhead",
+  "asset_type": "component",
+  "name": "Towering thunderhead",
+  "version": 1,
+  "description": "Towering thunderhead (cloud); vector component, base point at the bottom centre.",
+  "aliases": [
+    "CLOUD-THUNDERHEAD"
+  ],
+  "tags": [
+    "cloud",
+    "storm"
+  ],
+  "catalog_code": "CMP-CLD-0008",
+  "category": "cloud",
+  "subcategory": "cloud",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "b51c51f142b24ca61af299f8f5b2d1f8a61440521ebe8473f6d333bfe0fc7193",
+      "width": 580,
+      "height": 430,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "c7245d585df2dd9c40f7acd29b4845be87d9b9b44ab3334dfb95f7e5604b92a4",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:48+00:00",
+  "change_summary": "",
+  "kind": "cloud",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    580.0,
+    430.0
+  ]
+}

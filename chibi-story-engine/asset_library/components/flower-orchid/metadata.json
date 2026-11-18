@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "flower-orchid",
+  "asset_type": "component",
+  "name": "Orchid",
+  "version": 1,
+  "description": "Orchid (flower); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FLOWER-ORCHID"
+  ],
+  "tags": [
+    "flower",
+    "forest",
+    "tropical"
+  ],
+  "catalog_code": "CMP-FLW-0012",
+  "category": "flower",
+  "subcategory": "flower",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "2645469de872b5ae8f45a542a02463fcd34c5d0b1f8f57b50935430292ffa8d9",
+      "width": 110,
+      "height": 230,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "20ef4a0b29e58d1e40d1bd337d02fd80629a57617d00b7edeeb14fed81228c94",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:44+00:00",
+  "change_summary": "",
+  "kind": "flower",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    110.0,
+    230.0
+  ]
+}

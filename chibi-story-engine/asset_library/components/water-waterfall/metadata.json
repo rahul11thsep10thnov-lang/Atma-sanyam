@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "water-waterfall",
+  "asset_type": "component",
+  "name": "Waterfall",
+  "version": 1,
+  "description": "Waterfall (water); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WATER-WATERFALL"
+  ],
+  "tags": [
+    "mountain",
+    "water",
+    "waterfall"
+  ],
+  "catalog_code": "CMP-WTR-0006",
+  "category": "water features",
+  "subcategory": "water",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "4593027a1248521a0a620bbdef63797b834dd7344422fb23e42851106197a7e1",
+      "width": 320,
+      "height": 580,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "0c6ea2fbe5a1595140bfa074080549f3fa05fc7aaa71aa24b6fe4b72cf43a98a",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:50+00:00",
+  "change_summary": "",
+  "kind": "water",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    320.0,
+    580.0
+  ]
+}

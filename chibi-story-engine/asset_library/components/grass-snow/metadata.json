@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "grass-snow",
+  "asset_type": "component",
+  "name": "Snow drifts",
+  "version": 1,
+  "description": "Snow drifts (grass); vector component, base point at the bottom centre.",
+  "aliases": [
+    "GRASS-SNOW"
+  ],
+  "tags": [
+    "grass",
+    "snow",
+    "winter"
+  ],
+  "catalog_code": "CMP-GRS-0012",
+  "category": "grass",
+  "subcategory": "grass",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "93645b0bd61a62177582fe5e88968dc2403480daa37cac2f66ea0a9bc475b7ee",
+      "width": 290,
+      "height": 60,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "6a91a025d32adf74143287f587c10aadf4e8f1ae8a11d65c663ff5626765422e",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:45+00:00",
+  "change_summary": "",
+  "kind": "grass",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    290.0,
+    60.0
+  ]
+}

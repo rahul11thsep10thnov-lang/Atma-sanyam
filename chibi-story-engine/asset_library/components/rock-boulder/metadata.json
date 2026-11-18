@@ -1,0 +1,61 @@
+{
+  "manifest_version": "1.0",
+  "id": "rock-boulder",
+  "asset_type": "component",
+  "name": "Round boulder",
+  "version": 1,
+  "description": "Round boulder (rock); vector component, base point at the bottom centre.",
+  "aliases": [
+    "ROCK-BOULDER"
+  ],
+  "tags": [
+    "rock"
+  ],
+  "catalog_code": "CMP-RCK-0001",
+  "category": "rock",
+  "subcategory": "rock",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "3c5708bf0ae713dbbce887a397999cbfb7545ae237132251d9a2d073d512e0eb",
+      "width": 310,
+      "height": 220,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "70e8b49e30564498e57e0d6c9a0232a27182643d14f0eed92edfdada74f6b613",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:45+00:00",
+  "change_summary": "",
+  "kind": "rock",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    310.0,
+    220.0
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-fir-tall",
+  "asset_type": "component",
+  "name": "Tall narrow fir",
+  "version": 1,
+  "description": "Tall narrow fir (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-FIR-TALL"
+  ],
+  "tags": [
+    "fir",
+    "mountain",
+    "tree"
+  ],
+  "catalog_code": "CMP-TRE-0011",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "c0ed99f9f2f1f88c1bce7194e2d1153833ebd608661ecf37c86b7e95c8b7e55e",
+      "width": 280,
+      "height": 940,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "a9ef5ef2f0cbf6564ca9d7fdcdad23ecec46fd7575c43f17668ee8b410a47508",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:36+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    280.0,
+    940.0
+  ]
+}

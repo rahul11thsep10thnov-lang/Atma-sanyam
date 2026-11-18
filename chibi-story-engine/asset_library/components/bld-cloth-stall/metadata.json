@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "bld-cloth-stall",
+  "asset_type": "component",
+  "name": "Cloth stall",
+  "version": 1,
+  "description": "Cloth stall (building); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BLD-CLOTH-STALL"
+  ],
+  "tags": [
+    "building",
+    "cloth",
+    "market",
+    "stall"
+  ],
+  "catalog_code": "CMP-BLD-0026",
+  "category": "buildings",
+  "subcategory": "building",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "284455c2e2533c10420d711ca8c6a310efc8a14499a00c1abb296f66058831ed",
+      "width": 400,
+      "height": 270,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "993d34033dc736cfb3e66612c3a31ba629605c764f80e1effd675739f1d8be26",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:59+00:00",
+  "change_summary": "",
+  "kind": "building",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    400.0,
+    270.0
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "flower-lotus-bud",
+  "asset_type": "component",
+  "name": "Lotus bud",
+  "version": 1,
+  "description": "Lotus bud (flower); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FLOWER-LOTUS-BUD"
+  ],
+  "tags": [
+    "flower",
+    "lake",
+    "lotus",
+    "pond"
+  ],
+  "catalog_code": "CMP-FLW-0017",
+  "category": "flower",
+  "subcategory": "flower",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "2aca7b8216b5adf8b386b88198e6790089d153a1dd018674177502099bc8d381",
+      "width": 80,
+      "height": 210,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "01f7934a1787e7a91ad6254eb84533596fd57904224d556ecd0cfa8cb04207bb",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:44+00:00",
+  "change_summary": "",
+  "kind": "flower",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    80.0,
+    210.0
+  ]
+}

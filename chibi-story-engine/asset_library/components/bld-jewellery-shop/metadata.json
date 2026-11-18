@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "bld-jewellery-shop",
+  "asset_type": "component",
+  "name": "Jewellery shop",
+  "version": 1,
+  "description": "Jewellery shop (building); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BLD-JEWELLERY-SHOP"
+  ],
+  "tags": [
+    "building",
+    "jewellery",
+    "market",
+    "shop"
+  ],
+  "catalog_code": "CMP-BLD-0029",
+  "category": "buildings",
+  "subcategory": "building",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "cf3a916fe754ec79d0fa0f98b96d9bb662c66d8ba08d2ba48a98e10bcaf96334",
+      "width": 540,
+      "height": 430,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "7886fb79ee21136786a38ec1adbc19d3ca470ab043d40afd45b253dc0905c270",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:59+00:00",
+  "change_summary": "",
+  "kind": "building",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    540.0,
+    430.0
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "grass-pebbles",
+  "asset_type": "component",
+  "name": "Pebbles",
+  "version": 1,
+  "description": "Pebbles (grass); vector component, base point at the bottom centre.",
+  "aliases": [
+    "GRASS-PEBBLES"
+  ],
+  "tags": [
+    "grass",
+    "ground",
+    "path"
+  ],
+  "catalog_code": "CMP-GRS-0013",
+  "category": "grass",
+  "subcategory": "grass",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "7aee896013c41ac011fbff8b960bc24f02c219357274c368488b4ad1e6ff1f3f",
+      "width": 260,
+      "height": 70,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "c776d1daae6b18c195e581b66b63b3b9bd50df6e227529b256b47daf8d988aa5",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:45+00:00",
+  "change_summary": "",
+  "kind": "grass",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    260.0,
+    70.0
+  ]
+}

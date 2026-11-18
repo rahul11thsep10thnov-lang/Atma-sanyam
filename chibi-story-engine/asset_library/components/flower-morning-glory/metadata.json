@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "flower-morning-glory",
+  "asset_type": "component",
+  "name": "Morning glory",
+  "version": 1,
+  "description": "Morning glory (flower); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FLOWER-MORNING-GLORY"
+  ],
+  "tags": [
+    "fence",
+    "flower",
+    "village"
+  ],
+  "catalog_code": "CMP-FLW-0015",
+  "category": "flower",
+  "subcategory": "flower",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "68a518421fcb4ba47a6438fc37cc89a230f8cf43f5429c7f176c2f8370d5913b",
+      "width": 110,
+      "height": 200,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "6e630ebeac9f3b7d88a23b6f5c54fa457d4a8fb79a37feef6f33b0e6502e498d",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:44+00:00",
+  "change_summary": "",
+  "kind": "flower",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    110.0,
+    200.0
+  ]
+}

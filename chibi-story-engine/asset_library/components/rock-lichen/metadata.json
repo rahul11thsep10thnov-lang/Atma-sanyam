@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "rock-lichen",
+  "asset_type": "component",
+  "name": "Lichen rock",
+  "version": 1,
+  "description": "Lichen rock (rock); vector component, base point at the bottom centre.",
+  "aliases": [
+    "ROCK-LICHEN"
+  ],
+  "tags": [
+    "forest",
+    "rock"
+  ],
+  "catalog_code": "CMP-RCK-0012",
+  "category": "rock",
+  "subcategory": "rock",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "c5781c3ed616d570e681aa02d487b32d9b88d7440a45f660849d1e9e7f63c540",
+      "width": 340,
+      "height": 220,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "bbf185c06d5ff663e697e82978636f4a239deae324aeecba7880d6aa239eabcb",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:46+00:00",
+  "change_summary": "",
+  "kind": "rock",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    340.0,
+    220.0
+  ]
+}

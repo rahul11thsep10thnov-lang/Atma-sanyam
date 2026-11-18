@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "bld-two-storey",
+  "asset_type": "component",
+  "name": "Two-storey house",
+  "version": 1,
+  "description": "Two-storey house (building); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BLD-TWO-STOREY"
+  ],
+  "tags": [
+    "building",
+    "house",
+    "market",
+    "merchant"
+  ],
+  "catalog_code": "CMP-BLD-0008",
+  "category": "buildings",
+  "subcategory": "building",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "b4a3bf089eb710efdb15da72bb5bc9346b1abdb09294b600baa5b450cef59a68",
+      "width": 560,
+      "height": 670,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "de9649c18a65e5aca2f8479b0798eec7a4b39f2af96095598dc9567c9223dfd9",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:53+00:00",
+  "change_summary": "",
+  "kind": "building",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    560.0,
+    670.0
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "rock-gold-ore",
+  "asset_type": "component",
+  "name": "Gold-flecked rock",
+  "version": 1,
+  "description": "Gold-flecked rock (rock); vector component, base point at the bottom centre.",
+  "aliases": [
+    "ROCK-GOLD-ORE"
+  ],
+  "tags": [
+    "cave",
+    "rock",
+    "treasure"
+  ],
+  "catalog_code": "CMP-RCK-0010",
+  "category": "rock",
+  "subcategory": "rock",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "57c369bf9e61b01d7279caab63ee97fd482891e20f036b91f4c4b7a66e8264dd",
+      "width": 310,
+      "height": 220,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "eef3aeadaea78ec6506d9aa50b719330cf7bdd21df46c9c092f3ac0683228627",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:46+00:00",
+  "change_summary": "",
+  "kind": "rock",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    310.0,
+    220.0
+  ]
+}

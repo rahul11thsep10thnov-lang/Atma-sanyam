@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "water-sailboat",
+  "asset_type": "component",
+  "name": "Sailing boat",
+  "version": 1,
+  "description": "Sailing boat (water); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WATER-SAILBOAT"
+  ],
+  "tags": [
+    "boat",
+    "harbour",
+    "port",
+    "water"
+  ],
+  "catalog_code": "CMP-WTR-0010",
+  "category": "water features",
+  "subcategory": "water",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "29c4e051cad6c3f2c7536ded43a99abf620eab5a3c47be9e665e55de309e1576",
+      "width": 460,
+      "height": 420,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "884fc9d16176a97eab6dbb5e389c79a523ef5a4a6320443693df0999e042688f",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:50+00:00",
+  "change_summary": "",
+  "kind": "water",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    460.0,
+    420.0
+  ]
+}

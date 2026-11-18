@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "water-jetty",
+  "asset_type": "component",
+  "name": "Wooden jetty",
+  "version": 1,
+  "description": "Wooden jetty (water); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WATER-JETTY"
+  ],
+  "tags": [
+    "harbour",
+    "lake",
+    "water"
+  ],
+  "catalog_code": "CMP-WTR-0012",
+  "category": "water features",
+  "subcategory": "water",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "c1fcf3fd19aeba7c706f88891380dc2d47b41691c3a94ac0534e9139e991bfc1",
+      "width": 500,
+      "height": 150,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "4de2c9046b6a62599b8e2c557ca6c347525929d3b17e2f4953f80fef9f31684d",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:50+00:00",
+  "change_summary": "",
+  "kind": "water",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    500.0,
+    150.0
+  ]
+}

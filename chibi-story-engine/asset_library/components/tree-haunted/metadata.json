@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-haunted",
+  "asset_type": "component",
+  "name": "Twisted haunted tree",
+  "version": 1,
+  "description": "Twisted haunted tree (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-HAUNTED"
+  ],
+  "tags": [
+    "haunted",
+    "tree"
+  ],
+  "catalog_code": "CMP-TRE-0026",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "1140652b66e552c9ad1797284405e7750a6f5729d6397fba38b931fc5557beb5",
+      "width": 780,
+      "height": 790,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "83bd69bb5875ed7f84b6cb7943a70c3368ff6c619a944e62fe18a1893d98d4dc",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:39+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    780.0,
+    790.0
+  ]
+}

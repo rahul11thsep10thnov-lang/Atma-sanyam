@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "bld-darwaza",
+  "asset_type": "component",
+  "name": "Palace gateway (darwaza)",
+  "version": 1,
+  "description": "Palace gateway (darwaza) (building); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BLD-DARWAZA"
+  ],
+  "tags": [
+    "building",
+    "gate",
+    "palace"
+  ],
+  "catalog_code": "CMP-BLD-0019",
+  "category": "buildings",
+  "subcategory": "building",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "a5ac5528af5eb31d54cd20a79583034e206d12308131b8b08cf58223c7c2dcab",
+      "width": 560,
+      "height": 680,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "6456466f6f246a6949a9923723402f8f68d75eafa8adecd5418a9d7b3bed9234",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:57+00:00",
+  "change_summary": "",
+  "kind": "building",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    560.0,
+    680.0
+  ]
+}

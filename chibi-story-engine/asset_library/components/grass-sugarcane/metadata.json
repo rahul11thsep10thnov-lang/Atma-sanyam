@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "grass-sugarcane",
+  "asset_type": "component",
+  "name": "Sugarcane",
+  "version": 1,
+  "description": "Sugarcane (grass); vector component, base point at the bottom centre.",
+  "aliases": [
+    "GRASS-SUGARCANE"
+  ],
+  "tags": [
+    "farm",
+    "grass",
+    "village"
+  ],
+  "catalog_code": "CMP-GRS-0011",
+  "category": "grass",
+  "subcategory": "grass",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "10bc6117c33512439d53f23056b1ccb10203a873a308214d51a30faba2361a1b",
+      "width": 280,
+      "height": 360,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "80bf51aa169d9f3676795e990826f8389b6dffca5a4bb04d94f393646df1e1e2",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:45+00:00",
+  "change_summary": "",
+  "kind": "grass",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    280.0,
+    360.0
+  ]
+}

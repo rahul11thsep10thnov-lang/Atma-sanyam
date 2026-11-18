@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "water-foam",
+  "asset_type": "component",
+  "name": "Foam edge",
+  "version": 1,
+  "description": "Foam edge (water); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WATER-FOAM"
+  ],
+  "tags": [
+    "river",
+    "water"
+  ],
+  "catalog_code": "CMP-WTR-0007",
+  "category": "water features",
+  "subcategory": "water",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "839968d7ff2ce1e85c42d0f7923088a661296c55a4d3c0eea726fb6d13bb8856",
+      "width": 390,
+      "height": 60,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "88cb9b1f0e0b210aa3dc6a4bbc2cff08d832c5a57a11e67f24d49521caef8fc7",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:50+00:00",
+  "change_summary": "",
+  "kind": "water",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    390.0,
+    60.0
+  ]
+}

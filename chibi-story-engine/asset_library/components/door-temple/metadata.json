@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "door-temple",
+  "asset_type": "component",
+  "name": "Carved temple door",
+  "version": 1,
+  "description": "Carved temple door (opening); vector component, base point at the bottom centre.",
+  "aliases": [
+    "DOOR-TEMPLE"
+  ],
+  "tags": [
+    "door",
+    "opening",
+    "temple"
+  ],
+  "catalog_code": "CMP-OPN-0004",
+  "category": "doors and windows",
+  "subcategory": "opening",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "379af751d5b2d8e0b63d238195f954cc001281a0cc929a2fd0a1853e01adbfe9",
+      "width": 240,
+      "height": 380,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "7049f96e695964490d3eecd9d27c5c12fda991611fcaa6672e3b8ca344d1da6a",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:51+00:00",
+  "change_summary": "",
+  "kind": "opening",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    240.0,
+    380.0
+  ]
+}

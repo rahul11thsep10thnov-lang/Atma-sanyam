@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-banyan",
+  "asset_type": "component",
+  "name": "Banyan tree",
+  "version": 1,
+  "description": "Banyan tree (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-BANYAN"
+  ],
+  "tags": [
+    "banyan",
+    "sacred",
+    "tree",
+    "village"
+  ],
+  "catalog_code": "CMP-TRE-0027",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "1fb9ca1fc25ca5325ed3443a65d8ec0ccf9acd501771f3a0de78458d548d79b6",
+      "width": 910,
+      "height": 950,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "abb9e556d7d3000ce95cd9859ba48726992b0fc50a1aac1a95652b7bd2586d5b",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:40+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    910.0,
+    950.0
+  ]
+}

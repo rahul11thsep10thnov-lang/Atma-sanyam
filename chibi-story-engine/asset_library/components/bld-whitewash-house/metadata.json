@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "bld-whitewash-house",
+  "asset_type": "component",
+  "name": "Whitewashed house with chimney",
+  "version": 1,
+  "description": "Whitewashed house with chimney (building); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BLD-WHITEWASH-HOUSE"
+  ],
+  "tags": [
+    "building",
+    "house",
+    "village"
+  ],
+  "catalog_code": "CMP-BLD-0007",
+  "category": "buildings",
+  "subcategory": "building",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "740412891a78b35770c5e2e7be1440dc2e9324deaeae5b65e0f5827a6b46c74b",
+      "width": 520,
+      "height": 450,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "9aba0972fef3ab85132e53ce9e69d5b83dc510b2c323c7e239ed246a2420490b",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:53+00:00",
+  "change_summary": "",
+  "kind": "building",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    520.0,
+    450.0
+  ]
+}

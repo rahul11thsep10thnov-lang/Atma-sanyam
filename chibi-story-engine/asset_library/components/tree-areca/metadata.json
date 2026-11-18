@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-areca",
+  "asset_type": "component",
+  "name": "Slender areca palm",
+  "version": 1,
+  "description": "Slender areca palm (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-ARECA"
+  ],
+  "tags": [
+    "palm",
+    "tree",
+    "village"
+  ],
+  "catalog_code": "CMP-TRE-0015",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "a396af8abbe6b642a20ebdb59f513b5feb4e375926281002577e84d62f2f6411",
+      "width": 320,
+      "height": 900,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "d19e075fdf06f45f63754444da43fdaf505c42a0e0dc483a2c8c19a4aa518d93",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:36+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    320.0,
+    900.0
+  ]
+}

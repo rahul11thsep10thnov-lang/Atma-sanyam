@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "bush-cactus",
+  "asset_type": "component",
+  "name": "Saguaro cactus",
+  "version": 1,
+  "description": "Saguaro cactus (bush); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BUSH-CACTUS"
+  ],
+  "tags": [
+    "bush",
+    "cactus",
+    "desert"
+  ],
+  "catalog_code": "CMP-BSH-0015",
+  "category": "bush",
+  "subcategory": "bush",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "2e6dc0fbbc2fa0d9ada184ce72ad0551ecf6e48f4d9e2b5b85b444131f92264b",
+      "width": 200,
+      "height": 350,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "4491aacc5c0c1b2a1bee8dabb497f60ab25baaab3264c7aab5585f0f36d77a46",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:43+00:00",
+  "change_summary": "",
+  "kind": "bush",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    200.0,
+    350.0
+  ]
+}

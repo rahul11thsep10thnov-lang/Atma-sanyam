@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "lamp-hanging-brass",
+  "asset_type": "component",
+  "name": "Hanging brass lamp",
+  "version": 1,
+  "description": "Hanging brass lamp (lamp); vector component, base point at the bottom centre.",
+  "aliases": [
+    "LAMP-HANGING-BRASS"
+  ],
+  "tags": [
+    "house",
+    "lamp",
+    "palace",
+    "temple"
+  ],
+  "catalog_code": "CMP-LMP-0008",
+  "category": "lamps and lights",
+  "subcategory": "lamp",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "49f695e30a98741047cacdefccad53b7ec13acc509a6c9313e09d9537ae047d5",
+      "width": 260,
+      "height": 310,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "f39071d91693cca5cc463b31d310f320a7953809044db6be631329308b28cc09",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:03+00:00",
+  "change_summary": "",
+  "kind": "lamp",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    260.0,
+    310.0
+  ]
+}

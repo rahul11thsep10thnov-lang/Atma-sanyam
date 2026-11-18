@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "rock-arch",
+  "asset_type": "component",
+  "name": "Natural rock arch",
+  "version": 1,
+  "description": "Natural rock arch (rock); vector component, base point at the bottom centre.",
+  "aliases": [
+    "ROCK-ARCH"
+  ],
+  "tags": [
+    "desert",
+    "mountain",
+    "rock"
+  ],
+  "catalog_code": "CMP-RCK-0016",
+  "category": "rock",
+  "subcategory": "rock",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "f821cf50cd98b3ad56787068a584346e15de4df50453cc07e942d354d5b1e200",
+      "width": 500,
+      "height": 440,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "1ab7b1b80a50ab22839f5b183fc2a164bcc8429e02812aaffa1bc53c2984f435",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:47+00:00",
+  "change_summary": "",
+  "kind": "rock",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    500.0,
+    440.0
+  ]
+}

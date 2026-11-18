@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "lamp-paper-lantern",
+  "asset_type": "component",
+  "name": "Paper lantern",
+  "version": 1,
+  "description": "Paper lantern (lamp); vector component, base point at the bottom centre.",
+  "aliases": [
+    "LAMP-PAPER-LANTERN"
+  ],
+  "tags": [
+    "festival",
+    "lamp",
+    "market"
+  ],
+  "catalog_code": "CMP-LMP-0003",
+  "category": "lamps and lights",
+  "subcategory": "lamp",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "001553b5299326a9103ec7fc5fc4cc3edc884ccacc0c56b374feb90d974060e3",
+      "width": 240,
+      "height": 240,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "b2c81f34d7bf283da8b3bd88ef057610aa69656dd6ee082dcd0bc704607c5d70",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:02+00:00",
+  "change_summary": "",
+  "kind": "lamp",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    240.0,
+    240.0
+  ]
+}

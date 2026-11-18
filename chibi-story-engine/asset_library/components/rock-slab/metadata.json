@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "rock-slab",
+  "asset_type": "component",
+  "name": "Flat slab",
+  "version": 1,
+  "description": "Flat slab (rock); vector component, base point at the bottom centre.",
+  "aliases": [
+    "ROCK-SLAB"
+  ],
+  "tags": [
+    "path",
+    "rock"
+  ],
+  "catalog_code": "CMP-RCK-0014",
+  "category": "rock",
+  "subcategory": "rock",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "0193f41cfe2d77d130231b84e0ece43960b5d50c79e606a09331b82ba161a247",
+      "width": 420,
+      "height": 100,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "612b7dc60230867ed17ddc5afe76fc922bfe6fdc81f48ff36e761bb29caa7b43",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:46+00:00",
+  "change_summary": "",
+  "kind": "rock",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    420.0,
+    100.0
+  ]
+}

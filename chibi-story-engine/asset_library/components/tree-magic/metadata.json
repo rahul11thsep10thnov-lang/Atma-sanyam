@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-magic",
+  "asset_type": "component",
+  "name": "Glowing magical tree",
+  "version": 1,
+  "description": "Glowing magical tree (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-MAGIC"
+  ],
+  "tags": [
+    "enchanted",
+    "magic",
+    "tree"
+  ],
+  "catalog_code": "CMP-TRE-0008",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "9b319930c1b448995461020f9a1c94a2a67dabf4752d00425c3e825beca076f4",
+      "width": 740,
+      "height": 810,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "740bc63189fab50cb3aefd1da050e390b6b22d20fb962f2bdaa1c86262903adf",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:35+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    740.0,
+    810.0
+  ]
+}

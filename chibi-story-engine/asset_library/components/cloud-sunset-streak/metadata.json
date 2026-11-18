@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "cloud-sunset-streak",
+  "asset_type": "component",
+  "name": "Sunset streaks",
+  "version": 1,
+  "description": "Sunset streaks (cloud); vector component, base point at the bottom centre.",
+  "aliases": [
+    "CLOUD-SUNSET-STREAK"
+  ],
+  "tags": [
+    "cloud",
+    "sunset"
+  ],
+  "catalog_code": "CMP-CLD-0010",
+  "category": "cloud",
+  "subcategory": "cloud",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "d5390520db6c3a400fc3ca93d45cd8a444f1d7a46c8651b1f70a454f094128d7",
+      "width": 920,
+      "height": 120,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "901cb49fb8271f2a68209dc1375a8eb19afb4e269ad11bbf1e6bd43f7d734352",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:48+00:00",
+  "change_summary": "",
+  "kind": "cloud",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    920.0,
+    120.0
+  ]
+}

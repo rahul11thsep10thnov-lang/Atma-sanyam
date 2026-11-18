@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "mountain-green-hills",
+  "asset_type": "component",
+  "name": "Rolling green hills",
+  "version": 1,
+  "description": "Rolling green hills (mountain); vector component, base point at the bottom centre.",
+  "aliases": [
+    "MOUNTAIN-GREEN-HILLS"
+  ],
+  "tags": [
+    "green",
+    "hill",
+    "mountain"
+  ],
+  "catalog_code": "CMP-MTN-0002",
+  "category": "mountain",
+  "subcategory": "mountain",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "7b06da65f9ee2ce27a0966cf31fbc9f5093db81668a25efb9d7e02f807fa8c74",
+      "width": 1720,
+      "height": 340,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "9c5e10b26e2ac143a37f3099dde0cb9ad7f88848cbb0120adf24d716da6f4fbd",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:48+00:00",
+  "change_summary": "",
+  "kind": "mountain",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    1720.0,
+    340.0
+  ]
+}

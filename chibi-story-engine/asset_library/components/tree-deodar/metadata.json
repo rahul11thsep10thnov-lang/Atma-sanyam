@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-deodar",
+  "asset_type": "component",
+  "name": "Deodar cedar",
+  "version": 1,
+  "description": "Deodar cedar (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-DEODAR"
+  ],
+  "tags": [
+    "deodar",
+    "himalaya",
+    "mountain",
+    "tree"
+  ],
+  "catalog_code": "CMP-TRE-0010",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "1e977c9343b61085699ab40e5c843db6b2a47c9fd0afd4d709c3273df0ed94ed",
+      "width": 440,
+      "height": 850,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "605b039df17423e2f78f3d9196f2c3c85cba33374b707aff8738d2ac86dfd6bd",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:35+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    440.0,
+    850.0
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "bush-rose",
+  "asset_type": "component",
+  "name": "Rose bush",
+  "version": 1,
+  "description": "Rose bush (bush); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BUSH-ROSE"
+  ],
+  "tags": [
+    "bush",
+    "flowering",
+    "garden",
+    "palace"
+  ],
+  "catalog_code": "CMP-BSH-0007",
+  "category": "bush",
+  "subcategory": "bush",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "096a9a57001a211d23abcd5b39dd8038e9a5bfdfbcbf25bc8d6700ab79f46ca3",
+      "width": 260,
+      "height": 190,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "efd60899df0b0d9103b5116346442ad6cb94cdb08ddbb4da02d1341bd466c2aa",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:42+00:00",
+  "change_summary": "",
+  "kind": "bush",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    260.0,
+    190.0
+  ]
+}

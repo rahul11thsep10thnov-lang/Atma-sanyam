@@ -1,0 +1,65 @@
+{
+  "manifest_version": "1.0",
+  "id": "bush-tulsi",
+  "asset_type": "component",
+  "name": "Tulsi plant in a pot",
+  "version": 1,
+  "description": "Tulsi plant in a pot (bush); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BUSH-TULSI"
+  ],
+  "tags": [
+    "bush",
+    "house",
+    "temple",
+    "tulsi",
+    "village"
+  ],
+  "catalog_code": "CMP-BSH-0018",
+  "category": "bush",
+  "subcategory": "bush",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "6aa7d172206e11442a48f2a48498666a97c3e6d2dd2a1c4b34f52c1c604fb729",
+      "width": 160,
+      "height": 250,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "e6c27a87f14ff0d6d0ccc39655c1dac60454beac2aa7da49c54c8ad234715df3",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:43+00:00",
+  "change_summary": "",
+  "kind": "bush",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    160.0,
+    250.0
+  ]
+}

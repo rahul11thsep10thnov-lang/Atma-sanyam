@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "door-trellis",
+  "asset_type": "component",
+  "name": "Trellis garden door",
+  "version": 1,
+  "description": "Trellis garden door (opening); vector component, base point at the bottom centre.",
+  "aliases": [
+    "DOOR-TRELLIS"
+  ],
+  "tags": [
+    "door",
+    "garden",
+    "opening"
+  ],
+  "catalog_code": "CMP-OPN-0011",
+  "category": "doors and windows",
+  "subcategory": "opening",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "77a0c047d6022240eaae0f5387de5bb54266acc0d6625aa1cdbef968efaee3ff",
+      "width": 220,
+      "height": 290,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "66b7079d12c799bfd3d00751bbee6307b1a7ab9311aa67a55601f59d09026c9e",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:51+00:00",
+  "change_summary": "",
+  "kind": "opening",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    220.0,
+    290.0
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "flower-chrysanthemum",
+  "asset_type": "component",
+  "name": "Chrysanthemum",
+  "version": 1,
+  "description": "Chrysanthemum (flower); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FLOWER-CHRYSANTHEMUM"
+  ],
+  "tags": [
+    "autumn",
+    "flower",
+    "garden"
+  ],
+  "catalog_code": "CMP-FLW-0014",
+  "category": "flower",
+  "subcategory": "flower",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "45129e2c57e29f7dd7a294706c0a042038d12cc8e20ee8a74d3522bb33a39baa",
+      "width": 110,
+      "height": 220,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "48ad0509cfe5eae777023260ca4e67ab99e681b37a528d1fc3075da9754c5ed7",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:44+00:00",
+  "change_summary": "",
+  "kind": "flower",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    110.0,
+    220.0
+  ]
+}

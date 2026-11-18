@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "rock-mesa",
+  "asset_type": "component",
+  "name": "Red mesa block",
+  "version": 1,
+  "description": "Red mesa block (rock); vector component, base point at the bottom centre.",
+  "aliases": [
+    "ROCK-MESA"
+  ],
+  "tags": [
+    "desert",
+    "mountain",
+    "rock"
+  ],
+  "catalog_code": "CMP-RCK-0019",
+  "category": "rock",
+  "subcategory": "rock",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "50470e6af6d4ec6b59270e74851a6b3d60e069a0fa354bc0c5c157700da0dbd9",
+      "width": 460,
+      "height": 340,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "9356e0ba94d5b75b9cec8fe80cdd95396d1a3eb481856879757c080d6e0bfc31",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:47+00:00",
+  "change_summary": "",
+  "kind": "rock",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    460.0,
+    340.0
+  ]
+}

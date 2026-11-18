@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "window-jharokha",
+  "asset_type": "component",
+  "name": "Jharokha balcony window",
+  "version": 1,
+  "description": "Jharokha balcony window (opening); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WINDOW-JHAROKHA"
+  ],
+  "tags": [
+    "haveli",
+    "opening",
+    "palace",
+    "window"
+  ],
+  "catalog_code": "CMP-OPN-0020",
+  "category": "doors and windows",
+  "subcategory": "opening",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "aa42d610f8cfa5b3bb124af877d3d2dbbede71decdf88da06cb87a73a7b56297",
+      "width": 240,
+      "height": 250,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "f347438c124281515a6ab830302990dc3320b04675185b40b9ba7484a4e1f3cc",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:52+00:00",
+  "change_summary": "",
+  "kind": "opening",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    240.0,
+    250.0
+  ]
+}

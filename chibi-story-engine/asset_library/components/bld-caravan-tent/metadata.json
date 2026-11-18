@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "bld-caravan-tent",
+  "asset_type": "component",
+  "name": "Caravan tent",
+  "version": 1,
+  "description": "Caravan tent (building); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BLD-CARAVAN-TENT"
+  ],
+  "tags": [
+    "building",
+    "camp",
+    "desert",
+    "tent"
+  ],
+  "catalog_code": "CMP-BLD-0023",
+  "category": "buildings",
+  "subcategory": "building",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "643d61df9c36ee8d2d3c50ad27cc07d5ef0f2c1ccd312ef90648bc4d4aab1fc5",
+      "width": 440,
+      "height": 340,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "8f42c92f071da6c67996dd23ff1e30d76670d60d8cc8781fe738fa1ee4f6e6d1",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:58+00:00",
+  "change_summary": "",
+  "kind": "building",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    440.0,
+    340.0
+  ]
+}

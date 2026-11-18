@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "bush-prickly-pear",
+  "asset_type": "component",
+  "name": "Prickly pear",
+  "version": 1,
+  "description": "Prickly pear (bush); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BUSH-PRICKLY-PEAR"
+  ],
+  "tags": [
+    "bush",
+    "cactus",
+    "desert"
+  ],
+  "catalog_code": "CMP-BSH-0016",
+  "category": "bush",
+  "subcategory": "bush",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "98241c3f6608dabd0733ad65da09acbb90b17758112c5cd9b8159f19abbc7995",
+      "width": 210,
+      "height": 280,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "92d954e7ae7fa348e47fa31076d2ea1e0a624d36ad7e72407c4cd9070888fa18",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:43+00:00",
+  "change_summary": "",
+  "kind": "bush",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    210.0,
+    280.0
+  ]
+}

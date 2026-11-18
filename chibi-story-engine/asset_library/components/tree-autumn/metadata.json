@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-autumn",
+  "asset_type": "component",
+  "name": "Autumn maple",
+  "version": 1,
+  "description": "Autumn maple (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-AUTUMN"
+  ],
+  "tags": [
+    "autumn",
+    "tree"
+  ],
+  "catalog_code": "CMP-TRE-0007",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "d084ad66808cbb17768c05d11cde50d3d3e787267308cbc88544febcdf640265",
+      "width": 560,
+      "height": 690,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "00eadd40501ae1edfd57911b03995a1e39db5f9df0e8256b68c2d0a938cae534",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:34+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    560.0,
+    690.0
+  ]
+}

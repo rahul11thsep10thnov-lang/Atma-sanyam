@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "rock-mossy",
+  "asset_type": "component",
+  "name": "Mossy rock",
+  "version": 1,
+  "description": "Mossy rock (rock); vector component, base point at the bottom centre.",
+  "aliases": [
+    "ROCK-MOSSY"
+  ],
+  "tags": [
+    "forest",
+    "moss",
+    "rock"
+  ],
+  "catalog_code": "CMP-RCK-0003",
+  "category": "rock",
+  "subcategory": "rock",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "dc5bf882ccf725343c2415b3f498eabdcd436b267e81480eedf582b8dd4575e9",
+      "width": 310,
+      "height": 220,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "fd361d28f4a0da5112316c174f37c0b7a964cc1d8058032f373bd82770de1fe9",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:45+00:00",
+  "change_summary": "",
+  "kind": "rock",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    310.0,
+    220.0
+  ]
+}

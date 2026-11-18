@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-coconut",
+  "asset_type": "component",
+  "name": "Coconut palm",
+  "version": 1,
+  "description": "Coconut palm (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-COCONUT"
+  ],
+  "tags": [
+    "coast",
+    "coconut",
+    "palm",
+    "tree"
+  ],
+  "catalog_code": "CMP-TRE-0013",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "a380935be8f3dd8235b5c752aebcaed56f7e1cac5f0b10008075d0ac48af248e",
+      "width": 500,
+      "height": 870,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "132e7be40f22f7be4e1ba2d02bc4c7c8666773f5d8fb76985f63a12d8b71fb6d",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:36+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    500.0,
+    870.0
+  ]
+}

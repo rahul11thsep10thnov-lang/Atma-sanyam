@@ -1,0 +1,65 @@
+{
+  "manifest_version": "1.0",
+  "id": "flower-lotus",
+  "asset_type": "component",
+  "name": "Lotus bloom",
+  "version": 1,
+  "description": "Lotus bloom (flower); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FLOWER-LOTUS"
+  ],
+  "tags": [
+    "flower",
+    "lake",
+    "lotus",
+    "pond",
+    "temple"
+  ],
+  "catalog_code": "CMP-FLW-0016",
+  "category": "flower",
+  "subcategory": "flower",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "b270bf4ed7b78487ef0f250aa1c3675d8793b26f12ecb936ba0374da64c840eb",
+      "width": 220,
+      "height": 230,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "6b55690c6ce1c9eff9c8068acc702407286d97e524b3801fc4aada41f098f3f0",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:44+00:00",
+  "change_summary": "",
+  "kind": "flower",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    220.0,
+    230.0
+  ]
+}

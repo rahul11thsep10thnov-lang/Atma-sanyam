@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "water-ripples",
+  "asset_type": "component",
+  "name": "Ripple rings",
+  "version": 1,
+  "description": "Ripple rings (water); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WATER-RIPPLES"
+  ],
+  "tags": [
+    "pond",
+    "water"
+  ],
+  "catalog_code": "CMP-WTR-0002",
+  "category": "water features",
+  "subcategory": "water",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "2d60a3bc30c65bb905cd2c2370f789e234f648fc703df7aa36a42f74ddd4ee91",
+      "width": 480,
+      "height": 120,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "8f7d1dc80d3b9b6d88bbbbeb8d33b6c87a7b44e0d5e2cf1752115f05176b4510",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:49+00:00",
+  "change_summary": "",
+  "kind": "water",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    480.0,
+    120.0
+  ]
+}

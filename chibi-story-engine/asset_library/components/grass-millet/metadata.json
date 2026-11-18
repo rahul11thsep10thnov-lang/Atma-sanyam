@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "grass-millet",
+  "asset_type": "component",
+  "name": "Millet stalks",
+  "version": 1,
+  "description": "Millet stalks (grass); vector component, base point at the bottom centre.",
+  "aliases": [
+    "GRASS-MILLET"
+  ],
+  "tags": [
+    "farm",
+    "field",
+    "grass"
+  ],
+  "catalog_code": "CMP-GRS-0005",
+  "category": "grass",
+  "subcategory": "grass",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "677c5cd20d9abb0377d716fca395d6d24e77bba17c8fa57aa372bf72239cd362",
+      "width": 140,
+      "height": 320,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "54ba49e6a28e7a8986d7990203ba6f4aeba34ad4c4f5a43b8fae69fa78c6466a",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:45+00:00",
+  "change_summary": "",
+  "kind": "grass",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    140.0,
+    320.0
+  ]
+}

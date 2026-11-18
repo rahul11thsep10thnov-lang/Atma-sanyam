@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "cloud-cirrus",
+  "asset_type": "component",
+  "name": "Wispy cirrus",
+  "version": 1,
+  "description": "Wispy cirrus (cloud); vector component, base point at the bottom centre.",
+  "aliases": [
+    "CLOUD-CIRRUS"
+  ],
+  "tags": [
+    "cloud",
+    "high"
+  ],
+  "catalog_code": "CMP-CLD-0006",
+  "category": "cloud",
+  "subcategory": "cloud",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "5450605eabea62d915a9f1fc1d11436d97ff9b239a8661be9894ff909ef136da",
+      "width": 640,
+      "height": 120,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "2dd1417f7bfc265b7dd900c36b38287098aa0d2780049fac5eb2aa05c04012a6",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:47+00:00",
+  "change_summary": "",
+  "kind": "cloud",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    640.0,
+    120.0
+  ]
+}

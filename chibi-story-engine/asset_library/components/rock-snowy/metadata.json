@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "rock-snowy",
+  "asset_type": "component",
+  "name": "Snow-capped rock",
+  "version": 1,
+  "description": "Snow-capped rock (rock); vector component, base point at the bottom centre.",
+  "aliases": [
+    "ROCK-SNOWY"
+  ],
+  "tags": [
+    "rock",
+    "snow",
+    "winter"
+  ],
+  "catalog_code": "CMP-RCK-0004",
+  "category": "rock",
+  "subcategory": "rock",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "9c9fb82929099d542a0f6b07cbc41f04efd75603396b355f8cbfb0ef1f36f900",
+      "width": 310,
+      "height": 220,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "22ec6fdd99c00cb32b7ba769e52940f9a30af285deb0a4324784f5653d27ce68",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:46+00:00",
+  "change_summary": "",
+  "kind": "rock",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    310.0,
+    220.0
+  ]
+}

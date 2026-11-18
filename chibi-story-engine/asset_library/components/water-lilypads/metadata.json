@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "water-lilypads",
+  "asset_type": "component",
+  "name": "Lily pads",
+  "version": 1,
+  "description": "Lily pads (water); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WATER-LILYPADS"
+  ],
+  "tags": [
+    "lake",
+    "pond",
+    "water"
+  ],
+  "catalog_code": "CMP-WTR-0003",
+  "category": "water features",
+  "subcategory": "water",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "bbcd4bf837cfe506922c6f7b8404f9b0107f1d4e6838b35a97c972c06d3f05b7",
+      "width": 490,
+      "height": 70,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "e13121aa82b2f13cc6e58ddd63919a9926d7948f81484caa99c83f51b3cbda19",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:50+00:00",
+  "change_summary": "",
+  "kind": "water",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    490.0,
+    70.0
+  ]
+}

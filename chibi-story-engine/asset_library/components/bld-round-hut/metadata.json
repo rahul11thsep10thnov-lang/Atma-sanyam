@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "bld-round-hut",
+  "asset_type": "component",
+  "name": "Round hut with conical roof",
+  "version": 1,
+  "description": "Round hut with conical roof (building); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BLD-ROUND-HUT"
+  ],
+  "tags": [
+    "ashram",
+    "building",
+    "hut",
+    "village"
+  ],
+  "catalog_code": "CMP-BLD-0004",
+  "category": "buildings",
+  "subcategory": "building",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "8ee06b162b0362334a3e626405628f48a67c378cae7a5df14e7a9db1248bed9a",
+      "width": 380,
+      "height": 430,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "75d84a16d48887be5c53f863035ac95d3825fbacb382fc7a340a6af2717abacf",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:52+00:00",
+  "change_summary": "",
+  "kind": "building",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    380.0,
+    430.0
+  ]
+}

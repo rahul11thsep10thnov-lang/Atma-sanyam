@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "mountain-blue-range",
+  "asset_type": "component",
+  "name": "Hazy blue range",
+  "version": 1,
+  "description": "Hazy blue range (mountain); vector component, base point at the bottom centre.",
+  "aliases": [
+    "MOUNTAIN-BLUE-RANGE"
+  ],
+  "tags": [
+    "distant",
+    "mountain"
+  ],
+  "catalog_code": "CMP-MTN-0008",
+  "category": "mountain",
+  "subcategory": "mountain",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "76c43ce096fead8dfff13f8d9373f84362d34294f98a27c8fc6b348929927722",
+      "width": 1940,
+      "height": 460,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "53fe5166581a66928508d2ea94356ed4a9c70e0811c0e2daad1839ee754f2431",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:49+00:00",
+  "change_summary": "",
+  "kind": "mountain",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    1940.0,
+    460.0
+  ]
+}

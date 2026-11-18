@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "bld-smithy",
+  "asset_type": "component",
+  "name": "Blacksmith's forge",
+  "version": 1,
+  "description": "Blacksmith's forge (building); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BLD-SMITHY"
+  ],
+  "tags": [
+    "blacksmith",
+    "building",
+    "village",
+    "workshop"
+  ],
+  "catalog_code": "CMP-BLD-0031",
+  "category": "buildings",
+  "subcategory": "building",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "0cc0f74bc282aabdb0edf2dc708f5f001c600ccd24862ef60aca578fed744b33",
+      "width": 500,
+      "height": 390,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "f5d294e8025d8f3ddc239828e10a8e9e59ab23cd72d5460491b4c2c8e6705831",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:00+00:00",
+  "change_summary": "",
+  "kind": "building",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    500.0,
+    390.0
+  ]
+}

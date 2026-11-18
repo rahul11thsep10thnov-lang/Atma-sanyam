@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "fence-rail",
+  "asset_type": "component",
+  "name": "Post-and-rail fence",
+  "version": 1,
+  "description": "Post-and-rail fence (barrier); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FENCE-RAIL"
+  ],
+  "tags": [
+    "barrier",
+    "farm",
+    "fence",
+    "field"
+  ],
+  "catalog_code": "CMP-BAR-0003",
+  "category": "fences and walls",
+  "subcategory": "barrier",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "d45ef5069d3152e229d0730eab0eb11f22605c95a757c092a8c75b370664e1c3",
+      "width": 530,
+      "height": 150,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "860aec0e13e0c09b71c3bb5c5a9095d5c1707d2c8802a1832dacdeb36d636cfc",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:00+00:00",
+  "change_summary": "",
+  "kind": "barrier",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    530.0,
+    150.0
+  ]
+}

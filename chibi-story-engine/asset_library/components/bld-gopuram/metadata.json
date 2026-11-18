@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "bld-gopuram",
+  "asset_type": "component",
+  "name": "Gopuram temple tower",
+  "version": 1,
+  "description": "Gopuram temple tower (building); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BLD-GOPURAM"
+  ],
+  "tags": [
+    "building",
+    "south",
+    "temple"
+  ],
+  "catalog_code": "CMP-BLD-0013",
+  "category": "buildings",
+  "subcategory": "building",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "6cf93147c22a160eb49fad33171b15e19039db0d24b438d0fcd7ccd09c3afc7d",
+      "width": 480,
+      "height": 720,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "b2a2dd6b93cc9c7ee8e9de65bcc642a131d1f48d296be8756673890be2e5cb34",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:55+00:00",
+  "change_summary": "",
+  "kind": "building",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    480.0,
+    720.0
+  ]
+}

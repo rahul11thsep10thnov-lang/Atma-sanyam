@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "cloud-puff",
+  "asset_type": "component",
+  "name": "Single puff",
+  "version": 1,
+  "description": "Single puff (cloud); vector component, base point at the bottom centre.",
+  "aliases": [
+    "CLOUD-PUFF"
+  ],
+  "tags": [
+    "cloud",
+    "day"
+  ],
+  "catalog_code": "CMP-CLD-0004",
+  "category": "cloud",
+  "subcategory": "cloud",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "ac8781bb79d5736352d1d58a07ffef009faea1a329d96c5fe5a1966d7f82fa7c",
+      "width": 260,
+      "height": 140,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "4a906fb9f5d37c4aff771171b990cc19892a9b7a5fc9ed660a8e056303dc11d9",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:47+00:00",
+  "change_summary": "",
+  "kind": "cloud",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    260.0,
+    140.0
+  ]
+}

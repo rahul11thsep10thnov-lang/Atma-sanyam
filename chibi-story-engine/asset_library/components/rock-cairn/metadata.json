@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "rock-cairn",
+  "asset_type": "component",
+  "name": "Stacked-stone cairn",
+  "version": 1,
+  "description": "Stacked-stone cairn (rock); vector component, base point at the bottom centre.",
+  "aliases": [
+    "ROCK-CAIRN"
+  ],
+  "tags": [
+    "mountain",
+    "path",
+    "rock"
+  ],
+  "catalog_code": "CMP-RCK-0015",
+  "category": "rock",
+  "subcategory": "rock",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "a2658c96c147a7280133056fddde6b4bd2ba60629bb4f91e0090a4d92ab07ab4",
+      "width": 170,
+      "height": 240,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "a4ba68a9925bb521928ea6863585a74bf709495013287e6c6a49d7d1e9a824c0",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:46+00:00",
+  "change_summary": "",
+  "kind": "rock",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    170.0,
+    240.0
+  ]
+}

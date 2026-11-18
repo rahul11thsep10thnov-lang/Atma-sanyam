@@ -1,0 +1,65 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-babul",
+  "asset_type": "component",
+  "name": "Thorny babul",
+  "version": 1,
+  "description": "Thorny babul (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-BABUL"
+  ],
+  "tags": [
+    "babul",
+    "desert",
+    "dry",
+    "thorn",
+    "tree"
+  ],
+  "catalog_code": "CMP-TRE-0021",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "30a2cf0f19c31a4a9d6966e7c4e056a5c86f067dfe45bb03beac740e0e1559e7",
+      "width": 430,
+      "height": 560,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "512d04024426f23744f2d6439cf317ee8c6be5b06db2ccb6ec734935477ff688",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:38+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    430.0,
+    560.0
+  ]
+}

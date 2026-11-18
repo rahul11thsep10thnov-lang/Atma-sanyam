@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-bamboo",
+  "asset_type": "component",
+  "name": "Green bamboo clump",
+  "version": 1,
+  "description": "Green bamboo clump (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-BAMBOO"
+  ],
+  "tags": [
+    "bamboo",
+    "forest",
+    "tree"
+  ],
+  "catalog_code": "CMP-TRE-0017",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "15340566e542202c49a7ad77c1c99922dec0dd7b82cf1cc01c0427f22d1181db",
+      "width": 470,
+      "height": 770,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "537c849365e6932334e285d4b4833512dc0f8b6aebef743dd79e99700b1c04a6",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:37+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    470.0,
+    770.0
+  ]
+}

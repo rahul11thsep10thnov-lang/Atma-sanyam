@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "rock-volcanic",
+  "asset_type": "component",
+  "name": "Dark volcanic rock",
+  "version": 1,
+  "description": "Dark volcanic rock (rock); vector component, base point at the bottom centre.",
+  "aliases": [
+    "ROCK-VOLCANIC"
+  ],
+  "tags": [
+    "dark",
+    "haunted",
+    "rock"
+  ],
+  "catalog_code": "CMP-RCK-0009",
+  "category": "rock",
+  "subcategory": "rock",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "a2202301a37accf22ea02234992cdc6370c6a839cb6a4543aa01fe0d8655cae8",
+      "width": 320,
+      "height": 210,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "2ed3b0f90536dff29c194c02459cf6576782742625bd7256150c9d57ce82f92a",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:46+00:00",
+  "change_summary": "",
+  "kind": "rock",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    320.0,
+    210.0
+  ]
+}

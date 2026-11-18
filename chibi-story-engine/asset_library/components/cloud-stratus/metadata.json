@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "cloud-stratus",
+  "asset_type": "component",
+  "name": "Flat stratus layer",
+  "version": 1,
+  "description": "Flat stratus layer (cloud); vector component, base point at the bottom centre.",
+  "aliases": [
+    "CLOUD-STRATUS"
+  ],
+  "tags": [
+    "cloud",
+    "overcast"
+  ],
+  "catalog_code": "CMP-CLD-0005",
+  "category": "cloud",
+  "subcategory": "cloud",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "81a581a4a895cbef939fad6b8cf24549695b19efacdb0e04c3693a4a1b468db8",
+      "width": 780,
+      "height": 120,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "b2157641b52dd1b540d0332a852ff44ebc778666fe9023beeac79a077263e3d9",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:47+00:00",
+  "change_summary": "",
+  "kind": "cloud",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    780.0,
+    120.0
+  ]
+}

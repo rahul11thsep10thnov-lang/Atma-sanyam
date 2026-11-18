@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "water-rapids",
+  "asset_type": "component",
+  "name": "Rapids",
+  "version": 1,
+  "description": "Rapids (water); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WATER-RAPIDS"
+  ],
+  "tags": [
+    "river",
+    "stream",
+    "water"
+  ],
+  "catalog_code": "CMP-WTR-0005",
+  "category": "water features",
+  "subcategory": "water",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "7ad8adb95cf0446af36a8b6e1a55d35f6b1ee2f3335988193bfc4b00d26a9a21",
+      "width": 510,
+      "height": 100,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "776d2a8944916212b35e12e207a914c19b13b27062bec13571ad64c3444f0507",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:50+00:00",
+  "change_summary": "",
+  "kind": "water",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    510.0,
+    100.0
+  ]
+}

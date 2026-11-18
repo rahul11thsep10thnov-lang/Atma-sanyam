@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "water-stepping-stones",
+  "asset_type": "component",
+  "name": "Stepping stones",
+  "version": 1,
+  "description": "Stepping stones (water); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WATER-STEPPING-STONES"
+  ],
+  "tags": [
+    "river",
+    "stream",
+    "water"
+  ],
+  "catalog_code": "CMP-WTR-0008",
+  "category": "water features",
+  "subcategory": "water",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "b5683e73c31074bb074d232864f841bbcdf2b735c6b13ce5d35d0cd8332918f9",
+      "width": 640,
+      "height": 90,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "522b17f34154e837624124029f772617220c2255f2dfebf5e0f73f91d7b3e2e5",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:50+00:00",
+  "change_summary": "",
+  "kind": "water",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    640.0,
+    90.0
+  ]
+}

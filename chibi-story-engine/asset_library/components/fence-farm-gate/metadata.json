@@ -1,0 +1,65 @@
+{
+  "manifest_version": "1.0",
+  "id": "fence-farm-gate",
+  "asset_type": "component",
+  "name": "Farm gate",
+  "version": 1,
+  "description": "Farm gate (barrier); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FENCE-FARM-GATE"
+  ],
+  "tags": [
+    "barrier",
+    "farm",
+    "fence",
+    "field",
+    "village"
+  ],
+  "catalog_code": "CMP-BAR-0013",
+  "category": "fences and walls",
+  "subcategory": "barrier",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "5b4e3e872115415fa3bd4fc2ddca96286ba66dbdc4103c8527c1a306f45a1cfa",
+      "width": 360,
+      "height": 210,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "ff5780a11a2a043330dd55716bdd785fefcf70986e631aa010cf07e654ca0541",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:02+00:00",
+  "change_summary": "",
+  "kind": "barrier",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    360.0,
+    210.0
+  ]
+}

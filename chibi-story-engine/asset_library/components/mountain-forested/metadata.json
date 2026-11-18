@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "mountain-forested",
+  "asset_type": "component",
+  "name": "Forested ridge",
+  "version": 1,
+  "description": "Forested ridge (mountain); vector component, base point at the bottom centre.",
+  "aliases": [
+    "MOUNTAIN-FORESTED"
+  ],
+  "tags": [
+    "forest",
+    "mountain"
+  ],
+  "catalog_code": "CMP-MTN-0005",
+  "category": "mountain",
+  "subcategory": "mountain",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "8487a3dc031a96efe85b9d3e2654f5de3876f1845c971e55b8219fea6727b12e",
+      "width": 1140,
+      "height": 520,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "8aea5247db07d85a91911691a28592bf9c4af85bb63cf029c980ca6cc83d6016",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:49+00:00",
+  "change_summary": "",
+  "kind": "mountain",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    1140.0,
+    520.0
+  ]
+}

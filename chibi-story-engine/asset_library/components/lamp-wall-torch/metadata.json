@@ -1,0 +1,65 @@
+{
+  "manifest_version": "1.0",
+  "id": "lamp-wall-torch",
+  "asset_type": "component",
+  "name": "Wall torch",
+  "version": 1,
+  "description": "Wall torch (lamp); vector component, base point at the bottom centre.",
+  "aliases": [
+    "LAMP-WALL-TORCH"
+  ],
+  "tags": [
+    "cave",
+    "dark",
+    "fort",
+    "lamp",
+    "torch"
+  ],
+  "catalog_code": "CMP-LMP-0005",
+  "category": "lamps and lights",
+  "subcategory": "lamp",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "afa7fd1724bb24b0f7467059bd53dadca74a3fa906bd9f3992eb0ca37e72f7bc",
+      "width": 500,
+      "height": 510,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "d037e01e5c14e4217ae1cec3ee1e4f8408d151a7282a19454ad04ab795ddbba1",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:03+00:00",
+  "change_summary": "",
+  "kind": "lamp",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    500.0,
+    510.0
+  ]
+}

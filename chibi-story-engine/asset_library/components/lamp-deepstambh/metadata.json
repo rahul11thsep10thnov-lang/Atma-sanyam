@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "lamp-deepstambh",
+  "asset_type": "component",
+  "name": "Brass lamp tower",
+  "version": 1,
+  "description": "Brass lamp tower (lamp); vector component, base point at the bottom centre.",
+  "aliases": [
+    "LAMP-DEEPSTAMBH"
+  ],
+  "tags": [
+    "festival",
+    "lamp",
+    "temple"
+  ],
+  "catalog_code": "CMP-LMP-0002",
+  "category": "lamps and lights",
+  "subcategory": "lamp",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "bd0dfd31dd9403704207c4184fe75f698289e0d659b12cb7d9d306221823f1a1",
+      "width": 280,
+      "height": 460,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "d8d5b00943141ec40df67eff9079209169fa2c55696e185d38aeb88fa8ab37cd",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:02+00:00",
+  "change_summary": "",
+  "kind": "lamp",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    280.0,
+    460.0
+  ]
+}

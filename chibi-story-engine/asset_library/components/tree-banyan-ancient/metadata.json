@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-banyan-ancient",
+  "asset_type": "component",
+  "name": "Ancient banyan",
+  "version": 1,
+  "description": "Ancient banyan (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-BANYAN-ANCIENT"
+  ],
+  "tags": [
+    "ancient",
+    "banyan",
+    "forest",
+    "tree"
+  ],
+  "catalog_code": "CMP-TRE-0028",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "e7c84c2ba0b1be96b4bcfc7d969a56db65f8b92d2a403e5774c7a8a7d49808dc",
+      "width": 1250,
+      "height": 1110,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "031df9d3efb0c801cd08b44cea8a814f8ec9314ec5e60c99ccd4a6bb16023e8a",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:40+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    1250.0,
+    1110.0
+  ]
+}

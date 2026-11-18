@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "mountain-himalaya",
+  "asset_type": "component",
+  "name": "Distant Himalayan range",
+  "version": 1,
+  "description": "Distant Himalayan range (mountain); vector component, base point at the bottom centre.",
+  "aliases": [
+    "MOUNTAIN-HIMALAYA"
+  ],
+  "tags": [
+    "himalaya",
+    "mountain",
+    "snow"
+  ],
+  "catalog_code": "CMP-MTN-0004",
+  "category": "mountain",
+  "subcategory": "mountain",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "a7b965c6889a938204a64c46bf4c45ba3664427a52d710a4a76d9919c01a22b9",
+      "width": 1840,
+      "height": 780,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "b1e1e235093ef144dbddb4e27f4b990a677e384a5f44ad6cc760609a13f9c5a4",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:48+00:00",
+  "change_summary": "",
+  "kind": "mountain",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    1840.0,
+    780.0
+  ]
+}

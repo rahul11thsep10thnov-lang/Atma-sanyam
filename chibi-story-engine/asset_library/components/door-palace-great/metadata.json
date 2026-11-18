@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "door-palace-great",
+  "asset_type": "component",
+  "name": "Great palace door",
+  "version": 1,
+  "description": "Great palace door (opening); vector component, base point at the bottom centre.",
+  "aliases": [
+    "DOOR-PALACE-GREAT"
+  ],
+  "tags": [
+    "court",
+    "door",
+    "opening",
+    "palace"
+  ],
+  "catalog_code": "CMP-OPN-0009",
+  "category": "doors and windows",
+  "subcategory": "opening",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "5d07dbcea3133053bec28ff6818b7383251ca7051f6ec3022bdb691d4a5d537f",
+      "width": 460,
+      "height": 580,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "796ebc0bf73692ae939a7e30cdf2c8f13cbcbb724b97661914180fe5514820ef",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:51+00:00",
+  "change_summary": "",
+  "kind": "opening",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    460.0,
+    580.0
+  ]
+}

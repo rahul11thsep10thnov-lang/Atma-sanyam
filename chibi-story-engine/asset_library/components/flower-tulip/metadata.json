@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "flower-tulip",
+  "asset_type": "component",
+  "name": "Tulip",
+  "version": 1,
+  "description": "Tulip (flower); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FLOWER-TULIP"
+  ],
+  "tags": [
+    "flower",
+    "garden"
+  ],
+  "catalog_code": "CMP-FLW-0007",
+  "category": "flower",
+  "subcategory": "flower",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "9752cb1e935b351c53858954167a54c4b94e1c550402a661d496ee8a126365e2",
+      "width": 110,
+      "height": 260,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "7926965c669479ed4114f97263068e2b7b765aaba5b2fe57faeb0512589a79c8",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:44+00:00",
+  "change_summary": "",
+  "kind": "flower",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    110.0,
+    260.0
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "rock-river",
+  "asset_type": "component",
+  "name": "Smooth river stone",
+  "version": 1,
+  "description": "Smooth river stone (rock); vector component, base point at the bottom centre.",
+  "aliases": [
+    "ROCK-RIVER"
+  ],
+  "tags": [
+    "river",
+    "rock"
+  ],
+  "catalog_code": "CMP-RCK-0011",
+  "category": "rock",
+  "subcategory": "rock",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "e7eb61ad03897e4b8cf1376d7d24dd30361e8fd7a7b00046dec2efbd413b4804",
+      "width": 260,
+      "height": 160,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "265365b9abe70f65c826439ddd6f014e021dc5729da2a810891c989fc2983681",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:46+00:00",
+  "change_summary": "",
+  "kind": "rock",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    260.0,
+    160.0
+  ]
+}

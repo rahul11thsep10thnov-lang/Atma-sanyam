@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "door-plank",
+  "asset_type": "component",
+  "name": "Plank door",
+  "version": 1,
+  "description": "Plank door (opening); vector component, base point at the bottom centre.",
+  "aliases": [
+    "DOOR-PLANK"
+  ],
+  "tags": [
+    "door",
+    "hut",
+    "opening",
+    "village"
+  ],
+  "catalog_code": "CMP-OPN-0002",
+  "category": "doors and windows",
+  "subcategory": "opening",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "298822c4427a289620bf5de9cd484b90780cf11f489d51b6caf0636545849da9",
+      "width": 140,
+      "height": 250,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "8edbdf2ed3faa770161064726302a76c89c5d7831304506b3c89f30a2e598fd2",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:50+00:00",
+  "change_summary": "",
+  "kind": "opening",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    140.0,
+    250.0
+  ]
+}

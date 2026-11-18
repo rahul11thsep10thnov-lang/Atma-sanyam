@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "rock-crystal-spikes",
+  "asset_type": "component",
+  "name": "Glowing crystal spikes",
+  "version": 1,
+  "description": "Glowing crystal spikes (rock); vector component, base point at the bottom centre.",
+  "aliases": [
+    "ROCK-CRYSTAL-SPIKES"
+  ],
+  "tags": [
+    "cave",
+    "crystal",
+    "magic",
+    "rock"
+  ],
+  "catalog_code": "CMP-RCK-0020",
+  "category": "rock",
+  "subcategory": "rock",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "dccd326b3bd9c65a23461fe76060b2b611df134f8a9b17c5853904f8989524a4",
+      "width": 500,
+      "height": 500,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "77749b18502a95e3933f4afe1ed9b2a2148cb87a0d8a61385ababa065e3a0aeb",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:47+00:00",
+  "change_summary": "",
+  "kind": "rock",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    500.0,
+    500.0
+  ]
+}

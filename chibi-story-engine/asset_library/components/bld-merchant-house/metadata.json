@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "bld-merchant-house",
+  "asset_type": "component",
+  "name": "Merchant's house with sign",
+  "version": 1,
+  "description": "Merchant's house with sign (building); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BLD-MERCHANT-HOUSE"
+  ],
+  "tags": [
+    "building",
+    "house",
+    "market",
+    "merchant"
+  ],
+  "catalog_code": "CMP-BLD-0009",
+  "category": "buildings",
+  "subcategory": "building",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "f75c5d0c181a27b84fd9bef2ce08122cb493f0407925e1f280c64c05d5a33d92",
+      "width": 600,
+      "height": 670,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "5cc8416209011606c06c85caf0be2ddda4a522a1c2e011afc6ec5dda32798233",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:54+00:00",
+  "change_summary": "",
+  "kind": "building",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    600.0,
+    670.0
+  ]
+}

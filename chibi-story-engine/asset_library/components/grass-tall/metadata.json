@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "grass-tall",
+  "asset_type": "component",
+  "name": "Tall grass",
+  "version": 1,
+  "description": "Tall grass (grass); vector component, base point at the bottom centre.",
+  "aliases": [
+    "GRASS-TALL"
+  ],
+  "tags": [
+    "grass",
+    "meadow"
+  ],
+  "catalog_code": "CMP-GRS-0002",
+  "category": "grass",
+  "subcategory": "grass",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "2538d1d851d021f264265ee94ad2f4273af8593d8776480923466ad7b6f6c8b9",
+      "width": 160,
+      "height": 190,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "99a7636acc673c997caa4ea2406f2873321556f64c4e39f26ce08196af4d6bfb",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:44+00:00",
+  "change_summary": "",
+  "kind": "grass",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    160.0,
+    190.0
+  ]
+}

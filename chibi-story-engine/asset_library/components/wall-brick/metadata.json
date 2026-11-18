@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "wall-brick",
+  "asset_type": "component",
+  "name": "Brick wall",
+  "version": 1,
+  "description": "Brick wall (barrier); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WALL-BRICK"
+  ],
+  "tags": [
+    "barrier",
+    "house",
+    "market",
+    "wall"
+  ],
+  "catalog_code": "CMP-BAR-0008",
+  "category": "fences and walls",
+  "subcategory": "barrier",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "9dd8a684bec108d3a3b16254a068e89babe27a216379c362f5e44deff1bd922e",
+      "width": 660,
+      "height": 200,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "7e187bcdd0e9d7872272f3b7d4f82e6e39e6ea1d40b05bd0a861937ef0e18e7f",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:01+00:00",
+  "change_summary": "",
+  "kind": "barrier",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    660.0,
+    200.0
+  ]
+}

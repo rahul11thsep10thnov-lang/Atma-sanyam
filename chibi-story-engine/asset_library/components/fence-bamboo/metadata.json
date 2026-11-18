@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "fence-bamboo",
+  "asset_type": "component",
+  "name": "Bamboo fence",
+  "version": 1,
+  "description": "Bamboo fence (barrier); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FENCE-BAMBOO"
+  ],
+  "tags": [
+    "barrier",
+    "fence",
+    "forest",
+    "village"
+  ],
+  "catalog_code": "CMP-BAR-0002",
+  "category": "fences and walls",
+  "subcategory": "barrier",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "9ac1b552fc4ba94dff102b9d6294e9e5e5598606ea0e636934cc7d84c90e92de",
+      "width": 480,
+      "height": 200,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "1cb75f13f5c13ca2d12a40cfd1ac3a032a183195e9ad719cc9fd3b7dc7c25f4e",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:00+00:00",
+  "change_summary": "",
+  "kind": "barrier",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    480.0,
+    200.0
+  ]
+}

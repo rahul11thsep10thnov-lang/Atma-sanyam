@@ -1,0 +1,61 @@
+{
+  "manifest_version": "1.0",
+  "id": "bush-round",
+  "asset_type": "component",
+  "name": "Round green bush",
+  "version": 1,
+  "description": "Round green bush (bush); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BUSH-ROUND"
+  ],
+  "tags": [
+    "bush"
+  ],
+  "catalog_code": "CMP-BSH-0001",
+  "category": "bush",
+  "subcategory": "bush",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "2890bcd78b5890bb3a574ed5a7c16a8749104fcc8097cdccc5e197a5e052abb2",
+      "width": 280,
+      "height": 200,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "44521eab886abb10c3019a4daa213c63e6964df4d10aba2b8c707c006ac0c09c",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:41+00:00",
+  "change_summary": "",
+  "kind": "bush",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    280.0,
+    200.0
+  ]
+}

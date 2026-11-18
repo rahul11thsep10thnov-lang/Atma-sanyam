@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "mountain-snow-peak",
+  "asset_type": "component",
+  "name": "Snow-capped peak",
+  "version": 1,
+  "description": "Snow-capped peak (mountain); vector component, base point at the bottom centre.",
+  "aliases": [
+    "MOUNTAIN-SNOW-PEAK"
+  ],
+  "tags": [
+    "himalaya",
+    "mountain",
+    "snow"
+  ],
+  "catalog_code": "CMP-MTN-0001",
+  "category": "mountain",
+  "subcategory": "mountain",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "944390dfa682941a1b91605c2fdc3d2828391619436ef04a524f91924939b2e3",
+      "width": 1140,
+      "height": 640,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "e407201369411ff0204168751737a27048b719ada592bd504fef12263592e4c1",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:48+00:00",
+  "change_summary": "",
+  "kind": "mountain",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    1140.0,
+    640.0
+  ]
+}

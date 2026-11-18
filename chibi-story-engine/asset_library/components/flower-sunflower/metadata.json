@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "flower-sunflower",
+  "asset_type": "component",
+  "name": "Sunflower",
+  "version": 1,
+  "description": "Sunflower (flower); vector component, base point at the bottom centre.",
+  "aliases": [
+    "FLOWER-SUNFLOWER"
+  ],
+  "tags": [
+    "farm",
+    "flower"
+  ],
+  "catalog_code": "CMP-FLW-0003",
+  "category": "flower",
+  "subcategory": "flower",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "02fefb9f434a8e238a3c48b9b327136cf7f8304c2c68640d41163b6b726d91a8",
+      "width": 140,
+      "height": 310,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "429f65bebfab23b7ea2a2e44b09687b3489a6aceb4add2728ce370f8762f211c",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:44+00:00",
+  "change_summary": "",
+  "kind": "flower",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    140.0,
+    310.0
+  ]
+}

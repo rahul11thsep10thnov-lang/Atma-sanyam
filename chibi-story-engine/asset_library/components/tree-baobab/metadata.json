@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "tree-baobab",
+  "asset_type": "component",
+  "name": "Baobab",
+  "version": 1,
+  "description": "Baobab (tree); vector component, base point at the bottom centre.",
+  "aliases": [
+    "TREE-BAOBAB"
+  ],
+  "tags": [
+    "baobab",
+    "desert",
+    "savanna",
+    "tree"
+  ],
+  "catalog_code": "CMP-TRE-0030",
+  "category": "tree",
+  "subcategory": "tree",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "b6fd3ad98bf7e6c761820a6cbbca383a3d6ed1e0733536f98648ad6af1172d99",
+      "width": 490,
+      "height": 640,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "48bed38c0b5c334e274b08ea7ff38a55191ee21ce1bfb8a3c89e4b0f10894435",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:41+00:00",
+  "change_summary": "",
+  "kind": "tree",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    490.0,
+    640.0
+  ]
+}

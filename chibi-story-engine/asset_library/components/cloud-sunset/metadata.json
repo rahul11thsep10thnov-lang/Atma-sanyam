@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "cloud-sunset",
+  "asset_type": "component",
+  "name": "Sunset cloud",
+  "version": 1,
+  "description": "Sunset cloud (cloud); vector component, base point at the bottom centre.",
+  "aliases": [
+    "CLOUD-SUNSET"
+  ],
+  "tags": [
+    "cloud",
+    "sunset"
+  ],
+  "catalog_code": "CMP-CLD-0009",
+  "category": "cloud",
+  "subcategory": "cloud",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "22fb88e986a3cfe6821eaf3ac20d46decac9c777074042c4a9417c5826fc1b7a",
+      "width": 700,
+      "height": 390,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "47b64401354c4c603e6b3d2b6c1443a7cd0e604a8441a546a5fed490a0d6a912",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:48+00:00",
+  "change_summary": "",
+  "kind": "cloud",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    700.0,
+    390.0
+  ]
+}

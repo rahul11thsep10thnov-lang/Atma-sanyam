@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "water-reeds",
+  "asset_type": "component",
+  "name": "Reeds in water",
+  "version": 1,
+  "description": "Reeds in water (water); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WATER-REEDS"
+  ],
+  "tags": [
+    "marsh",
+    "pond",
+    "water"
+  ],
+  "catalog_code": "CMP-WTR-0004",
+  "category": "water features",
+  "subcategory": "water",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "ea15d400b17d1973d9c0f6f5133ad1610401a765783d68fc1cd4851e854ec195",
+      "width": 300,
+      "height": 350,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "9c2d3d8223c5fbc7e8b3063b1685e939da87d88a6f6cc46cabfbd744545e87ce",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:50+00:00",
+  "change_summary": "",
+  "kind": "water",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    300.0,
+    350.0
+  ]
+}

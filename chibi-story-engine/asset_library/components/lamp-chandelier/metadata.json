@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "lamp-chandelier",
+  "asset_type": "component",
+  "name": "Chandelier",
+  "version": 1,
+  "description": "Chandelier (lamp); vector component, base point at the bottom centre.",
+  "aliases": [
+    "LAMP-CHANDELIER"
+  ],
+  "tags": [
+    "court",
+    "hall",
+    "lamp",
+    "palace"
+  ],
+  "catalog_code": "CMP-LMP-0011",
+  "category": "lamps and lights",
+  "subcategory": "lamp",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "362e7559b3199e559cf0cf21a975028daa4f6f06b42f903ccb7702765e47cf8a",
+      "width": 440,
+      "height": 280,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "82d151478739f3866ff7d82dcbfcf004634418f78b305bd741260d10656f4d13",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:55:04+00:00",
+  "change_summary": "",
+  "kind": "lamp",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    440.0,
+    280.0
+  ]
+}

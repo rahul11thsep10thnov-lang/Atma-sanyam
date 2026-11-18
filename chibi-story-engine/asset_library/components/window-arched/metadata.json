@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "id": "window-arched",
+  "asset_type": "component",
+  "name": "Arched window",
+  "version": 1,
+  "description": "Arched window (opening); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WINDOW-ARCHED"
+  ],
+  "tags": [
+    "house",
+    "opening",
+    "palace",
+    "window"
+  ],
+  "catalog_code": "CMP-OPN-0013",
+  "category": "doors and windows",
+  "subcategory": "opening",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "c8241ccff8bef8f2cc034c9c6be1bf038be2af4a1b3c6b03b5dd81e360c6cef3",
+      "width": 160,
+      "height": 200,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "01c89febc1ab20c899fff1f181f25b460bca95f12fa8190c96c97b4ca176a0c2",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:51+00:00",
+  "change_summary": "",
+  "kind": "opening",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    160.0,
+    200.0
+  ]
+}

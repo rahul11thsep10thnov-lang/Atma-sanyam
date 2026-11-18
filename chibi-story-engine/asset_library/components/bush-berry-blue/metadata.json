@@ -1,0 +1,62 @@
+{
+  "manifest_version": "1.0",
+  "id": "bush-berry-blue",
+  "asset_type": "component",
+  "name": "Blue berry bush",
+  "version": 1,
+  "description": "Blue berry bush (bush); vector component, base point at the bottom centre.",
+  "aliases": [
+    "BUSH-BERRY-BLUE"
+  ],
+  "tags": [
+    "berry",
+    "bush"
+  ],
+  "catalog_code": "CMP-BSH-0004",
+  "category": "bush",
+  "subcategory": "bush",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "f4ec4961aa258cf755bf64c62252da47f5110991b3a3f42b5685a45d933943b4",
+      "width": 270,
+      "height": 180,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "d9dc4ac1dce0e4f784adcd4aca85b6c655cb3b0fa1b63e13b928ba5dbbff3971",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:41+00:00",
+  "change_summary": "",
+  "kind": "bush",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    270.0,
+    180.0
+  ]
+}

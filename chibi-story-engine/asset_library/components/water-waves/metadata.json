@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0",
+  "id": "water-waves",
+  "asset_type": "component",
+  "name": "Wave lines",
+  "version": 1,
+  "description": "Wave lines (water); vector component, base point at the bottom centre.",
+  "aliases": [
+    "WATER-WAVES"
+  ],
+  "tags": [
+    "lake",
+    "river",
+    "water"
+  ],
+  "catalog_code": "CMP-WTR-0001",
+  "category": "water features",
+  "subcategory": "water",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {},
+  "files": [
+    {
+      "role": "image",
+      "path": "component.png",
+      "format": "png",
+      "checksum": "49385959b2a0be613d06cae6fec0fb6ecd1931603a63bca32aa139f96cd50fa2",
+      "width": 490,
+      "height": 130,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "component.svg",
+      "format": "svg",
+      "checksum": "7ce82a13bde8c972f8af1558270999b012c726408faa66c8ee38b4e090b2cd7d",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T12:54:49+00:00",
+  "change_summary": "",
+  "kind": "water",
+  "file": "component.png",
+  "svg": "component.svg",
+  "size": [
+    490.0,
+    130.0
+  ]
+}
