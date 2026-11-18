@@ -23,7 +23,7 @@ export function EnvironmentLibrary() {
   const [target, setTarget] = useState<Record<string, string>>({});
   const [run, busy, error] = useAction();
 
-  const all = environments.data ?? [];
+  const all = useMemo(() => [...(environments.data ?? [])].sort((a, b) => Number(!!a.catalog_code) - Number(!!b.catalog_code)), [environments.data]); // original backgrounds first
   const categories = useMemo(() => countBy(all, (e) => e.category ?? "original"), [all]);
   const visible = useMemo(() => all.filter((e) => matches(e, filter)), [all, filter]);
   const env = all.find((e) => e.id === selected) ?? null;
