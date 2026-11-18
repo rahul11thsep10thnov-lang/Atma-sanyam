@@ -1,0 +1,57 @@
+{
+  "stats": {
+    "characters": {
+      "count": 110,
+      "by_category": {
+        "animal": 29,
+        "bird": 20,
+        "human": 44,
+        "mythological": 17
+      }
+    },
+    "environments": {
+      "count": 171,
+      "by_category": {
+        "CAV": 10,
+        "DES": 10,
+        "FOR": 15,
+        "HNT": 12,
+        "HOU": 15,
+        "MKT": 12,
+        "MTN": 12,
+        "PAL": 15,
+        "ROD": 10,
+        "SPC": 15,
+        "TMP": 15,
+        "VIL": 15,
+        "WAT": 15
+      },
+      "layers": 1201,
+      "scare_layers": 25
+    },
+    "components": {
+      "count": 227,
+      "by_kind": {
+        "building": 35,
+        "bush": 20,
+        "cloud": 12,
+        "opening": 20,
+        "barrier": 15,
+        "flower": 20,
+        "grass": 15,
+        "lamp": 15,
+        "mountain": 10,
+        "rock": 20,
+        "tree": 30,
+        "water": 15
+      }
+    },
+    "approval": {
+      "character:pending": 119,
+      "environment:pending": 178,
+      "component:pending": 227
+    }
+  },
+  "problems": [],
+  "ok": true
+}

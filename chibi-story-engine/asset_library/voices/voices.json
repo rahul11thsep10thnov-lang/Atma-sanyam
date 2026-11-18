@@ -178,5 +178,205 @@
         "frequency": 125
       }
     }
+  },
+  {
+    "id": "king_hi",
+    "name": "King",
+    "language": "hi-IN",
+    "description": "Deep, measured, regal",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "m6",
+        "pitch": 18,
+        "speed": 126
+      },
+      "sarvam": {
+        "speaker": "amartya"
+      },
+      "tone": {
+        "frequency": 100
+      }
+    }
+  },
+  {
+    "id": "queen_hi",
+    "name": "Queen",
+    "language": "hi-IN",
+    "description": "Clear and gracious",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "f3",
+        "pitch": 58,
+        "speed": 140
+      },
+      "sarvam": {
+        "speaker": "pavithra"
+      },
+      "tone": {
+        "frequency": 250
+      }
+    }
+  },
+  {
+    "id": "young_m_hi",
+    "name": "Young man",
+    "language": "hi-IN",
+    "description": "Light, eager",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "m2",
+        "pitch": 55,
+        "speed": 150
+      },
+      "sarvam": {
+        "speaker": "amol"
+      },
+      "tone": {
+        "frequency": 190
+      }
+    }
+  },
+  {
+    "id": "young_f_hi",
+    "name": "Young woman",
+    "language": "hi-IN",
+    "description": "Bright, warm",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "f2",
+        "pitch": 70,
+        "speed": 150
+      },
+      "sarvam": {
+        "speaker": "maitreyi"
+      },
+      "tone": {
+        "frequency": 300
+      }
+    }
+  },
+  {
+    "id": "child_hi",
+    "name": "Child",
+    "language": "hi-IN",
+    "description": "High and quick",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "f5",
+        "pitch": 95,
+        "speed": 165
+      },
+      "sarvam": {
+        "speaker": "maitreyi"
+      },
+      "tone": {
+        "frequency": 420
+      }
+    }
+  },
+  {
+    "id": "elder_m_hi",
+    "name": "Elder (man)",
+    "language": "hi-IN",
+    "description": "Slow, gravelly",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "m7",
+        "pitch": 25,
+        "speed": 126
+      },
+      "sarvam": {
+        "speaker": "arvind"
+      },
+      "tone": {
+        "frequency": 120
+      }
+    }
+  },
+  {
+    "id": "elder_f_hi",
+    "name": "Elder (woman)",
+    "language": "hi-IN",
+    "description": "Soft, cracked",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "f1",
+        "pitch": 50,
+        "speed": 128
+      },
+      "sarvam": {
+        "speaker": "meera"
+      },
+      "tone": {
+        "frequency": 220
+      }
+    }
+  },
+  {
+    "id": "sage_hi",
+    "name": "Sage",
+    "language": "hi-IN",
+    "description": "Calm, resonant",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "m1",
+        "pitch": 30,
+        "speed": 120
+      },
+      "sarvam": {
+        "speaker": "arvind"
+      },
+      "tone": {
+        "frequency": 130
+      }
+    }
+  },
+  {
+    "id": "soldier_hi",
+    "name": "Soldier",
+    "language": "hi-IN",
+    "description": "Firm and clipped",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "m3",
+        "pitch": 28,
+        "speed": 148
+      },
+      "sarvam": {
+        "speaker": "amartya"
+      },
+      "tone": {
+        "frequency": 115
+      }
+    }
+  },
+  {
+    "id": "villain_hi",
+    "name": "Villain / spirit",
+    "language": "hi-IN",
+    "description": "Rasping, uneven",
+    "providers": {
+      "espeak": {
+        "voice": "hi",
+        "variant": "m4",
+        "pitch": 20,
+        "speed": 118
+      },
+      "sarvam": {
+        "speaker": "amartya"
+      },
+      "tone": {
+        "frequency": 85
+      }
+    }
   }
 ]

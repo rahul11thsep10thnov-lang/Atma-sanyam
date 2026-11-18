@@ -21,6 +21,16 @@ VOICES = [
     _voice("jackal_hi", "Jackal", "Sly, nasal", "m4", 58, 152, "amol", 240),
     _voice("farmer_hi", "Farmer", "Plain and kind", "m1", 42, 140, "arvind", 150),
     _voice("rich_man_hi", "Rich man", "Pompous, heavy", "m5", 30, 132, "amartya", 125),
+    _voice("king_hi", "King", "Deep, measured, regal", "m6", 18, 126, "amartya", 100),
+    _voice("queen_hi", "Queen", "Clear and gracious", "f3", 58, 140, "pavithra", 250),
+    _voice("young_m_hi", "Young man", "Light, eager", "m2", 55, 150, "amol", 190),
+    _voice("young_f_hi", "Young woman", "Bright, warm", "f2", 70, 150, "maitreyi", 300),
+    _voice("child_hi", "Child", "High and quick", "f5", 95, 165, "maitreyi", 420),
+    _voice("elder_m_hi", "Elder (man)", "Slow, gravelly", "m7", 25, 126, "arvind", 120),
+    _voice("elder_f_hi", "Elder (woman)", "Soft, cracked", "f1", 50, 128, "meera", 220),
+    _voice("sage_hi", "Sage", "Calm, resonant", "m1", 30, 120, "arvind", 130),
+    _voice("soldier_hi", "Soldier", "Firm and clipped", "m3", 28, 148, "amartya", 115),
+    _voice("villain_hi", "Villain / spirit", "Rasping, uneven", "m4", 20, 118, "amartya", 85),
 ]
 PRONUNCIATION = {"hi": {}}
 
