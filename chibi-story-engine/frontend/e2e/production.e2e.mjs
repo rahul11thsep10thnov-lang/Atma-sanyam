@@ -155,6 +155,7 @@ test("7. user generates narration", async () => {
   const result = page.getByTestId("audio-result");
   await result.waitFor({ timeout: 120000 });
   assert.match(await result.innerText(), /lines generated/);
+  await page.getByTestId("audio-clip").nth(3).waitFor({ timeout: 60000 }); // the clip list reloads just after the result banner appears
   assert.ok((await page.getByTestId("audio-clip").count()) >= 4);
   await shot("08_voice_studio");
 });
