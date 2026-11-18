@@ -128,7 +128,7 @@ test("5. user selects a character", async () => {
   await page.getByTestId("environment-env-hnt-0001").click();
   await page.getByRole("heading", { name: /Haunted forest/ }).waitFor();
   await page.getByLabel("Scare level").selectOption("0");
-  await page.getByTestId("environment-preview").evaluate((img) => img.complete || new Promise((r) => (img.onload = r)));
+  await page.getByTestId("environment-preview").evaluate((img) => (img.complete && img.naturalWidth > 0) || new Promise((res, rej) => { img.onload = res; img.onerror = () => rej(new Error("environment preview failed to load")); setTimeout(() => rej(new Error("environment preview timed out")), 60000); }));
   await shot("05b_environment_haunted_scare0");
   await nav("Animation Studio");
   await page.getByTestId("animation-still").evaluate((img) => img.complete || new Promise((r) => (img.onload = r)));

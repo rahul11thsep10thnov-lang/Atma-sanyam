@@ -28,7 +28,7 @@ export function EnvironmentLibrary() {
   const visible = useMemo(() => all.filter((e) => matches(e, filter)), [all, filter]);
   const env = all.find((e) => e.id === selected) ?? null;
   const hasScare = env?.layers.some((l) => (l.scare ?? 0) > 0) ?? false;
-  const previewUrl = env ? `${media(env.preview_url ?? "")}?lighting=${look.lighting}&weather=${look.weather}&season=${look.season}&scare=${look.scare}` : "";
+  const previewUrl = env ? media(`${env.preview_url ?? ""}?lighting=${look.lighting}&weather=${look.weather}&season=${look.season}&scare=${look.scare}`) : "";
 
   return (
     <>
