@@ -4,12 +4,13 @@ import { Badge, Button, Card, Empty, ErrorNote, Field, inputClass } from "../com
 import { useAction, useLoad } from "../hooks/useAsync";
 import { useStudio } from "../hooks/useStudio";
 import { api } from "../services/api";
-import type { LibraryStats, Project } from "../types";
+import type { Completion, LibraryStats, Project } from "../types";
 
 export function Dashboard() {
   const { stories, storyId, selectStory, can } = useStudio();
   const projects = useLoad(() => api.get<Project[]>("/projects"), []);
   const stats = useLoad(() => api.get<LibraryStats>("/library/stats"), []);
+  const completion = useLoad(() => api.get<Completion>("/library/completion"), []);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [run, busy, error] = useAction();
@@ -27,6 +28,7 @@ export function Dashboard() {
   return (
     <>
       <h1 className="text-2xl font-bold">Dashboard</h1>
+      {completion.data && <CompletionCard c={completion.data} />}
       {stats.data && (
         <Card title="Asset library (counted from the files on disk)">
           <div className="grid grid-cols-2 gap-3 text-sm md:grid-cols-5" data-testid="library-stats">
@@ -109,5 +111,77 @@ export function Dashboard() {
         </Card>
       </div>
     </>
+  );
+}
+
+function CompletionCard({ c }: { c: Completion }) {
+  const row = (label: string, done: number, of: number) => (
+    <li key={label} className="flex justify-between gap-3">
+      <span>{label}</span>
+      <span className={done === of ? "font-semibold text-green-700" : "font-semibold text-amber-700"}>
+        {done} / {of}
+      </span>
+    </li>
+  );
+  const ch = c.characters, en = c.environments, sr = c.story_research;
+  return (
+    <Card title="Acceptance register (counted from registered files; planned assets are not counted)">
+      <div className="grid gap-4 text-sm md:grid-cols-4" data-testid="completion-register">
+        <div>
+          <h3 className="mb-1 font-semibold">Characters ({ch.total})</h3>
+          <ul className="space-y-0.5">
+            {row("SVG masters", ch.with_svg_masters, ch.total)}
+            {row("Four views", ch.with_four_views, ch.total)}
+            {row("15 expressions", ch.with_15_expressions, ch.total)}
+            {row("15 poses", ch.with_15_poses, ch.total)}
+            {row("Validated rigs", ch.with_validated_rigs, ch.total)}
+            {row("Original nine fully upgraded", ch.original_nine_fully_upgraded, 9)}
+            {row("Approved", ch.approved, ch.total)}
+          </ul>
+          <p className="mt-1 text-xs text-stone-500">Pending {ch.pending} · rejected {ch.rejected}. No four views yet: {ch.without_four_views.join(", ") || "none"}.</p>
+        </div>
+        <div>
+          <h3 className="mb-1 font-semibold">Backgrounds ({en.total})</h3>
+          <ul className="space-y-0.5">
+            {row("Wide compositions", en.wide, en.total)}
+            {row("Medium compositions", en.medium, en.wide)}
+            {row("Close-up compositions", en.closeup, en.wide)}
+            {row("Complete layer files (with SVG)", en.with_complete_layer_files, en.total)}
+            {row("Camera and anchors valid", en.with_validated_camera_and_anchors, en.total)}
+            {row("Approved", en.approved, en.total)}
+          </ul>
+          <p className="mt-1 text-xs text-stone-500">{en.wide_with_all_three_compositions} of {en.wide} wide backgrounds have all three compositions; pending {en.pending}.</p>
+        </div>
+        <div>
+          <h3 className="mb-1 font-semibold">Rigs</h3>
+          <ul className="space-y-0.5">
+            {c.rigs.rigs.map((r) => (
+              <li key={r.template} className="flex justify-between gap-3">
+                <span>{r.label}</span>
+                <span className={r.defined ? "font-semibold text-green-700" : "font-semibold text-red-700"}>{r.defined ? `${r.characters} characters` : "not built"}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-1 text-xs text-stone-500">
+            Rig tests: {c.rigs.rig_test_results.passed ?? "not run"} passed, {c.rigs.rig_test_results.failed ?? 0} failed.
+          </p>
+        </div>
+        <div>
+          <h3 className="mb-1 font-semibold">Story research</h3>
+          {sr.available ? (
+            <ul className="space-y-0.5">
+              {row("Collections with a consulted source", sr.collections_with_a_consulted_source ?? 0, sr.collections_total ?? 0)}
+              <li className="flex justify-between"><span>Sources consulted</span><b>{sr.sources_consulted}</b></li>
+              <li className="flex justify-between"><span>Stories catalogued</span><b>{(sr.source_records ?? 0) + (sr.seed_entries ?? 0)}</b></li>
+              <li className="flex justify-between"><span>Verified / cross-verified</span><b>{sr.verified} / {sr.cross_verified}</b></li>
+              <li className="flex justify-between"><span>Unverified / pending</span><b>{sr.unverified} / {sr.research_pending}</b></li>
+              {row("Regions with a consulted source", sr.regions_with_a_consulted_source ?? 0, sr.regions_total ?? 0)}
+            </ul>
+          ) : (
+            <p className="text-stone-500">Research register not generated.</p>
+          )}
+        </div>
+      </div>
+    </Card>
   );
 }

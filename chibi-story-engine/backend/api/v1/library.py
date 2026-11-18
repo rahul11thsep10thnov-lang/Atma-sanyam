@@ -248,6 +248,12 @@ def _catalogue_totals(ctx) -> dict[str, Any] | None:
     return {**data["totals"], "unmatched_needs": data["unmatched_needs"]}
 
 
+@router.get("/library/completion", summary="Acceptance register: completion counted from registered files, validated rigs and the research files")
+def library_completion(ctx: Ctx, _: AnyUser) -> dict[str, Any]:
+    from engine.asset_manager import completion
+    return completion.compute(_lib(ctx), Path(__file__).resolve().parents[3])
+
+
 @router.get("/library/stats", summary="Counts computed from the files on disk: by type, category, kind and approval status")
 def library_stats(ctx: Ctx, _: AnyUser) -> dict[str, Any]:
     library = _lib(ctx)

@@ -1,0 +1,534 @@
+{
+  "manifest_version": "1.0",
+  "id": "env-hnt-0002-medium",
+  "asset_type": "environment",
+  "name": "Abandoned palace (medium)",
+  "version": 1,
+  "description": "A ruined throne hall of broken light and dust; cobwebs and bats at scare 1, a ghostly king at scare 2. Medium composition: a re-arranged, larger view of the same place.",
+  "aliases": [
+    "ENV-HNT-0002-M",
+    "उजड़ा महल (medium)",
+    "abandoned palace (medium)"
+  ],
+  "tags": [
+    "abandoned",
+    "dust",
+    "haunted",
+    "palace",
+    "ruin",
+    "throne"
+  ],
+  "catalog_code": "ENV-HNT-0002-M",
+  "category": "HNT",
+  "subcategory": "palace",
+  "related_stories": [
+    "vikram_betal",
+    "folk",
+    "arabian_nights"
+  ],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {
+    "habitats": [
+      "ground"
+    ],
+    "style": "premium_chibi_anime",
+    "ambience": "forest_ambience_001",
+    "composition": "medium",
+    "composition_group": "env-hnt-0002",
+    "scare_levels": [
+      0,
+      1,
+      2
+    ],
+    "seasons": [
+      "spring",
+      "summer",
+      "monsoon",
+      "autumn",
+      "winter"
+    ],
+    "weather": [
+      "clear",
+      "cloudy",
+      "rain",
+      "fog",
+      "storm",
+      "snow"
+    ]
+  },
+  "files": [
+    {
+      "role": "layer",
+      "path": "layers/back_wall.png",
+      "format": "png",
+      "checksum": "74bb25288bf579bdb9791051b67613ed4cb46f2532aaf2eae7778c243879d20d",
+      "width": 2176,
+      "height": 776,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/back_wall.svg",
+      "format": "svg",
+      "checksum": "b39404a22a0ad0a3a13fdf56c3f864b99414c039b5dc7843dca10cc1939903ee",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/wall_decor.png",
+      "format": "png",
+      "checksum": "3b788263990afd06bd0e83ffdd877c9d7ac28012d077e27427466b5dd8bd0002",
+      "width": 1376,
+      "height": 208,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/wall_decor.svg",
+      "format": "svg",
+      "checksum": "f0bf45a0d0995b32b81e4c28dcecd8d7eb7dc9f3dbeaa8a8c0ed00af94783d13",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/ceiling.png",
+      "format": "png",
+      "checksum": "7aedac3ca1f08c71312c8520c3b99677fed73e9336035202890ef99a527acb35",
+      "width": 1632,
+      "height": 144,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/ceiling.svg",
+      "format": "svg",
+      "checksum": "000c370ffa824c2449a48efc8841dbf5d15a72bac5cd6145204d9d06d52c578a",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/ground.png",
+      "format": "png",
+      "checksum": "637029782171f198d957fbf1a8de34769fa8c5c8531081d78206b61f63d86ca8",
+      "width": 2448,
+      "height": 504,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/ground.svg",
+      "format": "svg",
+      "checksum": "60624074450a3bb0fc1368038beee6850b24c9072dd0d2dfe44aea5e8922d6ab",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/main_scenery.png",
+      "format": "png",
+      "checksum": "c4b926c5a577fd9786c9474d7e80e7993d85ac00ffa071d7799a220d901d8c5e",
+      "width": 1162,
+      "height": 784,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/main_scenery.svg",
+      "format": "svg",
+      "checksum": "c105889407aecefc3bb6828c1da797d7ee7fe0a9e476182e16f183903a6b3344",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/atmosphere.png",
+      "format": "png",
+      "checksum": "c7f95d28a37eac8940c7af996310f555fec5ea7ad560e0d1e4bfbbde0cda36c3",
+      "width": 1488,
+      "height": 396,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/atmosphere.svg",
+      "format": "svg",
+      "checksum": "23ad132efe61688d219e82dc5b1b3289e764a8a1e24ad1a883509a97414430fe",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/spooky.png",
+      "format": "png",
+      "checksum": "4198fc876276126f094671ff72af429db6c868b8ba1fef7269aa986b4e1d5874",
+      "width": 1212,
+      "height": 198,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/spooky.svg",
+      "format": "svg",
+      "checksum": "846f595fc0f93c9de14a62b3520f7537420adc2f78b659c5155c97e20bc0276f",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/spooky_strong.png",
+      "format": "png",
+      "checksum": "f61248b02106807b83da660ece1bc2336254ed0780ae969259298cc3170cd30f",
+      "width": 648,
+      "height": 426,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/spooky_strong.svg",
+      "format": "svg",
+      "checksum": "115e76f91a842e80d4e1f7b502b492ff601a3ed38cefb037c97988b760946700",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "preview",
+      "path": "previews/composite.jpg",
+      "format": "jpeg",
+      "checksum": "5dc429f93cb48960560a1c8d3ba782f74507b9bbc9b19d65e2cc52c2c81f4d06",
+      "width": 960,
+      "height": 540,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T17:51:18+00:00",
+  "change_summary": "",
+  "stage": [
+    1920,
+    1080
+  ],
+  "layers": [
+    {
+      "id": "back_wall",
+      "type": "far",
+      "file": "layers/back_wall.png",
+      "rect": [
+        -400.0,
+        310.0,
+        2720.0,
+        970.0
+      ],
+      "parallax": 0.94,
+      "order": 5,
+      "cover": true,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/back_wall.svg"
+    },
+    {
+      "id": "wall_decor",
+      "type": "far",
+      "file": "layers/wall_decor.png",
+      "rect": [
+        100.0,
+        590.0,
+        1720.0,
+        260.0
+      ],
+      "parallax": 0.94,
+      "order": 6,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/wall_decor.svg"
+    },
+    {
+      "id": "ceiling",
+      "type": "far",
+      "file": "layers/ceiling.png",
+      "rect": [
+        -400.0,
+        870.0,
+        2720.0,
+        240.0
+      ],
+      "parallax": 0.97,
+      "order": 7,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/ceiling.svg"
+    },
+    {
+      "id": "ground",
+      "type": "middle",
+      "file": "layers/ground.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        560.0
+      ],
+      "parallax": 1.0,
+      "order": 10,
+      "cover": false,
+      "cover_horizontal": true,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/ground.svg"
+    },
+    {
+      "id": "main_scenery",
+      "type": "middle",
+      "file": "layers/main_scenery.png",
+      "rect": [
+        130.0,
+        -170.0,
+        1660.0,
+        1120.0
+      ],
+      "parallax": 1.0,
+      "order": 40,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/main_scenery.svg"
+    },
+    {
+      "id": "atmosphere",
+      "type": "effects",
+      "file": "layers/atmosphere.png",
+      "rect": [
+        -160.0,
+        190.0,
+        2480.0,
+        660.0
+      ],
+      "parallax": 1.0,
+      "order": 920,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "none",
+      "scare": 0,
+      "svg": "masters/atmosphere.svg"
+    },
+    {
+      "id": "spooky",
+      "type": "effects",
+      "file": "layers/spooky.png",
+      "rect": [
+        -60.0,
+        790.0,
+        2020.0,
+        330.0
+      ],
+      "parallax": 1.0,
+      "order": 925,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "none",
+      "scare": 1,
+      "svg": "masters/spooky.svg"
+    },
+    {
+      "id": "spooky_strong",
+      "type": "effects",
+      "file": "layers/spooky_strong.png",
+      "rect": [
+        610.0,
+        270.0,
+        1080.0,
+        710.0
+      ],
+      "parallax": 1.0,
+      "order": 926,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "none",
+      "scare": 2,
+      "svg": "masters/spooky_strong.svg"
+    }
+  ],
+  "anchors": {
+    "left": {
+      "x": 608.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.12,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "center": {
+      "x": 960.0,
+      "y": 205.0,
+      "order": 101,
+      "scale": 1.12,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "right": {
+      "x": 1329.6,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.12,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "far_left": {
+      "x": 379.2,
+      "y": 245.0,
+      "order": 99,
+      "scale": 1.03,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "far_right": {
+      "x": 1567.2,
+      "y": 245.0,
+      "order": 99,
+      "scale": 1.03,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "offstage_left": {
+      "x": -430.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "offstage",
+        "ground"
+      ],
+      "description": ""
+    },
+    "offstage_right": {
+      "x": 2350.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "offstage",
+        "ground"
+      ],
+      "description": ""
+    }
+  },
+  "lighting_presets": [
+    "day",
+    "morning",
+    "noon",
+    "evening",
+    "sunset",
+    "night",
+    "moonlight",
+    "overcast"
+  ],
+  "camera_bounds": [
+    -400.0,
+    -200.0,
+    2320.0,
+    1280.0
+  ],
+  "default_anchor_by_role": {
+    "ground": [
+      "center",
+      "left",
+      "right",
+      "far_left",
+      "far_right"
+    ],
+    "arboreal": [
+      "center",
+      "left"
+    ]
+  }
+}

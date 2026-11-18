@@ -87,6 +87,51 @@ def build_environments(library: AssetLibrary, force: bool, ids: set[str] | None,
     return n
 
 
+def important_ids(specs: list) -> list[str]:
+    """The backgrounds that get three compositions: those the tracked stories resolve to, plus the three most general of every category."""
+    import json
+    chosen: list[str] = []
+    cat = PROJECT_ROOT / "stories" / "master_catalogue.json"
+    if cat.exists():
+        for c in json.loads(cat.read_text(encoding="utf-8"))["collections"]:
+            for st in c["stories"]:
+                for eid in st["matched"].get("environment_candidates", [])[:1]:
+                    if eid not in chosen:
+                        chosen.append(eid)
+    seen: dict[str, int] = {}
+    for sp in specs:
+        seen[sp.category] = seen.get(sp.category, 0) + 1
+        if seen[sp.category] <= 3 and sp.id not in chosen:
+            chosen.append(sp.id)
+    by_id = {sp.id for sp in specs}
+    return [e for e in chosen if e in by_id]
+
+
+def build_compositions(library: AssetLibrary, force: bool, ids: set[str] | None, log=print) -> int:
+    from .env_kit import recompose
+    n = 0
+    specs = all_specs()
+    wanted = ids or set(important_ids(specs))
+    with tempfile.TemporaryDirectory(prefix="csae_cmp_env_") as tmp:
+        for sp in specs:
+            if sp.id not in wanted:
+                continue
+            for mode in ("medium", "closeup"):
+                var, k = recompose(sp, mode)
+                if not _fresh(library, "environment", var.id, force):
+                    continue
+                work = Path(tmp) / var.id
+                built = build_environment(var, work, k=k)
+                built["data"]["catalog_code"] = f"{sp.id.upper()}-{mode[0].upper()}"
+                built["data"]["aliases"] = [built["data"]["catalog_code"], *[f"{a} ({mode})" for a in sp.aliases]]
+                files, _ = _roles(work, lambda rel: {})
+                library.register(built["data"], files, built["roles"])
+                n += 1
+                log(f"composition  {var.id}")
+    log(f"compositions registered {n} for {len(wanted)} backgrounds")
+    return n
+
+
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     p.add_argument("--library", type=Path, default=PROJECT_ROOT / "asset_library")
@@ -101,6 +146,8 @@ def main() -> None:
         build_components(lib, a.force, ids)
     if "environments" in only:
         build_environments(lib, a.force, ids)
+    if "compositions" in only:
+        build_compositions(lib, a.force, ids)
 
 
 if __name__ == "__main__":

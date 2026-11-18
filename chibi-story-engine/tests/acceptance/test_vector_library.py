@@ -67,7 +67,9 @@ def test_every_new_character_has_fifteen_expressions_and_poses_on_the_existing_r
 
 def test_original_assets_are_untouched(library):
     for cid in ("monkey_001", "lion_001", "rabbit_001", "jackal_001", "farmer_001", "rich_man_001", "crocodile_001"):
-        assert library.character(cid).version == 1 and library.verify(AssetType.character, cid) == []
+        # the originals were later upgraded to version 2; version 1 must remain complete and intact
+        assert library.character(cid, 1).version == 1 and library.verify(AssetType.character, cid, 1) == []
+        assert library.verify(AssetType.character, cid) == []
     assert library.environment("forest_river_001").version == 1
 
 

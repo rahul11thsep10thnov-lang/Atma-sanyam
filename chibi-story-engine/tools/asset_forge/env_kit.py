@@ -726,3 +726,63 @@ def _paste_clipped(dst: Image.Image, src: Image.Image, dx: int, dy: int) -> None
     crop = src.crop((x0 - dx, y0 - dy, min(src.width, dst.width - dx), min(src.height, dst.height - dy)))
     if crop.width > 0 and crop.height > 0:
         dst.alpha_composite(crop, (x0, y0))
+
+
+# ------------------------------------------------------------------------------ compositions (wide / medium / closeup)
+COMPOSITION = {"medium": {"k": 1.35, "keep": 820, "far": 0.5, "anchor_scale": 1.12, "pull": 0.88}, "closeup": {"k": 1.9, "keep": 480, "far": 0.0, "anchor_scale": 1.3, "pull": 0.7}}
+
+
+def _focus_items(items: list, keep: float, centre: float = 960.0) -> list:
+    """Keep what lies within `keep` of the focal point; trim rows and scatters to that window."""
+    out = []
+    lo, hi = centre - keep, centre + keep
+    for it in items:
+        kind = it[0]
+        if kind == "at":
+            if lo <= it[2] <= hi:
+                out.append(it)
+        elif kind == "row":
+            _, ids, x0, x1, step, y, sc, jit, sd, kw = it
+            if x1 >= lo and x0 <= hi:
+                out.append(("row", ids, max(x0, lo - 100), min(x1, hi + 100), step, y, sc, jit, sd, kw))
+        elif kind == "scatter":
+            _, ids, n, xr, yr, sr, sd, kw = it
+            a, b = max(xr[0], lo - 200), min(xr[1], hi + 200)
+            if b > a:
+                out.append(("scatter", ids, max(1, int(n * (b - a) / max(1, xr[1] - xr[0]))), (a, b), yr, sr, sd, kw))
+        else:
+            out.append(it)
+    return out
+
+
+def recompose(spec: EnvSpec, mode: str) -> tuple[EnvSpec, float]:
+    """A medium or close-up composition of the same place: a different arrangement drawn larger, not a crop of the wide picture.
+
+    The far layers are thinned or dropped, mid-ground and vegetation are limited to the focal window around the centre and redrawn at
+    a larger size with fewer elements, framing and foreground stay, and the anchors carry a larger scale so characters fill more of the frame.
+    Same sky, ground, lighting, parallax rules, anchors (names and features), camera bounds and layer hierarchy as the wide composition.
+    """
+    import copy
+    c = COMPOSITION[mode]
+    layers = []
+    for ld in spec.layers:
+        ld = copy.copy(ld)
+        lid = ld["id"]
+        if "items" in ld and lid not in ("sky", "back_wall", "ground", "water", "ripples"):
+            if lid == "far" and c["far"] == 0.0:
+                continue
+            if lid in ("far", "back"):
+                ld["items"] = _focus_items(ld["items"], 900 if mode == "medium" else 700)
+            elif lid in ("main_scenery", "vegetation", "wall_decor", "foreground_objects"):
+                ld["items"] = _focus_items(ld["items"], c["keep"])
+            if not ld["items"]:
+                continue
+        layers.append(ld)
+    anchors = {n: ({**a, "scale": round(a.get("scale", 1.0) * c["anchor_scale"], 3), "x": round(960 + (a["x"] - 960) * c["pull"], 1)} if "offstage" not in n else a)
+               for n, a in spec.anchors.items()}
+    new = EnvSpec(id=f"{spec.id}-{mode}", name=f"{spec.name} ({'medium' if mode == 'medium' else 'close-up'})", category=spec.category, subcategory=spec.subcategory,
+                  description=f"{spec.description} {'Medium' if mode == 'medium' else 'Close-up'} composition: a re-arranged, larger view of the same place.",
+                  layers=layers, anchors=anchors, roles=spec.roles, habitats=spec.habitats, tags=spec.tags, aliases=spec.aliases, stories=spec.stories,
+                  ambience=spec.ambience, seed=spec.seed + (11 if mode == "medium" else 23), composition=mode, group=spec.id, lighting=spec.lighting,
+                  scare_levels=spec.scare_levels)
+    return new, c["k"]

@@ -253,3 +253,13 @@ export interface AudioClip {
   text: string;
   url: string;
 }
+
+export interface Completion {
+  characters: { total: number; with_svg_masters: number; with_four_views: number; with_15_expressions: number; with_15_poses: number; with_validated_rigs: number; approved: number; pending: number;
+    rejected: number; original_nine_fully_upgraded: number; original_nine_upgraded_to_v2: number; without_four_views: string[] };
+  environments: { total: number; wide: number; medium: number; closeup: number; with_complete_layer_files: number; with_validated_camera_and_anchors: number; approved: number; pending: number;
+    rejected: number; wide_with_all_three_compositions: number; wide_without_variants: number };
+  rigs: { rigs: { template: string; label: string; defined: boolean; characters: number; note?: string }[]; rig_test_results: { passed?: number; failed?: number; run_at?: string } };
+  story_research: { available: boolean; collections_total?: number; collections_with_a_consulted_source?: number; sources_consulted?: number; source_records?: number; seed_entries?: number; verified?: number;
+    cross_verified?: number; unverified?: number; research_pending?: number; documented_overlaps?: number; regions_with_a_consulted_source?: number; regions_total?: number };
+}
