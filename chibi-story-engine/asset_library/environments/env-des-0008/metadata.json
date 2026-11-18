@@ -40,7 +40,9 @@
     "ambience": "forest_ambience_001",
     "composition": "wide",
     "composition_group": "env-des-0008",
-    "scare_levels": false,
+    "scare_levels": [
+      0
+    ],
     "seasons": [
       "spring",
       "summer",
@@ -206,8 +208,8 @@
       "role": "layer",
       "path": "layers/foreground.png",
       "format": "png",
-      "checksum": "fa601dace8ecf0a895f0b5488d787983e20ac037ff02a00247476db3e71e7b17",
-      "width": 1730,
+      "checksum": "649bf9657c2542f0e3c6ec620e98f5f64f82674ee7dfac17a85f8697709f2c0f",
+      "width": 1660,
       "height": 310,
       "duration_seconds": null,
       "view": null,
@@ -218,7 +220,7 @@
       "role": "svg_master",
       "path": "masters/foreground.svg",
       "format": "svg",
-      "checksum": "5d2c2378ba996f3f52306ec3a4794f60c48f759ed2566011800dfdeef30a5c54",
+      "checksum": "db02062929d4772546dd0eaf66146cec4c693957917b5dfce6512f36afb76189",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -254,7 +256,7 @@
       "role": "preview",
       "path": "previews/composite.jpg",
       "format": "jpeg",
-      "checksum": "732cea3a2580591fae4682fd9e9ef81b376a6a9a4cf323e817281ac1abbf5794",
+      "checksum": "83e4e8f23b119c3b0ebaf8eb3b710fe8394f8964436c006c71618f748f618d56",
       "width": 960,
       "height": 540,
       "duration_seconds": null,
@@ -263,7 +265,7 @@
       "pose": null
     }
   ],
-  "created_at": "2026-11-18T12:57:44+00:00",
+  "created_at": "2026-11-18T13:36:35+00:00",
   "change_summary": "",
   "stage": [
     1920,
@@ -391,7 +393,7 @@
       "rect": [
         470.0,
         -100.0,
-        1730.0,
+        1660.0,
         310.0
       ],
       "parallax": 1.3,

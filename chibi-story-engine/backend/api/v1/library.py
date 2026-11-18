@@ -15,7 +15,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from engine.camera.presets import CAMERA_PRESETS
 from engine.character_manager.registry import CharacterRegistry
 from engine.composition.effects import EFFECT_TYPES
-from engine.environment_manager.lighting import LIGHTING_PRESETS, WEATHER_PRESETS
+from engine.environment_manager.lighting import LIGHTING_PRESETS, SEASON_PRESETS, WEATHER_PRESETS
 from engine.schema.assets import AssetType, CharacterManifest, EnvironmentManifest
 
 from ...deps import AnyUser, Ctx, Db, Producer, Reviewer
@@ -62,6 +62,8 @@ def asset_out(manifest, versions: list[int]) -> dict[str, Any]:
     return {"id": manifest.id, "asset_type": t, "name": manifest.name, "description": manifest.description, "version": manifest.version,
             "versions": versions, "approval_status": manifest.approval_status.value, "tags": manifest.tags, "aliases": manifest.aliases,
             "licence": manifest.licence.name, "file_count": len(manifest.files), "thumbnail_url": thumb,
+            "catalog_code": manifest.catalog_code, "category": manifest.category, "subcategory": manifest.subcategory,
+            "related_stories": manifest.related_stories,
             "duration_seconds": getattr(manifest, "duration_seconds", None),
             "audio_url": _media(t, manifest.id, manifest.file) if t in ("music", "sound_effect") else None}
 
@@ -74,13 +76,18 @@ def character_out(m: CharacterManifest, versions: list[int], issues: list[dict])
             "rig_template": m.rig.template, "parts": m.rig.part_ids(), "expressions": sorted(m.expressions), "poses": sorted(m.poses),
             "states": m.states, "habitat": m.compatibility.get("habitat"), "attach_points": sorted(m.rig.attach_points),
             "references": by_role("reference"), "expression_images": by_role("expression"), "pose_images": by_role("pose"),
-            "problems": issues}
+            "svg_master_count": len(m.files_by_role("svg_master")), "problems": issues}
 
 
 def environment_out(m: EnvironmentManifest, versions: list[int]) -> dict[str, Any]:
     return {**asset_out(m, versions), "environment_code": m.id, "anchors": {k: v.model_dump() for k, v in m.anchors.items()},
             "lighting_presets": m.lighting_presets, "default_anchor_by_role": m.default_anchor_by_role,
+            "camera_bounds": list(m.camera_bounds), "compatibility": m.compatibility,
+            "preview_url": f"/api/v1/environments/{m.id}/preview",
+            "composite_url": next((_media("environment", m.id, f.path) for f in m.files_by_role("preview")), None),
             "layers": [{"id": l.id, "type": l.type, "parallax": l.parallax, "order": l.order, "animated": bool(l.motion),
+                        "scare": l.scare, "tint_group": l.tint_group, "rect": list(l.rect), "cover": l.cover,
+                        "svg_url": _media("environment", m.id, l.svg) if l.svg else None,
                         "url": _media("environment", m.id, l.file)} for l in m.layers]}
 
 
@@ -213,6 +220,76 @@ def list_environments(ctx: Ctx, _: AnyUser) -> list[dict[str, Any]]:
     return [environment_out(library.environment(e), library.versions(AssetType.environment, e)) for e in library.list_ids(AssetType.environment)]
 
 
+@router.get("/components", summary="Reusable vector components (trees, rocks, buildings, lamps, ...) with their SVG masters")
+def list_components(ctx: Ctx, _: AnyUser, kind: str | None = Query(None, max_length=40), q: str | None = Query(None, max_length=100)) -> list[dict[str, Any]]:
+    library = _lib(ctx)
+    out = []
+    for cid in library.list_ids(AssetType.component):
+        m = library.load(AssetType.component, cid)
+        if kind and m.kind != kind:
+            continue
+        if q and q.lower() not in " ".join([m.id, m.name, *m.tags, *m.aliases]).lower():
+            continue
+        out.append({**asset_out(m, library.versions(AssetType.component, cid)), "kind": m.kind, "size": list(m.size),
+                    "image_url": _media("component", m.id, m.file), "svg_url": _media("component", m.id, m.svg)})
+    return out
+
+
+@router.get("/library/stats", summary="Counts computed from the files on disk: by type, category, kind and approval status")
+def library_stats(ctx: Ctx, _: AnyUser) -> dict[str, Any]:
+    library = _lib(ctx)
+    by_type, approval, env_cats, char_cats, comp_kinds = {}, {}, {}, {}, {}
+    layers = svg = scare = 0
+    for t in AssetType:
+        ids = library.list_ids(t)
+        by_type[t.value] = len(ids)
+        for aid in ids:
+            m = library.load(t, aid)
+            key = f"{t.value}:{m.approval_status.value}"
+            approval[key] = approval.get(key, 0) + 1
+            svg += len(m.files_by_role("svg_master"))
+            if t == AssetType.environment:
+                env_cats[m.category or "uncategorised"] = env_cats.get(m.category or "uncategorised", 0) + 1
+                layers += len(m.layers)
+                scare += sum(1 for l in m.layers if l.scare)
+            elif t == AssetType.character:
+                char_cats[m.category or "original"] = char_cats.get(m.category or "original", 0) + 1
+            elif t == AssetType.component:
+                comp_kinds[m.kind] = comp_kinds.get(m.kind, 0) + 1
+    return {"by_type": by_type, "approval": approval, "environment_categories": env_cats, "character_categories": char_cats,
+            "component_kinds": comp_kinds, "environment_layers": layers, "scare_layers": scare, "svg_masters": svg,
+            "expressions_per_character": 15, "poses_per_character": 15,
+            "not_delivered": ["side, three-quarter and back character views", "separate medium / close-up background compositions"]}
+
+
+@router.get("/environments/{environment_id}/preview", summary="Render one frame of an environment with a chosen time of day, weather, season and scare level")
+def environment_preview(environment_id: str, ctx: Ctx, _: AnyUser, lighting: str = Query("day", max_length=24), weather: str = Query("clear", max_length=24),
+                        season: str = Query("summer", max_length=24), scare: int = Query(2, ge=0, le=2), width: int = Query(960, ge=160, le=1920)):
+    import io
+
+    from fastapi.responses import Response
+    from PIL import Image
+
+    from engine.composition.composer import SceneComposer
+    from engine.rendering.raster import render_shot_frame
+    from engine.schema.story import parse_story
+    library = _lib(ctx)
+    if not library.exists(AssetType.environment, environment_id):
+        raise ApiError(404, "not_found", "No such environment")
+    story = parse_story({"story_id": "env_preview", "output": {"width": 1920, "height": 1080, "fps": 24}, "characters": [],
+                         "scenes": [{"scene_id": "s", "environment_id": environment_id, "time_of_day": lighting, "weather": weather, "season": season, "scare_level": scare,
+                                     "shots": [{"shot_id": "sh1", "duration_seconds": 2.0, "camera": {"preset": "establishing_wide"}, "characters": [], "actions": [],
+                                                "dialogue": [], "effects": [], "props": [], "audio": []}]}]})
+    plan, issues = SceneComposer(library).compose(story, "s")
+    errors = [i for i in issues if i.severity == "error"]
+    if errors:
+        raise ApiError(422, "invalid_preview", errors[0].message)
+    frame = render_shot_frame(plan.shots[0], 0, width, int(width * 9 / 16)).convert("RGB")
+    buf = io.BytesIO()
+    frame.save(buf, "JPEG", quality=84)
+    return Response(buf.getvalue(), media_type="image/jpeg", headers={"Cache-Control": "private, max-age=300"})
+
+
 @router.get("/animations")
 def list_animations(ctx: Ctx, _: AnyUser, rig: str | None = Query(None, pattern=ID), category: str | None = None) -> list[dict[str, Any]]:
     out = []
@@ -239,7 +316,11 @@ def presets(ctx: Ctx, _: AnyUser) -> dict[str, Any]:
     return {"camera_presets": sorted(CAMERA_PRESETS), "lighting": {k: v.description for k, v in LIGHTING_PRESETS.items()},
             "weather": sorted(WEATHER_PRESETS), "effects": sorted(EFFECT_TYPES),
             "rig_templates": [{"id": t.id, "name": t.name, "description": t.description} for t in _lib(ctx).rig_templates().values()],
-            "facial_poses": ["neutral", "happy", "sad", "surprised", "angry", "worried", "thinking", "laughing", "speaking"]}
+            "facial_poses": ["neutral", "happy", "sad", "surprised", "angry", "worried", "thinking", "laughing", "speaking", "crying", "frightened",
+                             "suspicious", "excited", "disappointed", "determined"],
+            "seasons": sorted(SEASON_PRESETS), "scare_levels": [0, 1, 2],
+            "poses": ["standing", "walking", "running", "sitting", "sleeping", "jumping", "talking", "pointing", "waving", "fighting", "dancing",
+                      "kneeling", "falling", "climbing", "holding_object"]}
 
 
 @router.post("/library/sync", summary="Re-read the asset library from disk into the database (admin or producer)")

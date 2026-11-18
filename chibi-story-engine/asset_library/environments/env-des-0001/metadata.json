@@ -41,7 +41,9 @@
     "ambience": "forest_ambience_001",
     "composition": "wide",
     "composition_group": "env-des-0001",
-    "scare_levels": false,
+    "scare_levels": [
+      0
+    ],
     "seasons": [
       "spring",
       "summer",
@@ -135,9 +137,9 @@
       "role": "layer",
       "path": "layers/main_scenery.png",
       "format": "png",
-      "checksum": "ac2ecffaac9f9b586f6b4c343de7a44b6e2543db9b7bdeafee519d0b56831326",
+      "checksum": "096ea5d75ddad145aedaaa9fdde16512378de6247bdb4311b4277dc1f74e1f46",
       "width": 1211,
-      "height": 392,
+      "height": 385,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -147,7 +149,7 @@
       "role": "svg_master",
       "path": "masters/main_scenery.svg",
       "format": "svg",
-      "checksum": "6491c85704d07e6bbea32ed818c16c806037b22441744c2d7546b85a16e6585b",
+      "checksum": "c6fde7338bd424b5c002c57af5c2ab08e351de8c7392691563cfcda217c9ab3e",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -183,8 +185,8 @@
       "role": "layer",
       "path": "layers/foreground.png",
       "format": "png",
-      "checksum": "6dc89329280805b99d7233e9c7fcb069abb1a6b8069717923eafe4a731077cde",
-      "width": 1070,
+      "checksum": "3a2a2066baf70385d0e97d8dbaf50fc427083ac0c353584a588a2d7b2817a5a3",
+      "width": 1090,
       "height": 280,
       "duration_seconds": null,
       "view": null,
@@ -195,7 +197,7 @@
       "role": "svg_master",
       "path": "masters/foreground.svg",
       "format": "svg",
-      "checksum": "3616ba585ec3462ac1467be8501d0b53c44934dc65084b9d0265a66f8936ae2b",
+      "checksum": "d7acab3abb0ed14ea6001d7023a838e3ddb6959021ef1d446cf31f31624afdce",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -207,7 +209,7 @@
       "role": "preview",
       "path": "previews/composite.jpg",
       "format": "jpeg",
-      "checksum": "de635c7c074d2703f5f66aaaf5ebca2a05270c07b405aba711039c109e152bc1",
+      "checksum": "d013d5acf3e52b1cee9e0e917b9d86ca30619c030ec9b95c15d60a00de756199",
       "width": 960,
       "height": 540,
       "duration_seconds": null,
@@ -216,7 +218,7 @@
       "pose": null
     }
   ],
-  "created_at": "2026-11-18T12:57:38+00:00",
+  "created_at": "2026-11-18T13:36:30+00:00",
   "change_summary": "",
   "stage": [
     1920,
@@ -286,9 +288,9 @@
       "file": "layers/main_scenery.png",
       "rect": [
         210.0,
-        290.0,
+        300.0,
         1730.0,
-        560.0
+        550.0
       ],
       "parallax": 1.0,
       "order": 40,
@@ -324,8 +326,8 @@
       "file": "layers/foreground.png",
       "rect": [
         640.0,
-        -150.0,
-        1070.0,
+        -140.0,
+        1090.0,
         280.0
       ],
       "parallax": 1.3,

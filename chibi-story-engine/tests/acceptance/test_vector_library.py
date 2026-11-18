@@ -103,3 +103,75 @@ def test_seasons_weather_and_lighting_presets_exist():
         for wx in ("clear", "cloudy", "rain", "fog", "storm", "snow"):
             bg, ch = grade(tod, wx, "summer")
             assert bg and ch
+
+
+def test_new_character_aliases_do_not_collide_with_each_other_or_the_originals(library):
+    from collections import defaultdict
+    from engine.asset_manager.index import norm_name
+    seen = defaultdict(set)
+    for cid in library.list_ids(AssetType.character):
+        m = library.character(cid)
+        for a in set(m.aliases + [m.name]):
+            seen[norm_name(a)].add(cid)
+    clashes = {k: v for k, v in seen.items() if len(v) > 1 and any(c.startswith("char-") for c in v)}
+    assert clashes == {}, clashes
+
+
+def test_asset_report_matches_missing_and_alternatives(library):
+    from engine.story_intelligence.analyser import RuleBasedAnalyser
+    from engine.story_intelligence.asset_report import build_asset_report
+    from tests.support import MONKEY_STORY
+    idx = library.index()
+    analysis = RuleBasedAnalyser(idx).analyse(MONKEY_STORY)
+    report = build_asset_report(analysis, idx)
+    assert {c["matched"] for c in report["characters"]} >= {"monkey_001", "crocodile_001"}
+    assert report["scenes"][0]["environment"]["chosen"] and isinstance(report["missing"], list)
+    first = report["scenes"][0]["environment"]
+    alt = first["candidates"][0]["id"] if first["candidates"] else None
+    if alt:
+        forced = build_asset_report(analysis, idx, environment_overrides={report["scenes"][0]["scene_id"]: alt})
+        assert forced["scenes"][0]["environment"]["chosen"] == alt and forced["scenes"][0]["environment"]["overridden"]
+    unknown = RuleBasedAnalyser(idx).analyse("एक रेगिस्तान में एक ऊँट रहता था। ऊँट ने कहा, \"मित्र, चलो।\"")
+    rep = build_asset_report(unknown, idx)
+    assert rep["scenes"][0]["environment"]["chosen"] and rep["scenes"][0]["environment"]["chosen"].startswith("env-des")
+
+
+def test_storyboard_accepts_environment_overrides(library):
+    from engine.story_intelligence.analyser import RuleBasedAnalyser
+    from engine.story_intelligence.storyboard import StoryboardBuilder
+    from tests.support import MONKEY_STORY
+    idx = library.index()
+    analysis = RuleBasedAnalyser(idx).analyse(MONKEY_STORY)
+    base = StoryboardBuilder(idx).build(analysis, story_id="x")
+    sid = next(iter(base.environment_map))
+    other = "env-wat-0004"
+    forced = StoryboardBuilder(idx).build(analysis, story_id="x", environment_overrides={sid: other})
+    assert forced.environment_map[sid] == other and base.environment_map[sid] != other
+
+
+def test_master_catalogue_is_computed_and_honest(library):
+    from tools.catalogue.build_catalogue import build
+    cat = build(library)
+    assert cat["totals"]["stories"] >= 40 and cat["totals"]["implemented"] == 4
+    assert all(not s["source_verified"] for c in cat["collections"] for s in c["stories"])
+    assert all(c["complete_collection"] is False for c in cat["collections"])
+    assert any("Chacha" in e["title"] for e in cat["excluded"])
+    # a gap the library really has must be reported, not hidden
+    assert "crab" in cat["unmatched_needs"]["character"]
+
+
+def test_story_text_with_new_characters_and_backgrounds_runs_through_the_existing_pipeline(library, composer):
+    """Analysis -> storyboard -> composition -> a rendered frame, using only new assets."""
+    from engine.rendering.raster import render_shot_frame
+    from engine.story_intelligence.analyser import RuleBasedAnalyser
+    from engine.story_intelligence.storyboard import StoryboardBuilder
+    idx = library.index()
+    text = "एक रेगिस्तान में एक ऊँट रहता था। एक दिन राजा ने ऊँट से कहा, \"मित्र, मेरे साथ चलो।\" ऊँट खुश होकर बोला, \"ठीक है।\""
+    analysis = RuleBasedAnalyser(idx).analyse(text)
+    board = StoryboardBuilder(idx).build(analysis, story_id="camel_and_king")
+    ids = set(board.story.character_ids())
+    assert "char-ani-0010" in ids and any(i.startswith("char-hum-") or i.startswith("char-") for i in ids - {"char-ani-0010"}) , ids
+    assert board.story.scenes[0].environment_id.startswith("env-")
+    plan, issues = composer.compose(board.story, board.story.scenes[0].scene_id)
+    assert not [i for i in issues if i.severity == "error"], issues
+    assert render_shot_frame(plan.shots[0], 12, 320, 180).size == (320, 180)

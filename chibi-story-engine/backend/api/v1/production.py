@@ -34,6 +34,7 @@ class AnalyseIn(Body):
 
 class StoryboardIn(Body):
     character_overrides: dict[str, str] = Field(default_factory=dict, description="entity key -> character id to use")
+    environment_overrides: dict[str, str] = Field(default_factory=dict, description="scene id (scene_01, ...) -> environment id to use instead of the automatic match")
 
 
 class ScenePatch(Body):
@@ -110,7 +111,17 @@ def generate_storyboard(story_id: uuid.UUID, ctx: Ctx, db: Db, user: Producer, b
     svc = ProductionService(db, hub(ctx))
     if svc.stories.require(story_id).analysis_json is None:
         svc.analyse(story_id, user)
-    return svc.generate_storyboard(story_id, user, body.character_overrides if body else None)
+    return svc.generate_storyboard(story_id, user, body.character_overrides if body else None, body.environment_overrides if body else None)
+
+
+@router.get("/stories/{story_id}/asset-report", summary="Characters, backgrounds, props, expressions and animations the story needs: matched, missing and candidate alternatives")
+def asset_report(story_id: uuid.UUID, ctx: Ctx, db: Db, _: AnyUser, character_overrides: str = "", environment_overrides: str = "") -> dict[str, Any]:
+    return ProductionService(db, hub(ctx)).asset_report(story_id, _pairs(character_overrides), _pairs(environment_overrides))
+
+
+def _pairs(raw: str) -> dict[str, str]:
+    """'a=b,c=d' -> {'a': 'b', 'c': 'd'}"""
+    return dict(p.split("=", 1) for p in raw.split(",") if "=" in p)
 
 
 @router.get("/stories/{story_id}/scenes")

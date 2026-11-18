@@ -29,6 +29,9 @@ class CharacterEntry(BaseModel):
     attach_points: list[str] = Field(default_factory=list)
     default_voice: str | None = None
     approved: bool = False
+    category: str | None = None
+    subcategory: str | None = None
+    catalog_code: str | None = None
 
     def names(self) -> set[str]:
         return {norm_name(a) for a in [self.id, self.name, *self.aliases]}
@@ -55,6 +58,11 @@ class EnvironmentEntry(BaseModel):
     lighting_presets: list[str] = Field(default_factory=lambda: ["day"])
     ambience: str | None = None
     approved: bool = False
+    category: str | None = None
+    subcategory: str | None = None
+    catalog_code: str | None = None
+    scare_levels: list[int] = Field(default_factory=lambda: [0, 1, 2])
+    composition: str | None = None
 
     def anchor_with(self, feature: str, exclude: set[str] | None = None) -> str | None:
         """First anchor that has a feature, preferring ones nobody stands on."""

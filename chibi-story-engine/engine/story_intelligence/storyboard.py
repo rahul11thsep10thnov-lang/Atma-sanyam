@@ -78,8 +78,9 @@ class StoryboardBuilder:
     # ------------------------------------------------------------------ API
     def build(self, analysis: StoryAnalysis, *, story_id: str, title: str | None = None, output: OutputSpec | None = None,
               visual_style: str = "premium_chibi_anime", genre: str | None = None,
-              character_overrides: dict[str, str] | None = None) -> StoryboardResult:
+              character_overrides: dict[str, str] | None = None, environment_overrides: dict[str, str] | None = None) -> StoryboardResult:
         self.warnings: list[str] = []
+        self.env_overrides = environment_overrides or {}
         self._prev_env, self._prev_time, self._prev_env_id = None, "day", None
         self.missing: list[MissingAsset] = []
         self.pack = pack_for(analysis.language)
@@ -129,6 +130,20 @@ class StoryboardBuilder:
                                 character_map={c.key: c.cid for c in chars.values()}, environment_map=env_map)
 
     # ---------------------------------------------------------- environment
+    def rank_environments(self, tags: list[str], habitats: set[str], limit: int = 5) -> list[tuple[float, EnvironmentEntry]]:
+        """Environments that share at least one tag with the scene, best first (ties keep library order)."""
+        scored: list[tuple[float, int, EnvironmentEntry]] = []
+        for i, env in enumerate(self.index.environments):
+            et, st = set(env.tags), set(tags)
+            if not et & st:
+                continue
+            score = len(et & st) / len(et | st)
+            if env.habitats and habitats:
+                score += 0.15 * len(habitats & set(env.habitats)) / len(habitats)
+            scored.append((score, i, env))
+        scored.sort(key=lambda t: (-t[0], t[1]))
+        return [(sc, e) for sc, _, e in scored[:limit]]
+
     def match_environment(self, tags: list[str], habitats: set[str]) -> EnvironmentEntry | None:
         best: tuple[float, EnvironmentEntry] | None = None
         for env in self.index.environments:
@@ -146,7 +161,12 @@ class StoryboardBuilder:
         sid = f"scene_{sa.index:02d}"
         present = [chars[k] for k in sa.characters if k in chars]
         tags = list(sa.location_tags)
-        env = self.match_environment(tags, {c.habitat for c in present}) if tags else None
+        override = getattr(self, "env_overrides", {}).get(f"scene_{sa.index:02d}")
+        env = self.index.environment(override) if override else None
+        if override and env is None:
+            self.warnings.append(f"environment override '{override}' for scene_{sa.index:02d} is not in the library; matching normally")
+        if env is None:
+            env = self.match_environment(tags, {c.habitat for c in present}) if tags else None
         if env is None and getattr(self, "_prev_env", None) is not None and not tags:
             env = self._prev_env                       # no location named: the story stays where it was
         if env is None:

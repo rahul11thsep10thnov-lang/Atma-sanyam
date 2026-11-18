@@ -40,7 +40,9 @@
     "ambience": "forest_ambience_001",
     "composition": "wide",
     "composition_group": "env-des-0002",
-    "scare_levels": false,
+    "scare_levels": [
+      0
+    ],
     "seasons": [
       "spring",
       "summer",
@@ -182,8 +184,8 @@
       "role": "layer",
       "path": "layers/vegetation.png",
       "format": "png",
-      "checksum": "c1fc23f052c1ea838c1d769f5736fa6b37a1a1ec2a3bb9cfca16789f31e9ce4e",
-      "width": 245,
+      "checksum": "4bfba5937ed12fb40fd2ad1bf45ee46b6ef5d1dd0bcdd2a13f343c7d37386755",
+      "width": 224,
       "height": 140,
       "duration_seconds": null,
       "view": null,
@@ -194,7 +196,7 @@
       "role": "svg_master",
       "path": "masters/vegetation.svg",
       "format": "svg",
-      "checksum": "e2466643c57c356cfbf992ee9cb322ad77cb4fc4320c77b7cf2680b38d7dc327",
+      "checksum": "7fbae0d7a947b3762fad9cc24c9d8bdf2df4c6753a61a67acaf3ec2f2c7f2cdb",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -206,9 +208,9 @@
       "role": "layer",
       "path": "layers/foreground.png",
       "format": "png",
-      "checksum": "79e13ef5c3c4d392cee92e5ed7dce6bed7e375f0cc8af04c805febefc15e6d8f",
-      "width": 2180,
-      "height": 270,
+      "checksum": "d4a36e755a600e49337129042225ba26a817405b0239101efebc0d7d1dfa1738",
+      "width": 2160,
+      "height": 300,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -218,7 +220,7 @@
       "role": "svg_master",
       "path": "masters/foreground.svg",
       "format": "svg",
-      "checksum": "16bf1bdc74aadafedb74658345fd220ee9b43ba836a23fecf1c9b663da2317f8",
+      "checksum": "4c87b1eeccfc53d59a274ea84a5405b1290323896a43b82bcfdde960f17e048c",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -230,7 +232,7 @@
       "role": "preview",
       "path": "previews/composite.jpg",
       "format": "jpeg",
-      "checksum": "ee9dd28e9c4d6435a2921b29ec65717dac35aebf08a618045ff7b96a33adc5b0",
+      "checksum": "e64dcf4d66e5da3e25e2bcd6792ddb5449760db9ee88ded22c5bf11ffa037ce4",
       "width": 960,
       "height": 540,
       "duration_seconds": null,
@@ -239,7 +241,7 @@
       "pose": null
     }
   ],
-  "created_at": "2026-11-18T12:57:39+00:00",
+  "created_at": "2026-11-18T13:36:30+00:00",
   "change_summary": "",
   "stage": [
     1920,
@@ -346,9 +348,9 @@
       "type": "middle",
       "file": "layers/vegetation.png",
       "rect": [
-        120.0,
-        280.0,
-        350.0,
+        170.0,
+        290.0,
+        320.0,
         200.0
       ],
       "parallax": 1.0,
@@ -365,10 +367,10 @@
       "type": "foreground",
       "file": "layers/foreground.png",
       "rect": [
+        -90.0,
         -110.0,
-        -110.0,
-        2180.0,
-        270.0
+        2160.0,
+        300.0
       ],
       "parallax": 1.3,
       "order": 800,

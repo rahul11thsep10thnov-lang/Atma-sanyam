@@ -312,7 +312,7 @@ class AssetLibrary:
                 aliases=m.aliases, rig_template=m.rig.template, habitat=str(m.compatibility.get("habitat", "ground")),
                 parts=m.rig.part_ids(), expressions=sorted(m.expressions), poses=sorted(m.poses),
                 attach_points=sorted(m.rig.attach_points), default_voice=m.default_voice,
-                approved=m.approval_status == ApprovalStatus.approved))
+                approved=m.approval_status == ApprovalStatus.approved, category=m.category, subcategory=m.subcategory, catalog_code=m.catalog_code))
         envs = []
         for eid in self.list_ids(AssetType.environment):
             e = self.environment(eid)
@@ -321,7 +321,9 @@ class AssetLibrary:
                 aliases=e.aliases, anchors={n: AnchorEntry(x=a.x, y=a.y, order=a.order, scale=a.scale, features=a.features)
                                             for n, a in e.anchors.items()},
                 default_anchor_by_role=e.default_anchor_by_role, habitats=list(e.compatibility.get("habitats", [])),
-                lighting_presets=e.lighting_presets, ambience=e.compatibility.get("ambience"), approved=e.approval_status == ApprovalStatus.approved))
+                lighting_presets=e.lighting_presets, ambience=e.compatibility.get("ambience"), approved=e.approval_status == ApprovalStatus.approved,
+                category=e.category, subcategory=e.subcategory, catalog_code=e.catalog_code,
+                scare_levels=list(e.compatibility.get("scare_levels", [0, 1, 2])), composition=e.compatibility.get("composition")))
         anims = [AnimationEntry(code=c.code, category=c.category, level=c.level, rigs=c.rig_compatibility,
                                 semantics=list(c.metadata.get("semantics", [])), duration=c.duration, loop=c.loop, additive=c.additive,
                                 start_states=c.start_states, end_state=c.end_state, requires_feature=c.requires_feature,

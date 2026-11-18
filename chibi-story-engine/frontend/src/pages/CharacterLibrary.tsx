@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { countBy, emptyFilter, GalleryFilters, matches, type FilterState } from "../components/Gallery";
 import { Badge, Button, Card, ErrorNote, Field, inputClass } from "../components/ui";
 import { useAction, useLoad } from "../hooks/useAsync";
 import { useStudio } from "../hooks/useStudio";
@@ -14,8 +15,13 @@ export function CharacterLibrary() {
   const [form, setForm] = useState({ character_code: "", display_name: "", based_on: "monkey_001", aliases: "", default_voice: "" });
   const [entity, setEntity] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
+  const [filter, setFilter] = useState<FilterState>(emptyFilter);
+  const [shown, setShown] = useState(36);
 
   const current = characters.data?.find((c) => c.id === selected) ?? null;
+  const all = characters.data ?? [];
+  const categories = countBy(all, (c) => c.category ?? "original");
+  const visible = all.filter((c) => matches({ ...c, name: c.display_name }, filter));
   const entities = story?.analysis_json?.entities ?? [];
   const inStory = new Set(story?.story_json?.characters.map((c) => c.character_id));
 
@@ -44,17 +50,26 @@ export function CharacterLibrary() {
       <h1 className="text-2xl font-bold">Character Library</h1>
       <ErrorNote message={characters.error ?? error} />
       {notice && <p role="status" className="rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800">{notice}</p>}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        {characters.data?.map((c) => (
+      <p className="text-sm text-stone-600">
+        {all.length} characters · {visible.length} shown. Characters added by the vector-library expansion start as <b>pending</b>.
+      </p>
+      <GalleryFilters value={filter} onChange={(f) => { setFilter(f); setShown(36); }} categories={categories} noun="characters" />
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-6">
+        {visible.slice(0, shown).map((c) => (
           <button key={c.id} onClick={() => setSelected(c.id)} data-testid={`character-${c.id}`} className={`rounded-xl border bg-card p-2 text-left ${selected === c.id ? "border-brand" : "border-line"}`}>
             <img src={media(c.thumbnail_url)} alt={c.display_name} className="mx-auto h-36 object-contain" loading="lazy" />
             <div className="mt-1 text-sm font-medium">{c.display_name}</div>
             <div className="flex flex-wrap items-center gap-1 text-xs text-stone-500">
-              <code>{c.id}</code> <Badge>{c.approval_status}</Badge> {inStory.has(c.id) && <Badge tone="info">in story</Badge>}
+              <code>{c.catalog_code ?? c.id}</code> <Badge>{c.approval_status}</Badge> {inStory.has(c.id) && <Badge tone="info">in story</Badge>}
             </div>
           </button>
         ))}
       </div>
+      {visible.length > shown && (
+        <Button variant="ghost" onClick={() => setShown(shown + 36)}>
+          Show more ({visible.length - shown} left)
+        </Button>
+      )}
       {current && (
         <Card
           title={`${current.display_name} (${current.id}, version ${current.version})`}
@@ -82,11 +97,29 @@ export function CharacterLibrary() {
             {current.problems.length > 0 && <ErrorNote message={`Problems: ${current.problems.map((p) => p.message).join("; ")}`} />}
             <div>
               <b>Expressions</b>
-              <div className="mt-1 grid grid-cols-3 gap-2 md:grid-cols-9">
+              <div className="mt-1 grid grid-cols-3 gap-2 md:grid-cols-8">
                 {current.expression_images.map((e) => (
                   <figure key={e.name} className="rounded-lg border border-line p-1 text-center text-xs">
                     <img src={media(e.url)} alt={`${current.display_name}, ${e.name}`} className="mx-auto h-20 object-contain" loading="lazy" />
                     <figcaption>{e.name}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+            <p>
+              <b>Category</b> {current.category ?? "original"}
+              {current.subcategory ? ` / ${current.subcategory}` : ""} · <b>Catalogue code</b> {current.catalog_code ?? "none"} · <b>Versions</b> {current.versions.join(", ")} · <b>Licence</b> {current.licence} · <b>SVG masters</b> {current.svg_master_count ?? 0}
+            </p>
+            <p>
+              <b>Related stories</b> {current.related_stories?.join(", ") || "none recorded"}
+            </p>
+            <div>
+              <b>Poses ({current.poses.length})</b>
+              <div className="mt-1 grid grid-cols-3 gap-2 md:grid-cols-8">
+                {current.pose_images.map((p) => (
+                  <figure key={p.name} className="rounded-lg border border-line p-1 text-center text-xs">
+                    <img src={media(p.url)} alt={`${current.display_name}, ${p.name}`} className="mx-auto h-24 object-contain" loading="lazy" />
+                    <figcaption>{p.name}</figcaption>
                   </figure>
                 ))}
               </div>

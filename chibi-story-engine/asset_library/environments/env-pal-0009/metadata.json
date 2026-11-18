@@ -42,7 +42,9 @@
     "ambience": "forest_ambience_001",
     "composition": "wide",
     "composition_group": "env-pal-0009",
-    "scare_levels": false,
+    "scare_levels": [
+      0
+    ],
     "seasons": [
       "spring",
       "summer",
@@ -64,7 +66,7 @@
       "role": "layer",
       "path": "layers/sky.png",
       "format": "png",
-      "checksum": "91d859b970702d9db04aed1bddb9520aba0b2428807e9102aa25f740d10b726e",
+      "checksum": "e082c86a5ff86645b66957f815ffc7c502197c1b5a9fccbd57d79b45249b052b",
       "width": 1088,
       "height": 592,
       "duration_seconds": null,
@@ -76,7 +78,7 @@
       "role": "svg_master",
       "path": "masters/sky.svg",
       "format": "svg",
-      "checksum": "1a75520da9dc5ed7baefcbb6cedbe6dff96d262a3bf63a522fd762c8cebec00b",
+      "checksum": "dbc1d29d465dfebe6a45c56f8551bec483a0b9ef0850f64c2e3f1ca15788e035",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -88,9 +90,9 @@
       "role": "layer",
       "path": "layers/far.png",
       "format": "png",
-      "checksum": "1d53b98c782d9ef7755cf641d9f37500d247bd945ff2ac282e6f7714f49c2e5d",
+      "checksum": "1febbf9cc23cc746823b8656dcd544f8d6a62c9777ed6d19985c5dab3695c255",
       "width": 1496,
-      "height": 363,
+      "height": 358,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -100,7 +102,7 @@
       "role": "svg_master",
       "path": "masters/far.svg",
       "format": "svg",
-      "checksum": "1c539a4f38da5a14bbc550df973667006979cc35f1d711d3f435c231f324a4ed",
+      "checksum": "a7a17b9f0c4de2608af168c86fa0a9f21fea623a12338361d2e703ea95a2584e",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -208,7 +210,7 @@
       "role": "preview",
       "path": "previews/composite.jpg",
       "format": "jpeg",
-      "checksum": "d8be02efdd645aade9803c4cbfa3a69ab8ed8aa1d863fd69f9174ab0137ff746",
+      "checksum": "f5b644976dff78f51e8872154dd92570b15f03fdeda879381809d29132f21c55",
       "width": 960,
       "height": 540,
       "duration_seconds": null,
@@ -217,7 +219,7 @@
       "pose": null
     }
   ],
-  "created_at": "2026-11-18T12:55:49+00:00",
+  "created_at": "2026-11-18T13:34:39+00:00",
   "change_summary": "",
   "stage": [
     1920,
@@ -251,7 +253,7 @@
         -400.0,
         380.0,
         2720.0,
-        660.0
+        650.0
       ],
       "parallax": 0.3,
       "order": 1,

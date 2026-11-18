@@ -46,7 +46,7 @@ class ProductionService:
         audit.record(self.s, user.id, "story.analysed", "story", story.id, analyser=analysis.analyser, scenes=len(analysis.scenes))
         return story.analysis_json
 
-    def _board(self, story: Story, overrides: dict[str, str] | None):
+    def _board(self, story: Story, overrides: dict[str, str] | None, env_overrides: dict[str, str] | None = None):
         if story.analysis_json is None:
             raise ApiError(409, "not_analysed", "Analyse the story before generating a storyboard")
         analysis = parse_analysis(story.analysis_json)
@@ -54,11 +54,21 @@ class ProductionService:
         output = OutputSpec(width=width, height=height, fps=int(story.settings_json.get("fps", 24)))
         builder = StoryboardBuilder(self.hub.library.index())
         return builder.build(analysis, story_id=_slug(story), title=story.title, output=output, genre=story.genre,
-                             visual_style=story.settings_json.get("visual_style", "premium_chibi_anime"), character_overrides=overrides)
+                             visual_style=story.settings_json.get("visual_style", "premium_chibi_anime"), character_overrides=overrides,
+                             environment_overrides=env_overrides)
 
-    def generate_storyboard(self, story_id: uuid.UUID, user: User, overrides: dict[str, str] | None = None) -> dict[str, Any]:
+    def asset_report(self, story_id: uuid.UUID, character_overrides: dict[str, str] | None = None, environment_overrides: dict[str, str] | None = None) -> dict[str, Any]:
+        from engine.story_intelligence.asset_report import build_asset_report
+        story = self.stories.require(story_id)
+        if story.analysis_json is None:
+            raise ApiError(409, "not_analysed", "Analyse the story before asking for its asset report")
+        return build_asset_report(parse_analysis(story.analysis_json), self.hub.library.index(), character_overrides=character_overrides,
+                                  environment_overrides=environment_overrides)
+
+    def generate_storyboard(self, story_id: uuid.UUID, user: User, overrides: dict[str, str] | None = None,
+                            env_overrides: dict[str, str] | None = None) -> dict[str, Any]:
         story = self.stories.require(story_id, lock=True)
-        board = self._board(story, overrides)
+        board = self._board(story, overrides, env_overrides)
         self.stories.save_version(story, board.story, "Storyboard generated", user)
         audit.record(self.s, user.id, "story.storyboard_generated", "story", story.id, version=story.current_version,
                      missing=len(board.missing_assets))

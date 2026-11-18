@@ -41,7 +41,9 @@
     "ambience": "forest_ambience_001",
     "composition": "wide",
     "composition_group": "env-mkt-0010",
-    "scare_levels": false,
+    "scare_levels": [
+      0
+    ],
     "seasons": [
       "spring",
       "summer",
@@ -63,7 +65,7 @@
       "role": "layer",
       "path": "layers/sky.png",
       "format": "png",
-      "checksum": "ab310e0a93be62ab5523dcc8819814e64f09673c913e088280c8a93e2840f12a",
+      "checksum": "db23c5afc3721f6c317796f38583076b6d1f317b5711b2fcd8c8f6b335d46691",
       "width": 1088,
       "height": 592,
       "duration_seconds": null,
@@ -75,7 +77,7 @@
       "role": "svg_master",
       "path": "masters/sky.svg",
       "format": "svg",
-      "checksum": "8294671f64a51757ae7b9c566707e9ff8549c8f11ed9de6f914e6d87236efb75",
+      "checksum": "a5577067d9f7f0219d7c693be02caf8633e3be4a9f53ab7fadfebaca65e47fbc",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -159,9 +161,9 @@
       "role": "layer",
       "path": "layers/vegetation.png",
       "format": "png",
-      "checksum": "95eab53387dea69e01527f8d53515c347b231927c422903ad0025049ddcd6b59",
-      "width": 315,
-      "height": 329,
+      "checksum": "da0875f8aeee465a74119cfcb1329758da08102083de97ebd7c7a8585c62cda3",
+      "width": 280,
+      "height": 308,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -171,7 +173,7 @@
       "role": "svg_master",
       "path": "masters/vegetation.svg",
       "format": "svg",
-      "checksum": "e6dc5c7a347b800003f7f1dec38ca0830af2850e9c3c8ee67c3cfc55f43bb19d",
+      "checksum": "cd3ad96c2cc1dfeee22a80eb60965dacc493a85d8cc4e91ffe27b5eafc8f3b34",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -207,7 +209,7 @@
       "role": "preview",
       "path": "previews/composite.jpg",
       "format": "jpeg",
-      "checksum": "e4709e8a26c6d3a6ed597b8310eda0b67a1faab1dab5225aadb33adf8384319c",
+      "checksum": "f6f334248791e0eac2038eea6e156e72fb4b8eb59b0ccd978d65a1be04ad445b",
       "width": 960,
       "height": 540,
       "duration_seconds": null,
@@ -216,7 +218,7 @@
       "pose": null
     }
   ],
-  "created_at": "2026-11-18T12:57:24+00:00",
+  "created_at": "2026-11-18T13:36:16+00:00",
   "change_summary": "",
   "stage": [
     1920,
@@ -304,10 +306,10 @@
       "type": "middle",
       "file": "layers/vegetation.png",
       "rect": [
-        -100.0,
+        -70.0,
         320.0,
-        450.0,
-        470.0
+        400.0,
+        440.0
       ],
       "parallax": 1.0,
       "order": 45,

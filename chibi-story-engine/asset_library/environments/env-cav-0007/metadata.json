@@ -41,7 +41,9 @@
     "ambience": "forest_ambience_001",
     "composition": "wide",
     "composition_group": "env-cav-0007",
-    "scare_levels": false,
+    "scare_levels": [
+      0
+    ],
     "seasons": [
       "spring",
       "summer",
@@ -87,7 +89,7 @@
       "role": "layer",
       "path": "layers/back.png",
       "format": "png",
-      "checksum": "f89b2e2e38162a3423eb259ab92a9b7bf28ce8873b4ede1a32b8035ea9a530c3",
+      "checksum": "366d0685d2e1b5387f7f73803da8f3a453e68d4549019565a220e430cb089f74",
       "width": 1050,
       "height": 324,
       "duration_seconds": null,
@@ -99,7 +101,7 @@
       "role": "svg_master",
       "path": "masters/back.svg",
       "format": "svg",
-      "checksum": "0f19d32281ff5917868a22affbd158a5ac969290b744bb3e57da60d74fe70779",
+      "checksum": "671820411c1f130534b552403e69d0caa79ee959685702d51e601bdf36d3fbb7",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -135,7 +137,7 @@
       "role": "layer",
       "path": "layers/main_scenery.png",
       "format": "png",
-      "checksum": "548cdc4110b0df57d465fd89645f781512178c2a8fd112da58b631f50808f105",
+      "checksum": "96289f319ec9be33d1fd82df9039b155dc2f2cdb97d43a6872ec1ac1882dbcf3",
       "width": 1148,
       "height": 483,
       "duration_seconds": null,
@@ -147,7 +149,7 @@
       "role": "svg_master",
       "path": "masters/main_scenery.svg",
       "format": "svg",
-      "checksum": "f8efe882e9c97e46c7088733dc6434871fd7215cda5d1faf564b61da0bf67af4",
+      "checksum": "8a71b974a33016ebed59a820dc7b5cd714da71a71cc7793c3c090b676894c3c0",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -183,7 +185,7 @@
       "role": "preview",
       "path": "previews/composite.jpg",
       "format": "jpeg",
-      "checksum": "0795292f0c0f4852d1fd98afd33e8d4cf9974be092455b9dc30254ee4c6ce47d",
+      "checksum": "3e080f9e30a1ea7b4397a8266affc60c0aaac40de77a666421eabb1a16f514d2",
       "width": 960,
       "height": 540,
       "duration_seconds": null,
@@ -192,7 +194,7 @@
       "pose": null
     }
   ],
-  "created_at": "2026-11-18T12:56:54+00:00",
+  "created_at": "2026-11-18T13:35:47+00:00",
   "change_summary": "",
   "stage": [
     1920,

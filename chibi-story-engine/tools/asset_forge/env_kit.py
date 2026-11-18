@@ -714,7 +714,7 @@ def build_environment(spec: EnvSpec, out_dir: Path, k: float = 1.0, quick: bool 
         "default_anchor_by_role": spec.roles,
         "lighting_presets": spec.lighting or ["day", "morning", "noon", "evening", "sunset", "night", "moonlight", "overcast"],
         "compatibility": {"habitats": spec.habitats, "style": "premium_chibi_anime", "ambience": spec.ambience, "composition": spec.composition,
-                          "composition_group": spec.group or spec.id, "scare_levels": spec.scare_levels,
+                          "composition_group": spec.group or spec.id, "scare_levels": sorted({0, *[l["scare"] for l in layers_out]}),
                           "seasons": ["spring", "summer", "monsoon", "autumn", "winter"], "weather": ["clear", "cloudy", "rain", "fog", "storm", "snow"]},
         "licence": {"name": "CC0-1.0", "author": "Chibi Story Animation Engine (procedural vector art)", "source": "generated: tools/asset_forge", "notes": ""},
     }

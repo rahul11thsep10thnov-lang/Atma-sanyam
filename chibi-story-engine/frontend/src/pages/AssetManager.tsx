@@ -5,7 +5,7 @@ import { useStudio } from "../hooks/useStudio";
 import { api, media } from "../services/api";
 import type { Asset } from "../types";
 
-const TYPES = ["", "character", "environment", "prop", "effect", "music", "sound_effect"];
+const TYPES = ["", "character", "environment", "component", "prop", "effect", "music", "sound_effect"];
 
 export function AssetManager() {
   const { can } = useStudio();

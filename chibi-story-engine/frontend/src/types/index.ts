@@ -111,6 +111,10 @@ export interface Asset {
   thumbnail_url: string | null;
   audio_url: string | null;
   duration_seconds: number | null;
+  catalog_code?: string | null;
+  category?: string | null;
+  subcategory?: string | null;
+  related_stories?: string[];
 }
 
 export interface Character extends Asset {
@@ -126,13 +130,44 @@ export interface Character extends Asset {
   expression_images: { name: string; url: string }[];
   pose_images: { name: string; url: string }[];
   problems: { kind: string; path: string; message: string }[];
+  svg_master_count?: number;
 }
 
 export interface Environment extends Asset {
   environment_code: string;
   anchors: Record<string, { x: number; y: number; features: string[] }>;
   lighting_presets: string[];
-  layers: { id: string; type: string; parallax: number; order: number; animated: boolean; url: string }[];
+  camera_bounds?: number[];
+  compatibility?: { seasons?: string[]; weather?: string[]; scare_levels?: number[]; ambience?: string; habitats?: string[] };
+  preview_url?: string;
+  composite_url?: string | null;
+  layers: { id: string; type: string; parallax: number; order: number; animated: boolean; url: string; scare?: number; tint_group?: string; rect?: number[]; svg_url?: string | null }[];
+}
+
+export interface ComponentAsset extends Asset {
+  kind: string;
+  size: number[];
+  image_url: string;
+  svg_url: string;
+}
+
+export interface LibraryStats {
+  by_type: Record<string, number>;
+  approval: Record<string, number>;
+  environment_categories: Record<string, number>;
+  character_categories: Record<string, number>;
+  component_kinds: Record<string, number>;
+  environment_layers: number;
+  scare_layers: number;
+  svg_masters: number;
+  not_delivered: string[];
+}
+
+export interface AssetReport {
+  complete: boolean;
+  missing: { kind: string; key: string; needed_for: string; reason: string }[];
+  characters: { key: string; name: string; matched: string | null; candidates: string[] }[];
+  scenes: { scene_id: string; title: string; environment: { tags: string[]; chosen: string | null; chosen_name: string | null; candidates: { id: string; name: string; score: number; category: string | null }[] }; expressions_missing: string[] }[];
 }
 
 export interface Animation {

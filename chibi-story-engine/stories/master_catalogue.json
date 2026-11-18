@@ -1,0 +1,2476 @@
+{
+  "catalogue_version": 1,
+  "provenance": "Seed list written from general knowledge; every entry is unverified against a source (source_verified=false). No collection is claimed to be fully catalogued.",
+  "totals": {
+    "stories": 43,
+    "implemented": 4,
+    "fully_covered": 34
+  },
+  "unmatched_needs": {
+    "character": [
+      "ant",
+      "carpenter",
+      "crab",
+      "fish",
+      "grasshopper",
+      "sailor",
+      "tenali"
+    ],
+    "environment": [],
+    "prop": [
+      "dye"
+    ],
+    "animation": [
+      "climb@quadruped_reptile",
+      "throw@quadruped_reptile"
+    ]
+  },
+  "excluded": [
+    {
+      "title": "Chacha Chaudhary (and related characters)",
+      "reason": "Copyrighted comic franchise. Not reproduced. The library offers only original archetypes (e.g. the Scholar, Elderly Man, Villager) that carry no franchise designs."
+    }
+  ],
+  "collections": [
+    {
+      "id": "panchatantra",
+      "name": "Panchatantra",
+      "origin": "Ancient Sanskrit animal-fable collection (attributed to Vishnu Sharma); many recensions and translations.",
+      "public_domain_note": "Underlying tales are traditional; specific translations may be copyrighted.",
+      "tracked_stories": 14,
+      "complete_collection": false,
+      "stories": [
+        {
+          "id": "monkey_and_crocodile",
+          "title_en": "The Monkey and the Crocodile",
+          "title_hi": "बंदर और मगरमच्छ",
+          "premise": "A monkey outwits a crocodile who wants his heart.",
+          "source_verified": false,
+          "implemented": true,
+          "story_file": "stories/panchatantra/monkey_and_crocodile.json",
+          "needs": {
+            "characters": [
+              "monkey",
+              "crocodile",
+              "crocodile's wife"
+            ],
+            "location_tags": [
+              "river",
+              "tree",
+              "jamun"
+            ],
+            "props": [
+              "jamun"
+            ],
+            "actions": [
+              "swim",
+              "climb",
+              "throw"
+            ],
+            "expressions": [
+              "happy",
+              "worried",
+              "angry"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "monkey": [
+                "monkey_001"
+              ],
+              "crocodile": [
+                "crocodile_001",
+                "crocodile_wife_001"
+              ],
+              "crocodile's wife": [
+                "crocodile_wife_001"
+              ]
+            },
+            "environment": "forest_river_001",
+            "environment_candidates": [
+              "forest_river_001",
+              "env-for-0011",
+              "env-wat-0013"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": [
+              "climb@quadruped_reptile",
+              "throw@quadruped_reptile"
+            ]
+          },
+          "fully_covered": false
+        },
+        {
+          "id": "blue_jackal",
+          "title_en": "The Blue Jackal",
+          "title_hi": "नीला सियार",
+          "premise": "A jackal dyed blue passes as a king until he howls.",
+          "source_verified": false,
+          "implemented": true,
+          "story_file": "stories/panchatantra/blue_jackal.json",
+          "needs": {
+            "characters": [
+              "jackal",
+              "blue jackal",
+              "lion"
+            ],
+            "location_tags": [
+              "forest",
+              "village"
+            ],
+            "props": [
+              "dye"
+            ],
+            "actions": [
+              "walk",
+              "fall"
+            ],
+            "expressions": [
+              "happy",
+              "worried"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "jackal": [
+                "jackal_001",
+                "jackal_blue_001"
+              ],
+              "blue jackal": [
+                "jackal_blue_001"
+              ],
+              "lion": [
+                "lion_001"
+              ]
+            },
+            "environment": "farm_field_001",
+            "environment_candidates": [
+              "farm_field_001",
+              "forest_well_001",
+              "village_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [
+              "dye"
+            ],
+            "animations": []
+          },
+          "fully_covered": false
+        },
+        {
+          "id": "lion_and_clever_rabbit",
+          "title_en": "The Lion and the Clever Rabbit",
+          "title_hi": "शेर और चतुर खरगोश",
+          "premise": "A rabbit tricks a tyrant lion into a well.",
+          "source_verified": false,
+          "implemented": true,
+          "story_file": "stories/panchatantra/lion_and_clever_rabbit.json",
+          "needs": {
+            "characters": [
+              "lion",
+              "rabbit"
+            ],
+            "location_tags": [
+              "forest",
+              "well"
+            ],
+            "props": [],
+            "actions": [
+              "walk",
+              "jump"
+            ],
+            "expressions": [
+              "angry",
+              "thinking"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "lion": [
+                "lion_001"
+              ],
+              "rabbit": [
+                "rabbit_001"
+              ]
+            },
+            "environment": "forest_well_001",
+            "environment_candidates": [
+              "forest_well_001",
+              "env-for-0003",
+              "forest_river_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "crows_and_black_snake",
+          "title_en": "The Crows and the Black Snake",
+          "title_hi": "कौए और काला साँप",
+          "premise": "Crows get rid of a snake by using a queen's necklace.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "crow",
+              "snake",
+              "king"
+            ],
+            "location_tags": [
+              "tree",
+              "palace"
+            ],
+            "props": [
+              "money"
+            ],
+            "actions": [
+              "fly",
+              "walk"
+            ],
+            "expressions": [
+              "worried",
+              "happy"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "crow": [
+                "char-brd-0001"
+              ],
+              "snake": [
+                "char-ani-0027"
+              ],
+              "king": [
+                "char-hum-0001"
+              ]
+            },
+            "environment": "env-for-0003",
+            "environment_candidates": [
+              "env-for-0003",
+              "forest_river_001",
+              "env-for-0001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "tortoise_and_geese",
+          "title_en": "The Tortoise and the Geese",
+          "title_hi": "कछुआ और हंस",
+          "premise": "A talkative tortoise falls while being carried by geese.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "tortoise",
+              "swan"
+            ],
+            "location_tags": [
+              "pond",
+              "village"
+            ],
+            "props": [],
+            "actions": [
+              "fly",
+              "fall"
+            ],
+            "expressions": [
+              "surprised",
+              "sad"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "tortoise": [
+                "char-ani-0026"
+              ],
+              "swan": [
+                "char-brd-0008"
+              ]
+            },
+            "environment": "farm_field_001",
+            "environment_candidates": [
+              "farm_field_001",
+              "env-wat-0004",
+              "env-vil-0012"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "mongoose_and_brahmin",
+          "title_en": "The Brahmin's Wife and the Mongoose",
+          "title_hi": "ब्राह्मणी और नेवला",
+          "premise": "A hasty act wrongs a faithful mongoose.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "brahmin",
+              "mongoose",
+              "snake"
+            ],
+            "location_tags": [
+              "home",
+              "village"
+            ],
+            "props": [],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "sad",
+              "angry"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "brahmin": [
+                "char-hum-0014"
+              ],
+              "mongoose": [
+                "char-ani-0021"
+              ],
+              "snake": [
+                "char-ani-0027"
+              ]
+            },
+            "environment": "village_001",
+            "environment_candidates": [
+              "village_001",
+              "env-hou-0004",
+              "farm_field_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "monkey_and_wedge",
+          "title_en": "The Monkey and the Wedge",
+          "title_hi": "बंदर और कील",
+          "premise": "A curious monkey pulls a wedge from a half-split log.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "monkey",
+              "carpenter"
+            ],
+            "location_tags": [
+              "forest"
+            ],
+            "props": [],
+            "actions": [
+              "sit",
+              "climb"
+            ],
+            "expressions": [
+              "surprised",
+              "sad"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "monkey": [
+                "monkey_001"
+              ]
+            },
+            "environment": "forest_well_001",
+            "environment_candidates": [
+              "forest_well_001",
+              "env-for-0003",
+              "forest_river_001"
+            ]
+          },
+          "missing": {
+            "characters": [
+              "carpenter"
+            ],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": false
+        },
+        {
+          "id": "crane_and_crab",
+          "title_en": "The Crane and the Crab",
+          "title_hi": "बगुला और केकड़ा",
+          "premise": "A cunning crane is outwitted by a crab.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "crane",
+              "crab",
+              "fish"
+            ],
+            "location_tags": [
+              "pond"
+            ],
+            "props": [],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "thinking",
+              "angry"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "crane": [
+                "char-brd-0010"
+              ]
+            },
+            "environment": "env-tmp-0013",
+            "environment_candidates": [
+              "env-tmp-0013",
+              "env-wat-0004",
+              "env-vil-0012"
+            ]
+          },
+          "missing": {
+            "characters": [
+              "crab",
+              "fish"
+            ],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": false
+        },
+        {
+          "id": "mice_that_ate_iron",
+          "title_en": "The Merchant and the Mice that Ate Iron",
+          "title_hi": "लोहे की तराज़ू",
+          "premise": "A merchant answers a lie with a bigger tale.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "merchant",
+              "rat"
+            ],
+            "location_tags": [
+              "home",
+              "market"
+            ],
+            "props": [
+              "money"
+            ],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "angry",
+              "laughing"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "merchant": [
+                "char-hum-0021"
+              ],
+              "rat": [
+                "char-ani-0018"
+              ]
+            },
+            "environment": "village_001",
+            "environment_candidates": [
+              "village_001",
+              "mansion_001",
+              "crocodile_home_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "donkey_in_tiger_skin",
+          "title_en": "The Donkey in the Tiger's Skin",
+          "title_hi": "शेर की खाल में गधा",
+          "premise": "A washerman's donkey is caught by its bray.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "donkey",
+              "tiger",
+              "farmer"
+            ],
+            "location_tags": [
+              "field",
+              "village"
+            ],
+            "props": [],
+            "actions": [
+              "walk",
+              "run"
+            ],
+            "expressions": [
+              "happy",
+              "worried"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "donkey": [
+                "char-ani-0009"
+              ],
+              "tiger": [
+                "char-ani-0001"
+              ],
+              "farmer": [
+                "farmer_001"
+              ]
+            },
+            "environment": "farm_field_001",
+            "environment_candidates": [
+              "farm_field_001",
+              "village_001",
+              "env-des-0004"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "four_friends",
+          "title_en": "The Four Friends",
+          "title_hi": "चार मित्र",
+          "premise": "A crow, mouse, tortoise and deer help each other.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "crow",
+              "rat",
+              "tortoise",
+              "deer"
+            ],
+            "location_tags": [
+              "forest",
+              "pond"
+            ],
+            "props": [],
+            "actions": [
+              "walk",
+              "run"
+            ],
+            "expressions": [
+              "happy",
+              "worried"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "crow": [
+                "char-brd-0001"
+              ],
+              "rat": [
+                "char-ani-0018"
+              ],
+              "tortoise": [
+                "char-ani-0026"
+              ],
+              "deer": [
+                "char-ani-0004"
+              ]
+            },
+            "environment": "forest_well_001",
+            "environment_candidates": [
+              "forest_well_001",
+              "env-for-0003",
+              "forest_river_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "lion_and_bull",
+          "title_en": "The Lion and the Bull",
+          "title_hi": "शेर और बैल",
+          "premise": "A lion is turned against his bull friend by a jackal.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "lion",
+              "bull",
+              "jackal"
+            ],
+            "location_tags": [
+              "forest"
+            ],
+            "props": [],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "angry",
+              "sad"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "lion": [
+                "lion_001"
+              ],
+              "bull": [
+                "char-ani-0012"
+              ],
+              "jackal": [
+                "jackal_001",
+                "jackal_blue_001"
+              ]
+            },
+            "environment": "forest_well_001",
+            "environment_candidates": [
+              "forest_well_001",
+              "env-for-0003",
+              "forest_river_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "owls_and_crows",
+          "title_en": "The War of the Crows and the Owls",
+          "title_hi": "कौओं और उल्लुओं का युद्ध",
+          "premise": "A crow feigns exile to destroy the owls.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "crow",
+              "owl"
+            ],
+            "location_tags": [
+              "forest",
+              "cave"
+            ],
+            "props": [],
+            "actions": [
+              "fly"
+            ],
+            "expressions": [
+              "thinking",
+              "angry"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "crow": [
+                "char-brd-0001"
+              ],
+              "owl": [
+                "char-brd-0005"
+              ]
+            },
+            "environment": "forest_well_001",
+            "environment_candidates": [
+              "forest_well_001",
+              "crocodile_home_001",
+              "env-for-0003"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "elephant_and_sparrow",
+          "title_en": "The Elephant and the Sparrow",
+          "title_hi": "हाथी और गौरैया",
+          "premise": "Small friends bring down a proud elephant.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "elephant",
+              "sparrow",
+              "frog"
+            ],
+            "location_tags": [
+              "forest",
+              "pond"
+            ],
+            "props": [],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "angry",
+              "happy"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "elephant": [
+                "char-ani-0003"
+              ],
+              "sparrow": [
+                "char-brd-0012"
+              ],
+              "frog": [
+                "char-ani-0029"
+              ]
+            },
+            "environment": "forest_well_001",
+            "environment_candidates": [
+              "forest_well_001",
+              "env-for-0003",
+              "forest_river_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        }
+      ]
+    },
+    {
+      "id": "jataka",
+      "name": "Jataka tales",
+      "origin": "Buddhist birth-story tradition in Pali; many retellings.",
+      "public_domain_note": "Traditional; check any translation used.",
+      "tracked_stories": 5,
+      "complete_collection": false,
+      "stories": [
+        {
+          "id": "monkey_king",
+          "title_en": "The Monkey King",
+          "title_hi": "वानरराज",
+          "premise": "A monkey king makes a bridge of his body to save his troop.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "monkey",
+              "king"
+            ],
+            "location_tags": [
+              "forest",
+              "river",
+              "tree"
+            ],
+            "props": [
+              "fruit"
+            ],
+            "actions": [
+              "climb",
+              "jump"
+            ],
+            "expressions": [
+              "worried",
+              "sad"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "monkey": [
+                "monkey_001"
+              ],
+              "king": [
+                "char-hum-0001"
+              ]
+            },
+            "environment": "forest_river_001",
+            "environment_candidates": [
+              "forest_river_001",
+              "env-for-0011",
+              "env-for-0003"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "golden_deer",
+          "title_en": "The Golden Deer",
+          "title_hi": "सोने का हिरण",
+          "premise": "A golden deer offers its life for a doe.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "golden deer",
+              "deer",
+              "king"
+            ],
+            "location_tags": [
+              "forest",
+              "palace"
+            ],
+            "props": [],
+            "actions": [
+              "walk",
+              "run"
+            ],
+            "expressions": [
+              "sad",
+              "happy"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "golden deer": [
+                "char-myt-0016"
+              ],
+              "deer": [
+                "char-ani-0004"
+              ],
+              "king": [
+                "char-hum-0001"
+              ]
+            },
+            "environment": "forest_well_001",
+            "environment_candidates": [
+              "forest_well_001",
+              "env-for-0003",
+              "forest_river_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "hare_in_the_moon",
+          "title_en": "The Hare in the Moon",
+          "title_hi": "चाँद में खरगोश",
+          "premise": "A hare gives all it has to a hungry stranger.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "rabbit",
+              "monkey",
+              "fox",
+              "sage"
+            ],
+            "location_tags": [
+              "forest"
+            ],
+            "props": [
+              "food"
+            ],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "happy",
+              "sad"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "rabbit": [
+                "rabbit_001"
+              ],
+              "monkey": [
+                "monkey_001"
+              ],
+              "fox": [
+                "char-ani-0005"
+              ],
+              "sage": [
+                "char-hum-0011"
+              ]
+            },
+            "environment": "forest_well_001",
+            "environment_candidates": [
+              "forest_well_001",
+              "env-for-0003",
+              "forest_river_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "banyan_deer",
+          "title_en": "The Banyan Deer",
+          "title_hi": "बरगद का हिरण",
+          "premise": "A deer king asks to be taken in place of a doe.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "deer",
+              "king"
+            ],
+            "location_tags": [
+              "forest",
+              "palace"
+            ],
+            "props": [],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "sad",
+              "surprised"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "deer": [
+                "char-ani-0004"
+              ],
+              "king": [
+                "char-hum-0001"
+              ]
+            },
+            "environment": "forest_well_001",
+            "environment_candidates": [
+              "forest_well_001",
+              "env-for-0003",
+              "forest_river_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "golden_goose",
+          "title_en": "The Golden Goose",
+          "title_hi": "सोने का हंस",
+          "premise": "A swan with golden feathers is betrayed by greed.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "swan",
+              "farmer"
+            ],
+            "location_tags": [
+              "home",
+              "village",
+              "pond"
+            ],
+            "props": [
+              "money"
+            ],
+            "actions": [
+              "fly"
+            ],
+            "expressions": [
+              "happy",
+              "sad"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "swan": [
+                "char-brd-0008"
+              ],
+              "farmer": [
+                "farmer_001"
+              ]
+            },
+            "environment": "village_001",
+            "environment_candidates": [
+              "village_001",
+              "env-hou-0004",
+              "env-wat-0004"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        }
+      ]
+    },
+    {
+      "id": "hitopadesha",
+      "name": "Hitopadesha",
+      "origin": "Sanskrit fable collection (Narayana Pandit), related to the Panchatantra.",
+      "public_domain_note": "Traditional; check any translation used.",
+      "tracked_stories": 3,
+      "complete_collection": false,
+      "stories": [
+        {
+          "id": "mitralabha",
+          "title_en": "Mitralabha: The Gaining of Friends",
+          "title_hi": "मित्रलाभ",
+          "premise": "A crow, mouse, tortoise and deer form a friendship.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "crow",
+              "rat",
+              "tortoise",
+              "deer",
+              "hunter"
+            ],
+            "location_tags": [
+              "forest",
+              "pond"
+            ],
+            "props": [],
+            "actions": [
+              "walk",
+              "run"
+            ],
+            "expressions": [
+              "worried",
+              "happy"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "crow": [
+                "char-brd-0001"
+              ],
+              "rat": [
+                "char-ani-0018"
+              ],
+              "tortoise": [
+                "char-ani-0026"
+              ],
+              "deer": [
+                "char-ani-0004"
+              ],
+              "hunter": [
+                "char-hum-0026"
+              ]
+            },
+            "environment": "forest_well_001",
+            "environment_candidates": [
+              "forest_well_001",
+              "env-for-0003",
+              "forest_river_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "tiger_and_bracelet",
+          "title_en": "The Tiger and the Traveller with the Gold Bracelet",
+          "title_hi": "सोने का कंगन और बाघ",
+          "premise": "A greedy traveller is deceived by an old tiger.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "tiger",
+              "brahmin"
+            ],
+            "location_tags": [
+              "forest",
+              "pond"
+            ],
+            "props": [
+              "money"
+            ],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "thinking",
+              "worried"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "tiger": [
+                "char-ani-0001"
+              ],
+              "brahmin": [
+                "char-hum-0014"
+              ]
+            },
+            "environment": "forest_well_001",
+            "environment_candidates": [
+              "forest_well_001",
+              "env-for-0003",
+              "forest_river_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "lion_and_hare_well",
+          "title_en": "The Lion and the Hare",
+          "title_hi": "शेर और खरगोश",
+          "premise": "A hare ends a lion's tyranny with a reflection.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "lion",
+              "rabbit"
+            ],
+            "location_tags": [
+              "forest",
+              "well"
+            ],
+            "props": [],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "angry",
+              "thinking"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "lion": [
+                "lion_001"
+              ],
+              "rabbit": [
+                "rabbit_001"
+              ]
+            },
+            "environment": "forest_well_001",
+            "environment_candidates": [
+              "forest_well_001",
+              "env-for-0003",
+              "forest_river_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        }
+      ]
+    },
+    {
+      "id": "vikram_betal",
+      "name": "Vikram and Betal (Baital Pachisi)",
+      "origin": "Sanskrit/Hindi frame-story of 25 riddle tales.",
+      "public_domain_note": "Traditional; check any translation used.",
+      "tracked_stories": 2,
+      "complete_collection": false,
+      "stories": [
+        {
+          "id": "vikram_betal_frame",
+          "title_en": "Vikram and Betal: the frame story",
+          "title_hi": "विक्रम और बेताल",
+          "premise": "King Vikram carries the vetala from the tree in the burning ground; it tells riddles on the way.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "king",
+              "vetala",
+              "sorcerer"
+            ],
+            "location_tags": [
+              "cremation",
+              "tree",
+              "forest",
+              "road"
+            ],
+            "props": [],
+            "actions": [
+              "walk",
+              "climb"
+            ],
+            "expressions": [
+              "worried",
+              "thinking"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "king": [
+                "char-hum-0001"
+              ],
+              "vetala": [
+                "char-myt-0007"
+              ],
+              "sorcerer": [
+                "char-hum-0039"
+              ]
+            },
+            "environment": "env-for-0003",
+            "environment_candidates": [
+              "env-for-0003",
+              "forest_river_001",
+              "env-for-0001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "vikram_betal_suitors",
+          "title_en": "Vikram and Betal: the three suitors",
+          "title_hi": "तीन वर चाहने वाले",
+          "premise": "A riddle about who deserves a princess.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "king",
+              "vetala",
+              "princess",
+              "brahmin"
+            ],
+            "location_tags": [
+              "village",
+              "palace",
+              "cremation"
+            ],
+            "props": [],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "thinking"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "king": [
+                "char-hum-0001"
+              ],
+              "vetala": [
+                "char-myt-0007"
+              ],
+              "princess": [
+                "char-hum-0005"
+              ],
+              "brahmin": [
+                "char-hum-0014"
+              ]
+            },
+            "environment": "farm_field_001",
+            "environment_candidates": [
+              "farm_field_001",
+              "village_001",
+              "env-des-0004"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        }
+      ]
+    },
+    {
+      "id": "singhasan_battisi",
+      "name": "Singhasan Battisi",
+      "origin": "Frame-story of 32 tales told by statues on King Vikramaditya's throne.",
+      "public_domain_note": "Traditional; check any translation used.",
+      "tracked_stories": 1,
+      "complete_collection": false,
+      "stories": [
+        {
+          "id": "singhasan_frame",
+          "title_en": "Singhasan Battisi: the throne of Vikramaditya",
+          "title_hi": "सिंहासन बत्तीसी",
+          "premise": "King Bhoj finds a throne guarded by 32 statues who each tell a tale of Vikramaditya.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "king",
+              "apsara",
+              "farmer",
+              "minister"
+            ],
+            "location_tags": [
+              "field",
+              "palace",
+              "court"
+            ],
+            "props": [],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "surprised",
+              "thinking"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "king": [
+                "char-hum-0001"
+              ],
+              "apsara": [
+                "char-myt-0003"
+              ],
+              "farmer": [
+                "farmer_001"
+              ],
+              "minister": [
+                "char-hum-0006"
+              ]
+            },
+            "environment": "env-pal-0002",
+            "environment_candidates": [
+              "env-pal-0002",
+              "farm_field_001",
+              "env-pal-0001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        }
+      ]
+    },
+    {
+      "id": "akbar_birbal",
+      "name": "Akbar and Birbal",
+      "origin": "Folk tradition of court anecdotes; mostly legendary rather than historical.",
+      "public_domain_note": "Traditional; modern books may be copyrighted.",
+      "tracked_stories": 3,
+      "complete_collection": false,
+      "stories": [
+        {
+          "id": "birbal_khichdi",
+          "title_en": "Birbal's Khichdi",
+          "title_hi": "बीरबल की खिचड़ी",
+          "premise": "Birbal shows the emperor that real warmth cannot come from afar.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "emperor",
+              "minister",
+              "villager_man"
+            ],
+            "location_tags": [
+              "court",
+              "pond",
+              "palace"
+            ],
+            "props": [
+              "food"
+            ],
+            "actions": [
+              "walk",
+              "sit"
+            ],
+            "expressions": [
+              "thinking",
+              "laughing"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "emperor": [
+                "char-hum-0002"
+              ],
+              "minister": [
+                "char-hum-0006"
+              ],
+              "villager_man": [
+                "char-hum-0023"
+              ]
+            },
+            "environment": "env-pal-0002",
+            "environment_candidates": [
+              "env-pal-0002",
+              "env-pal-0001",
+              "env-pal-0004"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "how_many_crows",
+          "title_en": "How Many Crows?",
+          "title_hi": "कितने कौए?",
+          "premise": "Birbal answers a trick question with an exact-sounding reply.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "emperor",
+              "minister",
+              "crow"
+            ],
+            "location_tags": [
+              "court",
+              "palace"
+            ],
+            "props": [],
+            "actions": [
+              "sit"
+            ],
+            "expressions": [
+              "thinking",
+              "laughing"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "emperor": [
+                "char-hum-0002"
+              ],
+              "minister": [
+                "char-hum-0006"
+              ],
+              "crow": [
+                "char-brd-0001"
+              ]
+            },
+            "environment": "env-pal-0002",
+            "environment_candidates": [
+              "env-pal-0002",
+              "env-pal-0001",
+              "env-pal-0004"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "birbal_the_line",
+          "title_en": "The Longer and the Shorter Line",
+          "title_hi": "लकीर छोटी करो",
+          "premise": "Birbal makes a line shorter by drawing a longer one next to it.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "emperor",
+              "minister",
+              "courtier"
+            ],
+            "location_tags": [
+              "court",
+              "palace"
+            ],
+            "props": [],
+            "actions": [
+              "sit"
+            ],
+            "expressions": [
+              "thinking",
+              "surprised"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "emperor": [
+                "char-hum-0002"
+              ],
+              "minister": [
+                "char-hum-0006"
+              ],
+              "courtier": [
+                "char-hum-0007"
+              ]
+            },
+            "environment": "env-pal-0002",
+            "environment_candidates": [
+              "env-pal-0002",
+              "env-pal-0001",
+              "env-pal-0004"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        }
+      ]
+    },
+    {
+      "id": "tenali_raman",
+      "name": "Tenali Raman",
+      "origin": "Folk tradition of court wit attributed to a poet at the Vijayanagara court.",
+      "public_domain_note": "Traditional; modern books may be copyrighted.",
+      "tracked_stories": 3,
+      "complete_collection": false,
+      "stories": [
+        {
+          "id": "tenali_cat_and_milk",
+          "title_en": "Tenali Raman and the Cat's Milk",
+          "title_hi": "तेनालीराम और बिल्ली का दूध",
+          "premise": "Tenali proves a point about royal gifts with hot milk and a cat.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "tenali",
+              "king",
+              "cat"
+            ],
+            "location_tags": [
+              "palace",
+              "court",
+              "home"
+            ],
+            "props": [
+              "food"
+            ],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "thinking",
+              "laughing"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "king": [
+                "char-hum-0001"
+              ],
+              "cat": [
+                "char-ani-0017"
+              ]
+            },
+            "environment": "env-pal-0002",
+            "environment_candidates": [
+              "env-pal-0002",
+              "mansion_001",
+              "env-pal-0001"
+            ]
+          },
+          "missing": {
+            "characters": [
+              "tenali"
+            ],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": false
+        },
+        {
+          "id": "tenali_thieves",
+          "title_en": "Tenali Raman and the Thieves",
+          "title_hi": "तेनालीराम और चोर",
+          "premise": "Tenali turns thieves' own labour into digging his garden.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "tenali",
+              "thief",
+              "minister"
+            ],
+            "location_tags": [
+              "home",
+              "garden",
+              "well"
+            ],
+            "props": [],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "thinking",
+              "happy"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "thief": [
+                "char-hum-0033"
+              ],
+              "minister": [
+                "char-hum-0006"
+              ]
+            },
+            "environment": "env-hou-0015",
+            "environment_candidates": [
+              "env-hou-0015",
+              "mansion_001",
+              "crocodile_home_001"
+            ]
+          },
+          "missing": {
+            "characters": [
+              "tenali"
+            ],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": false
+        },
+        {
+          "id": "tenali_brinjal",
+          "title_en": "Tenali Raman and the Brinjal Curry",
+          "title_hi": "तेनालीराम और बैंगन",
+          "premise": "A courtier's praise of brinjal is tested.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "tenali",
+              "king",
+              "courtier"
+            ],
+            "location_tags": [
+              "palace",
+              "court"
+            ],
+            "props": [
+              "food"
+            ],
+            "actions": [
+              "sit"
+            ],
+            "expressions": [
+              "laughing",
+              "thinking"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "king": [
+                "char-hum-0001"
+              ],
+              "courtier": [
+                "char-hum-0007"
+              ]
+            },
+            "environment": "env-pal-0002",
+            "environment_candidates": [
+              "env-pal-0002",
+              "env-pal-0001",
+              "env-pal-0004"
+            ]
+          },
+          "missing": {
+            "characters": [
+              "tenali"
+            ],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": false
+        }
+      ]
+    },
+    {
+      "id": "aesop",
+      "name": "Aesop's fables",
+      "origin": "Ancient Greek fable tradition.",
+      "public_domain_note": "Traditional and widely in the public domain; check the translation used.",
+      "tracked_stories": 7,
+      "complete_collection": false,
+      "stories": [
+        {
+          "id": "tortoise_and_hare",
+          "title_en": "The Tortoise and the Hare",
+          "title_hi": "कछुआ और खरगोश",
+          "premise": "A steady tortoise beats a boastful hare.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "tortoise",
+              "rabbit"
+            ],
+            "location_tags": [
+              "forest",
+              "road"
+            ],
+            "props": [],
+            "actions": [
+              "walk",
+              "run",
+              "sleep"
+            ],
+            "expressions": [
+              "happy",
+              "surprised"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "tortoise": [
+                "char-ani-0026"
+              ],
+              "rabbit": [
+                "rabbit_001"
+              ]
+            },
+            "environment": "forest_well_001",
+            "environment_candidates": [
+              "forest_well_001",
+              "env-for-0003",
+              "forest_river_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "fox_and_grapes",
+          "title_en": "The Fox and the Grapes",
+          "title_hi": "लोमड़ी और अंगूर",
+          "premise": "A fox calls grapes sour when it cannot reach them.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "fox"
+            ],
+            "location_tags": [
+              "garden",
+              "field"
+            ],
+            "props": [
+              "fruit"
+            ],
+            "actions": [
+              "jump"
+            ],
+            "expressions": [
+              "sad",
+              "thinking"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "fox": [
+                "char-ani-0005"
+              ]
+            },
+            "environment": "farm_field_001",
+            "environment_candidates": [
+              "farm_field_001",
+              "env-for-0005",
+              "env-for-0008"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "lion_and_mouse",
+          "title_en": "The Lion and the Mouse",
+          "title_hi": "शेर और चूहा",
+          "premise": "A mouse repays a lion's mercy.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "lion",
+              "mouse",
+              "hunter"
+            ],
+            "location_tags": [
+              "forest"
+            ],
+            "props": [],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "angry",
+              "happy"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "lion": [
+                "lion_001"
+              ],
+              "mouse": [
+                "char-ani-0019"
+              ],
+              "hunter": [
+                "char-hum-0026"
+              ]
+            },
+            "environment": "forest_well_001",
+            "environment_candidates": [
+              "forest_well_001",
+              "env-for-0003",
+              "forest_river_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "boy_who_cried_wolf",
+          "title_en": "The Boy Who Cried Wolf",
+          "title_hi": "भेड़िया आया",
+          "premise": "A shepherd boy's false alarms leave him unheard.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "shepherd",
+              "wolf",
+              "sheep",
+              "villager_man"
+            ],
+            "location_tags": [
+              "mountain",
+              "village"
+            ],
+            "props": [],
+            "actions": [
+              "run"
+            ],
+            "expressions": [
+              "worried",
+              "sad"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "shepherd": [
+                "char-hum-0028"
+              ],
+              "wolf": [
+                "char-ani-0006"
+              ],
+              "sheep": [
+                "char-ani-0015"
+              ],
+              "villager_man": [
+                "char-hum-0023"
+              ]
+            },
+            "environment": "env-mtn-0006",
+            "environment_candidates": [
+              "env-mtn-0006",
+              "farm_field_001",
+              "village_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "thirsty_crow",
+          "title_en": "The Thirsty Crow",
+          "title_hi": "प्यासा कौआ",
+          "premise": "A crow raises water in a pot with pebbles.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "crow"
+            ],
+            "location_tags": [
+              "village",
+              "desert"
+            ],
+            "props": [],
+            "actions": [
+              "fly"
+            ],
+            "expressions": [
+              "thinking",
+              "happy"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "crow": [
+                "char-brd-0001"
+              ]
+            },
+            "environment": "env-des-0004",
+            "environment_candidates": [
+              "env-des-0004",
+              "farm_field_001",
+              "village_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "ant_and_grasshopper",
+          "title_en": "The Ant and the Grasshopper",
+          "title_hi": "चींटी और टिड्डा",
+          "premise": "A summer of play leaves the grasshopper hungry in winter.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "ant",
+              "grasshopper"
+            ],
+            "location_tags": [
+              "field"
+            ],
+            "props": [
+              "food"
+            ],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "sad",
+              "happy"
+            ]
+          },
+          "matched": {
+            "characters": {},
+            "environment": "farm_field_001",
+            "environment_candidates": [
+              "farm_field_001"
+            ]
+          },
+          "missing": {
+            "characters": [
+              "ant",
+              "grasshopper"
+            ],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": false
+        },
+        {
+          "id": "golden_eggs",
+          "title_en": "The Goose that Laid the Golden Eggs",
+          "title_hi": "सोने के अंडे वाली मुर्गी",
+          "premise": "Greed kills the source of wealth.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "farmer",
+              "hen"
+            ],
+            "location_tags": [
+              "home",
+              "village"
+            ],
+            "props": [
+              "money"
+            ],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "happy",
+              "sad"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "farmer": [
+                "farmer_001"
+              ],
+              "hen": [
+                "char-brd-0013"
+              ]
+            },
+            "environment": "village_001",
+            "environment_candidates": [
+              "village_001",
+              "env-hou-0004",
+              "farm_field_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        }
+      ]
+    },
+    {
+      "id": "arabian_nights",
+      "name": "Arabian Nights (One Thousand and One Nights)",
+      "origin": "Middle-Eastern and South-Asian frame-story collection; some well-known tales (e.g. Aladdin) were added by later translators.",
+      "public_domain_note": "Older translations are in the public domain; check the one used.",
+      "tracked_stories": 4,
+      "complete_collection": false,
+      "stories": [
+        {
+          "id": "sindbad",
+          "title_en": "Sindbad the Sailor",
+          "title_hi": "सिंदबाद",
+          "premise": "A merchant's seven voyages.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "sailor",
+              "merchant",
+              "giant"
+            ],
+            "location_tags": [
+              "port",
+              "island"
+            ],
+            "props": [
+              "money"
+            ],
+            "actions": [
+              "swim",
+              "walk"
+            ],
+            "expressions": [
+              "surprised",
+              "worried"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "merchant": [
+                "char-hum-0021"
+              ],
+              "giant": [
+                "char-myt-0015"
+              ]
+            },
+            "environment": "env-mkt-0012",
+            "environment_candidates": [
+              "env-mkt-0012",
+              "env-spc-0014",
+              "env-wat-0013"
+            ]
+          },
+          "missing": {
+            "characters": [
+              "sailor"
+            ],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": false
+        },
+        {
+          "id": "fisherman_and_jinni",
+          "title_en": "The Fisherman and the Jinni",
+          "title_hi": "मछुआरा और जिन्न",
+          "premise": "A fisherman releases a jinni from a jar.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "fisherman",
+              "genie"
+            ],
+            "location_tags": [
+              "river",
+              "lake",
+              "port"
+            ],
+            "props": [],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "surprised",
+              "worried"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "fisherman": [
+                "char-hum-0027"
+              ],
+              "genie": [
+                "char-myt-0012"
+              ]
+            },
+            "environment": "river_open_001",
+            "environment_candidates": [
+              "river_open_001",
+              "crocodile_home_001",
+              "forest_river_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "ali_baba",
+          "title_en": "Ali Baba and the Forty Thieves",
+          "title_hi": "अलीबाबा और चालीस चोर",
+          "premise": "A woodcutter finds a robbers' treasure cave.",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "woodcutter",
+              "thief",
+              "merchant"
+            ],
+            "location_tags": [
+              "cave",
+              "forest",
+              "market"
+            ],
+            "props": [
+              "money"
+            ],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "surprised",
+              "happy"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "woodcutter": [
+                "char-hum-0025"
+              ],
+              "thief": [
+                "char-hum-0033"
+              ],
+              "merchant": [
+                "char-hum-0021"
+              ]
+            },
+            "environment": "forest_well_001",
+            "environment_candidates": [
+              "forest_well_001",
+              "crocodile_home_001",
+              "village_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        },
+        {
+          "id": "aladdin",
+          "title_en": "Aladdin and the Magic Lamp",
+          "title_hi": "अलादीन",
+          "premise": "A boy and a genie in a lamp. (A later addition to the collection.)",
+          "source_verified": false,
+          "implemented": false,
+          "story_file": null,
+          "needs": {
+            "characters": [
+              "child_boy",
+              "magician",
+              "genie",
+              "princess"
+            ],
+            "location_tags": [
+              "market",
+              "palace",
+              "cave",
+              "desert"
+            ],
+            "props": [],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "surprised",
+              "happy"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "child_boy": [
+                "char-hum-0034"
+              ],
+              "magician": [
+                "char-hum-0038"
+              ],
+              "genie": [
+                "char-myt-0012"
+              ],
+              "princess": [
+                "char-hum-0005"
+              ]
+            },
+            "environment": "env-des-0008",
+            "environment_candidates": [
+              "env-des-0008",
+              "crocodile_home_001",
+              "forest_well_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        }
+      ]
+    },
+    {
+      "id": "folk",
+      "name": "Regional folk tales",
+      "origin": "Not catalogued: no regional tale is listed until its source is verified.",
+      "public_domain_note": "n/a",
+      "tracked_stories": 0,
+      "complete_collection": false,
+      "stories": []
+    },
+    {
+      "id": "original",
+      "name": "Original stories",
+      "origin": "Written for this project.",
+      "public_domain_note": "Project-owned.",
+      "tracked_stories": 1,
+      "complete_collection": false,
+      "stories": [
+        {
+          "id": "farmer_and_rich_man",
+          "title_en": "The Farmer and the Rich Man",
+          "title_hi": "किसान और सेठ",
+          "premise": "Project-original story.",
+          "source_verified": false,
+          "implemented": true,
+          "story_file": "stories/original/farmer_and_rich_man.json",
+          "needs": {
+            "characters": [
+              "farmer",
+              "rich man"
+            ],
+            "location_tags": [
+              "village",
+              "home"
+            ],
+            "props": [
+              "money"
+            ],
+            "actions": [
+              "walk"
+            ],
+            "expressions": [
+              "happy",
+              "sad"
+            ]
+          },
+          "matched": {
+            "characters": {
+              "farmer": [
+                "farmer_001"
+              ],
+              "rich man": [
+                "rich_man_001"
+              ]
+            },
+            "environment": "village_001",
+            "environment_candidates": [
+              "village_001",
+              "env-hou-0004",
+              "farm_field_001"
+            ]
+          },
+          "missing": {
+            "characters": [],
+            "environment": [],
+            "props": [],
+            "animations": []
+          },
+          "fully_covered": true
+        }
+      ]
+    }
+  ]
+}

@@ -41,7 +41,9 @@
     "ambience": "forest_ambience_001",
     "composition": "wide",
     "composition_group": "env-des-0004",
-    "scare_levels": false,
+    "scare_levels": [
+      0
+    ],
     "seasons": [
       "spring",
       "summer",
@@ -159,7 +161,7 @@
       "role": "layer",
       "path": "layers/vegetation.png",
       "format": "png",
-      "checksum": "9e3f007f51a084b84baae64cedb8a8702519495e73f83c908f77c9aba5967573",
+      "checksum": "57d658ece760a3dd712de1550b30196b336febf8c203451e6db40a7a8a707426",
       "width": 1421,
       "height": 392,
       "duration_seconds": null,
@@ -171,7 +173,7 @@
       "role": "svg_master",
       "path": "masters/vegetation.svg",
       "format": "svg",
-      "checksum": "7875cfd74d3330a0a68994deda7e3c171c80a6cb3c9afbb0a89a9eeaf51e628c",
+      "checksum": "21cf418e5291796462c0503f088c3ec771e466f1438b0f1f4c7b9bdfc353b39c",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -183,7 +185,7 @@
       "role": "layer",
       "path": "layers/foreground.png",
       "format": "png",
-      "checksum": "d3f586dc7bf7f9b911eea0357e361bbcddbdf7b8d4e58635b21ea68ae56a5d25",
+      "checksum": "dd573d6c0e29f0275eb3bfff3e620479473b9cb94bbfe30846d9124e40b112b2",
       "width": 1700,
       "height": 280,
       "duration_seconds": null,
@@ -195,7 +197,7 @@
       "role": "svg_master",
       "path": "masters/foreground.svg",
       "format": "svg",
-      "checksum": "98188cf45f5930b8a8b11229007e19ec5b168387ee397c82c34d5643724c0db2",
+      "checksum": "301193e84f0dfd9cf2cd563725d19286689247c3f7b1443d7cfdc710189706b1",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -207,7 +209,7 @@
       "role": "preview",
       "path": "previews/composite.jpg",
       "format": "jpeg",
-      "checksum": "08d72987223569767ac3cc7cfe3747bda551bc1e25175cca07e67d369a1269be",
+      "checksum": "59383f0aa8d3e9a3fc11971d068c357a67af79621d4402cc0d89be03bb52ab94",
       "width": 960,
       "height": 540,
       "duration_seconds": null,
@@ -216,7 +218,7 @@
       "pose": null
     }
   ],
-  "created_at": "2026-11-18T12:57:41+00:00",
+  "created_at": "2026-11-18T13:36:32+00:00",
   "change_summary": "",
   "stage": [
     1920,
@@ -324,7 +326,7 @@
       "file": "layers/foreground.png",
       "rect": [
         180.0,
-        -120.0,
+        -110.0,
         1700.0,
         280.0
       ],

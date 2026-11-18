@@ -5,7 +5,7 @@ import { describe, useLoad } from "../hooks/useAsync";
 import { useScenes, waitForJob } from "../hooks/useScenes";
 import { useStudio } from "../hooks/useStudio";
 import { api, media } from "../services/api";
-import type { Environment, RenderJob, Scene } from "../types";
+import type { AssetReport, Environment, RenderJob, Scene } from "../types";
 
 export function Storyboard() {
   const { story, refresh, can } = useStudio();
@@ -22,6 +22,7 @@ export function Storyboard() {
         </span>
       </div>
       <ErrorNote message={error} />
+      <AssetCoverage storyId={story.id} version={story.current_version} canEdit={can("producer")} onChanged={refresh} />
       {scenes.map((scene) => (
         <SceneCard key={`${scene.id}-${story.current_version}`} scene={scene} environments={environments.data ?? []} onChanged={refresh} canEdit={can("producer")} canApprove={can("reviewer")} version={story.current_version} />
       ))}
@@ -173,6 +174,64 @@ function SceneCard({ scene, environments, onChanged, canEdit, canApprove, versio
           )}
         </div>
       </div>
+    </Card>
+  );
+}
+
+function AssetCoverage({ storyId, version, canEdit, onChanged }: { storyId: string; version: number; canEdit: boolean; onChanged: () => Promise<void> }) {
+  const report = useLoad(() => api.get<AssetReport>(`/stories/${storyId}/asset-report`), [storyId, version]);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const r = report.data;
+  async function use(sceneId: string, environmentId: string) {
+    setBusy(true);
+    setError(null);
+    try {
+      await api.post(`/stories/${storyId}/generate-storyboard`, { environment_overrides: { [sceneId]: environmentId } });
+      await onChanged();
+      report.reload();
+    } catch (e) {
+      setError(describe(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <Card title="Asset coverage" actions={r ? <Badge tone={r.complete ? "info" : "warning"}>{r.complete ? "everything matched" : `${r.missing.length} missing`}</Badge> : undefined}>
+      <ErrorNote message={report.error ?? error} />
+      {r && (
+        <div className="space-y-2 text-sm" data-testid="asset-report">
+          {r.missing.length > 0 && (
+            <ul className="list-disc pl-5 text-amber-800">
+              {r.missing.map((m, i) => (
+                <li key={i}>
+                  {m.kind} <code>{m.key}</code> ({m.needed_for}): {m.reason}
+                </li>
+              ))}
+            </ul>
+          )}
+          <p>
+            <b>Characters</b> {r.characters.map((c) => `${c.name} → ${c.matched ?? "MISSING"}`).join(" · ") || "none"}
+          </p>
+          {r.scenes.map((sc) => (
+            <details key={sc.scene_id} className="rounded-lg border border-line p-2">
+              <summary className="cursor-pointer">
+                {sc.scene_id}: background <b>{sc.environment.chosen_name ?? "none matched"}</b> ({sc.environment.tags.join(", ") || "no location named"})
+              </summary>
+              {sc.environment.candidates.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {sc.environment.candidates.map((c) => (
+                    <Button key={c.id} variant="ghost" disabled={!canEdit || busy} onClick={() => use(sc.scene_id, c.id)} title={`match score ${c.score}`}>
+                      Use {c.name}
+                    </Button>
+                  ))}
+                </div>
+              )}
+              {sc.expressions_missing.length > 0 && <p className="mt-1 text-amber-800">Missing expressions: {sc.expressions_missing.join(", ")}</p>}
+            </details>
+          ))}
+        </div>
+      )}
     </Card>
   );
 }

@@ -120,8 +120,16 @@ test("5. user selects a character", async () => {
   await page.getByRole("status").filter({ hasText: "is now played by Monkey" }).waitFor({ timeout: 60000 });
   await shot("04_character_library");
   await nav("Environment Library");
+  await page.getByTestId("environment-forest_river_001").click();
   await page.getByRole("heading", { name: /Riverbank with a jamun tree/ }).waitFor();
   await shot("05_environment_library");
+  // the expanded library: filter to the haunted category, open a background and change its scare level
+  await page.getByLabel("Search backgrounds").fill("haunted");
+  await page.getByTestId("environment-env-hnt-0001").click();
+  await page.getByRole("heading", { name: /Haunted forest/ }).waitFor();
+  await page.getByLabel("Scare level").selectOption("0");
+  await page.getByTestId("environment-preview").evaluate((img) => img.complete || new Promise((r) => (img.onload = r)));
+  await shot("05b_environment_haunted_scare0");
   await nav("Animation Studio");
   await page.getByTestId("animation-still").evaluate((img) => img.complete || new Promise((r) => (img.onload = r)));
   await shot("06_animation_studio");

@@ -40,8 +40,8 @@ class _EntityFinder:
         for ch in (index.characters if index else []):
             for alias in ch.aliases:
                 if norm_name(alias) not in known and not self._is_relation_alias(alias) and self._script_ok(alias):
-                    surfaces.append((alias, self._key_for_asset(ch.id)))
-                    self._lexicon.setdefault(self._key_for_asset(ch.id), None)  # type: ignore[arg-type]
+                    surfaces.append((alias, self._key_for_asset(ch.id, ch.species)))
+                    self._lexicon.setdefault(self._key_for_asset(ch.id, ch.species), None)  # type: ignore[arg-type]
         surfaces.sort(key=lambda s: -len(s[0]))
         self._patterns = [(re.compile(pack.name_pattern(n), re.IGNORECASE), k) for n, k in surfaces]
         for word, rel in pack.relations.items():
@@ -62,7 +62,11 @@ class _EntityFinder:
         return any(word in alias for word in self.pack.relations)
 
     @staticmethod
-    def _key_for_asset(asset_id: str) -> str:
+    def _key_for_asset(asset_id: str, species: str | None = None) -> str:
+        """Entity keys are lowercase words with underscores. Catalogue ids (char-hum-0001) are not valid keys, so they use the species."""
+        if "-" in asset_id:
+            key = re.sub(r"[^a-z0-9_]+", "_", (species or asset_id).lower()).strip("_")
+            return key if re.fullmatch(r"[a-z][a-z0-9_]{0,47}", key) else "c_" + re.sub(r"[^a-z0-9_]+", "_", asset_id.lower())[:44]
         return re.sub(r"_\d+$", "", asset_id)
 
     def find(self, text: str) -> list[_Mention]:

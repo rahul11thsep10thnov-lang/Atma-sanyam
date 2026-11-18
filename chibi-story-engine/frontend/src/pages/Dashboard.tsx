@@ -4,11 +4,12 @@ import { Badge, Button, Card, Empty, ErrorNote, Field, inputClass } from "../com
 import { useAction, useLoad } from "../hooks/useAsync";
 import { useStudio } from "../hooks/useStudio";
 import { api } from "../services/api";
-import type { Project } from "../types";
+import type { LibraryStats, Project } from "../types";
 
 export function Dashboard() {
   const { stories, storyId, selectStory, can } = useStudio();
   const projects = useLoad(() => api.get<Project[]>("/projects"), []);
+  const stats = useLoad(() => api.get<LibraryStats>("/library/stats"), []);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [run, busy, error] = useAction();
@@ -26,6 +27,22 @@ export function Dashboard() {
   return (
     <>
       <h1 className="text-2xl font-bold">Dashboard</h1>
+      {stats.data && (
+        <Card title="Asset library (counted from the files on disk)">
+          <div className="grid grid-cols-2 gap-3 text-sm md:grid-cols-5" data-testid="library-stats">
+            {(["character", "environment", "component", "prop", "effect"] as const).map((k) => (
+              <div key={k} className="rounded-lg border border-line p-3">
+                <div className="text-2xl font-bold">{stats.data!.by_type[k] ?? 0}</div>
+                <div className="text-stone-500">{k.replace("_", " ")}s</div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-2 text-xs text-stone-500">
+            {stats.data.environment_layers} background layers · {stats.data.svg_masters} SVG masters · {stats.data.scare_layers} adjustable-scare layers ·{" "}
+            {stats.data.approval["environment:approved"] ?? 0} approved / {stats.data.approval["environment:pending"] ?? 0} pending backgrounds. Not yet delivered: {stats.data.not_delivered.join("; ")}.
+          </p>
+        </Card>
+      )}
       <div className="grid gap-4 md:grid-cols-2">
         <Card title="Projects">
           <ErrorNote message={projects.error} />

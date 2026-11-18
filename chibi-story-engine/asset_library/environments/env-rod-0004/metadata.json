@@ -41,7 +41,9 @@
     "ambience": "forest_ambience_001",
     "composition": "wide",
     "composition_group": "env-rod-0004",
-    "scare_levels": false,
+    "scare_levels": [
+      0
+    ],
     "seasons": [
       "spring",
       "summer",
@@ -159,9 +161,9 @@
       "role": "layer",
       "path": "layers/vegetation.png",
       "format": "png",
-      "checksum": "80c69e96eba4a9eaeb44d50a1e557aa59a683f22030393947f08eac8c9ce198f",
-      "width": 378,
-      "height": 413,
+      "checksum": "b00c8d7170ebdbdb3241d8c7c9c08f61fd2e71156adad2d45148bec9c342e598",
+      "width": 385,
+      "height": 385,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -171,7 +173,7 @@
       "role": "svg_master",
       "path": "masters/vegetation.svg",
       "format": "svg",
-      "checksum": "582023e5ba23580ccb265c1d6e376a231b652a3fd1711cf4e16fc54e30966d6d",
+      "checksum": "d8c1799b8e5e431551115ebd7069b7d25a2d2985585ed56993272f79cdf418da",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -183,7 +185,7 @@
       "role": "layer",
       "path": "layers/foreground.png",
       "format": "png",
-      "checksum": "06446bf44273fa284e8b55c51560180ca7196bd1f3d0e15a40ea63486c87f1d1",
+      "checksum": "b2abc1f3733b77dafa8fc15ac409603b31dc3ae2948d670fe66c20244c79bc79",
       "width": 1670,
       "height": 370,
       "duration_seconds": null,
@@ -195,7 +197,7 @@
       "role": "svg_master",
       "path": "masters/foreground.svg",
       "format": "svg",
-      "checksum": "027d469ae0deb74782fb2323949fc0687fa466be223e89e45b1bf6d890dd1eb0",
+      "checksum": "8b34d0e36148f4d506d3569b660d491580172ed00d61d71de0d6d4872abce01e",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -231,7 +233,7 @@
       "role": "preview",
       "path": "previews/composite.jpg",
       "format": "jpeg",
-      "checksum": "f2afd1aa3526a2d4be6a0ad4d871d1ff2cf681d53e88193b741b55cf8fabfdfb",
+      "checksum": "8b9d5969ebae3558c0aa738a4dcd8ae310ad5d2eebf5c94d3439da927c0215a1",
       "width": 960,
       "height": 540,
       "duration_seconds": null,
@@ -240,7 +242,7 @@
       "pose": null
     }
   ],
-  "created_at": "2026-11-18T12:58:09+00:00",
+  "created_at": "2026-11-18T13:36:58+00:00",
   "change_summary": "",
   "stage": [
     1920,
@@ -330,8 +332,8 @@
       "rect": [
         -150.0,
         310.0,
-        540.0,
-        590.0
+        550.0,
+        550.0
       ],
       "parallax": 1.0,
       "order": 45,
