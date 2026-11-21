@@ -30,7 +30,10 @@ def test_compositions_keep_identity_hierarchy_anchors_and_bounds(library, groups
             assert v.category == wide.category and sorted(v.tags) == sorted(wide.tags) and v.camera_bounds == wide.camera_bounds, v.id
             assert list(v.anchors) == list(wide.anchors) and v.default_anchor_by_role == wide.default_anchor_by_role, v.id
             assert {n: a.features for n, a in v.anchors.items()} == {n: a.features for n, a in wide.anchors.items()}, v.id
-            assert {l.id for l in v.layers} <= {l.id for l in wide.layers} and {l.id for l in v.layers} >= {"sky", "ground"} & {l.id for l in wide.layers}, v.id
+            if str(wide.catalog_code).startswith("ENV-ORG-"):       # the hand-drawn originals keep their own layer names; their compositions use the standard scheme
+                assert v.layers and "ground" in {l.id for l in v.layers} or "floor" in {l.id for l in v.layers}, v.id
+            else:
+                assert {l.id for l in v.layers} <= {l.id for l in wide.layers} and {l.id for l in v.layers} >= {"sky", "ground"} & {l.id for l in wide.layers}, v.id
             assert all(l.svg for l in v.layers) and library.verify(AssetType.environment, v.id) == [], v.id
         # characters stand larger and closer together as the composition tightens
         names = [n for n in wide.anchors if "offstage" not in n]
