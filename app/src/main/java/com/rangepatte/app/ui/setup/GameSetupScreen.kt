@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.setup
 
+import com.rangepatte.app.ui.components.FitText
 import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -271,14 +272,12 @@ private fun ModeSlots(selected: PlayMode, onSelect: (PlayMode) -> Unit, withOthe
     val comingSoon = stringResource(R.string.setup_mode_coming_soon)
     Row(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .horizontalScroll(rememberScrollState())
+        modifier = Modifier.fillMaxWidth()
     ) {
         modeOptions(withOthersAvailable).forEach { option ->
             val label = stringResource(option.labelRes)
             val isSelected = selected == option.mode
-            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(72.dp)) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
                 RoyalSlot(
                     selected = isSelected,
                     onClick = { onSelect(option.mode) },
@@ -292,7 +291,7 @@ private fun ModeSlots(selected: PlayMode, onSelect: (PlayMode) -> Unit, withOthe
                         modifier = Modifier.size(26.dp)
                     )
                 }
-                Text(
+                FitText(
                     text = label,
                     style = AppType.SecondaryLabel,
                     color = if (isSelected) GoldBevelLight else ParchmentTextDim,

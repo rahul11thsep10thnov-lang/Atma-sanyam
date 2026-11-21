@@ -1,5 +1,8 @@
 package com.rangepatte.app.ui.components
 
+import com.rangepatte.app.ui.theme.TypeScale
+import androidx.compose.ui.text.style.TextAlign
+import com.rangepatte.app.ui.components.FitText
 import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -46,11 +49,11 @@ fun BottomNavigationBar(
                 onClick = { onItemSelected(item) },
                 icon = { Icon(imageVector = item.icon, contentDescription = null) },
                 label = {
-                    Text(
+                    FitText(
                         text = stringResource(item.labelRes),
                         style = AppType.NavigationLabel,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        textAlign = TextAlign.Center,
+                        minFontSize = TypeScale.NAVIGATION_MIN.sp
                     )
                 },
                 colors = NavigationBarItemDefaults.colors(

@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.components.royal
 
+import com.rangepatte.app.ui.components.FitText
 import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -100,13 +101,11 @@ fun RoyalButton(
             .padding(horizontal = if (compact) 6.dp else 18.dp, vertical = if (compact) 8.dp else 10.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(
+        FitText(
             text = text,
             style = if (compact) AppType.SecondaryLabel else AppType.PrimaryButton,
             color = ParchmentText,
-            textAlign = TextAlign.Center,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            textAlign = TextAlign.Center
         )
     }
 }

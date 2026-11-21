@@ -1,5 +1,8 @@
 package com.rangepatte.app.ui.components
 
+import androidx.compose.ui.unit.sp
+import com.rangepatte.app.ui.theme.TypeScale
+import com.rangepatte.app.ui.components.FitText
 import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -63,13 +66,12 @@ fun GameHeader(
                     tint = GoldBevelLight
                 )
             }
-            Text(
+            FitText(
                 text = title,
                 style = AppType.ScreenTitle,
                 color = GoldBevelLight,
                 textAlign = TextAlign.Center,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+                minFontSize = TypeScale.BODY.sp,
                 modifier = Modifier.weight(1f)
             )
             if (onAudioClick != null) {

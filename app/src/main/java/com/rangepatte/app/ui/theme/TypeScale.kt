@@ -11,6 +11,8 @@ object TypeScale {
     const val SCREEN_TITLE = 21f    // main screen heading             (20–22)
     const val SECTION_TITLE = 23f   // section heading                 (22–24)
     const val GAME_TITLE = 21f      // game names and game-mode titles (20–22)
+    /** Game names step down to this at most, and only when a name would not fit its plaque whole. */
+    const val GAME_TITLE_MIN = 15f
     const val PLAYER_NAME = 16f     // player names                    (15–16)
     const val PLAYER_NAME_COMPACT = 14f // player names in narrow side plaques and tables (14 is the floor for gameplay text)
     const val BODY = 15f            // body text and instructions      (15–16)
@@ -19,6 +21,8 @@ object TypeScale {
     const val PRIMARY_BUTTON = 15f  // primary buttons                 (14–16)
     const val SECONDARY_LABEL = 13f // secondary labels                (12–13)
     const val NAVIGATION = 12f      // bottom navigation labels        (12–13)
+    /** A tab label may step down to this when a long word ("Entertainment") must fit a quarter of a phone. */
+    const val NAVIGATION_MIN = 10f
     const val METADATA = 12f        // small metadata                  (11–12)
 
     /** Line height as a multiple of the font size. Devanagari adds [DEVANAGARI_EXTRA] so matras are never clipped. */
@@ -29,6 +33,9 @@ object TypeScale {
 
     /** No text that carries information is ever set below this. */
     const val MINIMUM = 11f
+
+    /** Column headers of the results tables may shrink to this when a long word ("Serpents") must fit a narrow column. */
+    const val TABLE_HEADER_MIN = 9f
 
     /** The allowed range for each token, exactly as specified in the typography brief. */
     val ranges: Map<String, ClosedFloatingPointRange<Float>> = mapOf(

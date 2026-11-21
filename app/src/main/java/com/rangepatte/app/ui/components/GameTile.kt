@@ -1,5 +1,8 @@
 package com.rangepatte.app.ui.components
 
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.ui.unit.sp
+import com.rangepatte.app.ui.theme.TypeScale
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -52,12 +55,12 @@ private val portraitPalettes = listOf(
  * game's [GameThumbnail] — its signature cards — on top.
  */
 @Composable
-fun GamePortrait(game: GameInfo, modifier: Modifier = Modifier, size: Dp? = null) {
+fun GamePortrait(game: GameInfo, modifier: Modifier = Modifier, size: Dp? = null, maxWidth: Dp = Dp.Unspecified) {
     val (light, dark) = portraitPalettes[game.id.ordinal % portraitPalettes.size]
     val shape = RoundedCornerShape(3.dp)
     Box(
         modifier = modifier
-            .let { if (size != null) it.size(size) else it.fillMaxWidth().aspectRatio(1f) }
+            .let { if (size != null) it.size(size) else it.widthIn(max = maxWidth).fillMaxWidth().aspectRatio(1f) }
             .background(Brush.radialGradient(listOf(light, dark)), shape)
             .border(2.dp, GoldBevelDark, shape)
             .padding(3.dp)
@@ -81,14 +84,16 @@ fun GamePortrait(game: GameInfo, modifier: Modifier = Modifier, size: Dp? = null
 fun GameTile(
     game: GameInfo,
     onPlayClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    /** Caps the portrait in a one-column grid (very large system font), so it does not fill the screen. */
+    maxPortraitWidth: Dp = Dp.Unspecified
 ) {
     val playLabel = stringResource(R.string.action_play)
     Column(
         modifier = modifier.clickable(role = Role.Button, onClickLabel = playLabel, onClick = onPlayClick),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        GamePortrait(game = game)
+        GamePortrait(game = game, maxWidth = maxPortraitWidth)
         NamePlaque(text = stringResource(game.nameRes))
         Text(
             text = stringResource(game.descriptionRes),
@@ -126,13 +131,15 @@ private fun NamePlaque(text: String) {
             .padding(horizontal = 6.dp, vertical = 5.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(
+        // Steps down (to 15 sp at the least) only when a long name would not fit two lines whole —
+        // a very large system font size or a narrow column.
+        FitText(
             text = text,
             style = style,
             color = ParchmentText,
             textAlign = TextAlign.Center,
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis
+            minFontSize = TypeScale.GAME_TITLE_MIN.sp
         )
     }
 }
@@ -146,6 +153,7 @@ fun BoardGameTile(
     game: com.rangepatte.app.domain.board.BoardGameInfo,
     onPlayClick: () -> Unit,
     modifier: Modifier = Modifier,
+    maxPortraitWidth: Dp = Dp.Unspecified,
     portrait: @Composable () -> Unit
 ) {
     val playLabel = stringResource(R.string.action_play)
@@ -157,7 +165,7 @@ fun BoardGameTile(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth().aspectRatio(1f)
+                .widthIn(max = maxPortraitWidth).fillMaxWidth().aspectRatio(1f)
                 .background(Brush.radialGradient(listOf(light, dark)), shape)
                 .border(2.dp, GoldBevelDark, shape)
                 .padding(3.dp)
@@ -197,6 +205,24 @@ fun BoardGameTile(
     }
 }
 
+/** Portrait size when a grid shows a single column. */
+val ONE_COLUMN_PORTRAIT: Dp = 200.dp
+
+/**
+ * Grid columns for game tiles: by the width available, measured in "text widths" — the width divided by
+ * the system font scale — so that with a very large font size the grid falls back to fewer, wider
+ * columns instead of breaking game names and descriptions apart.
+ */
+fun gameGridColumns(width: Dp, fontScale: Float): Int {
+    val textWidth = width.value / fontScale.coerceAtLeast(1f)
+    return when {
+        textWidth >= 900f -> 4
+        textWidth >= 600f -> 3
+        textWidth >= 250f -> 2
+        else -> 1
+    }
+}
+
 private fun playerCountLabel(min: Int, max: Int, suffix: String): String =
     if (min == max) "$min $suffix" else "$min–$max $suffix"
 
@@ -214,7 +240,8 @@ fun GamesGrid(
                     GameTile(
                         game = game,
                         onPlayClick = { onPlayClick(game) },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        maxPortraitWidth = if (columns == 1) ONE_COLUMN_PORTRAIT else Dp.Unspecified
                     )
                 }
                 repeat(columns - rowGames.size) {

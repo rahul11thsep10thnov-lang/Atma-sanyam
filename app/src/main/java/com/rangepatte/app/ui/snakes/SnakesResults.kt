@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.snakes
 
+import com.rangepatte.app.ui.components.FitText
 import com.rangepatte.app.ui.theme.TypeScale
 import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.background
@@ -64,9 +65,13 @@ fun SnakesResultsDialog(state: SnakesState, mySeat: Int, youName: String, record
 private fun StatsRow(name: String, cells: List<String>, header: Boolean = false, highlight: Boolean = false) {
     val colour = when { header -> ParchmentTextDim; highlight -> GoldenGlow; else -> ParchmentText }
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-        Text(text = name, style = AppType.PlayerNameCompact, fontWeight = if (highlight) FontWeight.Bold else FontWeight.Medium, color = colour, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1.0f))
+        FitText(text = name, style = AppType.PlayerNameCompact, fontWeight = if (highlight) FontWeight.Bold else FontWeight.Medium, color = colour, modifier = Modifier.weight(1.6f))
         cells.forEach { c ->
-            Text(text = c, style = if (header) AppType.Metadata.copy(fontSize = TypeScale.MINIMUM.sp) else AppType.ScoreText.copy(fontSize = TypeScale.SECONDARY_LABEL.sp), color = colour, textAlign = TextAlign.Center, fontWeight = if (header) FontWeight.SemiBold else FontWeight.Medium, maxLines = if (header) 2 else 1, modifier = Modifier.weight(1f))
+            FitText(
+                text = c, style = if (header) AppType.Metadata else AppType.ScoreText.copy(fontSize = TypeScale.SECONDARY_LABEL.sp), color = colour, textAlign = TextAlign.Center,
+                fontWeight = if (header) FontWeight.SemiBold else FontWeight.Medium, modifier = Modifier.weight(1f),
+                minFontSize = if (header) TypeScale.TABLE_HEADER_MIN.sp else TypeScale.MINIMUM.sp
+            )
         }
     }
 }

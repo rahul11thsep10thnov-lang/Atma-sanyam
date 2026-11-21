@@ -1,5 +1,6 @@
 package com.rangepatte.app.ui.chrome
 
+import com.rangepatte.app.ui.components.FitText
 import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -160,12 +161,11 @@ private fun TopBarTab(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(imageVector = icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(18.dp))
-        Text(
+        FitText(
             text = text,
             style = AppType.SecondaryLabel,
             color = ParchmentText,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
+            maxLines = 2,
             modifier = Modifier.padding(start = 6.dp)
         )
     }

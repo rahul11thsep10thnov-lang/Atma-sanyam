@@ -1,9 +1,9 @@
 package com.rangepatte.app.ui.board
 
+import com.rangepatte.app.ui.components.FitText
 import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -257,15 +257,15 @@ private fun ModeSlots(selected: PlayMode, onSelect: (PlayMode) -> Unit) {
         ModeOption(PlayMode.NEARBY, Icons.Filled.Wifi, R.string.setup_mode_nearby, true),
         ModeOption(PlayMode.ONLINE, Icons.Filled.Public, R.string.setup_mode_online, true)
     )
-    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())) {
+    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fillMaxWidth()) {
         options.forEach { option ->
             val label = stringResource(option.labelRes)
             val isSelected = selected == option.mode
-            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(72.dp)) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
                 RoyalSlot(selected = isSelected, onClick = { onSelect(option.mode) }, contentDescription = if (option.available) label else "$label, $comingSoon", enabled = option.available) {
                     Icon(if (option.available) option.icon else Icons.Filled.Lock, contentDescription = null, tint = if (isSelected) GoldenGlow else ParchmentText, modifier = Modifier.size(26.dp))
                 }
-                Text(label, style = AppType.SecondaryLabel, color = if (isSelected) GoldBevelLight else ParchmentTextDim, textAlign = TextAlign.Center, maxLines = 3, modifier = Modifier.padding(top = 4.dp))
+                FitText(label, style = AppType.SecondaryLabel, color = if (isSelected) GoldBevelLight else ParchmentTextDim, textAlign = TextAlign.Center, maxLines = 3, modifier = Modifier.padding(top = 4.dp))
                 if (!option.available) Text(comingSoon, style = AppType.Metadata, color = GoldBevelDark, textAlign = TextAlign.Center)
             }
         }

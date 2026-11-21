@@ -1,5 +1,8 @@
 package com.rangepatte.app.ui.components.royal
 
+import androidx.compose.ui.unit.sp
+import com.rangepatte.app.ui.theme.TypeScale
+import com.rangepatte.app.ui.components.FitText
 import com.rangepatte.app.ui.theme.AppType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -58,11 +61,13 @@ fun RoyalPanel(
     ) {
         CompositionLocalProvider(LocalContentColor provides ParchmentText) {
             if (title != null) {
-                Text(
+                FitText(
                     text = title,
                     style = AppType.SectionTitle,
                     color = GoldBevelLight,
                     textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    minFontSize = TypeScale.BODY.sp,
                     modifier = Modifier.fillMaxWidth()
                 )
                 GoldRule(modifier = Modifier.padding(top = 6.dp, bottom = 12.dp))

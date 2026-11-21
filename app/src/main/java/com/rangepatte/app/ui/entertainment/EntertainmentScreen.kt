@@ -1,5 +1,9 @@
 package com.rangepatte.app.ui.entertainment
 
+import androidx.compose.ui.unit.Dp
+import com.rangepatte.app.ui.components.ONE_COLUMN_PORTRAIT
+import com.rangepatte.app.ui.components.gameGridColumns
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
@@ -30,14 +34,14 @@ import com.rangepatte.app.ui.thumbnails.LudoThumbnail
 fun EntertainmentScreen(onPlayGame: (BoardGameInfo) -> Unit = {}, modifier: Modifier = Modifier) {
     WatermarkBackground(backgroundType = BackgroundType.EVENING_BALCONY, modifier = modifier) {
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-            val columns = if (maxWidth >= 600.dp) 3 else 2
+            val columns = minOf(3, gameGridColumns(maxWidth, LocalDensity.current.fontScale))
             LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 item {
                     RoyalPanel(title = stringResource(R.string.nav_entertainment), modifier = Modifier.fillMaxWidth()) {
                         BoardCatalog.all.chunked(columns).forEach { rowGames ->
                             Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                                 rowGames.forEach { game ->
-                                    BoardGameTile(game = game, onPlayClick = { onPlayGame(game) }, modifier = Modifier.weight(1f)) {
+                                    BoardGameTile(game = game, onPlayClick = { onPlayGame(game) }, modifier = Modifier.weight(1f), maxPortraitWidth = if (columns == 1) ONE_COLUMN_PORTRAIT else Dp.Unspecified) {
                                         when (game.id) {
                                             BoardGameId.LUDO -> LudoThumbnail()
                                             BoardGameId.SNAKES_LADDERS -> com.rangepatte.app.ui.thumbnails.SnakesThumbnail()

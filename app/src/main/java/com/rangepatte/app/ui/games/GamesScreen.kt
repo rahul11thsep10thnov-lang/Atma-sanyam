@@ -1,5 +1,7 @@
 package com.rangepatte.app.ui.games
 
+import com.rangepatte.app.ui.components.gameGridColumns
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -18,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.rangepatte.app.R
 import com.rangepatte.app.domain.model.GameCatalog
@@ -31,13 +32,6 @@ import com.rangepatte.app.ui.components.royal.RoyalPanel
 import com.rangepatte.app.ui.theme.GoldBevelLight
 import com.rangepatte.app.ui.theme.ParchmentTextDim
 
-/** Grid columns for game cards at a given available width — phones, large phones/landscape, tablets. */
-private fun gameGridColumns(width: Dp): Int = when {
-    width >= 900.dp -> 4
-    width >= 600.dp -> 3
-    else -> 2
-}
-
 /**
  * "Khel" — the page the app opens on. The app's title crest and tagline, then every game in one
  * grid (no categories), each tile showing its signature cards.
@@ -49,7 +43,7 @@ fun GamesScreen(
 ) {
     WatermarkBackground(backgroundType = BackgroundType.WOODEN_VERANDA, modifier = modifier) {
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-            val columns = gameGridColumns(maxWidth)
+            val columns = gameGridColumns(maxWidth, LocalDensity.current.fontScale)
             LazyColumn(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)

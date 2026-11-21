@@ -1,5 +1,7 @@
 package com.rangepatte.app.ui
 
+import androidx.compose.ui.unit.dp
+import com.rangepatte.app.ui.components.gameGridColumns
 import com.rangepatte.app.ui.theme.TypeScale
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -66,5 +68,27 @@ class TypographyTest {
         val tile = sourceFiles().first { it.name == "GameTile.kt" }.readText()
         assertTrue(tile.contains("AppType.GameTitle"))
         assertTrue("game names must not be forced to capitals", !tile.contains("text.uppercase()"))
+    }
+
+    /** Text may step down to fit, but never below these floors (and game names never below 15 sp). */
+    @Test
+    fun fitFloorsAreSensible() {
+        assertTrue(TypeScale.GAME_TITLE_MIN >= 15f && TypeScale.GAME_TITLE_MIN < TypeScale.GAME_TITLE)
+        assertTrue(TypeScale.NAVIGATION_MIN >= 10f && TypeScale.NAVIGATION_MIN <= TypeScale.NAVIGATION)
+        assertTrue(TypeScale.TABLE_HEADER_MIN >= 9f && TypeScale.TABLE_HEADER_MIN <= TypeScale.METADATA)
+    }
+
+    /** Phones get two columns; very large system font sizes fall back to one; tablets get more. */
+    @Test
+    fun gridColumnsFollowWidthAndFontScale() {
+        assertEquals(2, gameGridColumns(360.dp, 1f))
+        assertEquals(2, gameGridColumns(320.dp, 1f))
+        assertEquals(2, gameGridColumns(360.dp, 1.3f))
+        assertEquals(1, gameGridColumns(360.dp, 2f))
+        assertEquals(1, gameGridColumns(320.dp, 1.5f))
+        assertEquals(3, gameGridColumns(700.dp, 1f))
+        assertEquals(4, gameGridColumns(1000.dp, 1f))
+        assertEquals(2, gameGridColumns(700.dp, 2f))
+        assertEquals(2, gameGridColumns(360.dp, 0.85f))
     }
 }
