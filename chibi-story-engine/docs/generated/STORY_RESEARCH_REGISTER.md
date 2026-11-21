@@ -14,9 +14,9 @@ Generated 2026-11-21 by `python -m tools.catalogue.research`. Every number is co
 | Jataka tales | jataka_table | 547 | 5 | verified 552 | The 547 numbered stories are indexed by title; their wording is not copied; Cowell's edition and the Pali texts were not consulted directly. |
 | Hitopadesha | arnold_1861 | 34 | 3 | verified 37 | Only Arnold's 1861 contents consulted; Sanskrit titles and the other translations are not. |
 | Vikram and Betal (Baital Pachisi) | burton_1870, vetala_wp | 11 | 2 | verified 13 | Only Burton's 1870 selection (his contents) is indexed, not all 25 tales of the Baital Pachisi; Sanskrit and Hindi recensions and other translations are not. |
-| Singhasan Battisi | singhasan_wp | 0 | 1 | research_pending 1 | The 32 tales are not indexed. |
-| Akbar and Birbal | birbal_wp | 0 | 3 | unverified 3 | The tradition is oral and anecdotal; no edition's contents consulted, so no individual tale can be verified. |
-| Tenali Raman | tenali_wp | 0 | 3 | unverified 3 | No edition's contents consulted, so no individual tale can be verified. |
+| Singhasan Battisi | singhasan_wp | 0 | 1 | research_pending 1 | The 32 tales are not indexed; Wikisource was searched and holds no edition (only Wikipedia was consulted). |
+| Akbar and Birbal | birbal_wp | 0 | 3 | unverified 3 | The tradition is oral and anecdotal; Wikisource was searched and holds no edition, and none was fetched elsewhere, so no individual tale can be verified. |
+| Tenali Raman | tenali_wp | 0 | 3 | unverified 3 | Wikisource was searched and holds no edition; no edition's contents consulted, so no individual tale can be verified. |
 | Aesop's fables | perry_wp | 584 | 7 | unverified 1, verified 590 | Only the Perry numbering as reproduced on Wikipedia; Perry's Aesopica and the Greek/Latin sources were not consulted. |
 | Arabian Nights (One Thousand and One Nights) | nights_wp | 0 | 4 | adaptation 2, unverified 2 | Only the Wikipedia article consulted; no edition's table of contents (Burton, Lane, Haddawy, Galland) was parsed. |
 | Regional folk tales | none | 0 | 0 | - | See the regional register. |

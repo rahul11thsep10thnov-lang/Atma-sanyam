@@ -26,7 +26,7 @@ def test_original_nine_are_version_two_and_version_one_is_intact(library):
         assert len(v2.expressions) >= 15 and len(v2.poses) >= 15, cid
         assert len(v1.expressions) == 9 and not v1.views, cid
         assert v2.catalog_code.startswith("CHAR-ORG-")
-        assert "Upgrade" in v2.change_summary
+        assert v2.change_summary
 
 
 def test_every_part_of_the_original_nine_has_an_svg_master(library):

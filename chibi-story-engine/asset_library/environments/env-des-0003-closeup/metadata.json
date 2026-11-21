@@ -185,9 +185,9 @@
       "role": "layer",
       "path": "layers/vegetation.png",
       "format": "png",
-      "checksum": "db432e896672c6b2a54929f1c8158f2c129d8ccf6972830d550c45912171f45b",
-      "width": 203,
-      "height": 385,
+      "checksum": "b74ee391dff7a300c4bafb1c6cb5e25063f55fc125527d0f21b5203013909626",
+      "width": 217,
+      "height": 413,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -197,7 +197,7 @@
       "role": "svg_master",
       "path": "masters/vegetation.svg",
       "format": "svg",
-      "checksum": "8de446b0b6c81f1cac7da0e2b5539cb7b319377c7c9b23bf82d56831d939e747",
+      "checksum": "88838be2c1b9e816adda2030c544ef2aaec6f03014f740ee0d8336c4b542f967",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -209,9 +209,9 @@
       "role": "layer",
       "path": "layers/foreground.png",
       "format": "png",
-      "checksum": "145a32c0489fd893c1af93da9fb68e595c2b059369abddff28bbcddf272437a6",
-      "width": 1430,
-      "height": 490,
+      "checksum": "c19cb0fae79e721e18b08736f8e23c2292dcf2759d7e290cb5fffb2856360b54",
+      "width": 2720,
+      "height": 520,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -221,7 +221,7 @@
       "role": "svg_master",
       "path": "masters/foreground.svg",
       "format": "svg",
-      "checksum": "8492eba043ff0caa0e7c5c78532af1590eab8ffc7b17454bad1f6cc1e4442ffe",
+      "checksum": "990365d7f66906a7588eb7fc3007408a079c33a6ed2a6d3a35b6c71bb4e831c4",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -233,7 +233,7 @@
       "role": "preview",
       "path": "previews/composite.jpg",
       "format": "jpeg",
-      "checksum": "6cec9ea4aecf256c9fbc768a2de94d86ab2e38416b4765641643d55ce55951bf",
+      "checksum": "9a1b9be3feb37774cff03c4d1e814384713179b1dad3097f82989ffdf9075d0f",
       "width": 960,
       "height": 540,
       "duration_seconds": null,
@@ -242,7 +242,7 @@
       "pose": null
     }
   ],
-  "created_at": "2026-11-18T17:51:17+00:00",
+  "created_at": "2026-11-21T17:57:40+00:00",
   "change_summary": "",
   "stage": [
     1920,
@@ -370,8 +370,8 @@
       "rect": [
         880.0,
         40.0,
-        290.0,
-        550.0
+        310.0,
+        590.0
       ],
       "parallax": 1.0,
       "order": 45,
@@ -389,8 +389,8 @@
       "rect": [
         -400.0,
         -130.0,
-        1430.0,
-        490.0
+        2720.0,
+        520.0
       ],
       "parallax": 1.3,
       "order": 800,

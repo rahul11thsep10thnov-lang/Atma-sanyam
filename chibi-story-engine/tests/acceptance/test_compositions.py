@@ -27,7 +27,7 @@ def test_compositions_keep_identity_hierarchy_anchors_and_bounds(library, groups
     for g, c in groups.items():
         wide, med, close = (library.environment(c[k]) for k in ("wide", "medium", "closeup"))
         for v in (med, close):
-            assert v.category == wide.category and v.tags == wide.tags and v.camera_bounds == wide.camera_bounds, v.id
+            assert v.category == wide.category and sorted(v.tags) == sorted(wide.tags) and v.camera_bounds == wide.camera_bounds, v.id
             assert list(v.anchors) == list(wide.anchors) and v.default_anchor_by_role == wide.default_anchor_by_role, v.id
             assert {n: a.features for n, a in v.anchors.items()} == {n: a.features for n, a in wide.anchors.items()}, v.id
             assert {l.id for l in v.layers} <= {l.id for l in wide.layers} and {l.id for l in v.layers} >= {"sky", "ground"} & {l.id for l in wide.layers}, v.id

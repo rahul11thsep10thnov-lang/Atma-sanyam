@@ -124,14 +124,29 @@ def d_trellis(v, x, y, s, rng, pal, w=150, h=230):
         v.L([(x + k * w * s / 7 + 30 * s, y), (x + k * w * s / 7 - 30 * s, y + h * s * 0.9)], col, 4, 0.9, smooth=False)
 
 
+def _pointed(v, x, y, w, h, fill, stroke, sw=6, inset=0.0):
+    """A pointed (Mughal) arch opening: straight jambs to 60 % of the height, then two curves meeting at the apex."""
+    xl, xr, yb = x - w / 2 + inset, x + w / 2 - inset, y + h * 0.6
+    v.D(f"M {xl:.1f} {y:.1f} L {xl:.1f} {yb:.1f} Q {xl:.1f} {y + h * 0.82:.1f} {x:.1f} {y + h:.1f} Q {xr:.1f} {y + h * 0.82:.1f} {xr:.1f} {yb:.1f} L {xr:.1f} {y:.1f} Z", fill, stroke, sw)
+
+
 def d_portcullis(v, x, y, s, rng, pal, w=260, h=320):
     iron = "#3a3a42"
-    v.S([(x - w * s / 2, y), (x - w * s / 2, y + h * s * 0.7), (x, y + h * s), (x + w * s / 2, y + h * s * 0.7), (x + w * s / 2, y)], "#1a1418", ol(iron), 6)
-    for k in range(7):
-        xx = x - w * s / 2 + 18 * s + k * (w - 36) * s / 6
-        v.L([(xx, y), (xx, y + h * s * (0.72 + 0.2 * (1 - abs(k - 3) / 3)))], iron, 7 * s, smooth=False)
+    stone = "#9a8a78"
+    _pointed(v, x, y, (w + 44) * s, (h + 22) * s, shade(v, stone), ol(stone), 6)                    # stone surround
+    _pointed(v, x, y, w * s, h * s, "#1a1418", ol(iron), 5)                                          # the opening
+    n = 7
+    for k in range(n):
+        xx = x - w * s / 2 + 16 * s + k * (w - 32) * s / (n - 1)
+        top = h * s * (0.6 + 0.4 * (1 - abs(xx - x) / (w * s / 2)) ** 0.9) - 8 * s
+        v.L([(xx, y), (xx, y + top)], iron, 7 * s, smooth=False)
     for k in range(1, 5):
-        v.L([(x - w * s / 2, y + k * h * s * 0.17), (x + w * s / 2, y + k * h * s * 0.17)], iron, 6 * s, smooth=False)
+        yy = y + k * h * s * 0.17
+        half = w * s / 2 if yy < y + h * s * 0.6 else (w * s / 2) * max(0.1, 1 - (yy - y - h * s * 0.6) / (h * s * 0.4)) ** 0.6
+        v.L([(x - half, yy), (x + half, yy)], iron, 6 * s, smooth=False)
+    for k in range(n):
+        xx = x - w * s / 2 + 16 * s + k * (w - 32) * s / (n - 1)
+        v.P([(xx - 4 * s, y), (xx, y - 14 * s), (xx + 4 * s, y)], iron, ol(iron), 2)               # spike tips at the bottom
 
 
 # ----------------------------------------------------------------------------------------- windows
@@ -545,9 +560,22 @@ def bd_shed(v, x, y, s, rng, pal, w=520, h=230):
 def bd_bridge(v, x, y, s, rng, pal, w=760, stone=False):
     col = "#b0a58a" if stone else "#9a6a3a"
     if stone:
-        v.S([(x - w * s / 2, y + 80 * s), (x - w * s * 0.3, y + 150 * s), (x + w * s * 0.3, y + 150 * s), (x + w * s / 2, y + 80 * s), (x + w * s * 0.3, y + 70 * s), (x + w * s * 0.14, y + 6 * s),
-             (x - w * s * 0.14, y + 6 * s), (x - w * s * 0.3, y + 70 * s)], shade(v, col), ol(col), 6)
-        v.S([(x - w * s * 0.2, y), (x - w * s * 0.18, y + 60 * s), (x, y + 90 * s), (x + w * s * 0.18, y + 60 * s), (x + w * s * 0.2, y)], "#2a3a4a", None, 0, 0.9)
+        half = w * s / 2
+        deck = 54 * s
+        # body of the bridge: two end masses and the roadway slab
+        v.R(x - half, y, w * s, 150 * s, shade(v, col), ol(col), 6, rx=6 * s)
+        v.R(x - half - 10 * s, y + 150 * s, w * s + 20 * s, deck, shade(v, lighten(col, 0.1)), ol(col), 6, rx=6 * s)
+        v.R(x - half - 4 * s, y + 150 * s + deck - 6 * s, w * s + 8 * s, 12 * s, lighten(col, 0.18), ol(col), 3)         # coping
+        for k in range(9):                                                                                               # parapet posts
+            v.R(x - half + 6 * s + k * (w * s - 24 * s) / 8, y + 150 * s + deck + 4 * s, 16 * s, 26 * s, shade(v, col), ol(col), 3)
+        for k in range(1, 7):                                                                                            # stone courses
+            v.L([(x - half + 4 * s, y + k * 21 * s), (x + half - 4 * s, y + k * 21 * s)], darken(col, 0.28), 3, 0.55, smooth=False)
+        for cx, r, hh in ((-0.3, 0.105, 16), (0.0, 0.15, 16), (0.3, 0.105, 16)):                                            # three arches
+            xc, rr, h0 = x + cx * w * s, r * w * s, hh * s
+            v.D(f"M {xc - rr:.1f} {y:.1f} L {xc - rr:.1f} {y + h0:.1f} C {xc - rr:.1f} {y + h0 + rr * 1.35:.1f} {xc + rr:.1f} {y + h0 + rr * 1.35:.1f} {xc + rr:.1f} {y + h0:.1f} L {xc + rr:.1f} {y:.1f} Z",
+                "#2a3a4a", ol(col), 6)
+            v.D(f"M {xc - rr - 12 * s:.1f} {y + h0:.1f} C {xc - rr - 12 * s:.1f} {y + h0 + rr * 1.5:.1f} {xc + rr + 12 * s:.1f} {y + h0 + rr * 1.5:.1f} {xc + rr + 12 * s:.1f} {y + h0:.1f}",
+                None, lighten(col, 0.2), 9)
     else:
         v.S([(x - w * s / 2, y + 70 * s), (x - w * s * 0.2, y + 110 * s), (x + w * s * 0.2, y + 110 * s), (x + w * s / 2, y + 70 * s), (x + w * s * 0.2, y + 86 * s), (x - w * s * 0.2, y + 86 * s)], shade(v, col), ol(col), 6)
         for k in range(12):
