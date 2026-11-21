@@ -13,6 +13,7 @@ import { guestSignIn, linkSupabase, logoutUser, profile } from '../../services/u
 import { assertCanStart, confirmOrder, createOrder, getEntitlement, handleRazorpayWebhook, verifyRazorpayWebhook } from '../../services/enrollmentService.js';
 import { getSiteSettings } from '../../services/siteSettingsService.js';
 import { clientSignals, recordAbuse } from '../../services/accessPolicyService.js';
+import { applyProgressEvents, getProgress, progressEventSchema } from '../../services/progressService.js';
 import { mockTests } from '../../database/schema.js';
 import type { AppDeps } from '../../types.js';
 import { idParam, optionalUuid, pageQuery } from '../util.js';
@@ -261,6 +262,17 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: RateLimits) {
 
   r.get('/attempts/:id', auth.requireUser, async (req, res) => {
     res.json(await getResult(db, req.user!.id, idParam(req), env.ATTEMPT_GRACE_SECONDS));
+  });
+
+  // Student progress (bookmarks, mistakes, points / streak) on every device.
+  r.get('/me/progress', auth.requireUser, async (req, res) => {
+    res.set('Cache-Control', 'no-store').json(await getProgress(db, req.user!.id));
+  });
+
+  // Uploads queued progress events. Each event id is applied once.
+  r.post('/me/progress/events', limits.autosave, auth.requireUser, async (req, res) => {
+    const body = parse(z.object({ events: z.array(progressEventSchema).min(1).max(200) }), req.body);
+    res.json(await applyProgressEvents(db, req.user!.id, body.events));
   });
 
   // Server clock for the exam timer (no auth, never cached).

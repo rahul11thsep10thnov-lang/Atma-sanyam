@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useProgressRefresh } from "@/lib/progressSync";
 import Link from "next/link";
 import { clearMistake, getWrongQuestions } from "@/lib/localStore";
 import { getQuestion } from "@/data/questions";
@@ -10,11 +11,12 @@ import { X } from "lucide-react";
 export default function MistakesPage() {
   const [entries, setEntries] = useState<{ questionId: string; wrongCount: number }[]>([]);
 
-  useEffect(() => {
-    // Hydrate from browser-only localStorage after mount.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setEntries(getWrongQuestions());
-  }, []);
+  const load = useCallback(() => setEntries(getWrongQuestions()), []);
+  // Hydrate from browser-only localStorage after mount, and again when synced
+  // progress arrives from the server.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(load, [load]);
+  useProgressRefresh(load);
 
   const rows = entries
     .map((e) => ({ ...e, question: getQuestion(e.questionId) }))

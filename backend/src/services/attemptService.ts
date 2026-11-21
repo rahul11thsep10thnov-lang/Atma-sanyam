@@ -259,6 +259,30 @@ async function ownedAttempt(db: Db, userId: string, attemptId: string, mockTestI
   return attempt;
 }
 
+/**
+ * Moves a guest's attempts to the account they signed in to. Runs inside the
+ * caller's transaction. Where both have an open attempt for the same test,
+ * the guest's one is finished first (with its saved answers) so the account
+ * keeps a single open attempt per test.
+ */
+export async function moveAttemptsToUser(tx: Db, fromUserId: string, toUserId: string, graceSeconds: number) {
+  await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${'attempt:' + toUserId}))`);
+  await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${'attempt:' + fromUserId}))`);
+  const open = await tx
+    .select({ id: testAttempts.id, mockTestId: testAttempts.mockTestId })
+    .from(testAttempts)
+    .where(and(eq(testAttempts.userId, fromUserId), eq(testAttempts.status, 'in_progress')));
+  for (const a of open) {
+    const [clash] = await tx
+      .select({ id: testAttempts.id })
+      .from(testAttempts)
+      .where(and(eq(testAttempts.userId, toUserId), eq(testAttempts.mockTestId, a.mockTestId), eq(testAttempts.status, 'in_progress')))
+      .limit(1);
+    if (clash) await finalizeLocked(tx, a.id, { mode: 'candidate', now: new Date(), graceSeconds });
+  }
+  await tx.update(testAttempts).set({ userId: toUserId }).where(eq(testAttempts.userId, fromUserId));
+}
+
 /** Finalises one attempt (if still open) in its own transaction. */
 async function finalize(db: Db, attemptId: string, o: FinalizeOpts) {
   return db.transaction((tx) => finalizeLocked(tx, attemptId, o));

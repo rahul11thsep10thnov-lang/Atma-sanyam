@@ -1,5 +1,6 @@
 import { and, count, desc, eq, inArray } from 'drizzle-orm';
-import { FINISHED_STATUSES } from './attemptService.js';
+import { FINISHED_STATUSES, moveAttemptsToUser } from './attemptService.js';
+import { mergeGuestProgress } from './progressService.js';
 import type { Db } from '../database/client.js';
 import { testAttempts, userSessions, users } from '../database/schema.js';
 import type { Env } from '../config/env.js';
@@ -52,10 +53,14 @@ export async function linkSupabase(db: Db, env: Env, identity: SupabaseIdentity,
   if (currentUserId && currentUserId !== user!.id) {
     const [current] = await db.select().from(users).where(eq(users.id, currentUserId)).limit(1);
     if (current?.authProvider === 'guest') {
-      await db.update(testAttempts).set({ userId: user!.id }).where(eq(testAttempts.userId, currentUserId));
-      if (!user!.displayName && current.displayName) {
-        await db.update(users).set({ displayName: current.displayName }).where(eq(users.id, user!.id));
-      }
+      const target = user!;
+      await db.transaction(async (tx) => {
+        await moveAttemptsToUser(tx, currentUserId, target.id, env.ATTEMPT_GRACE_SECONDS);
+        await mergeGuestProgress(tx, currentUserId, target.id);
+        if (!target.displayName && current.displayName) {
+          await tx.update(users).set({ displayName: current.displayName }).where(eq(users.id, target.id));
+        }
+      });
     }
   }
   const session = await createUserSession(db, user!.id, env.USER_SESSION_TTL_DAYS);

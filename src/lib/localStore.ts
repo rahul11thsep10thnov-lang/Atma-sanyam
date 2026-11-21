@@ -8,6 +8,7 @@
 
 import { Question, QuestionReport, ReportReason, TestAttemptResult } from "@/types";
 import { QUESTIONS } from "@/data/questions";
+import { queueProgress } from "@/lib/progressSync";
 
 const KEYS = {
   bookmarks: "pe_bookmarks",
@@ -53,6 +54,7 @@ export function toggleBookmark(questionId: string): boolean {
   const current = getBookmarks();
   const exists = current.includes(questionId);
   const next = exists ? current.filter((id) => id !== questionId) : [...current, questionId];
+  queueProgress({ kind: "bookmark", questionKey: questionId, on: !exists });
   write(KEYS.bookmarks, next);
   return !exists;
 }
@@ -69,6 +71,7 @@ export function getWrongQuestions(): WrongEntry[] {
 }
 
 export function recordAnswer(questionId: string, isCorrect: boolean) {
+  queueProgress({ kind: "answer", questionKey: questionId, correct: isCorrect });
   const current = getWrongQuestions();
   if (isCorrect) {
     write(
@@ -91,6 +94,7 @@ export function recordAnswer(questionId: string, isCorrect: boolean) {
 }
 
 export function clearMistake(questionId: string) {
+  queueProgress({ kind: "mistake_clear", questionKey: questionId });
   write(
     KEYS.wrongQuestions,
     getWrongQuestions().filter((w) => w.questionId !== questionId)
@@ -113,6 +117,7 @@ export function getPoints(): number {
 }
 
 export function addPoints(amount: number): number {
+  queueProgress({ kind: "points", amount });
   const next = getPoints() + amount;
   write(KEYS.points, next);
   return next;
@@ -135,9 +140,11 @@ export function recordDailyQuizCompletion(): { streak: number; alreadyDoneToday:
   const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
   const currentStreak = getStreak();
   const nextStreak = last === yesterday ? currentStreak + 1 : 1;
+  // The server adds the daily-quiz points itself for this event.
+  queueProgress({ kind: "daily_quiz", date: today });
   write(KEYS.streak, nextStreak);
   write(KEYS.lastQuizDate, today);
-  addPoints(20);
+  write(KEYS.points, getPoints() + 20);
   return { streak: nextStreak, alreadyDoneToday: false };
 }
 
@@ -233,4 +240,34 @@ export function deleteAdminQuestion(id: string) {
 
 export function resetAdminQuestions() {
   write(KEYS.adminQuestions, QUESTIONS);
+}
+
+/** Replaces this browser's copy with the server's (after the outbox has been
+ * uploaded, so nothing done here is lost). */
+export function applyServerProgress(p: {
+  bookmarks: string[];
+  mistakes: { questionKey: string; wrongCount: number; lastWrongAt: string }[];
+  points: number;
+  streak: number;
+  lastQuizDate: string | null;
+}) {
+  write(KEYS.bookmarks, p.bookmarks);
+  write(
+    KEYS.wrongQuestions,
+    p.mistakes.map((m) => ({ questionId: m.questionKey, wrongCount: m.wrongCount, lastWrongAt: m.lastWrongAt }))
+  );
+  write(KEYS.points, p.points);
+  write(KEYS.streak, p.streak);
+  write(KEYS.lastQuizDate, p.lastQuizDate);
+}
+
+/** This browser's progress as it was before syncing existed (uploaded once). */
+export function localProgressSnapshot() {
+  return {
+    bookmarks: getBookmarks(),
+    mistakes: getWrongQuestions(),
+    points: getPoints(),
+    streak: getStreak(),
+    lastQuizDate: read<string | null>(KEYS.lastQuizDate, null),
+  };
 }

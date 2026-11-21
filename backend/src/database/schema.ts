@@ -766,6 +766,63 @@ export const abuseEvents = pgTable(
   (t) => [index('abuse_events_created_idx').on(t.createdAt), index('abuse_events_kind_idx').on(t.kind, t.createdAt)]
 );
 
+// ---------------------------------------------------------------------------
+// Student progress (bookmarks, mistake notebook, points / streak), synced from
+// the website. Question keys are text: live questions use their uuid, the
+// website's built-in practice questions use their own ids.
+// ---------------------------------------------------------------------------
+
+export const userBookmarks = pgTable(
+  'user_bookmarks',
+  {
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    questionKey: text('question_key').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.questionKey] })]
+);
+
+export const userMistakes = pgTable(
+  'user_mistakes',
+  {
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    questionKey: text('question_key').notNull(),
+    wrongCount: integer('wrong_count').notNull().default(0),
+    lastWrongAt: timestamp('last_wrong_at', { withTimezone: true }).notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.questionKey] })]
+);
+
+export const userProgress = pgTable('user_progress', {
+  userId: uuid('user_id')
+    .primaryKey()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  points: integer('points').notNull().default(0),
+  streak: integer('streak').notNull().default(0),
+  lastQuizDate: text('last_quiz_date'),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** Every progress event applied, keyed by the client's event id: a retried
+ * upload is applied once. */
+export const progressEvents = pgTable(
+  'progress_events',
+  {
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    eventId: text('event_id').notNull(),
+    kind: text('kind').notNull(),
+    occurredAt: timestamp('occurred_at', { withTimezone: true }).notNull(),
+    receivedAt: timestamp('received_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.eventId] }), index('progress_events_user_idx').on(t.userId, t.receivedAt)]
+);
+
 export const appSettings = pgTable('app_settings', {
   key: text('key').primaryKey(),
   value: jsonb('value').notNull(),

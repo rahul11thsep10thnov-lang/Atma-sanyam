@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { getAttempts, getBookmarks, getDisplayName, getEarnedBadgeCodes, getPoints, getStreak, getWrongQuestions } from "@/lib/localStore";
 import { TestAttemptResult } from "@/types";
@@ -12,6 +12,7 @@ import Badge from "@/components/ui/Badge";
 import { formatDate } from "@/lib/utils";
 import { Flame, Trophy, Star, AlertCircle, Timer, Award } from "lucide-react";
 import LiveResults from "@/components/mock/LiveResults";
+import { useProgressRefresh } from "@/lib/progressSync";
 
 export default function DashboardPage() {
   const [attempts, setAttempts] = useState<TestAttemptResult[]>([]);
@@ -22,9 +23,7 @@ export default function DashboardPage() {
   const [name, setName] = useState("");
   const [badgeCodes, setBadgeCodes] = useState<string[]>([]);
 
-  useEffect(() => {
-    // Hydrate from browser-only localStorage after mount (SSR can't see it).
-    /* eslint-disable react-hooks/set-state-in-effect */
+  const load = useCallback(() => {
     setAttempts(getAttempts());
     setPoints(getPoints());
     setStreak(getStreak());
@@ -32,8 +31,12 @@ export default function DashboardPage() {
     setMistakesCount(getWrongQuestions().length);
     setName(getDisplayName());
     setBadgeCodes(getEarnedBadgeCodes());
-    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
+  // Hydrate from browser-only localStorage after mount (SSR can't see it),
+  // and again when synced progress arrives from the server.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(load, [load]);
+  useProgressRefresh(load);
 
   // Server-scored tests have their own "Test Results" card above.
   const localAttempts = attempts.filter((a) => !a.id.startsWith("live-"));

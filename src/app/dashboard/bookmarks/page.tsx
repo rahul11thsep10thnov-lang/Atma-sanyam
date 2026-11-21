@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useProgressRefresh } from "@/lib/progressSync";
 import Link from "next/link";
 import { getBookmarks, toggleBookmark } from "@/lib/localStore";
 import { getQuestion } from "@/data/questions";
@@ -9,11 +10,12 @@ import { Star } from "lucide-react";
 export default function BookmarksPage() {
   const [ids, setIds] = useState<string[]>([]);
 
-  useEffect(() => {
-    // Hydrate from browser-only localStorage after mount.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIds(getBookmarks());
-  }, []);
+  const load = useCallback(() => setIds(getBookmarks()), []);
+  // Hydrate from browser-only localStorage after mount, and again when synced
+  // progress arrives from the server.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(load, [load]);
+  useProgressRefresh(load);
 
   const questions = ids.map((id) => getQuestion(id)).filter(Boolean) as NonNullable<
     ReturnType<typeof getQuestion>

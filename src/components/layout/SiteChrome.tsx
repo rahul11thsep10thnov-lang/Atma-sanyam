@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import MobileNav from "@/components/layout/MobileNav";
 import Watermark from "@/components/layout/Watermark";
 import EnrollPopup from "@/components/enroll/EnrollPopup";
+import { useProgressSync } from "@/lib/progressSync";
 
 // The mock-test instructions screen and the live test run full-screen with
 // their own header and sticky actions — no site header, footer or tab bar
@@ -16,6 +17,7 @@ function isExamRoute(pathname: string): boolean {
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  useProgressSync();
 
   if (isExamRoute(pathname)) {
     return (

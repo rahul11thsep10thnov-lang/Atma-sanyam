@@ -40,6 +40,12 @@ function readSession(): StoredSession | null {
   }
 }
 
+/** True once this browser has an API session (guest or signed in). Progress
+ * sync uses it so that merely reading a page never creates a guest account. */
+export function hasApiSession(): boolean {
+  return readSession() !== null;
+}
+
 function writeSession(s: StoredSession | null) {
   try {
     if (s) localStorage.setItem(SESSION_KEY, JSON.stringify(s));
@@ -271,6 +277,22 @@ export interface EnrollOrder {
   providerOrderId?: string;
 }
 
+export interface ServerProgress {
+  bookmarks: string[];
+  mistakes: { questionKey: string; wrongCount: number; lastWrongAt: string }[];
+  points: number;
+  streak: number;
+  lastQuizDate: string | null;
+}
+
+export type ProgressEventPayload = { id: string; at: string } & (
+  | { kind: "bookmark"; questionKey: string; on: boolean }
+  | { kind: "answer"; questionKey: string; correct: boolean }
+  | { kind: "mistake_clear"; questionKey: string }
+  | { kind: "daily_quiz"; date: string; importedStreak?: number }
+  | { kind: "points"; amount: number }
+);
+
 export const liveApi = {
   me: () => authed<{ id: string; displayName: string | null; authProvider: string; entitlement: Entitlement }>("/me"),
   enrollOrder: () => authed<EnrollOrder>("/enroll/order", { method: "POST" }),
@@ -301,6 +323,12 @@ export const liveApi = {
     ),
   attemptState: (attemptId: string) => authed<AttemptState>(`/attempts/${encodeURIComponent(attemptId)}/state`),
   serverTime: () => request<{ serverTime: string }>("/time"),
+  progress: () => authed<ServerProgress>("/me/progress"),
+  progressEvents: (events: ProgressEventPayload[]) =>
+    authed<{ applied: string[]; duplicate: string[]; rejected: string[]; progress: ServerProgress }>("/me/progress/events", {
+      method: "POST",
+      body: JSON.stringify({ events }),
+    }),
   attempts: () => authed<{ items: AttemptSummary[] }>("/attempts"),
   result: (attemptId: string) => authed<LiveResult>(`/attempts/${encodeURIComponent(attemptId)}`),
 };
