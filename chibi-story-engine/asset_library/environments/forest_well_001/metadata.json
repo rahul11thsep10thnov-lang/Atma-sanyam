@@ -3,7 +3,7 @@
   "id": "forest_well_001",
   "asset_type": "environment",
   "name": "Forest clearing with an old well",
-  "version": 1,
+  "version": 2,
   "description": "A sunny clearing deep in the forest: a rocky den, tall trees and a stone well.",
   "aliases": [
     "जंगल",
@@ -16,6 +16,10 @@
     "well",
     "cave"
   ],
+  "catalog_code": "ENV-ORG-0004",
+  "category": "ORG",
+  "subcategory": "well",
+  "related_stories": [],
   "licence": {
     "name": "CC0-1.0",
     "author": "Chibi Story Animation Engine (procedurally generated)",
@@ -28,7 +32,27 @@
       "ground"
     ],
     "style": "premium_chibi_anime",
-    "ambience": "forest_ambience_001"
+    "ambience": "forest_ambience_001",
+    "composition": "wide",
+    "composition_group": "forest_well_001",
+    "seasons": [
+      "spring",
+      "summer",
+      "monsoon",
+      "autumn",
+      "winter"
+    ],
+    "weather": [
+      "clear",
+      "cloudy",
+      "rain",
+      "fog",
+      "storm",
+      "snow"
+    ],
+    "scare_levels": [
+      0
+    ]
   },
   "files": [
     {
@@ -150,10 +174,130 @@
       "view": null,
       "expression": null,
       "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/bushes.svg",
+      "format": "svg",
+      "checksum": "a9c1caf19505beedb8138e992ea24e3d769d318e2202bfdb94ac564e1293c97f",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/den.svg",
+      "format": "svg",
+      "checksum": "6e93ad686168a8c71b783494e6723e6b809fdc440d7ca1674b4664ce82223c0d",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/far_hills.svg",
+      "format": "svg",
+      "checksum": "b90b2b5b58de2f361a9403ada869eb7857b0fc80c97bddcb8907a4dd7d8a7548",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/far_trees.svg",
+      "format": "svg",
+      "checksum": "5914878fccb4c702bd606ab4c3def8403b4717ca694e871bf096eb43f009b25e",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/ground.svg",
+      "format": "svg",
+      "checksum": "7bf2834f4a1513113592c8420a535306ec529c54f0d613d9721a9bfd903dcdcf",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/sky.svg",
+      "format": "svg",
+      "checksum": "69ed26f17a0d410203c55934561866089cf3831f2ba05b69734e8e4dc042dfca",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/trees.svg",
+      "format": "svg",
+      "checksum": "0c96865ca23057ff49a721d939d32ef1cfcf26986d715afce9463593674c9d24",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/well_back.svg",
+      "format": "svg",
+      "checksum": "bf71677dd8c512c653c907a88683bb5fab9ca657c59f6c5e3ff75eba9eff9f81",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/well_front.svg",
+      "format": "svg",
+      "checksum": "f170a351c01df05262f3e48dea47761a6b7e9a6f3e458f87faed08b59d4b901d",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/well_posts.svg",
+      "format": "svg",
+      "checksum": "361affb2e45e93dae4b88c4a2bfd9960d775eac9e4d87500ade4af947aa7c63f",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
     }
   ],
-  "created_at": "2026-11-17T03:43:09+00:00",
-  "change_summary": "",
+  "created_at": "2026-11-21T17:15:40+00:00",
+  "change_summary": "Upgrade: SVG master for every layer; runtime PNGs unchanged (verified pixel for pixel).",
   "stage": [
     1920,
     1080
@@ -174,7 +318,9 @@
       "cover": true,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/sky.svg"
     },
     {
       "id": "far_hills",
@@ -191,7 +337,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/far_hills.svg"
     },
     {
       "id": "far_trees",
@@ -208,7 +356,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/far_trees.svg"
     },
     {
       "id": "ground",
@@ -225,7 +375,9 @@
       "cover": false,
       "cover_horizontal": true,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/ground.svg"
     },
     {
       "id": "den",
@@ -242,7 +394,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/den.svg"
     },
     {
       "id": "trees",
@@ -272,7 +426,9 @@
           "wind_scaled": true
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/trees.svg"
     },
     {
       "id": "well_posts",
@@ -289,7 +445,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/well_posts.svg"
     },
     {
       "id": "well_back",
@@ -306,7 +464,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/well_back.svg"
     },
     {
       "id": "well_front",
@@ -323,7 +483,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/well_front.svg"
     },
     {
       "id": "bushes",
@@ -353,7 +515,9 @@
           "wind_scaled": true
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/bushes.svg"
     }
   ],
   "anchors": {

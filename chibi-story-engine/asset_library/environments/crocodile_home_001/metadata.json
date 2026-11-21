@@ -3,7 +3,7 @@
   "id": "crocodile_home_001",
   "asset_type": "environment",
   "name": "Crocodile home",
-  "version": 1,
+  "version": 2,
   "description": "A cave among rocks on the riverside at dusk: the crocodiles' home.",
   "aliases": [
     "मगरमच्छ का घर",
@@ -14,6 +14,10 @@
     "cave",
     "river"
   ],
+  "catalog_code": "ENV-ORG-0003",
+  "category": "ORG",
+  "subcategory": "river",
+  "related_stories": [],
   "licence": {
     "name": "CC0-1.0",
     "author": "Chibi Story Animation Engine (procedurally generated)",
@@ -26,7 +30,27 @@
       "aquatic"
     ],
     "style": "premium_chibi_anime",
-    "ambience": "river_ambience_001"
+    "ambience": "river_ambience_001",
+    "composition": "wide",
+    "composition_group": "crocodile_home_001",
+    "seasons": [
+      "spring",
+      "summer",
+      "monsoon",
+      "autumn",
+      "winter"
+    ],
+    "weather": [
+      "clear",
+      "cloudy",
+      "rain",
+      "fog",
+      "storm",
+      "snow"
+    ],
+    "scare_levels": [
+      0
+    ]
   },
   "files": [
     {
@@ -136,10 +160,118 @@
       "view": null,
       "expression": null,
       "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/cave.svg",
+      "format": "svg",
+      "checksum": "60c1c7defd3785eb5dc02dcb49587ba92c291c0839c5e8114347d445f434b024",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/far_hills.svg",
+      "format": "svg",
+      "checksum": "d65666d7495ec253bd68b7e031185b7f20f611ed637eb2d63825e8e217043b4b",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/far_trees.svg",
+      "format": "svg",
+      "checksum": "96b42ae28efbcf0e632ab56c056388ea396124f3883bcaf7311859b74db20250",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/reeds.svg",
+      "format": "svg",
+      "checksum": "7235c7a252d1d29892a2329168f50bc6d44b54454fd8290110fb8510b720b4d0",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/ripples_near.svg",
+      "format": "svg",
+      "checksum": "ec812c8b4ed69e588ca8cc891975e7c5246ab2558f66320bff66273b2bc85020",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/river.svg",
+      "format": "svg",
+      "checksum": "18498b83e4a9e90009cb80a30f3d2631b19bab4fe7b38e67a0bb914fd5b99524",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/shore.svg",
+      "format": "svg",
+      "checksum": "59907ec4c275eb5f5d7f9864de84df8ed7017a251a1ec7b56cc16b7f777781f6",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/sky.svg",
+      "format": "svg",
+      "checksum": "b27c7e3fb1dde9b0a90207a926a8159a678f1e9716d50e1aa3273751ef31e2f1",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/water_front.svg",
+      "format": "svg",
+      "checksum": "d95101813c8eeae2dc99f5179b440540d6330c3b99a5fde532e291743ffa9cb0",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
     }
   ],
-  "created_at": "2026-11-16T18:36:13+00:00",
-  "change_summary": "",
+  "created_at": "2026-11-21T17:15:34+00:00",
+  "change_summary": "Upgrade: SVG master for every layer; runtime PNGs unchanged (verified pixel for pixel).",
   "stage": [
     1920,
     1080
@@ -160,7 +292,9 @@
       "cover": true,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/sky.svg"
     },
     {
       "id": "far_hills",
@@ -177,7 +311,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/far_hills.svg"
     },
     {
       "id": "far_trees",
@@ -194,7 +330,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/far_trees.svg"
     },
     {
       "id": "shore",
@@ -211,7 +349,9 @@
       "cover": false,
       "cover_horizontal": true,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/shore.svg"
     },
     {
       "id": "cave",
@@ -228,7 +368,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/cave.svg"
     },
     {
       "id": "river",
@@ -245,7 +387,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/river.svg"
     },
     {
       "id": "ripples_near",
@@ -281,7 +425,9 @@
           "wind_scaled": false
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/ripples_near.svg"
     },
     {
       "id": "water_front",
@@ -308,7 +454,9 @@
           "wind_scaled": false
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/water_front.svg"
     },
     {
       "id": "reeds",
@@ -338,7 +486,9 @@
           "wind_scaled": true
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/reeds.svg"
     }
   ],
   "anchors": {

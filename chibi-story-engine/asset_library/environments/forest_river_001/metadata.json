@@ -3,7 +3,7 @@
   "id": "forest_river_001",
   "asset_type": "environment",
   "name": "Riverbank with a jamun tree",
-  "version": 1,
+  "version": 2,
   "description": "A sunny riverbank at the edge of a forest. A large jamun tree leans over the water.",
   "aliases": [
     "नदी किनारा",
@@ -17,6 +17,10 @@
     "jamun",
     "forest"
   ],
+  "catalog_code": "ENV-ORG-0001",
+  "category": "ORG",
+  "subcategory": "river",
+  "related_stories": [],
   "licence": {
     "name": "CC0-1.0",
     "author": "Chibi Story Animation Engine (procedurally generated)",
@@ -31,7 +35,27 @@
       "ground"
     ],
     "style": "premium_chibi_anime",
-    "ambience": "river_ambience_001"
+    "ambience": "river_ambience_001",
+    "composition": "wide",
+    "composition_group": "forest_river_001",
+    "seasons": [
+      "spring",
+      "summer",
+      "monsoon",
+      "autumn",
+      "winter"
+    ],
+    "weather": [
+      "clear",
+      "cloudy",
+      "rain",
+      "fog",
+      "storm",
+      "snow"
+    ],
+    "scare_levels": [
+      0
+    ]
   },
   "files": [
     {
@@ -201,10 +225,178 @@
       "view": null,
       "expression": null,
       "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/bank.svg",
+      "format": "svg",
+      "checksum": "9f05538276d2ef91588788c4a7813a2003cb70df501135f67eb31cbeb349928a",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/canopy_back.svg",
+      "format": "svg",
+      "checksum": "8ef9f8cac6f0e3b17cc2344b2bf6b07190f940082a5a08feb4e1538b0a1ce30a",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/far_hills.svg",
+      "format": "svg",
+      "checksum": "f15e1f91459447fc173d5af1d815e9f8a0b855dafffeb6f347528b20c7ed1598",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/far_trees.svg",
+      "format": "svg",
+      "checksum": "f70215c3e1f2e63bc814cd6dbacd302a1e55e6480ee29f294a0feb02f8b9d761",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/leaves_0.svg",
+      "format": "svg",
+      "checksum": "5eed2064eac5220cff22f796a9aa80b4bce5570011e9e18e51e4911e7c3619b9",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/leaves_1.svg",
+      "format": "svg",
+      "checksum": "202160ec2c79125a8eb1b74481fb82c30b9d5f8607fee25fe8840868996d6a58",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/leaves_2.svg",
+      "format": "svg",
+      "checksum": "7cfd479a421188840c8bf8a4fc8d11b3d03bf212f4dfe35ace303a8da9e83f54",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/reeds.svg",
+      "format": "svg",
+      "checksum": "93df44a9e1cc3ca521a9bdfe0739d3bb20cc2e44983afc983c355760d514d053",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/ripples_far.svg",
+      "format": "svg",
+      "checksum": "b76a6eaa9995e8db8cd3de99ea4b39af5de18299f264c0d1f7c0b961f021c934",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/ripples_near.svg",
+      "format": "svg",
+      "checksum": "dd5b5b535a33e69947242625daa01a12fdb2c0ad57ee4240fbbdfe866130aa99",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/river.svg",
+      "format": "svg",
+      "checksum": "22f1fdbc7208624b8003f9dc995f62eb1dbd050c1cc6c7992eae2e91232022f8",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/sky.svg",
+      "format": "svg",
+      "checksum": "0330f6f05bdf07b7da1e553caa6c9c6a2f9c0c2ff6464f2e23c878b542ec8bc6",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/tree.svg",
+      "format": "svg",
+      "checksum": "25b4075d4cac88867b4e8e065f28096db98183c38d3b8dc4866954c49897df94",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/water_front.svg",
+      "format": "svg",
+      "checksum": "30e877807d1dae62a645d4b792fdf8662afcfc3ab86ac0c96ae374df2dc0e823",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
     }
   ],
-  "created_at": "2026-11-16T18:36:07+00:00",
-  "change_summary": "",
+  "created_at": "2026-11-21T17:15:25+00:00",
+  "change_summary": "Upgrade: SVG master for every layer; runtime PNGs unchanged (verified pixel for pixel).",
   "stage": [
     1920,
     1080
@@ -225,7 +417,9 @@
       "cover": true,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/sky.svg"
     },
     {
       "id": "far_hills",
@@ -242,7 +436,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/far_hills.svg"
     },
     {
       "id": "far_trees",
@@ -259,7 +455,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/far_trees.svg"
     },
     {
       "id": "river",
@@ -276,7 +474,9 @@
       "cover": false,
       "cover_horizontal": true,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/river.svg"
     },
     {
       "id": "ripples_far",
@@ -303,7 +503,9 @@
           "wind_scaled": false
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/ripples_far.svg"
     },
     {
       "id": "ripples_near",
@@ -339,7 +541,9 @@
           "wind_scaled": false
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/ripples_near.svg"
     },
     {
       "id": "bank",
@@ -356,7 +560,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/bank.svg"
     },
     {
       "id": "canopy_back",
@@ -386,7 +592,9 @@
           "wind_scaled": true
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/canopy_back.svg"
     },
     {
       "id": "tree",
@@ -403,7 +611,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/tree.svg"
     },
     {
       "id": "leaves_0",
@@ -433,7 +643,9 @@
           "wind_scaled": true
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/leaves_0.svg"
     },
     {
       "id": "leaves_1",
@@ -463,7 +675,9 @@
           "wind_scaled": true
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/leaves_1.svg"
     },
     {
       "id": "leaves_2",
@@ -493,7 +707,9 @@
           "wind_scaled": true
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/leaves_2.svg"
     },
     {
       "id": "water_front",
@@ -520,7 +736,9 @@
           "wind_scaled": false
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/water_front.svg"
     },
     {
       "id": "reeds",
@@ -550,7 +768,9 @@
           "wind_scaled": true
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/reeds.svg"
     }
   ],
   "anchors": {

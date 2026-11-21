@@ -3,7 +3,7 @@
   "id": "village_001",
   "asset_type": "environment",
   "name": "Village lane with a dyer's vat",
-  "version": 1,
+  "version": 2,
   "description": "A quiet village lane: mud huts, washing on a line and a big vat of indigo dye.",
   "aliases": [
     "गाँव",
@@ -14,6 +14,10 @@
     "home",
     "market"
   ],
+  "catalog_code": "ENV-ORG-0005",
+  "category": "ORG",
+  "subcategory": "village",
+  "related_stories": [],
   "licence": {
     "name": "CC0-1.0",
     "author": "Chibi Story Animation Engine (procedurally generated)",
@@ -26,7 +30,27 @@
       "ground"
     ],
     "style": "premium_chibi_anime",
-    "ambience": "forest_ambience_001"
+    "ambience": "forest_ambience_001",
+    "composition": "wide",
+    "composition_group": "village_001",
+    "seasons": [
+      "spring",
+      "summer",
+      "monsoon",
+      "autumn",
+      "winter"
+    ],
+    "weather": [
+      "clear",
+      "cloudy",
+      "rain",
+      "fog",
+      "storm",
+      "snow"
+    ],
+    "scare_levels": [
+      0
+    ]
   },
   "files": [
     {
@@ -124,10 +148,106 @@
       "view": null,
       "expression": null,
       "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/clothes_line.svg",
+      "format": "svg",
+      "checksum": "c81420caebf184793b1a5815b7fdee8a6a286d6b357860921139c211f9e0d4bb",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/far_hills.svg",
+      "format": "svg",
+      "checksum": "733b77f059f6d8651d2bc6e3050b953a3be160786c16ce71ed1321dda2c565dd",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/far_trees.svg",
+      "format": "svg",
+      "checksum": "20d352fba7811b6aad8791d9f906ce873ee27cea8cc08dd24027baa10cc15c22",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/ground.svg",
+      "format": "svg",
+      "checksum": "5dd84e3c05b0110642404eaaf513954025715e0da0eca31cc6c84166abe15a9e",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/huts.svg",
+      "format": "svg",
+      "checksum": "7b07604e1dc76bab11f1ebb8620a0ebfc6d35b82cf7e5676abf948c1c9ad4f2f",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/sky.svg",
+      "format": "svg",
+      "checksum": "dee6106705639e626d731f27b23232a72fc0317da09b35e315c28c1dc206c983",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/vat_back.svg",
+      "format": "svg",
+      "checksum": "f6772dd6ba68cc1cd7c425b3507e4742289a20bd9d482473a9088246bbd8a874",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/vat_front.svg",
+      "format": "svg",
+      "checksum": "e58821a2116daf25c4e388079ca93f90686ade1f2e99e3f5d2bf9ace6dcfab15",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
     }
   ],
-  "created_at": "2026-11-17T03:43:12+00:00",
-  "change_summary": "",
+  "created_at": "2026-11-21T17:15:44+00:00",
+  "change_summary": "Upgrade: SVG master for every layer; runtime PNGs unchanged (verified pixel for pixel).",
   "stage": [
     1920,
     1080
@@ -148,7 +268,9 @@
       "cover": true,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/sky.svg"
     },
     {
       "id": "far_hills",
@@ -165,7 +287,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/far_hills.svg"
     },
     {
       "id": "far_trees",
@@ -182,7 +306,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/far_trees.svg"
     },
     {
       "id": "ground",
@@ -199,7 +325,9 @@
       "cover": false,
       "cover_horizontal": true,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/ground.svg"
     },
     {
       "id": "huts",
@@ -216,7 +344,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/huts.svg"
     },
     {
       "id": "clothes_line",
@@ -233,7 +363,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/clothes_line.svg"
     },
     {
       "id": "vat_back",
@@ -250,7 +382,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/vat_back.svg"
     },
     {
       "id": "vat_front",
@@ -267,7 +401,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/vat_front.svg"
     }
   ],
   "anchors": {

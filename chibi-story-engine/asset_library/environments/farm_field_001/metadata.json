@@ -3,7 +3,7 @@
   "id": "farm_field_001",
   "asset_type": "environment",
   "name": "Farm field",
-  "version": 1,
+  "version": 2,
   "description": "Ploughed fields with a scarecrow at the edge of a village.",
   "aliases": [
     "खेत",
@@ -14,6 +14,10 @@
     "field",
     "village"
   ],
+  "catalog_code": "ENV-ORG-0006",
+  "category": "ORG",
+  "subcategory": "farm",
+  "related_stories": [],
   "licence": {
     "name": "CC0-1.0",
     "author": "Chibi Story Animation Engine (procedurally generated)",
@@ -26,7 +30,27 @@
       "ground"
     ],
     "style": "premium_chibi_anime",
-    "ambience": "forest_ambience_001"
+    "ambience": "forest_ambience_001",
+    "composition": "wide",
+    "composition_group": "farm_field_001",
+    "seasons": [
+      "spring",
+      "summer",
+      "monsoon",
+      "autumn",
+      "winter"
+    ],
+    "weather": [
+      "clear",
+      "cloudy",
+      "rain",
+      "fog",
+      "storm",
+      "snow"
+    ],
+    "scare_levels": [
+      0
+    ]
   },
   "files": [
     {
@@ -112,10 +136,94 @@
       "view": null,
       "expression": null,
       "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/crops.svg",
+      "format": "svg",
+      "checksum": "85d4884ad173ea0d71eb8416839f5dbf5435dabb3ce33dbfd01eac67d02562a7",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/far_hills.svg",
+      "format": "svg",
+      "checksum": "2907d65753d282b69f0ce2441b8965db1e5ea8fabeab220241df430e7023734e",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/far_trees.svg",
+      "format": "svg",
+      "checksum": "e19d15ae5b476bd0e20650ab7af797b4496707f2e3b1c1344940dfdcae965ab8",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/field.svg",
+      "format": "svg",
+      "checksum": "668f1c26b968232e42cb4f950fbb50ac709a2dec8bb2528cd8495acfac34ede1",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/scarecrow.svg",
+      "format": "svg",
+      "checksum": "9e9f433dc386c45d0d515c918e491e21cc371302a4d585cf5b0219a7ec070f5d",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/sky.svg",
+      "format": "svg",
+      "checksum": "e984a39a5b7c2625ab3e421f8990a040975443335f59de59fe357d7010250226",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/village_edge.svg",
+      "format": "svg",
+      "checksum": "59d8f22cd66191aaf70ae37da012ea82bd8345b1f26e7d220fc1249ff318b104",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
     }
   ],
-  "created_at": "2026-11-17T03:43:14+00:00",
-  "change_summary": "",
+  "created_at": "2026-11-21T17:15:48+00:00",
+  "change_summary": "Upgrade: SVG master for every layer; runtime PNGs unchanged (verified pixel for pixel).",
   "stage": [
     1920,
     1080
@@ -136,7 +244,9 @@
       "cover": true,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/sky.svg"
     },
     {
       "id": "far_hills",
@@ -153,7 +263,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/far_hills.svg"
     },
     {
       "id": "far_trees",
@@ -170,7 +282,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/far_trees.svg"
     },
     {
       "id": "village_edge",
@@ -187,7 +301,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/village_edge.svg"
     },
     {
       "id": "field",
@@ -204,7 +320,9 @@
       "cover": false,
       "cover_horizontal": true,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/field.svg"
     },
     {
       "id": "scarecrow",
@@ -234,7 +352,9 @@
           "wind_scaled": true
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/scarecrow.svg"
     },
     {
       "id": "crops",
@@ -264,7 +384,9 @@
           "wind_scaled": true
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/crops.svg"
     }
   ],
   "anchors": {

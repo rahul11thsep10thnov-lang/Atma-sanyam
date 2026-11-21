@@ -3,7 +3,7 @@
   "id": "mansion_001",
   "asset_type": "environment",
   "name": "Courtyard of a haveli",
-  "version": 1,
+  "version": 2,
   "description": "The paved courtyard of a wealthy landlord's house.",
   "aliases": [
     "हवेली",
@@ -14,6 +14,10 @@
     "mansion",
     "home"
   ],
+  "catalog_code": "ENV-ORG-0007",
+  "category": "ORG",
+  "subcategory": "mansion",
+  "related_stories": [],
   "licence": {
     "name": "CC0-1.0",
     "author": "Chibi Story Animation Engine (procedurally generated)",
@@ -26,7 +30,27 @@
       "ground"
     ],
     "style": "premium_chibi_anime",
-    "ambience": "forest_ambience_001"
+    "ambience": "forest_ambience_001",
+    "composition": "wide",
+    "composition_group": "mansion_001",
+    "seasons": [
+      "spring",
+      "summer",
+      "monsoon",
+      "autumn",
+      "winter"
+    ],
+    "weather": [
+      "clear",
+      "cloudy",
+      "rain",
+      "fog",
+      "storm",
+      "snow"
+    ],
+    "scare_levels": [
+      0
+    ]
   },
   "files": [
     {
@@ -100,10 +124,82 @@
       "view": null,
       "expression": null,
       "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/floor.svg",
+      "format": "svg",
+      "checksum": "2c6fcbe682c6c1b0c781a295393f3f9c36928556ec53966ea32db767a55503a5",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/garden.svg",
+      "format": "svg",
+      "checksum": "72c9f92766e99e9f0991a338b010001536c75239cbf33a0b46c76d0da5fc332f",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/house.svg",
+      "format": "svg",
+      "checksum": "3e6b0a9c348ef34d754ddd5ecccd1609e0ae004427d57fdc07525a5306b20cf6",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/pillars.svg",
+      "format": "svg",
+      "checksum": "c8aee3b6832a5ca18939fd512f6a0514aba13317f51b1c5fd1e009ece5265148",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/pots.svg",
+      "format": "svg",
+      "checksum": "c99e1b3baa8a7b13c0ebaf4025a58adc8c52898500c19e459b40759b5e8b4451",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/sky.svg",
+      "format": "svg",
+      "checksum": "6d59632a904b177bec017644efe8739661550f7a3c28b2870f7a384988342d0f",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
     }
   ],
-  "created_at": "2026-11-17T03:43:16+00:00",
-  "change_summary": "",
+  "created_at": "2026-11-21T17:15:52+00:00",
+  "change_summary": "Upgrade: SVG master for every layer; runtime PNGs unchanged (verified pixel for pixel).",
   "stage": [
     1920,
     1080
@@ -124,7 +220,9 @@
       "cover": true,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/sky.svg"
     },
     {
       "id": "garden",
@@ -141,7 +239,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/garden.svg"
     },
     {
       "id": "house",
@@ -158,7 +258,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/house.svg"
     },
     {
       "id": "floor",
@@ -175,7 +277,9 @@
       "cover": false,
       "cover_horizontal": true,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/floor.svg"
     },
     {
       "id": "pillars",
@@ -192,7 +296,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/pillars.svg"
     },
     {
       "id": "pots",
@@ -222,7 +328,9 @@
           "wind_scaled": true
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/pots.svg"
     }
   ],
   "anchors": {

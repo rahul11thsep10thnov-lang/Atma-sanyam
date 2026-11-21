@@ -70,7 +70,7 @@ def test_original_assets_are_untouched(library):
         # the originals were later upgraded to version 2; version 1 must remain complete and intact
         assert library.character(cid, 1).version == 1 and library.verify(AssetType.character, cid, 1) == []
         assert library.verify(AssetType.character, cid) == []
-    assert library.environment("forest_river_001").version == 1
+    assert library.environment("forest_river_001", 1).version == 1 and library.verify(AssetType.environment, "forest_river_001", 1) == []     # v2 adds SVG masters only
 
 
 def test_new_character_in_new_background_uses_existing_clips_and_renders(composer, library):

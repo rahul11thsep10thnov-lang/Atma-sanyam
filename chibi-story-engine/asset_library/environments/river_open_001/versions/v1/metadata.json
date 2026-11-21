@@ -1,0 +1,364 @@
+{
+  "manifest_version": "1.0",
+  "id": "river_open_001",
+  "asset_type": "environment",
+  "name": "Middle of the river",
+  "version": 1,
+  "description": "Open water in the middle of a wide river; the banks are far away.",
+  "aliases": [
+    "नदी के बीच",
+    "mid river"
+  ],
+  "tags": [
+    "river",
+    "river_mid"
+  ],
+  "catalog_code": null,
+  "category": null,
+  "subcategory": null,
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedurally generated)",
+    "source": "generated",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {
+    "habitats": [
+      "aquatic"
+    ],
+    "style": "premium_chibi_anime",
+    "ambience": "river_ambience_001"
+  },
+  "files": [
+    {
+      "role": "layer",
+      "path": "layers/far_bank.png",
+      "format": "png",
+      "checksum": "17e983a5d48bd466190faad99683def4a47c6b4620106e8f45566d106abdf64c",
+      "width": 2720,
+      "height": 1030,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/far_hills.png",
+      "format": "png",
+      "checksum": "26758951aba609ae542e14726140209ad3286751fe44d17270dbb08b309b0ba7",
+      "width": 1360,
+      "height": 445,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/ripples_far.png",
+      "format": "png",
+      "checksum": "ba77013ed8c68cf5bf2e7393bc460964aac908e5f0df496df0dd4432203e5811",
+      "width": 3400,
+      "height": 196,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/ripples_near.png",
+      "format": "png",
+      "checksum": "e24962bf7974718086a069ee3d5f0758f6cc17ade67ad949ae48e377b171d1c1",
+      "width": 3400,
+      "height": 284,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/river.png",
+      "format": "png",
+      "checksum": "1f0f7235315277f8cdc046ca895a7674e689d0dd8b0e19d50a10da87f53a50de",
+      "width": 1352,
+      "height": 378,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/sky.png",
+      "format": "png",
+      "checksum": "3f8c92ee982b7bea7aa25bf5c47f9fd857aea0e7d4fcf12fc9d8b107dd136aca",
+      "width": 1360,
+      "height": 740,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/water_front.png",
+      "format": "png",
+      "checksum": "7ad63b06e094428a09c835c3240e1a768dc5be43aa01a0bd5bd7264f637aaa92",
+      "width": 1354,
+      "height": 210,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-16T18:36:09+00:00",
+  "change_summary": "",
+  "stage": [
+    1920,
+    1080
+  ],
+  "layers": [
+    {
+      "id": "sky",
+      "type": "background",
+      "file": "layers/sky.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        1480.0
+      ],
+      "parallax": 0.12,
+      "order": 0,
+      "cover": true,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": null
+    },
+    {
+      "id": "far_hills",
+      "type": "far",
+      "file": "layers/far_hills.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        890.0
+      ],
+      "parallax": 0.28,
+      "order": 1,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": null
+    },
+    {
+      "id": "far_bank",
+      "type": "middle",
+      "file": "layers/far_bank.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        1030.0
+      ],
+      "parallax": 0.5,
+      "order": 2,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": null
+    },
+    {
+      "id": "river",
+      "type": "middle",
+      "file": "layers/river.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2704.0,
+        756.0
+      ],
+      "parallax": 1.0,
+      "order": 10,
+      "cover": false,
+      "cover_horizontal": true,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": null
+    },
+    {
+      "id": "ripples_far",
+      "type": "middle",
+      "file": "layers/ripples_far.png",
+      "rect": [
+        -400.0,
+        338.0,
+        3400.0,
+        196.0
+      ],
+      "parallax": 1.0,
+      "order": 12,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [
+        {
+          "type": "scroll",
+          "amplitude": 680.0,
+          "period": 4.0,
+          "phase": 0.0,
+          "speed": 34.0,
+          "pivot": null,
+          "wind_scaled": false
+        }
+      ],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": null
+    },
+    {
+      "id": "ripples_near",
+      "type": "middle",
+      "file": "layers/ripples_near.png",
+      "rect": [
+        -400.0,
+        29.0,
+        3400.0,
+        284.0
+      ],
+      "parallax": 1.0,
+      "order": 14,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [
+        {
+          "type": "scroll",
+          "amplitude": 680.0,
+          "period": 4.0,
+          "phase": 0.0,
+          "speed": -52.0,
+          "pivot": null,
+          "wind_scaled": false
+        },
+        {
+          "type": "bob",
+          "amplitude": 4.0,
+          "period": 3.0,
+          "phase": 0.0,
+          "speed": 0.0,
+          "pivot": null,
+          "wind_scaled": false
+        }
+      ],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": null
+    },
+    {
+      "id": "water_front",
+      "type": "foreground",
+      "file": "layers/water_front.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2708.0,
+        420.0
+      ],
+      "parallax": 1.0,
+      "order": 130,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [
+        {
+          "type": "bob",
+          "amplitude": 5.0,
+          "period": 2.4,
+          "phase": 0.0,
+          "speed": 0.0,
+          "pivot": null,
+          "wind_scaled": false
+        }
+      ],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": null
+    }
+  ],
+  "anchors": {
+    "river_mid": {
+      "x": 960.0,
+      "y": 140.0,
+      "order": 120,
+      "scale": 1.0,
+      "features": [
+        "water",
+        "mid_water"
+      ],
+      "description": ""
+    },
+    "river_mid_far": {
+      "x": 1500.0,
+      "y": 150.0,
+      "order": 119,
+      "scale": 0.9,
+      "features": [
+        "water"
+      ],
+      "description": ""
+    },
+    "offstage_left": {
+      "x": -430.0,
+      "y": 140.0,
+      "order": 120,
+      "scale": 1.0,
+      "features": [
+        "offstage",
+        "water"
+      ],
+      "description": ""
+    },
+    "offstage_right": {
+      "x": 2350.0,
+      "y": 140.0,
+      "order": 120,
+      "scale": 1.0,
+      "features": [
+        "offstage",
+        "water"
+      ],
+      "description": ""
+    }
+  },
+  "lighting_presets": [
+    "day",
+    "morning",
+    "sunset",
+    "night",
+    "overcast"
+  ],
+  "camera_bounds": [
+    -400.0,
+    -200.0,
+    2320.0,
+    1280.0
+  ],
+  "default_anchor_by_role": {
+    "aquatic": [
+      "river_mid",
+      "river_mid_far"
+    ]
+  }
+}

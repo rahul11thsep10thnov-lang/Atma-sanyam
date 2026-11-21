@@ -3,7 +3,7 @@
   "id": "river_open_001",
   "asset_type": "environment",
   "name": "Middle of the river",
-  "version": 1,
+  "version": 2,
   "description": "Open water in the middle of a wide river; the banks are far away.",
   "aliases": [
     "नदी के बीच",
@@ -13,6 +13,10 @@
     "river",
     "river_mid"
   ],
+  "catalog_code": "ENV-ORG-0002",
+  "category": "ORG",
+  "subcategory": "river",
+  "related_stories": [],
   "licence": {
     "name": "CC0-1.0",
     "author": "Chibi Story Animation Engine (procedurally generated)",
@@ -25,7 +29,27 @@
       "aquatic"
     ],
     "style": "premium_chibi_anime",
-    "ambience": "river_ambience_001"
+    "ambience": "river_ambience_001",
+    "composition": "wide",
+    "composition_group": "river_open_001",
+    "seasons": [
+      "spring",
+      "summer",
+      "monsoon",
+      "autumn",
+      "winter"
+    ],
+    "weather": [
+      "clear",
+      "cloudy",
+      "rain",
+      "fog",
+      "storm",
+      "snow"
+    ],
+    "scare_levels": [
+      0
+    ]
   },
   "files": [
     {
@@ -111,10 +135,94 @@
       "view": null,
       "expression": null,
       "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/far_bank.svg",
+      "format": "svg",
+      "checksum": "1d5cfffee0e792994fa14aff798efe2de432de7f74b765bc9854f92be8088fb2",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/far_hills.svg",
+      "format": "svg",
+      "checksum": "0d1eb1283de655fdacf0dd1c8e024b70a6d83aff5a477420ee67891356732fd8",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/ripples_far.svg",
+      "format": "svg",
+      "checksum": "7a14f5047a3d511f47e97acef529fc0d5da3fb30721f10b3c655a9c76ae84d1a",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/ripples_near.svg",
+      "format": "svg",
+      "checksum": "d17e1d3f70391cf1816ef42e2bc8be92d1a77a4dab76172fa7ede0bff055077e",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/river.svg",
+      "format": "svg",
+      "checksum": "1e59f4b3ccdc8ae94aabac773409e7a3ad13c6f4cc793aff95c2f91d134c4f99",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/sky.svg",
+      "format": "svg",
+      "checksum": "313d21559a3fa5b03bf4199b27a442f5778cda86cb10fea377f1bb96da944fbd",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/water_front.svg",
+      "format": "svg",
+      "checksum": "01a8ea94b433324445e80937e9df1285f9da674ed0827c7f861abce0d4bc4aa8",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
     }
   ],
-  "created_at": "2026-11-16T18:36:09+00:00",
-  "change_summary": "",
+  "created_at": "2026-11-21T17:15:29+00:00",
+  "change_summary": "Upgrade: SVG master for every layer; runtime PNGs unchanged (verified pixel for pixel).",
   "stage": [
     1920,
     1080
@@ -135,7 +243,9 @@
       "cover": true,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/sky.svg"
     },
     {
       "id": "far_hills",
@@ -152,7 +262,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/far_hills.svg"
     },
     {
       "id": "far_bank",
@@ -169,7 +281,9 @@
       "cover": false,
       "cover_horizontal": false,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/far_bank.svg"
     },
     {
       "id": "river",
@@ -186,7 +300,9 @@
       "cover": false,
       "cover_horizontal": true,
       "motion": [],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/river.svg"
     },
     {
       "id": "ripples_far",
@@ -213,7 +329,9 @@
           "wind_scaled": false
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/ripples_far.svg"
     },
     {
       "id": "ripples_near",
@@ -249,7 +367,9 @@
           "wind_scaled": false
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/ripples_near.svg"
     },
     {
       "id": "water_front",
@@ -276,7 +396,9 @@
           "wind_scaled": false
         }
       ],
-      "tint_group": "background"
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/water_front.svg"
     }
   ],
   "anchors": {
