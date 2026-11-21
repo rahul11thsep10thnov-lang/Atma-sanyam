@@ -9,6 +9,7 @@
 
 class AUCGameState;
 class AUCPlayerController;
+class AUCVehiclePawn;
 
 /** Per-participant match record. Bots have one too, so scoring treats everyone the same. */
 UCLASS()
@@ -74,9 +75,17 @@ struct FUCObjectiveState
 	UPROPERTY(BlueprintReadOnly, Category = "Objective")
 	bool bOptional = false;
 
+	/** Progress has reached Required. (Objectives do not fail individually; the mission fails as a whole.) */
+	UPROPERTY(BlueprintReadOnly, Category = "Objective")
+	bool bComplete = false;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Objective")
+	FText DisplayText;
+
 	bool operator==(const FUCObjectiveState& Other) const
 	{
-		return ObjectiveId == Other.ObjectiveId && Type == Other.Type && Required == Other.Required && Progress == Other.Progress && bOptional == Other.bOptional;
+		return ObjectiveId == Other.ObjectiveId && Type == Other.Type && Required == Other.Required && Progress == Other.Progress
+			&& bOptional == Other.bOptional && bComplete == Other.bComplete && DisplayText.EqualTo(Other.DisplayText);
 	}
 };
 
@@ -126,6 +135,10 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Unreal Combat|Match")
 	FUCOnMatchStateChanged OnMatchStateChanged;
+
+	/** The living boss vehicle, or null (no boss in this mode, or it is destroyed). Server and clients. */
+	UFUNCTION(BlueprintPure, Category = "Unreal Combat|Match")
+	AUCVehiclePawn* GetBossVehicle() const;
 
 	/** Server: call after changing any of the fields above. */
 	void NotifyMatchStateChanged() { OnMatchStateChanged.Broadcast(this); }

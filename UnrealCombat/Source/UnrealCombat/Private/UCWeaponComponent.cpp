@@ -2,6 +2,7 @@
 
 #include "Engine/World.h"
 #include "GameFramework/Controller.h"
+#include "GameFramework/GameStateBase.h"
 #include "GameFramework/Pawn.h"
 #include "Net/UnrealNetwork.h"
 #include "UCCombatStatics.h"
@@ -33,6 +34,22 @@ AController* UUCWeaponComponent::GetInstigatorController() const
 {
 	const APawn* Pawn = Cast<APawn>(GetOwner());
 	return Pawn != nullptr ? Pawn->GetController() : nullptr;
+}
+
+float UUCWeaponComponent::GetServerTime() const
+{
+	const UWorld* World = GetWorld();
+	const AGameStateBase* GameState = World != nullptr ? World->GetGameState() : nullptr;
+	return GameState != nullptr ? static_cast<float>(GameState->GetServerWorldTimeSeconds()) : 0.f;
+}
+
+float UUCWeaponComponent::GetReloadProgress() const
+{
+	if (!State.bReloading || !(State.ReloadDuration > 0.f))
+	{
+		return 0.f;
+	}
+	return FMath::Clamp(1.f - (State.ReloadEndTime - GetServerTime()) / State.ReloadDuration, 0.f, 1.f);
 }
 
 float UUCWeaponComponent::GetRange() const
@@ -200,6 +217,21 @@ void UUCWeaponComponent::RefreshState()
 	NewState.HeatByte = static_cast<uint8>(FMath::Clamp(FMath::RoundToInt(Weapon.GetHeat() * 255.f), 0, 255));
 	NewState.bOverheated = Weapon.IsOverheated();
 	NewState.bReloading = Weapon.IsReloading();
+	if (NewState.bReloading)
+	{
+		if (State.bReloading)
+		{
+			// Keep the times fixed for the whole reload so they replicate once, not every tick.
+			NewState.ReloadEndTime = State.ReloadEndTime;
+			NewState.ReloadDuration = State.ReloadDuration;
+		}
+		else
+		{
+			// The weapon cycle runs FireRateScale times faster (boss phases), reloads included.
+			NewState.ReloadDuration = Weapon.GetSpec().ReloadTime / FireRateScale;
+			NewState.ReloadEndTime = GetServerTime() + Weapon.GetReloadRemaining() / FireRateScale;
+		}
+	}
 	NewState.bOnline = Weapon.IsEnabled();
 	if (!(NewState == State))
 	{

@@ -9,6 +9,7 @@
 #include "UCDefinitions.generated.h"
 
 class AUCProjectile;
+class UTexture2D;
 class AUCVehiclePawn;
 
 /** Tuning for one weapon. All gameplay numbers live here, not in code. */
@@ -20,6 +21,14 @@ class UNREALCOMBAT_API UUCWeaponDefinition : public UPrimaryDataAsset
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	FName WeaponId;
+
+	/** Player-facing name (supplied by the visual package). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Presentation")
+	FText DisplayName;
+
+	/** Icon (supplied by the visual package). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Presentation")
+	TSoftObjectPtr<UTexture2D> Icon;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (ClampMin = "0"))
 	float Damage = 20.f;
@@ -101,6 +110,14 @@ struct FUCAbilityDefinition
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability")
 	FName AbilityId;
 
+	/** Player-facing name (supplied by the visual package). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Presentation")
+	FText DisplayName;
+
+	/** Icon (supplied by the visual package). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Presentation")
+	TSoftObjectPtr<UTexture2D> Icon;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability")
 	EUCAbilityEffect Effect = EUCAbilityEffect::RepairKit;
 
@@ -173,6 +190,14 @@ class UNREALCOMBAT_API UUCVehicleDefinition : public UPrimaryDataAsset
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Vehicle")
 	FName VehicleId;
+
+	/** Player-facing name (supplied by the visual package). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Presentation")
+	FText DisplayName;
+
+	/** Icon (supplied by the visual package). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Presentation")
+	TSoftObjectPtr<UTexture2D> Icon;
 
 	/**
 	 * Blueprint subclass of AUCVehiclePawn carrying the mesh, wheels and Chaos vehicle setup.
@@ -248,6 +273,10 @@ struct FUCObjectiveDefinition
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Objective")
 	FName ObjectiveId;
+
+	/** Player-facing objective text (localised; wording supplied by the visual / UX package). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Presentation")
+	FText DisplayText;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Objective")
 	EUCObjectiveType Type = EUCObjectiveType::DestroyTargets;

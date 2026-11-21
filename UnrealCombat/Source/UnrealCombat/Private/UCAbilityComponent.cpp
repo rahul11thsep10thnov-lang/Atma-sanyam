@@ -147,6 +147,8 @@ void UUCAbilityComponent::RefreshStates()
 		State.ActiveEndTime = Now + Ability.GetActiveRemaining();
 		State.ReadyTime = Now + Ability.GetActiveRemaining() + (Ability.IsActive() ? Ability.GetSpec().Cooldown : Ability.GetCooldownRemaining());
 		State.ChargesRemaining = Ability.GetChargesRemaining();
+		State.CooldownDuration = Ability.GetSpec().Cooldown;
+		State.ActiveDuration = Ability.GetSpec().Duration;
 	}
 	OnAbilitiesChanged.Broadcast(this);
 }

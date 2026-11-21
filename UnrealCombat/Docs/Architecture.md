@@ -79,13 +79,19 @@ Objective checkpoints and repair/rearm areas.
 
 | Data / event | Source |
 | --- | --- |
-| Component health, armour, shield, fire, destroyed | `UUCVehicleHealthComponent` getters; `OnStateChanged`, `OnComponentDestroyed`, `OnVehicleDestroyed` |
+| Component health and armour (as 0..1 fractions), shield, fire, destroyed | `UUCVehicleHealthComponent` getters; `OnStateChanged`, `OnComponentDestroyed`, `OnVehicleDestroyed` |
 | Ammo, reserve, heat, reloading, overheated, mount online | `UUCWeaponComponent::GetWeaponState`, `OnStateChanged` |
+| Reload progress (0..1), reload end time and length | `UUCWeaponComponent::GetReloadProgress`, `FUCWeaponState::ReloadEndTime` / `ReloadDuration` |
+| Weapon name and icon | `UUCWeaponComponent::GetDefinition()->DisplayName` / `Icon` |
 | Shot fired (muzzle, end point, hit) | `UUCWeaponComponent::OnFired` |
 | Projectile detonation | `AUCProjectile::OnDetonated` |
-| Ability cooldowns, charges, active | `UUCAbilityComponent::GetAbilityStates`, `OnAbilitiesChanged` |
+| Ability cooldowns, charges, active, ready time, effect end time, full cooldown and effect length | `UUCAbilityComponent::GetAbilityStates`, `OnAbilitiesChanged` |
+| Ability name, icon, effect type | `UUCAbilityComponent::GetAbilityDefinitions` (same order as the states) |
 | Speed | `AUCVehiclePawn::GetSpeedKmh` |
+| Vehicle name and icon | `AUCVehiclePawn::GetDefinition()->DisplayName` / `Icon` |
 | Mode, phase, clock, team scores, objectives, lives, winner | `AUCGameState` fields, `OnMatchStateChanged` |
+| Objective text, progress, required, optional, complete | `AUCGameState::Objectives` (`FUCObjectiveState`) |
+| Boss vehicle (then its health, armour, shield via its health component) | `AUCGameState::GetBossVehicle` |
 | Per-player kills, deaths, score, team | `AUCPlayerState` |
 | End-of-match summary and levels gained | `AUCPlayerController::OnMatchResult` |
 | Level, XP, balances, ownership, loadout, purchase/equip | `UUCProfileSubsystem`, `OnProfileChanged` |

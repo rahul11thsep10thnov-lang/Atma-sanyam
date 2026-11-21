@@ -35,13 +35,22 @@ struct FUCWeaponState
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
 	bool bReloading = false;
 
+	/** Server time when the current reload finishes (valid while bReloading). */
+	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
+	float ReloadEndTime = 0.f;
+
+	/** Length in seconds of the current reload (valid while bReloading). */
+	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
+	float ReloadDuration = 0.f;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
 	bool bOnline = true;
 
 	bool operator==(const FUCWeaponState& Other) const
 	{
 		return AmmoInMagazine == Other.AmmoInMagazine && ReserveAmmo == Other.ReserveAmmo && HeatByte == Other.HeatByte
-			&& bOverheated == Other.bOverheated && bReloading == Other.bReloading && bOnline == Other.bOnline;
+			&& bOverheated == Other.bOverheated && bReloading == Other.bReloading && bOnline == Other.bOnline
+			&& ReloadEndTime == Other.ReloadEndTime && ReloadDuration == Other.ReloadDuration;
 	}
 };
 
@@ -85,6 +94,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Unreal Combat|Weapon")
 	bool HasWeapon() const { return Definition != nullptr; }
 
+	/** 0..1 while reloading, 0 otherwise. Computed locally from replicated times, so it animates smoothly. */
+	UFUNCTION(BlueprintPure, Category = "Unreal Combat|Weapon")
+	float GetReloadProgress() const;
+
 	float GetRange() const;
 
 	/** Fired on server and all clients for every shot. Hook muzzle flash, tracers and audio here. */
@@ -114,6 +127,7 @@ private:
 	void FireShot();
 	void RefreshState();
 	AController* GetInstigatorController() const;
+	float GetServerTime() const;
 
 	UPROPERTY(Replicated)
 	TObjectPtr<UUCWeaponDefinition> Definition;

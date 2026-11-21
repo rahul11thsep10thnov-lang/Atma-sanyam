@@ -3,6 +3,7 @@
 #include "Engine/GameInstance.h"
 #include "Net/UnrealNetwork.h"
 #include "UCProfileSubsystem.h"
+#include "UCVehiclePawn.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(UCGameFramework)
 
@@ -29,6 +30,20 @@ void AUCGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(AUCGameState, WinningTeam);
 	DOREPLIFETIME(AUCGameState, WinningPlayer);
 	DOREPLIFETIME(AUCGameState, bMissionSucceeded);
+}
+
+AUCVehiclePawn* AUCGameState::GetBossVehicle() const
+{
+	for (APlayerState* Base : PlayerArray)
+	{
+		const AUCPlayerState* State = Cast<AUCPlayerState>(Base);
+		AUCVehiclePawn* Vehicle = State != nullptr && State->IsBoss() ? Cast<AUCVehiclePawn>(State->GetPawn()) : nullptr;
+		if (Vehicle != nullptr && !Vehicle->IsWrecked())
+		{
+			return Vehicle;
+		}
+	}
+	return nullptr;
 }
 
 void AUCGameState::OnRep_MatchState()

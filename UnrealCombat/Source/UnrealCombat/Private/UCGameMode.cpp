@@ -316,6 +316,12 @@ void AUCGameMode::SyncReplicatedState()
 		Out.Required = Objective.Required;
 		Out.Progress = Objective.Progress;
 		Out.bOptional = Objective.bOptional;
+		Out.bComplete = Objective.IsComplete();
+		const int32 Index = Objectives.Num() - 1;
+		if (Mission != nullptr && Mission->Objectives.IsValidIndex(Index))
+		{
+			Out.DisplayText = Mission->Objectives[Index].DisplayText;
+		}
 	}
 	Assign(State->Objectives, Objectives);
 

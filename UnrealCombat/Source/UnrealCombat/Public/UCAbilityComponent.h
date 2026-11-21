@@ -34,6 +34,14 @@ struct FUCAbilityState
 	/** Negative = unlimited. */
 	UPROPERTY(BlueprintReadOnly, Category = "Ability")
 	int32 ChargesRemaining = -1;
+
+	/** Full cooldown length in seconds, for cooldown rings. */
+	UPROPERTY(BlueprintReadOnly, Category = "Ability")
+	float CooldownDuration = 0.f;
+
+	/** Full effect length in seconds (0 = instant). */
+	UPROPERTY(BlueprintReadOnly, Category = "Ability")
+	float ActiveDuration = 0.f;
 };
 
 /** Defensive / utility abilities of a vehicle (repair kit, boost, shield recharge, extinguisher). */
@@ -56,6 +64,10 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Unreal Combat|Abilities")
 	const TArray<FUCAbilityState>& GetAbilityStates() const { return States; }
+
+	/** Same order as GetAbilityStates. Carries display name, icon and effect type. */
+	UFUNCTION(BlueprintPure, Category = "Unreal Combat|Abilities")
+	const TArray<FUCAbilityDefinition>& GetAbilityDefinitions() const { return Definitions; }
 
 	/** Product of all active Boost abilities (1 when none). Valid on server and clients. */
 	float GetBoostScale() const;
