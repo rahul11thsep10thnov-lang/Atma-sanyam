@@ -17,8 +17,8 @@ def groups(library):
     return {g: c for g, c in out.items() if {"medium", "closeup"} & set(c)}
 
 
-def test_forty_five_important_backgrounds_have_all_three_compositions(groups):
-    assert len(groups) >= 45
+def test_every_master_background_has_all_three_compositions(groups):
+    assert len(groups) >= 171
     for g, c in groups.items():
         assert set(c) == {"wide", "medium", "closeup"} and c["wide"] == g, g
 

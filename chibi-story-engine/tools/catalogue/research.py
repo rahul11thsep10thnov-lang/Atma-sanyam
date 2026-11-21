@@ -31,9 +31,15 @@ TODAY = date.today().isoformat()
 
 
 def fetch(url: str) -> bytes | None:
-    r = subprocess.run(["curl", "-sSL", "-m", "90", "-A", UA, "-w", "\n%{http_code}", url], capture_output=True)
-    body, _, code = r.stdout.rpartition(b"\n")
-    return body if code.strip() == b"200" else None
+    import time
+    for attempt in range(3):                      # Wikimedia answers 429 / error pages when asked too quickly
+        r = subprocess.run(["curl", "-sSL", "-m", "90", "-A", UA, "-w", "\n%{http_code}", url], capture_output=True)
+        body, _, code = r.stdout.rpartition(b"\n")
+        if code.strip() == b"200" and b"Wikimedia Error" not in body[:4000]:
+            time.sleep(2)
+            return body
+        time.sleep(12)
+    return None
 
 
 def clean(s: str) -> str:
@@ -58,6 +64,10 @@ SOURCES = {
                    "https://en.wikisource.org/w/index.php?title=Old_Deccan_Days&action=render", "primary_toc", "Wikisource transcription marked public domain (PD-old).", "wikisource"),
     "kingscote_1890": ("regional", "Tales of the Sun, or Folklore of Southern India (contents)", "collected by Mrs. Howard Kingscote and Pandit Natesa Sastri", "London: W. H. Allen, 1890",
                        "https://en.wikisource.org/w/index.php?title=Tales_of_the_Sun&action=render", "primary_toc", "Wikisource transcription marked public domain (pd-old).", "wikisource"),
+    "day_1883": ("regional", "Folk-Tales of Bengal (contents)", "collected by Lal Behari Day", "London: Macmillan, 1883",
+                 "https://en.wikisource.org/w/index.php?title=Folk-tales_of_Bengal&action=render", "primary_toc", "Wikisource transcription of an 1883 book (public domain).", "wikisource"),
+    "knowles_1893": ("regional", "Folk-Tales of Kashmir (contents)", "collected by J. Hinton Knowles", "London: Kegan Paul, Trench, Trubner, 1893 (publisher as printed in the 1893 edition; not re-checked)",
+                     "https://en.wikisource.org/w/index.php?title=Folk-tales_of_Kashmir&action=render", "primary_toc", "Wikisource transcription of an 1893 book (public domain).", "wikisource"),
     "vetala_wp": ("vikram_betal", "Vetala Panchavimshati (Wikipedia)", "Wikipedia contributors", "Wikipedia article 'Vetala Panchavimshati'",
                   "https://en.wikipedia.org/w/index.php?title=Vetala_Panchavimshati&action=raw", "tertiary", "Wikipedia text (CC BY-SA). Describes recensions and translations; does not index the 25 tales.", "wikitext"),
     "singhasan_wp": ("singhasan_battisi", "Singhasan Battisi (Wikipedia)", "Wikipedia contributors", "Wikipedia article 'Singhasan Battisi'",
@@ -184,6 +194,24 @@ def parse_roman_contents(t: str) -> list[dict]:
     return out
 
 
+def parse_leader_contents(t: str, numbered: bool) -> list[dict]:
+    """Contents pages whose title lines are followed by rows of dots or bullets and a page number."""
+    i = t.upper().find("CONTENTS")
+    lines = [l.replace("\xa0", " ").replace("\u200b", "").strip() for l in t[i:i + 60000].splitlines()] if i >= 0 else []
+    lines = [l for l in lines if l and not re.fullmatch(r"[.•\s]+", l) and l.upper() not in ("PAGE", "CONTENTS", "CONTENTS.")]
+    out = []
+    for k, l in enumerate(lines):
+        if re.match(r"^(NOTES|INDEX|GLOSSARY|ILLUSTRATIONS|LIST OF)", l, flags=re.I) and out:
+            break
+        if numbered:
+            m = re.fullmatch(r"(\d+)\.", l)
+            if m and k + 1 < len(lines):
+                out.append({"number": int(m.group(1)), "title": lines[k + 1].strip(" .")})
+        elif not re.fullmatch(r"[\dxvilc\-–, ]+", l, flags=re.I) and not re.fullmatch(r"[IVXL]+\.", l):
+            out.append({"number": len(out) + 1, "title": l.strip(" .")})
+    return out
+
+
 # ------------------------------------------------------------------------------------------------ evidence for the author's seed list
 EVIDENCE = {
     "monkey_and_crocodile": [("jataka_table", r"Su[ṃṁm]*sumāra"), ("ryder_1925", r"Monkey and the Crocodile")],
@@ -268,6 +296,8 @@ def build(offline: bool = False) -> dict:
     perry = parse_perry(texts["perry_wp"])
     frere = parse_contents(texts["frere_1898"])
     sun = parse_roman_contents(texts["kingscote_1890"])
+    bengal = parse_leader_contents(texts["day_1883"], numbered=True)
+    kashmir = [r for r in parse_leader_contents(texts["knowles_1893"], numbered=False) if r["title"].lower() not in ("preface", "introduction")]
     records: list[dict] = []
 
     def rec(rid, collection, title, src, locator, status, **kw):
@@ -294,6 +324,12 @@ def build(offline: bool = False) -> dict:
     for r in frere:
         rec(f"reg-frere-{r['number']:02d}", "regional", r["title"].title(), "frere_1898", f"Contents item {r['number']}", "verified", region="Southern India (as stated by the title; finer region not given in the contents)",
             subcollection="Deccan / Southern India", translation_status="English retelling collected from oral tradition by Mary Frere")
+    for r in bengal:
+        rec(f"reg-day-{r['number']:02d}", "regional", r["title"], "day_1883", f"Contents item {r['number']}", "verified", region="Bengal (per the collection's title)", subcollection="Bengal",
+            translation_status="English retelling collected by Lal Behari Day from oral tradition")
+    for r in kashmir:
+        rec(f"reg-knowles-{r['number']:02d}", "regional", r["title"], "knowles_1893", f"Contents item {r['number']}", "verified", region="Kashmir (per the collection's title)", subcollection="Jammu and Kashmir",
+            translation_status="English retelling collected by J. Hinton Knowles")
     for r in sun:
         rec(f"reg-sun-{r['number']:02d}", "regional", r["title"].title(), "kingscote_1890", f"Contents item {r['number']}", "verified", region="Southern India (as stated by the title)",
             subcollection="Southern India", translation_status="English retelling by Kingscote and Natesa Sastri")
@@ -326,25 +362,25 @@ def build(offline: bool = False) -> dict:
                         "retrieved": TODAY if (fetched[sid] or texts[sid]) else None, "sha256_of_fetched_page": fetched[sid], "extract_file": f"stories/research/extracts/{sid}.txt" if texts[sid] else None,
                         "status": "consulted" if texts[sid] else "not_fetched"})
     return {"records": records, "seed_entries": seeds, "overlaps": overlaps, "sources": sources, "counts": {"ryder": len(ryder), "arnold": len(arnold), "jataka": len(jat), "perry": len(perry),
-                                                                                                    "frere": len(frere), "kingscote": len(sun)}}
+                                                                                                    "frere": len(frere), "kingscote": len(sun), "day": len(bengal), "knowles": len(kashmir)}}
 
 
 # ------------------------------------------------------------------------------------------------ regional research plan and register
 REGIONS = [
-    ("Uttar Pradesh and North India", "research_pending", "No regional source consulted yet."),
-    ("Rajasthan", "research_pending", "Not yet researched."),
-    ("Gujarat", "research_pending", "Not yet researched."),
+    ("Uttar Pradesh and North India", "research_pending", "Wikisource was searched (Nov 2026) and no transcribed collection for this region was found; other sources not yet consulted."),
+    ("Rajasthan", "research_pending", "Wikisource was searched (Nov 2026) and no transcribed collection for this region was found; other sources not yet consulted."),
+    ("Gujarat", "research_pending", "Wikisource was searched (Nov 2026) and no transcribed collection for this region was found; other sources not yet consulted."),
     ("Maharashtra", "partial", "Frere's Old Deccan Days (title says Southern India) is indexed but its tales are not attributed to Maharashtra specifically; no Maharashtra-specific source consulted."),
-    ("Bengal", "sources_identified", "Folk-Tales of Bengal by Lal Behari Day (1883) identified on the Internet Archive (e.g. day-1883-folk-tales-of-bengal); its contents could not be fetched because the archive's file servers were blocked in this session."),
-    ("Assam and Northeast India", "research_pending", "Not yet researched."),
-    ("Odisha", "research_pending", "Not yet researched."),
-    ("Bihar and Jharkhand", "sources_identified", "Folklore of the Santal Parganas (Bompas, 1909) identified on the Internet Archive (dli.csl.5286); contents not fetched (archive file servers blocked)."),
-    ("Punjab and Haryana", "sources_identified", "Wide-Awake Stories (Steel and Temple, 1884) identified on the Internet Archive (wideawakestorie00unkngoog); contents not fetched."),
-    ("Himachal Pradesh and Uttarakhand", "research_pending", "Not yet researched."),
+    ("Bengal", "partial", "Lal Behari Day's Folk-Tales of Bengal (1883) contents indexed from Wikisource. One collection only; no other Bengali source consulted."),
+    ("Assam and Northeast India", "research_pending", "Wikisource was searched (Nov 2026) and no transcribed collection for this region was found; other sources not yet consulted."),
+    ("Odisha", "research_pending", "Wikisource was searched (Nov 2026) and no transcribed collection for this region was found; other sources not yet consulted."),
+    ("Bihar and Jharkhand", "sources_identified", "Folklore of the Santal Parganas (Bompas, 1909) identified on the Internet Archive (dli.csl.5286); contents not fetched (archive file servers blocked). Wikisource was searched (Nov 2026) and no transcribed collection for this region was found; other sources not yet consulted."),
+    ("Punjab and Haryana", "sources_identified", "Wide-Awake Stories (Steel and Temple, 1884) identified on the Internet Archive (wideawakestorie00unkngoog); contents not fetched. Wikisource was searched (Nov 2026) and no transcribed collection for this region was found; other sources not yet consulted."),
+    ("Himachal Pradesh and Uttarakhand", "research_pending", "Wikisource was searched (Nov 2026) and no transcribed collection for this region was found; other sources not yet consulted."),
     ("Pan-Indian selections", "sources_identified", "Joseph Jacobs's Indian Fairy Tales (1892) exists on Wikisource, but the fetched rendering did not include its contents list, so it is not indexed."),
-    ("Jammu and Kashmir (extra)", "sources_identified", "Folk-Tales of Kashmir (Knowles, 1893) identified on the Internet Archive (dli.pahar.1279); contents not fetched."),
+    ("Jammu and Kashmir (extra)", "partial", "Knowles's Folk-Tales of Kashmir (1893) contents indexed from Wikisource."),
     ("Tamil Nadu", "partial", "Tales of the Sun (Kingscote and Natesa Sastri, 1890) indexed; the contents name 'Southern India', not Tamil Nadu specifically."),
-    ("Kerala", "research_pending", "Not yet researched."),
+    ("Kerala", "research_pending", "Wikisource was searched (Nov 2026) and no transcribed collection for this region was found; other sources not yet consulted."),
     ("Karnataka", "partial", "Same Southern-India collections as above; no Karnataka-specific source consulted."),
     ("Andhra Pradesh and Telangana", "research_pending", "The Tenali Rama folklore tradition is described on Wikipedia, but no story index was found."),
 ]

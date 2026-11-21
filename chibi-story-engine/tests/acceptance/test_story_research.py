@@ -36,6 +36,7 @@ def test_counts_match_the_sources_that_were_parsed():
     for r in rec["records"]:
         by[r["source_id"]] = by.get(r["source_id"], 0) + 1
     assert by["arnold_1861"] == 34          # 6 + 9 + 7 + 12 stories in Arnold's four books
+    assert by["day_1883"] == 22 and by["knowles_1893"] == 64      # the two books' own counts
     assert by["jataka_table"] == 547 and by["ryder_1925"] >= 85 and by["frere_1898"] == 24
     assert len({r["id"] for r in rec["records"] if r["source_id"] == "jataka_table"}) == 547
 

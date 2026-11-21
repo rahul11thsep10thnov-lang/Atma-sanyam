@@ -1,10 +1,10 @@
 # Story research register
 
-Generated 2026-11-18 by `python -m tools.catalogue.research`. Every number is counted from the fetched sources; nothing is claimed beyond what they list.
+Generated 2026-11-21 by `python -m tools.catalogue.research`. Every number is counted from the fetched sources; nothing is claimed beyond what they list.
 
-- Sources consulted: **13**; story records taken from them: **1289**; seed entries checked against them: **43**
-- Verified 1308 · cross-verified 8 · adaptations 2 · unverified 11 · research pending 3 · documented overlaps 5
-- Regions with a consulted (partial) source: 3 of 16; no region is complete.
+- Sources consulted: **15**; story records taken from them: **1375**; seed entries checked against them: **43**
+- Verified 1394 · cross-verified 8 · adaptations 2 · unverified 11 · research pending 3 · documented overlaps 5
+- Regions with a consulted (partial) source: 5 of 16; no region is complete.
 
 ## Collections
 
@@ -26,20 +26,20 @@ Generated 2026-11-18 by `python -m tools.catalogue.research`. Every number is co
 
 | Region | Status | Note |
 |---|---|---|
-| Uttar Pradesh and North India | research_pending | No regional source consulted yet. |
-| Rajasthan | research_pending | Not yet researched. |
-| Gujarat | research_pending | Not yet researched. |
+| Uttar Pradesh and North India | research_pending | Wikisource was searched (Nov 2026) and no transcribed collection for this region was found; other sources not yet consulted. |
+| Rajasthan | research_pending | Wikisource was searched (Nov 2026) and no transcribed collection for this region was found; other sources not yet consulted. |
+| Gujarat | research_pending | Wikisource was searched (Nov 2026) and no transcribed collection for this region was found; other sources not yet consulted. |
 | Maharashtra | partial | Frere's Old Deccan Days (title says Southern India) is indexed but its tales are not attributed to Maharashtra specifically; no Maharashtra-specific source consulted. |
-| Bengal | sources_identified | Folk-Tales of Bengal by Lal Behari Day (1883) identified on the Internet Archive (e.g. day-1883-folk-tales-of-bengal); its contents could not be fetched because the archive's file servers were blocked in this session. |
-| Assam and Northeast India | research_pending | Not yet researched. |
-| Odisha | research_pending | Not yet researched. |
-| Bihar and Jharkhand | sources_identified | Folklore of the Santal Parganas (Bompas, 1909) identified on the Internet Archive (dli.csl.5286); contents not fetched (archive file servers blocked). |
-| Punjab and Haryana | sources_identified | Wide-Awake Stories (Steel and Temple, 1884) identified on the Internet Archive (wideawakestorie00unkngoog); contents not fetched. |
-| Himachal Pradesh and Uttarakhand | research_pending | Not yet researched. |
+| Bengal | partial | Lal Behari Day's Folk-Tales of Bengal (1883) contents indexed from Wikisource. One collection only; no other Bengali source consulted. |
+| Assam and Northeast India | research_pending | Wikisource was searched (Nov 2026) and no transcribed collection for this region was found; other sources not yet consulted. |
+| Odisha | research_pending | Wikisource was searched (Nov 2026) and no transcribed collection for this region was found; other sources not yet consulted. |
+| Bihar and Jharkhand | sources_identified | Folklore of the Santal Parganas (Bompas, 1909) identified on the Internet Archive (dli.csl.5286); contents not fetched (archive file servers blocked). Wikisource was searched (Nov 2026) and no transcribed collection for this region was found; other sources not yet consulted. |
+| Punjab and Haryana | sources_identified | Wide-Awake Stories (Steel and Temple, 1884) identified on the Internet Archive (wideawakestorie00unkngoog); contents not fetched. Wikisource was searched (Nov 2026) and no transcribed collection for this region was found; other sources not yet consulted. |
+| Himachal Pradesh and Uttarakhand | research_pending | Wikisource was searched (Nov 2026) and no transcribed collection for this region was found; other sources not yet consulted. |
 | Pan-Indian selections | sources_identified | Joseph Jacobs's Indian Fairy Tales (1892) exists on Wikisource, but the fetched rendering did not include its contents list, so it is not indexed. |
-| Jammu and Kashmir (extra) | sources_identified | Folk-Tales of Kashmir (Knowles, 1893) identified on the Internet Archive (dli.pahar.1279); contents not fetched. |
+| Jammu and Kashmir (extra) | partial | Knowles's Folk-Tales of Kashmir (1893) contents indexed from Wikisource. |
 | Tamil Nadu | partial | Tales of the Sun (Kingscote and Natesa Sastri, 1890) indexed; the contents name 'Southern India', not Tamil Nadu specifically. |
-| Kerala | research_pending | Not yet researched. |
+| Kerala | research_pending | Wikisource was searched (Nov 2026) and no transcribed collection for this region was found; other sources not yet consulted. |
 | Karnataka | partial | Same Southern-India collections as above; no Karnataka-specific source consulted. |
 | Andhra Pradesh and Telangana | research_pending | The Tenali Rama folklore tradition is described on Wikipedia, but no story index was found. |
 
@@ -53,6 +53,8 @@ Generated 2026-11-18 by `python -m tools.catalogue.research`. Every number is co
 | perry_wp | index_via_wiki | Perry Index (Wikipedia) | https://en.wikipedia.org/w/index.php?title=Perry_Index&action=raw | consulted |
 | frere_1898 | primary_toc | Old Deccan Days, or Hindoo Fairy Legends current in Southern India (contents) | https://en.wikisource.org/w/index.php?title=Old_Deccan_Days&action=render | consulted |
 | kingscote_1890 | primary_toc | Tales of the Sun, or Folklore of Southern India (contents) | https://en.wikisource.org/w/index.php?title=Tales_of_the_Sun&action=render | consulted |
+| day_1883 | primary_toc | Folk-Tales of Bengal (contents) | https://en.wikisource.org/w/index.php?title=Folk-tales_of_Bengal&action=render | consulted |
+| knowles_1893 | primary_toc | Folk-Tales of Kashmir (contents) | https://en.wikisource.org/w/index.php?title=Folk-tales_of_Kashmir&action=render | consulted |
 | vetala_wp | tertiary | Vetala Panchavimshati (Wikipedia) | https://en.wikipedia.org/w/index.php?title=Vetala_Panchavimshati&action=raw | consulted |
 | singhasan_wp | tertiary | Singhasan Battisi (Wikipedia) | https://en.wikipedia.org/w/index.php?title=Singhasan_Battisi&action=raw | consulted |
 | birbal_wp | tertiary | Birbal (Wikipedia) | https://en.wikipedia.org/w/index.php?title=Birbal&action=raw | consulted |
