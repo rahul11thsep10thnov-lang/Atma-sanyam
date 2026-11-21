@@ -1,0 +1,436 @@
+{
+  "manifest_version": "1.0",
+  "id": "village_001-closeup",
+  "asset_type": "environment",
+  "name": "Village lane with a dyer's vat (close-up)",
+  "version": 1,
+  "description": "A quiet village lane: mud huts, washing on a line and a big vat of indigo dye. Close-up composition: a new arrangement of the same place.",
+  "aliases": [
+    "VILLAGE_001-CLOSEUP",
+    "गाँव",
+    "village",
+    "village lane (closeup)"
+  ],
+  "tags": [
+    "home",
+    "market",
+    "village"
+  ],
+  "catalog_code": "VILLAGE-C",
+  "category": "ORG",
+  "subcategory": "closeup",
+  "related_stories": [],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedural vector art)",
+    "source": "generated: tools/asset_forge",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {
+    "habitats": [
+      "ground"
+    ],
+    "style": "premium_chibi_anime",
+    "ambience": "forest_ambience_001",
+    "composition": "closeup",
+    "composition_group": "village_001",
+    "scare_levels": [
+      0
+    ],
+    "seasons": [
+      "spring",
+      "summer",
+      "monsoon",
+      "autumn",
+      "winter"
+    ],
+    "weather": [
+      "clear",
+      "cloudy",
+      "rain",
+      "fog",
+      "storm",
+      "snow"
+    ]
+  },
+  "files": [
+    {
+      "role": "layer",
+      "path": "layers/sky.png",
+      "format": "png",
+      "checksum": "149a1896238aaa2923a12cd3cfc2fc89c0dcaf097c06e81809dfd53ee5b76c90",
+      "width": 1088,
+      "height": 592,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/sky.svg",
+      "format": "svg",
+      "checksum": "7fbeede9aaa6f9cb0289c9c31527ae68d46c5eecc61f12ed9aab43d1369042ca",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/ground.png",
+      "format": "png",
+      "checksum": "7bc0479910c8796a6d61fc37f566139b77cf67f89175f8dad991624f39679f30",
+      "width": 2448,
+      "height": 396,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/ground.svg",
+      "format": "svg",
+      "checksum": "eb1107eb68b2bc31fc57e28f2f20b9cab56d26eeb2c2dd39682788209f8e9419",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/main_scenery.png",
+      "format": "png",
+      "checksum": "2b2e40e53377fa5fb3437d1b66f0f2d828c0e9b9d496846bd0ccce1bf63b095c",
+      "width": 1274,
+      "height": 567,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/main_scenery.svg",
+      "format": "svg",
+      "checksum": "a8fa4797db001b9890400e16733bab6bf38ec7263f45c89b088cc36ff13c4439",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/vegetation.png",
+      "format": "png",
+      "checksum": "18522170cf422cd42310da8382683b56d64018bc7ae73dde74d1c92196ab2ad4",
+      "width": 651,
+      "height": 700,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/vegetation.svg",
+      "format": "svg",
+      "checksum": "5b53379de0e0c23d08c7123a9ae3eb1ddbcce98afd7cf0a3eabe818810aae735",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/foreground.png",
+      "format": "png",
+      "checksum": "059a29db21747b401541d35c8f8f54783220b200f15894b47672484c81ec85ce",
+      "width": 1880,
+      "height": 300,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/foreground.svg",
+      "format": "svg",
+      "checksum": "e1eb3505a41e27c27648575e16d9efcf88384e3eb1dd9feb7a626c0db7a4b829",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "layer",
+      "path": "layers/atmosphere.png",
+      "format": "png",
+      "checksum": "1159bb0d25abe4c86b84c508289e361eb830978556516cc0384e2bb79254795f",
+      "width": 546,
+      "height": 102,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "masters/atmosphere.svg",
+      "format": "svg",
+      "checksum": "443c57edfe13815ad7ecab9550b8bfb7e63b9a880bf681a0cd96890a0c77ffc6",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "preview",
+      "path": "previews/composite.jpg",
+      "format": "jpeg",
+      "checksum": "c077d31241235d3c1941d3d5f65525ab191afd7defd7aac2c2dc71c31b1d71f7",
+      "width": 960,
+      "height": 540,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-21T17:45:35+00:00",
+  "change_summary": "",
+  "stage": [
+    1920,
+    1080
+  ],
+  "layers": [
+    {
+      "id": "sky",
+      "type": "background",
+      "file": "layers/sky.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        1480.0
+      ],
+      "parallax": 0.12,
+      "order": 0,
+      "cover": true,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/sky.svg"
+    },
+    {
+      "id": "ground",
+      "type": "middle",
+      "file": "layers/ground.png",
+      "rect": [
+        -400.0,
+        -200.0,
+        2720.0,
+        440.0
+      ],
+      "parallax": 1.0,
+      "order": 10,
+      "cover": false,
+      "cover_horizontal": true,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/ground.svg"
+    },
+    {
+      "id": "main_scenery",
+      "type": "middle",
+      "file": "layers/main_scenery.png",
+      "rect": [
+        -40.0,
+        110.0,
+        1820.0,
+        810.0
+      ],
+      "parallax": 1.0,
+      "order": 40,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "background",
+      "scare": 0,
+      "svg": "masters/main_scenery.svg"
+    },
+    {
+      "id": "vegetation",
+      "type": "middle",
+      "file": "layers/vegetation.png",
+      "rect": [
+        -360.0,
+        200.0,
+        930.0,
+        1000.0
+      ],
+      "parallax": 1.0,
+      "order": 45,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "foliage",
+      "scare": 0,
+      "svg": "masters/vegetation.svg"
+    },
+    {
+      "id": "foreground",
+      "type": "foreground",
+      "file": "layers/foreground.png",
+      "rect": [
+        -30.0,
+        -80.0,
+        1880.0,
+        300.0
+      ],
+      "parallax": 1.3,
+      "order": 800,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [
+        {
+          "type": "sway",
+          "amplitude": 0.8,
+          "period": 4.2,
+          "phase": 0.0,
+          "speed": 0.0,
+          "pivot": [
+            960.0,
+            -200.0
+          ],
+          "wind_scaled": true
+        }
+      ],
+      "tint_group": "foliage",
+      "scare": 0,
+      "svg": "masters/foreground.svg"
+    },
+    {
+      "id": "atmosphere",
+      "type": "effects",
+      "file": "layers/atmosphere.png",
+      "rect": [
+        220.0,
+        490.0,
+        910.0,
+        170.0
+      ],
+      "parallax": 1.0,
+      "order": 920,
+      "cover": false,
+      "cover_horizontal": false,
+      "motion": [],
+      "tint_group": "none",
+      "scare": 0,
+      "svg": "masters/atmosphere.svg"
+    }
+  ],
+  "anchors": {
+    "lane": {
+      "x": 748.8,
+      "y": 205.0,
+      "order": 100,
+      "scale": 1.3,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "lane_far": {
+      "x": 1019.4,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.3,
+      "features": [
+        "ground"
+      ],
+      "description": ""
+    },
+    "vat_side": {
+      "x": 1105.2,
+      "y": 200.0,
+      "order": 100,
+      "scale": 1.3,
+      "features": [
+        "ground",
+        "vat_side"
+      ],
+      "description": ""
+    },
+    "offstage_left": {
+      "x": -430.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "offstage",
+        "ground"
+      ],
+      "description": ""
+    },
+    "offstage_right": {
+      "x": 2350.0,
+      "y": 215.0,
+      "order": 100,
+      "scale": 1.0,
+      "features": [
+        "offstage",
+        "ground"
+      ],
+      "description": ""
+    },
+    "vat": {
+      "x": 1356.0,
+      "y": 150.0,
+      "order": 110,
+      "scale": 1.3,
+      "features": [
+        "vat",
+        "pit"
+      ],
+      "description": ""
+    }
+  },
+  "lighting_presets": [
+    "day",
+    "morning",
+    "sunset",
+    "night",
+    "overcast"
+  ],
+  "camera_bounds": [
+    -400.0,
+    -200.0,
+    2320.0,
+    1280.0
+  ],
+  "default_anchor_by_role": {
+    "ground": [
+      "lane",
+      "vat_side",
+      "lane_far"
+    ]
+  }
+}

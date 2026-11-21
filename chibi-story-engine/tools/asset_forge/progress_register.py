@@ -53,8 +53,8 @@ def main() -> None:
         f"| 3. Original nine upgraded | **{'Closed' if ch['original_nine_fully_upgraded'] == ch['original_total'] else 'Partly closed'}** ({ch['original_nine_fully_upgraded']} of {ch['original_total']} fully upgraded): SVG masters, four views, 15 expressions, 15 poses, valid rig; version 1 intact and retrievable; nothing is approved. |",
         "| 4. Reptile rigs | **Closed.** Articulated `quadruped_reptile` (crocodile, crocodile's wife, lizard), `chelonian` (turtle, tortoise) and `serpentine_reptile` (snake) with 20 new clips; "
         f"rig tests: {comp['rigs']['rig_test_results'].get('passed', 'not run')} passed. The old upright turtle, tortoise, snake and lizard remain in version 1. |",
-        f"| 5. Story catalogue | **Partly closed.** {sr['sources_consulted']} real sources were fetched and parsed (Ryder's Panchatantra, Arnold's Hitopadesa, a 547-row Jataka table, the Perry Index via Wikipedia, two regional collections). "
-        "Vikram-Betal and Singhasan Battisi tale lists are pending (Project Gutenberg was down), Akbar-Birbal and Tenali Raman have no edition index, most regions are unresearched. The collection register says so. |",
+        f"| 5. Story catalogue | **Partly closed.** {sr['sources_consulted']} real sources were fetched and parsed (Ryder's Panchatantra, Arnold's Hitopadesa, a 547-row Jataka table, the Perry Index via Wikipedia, Burton's Vikram and the Vampire, four regional collections). "
+        "Burton's 1870 Vikram-Betal selection (11 tales) is indexed; Singhasan Battisi has no tale list yet, Akbar-Birbal and Tenali Raman have no edition index, most regions are unresearched. The collection register says so. |",
         "",
         "## Known gaps (not hidden)",
         "",

@@ -2,8 +2,8 @@
 
 Generated 2026-11-21 by `python -m tools.catalogue.research`. Every number is counted from the fetched sources; nothing is claimed beyond what they list.
 
-- Sources consulted: **15**; story records taken from them: **1375**; seed entries checked against them: **43**
-- Verified 1394 · cross-verified 8 · adaptations 2 · unverified 11 · research pending 3 · documented overlaps 5
+- Sources consulted: **16**; story records taken from them: **1386**; seed entries checked against them: **43**
+- Verified 1407 · cross-verified 8 · adaptations 2 · unverified 11 · research pending 1 · documented overlaps 5
 - Regions with a consulted (partial) source: 5 of 16; no region is complete.
 
 ## Collections
@@ -13,7 +13,7 @@ Generated 2026-11-21 by `python -m tools.catalogue.research`. Every number is co
 | Panchatantra | ryder_1925, panchatantra_wp | 87 | 14 | cross_verified 8, unverified 1, verified 92 | Only the books and stories listed in Ryder's contents are indexed; Sanskrit titles, other recensions (Tantrakhyayika, Southern recension, Pahlavi/Arabic Kalila wa Dimna) and regional versions are not. |
 | Jataka tales | jataka_table | 547 | 5 | verified 552 | The 547 numbered stories are indexed by title; their wording is not copied; Cowell's edition and the Pali texts were not consulted directly. |
 | Hitopadesha | arnold_1861 | 34 | 3 | verified 37 | Only Arnold's 1861 contents consulted; Sanskrit titles and the other translations are not. |
-| Vikram and Betal (Baital Pachisi) | vetala_wp | 0 | 2 | research_pending 2 | The 25 tales are not indexed (Gutenberg was down for maintenance); the frame story is described by a Wikipedia article only. |
+| Vikram and Betal (Baital Pachisi) | burton_1870, vetala_wp | 11 | 2 | verified 13 | Only Burton's 1870 selection (his contents) is indexed, not all 25 tales of the Baital Pachisi; Sanskrit and Hindi recensions and other translations are not. |
 | Singhasan Battisi | singhasan_wp | 0 | 1 | research_pending 1 | The 32 tales are not indexed. |
 | Akbar and Birbal | birbal_wp | 0 | 3 | unverified 3 | The tradition is oral and anecdotal; no edition's contents consulted, so no individual tale can be verified. |
 | Tenali Raman | tenali_wp | 0 | 3 | unverified 3 | No edition's contents consulted, so no individual tale can be verified. |
@@ -55,6 +55,7 @@ Generated 2026-11-21 by `python -m tools.catalogue.research`. Every number is co
 | kingscote_1890 | primary_toc | Tales of the Sun, or Folklore of Southern India (contents) | https://en.wikisource.org/w/index.php?title=Tales_of_the_Sun&action=render | consulted |
 | day_1883 | primary_toc | Folk-Tales of Bengal (contents) | https://en.wikisource.org/w/index.php?title=Folk-tales_of_Bengal&action=render | consulted |
 | knowles_1893 | primary_toc | Folk-Tales of Kashmir (contents) | https://en.wikisource.org/w/index.php?title=Folk-tales_of_Kashmir&action=render | consulted |
+| burton_1870 | primary_toc | Vikram and the Vampire; or, Tales of Hindu Devilry (table of contents) | https://en.wikisource.org/w/index.php?title=Vikram_and_the_Vampire;_or,_Tales_of_Hindu_Devilry/Contents&action=render | consulted |
 | vetala_wp | tertiary | Vetala Panchavimshati (Wikipedia) | https://en.wikipedia.org/w/index.php?title=Vetala_Panchavimshati&action=raw | consulted |
 | singhasan_wp | tertiary | Singhasan Battisi (Wikipedia) | https://en.wikipedia.org/w/index.php?title=Singhasan_Battisi&action=raw | consulted |
 | birbal_wp | tertiary | Birbal (Wikipedia) | https://en.wikipedia.org/w/index.php?title=Birbal&action=raw | consulted |

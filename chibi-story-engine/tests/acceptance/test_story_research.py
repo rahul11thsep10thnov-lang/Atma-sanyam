@@ -36,7 +36,7 @@ def test_counts_match_the_sources_that_were_parsed():
     for r in rec["records"]:
         by[r["source_id"]] = by.get(r["source_id"], 0) + 1
     assert by["arnold_1861"] == 34          # 6 + 9 + 7 + 12 stories in Arnold's four books
-    assert by["day_1883"] == 22 and by["knowles_1893"] == 64      # the two books' own counts
+    assert by["burton_1870"] == 11 and by["day_1883"] == 22 and by["knowles_1893"] == 64      # the two books' own counts
     assert by["jataka_table"] == 547 and by["ryder_1925"] >= 85 and by["frere_1898"] == 24
     assert len({r["id"] for r in rec["records"] if r["source_id"] == "jataka_table"}) == 547
 
@@ -55,7 +55,7 @@ def test_seed_entries_are_only_verified_with_evidence_from_a_title_listing():
     by = {s["id"]: s["verification_status"] for s in rec["seed_entries"]}
     assert by["seed-mongoose_and_brahmin"] == "unverified"       # a wrong match was found and removed
     assert by["seed-birbal_khichdi"] == "unverified" and by["seed-aladdin"] == "adaptation"
-    assert by["seed-blue_jackal"] == "cross_verified" and by["seed-vikram_betal_frame"] == "research_pending"
+    assert by["seed-blue_jackal"] == "cross_verified" and by["seed-vikram_betal_frame"] == "verified" and by["seed-singhasan_frame"] == "research_pending"
 
 
 def test_register_does_not_claim_completeness_and_excludes_copyrighted_franchises():

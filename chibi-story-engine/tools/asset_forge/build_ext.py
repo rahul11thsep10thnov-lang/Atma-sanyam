@@ -132,6 +132,27 @@ def build_compositions(library: AssetLibrary, force: bool, ids: set[str] | None,
     return n
 
 
+def build_original_compositions(library: AssetLibrary, force: bool, log=print) -> int:
+    from .scenes_original_comp import build as build_specs
+    from .env_kit import build_environment
+    n = 0
+    with tempfile.TemporaryDirectory(prefix="csae_orgcmp_") as tmp:
+        for sp in build_specs(library):
+            if not _fresh(library, "environment", sp.id, force):
+                continue
+            k = 1.0
+            work = Path(tmp) / sp.id
+            built = build_environment(sp, work, k=k)
+            built["data"]["catalog_code"] = f"{sp.group.upper().replace('_001', '')}-{sp.composition[0].upper()}"
+            built["data"]["category"] = "ORG"
+            files, _ = _roles(work, lambda rel: {})
+            library.register(built["data"], files, built["roles"])
+            n += 1
+            log(f"composition  {sp.id}")
+    log(f"original-environment compositions registered {n}")
+    return n
+
+
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     p.add_argument("--library", type=Path, default=PROJECT_ROOT / "asset_library")
@@ -148,6 +169,8 @@ def main() -> None:
         build_environments(lib, a.force, ids)
     if "compositions" in only:
         build_compositions(lib, a.force, ids)
+    if "original_compositions" in only:
+        build_original_compositions(lib, a.force)
 
 
 if __name__ == "__main__":

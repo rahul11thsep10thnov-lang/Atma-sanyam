@@ -95,11 +95,43 @@ def upgrade(library_root: Path, only: set[str] | None, log=print) -> list[str]:
     return done
 
 
+def refresh_views(library_root: Path, log=print) -> list[str]:
+    """Register a new version of each upgraded original whose side / three-quarter / back views have been redrawn; front art stays as it is."""
+    lib = AssetLibrary(library_root)
+    reg = CharacterRegistry(lib)
+    done: list[str] = []
+    characters_ext.QUANTIZE = False
+    with tempfile.TemporaryDirectory(prefix="csae_views_") as tmp:
+        for b in BIPEDS:
+            current = lib.character(b.id)
+            if not current.views:
+                continue
+            work = Path(tmp) / b.id
+            data, manifest = draw_character(figspec(b), work)
+            files, roles = _roles(work, role_for)
+            keep = {k: (v, roles[k]) for k, v in files.items() if k.startswith("views/") or k == "references/view_sheet.jpg"}
+            diff = front_identity_diff(lib.asset_dir(AssetType.character, b.id), work, current, manifest)
+            if diff > 0.5:
+                raise RuntimeError(f"{b.id}: front parts changed ({diff:.2f}); refusing")
+            new = lib.update(AssetType.character, b.id, changes={"views": data["views"]}, files={k: v[0] for k, v in keep.items()}, roles={k: v[1] for k, v in keep.items()},
+                             change_summary="Redrawn three-quarter view (asymmetric face: near eye full size, far eye narrower and turned, far brow shorter, mouth moved toward the far side). Front art unchanged.")
+            issues = reg.rig_issues(new) + [{"path": p["file"], "message": p["problem"]} for p in lib.verify(AssetType.character, b.id)]
+            if issues:
+                raise RuntimeError(f"{b.id}: validation failed: {issues[:2]}")
+            log(f"{b.id} -> v{new.version}")
+            done.append(b.id)
+    return done
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--library", type=Path, default=PROJECT_ROOT / "asset_library")
     ap.add_argument("--only", default="")
+    ap.add_argument("--refresh-views", action="store_true", help="register a new version with redrawn views for already-upgraded originals")
     a = ap.parse_args()
+    if a.refresh_views:
+        print(refresh_views(a.library))
+        return
     print(upgrade(a.library, set(filter(None, a.only.split(",")))) or "nothing to do")
 
 

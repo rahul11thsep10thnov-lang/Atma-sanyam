@@ -68,6 +68,9 @@ SOURCES = {
                  "https://en.wikisource.org/w/index.php?title=Folk-tales_of_Bengal&action=render", "primary_toc", "Wikisource transcription of an 1883 book (public domain).", "wikisource"),
     "knowles_1893": ("regional", "Folk-Tales of Kashmir (contents)", "collected by J. Hinton Knowles", "London: Kegan Paul, Trench, Trubner, 1893 (publisher as printed in the 1893 edition; not re-checked)",
                      "https://en.wikisource.org/w/index.php?title=Folk-tales_of_Kashmir&action=render", "primary_toc", "Wikisource transcription of an 1893 book (public domain).", "wikisource"),
+    "burton_1870": ("vikram_betal", "Vikram and the Vampire; or, Tales of Hindu Devilry (table of contents)", "translated and edited by Richard Francis Burton", "London: Longmans, Green, 1870",
+                    "https://en.wikisource.org/w/index.php?title=Vikram_and_the_Vampire;_or,_Tales_of_Hindu_Devilry/Contents&action=render", "primary_toc",
+                    "Wikisource transcription of an 1870 book (public domain). Burton translated a selection from the Baital Pachisi, not all 25 tales.", "wikisource"),
     "vetala_wp": ("vikram_betal", "Vetala Panchavimshati (Wikipedia)", "Wikipedia contributors", "Wikipedia article 'Vetala Panchavimshati'",
                   "https://en.wikipedia.org/w/index.php?title=Vetala_Panchavimshati&action=raw", "tertiary", "Wikipedia text (CC BY-SA). Describes recensions and translations; does not index the 25 tales.", "wikitext"),
     "singhasan_wp": ("singhasan_battisi", "Singhasan Battisi (Wikipedia)", "Wikipedia contributors", "Wikipedia article 'Singhasan Battisi'",
@@ -182,6 +185,18 @@ def parse_contents(t: str, start: str = "CONTENTS", stop: tuple[str, ...] = ("NO
     return out
 
 
+def parse_burton(t: str) -> list[dict]:
+    """'The vampire's first story.' followed by a one-line description of what the tale is about."""
+    lines = [l.strip() for l in t.replace("\xa0", " ").splitlines()]
+    lines = [l for l in lines if l and not re.fullmatch(r"[.\s]+", l)]
+    out = []
+    for k, l in enumerate(lines):
+        m = re.fullmatch(r"The vampire's (\w+) story\.", l, flags=re.I)
+        if m and k + 1 < len(lines):
+            out.append({"number": len(out) + 1, "ordinal": m.group(1).lower(), "title": lines[k + 1].strip(" .")})
+    return out
+
+
 def parse_roman_contents(t: str) -> list[dict]:
     """Chapters numbered with roman numerals ('I.' on one line, the title on the next, then dotted leaders)."""
     i = t.find("CONTENTS")
@@ -243,13 +258,15 @@ EVIDENCE = {
     "thirsty_crow": [("perry_wp", r"Crow and the (Pitcher|Jug|Pot)|Thirsty Crow")],
     "ant_and_grasshopper": [("perry_wp", r"Ant and the (Cicada|Grasshopper)|Cicada")],
     "golden_eggs": [("perry_wp", r"Golden Egg|Goose that Laid")],
+    "vikram_betal_frame": [("burton_1870", r"Introduction")],
+    "vikram_betal_suitors": [("burton_1870", r"three men dispute")],
     "fisherman_and_jinni": [("nights_wp", r"Fisherman and the Jinni")],
     "sindbad": [("nights_wp", r"Sindbad|Sinbad")],
     "ali_baba": [("nights_wp", r"Ali Baba")],
     "aladdin": [("nights_wp", r"Aladdin")],
 }
 ADAPTATION = {"aladdin": "Not in the earlier Arabic versions; added by later translators (stated on the Wikipedia article).", "ali_baba": "Not in the earlier Arabic versions; added by later translators (stated on the Wikipedia article)."}
-PENDING = {"vikram_betal": "Gutenberg #48511 (Burton, 1870) was in maintenance when fetched; the 25 tales are not yet indexed.", "singhasan_battisi": "No index of the 32 tales fetched; Wikipedia article consulted only."}
+PENDING = { "singhasan_battisi": "No index of the 32 tales fetched; Wikipedia article consulted only."}
 
 
 def evidence_for(sid: str, texts: dict[str, str]) -> list[dict]:
@@ -296,6 +313,7 @@ def build(offline: bool = False) -> dict:
     perry = parse_perry(texts["perry_wp"])
     frere = parse_contents(texts["frere_1898"])
     sun = parse_roman_contents(texts["kingscote_1890"])
+    burton = parse_burton(texts["burton_1870"])
     bengal = parse_leader_contents(texts["day_1883"], numbered=True)
     kashmir = [r for r in parse_leader_contents(texts["knowles_1893"], numbered=False) if r["title"].lower() not in ("preface", "introduction")]
     records: list[dict] = []
@@ -324,6 +342,9 @@ def build(offline: bool = False) -> dict:
     for r in frere:
         rec(f"reg-frere-{r['number']:02d}", "regional", r["title"].title(), "frere_1898", f"Contents item {r['number']}", "verified", region="Southern India (as stated by the title; finer region not given in the contents)",
             subcollection="Deccan / Southern India", translation_status="English retelling collected from oral tradition by Mary Frere")
+    for r in burton:
+        rec(f"vb-burton-{r['number']:02d}", "vikram_betal", f"The vampire's {r['ordinal']} story: {r['title']}", "burton_1870", f"Contents, tale {r['number']}", "verified",
+            translation_status="Burton's 1870 English selection from the Baital Pachisi; the chapter heading is Burton's own description, not a traditional title")
     for r in bengal:
         rec(f"reg-day-{r['number']:02d}", "regional", r["title"], "day_1883", f"Contents item {r['number']}", "verified", region="Bengal (per the collection's title)", subcollection="Bengal",
             translation_status="English retelling collected by Lal Behari Day from oral tradition")
@@ -338,6 +359,7 @@ def build(offline: bool = False) -> dict:
     texts_all["jataka_table"] = "\n".join(f"{r['pali']} {r['title']}" for r in jat)           # match titles, not synopses
     texts_all["ryder_1925"] = "\n".join(r["title"] for r in ryder) + "\n" + "\n".join(f"BOOK {r['book_title']}" for r in ryder)
     texts_all["arnold_1861"] = "\n".join(r["title"] for r in arnold) + "\n" + "\n".join(f"BOOK {r['book_title']}" for r in arnold)
+    texts_all["burton_1870"] = "Introduction\n" + "\n".join(r["title"] for r in burton)
     texts_all["perry_wp"] = "\n".join(r["title"] for r in perry)
     seeds = []
     for coll, items in STORIES.items():
@@ -362,7 +384,7 @@ def build(offline: bool = False) -> dict:
                         "retrieved": TODAY if (fetched[sid] or texts[sid]) else None, "sha256_of_fetched_page": fetched[sid], "extract_file": f"stories/research/extracts/{sid}.txt" if texts[sid] else None,
                         "status": "consulted" if texts[sid] else "not_fetched"})
     return {"records": records, "seed_entries": seeds, "overlaps": overlaps, "sources": sources, "counts": {"ryder": len(ryder), "arnold": len(arnold), "jataka": len(jat), "perry": len(perry),
-                                                                                                    "frere": len(frere), "kingscote": len(sun), "day": len(bengal), "knowles": len(kashmir)}}
+                                                                                                    "frere": len(frere), "kingscote": len(sun), "day": len(bengal), "knowles": len(kashmir), "burton": len(burton)}}
 
 
 # ------------------------------------------------------------------------------------------------ regional research plan and register
@@ -399,7 +421,7 @@ def register(data: dict) -> dict:
         gaps = {"panchatantra": "Only the books and stories listed in Ryder's contents are indexed; Sanskrit titles, other recensions (Tantrakhyayika, Southern recension, Pahlavi/Arabic Kalila wa Dimna) and regional versions are not.",
                 "jataka": "The 547 numbered stories are indexed by title; their wording is not copied; Cowell's edition and the Pali texts were not consulted directly.",
                 "hitopadesha": "Only Arnold's 1861 contents consulted; Sanskrit titles and the other translations are not.",
-                "vikram_betal": "The 25 tales are not indexed (Gutenberg was down for maintenance); the frame story is described by a Wikipedia article only.",
+                "vikram_betal": "Only Burton's 1870 selection (his contents) is indexed, not all 25 tales of the Baital Pachisi; Sanskrit and Hindi recensions and other translations are not.",
                 "singhasan_battisi": "The 32 tales are not indexed.",
                 "akbar_birbal": "The tradition is oral and anecdotal; no edition's contents consulted, so no individual tale can be verified.",
                 "tenali_raman": "No edition's contents consulted, so no individual tale can be verified.",

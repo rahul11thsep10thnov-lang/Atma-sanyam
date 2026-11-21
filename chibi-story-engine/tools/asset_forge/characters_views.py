@@ -381,6 +381,72 @@ def shifted(art: Art, dx: float, dy: float = 0) -> Art:
     return out
 
 
+# ------------------------------------------------------------------------------------------------ THREE-QUARTER FACE
+def _eye_at(a: Art, s: FigSpec, variant: str, cx: float, cy: float, rx: float, ry: float, sign: int, k: int) -> None:
+    lid = _lid(s)
+    if variant in ("open", "wide", "sad", "angry", "half", "tear"):
+        ex, ey = (rx + 4, ry + 6) if variant == "wide" else (rx, ry)
+        a.ellipse(cx, cy, ex, ey, "#ffffff", INK, 6)
+        if variant in ("sad", "angry", "half", "tear"):
+            cid = f"tqe{k}"
+            a.defs.append(f'<clipPath id="{cid}"><ellipse cx="{cx}" cy="{cy}" rx="{ex}" ry="{ey}"/></clipPath>')
+            a.raw(f'<g clip-path="url(#{cid})">')
+            if variant == "half":
+                a.rect(cx - 60, cy - 70, 120, 72, lid, None, 0)
+            elif variant == "angry":
+                a.poly([(cx - 60, cy - 70), (cx + 60, cy - 70), (cx + sign * 60, cy - 12), (cx - sign * 60, cy - 46)], lid)
+            else:
+                a.poly([(cx - 60, cy - 70), (cx + 60, cy - 70), (cx - sign * 60, cy - 12), (cx + sign * 60, cy - 46)], lid)
+            a.raw("</g>")
+            a.ellipse(cx, cy, ex, ey, None, INK, 6)
+        if variant == "tear":
+            a.path(f"M {cx} {cy + ey} Q {cx - 10} {cy + ey + 34} {cx} {cy + ey + 52} Q {cx + 10} {cy + ey + 34} {cx} {cy + ey} Z", "#7fc8f0", "#3a7ab0", 3, 0.9)
+    elif variant == "closed":
+        a.path(f"M {cx - rx} {cy + 4} Q {cx} {cy + 30} {cx + rx} {cy + 4}", None, INK, 8)
+    elif variant == "happy":
+        a.path(f"M {cx - rx} {cy + 14} Q {cx} {cy - 30} {cx + rx} {cy + 14}", None, INK, 8)
+
+
+TQ_EYES = ((258, 262, 38, 48, -1), (394, 262, 27, 46, 1))          # near eye full size, far eye narrower and turned away
+
+
+def tq_eyes(s: FigSpec, variant: str) -> Art:
+    a = Art(BW, BH)
+    for k, (cx, cy, rx, ry, sign) in enumerate(TQ_EYES):
+        _eye_at(a, s, variant, cx, cy, rx, ry, sign, k)
+    return a
+
+
+def tq_pupils(s: FigSpec, variant: str) -> Art:
+    a = Art(BW, BH)
+    for cx, cy, rx, ry, sign in TQ_EYES:
+        r = (27 if variant == "normal" else 16) * (rx / 38) ** 0.6
+        x, y = cx + 10 * (rx / 38), cy + 5
+        a.ellipse(x, y, r * (0.85 if rx < 38 else 1.0), r, a.radial(lighten(s.iris, 0.25), darken(s.iris, 0.3)), INK, 3)
+        a.ellipse(x, y, r * 0.5, r * 0.55, "#140c08")
+        a.circle(x - r * 0.3, y - r * 0.4, r * 0.3, "#ffffff")
+    return a
+
+
+def tq_brow(s: FigSpec, which: str) -> Art:
+    a = Art(BW, BH)
+    colour = "#2b2019" if s.clothes else darken(s.fur, 0.5)
+    if which == "l":
+        a.path("M 224 205 Q 258 188 294 206", None, colour, 10)
+    else:
+        a.path("M 372 206 Q 396 192 420 206", None, colour, 9)
+    return a
+
+
+def tq_mouth(s: FigSpec, variant: str, cy: float) -> Art:
+    """The front mouth moved toward the far side and narrowed, as it sits on a turned face."""
+    m = fig_mouth(s, variant, cy)
+    out = Art(m.w, m.h)
+    out.defs, out._n = list(m.defs), m._n
+    out.items = ['<g transform="translate(364 0) scale(0.86 1) translate(-300 0)">', *m.items, "</g>"]
+    return out
+
+
 # ------------------------------------------------------------------------------------------------ BACK
 def back_head(s: FigSpec) -> Art:
     b, base, f = _sub(1), _sub(2), _sub(3)
@@ -572,10 +638,10 @@ def build_views(s: FigSpec, out: Path) -> dict[str, dict]:
     _part(P, out, "three_quarter", "body", "body", "root", mp(300, 600), 0, {"base": turn(fig_body(s), 16, 0.86)}, [-25, 25])
     _part(P, out, "three_quarter", "arm_r", "right_arm", "body", mp(378, 428), 3, {"base": turn(fig_arm(s, 378, -14, right=True), sh, fr)}, [-185, 185])
     _part(P, out, "three_quarter", "head", "head", "body", mp(300, 388), 5, {"base": turn(fig_head(s), sh, fr)}, [-35, 35])
-    _part(P, out, "three_quarter", "eyes", "eyes", "head", mp(300, 262), 6, {v: turn(fig_eyes(s, v), sh, fr) for v in EYE_VARIANTS})
-    _part(P, out, "three_quarter", "pupils", "eyes", "eyes", mp(300, 262), 7, {v: turn(biped_pupils(s, v), sh, fr) for v in ("normal", "small")})
-    _part(P, out, "three_quarter", "brow_l", "eyebrows", "head", mp(232, 200), 8, {"base": turn(biped_brow(s, 232), sh, fr)}, [-40, 40])
-    _part(P, out, "three_quarter", "brow_r", "eyebrows", "head", mp(368, 200), 8, {"base": turn(biped_brow(s, 368), sh, fr)}, [-40, 40])
-    _part(P, out, "three_quarter", "mouth", "mouth", "head", mp(300, mouth_y), 8, {v: turn(fig_mouth(s, v, mouth_y), sh, fr) for v in MOUTH_VARIANTS})
+    _part(P, out, "three_quarter", "eyes", "eyes", "head", (326, 262), 6, {v: tq_eyes(s, v) for v in EYE_VARIANTS})
+    _part(P, out, "three_quarter", "pupils", "eyes", "eyes", (326, 262), 7, {v: tq_pupils(s, v) for v in ("normal", "small")})
+    _part(P, out, "three_quarter", "brow_l", "eyebrows", "head", (258, 200), 8, {"base": tq_brow(s, "l")}, [-40, 40])
+    _part(P, out, "three_quarter", "brow_r", "eyebrows", "head", (396, 200), 8, {"base": tq_brow(s, "r")}, [-40, 40])
+    _part(P, out, "three_quarter", "mouth", "mouth", "head", (364, mouth_y), 8, {v: tq_mouth(s, v, mouth_y) for v in MOUTH_VARIANTS})
     views["three_quarter"] = _rig(P, mp(300, mouth_y + 6), mp(300, 112), mp(410, 548), mp(300, 470))
     return views

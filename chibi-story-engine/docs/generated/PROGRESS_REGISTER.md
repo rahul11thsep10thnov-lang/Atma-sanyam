@@ -7,21 +7,21 @@ Verifier result: **no problems**.
 ## Counts
 
 - Components (SVG master + PNG each): **227**: barrier 15, building 35, bush 20, cloud 12, flower 20, grass 15, lamp 15, mountain 10, opening 20, rock 20, tree 30, water 15
-- Master backgrounds (wide): **178**; medium compositions **171**; close-up compositions **171**; 171 backgrounds have all three, 7 have the wide composition only
+- Master backgrounds (wide): **178**; medium compositions **178**; close-up compositions **178**; 178 backgrounds have all three, 0 have the wide composition only
 - Characters: **119** (animal 29, bird 20, human 44, mythological 17 new, plus the original nine); rigs: biped_chibi 113, chelonian 2, quadruped_reptile 3, serpentine_reptile 1
 - Characters with SVG masters 119, four views 119, 15 expressions 119, 15 poses 119, validated rigs 119
 - Original nine: 9 upgraded to version 2 (version 1 intact), 9 fully upgraded (SVG, four views, 15 + 15, valid rig)
-- Story research: 15 sources consulted, 1375 source records and 43 seed entries; verified 1394, cross-verified 8, unverified 11, research pending 3; 5 of 16 regions have any consulted source
+- Story research: 16 sources consulted, 1386 source records and 43 seed entries; verified 1407, cross-verified 8, unverified 11, research pending 1; 5 of 16 regions have any consulted source
 
 ## The five legacy gaps
 
 | Gap | Status |
 |---|---|
 | 1. Four views | **Closed.** 119 of 119 characters have front, side, three-quarter and back views. Side and back (and head-on / tail-on for reptiles) are drawn separately per angle; the three-quarter view of the biped characters is the front art turned about the vertical axis, and for reptiles it is the side body foreshortened with the head-on head turned toward the viewer. Head-on views of reptiles fix the jaw and omit parts that cannot be seen. |
-| 2. Three compositions | **Closed for the master backgrounds.** 171 backgrounds have wide, medium and close-up compositions (re-arranged, larger, fewer elements, scaled and pulled-together anchors; sky, wall and ground are shared). The 7 original hand-coded backgrounds have SVG masters (version 2, PNGs unchanged) but no medium or close-up composition. |
+| 2. Three compositions | **Closed for the master backgrounds.** 178 backgrounds have wide, medium and close-up compositions (re-arranged, larger, fewer elements, scaled and pulled-together anchors; sky, wall and ground are shared). The 0 original hand-coded backgrounds have SVG masters (version 2, PNGs unchanged) but no medium or close-up composition. |
 | 3. Original nine upgraded | **Closed** (9 of 9 fully upgraded): SVG masters, four views, 15 expressions, 15 poses, valid rig; version 1 intact and retrievable; nothing is approved. |
 | 4. Reptile rigs | **Closed.** Articulated `quadruped_reptile` (crocodile, crocodile's wife, lizard), `chelonian` (turtle, tortoise) and `serpentine_reptile` (snake) with 20 new clips; rig tests: 48 passed. The old upright turtle, tortoise, snake and lizard remain in version 1. |
-| 5. Story catalogue | **Partly closed.** 15 real sources were fetched and parsed (Ryder's Panchatantra, Arnold's Hitopadesa, a 547-row Jataka table, the Perry Index via Wikipedia, two regional collections). Vikram-Betal and Singhasan Battisi tale lists are pending (Project Gutenberg was down), Akbar-Birbal and Tenali Raman have no edition index, most regions are unresearched. The collection register says so. |
+| 5. Story catalogue | **Partly closed.** 16 real sources were fetched and parsed (Ryder's Panchatantra, Arnold's Hitopadesa, a 547-row Jataka table, the Perry Index via Wikipedia, Burton's Vikram and the Vampire, four regional collections). Burton's 1870 Vikram-Betal selection (11 tales) is indexed; Singhasan Battisi has no tale list yet, Akbar-Birbal and Tenali Raman have no edition index, most regions are unresearched. The collection register says so. |
 
 ## Known gaps (not hidden)
 
