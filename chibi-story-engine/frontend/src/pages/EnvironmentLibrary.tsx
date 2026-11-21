@@ -11,6 +11,7 @@ const TIMES = ["morning", "day", "noon", "evening", "sunset", "night", "moonligh
 const WEATHERS = ["clear", "cloudy", "rain", "fog", "storm", "snow"];
 const SEASONS = ["spring", "summer", "monsoon", "autumn", "winter"];
 const PAGE = 24;
+const isOriginal = (e: Environment) => !e.catalog_code || e.catalog_code.startsWith("ENV-ORG-");
 
 export function EnvironmentLibrary() {
   const { refresh, can } = useStudio();
@@ -23,7 +24,7 @@ export function EnvironmentLibrary() {
   const [target, setTarget] = useState<Record<string, string>>({});
   const [run, busy, error] = useAction();
 
-  const all = useMemo(() => [...(environments.data ?? [])].sort((a, b) => Number(!!a.catalog_code) - Number(!!b.catalog_code)), [environments.data]); // original backgrounds first
+  const all = useMemo(() => [...(environments.data ?? [])].sort((a, b) => Number(!isOriginal(a)) - Number(!isOriginal(b))), [environments.data]); // the backgrounds the library shipped with come first
   const categories = useMemo(() => countBy(all, (e) => e.category ?? "original"), [all]);
   const visible = useMemo(() => all.filter((e) => matches(e, filter)), [all, filter]);
   const env = all.find((e) => e.id === selected) ?? null;
