@@ -1,7 +1,11 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import FigureImage from "@/components/exam/FigureImage";
 import { cn } from "@/lib/utils";
-import { CheckCircle2, XCircle, ArrowLeft } from "lucide-react";
+import { CheckCircle2, XCircle, ArrowLeft, Bookmark, Clock } from "lucide-react";
+import { isBookmarked, toggleBookmark } from "@/lib/localStore";
 
 export interface ResultSolution {
   id: string;
@@ -12,7 +16,18 @@ export interface ResultSolution {
   correctIndex: number;
   selected: number | null;
   explanation: string | null;
+  /** Seconds spent on this question, when known. */
+  seconds?: number | null;
 }
+
+export interface ResultTopic {
+  label: string;
+  correct: number;
+  incorrect: number;
+  total: number;
+}
+
+type Filter = "all" | "incorrect" | "skipped" | "correct";
 
 const fmt = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/0+$/, "").replace(/\.$/, ""));
 
@@ -31,8 +46,11 @@ export default function ExamResult({
   incorrect,
   skipped,
   subjects,
+  topics,
   solutions,
   note,
+  negativeMarksLost,
+  averageSeconds,
 }: {
   title: string;
   exitHref: string;
@@ -48,9 +66,32 @@ export default function ExamResult({
   incorrect: number;
   skipped: number;
   subjects: { label: string; correct: number; total: number }[];
+  /** Chapter-wise breakdown; the weakest chapters are listed first. */
+  topics?: ResultTopic[];
   solutions: ResultSolution[];
   note?: React.ReactNode;
+  negativeMarksLost?: number;
+  averageSeconds?: number | null;
 }) {
+  const [filter, setFilter] = useState<Filter>("all");
+  const [marks, setMarks] = useState<Record<string, boolean>>({});
+  const status = (q: ResultSolution): Exclude<Filter, "all"> =>
+    q.selected == null ? "skipped" : q.selected === q.correctIndex ? "correct" : "incorrect";
+  const counts = useMemo(() => {
+    const c = { all: solutions.length, incorrect: 0, skipped: 0, correct: 0 };
+    for (const q of solutions) c[status(q)]++;
+    return c;
+  }, [solutions]);
+  const shown = solutions.map((q, i) => ({ q, i })).filter(({ q }) => filter === "all" || status(q) === filter);
+  const weak = useMemo(
+    () =>
+      (topics ?? [])
+        .filter((t) => t.total > 0)
+        .map((t) => ({ ...t, pct: Math.round((t.correct / t.total) * 100) }))
+        .sort((a, b) => a.pct - b.pct || b.total - a.total),
+    [topics]
+  );
+  const bookmarked = (id: string) => marks[id] ?? isBookmarked(id);
   return (
       <div className="exam-shell min-h-dvh bg-gray-50">
         <ExamTopBar exitHref={exitHref} />
@@ -68,6 +109,12 @@ export default function ExamResult({
             <Stat label="Incorrect" value={String(incorrect)} tone="text-brand-red" />
             <Stat label="Skipped" value={String(skipped)} tone="text-gray-500" />
           </div>
+          {(negativeMarksLost !== undefined || averageSeconds != null) && (
+            <div className="card p-5 mt-4 grid grid-cols-2 gap-3 text-center">
+              <Stat label="Negative marks" value={negativeMarksLost ? `−${fmt(negativeMarksLost)}` : "0"} tone={negativeMarksLost ? "text-brand-red" : "text-gray-500"} />
+              <Stat label="Avg time / answered" value={averageSeconds != null ? `${Math.round(averageSeconds)}s` : "—"} />
+            </div>
+          )}
 
           <div className="card p-5 mt-4">
             <p className="text-sm font-bold text-gray-900 mb-3">Subject-wise Performance</p>
@@ -83,16 +130,73 @@ export default function ExamResult({
             </div>
           </div>
 
+          {weak.length > 0 && (
+            <div className="card p-5 mt-4">
+              <p className="text-sm font-bold text-gray-900 mb-1">Chapter-wise Performance</p>
+              <p className="mb-3 text-xs text-gray-500">Kamzor chapters upar — inki practice pehle karein.</p>
+              <div className="space-y-2.5">
+                {weak.map((t) => (
+                  <div key={t.label} className="text-sm">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="min-w-0 truncate text-gray-700">{t.label}</span>
+                      <span className="shrink-0 font-medium text-gray-900">
+                        {t.correct}/{t.total} · {t.pct}%
+                      </span>
+                    </div>
+                    <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-gray-100">
+                      <div
+                        className={cn("h-full rounded-full", t.pct >= 70 ? "bg-green-500" : t.pct >= 40 ? "bg-amber-400" : "bg-red-500")}
+                        style={{ width: `${Math.max(4, t.pct)}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="mt-6">
             <p className="text-sm font-bold text-gray-900 mb-3">Question-wise Solutions</p>
+            <div className="mb-3 flex flex-wrap gap-2" role="tablist" aria-label="Filter solutions">
+              {(["all", "incorrect", "skipped", "correct"] as const).map((f) => (
+                <button
+                  key={f}
+                  role="tab"
+                  aria-selected={filter === f}
+                  onClick={() => setFilter(f)}
+                  className={cn(
+                    "rounded-full border px-3 py-1.5 font-display text-[13px] font-semibold",
+                    filter === f ? "border-brand-dark bg-brand-dark text-white" : "border-gray-200 bg-white text-slate-600"
+                  )}
+                >
+                  {{ all: "Sabhi", incorrect: "Galat", skipped: "Chhode", correct: "Sahi" }[f]} ({counts[f]})
+                </button>
+              ))}
+            </div>
+            {shown.length === 0 && <p className="card p-4 text-sm text-gray-500">Is filter mein koi question nahi.</p>}
             <div className="space-y-4">
-              {solutions.map((q, i) => {
+              {shown.map(({ q, i }) => {
                 const isCorrect = q.selected === q.correctIndex;
                 return (
                   <div key={q.id} className="card p-4">
-                    <p className="text-sm font-semibold text-gray-900">
-                      {i + 1}. {q.text}
-                    </p>
+                    <div className="flex items-start gap-2">
+                      <p className="min-w-0 flex-1 text-sm font-semibold text-gray-900">
+                        {i + 1}. {q.text}
+                      </p>
+                      <button
+                        onClick={() => setMarks((m) => ({ ...m, [q.id]: toggleBookmark(q.id) }))}
+                        aria-pressed={bookmarked(q.id)}
+                        aria-label={bookmarked(q.id) ? "Bookmark hatayein" : "Bookmark karein"}
+                        className="-m-1 shrink-0 p-1"
+                      >
+                        <Bookmark size={18} className={bookmarked(q.id) ? "fill-brand-orange text-brand-orange" : "text-gray-400"} />
+                      </button>
+                    </div>
+                    {q.seconds != null && q.seconds > 0 && (
+                      <p className="mt-1 flex items-center gap-1 text-[12px] text-gray-500">
+                        <Clock size={12} /> {q.seconds}s
+                      </p>
+                    )}
                     {q.figure && <FigureImage svg={q.figure} alt={`Question ${i + 1} figure`} className="mt-2 w-full max-w-[min(100%,560px)] rounded-md border border-gray-100" />}
                     <div className={cn("mt-2", q.optionFigures?.some(Boolean) ? "grid grid-cols-2 gap-1.5 sm:grid-cols-4" : "space-y-1.5")}>
                       {q.options.map((opt, oi) => (

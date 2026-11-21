@@ -49,8 +49,27 @@ function writeSession(s: StoredSession | null) {
   }
 }
 
+const DEVICE_KEY = "pc_device_id";
+
+/** A random id for this browser, sent as X-Device-Id. The server stores only
+ * a keyed hash of it (free-test protection); it identifies nobody. */
+export function deviceId(): string | null {
+  try {
+    let id = localStorage.getItem(DEVICE_KEY);
+    if (!id) {
+      id = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 14)}`;
+      localStorage.setItem(DEVICE_KEY, id);
+    }
+    return id;
+  } catch {
+    return null;
+  }
+}
+
 async function request<T>(path: string, init: RequestInit & { token?: string } = {}): Promise<T> {
   const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const device = typeof window !== "undefined" ? deviceId() : null;
+  if (device) headers["X-Device-Id"] = device;
   if (init.token) headers.Authorization = `Bearer ${init.token}`;
   let res: Response;
   try {
@@ -164,8 +183,12 @@ export interface LiveResult {
   attemptId: string;
   mockTestId: string;
   title: string;
+  /** submitted = by the candidate; auto_submitted = closed by the server at the deadline. */
+  status?: "submitted" | "auto_submitted";
   timeTakenSeconds: number | null;
   late: boolean;
+  marksPerQuestion?: number;
+  negativeMarks?: number;
   summary: {
     totalQuestions: number;
     attempted: number;
@@ -175,17 +198,44 @@ export interface LiveResult {
     score: number;
     maxScore: number;
     percentage: number;
+    negativeMarksLost?: number;
+    accuracy?: number;
+    averageSecondsPerAnswered?: number | null;
   };
-  sections: { subjectName: string; total: number; correct: number }[];
+  sections: { subjectName: string; total: number; correct: number; incorrect?: number; unanswered?: number; timeSeconds?: number }[];
+  topics?: { chapterId: string; subjectName: string; chapterName: string; total: number; correct: number; incorrect: number; unanswered: number }[];
   questions: {
     questionId: string;
     questionText: string;
+    subjectName?: string;
+    chapterName?: string | null;
     figureSvg?: string | null;
     options: { label: string; text: string; svg?: string | null }[];
     selectedOption: string | null;
     correctOption: string;
+    isCorrect?: boolean | null;
+    timeSpentSeconds?: number | null;
     explanation: string | null;
   }[];
+}
+
+export interface AnswerPayload {
+  questionId: string;
+  selectedOption: string | null;
+  markedForReview: boolean;
+  timeSpentSeconds?: number | null;
+  version?: number;
+}
+
+export interface AttemptState {
+  attemptId: string;
+  mockTestId: string;
+  status: "in_progress" | "submitted" | "auto_submitted";
+  startedAt: string;
+  deadlineAt: string;
+  serverTime: string;
+  graceSeconds: number;
+  answers: { questionId: string; selectedOption: string | null; markedForReview: boolean; timeSpentSeconds: number | null; version: number }[];
 }
 
 export interface AttemptSummary {
@@ -238,11 +288,19 @@ export const liveApi = {
   },
   getTest: (id: string) => request<LiveTest>(`/mock-tests/${encodeURIComponent(id)}`),
   start: (id: string) => authed<StartedAttempt>(`/mock-tests/${encodeURIComponent(id)}/start`, { method: "POST" }),
-  submit: (id: string, attemptId: string, answers: { questionId: string; selectedOption: string | null; markedForReview: boolean }[]) =>
+  submit: (id: string, attemptId: string, answers: AnswerPayload[]) =>
     authed<LiveResult>(`/mock-tests/${encodeURIComponent(id)}/submit`, {
       method: "POST",
       body: JSON.stringify({ attemptId, answers }),
     }),
+  /** Autosave (versioned: the server keeps the newest change per question). */
+  saveAnswers: (attemptId: string, answers: AnswerPayload[]) =>
+    authed<{ saved: { questionId: string; version: number }[]; stale: string[]; serverTime: string; deadlineAt: string }>(
+      `/attempts/${encodeURIComponent(attemptId)}/answers`,
+      { method: "PUT", body: JSON.stringify({ answers }) }
+    ),
+  attemptState: (attemptId: string) => authed<AttemptState>(`/attempts/${encodeURIComponent(attemptId)}/state`),
+  serverTime: () => request<{ serverTime: string }>("/time"),
   attempts: () => authed<{ items: AttemptSummary[] }>("/attempts"),
   result: (attemptId: string) => authed<LiveResult>(`/attempts/${encodeURIComponent(attemptId)}`),
 };

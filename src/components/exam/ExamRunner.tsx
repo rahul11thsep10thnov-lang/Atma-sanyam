@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import QuestionPalette, { PaletteEntry, QuestionStatus } from "@/components/exam/QuestionPalette";
 import ExamBottomSheet from "@/components/exam/ExamBottomSheet";
 import FigureImage from "@/components/exam/FigureImage";
-import { CheckCircle2, Flag, Clock, ArrowLeft, LayoutGrid, X } from "lucide-react";
+import { CheckCircle2, Flag, Clock, ArrowLeft, LayoutGrid, X, Cloud, CloudOff, Loader2 } from "lucide-react";
 
 export interface RunnerQuestion {
   id: string;
@@ -24,7 +24,12 @@ export interface RunnerAnswer {
   selected: number | null;
   marked: boolean;
   visited: boolean;
+  /** Seconds spent on this question so far (added when leaving it). */
+  seconds?: number;
 }
+
+/** Autosave state shown in the header (live tests only). */
+export type SyncStatus = "saved" | "saving" | "pending" | "offline";
 
 export type RunnerAnswers = Record<string, RunnerAnswer>;
 
@@ -52,11 +57,22 @@ export default function ExamRunner({
   onAnswersChange,
   onSubmit,
   locked = false,
+  deadlineAt,
+  clockOffsetMs = 0,
+  syncStatus,
 }: {
   title: string;
   exitHref: string;
   questions: RunnerQuestion[];
+  /** Fallback countdown (demo tests). Live tests pass `deadlineAt`. */
   initialSeconds: number;
+  /** Server deadline (epoch ms). The countdown is derived from it on every
+   * tick, so a sleeping device, a background tab or a changed phone clock
+   * cannot add time. */
+  deadlineAt?: number;
+  /** Server clock minus this device's clock, in ms. */
+  clockOffsetMs?: number;
+  syncStatus?: SyncStatus;
   initialAnswers?: RunnerAnswers;
   onAnswersChange?: (answers: RunnerAnswers) => void;
   onSubmit: (answers: RunnerAnswers) => void;
@@ -71,25 +87,70 @@ export default function ExamRunner({
       ? { ...base, [first.id]: { ...(base[first.id] ?? { selected: null, marked: false }), visited: true } }
       : base;
   });
-  const [secondsLeft, setSecondsLeft] = useState(Math.max(0, Math.floor(initialSeconds)));
+  const remaining = useCallback(
+    () => (deadlineAt ? Math.max(0, Math.ceil((deadlineAt - (Date.now() + clockOffsetMs)) / 1000)) : null),
+    [deadlineAt, clockOffsetMs]
+  );
+  const [secondsLeft, setSecondsLeft] = useState(() => remaining() ?? Math.max(0, Math.floor(initialSeconds)));
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [online, setOnline] = useState(true);
   const submittedRef = useRef(false);
+  const enteredAtRef = useRef(0);
+  useEffect(() => {
+    enteredAtRef.current = Date.now();
+  }, []);
 
   useEffect(() => {
     if (locked) return;
-    const t = setInterval(() => setSecondsLeft((s) => Math.max(0, s - 1)), 1000);
-    return () => clearInterval(t);
-  }, [locked]);
+    const tick = () => setSecondsLeft((s) => remaining() ?? Math.max(0, s - 1));
+    const t = setInterval(tick, 1000);
+    // Coming back from a background tab or a sleeping phone: correct at once.
+    const onVisible = () => document.visibilityState === "visible" && tick();
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      clearInterval(t);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [locked, remaining]);
+
+  useEffect(() => {
+    const update = () => setOnline(navigator.onLine);
+    update();
+    window.addEventListener("online", update);
+    window.addEventListener("offline", update);
+    return () => {
+      window.removeEventListener("online", update);
+      window.removeEventListener("offline", update);
+    };
+  }, []);
 
   useEffect(() => {
     onAnswersChange?.(answers);
   }, [answers, onAnswersChange]);
 
+  /** The answers with the time spent on the open question added. */
+  const withElapsed = useCallback(
+    (prev: RunnerAnswers, qid: string | undefined): RunnerAnswers => {
+      if (!qid) return prev;
+      const now = Date.now();
+      const elapsed = enteredAtRef.current ? Math.max(0, Math.round((now - enteredAtRef.current) / 1000)) : 0;
+      enteredAtRef.current = now;
+      if (!elapsed) return prev;
+      const base: RunnerAnswer = prev[qid] ?? { selected: null, marked: false, visited: true };
+      return { ...prev, [qid]: { ...base, seconds: (base.seconds ?? 0) + elapsed } };
+    },
+    []
+  );
+
   const handleSubmit = useCallback(() => {
     if (submittedRef.current || locked) return;
     submittedRef.current = true;
-    onSubmit(answers);
-  }, [answers, locked, onSubmit]);
+    setConfirmOpen(false);
+    const final = withElapsed(answers, questions[index]?.id);
+    setAnswers(final);
+    onSubmit(final);
+  }, [answers, locked, onSubmit, withElapsed, questions, index]);
 
   // A failed submission unlocks the runner so it can be tried again.
   useEffect(() => {
@@ -112,11 +173,17 @@ export default function ExamRunner({
   const goTo = useCallback(
     (i: number) => {
       if (i < 0 || i >= questions.length) return;
+      const leaving = questions[index]?.id;
+      setAnswers((prev) => {
+        const next = withElapsed(prev, leaving);
+        const qid = questions[i].id;
+        const base: RunnerAnswer = next[qid] ?? { selected: null, marked: false, visited: false };
+        return { ...next, [qid]: { ...base, visited: true } };
+      });
       setIndex(i);
-      updateAnswer(questions[i].id, { visited: true });
       setPaletteOpen(false);
     },
-    [questions, updateAnswer]
+    [questions, index, withElapsed]
   );
 
   // Keyboard shortcuts: 1-4 select an option, arrows move between
@@ -147,6 +214,9 @@ export default function ExamRunner({
 
   const answeredCount = Object.values(answers).filter((a) => a.selected !== null && a.selected !== undefined).length;
   const markedCount = Object.values(answers).filter((a) => a.marked).length;
+  const visitedCount = questions.filter((q) => answers[q.id]?.visited).length;
+  const notVisitedCount = questions.length - visitedCount;
+  const unansweredCount = questions.length - answeredCount;
   const minutes = Math.floor(secondsLeft / 60);
   const seconds = secondsLeft % 60;
   const timerState = secondsLeft < 60 ? "critical" : secondsLeft < 300 ? "warning" : "normal";
@@ -187,8 +257,11 @@ export default function ExamRunner({
           </Link>
           <div className="min-w-0 flex-1">
             <p className="truncate font-display text-[15px] font-semibold text-brand-dark">{title}</p>
-            <p className="font-display text-[13px] text-slate-500">
-              {answeredCount}/{questions.length} answered
+            <p className="flex flex-wrap items-center gap-x-2 font-display text-[13px] text-slate-500">
+              <span>
+                {answeredCount}/{questions.length} answered
+              </span>
+              <SyncBadge status={syncStatus} online={online} />
             </p>
           </div>
           <div
@@ -260,7 +333,14 @@ export default function ExamRunner({
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-6xl flex-col px-3 pt-4 sm:px-5 lg:flex-row lg:items-start lg:gap-6 lg:pt-6">
+      <div className="mx-auto flex max-w-6xl flex-wrap gap-1.5 px-3 pt-3 font-display text-[12.5px] sm:px-5" aria-label="Question summary">
+        <span className="rounded-full bg-[#e8f8ef] px-2.5 py-1 text-[#0b6b3d]">Answered {answeredCount}</span>
+        <span className="rounded-full bg-[#fdecea] px-2.5 py-1 text-[#b42318]">Not answered {unansweredCount}</span>
+        <span className="rounded-full bg-[#f1eeff] px-2.5 py-1 text-[#5b3fd0]">Marked {markedCount}</span>
+        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-600">Not visited {notVisitedCount}</span>
+      </div>
+
+      <div className="mx-auto flex max-w-6xl flex-col px-3 pt-3 sm:px-5 lg:flex-row lg:items-start lg:gap-6 lg:pt-4">
         {/* Question column */}
         <div className="min-w-0 flex-1 pb-40 lg:pb-8">
           <div className="flex items-center justify-between gap-2">
@@ -338,21 +418,30 @@ export default function ExamRunner({
 
           {/* Action bar: fixed on mobile, in-flow on desktop */}
           <div className="fixed inset-x-0 bottom-0 z-30 border-t border-[var(--card-border)] bg-white pb-safe lg:static lg:mt-6 lg:border-0 lg:bg-transparent">
-            <div className="mx-auto grid max-w-3xl grid-cols-2 gap-2.5 px-3 py-3 lg:max-w-none lg:px-0 lg:py-0">
-              <button onClick={() => goTo(index - 1)} disabled={index === 0} className="exam-btn exam-btn-ghost py-3.5 text-[17px]">
+            <div className="mx-auto grid max-w-3xl grid-cols-6 gap-2 px-3 py-2.5 lg:max-w-none lg:px-0 lg:py-0">
+              <button onClick={() => goTo(index - 1)} disabled={index === 0} className="exam-btn exam-btn-ghost col-span-2 py-3 text-[15px] sm:text-[17px]">
                 ← Prev
               </button>
-              <button onClick={() => goTo(index + 1)} disabled={isLast} className="exam-btn exam-btn-primary py-3.5 text-[17px]">
-                Next →
+              <button
+                onClick={() => {
+                  updateAnswer(current.id, { marked: true, visited: true });
+                  if (!isLast) goTo(index + 1);
+                }}
+                className="exam-btn exam-btn-marked col-span-2 py-3 text-[15px] sm:text-[17px]"
+              >
+                Mark & Next
+              </button>
+              <button onClick={() => goTo(index + 1)} disabled={isLast} className="exam-btn exam-btn-primary col-span-2 py-3 text-[15px] sm:text-[17px]">
+                Save & Next
               </button>
               <button
                 onClick={() => updateAnswer(current.id, { selected: null })}
                 disabled={currentAnswer?.selected === null || currentAnswer?.selected === undefined}
-                className="exam-btn exam-btn-ghost inline-flex items-center justify-center gap-1.5 py-3.5 text-[17px]"
+                className="exam-btn exam-btn-ghost col-span-3 inline-flex items-center justify-center gap-1.5 py-3 text-[15px] sm:text-[17px]"
               >
-                <X size={18} /> Clear
+                <X size={18} /> Clear Response
               </button>
-              <button onClick={handleSubmit} disabled={locked} className="exam-btn exam-btn-dark py-3.5 text-[17px]">
+              <button onClick={() => setConfirmOpen(true)} disabled={locked} className="exam-btn exam-btn-dark col-span-3 py-3 text-[15px] sm:text-[17px]">
                 {locked ? "Submitting…" : "Submit Test →"}
               </button>
             </div>
@@ -372,7 +461,7 @@ export default function ExamRunner({
         <button
           onClick={() => {
             setPaletteOpen(false);
-            handleSubmit();
+            setConfirmOpen(true);
           }}
           disabled={locked}
           className="exam-btn exam-btn-dark mt-4 w-full py-3.5 text-[16px]"
@@ -380,7 +469,54 @@ export default function ExamRunner({
           {locked ? "Submitting…" : "Submit Test →"}
         </button>
       </ExamBottomSheet>
+
+      {confirmOpen && (
+        <div role="dialog" aria-modal="true" aria-labelledby="confirm-title" className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-3 sm:items-center">
+          <div className="w-full max-w-md rounded-3xl bg-white p-5 shadow-xl">
+            <h2 id="confirm-title" className="font-display text-[1.25rem] font-bold text-brand-dark">
+              Test submit karein?
+            </h2>
+            <p className="mt-1 text-[15px] text-slate-600">Submit karne ke baad answers badle nahi ja sakte.</p>
+            <dl className="mt-4 grid grid-cols-2 gap-2 font-display text-[15px]">
+              <div className="rounded-2xl bg-[#e8f8ef] px-3 py-2"><dt className="text-[13px] text-[#0b6b3d]">Answered</dt><dd className="text-[20px] font-bold">{answeredCount}</dd></div>
+              <div className="rounded-2xl bg-[#fdecea] px-3 py-2"><dt className="text-[13px] text-[#b42318]">Not answered</dt><dd className="text-[20px] font-bold">{unansweredCount}</dd></div>
+              <div className="rounded-2xl bg-[#f1eeff] px-3 py-2"><dt className="text-[13px] text-[#5b3fd0]">Marked for review</dt><dd className="text-[20px] font-bold">{markedCount}</dd></div>
+              <div className="rounded-2xl bg-slate-100 px-3 py-2"><dt className="text-[13px] text-slate-600">Time left</dt><dd className="text-[20px] font-bold tabular-nums">{String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}</dd></div>
+            </dl>
+            <div className="mt-5 grid grid-cols-2 gap-2.5">
+              <button onClick={() => setConfirmOpen(false)} className="exam-btn exam-btn-ghost py-3 text-[16px]">
+                Wapas jaayein
+              </button>
+              <button onClick={handleSubmit} disabled={locked} className="exam-btn exam-btn-dark py-3 text-[16px]">
+                Haan, submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+function SyncBadge({ status, online }: { status?: SyncStatus; online: boolean }) {
+  if (!status) return null;
+  const offline = !online || status === "offline";
+  if (offline)
+    return (
+      <span className="inline-flex items-center gap-1 text-[#b42318]" role="status">
+        <CloudOff size={13} /> Offline — answers kept on this device
+      </span>
+    );
+  if (status === "saving" || status === "pending")
+    return (
+      <span className="inline-flex items-center gap-1 text-[#a16207]" role="status">
+        <Loader2 size={13} className="motion-safe:animate-spin" /> Saving…
+      </span>
+    );
+  return (
+    <span className="inline-flex items-center gap-1 text-[#0b6b3d]" role="status">
+      <Cloud size={13} /> Saved
+    </span>
   );
 }
 
