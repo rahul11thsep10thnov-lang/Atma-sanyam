@@ -6,15 +6,23 @@ import type { Env } from '../config/env.js';
 import { notFound } from '../lib/httpError.js';
 import type { SupabaseIdentity } from '../types.js';
 import { createUserSession } from './sessionService.js';
+import { assertGuestCreationAllowed, type ClientSignals } from './accessPolicyService.js';
 
 function publicUser(u: typeof users.$inferSelect) {
   return { id: u.id, displayName: u.displayName, authProvider: u.authProvider, createdAt: u.createdAt };
 }
 
-export async function guestSignIn(db: Db, env: Env, displayName?: string) {
+export async function guestSignIn(db: Db, env: Env, displayName?: string, signals?: ClientSignals) {
+  if (signals) await assertGuestCreationAllowed(db, signals);
   const [user] = await db
     .insert(users)
-    .values({ authProvider: 'guest', displayName: displayName || null, lastSeenAt: new Date() })
+    .values({
+      authProvider: 'guest',
+      displayName: displayName || null,
+      lastSeenAt: new Date(),
+      deviceHash: signals?.deviceHash ?? null,
+      networkHash: signals?.networkHash ?? null,
+    })
     .returning();
   const session = await createUserSession(db, user!.id, env.USER_SESSION_TTL_DAYS);
   return { token: session.token, expiresAt: session.expiresAt, user: publicUser(user!) };

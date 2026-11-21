@@ -61,6 +61,10 @@ describe('exam attempts: concurrency, submission integrity and recovery', () => 
     ctx = await setupTestApp({ env: { ATTEMPT_GRACE_SECONDS: '60' } });
     admin = await adminToken(ctx.app, ctx.db);
     ids = await scopeIds(ctx.app, admin);
+    // Every "candidate" here comes from one test machine (same IP and
+    // browser), which the guest free-quota protection would rightly treat as
+    // one network. That protection has its own tests (access-policy.test.ts).
+    expect((await request(ctx.app).put('/api/admin/access-policy').set(auth(admin)).send({ enabled: false })).status).toBe(200);
     await bank(ids.mathsId, ids.percentageId);
     await bank(ids.reasoningId, ids.seriesId);
     for (let i = 1; i <= 6; i++) tests.push(await publishTest(i));

@@ -7,6 +7,7 @@ import { audit } from '../lib/audit.js';
 import { HttpError, badRequest, conflict, notFound, unprocessable } from '../lib/httpError.js';
 import { log } from '../lib/logger.js';
 import { getSiteSettings, type SiteSettings } from './siteSettingsService.js';
+import { assertGuestClusterQuota, type ClientSignals } from './accessPolicyService.js';
 
 export type MockKind = 'full' | 'subject';
 
@@ -60,7 +61,7 @@ export async function getEntitlement(db: Db, userId: string): Promise<Entitlemen
  * tests of this kind and has no active plan. Tests the user already
  * started are always allowed (resume / retake).
  */
-export async function assertCanStart(db: Db, userId: string, mockTestId: string, kind: MockKind) {
+export async function assertCanStart(db: Db, userId: string, mockTestId: string, kind: MockKind, signals?: ClientSignals) {
   const sub = await activeSubscription(db, userId);
   if (sub) return;
   const [seen] = await db
@@ -71,7 +72,12 @@ export async function assertCanStart(db: Db, userId: string, mockTestId: string,
   if (seen) return;
   const settings = await getSiteSettings(db);
   const used = await usedQuota(db, userId);
-  if (used[kind] < settings.freeQuota[kind]) return;
+  if (used[kind] < settings.freeQuota[kind]) {
+    // Guests: the free tests are shared by the guest accounts of one device
+    // (and, more generously, one network + browser).
+    if (signals) await assertGuestClusterQuota(db, userId, kind, settings.freeQuota[kind], signals);
+    return;
+  }
   throw new HttpError(
     402,
     `Aapke ${settings.freeQuota[kind]} free ${kind === 'full' ? 'full' : 'subject-wise'} mock tests ho chuke hain. ₹${settings.plan.priceInr} mein poore saal ke liye enrol karein.`,

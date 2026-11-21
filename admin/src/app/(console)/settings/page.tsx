@@ -37,10 +37,120 @@ export default function SettingsPage() {
       <PageHead title="Settings" subtitle="Website text and plan, AI pipeline and spending controls, console accounts and your password." />
       <WebsiteSettings />
       <PipelineSettings />
+      {can('settings:write') && <AccessPolicySettings />}
       {can('settings:write') && <AlertSettings />}
       {can('admins:write') && <Admins />}
       <Password />
     </>
+  );
+}
+
+interface AccessPolicy {
+  enabled: boolean;
+  windowDays: number;
+  deviceMultiplier: number;
+  networkMultiplier: number;
+  maxGuestAccountsPerDevicePerDay: number;
+  maxGuestAccountsPerNetworkPerHour: number;
+}
+interface AbuseReport {
+  days: number;
+  guestAccountsCreated: number;
+  byKind: { kind: string; count: number }[];
+  recent: { id: string; kind: string; createdAt: string; device: string | null; network: string | null; details: Record<string, unknown> }[];
+}
+const ABUSE_LABELS: Record<string, string> = {
+  free_quota_device: 'Free tests already used on this device',
+  free_quota_network: 'Free tests already used on this network + browser',
+  guest_accounts_per_device: 'Too many new guest accounts from one device',
+  guest_accounts_per_network: 'Too many new guest accounts from one network',
+};
+
+/** Free-test protection for guest accounts (server-side; nothing here is
+ * trusted from the browser). */
+function AccessPolicySettings() {
+  const { data, error, setData, reload } = useApi<{ policy: AccessPolicy; report: AbuseReport }>('access-policy', { days: 7 });
+  const [msg, setMsg] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  if (!data) return error ? <ErrorAlert error={error} /> : <Loading />;
+  const p = data.policy;
+  const set = (patch: Partial<AccessPolicy>) => setData({ ...data, policy: { ...p, ...patch } });
+  const num = (k: keyof AccessPolicy, label: string, hint: string, min: number, max: number) => (
+    <label className="field">
+      <span>{label}</span>
+      <input className="input" type="number" min={min} max={max} value={p[k] as number} onChange={(e) => set({ [k]: Number(e.target.value) } as Partial<AccessPolicy>)} />
+      <small>{hint}</small>
+    </label>
+  );
+
+  async function save(e: React.FormEvent) {
+    e.preventDefault();
+    setErr(null);
+    setMsg(null);
+    try {
+      await api('access-policy', { method: 'PUT', body: p });
+      setMsg('Free-test protection saved.');
+      await reload();
+    } catch (e2) {
+      setErr(errorMessage(e2));
+    }
+  }
+
+  return (
+    <form className="card" onSubmit={save}>
+      <h2 style={{ marginBottom: 6 }}>Free-test protection</h2>
+      <p className="small muted" style={{ marginTop: 0 }}>
+        Guest accounts on one device share the free tests; on one network with the same browser the limit is higher (hostels, cyber cafés).
+        When it is reached, a guest is asked to sign in for free (Google or mobile OTP) — signed-in accounts are counted per account.
+        Only keyed hashes are stored, never IP addresses.
+      </p>
+      <OkAlert message={msg} />
+      <ErrorAlert error={err} />
+      <label className="check">
+        <input type="checkbox" checked={p.enabled} onChange={(e) => set({ enabled: e.target.checked })} />
+        Protection on
+      </label>
+      <div className="form-grid">
+        {num('windowDays', 'History counted (days)', 'Free tests started in this period count towards the shared limit.', 1, 365)}
+        {num('deviceMultiplier', 'Free tests per device (× free quota)', '1 = the same free tests as one account.', 1, 20)}
+        {num('networkMultiplier', 'Free tests per network + browser (× free quota)', 'Higher because people share Wi-Fi.', 1, 100)}
+        {num('maxGuestAccountsPerDevicePerDay', 'New guest accounts per device per day', 'Beyond this, sign-in is required.', 1, 1000)}
+        {num('maxGuestAccountsPerNetworkPerHour', 'New guest accounts per network per hour', 'Generous: many students can share one network.', 1, 10000)}
+      </div>
+      <button className="btn btn-primary">Save protection settings</button>
+
+      <h3 style={{ margin: '18px 0 6px' }}>Last {data.report.days} days</h3>
+      <p className="small muted" style={{ marginTop: 0 }}>
+        {data.report.guestAccountsCreated.toLocaleString()} guest accounts created.{' '}
+        {data.report.byKind.length === 0 ? 'Nothing suspicious seen.' : data.report.byKind.map((k) => `${ABUSE_LABELS[k.kind] ?? k.kind}: ${k.count}`).join(' · ')}
+      </p>
+      {data.report.recent.length > 0 && (
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>When</th>
+                <th>What</th>
+                <th>Device</th>
+                <th>Network</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.report.recent.slice(0, 20).map((r) => (
+                <tr key={r.id}>
+                  <td className="small">{relTime(r.createdAt)}</td>
+                  <td className="small">{ABUSE_LABELS[r.kind] ?? r.kind}</td>
+                  <td className="small muted">{r.device ?? '—'}</td>
+                  <td className="small muted">{r.network ?? '—'}</td>
+                  <td className="small muted">{Object.entries(r.details).map(([k, v]) => `${k}: ${v}`).join(', ')}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </form>
   );
 }
 

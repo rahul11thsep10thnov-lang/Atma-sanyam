@@ -71,7 +71,7 @@ export async function startAttempt(
   userId: string,
   mockTestId: string,
   graceSeconds: number,
-  opts: { assertAllowed?: (tx: Db) => Promise<void> } = {}
+  opts: { assertAllowed?: (tx: Db) => Promise<void>; signals?: { deviceHash: string | null; networkHash: string | null } } = {}
 ) {
   try {
     return await db.transaction(async (tx) => {
@@ -110,7 +110,7 @@ export async function startAttempt(
       const deadlineAt = new Date(now.getTime() + test.durationMinutes * 60_000);
       const [row] = await tx
         .insert(testAttempts)
-        .values({ userId, mockTestId, startedAt: now, deadlineAt, totalQuestions: served.length })
+        .values({ userId, mockTestId, startedAt: now, deadlineAt, totalQuestions: served.length, deviceHash: opts.signals?.deviceHash ?? null, networkHash: opts.signals?.networkHash ?? null })
         .returning();
       await tx.insert(testAnswers).values(
         served.map((q) => ({

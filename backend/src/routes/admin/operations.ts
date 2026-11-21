@@ -26,6 +26,7 @@ import { createTestPdf, deleteTestPdfs, getTestPdfFile, listTestPdfs } from '../
 import { getSettings, pipelineSettingsSchema, updateSettings } from '../../services/settingsService.js';
 import { getSiteSettings, siteSettingsPatchSchema, updateSiteSettings } from '../../services/siteSettingsService.js';
 import { grantSubscription, listSubscriptionsFor } from '../../services/enrollmentService.js';
+import { abuseReport, accessPolicySchema, getAccessPolicy, updateAccessPolicy } from '../../services/accessPolicyService.js';
 import type { AppDeps } from '../../types.js';
 import { idParam, optionalUuid, pageQuery } from '../util.js';
 
@@ -207,6 +208,19 @@ export function adminOperationsRouter(deps: AppDeps, auth: Auth, limits: RateLim
   r.post('/users/:id/subscription', A, auth.can('settings:write'), async (req, res) => {
     const body = parse(z.object({ days: z.number().int().min(1).max(3650).default(365), note: z.string().trim().max(200).optional() }), req.body ?? {});
     res.status(201).json({ subscription: await grantSubscription(db, idParam(req), body.days, req.admin!.id, body.note) });
+  });
+
+  // Free-test protection (guest accounts): policy and what it has seen.
+  r.get('/access-policy', A, auth.can('settings:write'), async (req, res) => {
+    const q = parse(z.object({ days: z.coerce.number().int().min(1).max(90).optional() }), req.query);
+    res.json({ policy: await getAccessPolicy(db), report: await abuseReport(db, q.days ?? 7) });
+  });
+
+  r.put('/access-policy', A, auth.can('settings:write'), async (req, res) => {
+    const patch = parse(accessPolicySchema.partial(), req.body);
+    const policy = await updateAccessPolicy(db, patch, req.admin!.id);
+    await audit(db, req.admin!.id, 'access_policy.updated', 'settings', null, patch);
+    res.json({ policy });
   });
 
   r.get('/site-settings', A, auth.can('dashboard:read'), async (_req, res) => {

@@ -2,7 +2,7 @@ import express, { Router } from 'express';
 import { and, asc, eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { chapters, exams, subjects } from '../../database/schema.js';
-import { badRequest, notFound, unauthorized } from '../../lib/httpError.js';
+import { badRequest, HttpError, notFound, unauthorized } from '../../lib/httpError.js';
 import { errorMessage, log } from '../../lib/logger.js';
 import { parse } from '../../middleware/validate.js';
 import type { Auth } from '../../middleware/auth.js';
@@ -12,6 +12,7 @@ import { getMockTest, listMockTests } from '../../services/mockTestService.js';
 import { guestSignIn, linkSupabase, logoutUser, profile } from '../../services/userService.js';
 import { assertCanStart, confirmOrder, createOrder, getEntitlement, handleRazorpayWebhook, verifyRazorpayWebhook } from '../../services/enrollmentService.js';
 import { getSiteSettings } from '../../services/siteSettingsService.js';
+import { clientSignals, recordAbuse } from '../../services/accessPolicyService.js';
 import { mockTests } from '../../database/schema.js';
 import type { AppDeps } from '../../types.js';
 import { idParam, optionalUuid, pageQuery } from '../util.js';
@@ -52,7 +53,7 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: RateLimits) {
   // --- Website users -------------------------------------------------------
   r.post('/auth/guest', limits.userAuth, async (req, res) => {
     const body = parse(z.object({ displayName: z.string().trim().max(60).optional() }), req.body ?? {});
-    res.status(201).json(await guestSignIn(db, env, body.displayName));
+    res.status(201).json(await guestSignIn(db, env, body.displayName, await clientSignals(db, req)));
   });
 
   // Exchange a Supabase access token (Google / mobile OTP login on the
@@ -203,9 +204,20 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: RateLimits) {
     if (!test) throw notFound('Mock test not found');
     // The quota / plan check runs inside the start transaction, under a
     // per-user lock, so parallel requests cannot exceed the free quota.
-    const started = await startAttempt(db, req.user!.id, id, env.ATTEMPT_GRACE_SECONDS, {
-      assertAllowed: (tx) => assertCanStart(tx, req.user!.id, id, test.kind),
-    });
+    const signals = await clientSignals(db, req);
+    let started;
+    try {
+      started = await startAttempt(db, req.user!.id, id, env.ATTEMPT_GRACE_SECONDS, {
+        assertAllowed: (tx) => assertCanStart(tx, req.user!.id, id, test.kind, signals),
+        signals,
+      });
+    } catch (e) {
+      if (e instanceof HttpError && e.code === 'login_required') {
+        const d = (e.details ?? {}) as { scope?: string };
+        await recordAbuse(db, `free_quota_${d.scope ?? 'shared'}`, signals, req.user!.id, e.details as Record<string, unknown>);
+      }
+      throw e;
+    }
     res.status(201).json(started); // 201 for both new and resumed (unchanged contract; see `resumed`)
   });
 

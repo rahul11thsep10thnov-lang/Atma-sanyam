@@ -100,9 +100,17 @@ export const users = pgTable(
     phone: text('phone'),
     status: recordStatus('status').notNull().default('active'),
     lastSeenAt: timestamp('last_seen_at', { withTimezone: true }),
+    /** Free-quota protection for guests: keyed hashes (HMAC) of the browser's
+     * device id and of network prefix + browser. Never the raw IP or id. */
+    deviceHash: text('device_hash'),
+    networkHash: text('network_hash'),
     ...timestamps,
   },
-  (t) => [uniqueIndex('users_provider_external_uq').on(t.authProvider, t.externalId)]
+  (t) => [
+    uniqueIndex('users_provider_external_uq').on(t.authProvider, t.externalId),
+    index('users_device_hash_idx').on(t.deviceHash, t.createdAt),
+    index('users_network_hash_idx').on(t.networkHash, t.createdAt),
+  ]
 );
 
 export const userSessions = pgTable(
@@ -643,12 +651,17 @@ export const testAttempts = pgTable(
     late: boolean('late').notNull().default(false),
     /** Last time an answer was saved on the server (autosave). */
     lastSavedAt: timestamp('last_saved_at', { withTimezone: true }),
+    /** Where the attempt was started from (hashed; see users.device_hash). */
+    deviceHash: text('device_hash'),
+    networkHash: text('network_hash'),
   },
   (t) => [
     index('test_attempts_user_idx').on(t.userId, t.startedAt),
     index('test_attempts_mock_idx').on(t.mockTestId, t.status),
     // At most one open attempt per user and test: concurrent "start" requests
     // cannot create two (the database refuses the second insert).
+    index('test_attempts_device_idx').on(t.deviceHash, t.startedAt),
+    index('test_attempts_network_idx').on(t.networkHash, t.startedAt),
     uniqueIndex('test_attempts_one_open_uq')
       .on(t.userId, t.mockTestId)
       .where(sql`status = 'in_progress'`),
@@ -737,6 +750,22 @@ export const auditLogs = pgTable(
 
 /** Admin-editable pipeline settings (batch size, retries, budget…). Values
  * here override the env defaults; see services/settingsService.ts. */
+/** Suspicious activity seen by the free-quota protection. Holds hashes and
+ * counts only — no IPs, names, emails or phone numbers. */
+export const abuseEvents = pgTable(
+  'abuse_events',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    kind: text('kind').notNull(),
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+    deviceHash: text('device_hash'),
+    networkHash: text('network_hash'),
+    details: jsonb('details').$type<Record<string, unknown>>().notNull().default({}),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index('abuse_events_created_idx').on(t.createdAt), index('abuse_events_kind_idx').on(t.kind, t.createdAt)]
+);
+
 export const appSettings = pgTable('app_settings', {
   key: text('key').primaryKey(),
   value: jsonb('value').notNull(),
