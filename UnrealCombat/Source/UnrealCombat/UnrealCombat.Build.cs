@@ -17,6 +17,9 @@ public class UnrealCombat : ModuleRules
 			"PhysicsCore",
 			"AIModule",
 			"DeveloperSettings",
+			"UMG",
+			"Slate",
+			"SlateCore",
 			"UnrealCombatCore"
 		});
 

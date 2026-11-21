@@ -16,6 +16,9 @@
   forward declaration, replaced an unverified wheel-count call.
 * Assists are now credited (opponents who damaged a vehicle in the 10 s before it died).
 
+* Visual Delivery 02 implemented with placeholder art: touch controls (PH-TOUCH-001 v1.0) and in-match HUD
+  (PH-HUD-001 v1.1), string table, theme tokens, boss/reload/cooldown/objective bindings. Debug HUD removed.
+
 ## Next, in order
 
 1. **First engine build** - compile the Unreal module on a machine with UE 5.7 and fix errors.
@@ -38,3 +41,5 @@
 | Rewards trust | Applied on the client (see backend doc). |
 | Localisation | Placeholder HUD strings are not localised (the real UI will be). |
 | Audio | Nothing implemented; ownership to be confirmed. |
+| UI artwork | Icons, fonts and diagrams not delivered; the UI uses colour fills and the engine default font. |
+| UI settings | No settings screen: left-handed layout, control opacity/scale not available. |

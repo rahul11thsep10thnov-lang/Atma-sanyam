@@ -72,6 +72,15 @@ Wallet (two currencies), inventory, loadout, level/XP, completed missions. Every
 purchase carries a transaction id and is idempotent. Stored as versioned text through
 `IUCBackendService`; the shipped implementation is an on-device guest account.
 
+### UI (`AUCHUD`, `UUCHUDWidget`, `UUCTouchControlsWidget`)
+The HUD and touch controls are UMG widgets built in code (no binary Widget Blueprints), laid out at a 1920x1080
+reference inside a Safe Zone with DPI scaling by shortest side. The HUD is read-only; gameplay delegates only
+mark sections dirty and a section is refreshed once per tick, with time-based values at 10 Hz and list-style
+sections rebuilt only when their content changes. All text comes from string table `ST_HUD`
+(`UCStrings`); colours from `UCUITheme.h`. Touch controls and Enhanced Input actions both call
+`AUCVehiclePawn::SetPlayer*`, so there is one input path. Approved artwork replaces the placeholder fills
+without changing this structure.
+
 ### World (`AUCCheckpoint`, `AUCRepairZone`)
 Objective checkpoints and repair/rearm areas.
 

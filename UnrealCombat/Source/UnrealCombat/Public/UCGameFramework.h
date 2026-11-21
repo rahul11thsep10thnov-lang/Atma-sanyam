@@ -104,6 +104,10 @@ public:
 	UPROPERTY(ReplicatedUsing = OnRep_MatchState, BlueprintReadOnly, Category = "Unreal Combat|Match")
 	EUCMatchPhase Phase = EUCMatchPhase::Warmup;
 
+	/** Full length of the timed match in whole seconds (0 = untimed). For display thresholds only. */
+	UPROPERTY(ReplicatedUsing = OnRep_MatchState, BlueprintReadOnly, Category = "Unreal Combat|Match")
+	int32 MatchDurationSeconds = 0;
+
 	/** Whole seconds left in the current phase; negative when untimed. */
 	UPROPERTY(ReplicatedUsing = OnRep_MatchState, BlueprintReadOnly, Category = "Unreal Combat|Match")
 	int32 SecondsRemaining = 0;
@@ -158,6 +162,8 @@ class UNREALCOMBAT_API AUCPlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
+	virtual void BeginPlay() override;
+
 	/** Server -> owning client at the end of a match. Applies rewards to the local profile. */
 	UFUNCTION(Client, Reliable)
 	void ClientReceiveMatchResult(const FUCMatchResult& Result);

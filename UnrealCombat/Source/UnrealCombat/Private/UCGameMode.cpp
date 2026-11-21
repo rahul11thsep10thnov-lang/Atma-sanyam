@@ -5,7 +5,7 @@
 #include "GameFramework/PlayerStart.h"
 #include "TimerManager.h"
 #include "UCAIController.h"
-#include "UCDebugHUD.h"
+#include "UCHUD.h"
 #include "UCDefinitions.h"
 #include "UCGameFramework.h"
 #include "UCVehicleHealthComponent.h"
@@ -21,8 +21,7 @@ AUCGameMode::AUCGameMode()
 	PlayerStateClass = AUCPlayerState::StaticClass();
 	PlayerControllerClass = AUCPlayerController::StaticClass();
 	BotControllerClass = AUCAIController::StaticClass();
-	// Placeholder until the approved HUD is delivered (register entry PH-HUD-001).
-	HUDClass = AUCDebugHUD::StaticClass();
+	HUDClass = AUCHUD::StaticClass(); // PH-HUD-001 v1.1 + PH-TOUCH-001 v1.0
 	// Vehicles are spawned from definitions in RestartPlayer.
 	DefaultPawnClass = nullptr;
 }
@@ -294,6 +293,7 @@ void AUCGameMode::SyncReplicatedState()
 	const float Remaining = Match.GetTimeRemaining();
 	Assign(State->SecondsRemaining, Remaining < 0.f ? -1 : FMath::CeilToInt(Remaining));
 	Assign(State->ScoreLimit, Match.GetConfig().ScoreLimit);
+	Assign(State->MatchDurationSeconds, Match.GetConfig().TimeLimit > 0.f ? FMath::RoundToInt(Match.GetConfig().TimeLimit) : 0);
 	Assign(State->LivesRemaining, Match.GetLivesRemaining());
 	Assign(State->bMissionSucceeded, Match.DidMissionSucceed());
 

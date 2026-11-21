@@ -41,6 +41,28 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Unreal Combat|Vehicle")
 	void SetFiring(bool bPrimary, bool bSecondary);
 
+	// ---- Player input entry points. Enhanced Input actions and the touch controls (PH-TOUCH-001) both end here. ----
+
+	/** -1 (brake / reverse) .. 1 (accelerate). */
+	UFUNCTION(BlueprintCallable, Category = "Unreal Combat|Input")
+	void SetPlayerThrottle(float Value);
+
+	/** -1 (left) .. 1 (right). */
+	UFUNCTION(BlueprintCallable, Category = "Unreal Combat|Input")
+	void SetPlayerSteering(float Value);
+
+	UFUNCTION(BlueprintCallable, Category = "Unreal Combat|Input")
+	void SetPlayerHandbrake(bool bHeld);
+
+	UFUNCTION(BlueprintCallable, Category = "Unreal Combat|Input")
+	void SetPlayerFire(bool bPrimary, bool bHeld);
+
+	UFUNCTION(BlueprintCallable, Category = "Unreal Combat|Input")
+	void PlayerReload();
+
+	UFUNCTION(BlueprintCallable, Category = "Unreal Combat|Input")
+	void PlayerActivateAbility(int32 SlotIndex);
+
 	UFUNCTION(BlueprintPure, Category = "Unreal Combat|Vehicle")
 	const UUCVehicleDefinition* GetDefinition() const { return Definition; }
 

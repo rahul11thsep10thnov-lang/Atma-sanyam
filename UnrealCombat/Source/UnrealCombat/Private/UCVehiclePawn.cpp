@@ -141,41 +141,45 @@ void AUCVehiclePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	}
 }
 
-void AUCVehiclePawn::OnThrottleInput(const FInputActionValue& Value)
+void AUCVehiclePawn::OnThrottleInput(const FInputActionValue& Value) { SetPlayerThrottle(Value.Get<float>()); }
+void AUCVehiclePawn::OnSteerInput(const FInputActionValue& Value) { SetPlayerSteering(Value.Get<float>()); }
+void AUCVehiclePawn::OnHandbrakeInput(const FInputActionValue& Value) { SetPlayerHandbrake(Value.Get<bool>()); }
+void AUCVehiclePawn::OnFirePrimaryInput(const FInputActionValue& Value) { SetPlayerFire(true, Value.Get<bool>()); }
+void AUCVehiclePawn::OnFireSecondaryInput(const FInputActionValue& Value) { SetPlayerFire(false, Value.Get<bool>()); }
+void AUCVehiclePawn::OnReloadInput(const FInputActionValue& Value) { PlayerReload(); }
+void AUCVehiclePawn::OnAbilityInput(const FInputActionValue& Value, int32 SlotIndex) { PlayerActivateAbility(SlotIndex); }
+
+void AUCVehiclePawn::SetPlayerThrottle(float Value)
 {
-	PlayerThrottle = Value.Get<float>();
+	PlayerThrottle = FMath::Clamp(Value, -1.f, 1.f);
 	PushPlayerDriveInput();
 }
 
-void AUCVehiclePawn::OnSteerInput(const FInputActionValue& Value)
+void AUCVehiclePawn::SetPlayerSteering(float Value)
 {
-	PlayerSteering = Value.Get<float>();
+	PlayerSteering = FMath::Clamp(Value, -1.f, 1.f);
 	PushPlayerDriveInput();
 }
 
-void AUCVehiclePawn::OnHandbrakeInput(const FInputActionValue& Value)
+void AUCVehiclePawn::SetPlayerHandbrake(bool bHeld)
 {
-	bPlayerHandbrake = Value.Get<bool>();
+	bPlayerHandbrake = bHeld;
 	PushPlayerDriveInput();
 }
 
-void AUCVehiclePawn::OnFirePrimaryInput(const FInputActionValue& Value)
+void AUCVehiclePawn::SetPlayerFire(bool bPrimary, bool bHeld)
 {
-	PrimaryWeapon->SetTriggerHeld(Value.Get<bool>() && !IsWrecked());
+	UUCWeaponComponent* Weapon = bPrimary ? PrimaryWeapon.Get() : SecondaryWeapon.Get();
+	Weapon->SetTriggerHeld(bHeld && !IsWrecked());
 }
 
-void AUCVehiclePawn::OnFireSecondaryInput(const FInputActionValue& Value)
-{
-	SecondaryWeapon->SetTriggerHeld(Value.Get<bool>() && !IsWrecked());
-}
-
-void AUCVehiclePawn::OnReloadInput(const FInputActionValue& Value)
+void AUCVehiclePawn::PlayerReload()
 {
 	PrimaryWeapon->RequestReload();
 	SecondaryWeapon->RequestReload();
 }
 
-void AUCVehiclePawn::OnAbilityInput(const FInputActionValue& Value, int32 SlotIndex)
+void AUCVehiclePawn::PlayerActivateAbility(int32 SlotIndex)
 {
 	Abilities->ActivateAbility(SlotIndex);
 }

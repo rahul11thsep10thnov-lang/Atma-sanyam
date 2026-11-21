@@ -23,6 +23,7 @@ void AUCGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(AUCGameState, Mode);
 	DOREPLIFETIME(AUCGameState, Phase);
 	DOREPLIFETIME(AUCGameState, SecondsRemaining);
+	DOREPLIFETIME(AUCGameState, MatchDurationSeconds);
 	DOREPLIFETIME(AUCGameState, ScoreLimit);
 	DOREPLIFETIME(AUCGameState, TeamScores);
 	DOREPLIFETIME(AUCGameState, Objectives);
@@ -49,6 +50,16 @@ AUCVehiclePawn* AUCGameState::GetBossVehicle() const
 void AUCGameState::OnRep_MatchState()
 {
 	OnMatchStateChanged.Broadcast(this);
+}
+
+void AUCPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+	if (IsLocalController())
+	{
+		// Remove the engine's default virtual joysticks; PH-TOUCH-001 provides the controls.
+		ActivateTouchInterface(nullptr);
+	}
 }
 
 void AUCPlayerController::ClientReceiveMatchResult_Implementation(const FUCMatchResult& Result)
