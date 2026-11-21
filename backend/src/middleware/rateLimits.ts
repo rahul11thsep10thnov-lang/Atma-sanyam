@@ -26,6 +26,8 @@ export function createRateLimits(disabled = false) {
     }),
     userAuth: rateLimit({ windowMs: 60 * 60_000, limit: 30, skip, ...json('Too many sign-ins from this network. Try later.') }),
     attempts: rateLimit({ windowMs: 60_000, limit: 30, skip, ...json('Too many test submissions. Wait a minute.') }),
+    // Autosave sends one request per answer change (debounced in the browser).
+    autosave: rateLimit({ windowMs: 60_000, limit: 240, skip, ...json('Saving too often. Your answers are kept on this device.') }),
     // AI spend is money: cap how often jobs can be created.
     generation: rateLimit({ windowMs: 60 * 60_000, limit: 30, skip, ...json('Too many generation jobs this hour.') }),
     // PDF rendering is CPU work on the API process.

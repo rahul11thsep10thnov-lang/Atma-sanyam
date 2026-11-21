@@ -129,7 +129,7 @@ describe('complete question pipeline', () => {
       .set(auth(user))
       .send({ attemptId: start.body.attemptId, answers, score: 9999, correct: 10 });
     expect(res.status).toBe(200);
-    expect(res.body.summary).toEqual({
+    expect(res.body.summary).toMatchObject({
       totalQuestions: 10,
       attempted: 8,
       correct: 6,

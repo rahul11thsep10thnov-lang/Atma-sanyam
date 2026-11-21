@@ -395,7 +395,7 @@ async function attemptCounts(db: Db, mockTestId: string) {
     .from(testAttempts)
     .where(eq(testAttempts.mockTestId, mockTestId))
     .groupBy(testAttempts.status);
-  const submitted = Number(rows.find((r) => r.status === 'submitted')?.n ?? 0);
+  const submitted = rows.filter((r) => r.status !== 'in_progress').reduce((n, r) => n + Number(r.n), 0);
   const inProgress = Number(rows.find((r) => r.status === 'in_progress')?.n ?? 0);
   return { total: submitted + inProgress, submitted, inProgress };
 }

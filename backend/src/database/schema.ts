@@ -71,7 +71,9 @@ export const pdfVariant = pgEnum('pdf_variant', ['paper', 'key', 'both']);
 
 export const subscriptionStatus = pgEnum('subscription_status', ['pending', 'active', 'expired', 'cancelled']);
 
-export const attemptStatus = pgEnum('attempt_status', ['in_progress', 'submitted']);
+// in_progress → submitted (by the candidate) or auto_submitted (finalised by
+// the server after the deadline + grace, from the answers saved so far).
+export const attemptStatus = pgEnum('attempt_status', ['in_progress', 'submitted', 'auto_submitted']);
 
 export const sourceKind = pgEnum('source_kind', ['text', 'url', 'syllabus', 'pyq', 'pdf']);
 
@@ -403,6 +405,9 @@ export const questions = pgTable(
     qaGrade: text('qa_grade'),
     qaFlags: text('qa_flags'),
     qaFixes: text('qa_fixes'),
+    /** Content version; raised on every edit. Older versions live in
+     * question_revisions, so past results keep showing what was asked. */
+    version: integer('version').notNull().default(1),
     normalizedText: text('normalized_text').notNull(),
     fingerprint: text('fingerprint').notNull(),
     duplicateOfId: uuid('duplicate_of_id'),
@@ -441,6 +446,44 @@ export const questionOptions = pgTable(
     sortOrder: integer('sort_order').notNull(),
   },
   (t) => [uniqueIndex('question_options_q_label_uq').on(t.questionId, t.label)]
+);
+
+/** One row per earlier version of a question (the content before an edit or
+ * a restore). The live row in `questions` is always the newest version. */
+export interface QuestionSnapshot {
+  questionText: string;
+  explanation: string | null;
+  correctOption: string;
+  difficulty: string;
+  language: string;
+  examId: string;
+  subjectId: string;
+  chapterId: string;
+  topicId: string | null;
+  computation: string | null;
+  sourceName: string | null;
+  sourceReference: string | null;
+  validAsOf: string | null;
+  figureSvg: string | null;
+  options: { label: string; text: string; svg: string | null }[];
+}
+
+export const questionRevisions = pgTable(
+  'question_revisions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    questionId: uuid('question_id')
+      .notNull()
+      .references(() => questions.id, { onDelete: 'cascade' }),
+    version: integer('version').notNull(),
+    snapshot: jsonb('snapshot').$type<QuestionSnapshot>().notNull(),
+    /** Who made the change that replaced this version, and why. */
+    changedBy: uuid('changed_by').references(() => admins.id, { onDelete: 'set null' }),
+    changeKind: text('change_kind').notNull(), // 'edit' | 'restore' | 'bulk_edit'
+    changeSummary: text('change_summary'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex('question_revisions_q_version_uq').on(t.questionId, t.version)]
 );
 
 export const questionReviews = pgTable(
@@ -598,10 +641,17 @@ export const testAttempts = pgTable(
     percentage: numeric('percentage', { precision: 6, scale: 2 }),
     // True when the answers arrived after the deadline + grace period.
     late: boolean('late').notNull().default(false),
+    /** Last time an answer was saved on the server (autosave). */
+    lastSavedAt: timestamp('last_saved_at', { withTimezone: true }),
   },
   (t) => [
     index('test_attempts_user_idx').on(t.userId, t.startedAt),
     index('test_attempts_mock_idx').on(t.mockTestId, t.status),
+    // At most one open attempt per user and test: concurrent "start" requests
+    // cannot create two (the database refuses the second insert).
+    uniqueIndex('test_attempts_one_open_uq')
+      .on(t.userId, t.mockTestId)
+      .where(sql`status = 'in_progress'`),
   ]
 );
 
@@ -622,6 +672,13 @@ export const testAnswers = pgTable(
     isCorrect: boolean('is_correct'),
     markedForReview: boolean('marked_for_review').notNull().default(false),
     timeSpentSeconds: integer('time_spent_seconds'),
+    /** Client-side change counter: an older save never overwrites a newer one. */
+    version: integer('version').notNull().default(0),
+    savedAt: timestamp('saved_at', { withTimezone: true }),
+    /** Answer key and question version as they were when the attempt started:
+     * later edits to the question never change this attempt's score. */
+    correctOptionSnapshot: text('correct_option_snapshot'),
+    questionVersion: integer('question_version'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [

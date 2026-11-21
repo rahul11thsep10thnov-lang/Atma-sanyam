@@ -1,4 +1,5 @@
-import { and, count, desc, eq } from 'drizzle-orm';
+import { and, count, desc, eq, inArray } from 'drizzle-orm';
+import { FINISHED_STATUSES } from './attemptService.js';
 import type { Db } from '../database/client.js';
 import { testAttempts, userSessions, users } from '../database/schema.js';
 import type { Env } from '../config/env.js';
@@ -63,11 +64,11 @@ export async function profile(db: Db, userId: string) {
   const [attempts] = await db
     .select({ n: count() })
     .from(testAttempts)
-    .where(and(eq(testAttempts.userId, userId), eq(testAttempts.status, 'submitted')));
+    .where(and(eq(testAttempts.userId, userId), inArray(testAttempts.status, FINISHED_STATUSES)));
   const [last] = await db
     .select({ submittedAt: testAttempts.submittedAt })
     .from(testAttempts)
-    .where(and(eq(testAttempts.userId, userId), eq(testAttempts.status, 'submitted')))
+    .where(and(eq(testAttempts.userId, userId), inArray(testAttempts.status, FINISHED_STATUSES)))
     .orderBy(desc(testAttempts.submittedAt))
     .limit(1);
   return { ...publicUser(user), testsSubmitted: Number(attempts?.n ?? 0), lastSubmittedAt: last?.submittedAt ?? null };

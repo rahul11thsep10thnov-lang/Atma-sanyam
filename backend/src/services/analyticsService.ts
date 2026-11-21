@@ -1,4 +1,5 @@
-import { count, desc, eq, gte, isNotNull, ne, sql } from 'drizzle-orm';
+import { count, desc, eq, gte, inArray, isNotNull, ne, sql } from 'drizzle-orm';
+import { FINISHED_STATUSES } from './attemptService.js';
 import type { Db } from '../database/client.js';
 import { rowsOf } from '../database/client.js';
 import { exams, generationJobs, mockTests, questions, testAnswers, testAttempts, users } from '../database/schema.js';
@@ -66,7 +67,7 @@ export async function analytics(db: Db, opts: { minAttempts?: number } = {}) {
       avgSeconds: sql<string | null>`avg(${testAttempts.timeTakenSeconds})`,
     })
     .from(testAttempts)
-    .where(eq(testAttempts.status, 'submitted'));
+    .where(inArray(testAttempts.status, FINISHED_STATUSES));
   const [answered] = await db.select({ n: count() }).from(testAnswers).where(isNotNull(testAnswers.selectedOption));
 
   const mostAttemptedExams = await db
@@ -74,7 +75,7 @@ export async function analytics(db: Db, opts: { minAttempts?: number } = {}) {
     .from(testAttempts)
     .innerJoin(mockTests, eq(mockTests.id, testAttempts.mockTestId))
     .innerJoin(exams, eq(exams.id, mockTests.examId))
-    .where(eq(testAttempts.status, 'submitted'))
+    .where(inArray(testAttempts.status, FINISHED_STATUSES))
     .groupBy(exams.id, exams.name)
     .orderBy(desc(count()))
     .limit(10);
@@ -132,7 +133,7 @@ export async function analytics(db: Db, opts: { minAttempts?: number } = {}) {
     await db.execute(sql`
       select to_char(date_trunc('day', submitted_at), 'YYYY-MM-DD') as day, count(*)::int as attempts
       from test_attempts
-      where status = 'submitted' and submitted_at >= now() - interval '30 days'
+      where status in ('submitted', 'auto_submitted') and submitted_at >= now() - interval '30 days'
       group by 1 order by 1`)
   );
 
@@ -189,8 +190,8 @@ export async function listUsers(db: Db, page = 1, pageSize = 50) {
   }>(
     await db.execute(sql`
       select u.id, u.display_name, u.auth_provider, u.email, u.status, u.created_at, u.last_seen_at,
-             count(a.id) filter (where a.status = 'submitted')::int as attempts,
-             avg(a.percentage) filter (where a.status = 'submitted')::float as avg_percentage
+             count(a.id) filter (where a.status in ('submitted', 'auto_submitted'))::int as attempts,
+             avg(a.percentage) filter (where a.status in ('submitted', 'auto_submitted'))::float as avg_percentage
       from users u
       left join test_attempts a on a.user_id = u.id
       group by u.id

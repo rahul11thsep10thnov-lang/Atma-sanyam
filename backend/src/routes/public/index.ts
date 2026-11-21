@@ -7,7 +7,7 @@ import { errorMessage, log } from '../../lib/logger.js';
 import { parse } from '../../middleware/validate.js';
 import type { Auth } from '../../middleware/auth.js';
 import type { RateLimits } from '../../middleware/rateLimits.js';
-import { getResult, listAttempts, startAttempt, submitAttempt } from '../../services/attemptService.js';
+import { getAttemptState, getResult, listAttempts, saveAnswers, startAttempt, submitAttempt } from '../../services/attemptService.js';
 import { getMockTest, listMockTests } from '../../services/mockTestService.js';
 import { guestSignIn, linkSupabase, logoutUser, profile } from '../../services/userService.js';
 import { assertCanStart, confirmOrder, createOrder, getEntitlement, handleRazorpayWebhook, verifyRazorpayWebhook } from '../../services/enrollmentService.js';
@@ -201,24 +201,28 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: RateLimits) {
     const id = idParam(req);
     const [test] = await db.select({ kind: mockTests.kind }).from(mockTests).where(and(eq(mockTests.id, id), eq(mockTests.status, 'published'))).limit(1);
     if (!test) throw notFound('Mock test not found');
-    await assertCanStart(db, req.user!.id, id, test.kind);
-    res.status(201).json(await startAttempt(db, req.user!.id, id, env.ATTEMPT_GRACE_SECONDS));
+    // The quota / plan check runs inside the start transaction, under a
+    // per-user lock, so parallel requests cannot exceed the free quota.
+    const started = await startAttempt(db, req.user!.id, id, env.ATTEMPT_GRACE_SECONDS, {
+      assertAllowed: (tx) => assertCanStart(tx, req.user!.id, id, test.kind),
+    });
+    res.status(201).json(started); // 201 for both new and resumed (unchanged contract; see `resumed`)
+  });
+
+  const answerSchema = z.object({
+    questionId: z.uuid(),
+    selectedOption: z.string().regex(/^[A-D]$/).nullable(),
+    markedForReview: z.boolean().optional(),
+    timeSpentSeconds: z.number().min(0).max(86_400).nullable().optional(),
+    version: z.number().int().min(0).max(1_000_000_000).optional(),
   });
 
   r.post('/mock-tests/:id/submit', limits.attempts, auth.requireUser, async (req, res) => {
     const body = parse(
       z.object({
         attemptId: z.uuid(),
-        answers: z
-          .array(
-            z.object({
-              questionId: z.uuid(),
-              selectedOption: z.string().regex(/^[A-D]$/).nullable(),
-              markedForReview: z.boolean().optional(),
-              timeSpentSeconds: z.number().min(0).max(86_400).nullable().optional(),
-            })
-          )
-          .max(500),
+        // May be empty: the answers already autosaved on the server are used.
+        answers: z.array(answerSchema).max(500),
         // Anything the client claims about its score is ignored by design.
       }),
       req.body
@@ -226,12 +230,30 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: RateLimits) {
     res.json(await submitAttempt(db, req.user!.id, idParam(req), body.attemptId, body.answers, env.ATTEMPT_GRACE_SECONDS));
   });
 
+  // Autosave while the test runs. Each answer carries the client's version
+  // counter; a stale (older) save never overwrites a newer one.
+  r.put('/attempts/:id/answers', limits.autosave, auth.requireUser, async (req, res) => {
+    const body = parse(z.object({ answers: z.array(answerSchema.extend({ version: z.number().int().min(1).max(1_000_000_000) })).min(1).max(500) }), req.body);
+    res.json(await saveAnswers(db, req.user!.id, idParam(req), body.answers, env.ATTEMPT_GRACE_SECONDS));
+  });
+
+  // Resume after a refresh / on another device: server clock, deadline, saved answers.
+  r.get('/attempts/:id/state', auth.requireUser, async (req, res) => {
+    res.set('Cache-Control', 'no-store').json(await getAttemptState(db, req.user!.id, idParam(req), env.ATTEMPT_GRACE_SECONDS));
+  });
+
   r.get('/attempts', auth.requireUser, async (req, res) => {
-    res.json({ items: await listAttempts(db, req.user!.id) });
+    const q = parse(z.object(pageQuery), req.query);
+    res.json({ items: await listAttempts(db, req.user!.id, q) });
   });
 
   r.get('/attempts/:id', auth.requireUser, async (req, res) => {
-    res.json(await getResult(db, req.user!.id, idParam(req)));
+    res.json(await getResult(db, req.user!.id, idParam(req), env.ATTEMPT_GRACE_SECONDS));
+  });
+
+  // Server clock for the exam timer (no auth, never cached).
+  r.get('/time', (_req, res) => {
+    res.set('Cache-Control', 'no-store').json({ serverTime: new Date().toISOString() });
   });
 
   return r;
