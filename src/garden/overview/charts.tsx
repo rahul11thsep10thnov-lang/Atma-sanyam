@@ -5,7 +5,7 @@ import { Animated, Easing, Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Line, Path, Rect, Text as SvgText } from 'react-native-svg';
 import { AppText } from '../../ui/AppText';
 import type { Bucket } from './stats';
-import { formatMinutes } from './stats';
+import { fmtMinutes, fmtShort } from './labels';
 
 export const GREEN = '#2E9E78';
 export const GREEN_DARK = '#16604A';
@@ -57,7 +57,7 @@ export function BarChart({ buckets, width, height = 150, motion }: BarProps) {
             <React.Fragment key={t}>
               <Line x1={left} x2={width - 4} y1={y} y2={y} stroke={GRID} strokeWidth={1} />
               <SvgText x={left - 6} y={y + 3} fontSize={10} fill={INK} textAnchor="end" opacity={0.7}>
-                {t === 0 ? '0' : formatMinutes(maxV * t).replace(' min', 'm')}
+                {t === 0 ? '0' : fmtShort(maxV * t)}
               </SvgText>
             </React.Fragment>
           );
@@ -77,7 +77,7 @@ export function BarChart({ buckets, width, height = 150, motion }: BarProps) {
       </Svg>
       <View style={[StyleSheet.absoluteFill, { left, right: 4, bottom, flexDirection: 'row' }]}>
         {buckets.map((b, i) => (
-          <Pressable key={i} style={{ flex: 1 }} onPress={() => setSel(sel === i ? null : i)} accessibilityRole="button" accessibilityLabel={`${b.title}: ${formatMinutes(b.minutes)}`} />
+          <Pressable key={i} style={{ flex: 1 }} onPress={() => setSel(sel === i ? null : i)} accessibilityRole="button" accessibilityLabel={`${b.title}: ${fmtMinutes(b.minutes)}`} />
         ))}
       </View>
       {sel !== null && (
@@ -86,7 +86,7 @@ export function BarChart({ buckets, width, height = 150, motion }: BarProps) {
             {buckets[sel]!.title}
           </AppText>
           <AppText variant="bodyStrong" style={{ color: '#fff' }}>
-            {formatMinutes(buckets[sel]!.minutes)}
+            {fmtMinutes(buckets[sel]!.minutes)}
           </AppText>
         </View>
       )}
@@ -154,7 +154,7 @@ export function HBars({ rows, width }: HBarProps) {
               {r.label}
             </AppText>
             <AppText variant="caption" style={{ color: INK }}>
-              {formatMinutes(r.minutes)}
+              {fmtMinutes(r.minutes)}
             </AppText>
           </View>
           <View style={{ height: 12, width, backgroundColor: 'rgba(20,60,45,0.08)', borderRadius: 6, overflow: 'hidden' }}>

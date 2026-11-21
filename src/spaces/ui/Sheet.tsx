@@ -6,6 +6,7 @@ import { Animated, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '../../ui/AppText';
 import { IconButton } from '../../ui/Button';
+import { t as tr } from '../../i18n';
 import { radii } from '../../theme/radii';
 import { space } from '../../theme/spacing';
 import { duration, easing } from '../../theme/motion';
@@ -38,7 +39,7 @@ export function Sheet({ visible, title, subtitle, right, onClose, children, maxH
   return (
     <View style={styles.fill} pointerEvents={visible ? 'auto' : 'none'}>
       <Animated.View style={[styles.fill, { backgroundColor: colors.scrim, opacity: t }]}>
-        <Pressable style={styles.fill} onPress={onClose} accessibilityLabel={`Close ${title}`} accessibilityRole="button" />
+        <Pressable style={styles.fill} onPress={onClose} accessibilityLabel={`${tr('close')} ${title}`} accessibilityRole="button" />
       </Animated.View>
       <Animated.View
         style={[styles.sheet, { maxHeight, backgroundColor: colors.surfaceRaised, paddingBottom: insets.bottom + space.lg, transform: [{ translateY }] }, shadow.level4]}
@@ -55,7 +56,7 @@ export function Sheet({ visible, title, subtitle, right, onClose, children, maxH
             ) : null}
           </View>
           {right}
-          <IconButton icon="close" label={`Close ${title}`} size={40} variant="filled" onPress={onClose} />
+          <IconButton icon="close" label={`${tr('close')} ${title}`} size={40} variant="filled" onPress={onClose} />
         </View>
         {children}
       </Animated.View>

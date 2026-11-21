@@ -81,7 +81,7 @@ function WeekBars({ week }: { week: { day: number; minutes: number }[] }) {
     <Card variant="base" padding="lg" style={styles.weekCard}>
       <View style={styles.rowBetween}>
         <AppText variant="subheading">{t('progress.thisWeek')}</AppText>
-        <AppText variant="bodySmall" tone="secondary">{formatMinutes(week.reduce((s, d) => s + d.minutes, 0))} focused</AppText>
+        <AppText variant="bodySmall" tone="secondary">{t('progress.focusedSuffix', { time: formatMinutes(week.reduce((s, d) => s + d.minutes, 0)) })}</AppText>
       </View>
       <View style={styles.bars} accessibilityLabel={t('progress.weekA11y', { days: week.map((d) => `${new Date(d.day).toLocaleDateString(undefined, { weekday: 'short' })} ${d.minutes}`).join(', ') })}>
         {week.map((d) => {

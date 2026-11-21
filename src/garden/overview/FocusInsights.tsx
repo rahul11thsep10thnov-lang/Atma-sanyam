@@ -11,20 +11,23 @@ import { useTheme } from '../../theme/ThemeContext';
 import { space } from '../../theme/spacing';
 import type { SessionRecord } from '../../types';
 import { BarChart, GREEN_DARK, HBars, LineChart } from './charts';
-import {
-  Period, WEEKDAYS, WEEKDAYS_LONG, MONTHS_LONG, completedSessions, distribution, extras, formatMinutes, hourTotals, isCurrentOrFuture, keyToDate, pad2, peak, periodLabel, shiftAnchor, weekdayTotals,
-} from './stats';
+import { t, useLanguage } from '../../i18n';
+import { Period, completedSessions, distribution, extras, hourTotals, isCurrentOrFuture, keyToDate, pad2, peak, periodLabel, shiftAnchor, weekdayTotals } from './stats';
+import { fmtMinutes as formatMinutes, fmtShort, names } from './labels';
 
 const INK = '#173A2E';
 const CARD = '#FBFDFB';
-const PERIODS: { id: Period; label: string }[] = [
-  { id: 'day', label: 'Day' },
-  { id: 'week', label: 'Week' },
-  { id: 'month', label: 'Month' },
-  { id: 'year', label: 'Year' },
+const PERIODS: { id: Period; key: 'gov.day' | 'gov.week' | 'gov.month' | 'gov.year' }[] = [
+  { id: 'day', key: 'gov.day' },
+  { id: 'week', key: 'gov.week' },
+  { id: 'month', key: 'gov.month' },
+  { id: 'year', key: 'gov.year' },
 ];
+const daysText = (n: number) => (n === 1 ? t('ins.day1') : t('ins.days', { count: n }));
 
 export function FocusInsights({ history }: { history: SessionRecord[] }) {
+  const lang = useLanguage();
+  const N = useMemo(() => names(), [lang]);
   const { width } = useWindowDimensions();
   const { colors } = useTheme();
   const reduced = useReducedMotion();
@@ -33,8 +36,8 @@ export function FocusInsights({ history }: { history: SessionRecord[] }) {
 
   const now = useMemo(() => new Date(), [history]);
   const sessions = useMemo(() => completedSessions(history), [history]);
-  const label = periodLabel(period, anchor);
-  const dist = useMemo(() => distribution(sessions, period, anchor), [sessions, period, anchor]);
+  const label = periodLabel(period, anchor, N);
+  const dist = useMemo(() => distribution(sessions, period, anchor, N), [sessions, period, anchor, N]);
   const weekday = useMemo(() => weekdayTotals(sessions), [sessions]);
   const hours = useMemo(() => hourTotals(sessions), [sessions]);
   const wPeak = peak(weekday);
@@ -45,8 +48,8 @@ export function FocusInsights({ history }: { history: SessionRecord[] }) {
 
   // the Progress list pads the screen by 20 on each side; cards add 16 inside
   const innerW = width - 40 - 32;
-  const best = ex.bestDay ? `${keyToDate(ex.bestDay.key).getDate()} ${MONTHS_LONG[keyToDate(ex.bestDay.key).getMonth()]!.slice(0, 3)} · ${formatMinutes(ex.bestDay.minutes)}` : '–';
-  const least = ex.leastDay ? `${keyToDate(ex.leastDay.key).getDate()} ${MONTHS_LONG[keyToDate(ex.leastDay.key).getMonth()]!.slice(0, 3)} · ${formatMinutes(ex.leastDay.minutes)}` : '–';
+  const best = ex.bestDay ? `${keyToDate(ex.bestDay.key).getDate()} ${N.months[keyToDate(ex.bestDay.key).getMonth()]} · ${formatMinutes(ex.bestDay.minutes)}` : '–';
+  const least = ex.leastDay ? `${keyToDate(ex.leastDay.key).getDate()} ${N.months[keyToDate(ex.leastDay.key).getMonth()]} · ${formatMinutes(ex.leastDay.minutes)}` : '–';
 
   return (
     <View style={{ gap: space.md, marginTop: space.xl }}>
@@ -54,44 +57,44 @@ export function FocusInsights({ history }: { history: SessionRecord[] }) {
         {PERIODS.map((p) => (
           <Pressable key={p.id} onPress={() => { setPeriod(p.id); setAnchor(new Date()); }} accessibilityRole="button" accessibilityState={{ selected: period === p.id }} style={[styles.pill, period === p.id && { backgroundColor: colors.primary }]}>
             <AppText variant="caption" style={{ color: period === p.id ? '#fff' : colors.text, fontWeight: '700' }}>
-              {p.label}
+              {t(p.key)}
             </AppText>
           </Pressable>
         ))}
       </View>
       <View style={styles.dateRow}>
-        <Pressable onPress={() => move(-1)} hitSlop={12} accessibilityRole="button" accessibilityLabel="Previous" style={styles.arrow}>
+        <Pressable onPress={() => move(-1)} hitSlop={12} accessibilityRole="button" accessibilityLabel={t('gov.prev')} style={styles.arrow}>
           <Icon name="chevronLeft" size={22} color={colors.text} />
         </Pressable>
         <AppText variant="bodyStrong" style={{ minWidth: 190, textAlign: 'center' }}>
           {label}
         </AppText>
-        <Pressable onPress={() => move(1)} disabled={atEnd} hitSlop={12} accessibilityRole="button" accessibilityLabel="Next" style={[styles.arrow, atEnd && { opacity: 0.3 }]}>
+        <Pressable onPress={() => move(1)} disabled={atEnd} hitSlop={12} accessibilityRole="button" accessibilityLabel={t('gov.next')} style={[styles.arrow, atEnd && { opacity: 0.3 }]}>
           <Icon name="chevronRight" size={22} color={colors.text} />
         </Pressable>
       </View>
 
       <Card>
-        <AppText variant="heading" style={{ color: INK }}>Focused Time Distribution</AppText>
+        <AppText variant="heading" style={{ color: INK }}>{t('ins.distribution')}</AppText>
         <AppText variant="caption" style={{ color: '#5A6B63' }}>{label}</AppText>
         <AppText variant="display" style={{ color: GREEN_DARK, marginVertical: 6 }}>{formatMinutes(dist.total)}</AppText>
         <BarChart buckets={dist.buckets} width={innerW} motion={!reduced} />
         {dist.total === 0 && (
-          <AppText variant="caption" style={{ color: '#5A6B63', textAlign: 'center' }}>No focus time in this period.</AppText>
+          <AppText variant="caption" style={{ color: '#5A6B63', textAlign: 'center' }}>{t('ins.noFocus')}</AppText>
         )}
       </Card>
 
       <Card>
-        <AppText variant="heading" style={{ color: INK }}>Most Focused Day of the Week</AppText>
+        <AppText variant="heading" style={{ color: INK }}>{t('ins.bestDay')}</AppText>
         <AppText variant="bodySmall" style={{ color: '#2B3B35', marginVertical: 4 }}>
-          {wPeak >= 0 ? `Most focused on ${WEEKDAYS_LONG[wPeak]} every week in general.` : 'Complete a session to see your best weekday.'}
+          {wPeak >= 0 ? t('ins.bestDayLine', { day: N.weekdaysLong[wPeak]! }) : t('ins.bestDayNone')}
         </AppText>
-        <LineChart values={weekday} labels={WEEKDAYS} peak={wPeak} width={innerW} />
+        <LineChart values={weekday} labels={N.weekdays} peak={wPeak} width={innerW} />
         <View style={styles.weekRow}>
           {weekday.map((m, i) => (
             <View key={i} style={{ alignItems: 'center', flex: 1 }}>
               <AppText variant="caption" style={{ color: i === wPeak ? GREEN_DARK : '#5A6B63', fontWeight: i === wPeak ? '700' : '400', fontSize: 10 }}>
-                {m ? formatMinutes(m).replace(' min', 'm').replace(' h ', 'h ') : '–'}
+                {m ? fmtShort(m) : '–'}
               </AppText>
             </View>
           ))}
@@ -99,33 +102,33 @@ export function FocusInsights({ history }: { history: SessionRecord[] }) {
       </Card>
 
       <Card>
-        <AppText variant="heading" style={{ color: INK }}>Most Focused Period of the Day</AppText>
+        <AppText variant="heading" style={{ color: INK }}>{t('ins.bestHour')}</AppText>
         <AppText variant="bodySmall" style={{ color: '#2B3B35', marginVertical: 4 }}>
-          {hPeak >= 0 ? `Most focused at ${pad2(hPeak)}:00 every day in general.` : 'Complete a session to see your best hour.'}
+          {hPeak >= 0 ? t('ins.bestHourLine', { hour: pad2(hPeak) }) : t('ins.bestHourNone')}
         </AppText>
         <LineChart values={hours} labels={hours.map((_, i) => pad2(i))} peak={hPeak} width={innerW} every={3} />
       </Card>
 
       <Card>
-        <AppText variant="heading" style={{ color: INK }}>More about your focus</AppText>
+        <AppText variant="heading" style={{ color: INK }}>{t('ins.more')}</AppText>
         <View style={styles.grid}>
-          <Stat label="Completed sessions" value={String(ex.sessions)} />
-          <Stat label="Total focused" value={formatMinutes(ex.totalMinutes)} />
-          <Stat label="Current streak" value={`${ex.currentStreak} day${ex.currentStreak === 1 ? '' : 's'}`} />
-          <Stat label="Longest streak" value={`${ex.longestStreak} day${ex.longestStreak === 1 ? '' : 's'}`} />
-          <Stat label="Average per active day" value={formatMinutes(ex.avgPerActiveDay)} />
-          <Stat label="Average session" value={formatMinutes(ex.avgSession)} />
-          <Stat label="Longest session" value={formatMinutes(ex.longest)} />
-          <Stat label="Active days" value={String(ex.activeDays)} />
-          <Stat label="Best day" value={best} />
-          <Stat label="Quietest day" value={least} />
+          <Stat label={t('ins.sessions')} value={String(ex.sessions)} />
+          <Stat label={t('ins.total')} value={formatMinutes(ex.totalMinutes)} />
+          <Stat label={t('ins.streak')} value={daysText(ex.currentStreak)} />
+          <Stat label={t('ins.longestStreak')} value={daysText(ex.longestStreak)} />
+          <Stat label={t('ins.avgDay')} value={formatMinutes(ex.avgPerActiveDay)} />
+          <Stat label={t('ins.avgSession')} value={formatMinutes(ex.avgSession)} />
+          <Stat label={t('ins.longest')} value={formatMinutes(ex.longest)} />
+          <Stat label={t('ins.activeDays')} value={String(ex.activeDays)} />
+          <Stat label={t('ins.best')} value={best} />
+          <Stat label={t('ins.least')} value={least} />
         </View>
-        <AppText variant="bodyStrong" style={{ color: INK, marginTop: 14, marginBottom: 4 }}>{anchor.getFullYear()} by month</AppText>
-        <HBars rows={ex.monthTotals.map((m, i) => ({ label: MONTHS_LONG[i]!, minutes: m })).filter((r) => r.minutes > 0)} width={innerW} />
+        <AppText variant="bodyStrong" style={{ color: INK, marginTop: 14, marginBottom: 4 }}>{t('ins.byMonth', { year: anchor.getFullYear() })}</AppText>
+        <HBars rows={ex.monthTotals.map((m, i) => ({ label: N.monthsLong[i]!, minutes: m })).filter((r) => r.minutes > 0)} width={innerW} />
         {ex.monthTotals.every((m) => m === 0) && (
-          <AppText variant="caption" style={{ color: '#5A6B63' }}>No focus recorded in {anchor.getFullYear()}.</AppText>
+          <AppText variant="caption" style={{ color: '#5A6B63' }}>{t('ins.noYear', { year: anchor.getFullYear() })}</AppText>
         )}
-        <AppText variant="caption" style={{ color: '#7A8A83', marginTop: 12 }}>Focus by task is not shown: sessions do not record a task yet.</AppText>
+        <AppText variant="caption" style={{ color: '#7A8A83', marginTop: 12 }}>{t('ins.noTask')}</AppText>
       </Card>
     </View>
   );

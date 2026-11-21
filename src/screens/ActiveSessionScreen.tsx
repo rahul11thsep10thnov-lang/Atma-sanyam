@@ -39,7 +39,7 @@ import { group as groupApi, GroupSessionView } from '../social/groupApi';
 import { GroupPanel } from '../components/session/GroupPanel';
 import { SessionRecord } from '../types';
 import { useSettings } from '../context/SettingsContext';
-import { useRemoteConfig } from '../context/RemoteConfigContext';
+import { DEFAULT_CONFIG, RemoteConfig, useRemoteConfig } from '../context/RemoteConfigContext';
 import { track } from '../services/analytics';
 import { AppText } from '../ui/AppText';
 import { IconButton } from '../ui/Button';
@@ -48,7 +48,7 @@ import { typography } from '../theme/typography';
 import { radii } from '../theme/radii';
 import { space } from '../theme/spacing';
 import { useTheme } from '../theme/ThemeContext';
-import { t } from '../i18n';
+import { StringKey, t } from '../i18n';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>;
 
@@ -86,6 +86,8 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
   const { colors } = useTheme();
   const reduced = useReducedMotion();
   const texts = remote.texts;
+  // An admin's own wording wins; the bundled wording follows the person's language.
+  const text = (k: Exclude<keyof RemoteConfig['texts'], 'announcement'>, key: StringKey) => (texts[k] && texts[k] !== DEFAULT_CONFIG.texts[k] ? texts[k] : t(key));
   const insets = useSafeAreaInsets();
   const groupCfg = config.group;
   // In a group the server's clock is the truth: the time left from this person's own start.
@@ -232,7 +234,11 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
           lines.push({ icon: 'puzzle', text: t('session.jigsawEarned', { title: summary.artwork.title, tier: summary.artwork.tier }) });
           setPendingArt(summary.artwork);
         } else if (summary.tooShortForJigsaw) lines.push({ icon: 'puzzle', text: t('session.noJigsaw') });
-        for (const m of summary.milestones) lines.push({ icon: 'sparkles', text: t('session.milestone', { title: m.title, coins: m.coins }) });
+        for (const m of summary.milestones) {
+          const key = `milestone.${m.id}` as StringKey;
+          const title = t(key) === key ? m.title : t(key);
+          lines.push({ icon: 'sparkles', text: t('session.milestone', { title, coins: m.coins }) });
+        }
         setRewardLines(lines);
       })
       .catch(() => undefined);
@@ -456,8 +462,8 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
       {result?.outcome === 'completed' && !placing && (
         <SessionResultSheet
           outcome="completed"
-          title={isPlant ? (newPlant ? t('session.plantDoneTitle', { name: newPlant.name }) : t('session.plantShortTitle')) : texts.sessionCompleteTitle}
-          message={isPlant ? (newPlant ? t(newPlant.place === 'balcony' ? 'session.plantDoneBodyBalcony' : 'session.plantDoneBody', { size: newPlant.size }) : t('session.plantShortBody')) : texts.sessionCompleteMessage}
+          title={isPlant ? (newPlant ? t('session.plantDoneTitle', { name: newPlant.name }) : t('session.plantShortTitle')) : text('sessionCompleteTitle', 'session.completeTitle')}
+          message={isPlant ? (newPlant ? t(newPlant.place === 'balcony' ? 'session.plantDoneBodyBalcony' : 'session.plantDoneBody', { size: newPlant.size }) : t('session.plantShortBody')) : text('sessionCompleteMessage', 'session.completeMessage')}
           lines={rewardLines}
           primaryLabel={pendingArt ? t('session.placeIt') : newPlant ? t(newPlant.place === 'balcony' ? 'session.seeOnBalcony' : 'session.seeInGarden') : inSpace ? t('session.backTo', { space: t('space.balcony').toLowerCase() }) : isPlant ? t('session.backTo', { space: t('tabs.garden').toLowerCase() }) : t('session.backHome')}
           onPrimary={pendingArt ? startPlacing : leave}
@@ -469,8 +475,8 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
       {result?.outcome === 'failed' && (
         <SessionResultSheet
           outcome="failed"
-          title={texts.sessionFailedTitle}
-          message={result.reason === 'left_app' ? texts.sessionLeftAppMessage : texts.sessionGaveUpMessage}
+          title={text('sessionFailedTitle', 'session.failedTitle')}
+          message={isPlant || inSpace ? t(result.reason === 'left_app' ? 'session.plantLeftAppMessage' : 'session.plantGaveUpMessage', { plant: plantLabel }) : result.reason === 'left_app' ? text('sessionLeftAppMessage', 'session.leftAppMessage') : text('sessionGaveUpMessage', 'session.gaveUpMessage')}
           lines={rewardLines}
           primaryLabel={t('session.anotherMoment')}
           onPrimary={leave}

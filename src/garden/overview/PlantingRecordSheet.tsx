@@ -9,10 +9,11 @@ import { AppText } from '../../ui/AppText';
 import { Icon } from '../../ui/Icon';
 import { speciesThumb } from '../../paradise/ui/PlantCatalogSheet';
 import { SPECIES_BY_ID, plantName } from '../../paradise/catalog';
-import { SIZE_LABEL } from '../../growth/size';
 import type { PlantInstance } from '../../paradise/model';
 import type { SessionRecord } from '../../types';
-import { MONTHS, WEEKDAYS, clock, formatMinutes, type Range } from './stats';
+import { clock, type Range } from './stats';
+import { fmtMinutes, names } from './labels';
+import { t, useLanguage } from '../../i18n';
 import { GREEN } from './charts';
 
 type Filter = 'period' | 'all';
@@ -26,13 +27,19 @@ interface Props {
   periodLabel: string;
 }
 
-const dayTitle = (t: number) => {
-  const d = new Date(t);
-  return `${WEEKDAYS[(d.getDay() + 6) % 7]} / ${MONTHS[d.getMonth()]} ${String(d.getDate()).padStart(2, '0')}${d.getFullYear() !== new Date().getFullYear() ? `, ${d.getFullYear()}` : ''}`;
+const dayTitle = (ms: number) => {
+  const d = new Date(ms);
+  const { weekdays, months } = names();
+  return `${weekdays[(d.getDay() + 6) % 7]} / ${months[d.getMonth()]} ${String(d.getDate()).padStart(2, '0')}${d.getFullYear() !== new Date().getFullYear() ? `, ${d.getFullYear()}` : ''}`;
+};
+const dateText = (ms: number) => {
+  const d = new Date(ms);
+  return `${d.getDate()} ${names().months[d.getMonth()]} ${d.getFullYear()}`;
 };
 
 export function PlantingRecordSheet({ visible, onClose, history, plants, range, periodLabel }: Props) {
   const insets = useSafeAreaInsets();
+  const lang = useLanguage();
   const [filter, setFilter] = useState<Filter>('period');
   const [open, setOpen] = useState<string | null>(null);
   const bySession = useMemo(() => new Map(plants.map((p) => [p.sessionId, p])), [plants]);
@@ -48,19 +55,19 @@ export function PlantingRecordSheet({ visible, onClose, history, plants, range, 
       else out.push({ key, title: dayTitle(r.startedAt), rows: [r] });
     }
     return out;
-  }, [history, filter, range]);
+  }, [history, filter, range, lang]);
 
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose} statusBarTranslucent>
       <View style={styles.backdrop}>
-        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel="Close planting record" />
+        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel={t('rec.closeA11y')} />
         <View style={[styles.sheet, { paddingBottom: insets.bottom + 12, maxHeight: '88%' }]}>
           <View style={styles.grab} />
           <View style={styles.head}>
             <AppText variant="heading" style={{ color: '#173A2E', flex: 1 }}>
-              Planting Record ({filter === 'all' ? 'All time' : periodLabel})
+              {t('rec.title', { period: filter === 'all' ? t('rec.allTime') : periodLabel })}
             </AppText>
-            <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel="Close" hitSlop={12}>
+            <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel={t('rec.closeA11y')} hitSlop={12}>
               <Icon name="close" size={22} color="#173A2E" />
             </Pressable>
           </View>
@@ -68,7 +75,7 @@ export function PlantingRecordSheet({ visible, onClose, history, plants, range, 
             {(['period', 'all'] as Filter[]).map((f) => (
               <Pressable key={f} onPress={() => setFilter(f)} accessibilityRole="button" accessibilityState={{ selected: filter === f }} style={[styles.chip, filter === f && { backgroundColor: GREEN, borderColor: GREEN }]}>
                 <AppText variant="caption" style={{ color: filter === f ? '#fff' : '#173A2E' }}>
-                  {f === 'period' ? periodLabel : 'All time'}
+                  {f === 'period' ? periodLabel : t('rec.allTime')}
                 </AppText>
               </Pressable>
             ))}
@@ -76,7 +83,7 @@ export function PlantingRecordSheet({ visible, onClose, history, plants, range, 
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 12 }}>
             {groups.length === 0 && (
               <AppText variant="bodySmall" style={{ color: '#5A6B63', textAlign: 'center', paddingVertical: 32 }}>
-                No sessions in this period yet.
+                {t('rec.none')}
               </AppText>
             )}
             {groups.map((g) => (
@@ -91,28 +98,28 @@ export function PlantingRecordSheet({ visible, onClose, history, plants, range, 
                   const done = r.outcome === 'completed';
                   const isOpen = open === r.id;
                   return (
-                    <Pressable key={r.id} onPress={() => setOpen(isOpen ? null : r.id)} accessibilityRole="button" accessibilityLabel={`Session ${clock(r.startedAt)} to ${clock(r.endedAt)}`} style={styles.card}>
+                    <Pressable key={r.id} onPress={() => setOpen(isOpen ? null : r.id)} accessibilityRole="button" accessibilityLabel={t('rec.sessionA11y', { from: clock(r.startedAt), to: clock(r.endedAt) })} style={styles.card}>
                       <View style={styles.thumb}>{thumb ? <Image source={thumb} style={styles.thumbImg} resizeMode="contain" /> : <Icon name="leaf" size={22} color="#9AAEA5" />}</View>
                       <View style={{ flex: 1 }}>
                         <AppText variant="bodyStrong" style={{ color: '#173A2E' }}>
                           {clock(r.startedAt)} – {clock(r.endedAt)}
                         </AppText>
                         <AppText variant="caption" style={{ color: done ? '#2B3B35' : '#A4573B' }}>
-                          {done ? `${formatMinutes(r.durationMinutes)} focused` : 'Stopped early · no plant'} · Unset
+                          {done ? t('rec.focused', { time: fmtMinutes(r.durationMinutes) }) : t('rec.stopped')} · {t('rec.unset')}
                         </AppText>
                         {isOpen && (
                           <View style={{ marginTop: 6, gap: 2 }}>
                             {plant && speciesId && (
                               <AppText variant="caption" style={{ color: '#2B3B35' }}>
-                                {plantName(speciesId)} · {SIZE_LABEL[plant.size]} ({SPECIES_BY_ID[speciesId]?.habit === 'tree' ? 'tree' : 'plant'}) · planted {new Date(plant.plantedAt).toLocaleDateString()}
+                                {plantName(speciesId)} · {t('paradise.size', { size: plant.size })} ({t(SPECIES_BY_ID[speciesId]?.habit === 'tree' ? 'gov.tree' : 'gov.plant')}) · {t('rec.planted', { date: dateText(plant.plantedAt) })}
                               </AppText>
                             )}
                             <AppText variant="caption" style={{ color: '#2B3B35' }}>
-                              Elapsed {formatMinutes((r.endedAt - r.startedAt) / 60000)} start to end · planned {r.durationMinutes} min
+                              {t('rec.elapsed', { time: fmtMinutes((r.endedAt - r.startedAt) / 60000), minutes: r.durationMinutes })}
                             </AppText>
                             {!done && (
                               <AppText variant="caption" style={{ color: '#A4573B' }}>
-                                {r.failureReason === 'left_app' ? 'You left the app.' : 'You gave up.'}{r.image.kind === 'plant' ? ' A wilted sapling may have been left in the garden.' : ''}
+                                {t(r.failureReason === 'left_app' ? 'rec.leftApp' : 'rec.gaveUp')}{r.image.kind === 'plant' ? ` ${t('rec.sapling')}` : ''}
                               </AppText>
                             )}
                           </View>

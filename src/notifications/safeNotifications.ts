@@ -4,6 +4,8 @@
 // whole app on load there. Loading it lazily and catching the failure lets the
 // app run normally with notifications simply disabled in that environment —
 // they still work fine in a real device/EAS build.
+import { t } from '../i18n';
+
 type NotificationsModule = typeof import('expo-notifications');
 
 let modulePromise: Promise<NotificationsModule | null> | null = null;
@@ -48,7 +50,7 @@ export async function scheduleWarningNotificationAsync(body: string): Promise<st
     const Notifications = await loadNotifications();
     if (!Notifications) return null;
     return await Notifications.scheduleNotificationAsync({
-      content: { title: 'Still there?', body },
+      content: { title: t('session.awayTitle'), body },
       trigger: null,
     });
   } catch {

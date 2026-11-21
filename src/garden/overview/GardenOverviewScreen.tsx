@@ -23,20 +23,21 @@ import type { SessionRecord } from '../../types';
 import { GardenIsland, IslandPlant } from './GardenIsland';
 import { PlantingRecordSheet } from './PlantingRecordSheet';
 import { Period, isCurrentOrFuture, periodLabel, rangeOf, shiftAnchor } from './stats';
+import { countOf, names } from './labels';
+import { t, useLanguage } from '../../i18n';
 
 const FOREST = '#0F3B2C';
 const FOREST_2 = '#165240';
-const CARD = '#FBFDFB';
-const INK = '#173A2E';
-const PERIODS: { id: Period; label: string }[] = [
-  { id: 'day', label: 'Day' },
-  { id: 'week', label: 'Week' },
-  { id: 'month', label: 'Month' },
-  { id: 'year', label: 'Year' },
+const PERIODS: { id: Period; key: 'gov.day' | 'gov.week' | 'gov.month' | 'gov.year' }[] = [
+  { id: 'day', key: 'gov.day' },
+  { id: 'week', key: 'gov.week' },
+  { id: 'month', key: 'gov.month' },
+  { id: 'year', key: 'gov.year' },
 ];
 
 export function GardenOverviewScreen({ onOpenScene }: { onOpenScene: () => void }) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const lang = useLanguage();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const reduced = useReducedMotion();
@@ -82,7 +83,7 @@ export function GardenOverviewScreen({ onOpenScene }: { onOpenScene: () => void 
   );
 
   const range = useMemo(() => rangeOf(period, anchor), [period, anchor]);
-  const label = periodLabel(period, anchor);
+  const label = useMemo(() => periodLabel(period, anchor, names()), [period, anchor, lang]);
 
   // the plants this period's sessions earned, and the totals
   const allPlants = useMemo(() => (paradise?.plants ?? []).filter(isKnown), [paradise]);
@@ -107,12 +108,12 @@ export function GardenOverviewScreen({ onOpenScene }: { onOpenScene: () => void 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: insets.top + 12, paddingBottom: bottomPad }}>
         <View style={styles.titleRow}>
           <AppText variant="headingLarge" style={{ color: '#fff', flex: 1 }}>
-            Garden overview
+            {t('gov.title')}
           </AppText>
-          <Pressable onPress={onOpenScene} accessibilityRole="button" accessibilityLabel="Open the garden scene" style={styles.sceneBtn}>
+          <Pressable onPress={onOpenScene} accessibilityRole="button" accessibilityLabel={t('gov.sceneA11y')} style={styles.sceneBtn}>
             <Icon name="trees" size={16} color="#BFE8D6" />
             <AppText variant="caption" style={{ color: '#BFE8D6' }}>
-              Garden scene
+              {t('gov.scene')}
             </AppText>
           </Pressable>
         </View>
@@ -121,32 +122,32 @@ export function GardenOverviewScreen({ onOpenScene }: { onOpenScene: () => void 
           {PERIODS.map((p) => (
             <Pressable key={p.id} onPress={() => changePeriod(p.id, anchor)} accessibilityRole="button" accessibilityState={{ selected: period === p.id }} style={[styles.pill, period === p.id && styles.pillOn]}>
               <AppText variant="caption" style={{ color: period === p.id ? FOREST : '#CFE9DD', fontWeight: '700' }}>
-                {p.label}
+                {t(p.key)}
               </AppText>
             </Pressable>
           ))}
         </View>
 
         <View style={styles.dateRow}>
-          <Pressable onPress={prev} hitSlop={12} accessibilityRole="button" accessibilityLabel="Previous" style={styles.arrow}>
+          <Pressable onPress={prev} hitSlop={12} accessibilityRole="button" accessibilityLabel={t('gov.prev')} style={styles.arrow}>
             <Icon name="chevronLeft" size={22} color="#fff" />
           </Pressable>
           <AppText variant="bodyStrong" style={{ color: '#fff', minWidth: 190, textAlign: 'center' }}>
             {label}
           </AppText>
-          <Pressable onPress={next} disabled={atEnd} hitSlop={12} accessibilityRole="button" accessibilityLabel="Next" style={[styles.arrow, atEnd && { opacity: 0.3 }]}>
+          <Pressable onPress={next} disabled={atEnd} hitSlop={12} accessibilityRole="button" accessibilityLabel={t('gov.next')} style={[styles.arrow, atEnd && { opacity: 0.3 }]}>
             <Icon name="chevronRight" size={22} color="#fff" />
           </Pressable>
         </View>
 
         <Animated.View style={{ alignItems: 'center', opacity: Animated.multiply(enter, swap), transform: [{ translateY: enter.interpolate({ inputRange: [0, 1], outputRange: [24, 0] }) }, { scale: enter.interpolate({ inputRange: [0, 1], outputRange: [0.94, 1] }) }] }}>
-          <Pressable onPress={() => setRecord(true)} accessibilityRole="button" accessibilityLabel="Open the planting record" accessibilityHint="Shows every session and the plant it earned">
+          <Pressable onPress={() => setRecord(true)} accessibilityRole="button" accessibilityLabel={t('gov.recordA11y')} accessibilityHint={t('gov.recordHint')}>
             <GardenIsland width={islandW} plants={islandPlants} />
           </Pressable>
         </Animated.View>
         {loaded && inRange.length === 0 && (
-          <AppText variant="bodySmall" style={{ color: '#CFE9DD', textAlign: 'center', marginTop: -8 }}>
-            No plants earned in this period yet. Each completed session grows one.
+          <AppText variant="bodySmall" style={{ color: '#CFE9DD', textAlign: 'center', marginTop: -8, paddingHorizontal: 24 }}>
+            {t('gov.empty')}
           </AppText>
         )}
 
@@ -156,7 +157,7 @@ export function GardenOverviewScreen({ onOpenScene }: { onOpenScene: () => void 
               {plantsOnly}
             </AppText>
             <AppText variant="caption" style={{ color: '#BFE8D6' }}>
-              plants
+              {t(plantsOnly === 1 ? 'gov.plant' : 'gov.plants')}
             </AppText>
           </View>
           <View style={styles.counter}>
@@ -164,18 +165,18 @@ export function GardenOverviewScreen({ onOpenScene }: { onOpenScene: () => void 
               {trees}
             </AppText>
             <AppText variant="caption" style={{ color: '#BFE8D6' }}>
-              trees
+              {t(trees === 1 ? 'gov.tree' : 'gov.trees')}
             </AppText>
           </View>
         </View>
-        <AppText variant="caption" style={{ color: '#8FC4AE', textAlign: 'center', marginBottom: 14 }}>
-          All time: {allPlants.length - allTrees} plants · {allTrees} trees · tap the garden for the planting record
+        <AppText variant="caption" style={{ color: '#8FC4AE', textAlign: 'center', marginBottom: 14, paddingHorizontal: 24 }}>
+          {t('gov.allTime', { plants: countOf(allPlants.length - allTrees, 'gov.plant', 'gov.plants'), trees: countOf(allTrees, 'gov.tree', 'gov.trees') })}
         </AppText>
 
-        <Pressable onPress={() => navigation.navigate('Tabs', { screen: 'Progress' })} accessibilityRole="button" accessibilityLabel="See your focus statistics in Progress" style={styles.statsLink}>
+        <Pressable onPress={() => navigation.navigate('Tabs', { screen: 'Progress' })} accessibilityRole="button" accessibilityLabel={t('gov.statsLinkA11y')} style={styles.statsLink}>
           <Icon name="chart" size={18} color="#BFE8D6" />
           <AppText variant="bodySmall" style={{ color: '#BFE8D6', flex: 1 }}>
-            Your focus statistics are in the Progress tab
+            {t('gov.statsLink')}
           </AppText>
           <Icon name="chevronRight" size={18} color="#BFE8D6" />
         </Pressable>

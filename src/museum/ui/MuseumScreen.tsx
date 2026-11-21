@@ -140,7 +140,7 @@ export function MuseumScreen() {
       {chrome && current === 0 && (
         <View style={[styles.hintWrap, { top: insets.top + 56 }]} pointerEvents="none">
           <GlassChip style={styles.toast}>
-            <AppText variant="caption" style={styles.white}>
+            <AppText variant="caption" style={[styles.white, styles.toastText]}>
               {c.owned === 0 ? `${t('museum.emptyWall')} ${t('home.jigsawSizes')}` : t('museum.swipeHint')}
             </AppText>
           </GlassChip>
@@ -193,7 +193,7 @@ export function MuseumScreen() {
       {toast && (
         <View style={[styles.toastWrap, { bottom: tabSpace + 76 }]} pointerEvents="none">
           <GlassChip style={styles.toast}>
-            <AppText variant="caption" style={styles.white}>
+            <AppText variant="caption" style={[styles.white, styles.toastText]}>
               {toast}
             </AppText>
           </GlassChip>
@@ -247,7 +247,8 @@ const styles = StyleSheet.create({
   dockEmphasis: { backgroundColor: CREAM },
   badge: { position: 'absolute', top: 8, right: 16, width: 7, height: 7, borderRadius: 4, backgroundColor: '#F2B66D' },
   toastWrap: { position: 'absolute', left: sp.lg, right: sp.lg, alignItems: 'center' },
-  toast: { height: undefined, paddingVertical: 8, maxWidth: '100%' },
+  toast: { height: 'auto', minHeight: 32, paddingVertical: 8, maxWidth: '100%', borderRadius: 18 },
+  toastText: { flexShrink: 1, textAlign: 'center' },
   scrim: { backgroundColor: 'rgba(20,12,8,0.25)' },
   infoCard: { position: 'absolute', left: sp.lg, right: sp.lg, padding: sp.xl, gap: 4, borderRadius: radii.xl, backgroundColor: 'rgba(251,245,236,0.96)' },
   infoLine: { color: 'rgba(43,33,24,0.72)' },

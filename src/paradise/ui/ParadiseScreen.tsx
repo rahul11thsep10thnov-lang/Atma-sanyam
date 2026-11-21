@@ -36,7 +36,8 @@ const THUMB = require('../../../assets/paradise/plate_thumb.webp');
 
 type Sheet = 'catalog' | 'preview' | 'ad' | null;
 
-export function ParadiseScreen() {
+/** `onOverview`, when given, adds a back pill to the Garden overview next to the title. */
+export function ParadiseScreen({ onOverview }: { onOverview?: () => void } = {}) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<{ key: string; name: string; params?: { arrival?: string } }>();
   const insets = useSafeAreaInsets();
@@ -212,10 +213,11 @@ export function ParadiseScreen() {
             ))}
           </Pressable>
           <View style={styles.titleRow}>
-            <GlassChip>
+            {onOverview && <GlassPill icon="chevronLeft" label={t('gov.overview')} compact onPress={onOverview} accessibilityLabel={t('gov.overviewA11y')} style={styles.overviewPill} />}
+            <GlassChip style={{ flexShrink: 1 }}>
               <Icon name="flower" size="xs" color="#FFFFFF" />
               <AppText variant="caption" style={styles.white} numberOfLines={1}>
-                {t('paradise.title')} · {t('paradise.plantCount', { count: total })}
+                {t('paradise.title')} · {t(total === 1 ? 'paradise.plantCount1' : 'paradise.plantCount', { count: total })}
               </AppText>
             </GlassChip>
             <Tactile onPress={() => setSheet('ad')} accessibilityRole="button" accessibilityLabel={t('space.coinsAndAds')} style={styles.chipBtn}>
@@ -236,7 +238,7 @@ export function ParadiseScreen() {
           <GlassPill icon="chevronLeft" label={t('paradise.wholeGarden')} compact onPress={() => { setView({ mode: 'full' }); setSelected(null); setPenalty(null); }} />
           <GlassChip style={{ flexShrink: 1 }}>
             <AppText variant="caption" style={styles.white} numberOfLines={1}>
-              {segmentLabel(segment)} · {t('paradise.plantCount', { count: perSegment?.[segment] ?? 0 })}
+              {segmentLabel(segment)} · {t((perSegment?.[segment] ?? 0) === 1 ? 'paradise.plantCount1' : 'paradise.plantCount', { count: perSegment?.[segment] ?? 0 })}
             </AppText>
           </GlassChip>
           <GlassPill icon="reset" compact onPress={() => { save(shuffleSegment(state, segment)); say(t('paradise.shuffled')); }} accessibilityLabel={t('paradise.shuffle')} />
@@ -343,6 +345,7 @@ const styles = StyleSheet.create({
   tick: { position: 'absolute', bottom: 2, width: 16, height: 16, borderRadius: 8, backgroundColor: 'rgba(28,20,14,0.6)', alignItems: 'center', justifyContent: 'center' },
   tickText: { color: '#FFFFFF', fontSize: 10, lineHeight: 12 },
   titleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: sp.sm },
+  overviewPill: { height: 32, paddingHorizontal: 10 },
   chipBtn: { borderRadius: radii.pill },
   segTop: { position: 'absolute', left: sp.lg, right: sp.lg, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: sp.sm },
   dockWrap: { position: 'absolute', left: sp.lg, right: sp.lg, alignItems: 'center', gap: 6 },

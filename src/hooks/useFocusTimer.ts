@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 import { cancelScheduledNotificationAsync, scheduleWarningNotificationAsync } from '../notifications/safeNotifications';
+import { t } from '../i18n';
 
 export type TimerStatus = 'running' | 'grace' | 'completed' | 'failed';
 export type FailReason = 'left_app' | 'gave_up';
@@ -124,9 +125,7 @@ export function useFocusTimer({
         setAwaySecondsRemaining(graceSeconds);
 
         if (notificationsEnabled) {
-          scheduleWarningNotificationAsync(
-            `Come back within ${graceSeconds}s or your puzzle session will fail.`
-          ).then((id) => {
+          scheduleWarningNotificationAsync(t('session.awayWarning', { seconds: graceSeconds })).then((id) => {
             warnNotificationIdRef.current = id;
           });
         }

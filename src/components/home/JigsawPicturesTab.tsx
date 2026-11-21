@@ -33,7 +33,7 @@ export function JigsawPicturesTab({ selected, onPick, onSeeAll }: { selected: Ji
   const [rows, setRows] = useState<Record<string, ContentImage[]>>({});
   const [busy, setBusy] = useState<string | null>(null);
   const roots = categories.filter((c) => c.parentId === null);
-  const sections = SECTIONS.map((s) => ({ ...s, category: roots.find((c) => s.match.test(`${c.id} ${c.name}`)) ?? null }));
+  const sections = SECTIONS.map((s) => ({ ...s, category: roots.find((c) => s.match.test(c.id) || s.match.test(c.name)) ?? null }));
 
   useEffect(() => {
     let alive = true;

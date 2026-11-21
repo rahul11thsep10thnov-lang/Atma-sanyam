@@ -17,6 +17,7 @@ import { radii } from '../../theme/radii';
 import { space as sp } from '../../theme/spacing';
 import { useTheme } from '../../theme/ThemeContext';
 import { t } from '../../i18n';
+import { MONETIZATION_ENABLED } from '../../config/features';
 
 interface Props {
   visible: boolean;
@@ -38,8 +39,6 @@ export function thumbFor(space: SpaceId, itemId: string) {
   const f = first?.files?.morning ?? (first ? Object.values(first.files ?? {})[0] : null);
   return f && hasImg(space, f.file) ? img(space, f.file) : null;
 }
-
-const SPACE_LABEL: Record<SpaceId, string> = { balcony: 'Balcony', garden: 'Garden' };
 
 export function StoreSheet({ visible, space, state, rewards, onClose, onState, onRewards, onToast }: Props) {
   const { colors } = useTheme();
@@ -111,11 +110,11 @@ export function StoreSheet({ visible, space, state, rewards, onClose, onState, o
                   {entry.blurb}
                 </AppText>
                 <AppText variant="caption" tone="muted">
-                  ₹{rupeesFor(entry.coins)} · {SPACE_LABEL[which]}
+                  {MONETIZATION_ENABLED ? `₹${rupeesFor(entry.coins)} · ` : ''}{t(`space.${which}`)}
                 </AppText>
               </View>
               {unlocked ? (
-                <Button label={`${entry.coins}`} icon="coins" size="sm" variant={affordable ? 'primary' : 'secondary'} disabled={!affordable} onPress={() => void buy(id)} accessibilityLabel={`Buy ${pack.items[id].name} for ${entry.coins} coins`} />
+                <Button label={`${entry.coins}`} icon="coins" size="sm" variant={affordable ? 'primary' : 'secondary'} disabled={!affordable} onPress={() => void buy(id)} accessibilityLabel={t('store.buyA11y', { name: pack.items[id].name, coins: entry.coins })} />
               ) : (
                 <View style={styles.lock}>
                   <Icon name="lock" size="xs" color={colors.textMuted} />
@@ -133,7 +132,7 @@ export function StoreSheet({ visible, space, state, rewards, onClose, onState, o
 }
 
 export function formatMinutes(m: number) {
-  return m >= 60 ? `${Math.round((m / 60) * 10) / 10} h` : `${m} min`;
+  return m >= 60 ? t('unit.h', { n: Math.round((m / 60) * 10) / 10 }) : t('unit.min', { n: m });
 }
 
 const styles = StyleSheet.create({

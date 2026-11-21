@@ -82,7 +82,17 @@ export const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'Jun
 export const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 export const WEEKDAYS_LONG = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-export function periodLabel(period: Period, anchor: Date): string {
+/** Month and weekday names (weekdays Monday first). English by default; the UI passes the person's language. */
+export interface Names {
+  months: string[];
+  monthsLong: string[];
+  weekdays: string[];
+  weekdaysLong: string[];
+}
+export const EN_NAMES: Names = { months: MONTHS, monthsLong: MONTHS_LONG, weekdays: WEEKDAYS, weekdaysLong: WEEKDAYS_LONG };
+
+export function periodLabel(period: Period, anchor: Date, n: Names = EN_NAMES): string {
+  const { months: MONTHS, monthsLong: MONTHS_LONG, weekdays: WEEKDAYS } = n;
   if (period === 'day') return `${WEEKDAYS[(anchor.getDay() + 6) % 7]}, ${anchor.getDate()} ${MONTHS[anchor.getMonth()]} ${anchor.getFullYear()}`;
   if (period === 'week') {
     const s = startOfWeek(anchor);
@@ -104,7 +114,8 @@ export interface Bucket {
   end: number;
 }
 
-export function buckets(period: Period, anchor: Date): Bucket[] {
+export function buckets(period: Period, anchor: Date, n: Names = EN_NAMES): Bucket[] {
+  const { months: MONTHS, monthsLong: MONTHS_LONG, weekdays: WEEKDAYS } = n;
   const r = rangeOf(period, anchor);
   const out: Bucket[] = [];
   if (period === 'day') {
@@ -130,8 +141,8 @@ export function buckets(period: Period, anchor: Date): Bucket[] {
 /** Minutes of the focused interval that fall inside [a, b). */
 const overlapMinutes = (s: FocusSession, a: number, b: number) => Math.max(0, Math.min(s.focusEnd, b) - Math.max(s.start, a)) / MIN;
 
-export function distribution(sessions: FocusSession[], period: Period, anchor: Date): { buckets: Bucket[]; total: number } {
-  const bs = buckets(period, anchor);
+export function distribution(sessions: FocusSession[], period: Period, anchor: Date, n: Names = EN_NAMES): { buckets: Bucket[]; total: number } {
+  const bs = buckets(period, anchor, n);
   const r = rangeOf(period, anchor);
   for (const s of sessions) {
     if (s.focusEnd <= r.start || s.start >= r.end) continue;
