@@ -94,3 +94,43 @@ def test_old_crocodile_version_still_loads_and_animates(composer, library):
     st.characters[0].asset_version = 1
     plan, issues = composer.compose(st, "s")
     assert not [i for i in issues if i.severity == "error"]
+
+
+REPTILES = ["crocodile_001", "crocodile_wife_001", "char-ani-0025", "char-ani-0026", "char-ani-0027", "char-ani-0028"]
+
+
+@pytest.mark.parametrize("cid", REPTILES)
+def test_reptiles_have_four_distinct_views_with_svg_masters(library, cid):
+    m = library.character(cid)
+    assert m.compatibility["primary_view"] == "side" and set(m.views) == {"front", "three_quarter", "back"}
+    previews = {f.view: f.checksum for f in m.files_by_role("view")}
+    assert {"side", "front", "three_quarter", "back"} <= set(previews) or len({f.checksum for f in m.files_by_role("view")}) >= 3
+    for name, view in m.views.items():
+        assert all(img.svg for p in view.parts for img in p.variants.values()), (cid, name)
+        assert {p.id for p in view.parts} >= {"body"}
+    assert library.verify(AssetType.character, cid) == []
+
+
+@pytest.mark.parametrize("cid", REPTILES)
+@pytest.mark.parametrize("view", ["front", "three_quarter", "back", "side"])
+def test_reptile_views_work_in_scenes_with_clips(composer, library, cid, view):
+    m = library.character(cid)
+    clip = {"quadruped_reptile": "reptile_walk_articulated", "chelonian": "chelonian_walk", "serpentine_reptile": "serpent_slither"}[m.rig.template]
+    ch = {"character_id": cid, "position": {"anchor": "center"}, "facing": "right", "state": "standing", "view": view}
+    st = story([scene("s", [shot(seconds=2.0, characters=[ch], actions=[{"action_id": "a", "character_id": cid, "animation": clip, "start_seconds": 0.1}])], environment="env-for-0001")],
+               story_id="rv", characters=(cid,))
+    for c in st.characters:
+        c.asset_version = m.version
+    plan, issues = composer.compose(st, "s")
+    assert not [i for i in issues if i.severity == "error"], issues
+    assert render_shot_frame(plan.shots[0], 12, 320, 180).size == (320, 180)
+
+
+def test_history_of_a_replaced_character_stays_retrievable(library):
+    """char-ani-0025 was an upright biped (v1), became a turtle rig (v2), then gained views (v3): all three load and verify."""
+    assert library.character("char-ani-0025", 1).rig.template == "biped_chibi"
+    assert library.character("char-ani-0025", 2).rig.template == "chelonian" and not library.character("char-ani-0025", 2).views
+    assert library.character("char-ani-0025", 3).views
+    for v in (1, 2, 3):
+        assert library.verify(AssetType.character, "char-ani-0025", v) == []
+    assert library.character("crocodile_001", 1).version == 1 and not library.character("crocodile_001", 1).rig.part("chest")

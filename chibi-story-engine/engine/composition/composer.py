@@ -143,7 +143,8 @@ class SceneComposer:
                     if view not in manifest.views:
                         have = ", ".join([primary, *manifest.views])
                         raise RigError(f"has no '{view}' view (has: {have})")
-                    manifest = manifest.model_copy(update={"rig": manifest.views[view]})     # every later step reads manifest.rig
+                    hidden = sorted({p.id for p in manifest.rig.parts} - {p.id for p in manifest.views[view].parts})        # drawn in other views, not in this one
+                    manifest = manifest.model_copy(update={"rig": manifest.views[view], "compatibility": {**manifest.compatibility, "hidden_in_view": hidden}})     # every later step reads manifest.rig
                 self._rigs[key] = (manifest, Rig(manifest.rig))
             except EngineError as exc:
                 code = "missing_asset" if isinstance(exc, AssetNotFound) else exc.code

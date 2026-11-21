@@ -22,6 +22,7 @@ from .build import _roles
 from .build_figs import draw_character, role_for
 from .characters import REPTILES
 from .figures import ROSTER
+from .reptile_views import build_rep_views
 from .reptiles import RepSpec, build_rep
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -62,19 +63,19 @@ def run(library_root: Path, only: set[str] | None, log=print) -> list[str]:
             if only and sp.id not in only:
                 continue
             current = lib.character(sp.id)
-            if current.rig.template == {"quad": "quadruped_reptile", "chelonian": "chelonian", "serpent": "serpentine_reptile"}[sp.family] and current.version > 1:
-                log(f"skip {sp.id}: already species-specific (v{current.version})")
+            if current.rig.template == {"quad": "quadruped_reptile", "chelonian": "chelonian", "serpent": "serpentine_reptile"}[sp.family] and current.views:
+                log(f"skip {sp.id}: already has views (v{current.version})")
                 continue
             work = Path(tmp) / sp.id
-            data, manifest = draw_character(sp, work, build_rep, None)
+            data, manifest = draw_character(sp, work, build_rep, build_rep_views)
             files, roles = _roles(work, role_for)
             original = sp.id in ORIGINAL
             if original:
                 diff = rest_difference(lib.asset_dir(AssetType.character, sp.id), current, work, manifest)
                 if diff > 2.0:
                     raise RuntimeError(f"{sp.id}: version 2 at rest differs from version 1 (mean pixel difference {diff:.2f}); refusing to upgrade")
-                changes = {k: data[k] for k in ("rig", "expressions", "poses", "states")}
-                changes["compatibility"] = {**current.compatibility, "primary_view": "side", "rig_family": sp.family, "clips": "quadruped_reptile"}
+                changes = {k: data[k] for k in ("rig", "views", "expressions", "poses", "states")}
+                changes["compatibility"] = {**current.compatibility, "primary_view": "side", "rig_family": sp.family, "clips": "quadruped_reptile", "views": ["side", "front", "three_quarter", "back"]}
                 changes["visual_identity"] = {**current.visual_identity, "family": sp.family}
                 changes.update({"catalog_code": sp.code, "category": "animal", "subcategory": "reptile", "related_stories": sp.stories,
                                 "tags": sorted(set(current.tags) | {"original", "quadruped"})})
@@ -83,7 +84,6 @@ def run(library_root: Path, only: set[str] | None, log=print) -> list[str]:
                 diff = None
                 changes = {k: v for k, v in data.items() if k not in ("id", "asset_type", "files")}
                 changes["files"] = []
-                changes["views"] = {}
                 note = f"Replaced the upright biped figure with the {sp.family} rig; the earlier version stays in versions/v1."
             new = lib.update(AssetType.character, sp.id, changes=changes, files=files, roles=roles, change_summary=note)
             if not original:                                              # drop the superseded working files; v1 keeps its own copy

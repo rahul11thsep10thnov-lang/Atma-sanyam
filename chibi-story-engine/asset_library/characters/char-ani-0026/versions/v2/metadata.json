@@ -1,0 +1,2296 @@
+{
+  "manifest_version": "1.0",
+  "id": "char-ani-0026",
+  "asset_type": "character",
+  "name": "Tortoise",
+  "version": 2,
+  "description": "A slow, wise old tortoise with a brown domed shell and a wrinkled face.",
+  "aliases": [
+    "कच्छप",
+    "धीमा कछुआ",
+    "tortoise",
+    "tortoise",
+    "tortoise"
+  ],
+  "tags": [
+    "chelonian",
+    "chibi",
+    "reptile",
+    "tortoise"
+  ],
+  "catalog_code": "CHAR-ANI-0026",
+  "category": "animal",
+  "subcategory": "reptile",
+  "related_stories": [
+    "panchatantra",
+    "jataka",
+    "hitopadesha",
+    "akbar_birbal",
+    "aesop"
+  ],
+  "licence": {
+    "name": "CC0-1.0",
+    "author": "Chibi Story Animation Engine (procedurally generated)",
+    "source": "generated",
+    "notes": ""
+  },
+  "approval_status": "pending",
+  "compatibility": {
+    "habitat": "ground",
+    "stage_scale": 0.46,
+    "style": "premium_chibi_anime",
+    "primary_view": "side",
+    "rig_family": "chelonian"
+  },
+  "files": [
+    {
+      "role": "expression",
+      "path": "expressions/angry.png",
+      "format": "png",
+      "checksum": "72cd91b2804e591c6d16f0a4f6cdafe448eb55f39af3715ca91955f522ff51ce",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": "angry",
+      "pose": null
+    },
+    {
+      "role": "expression",
+      "path": "expressions/crying.png",
+      "format": "png",
+      "checksum": "b8b971f162c2da9c169d6e7288626c2e3648c1b34a77538b26452e4cd67c25e0",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": "crying",
+      "pose": null
+    },
+    {
+      "role": "expression",
+      "path": "expressions/determined.png",
+      "format": "png",
+      "checksum": "9204d5e1e2fd3b16ebede7058e4f7774f3c92fc19e1328f4497df9692dd5f015",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": "determined",
+      "pose": null
+    },
+    {
+      "role": "expression",
+      "path": "expressions/disappointed.png",
+      "format": "png",
+      "checksum": "f415e296e6652131bf8e5e62a1277c424191b4f5b9712324264c944761f9a986",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": "disappointed",
+      "pose": null
+    },
+    {
+      "role": "expression",
+      "path": "expressions/excited.png",
+      "format": "png",
+      "checksum": "632df410c150cf44d04a46d08913eeed52fcbbd115ef0b9546b2b9e493adea1b",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": "excited",
+      "pose": null
+    },
+    {
+      "role": "expression",
+      "path": "expressions/frightened.png",
+      "format": "png",
+      "checksum": "82db1bb9cdf1e741f77cfdd5f81cf1c85ebd34312259f880fc9e482cf7001a39",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": "frightened",
+      "pose": null
+    },
+    {
+      "role": "expression",
+      "path": "expressions/happy.png",
+      "format": "png",
+      "checksum": "c3f809ba4db256a1178c452938ec83a84bd87fb2c5f4dca1bba9133d6c4daa85",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": "happy",
+      "pose": null
+    },
+    {
+      "role": "expression",
+      "path": "expressions/laughing.png",
+      "format": "png",
+      "checksum": "14e8508f583d1d4607199ddc42166caeb681d984b6724105d398ea6e4edb2f42",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": "laughing",
+      "pose": null
+    },
+    {
+      "role": "expression",
+      "path": "expressions/neutral.png",
+      "format": "png",
+      "checksum": "b0b3a8531075b88ec84e5125e763f5abd7102c0ff1e8282eefd9e5ff78972854",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": "neutral",
+      "pose": null
+    },
+    {
+      "role": "expression",
+      "path": "expressions/sad.png",
+      "format": "png",
+      "checksum": "d512bcc83fe5247339ff4a0aa54518b1aea152a505e20a582bf3c4b9ef0d6c56",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": "sad",
+      "pose": null
+    },
+    {
+      "role": "expression",
+      "path": "expressions/speaking.png",
+      "format": "png",
+      "checksum": "0748b748ab00b12ceb05bd3d06d4457b58f7dd294496cd3ccca4773d2d437647",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": "speaking",
+      "pose": null
+    },
+    {
+      "role": "expression",
+      "path": "expressions/surprised.png",
+      "format": "png",
+      "checksum": "7dd5122712aa8fb055e855da89c62951bc783c433ad8fc064f8500c59e12e245",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": "surprised",
+      "pose": null
+    },
+    {
+      "role": "expression",
+      "path": "expressions/suspicious.png",
+      "format": "png",
+      "checksum": "f24d1a46792ff5d9483e9158e977a44b9ef67fbf8cb670ac049c5024a6da0156",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": "suspicious",
+      "pose": null
+    },
+    {
+      "role": "expression",
+      "path": "expressions/thinking.png",
+      "format": "png",
+      "checksum": "342f29796f4f55aa5824a5ad78724033e66fee6246ed9d7810002f7164c8d110",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": "thinking",
+      "pose": null
+    },
+    {
+      "role": "expression",
+      "path": "expressions/worried.png",
+      "format": "png",
+      "checksum": "e919d3f96ef20cbedfc6e872691b58f17b8cff365e45bf9e711e7c45f9d92e61",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": "worried",
+      "pose": null
+    },
+    {
+      "role": "pose",
+      "path": "poses/climbing.png",
+      "format": "png",
+      "checksum": "631f0bac2dd3fae2c291767e88668ec706b4098c356ee91113238394ac2c7a01",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": "climbing"
+    },
+    {
+      "role": "pose",
+      "path": "poses/dancing.png",
+      "format": "png",
+      "checksum": "4a894552929024289846cce5f4c431c0069e33cb87d99331f5d1bb515171148d",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": "dancing"
+    },
+    {
+      "role": "pose",
+      "path": "poses/falling.png",
+      "format": "png",
+      "checksum": "487854479f56e29ceb345047a7942d59cad6385193b877b8cdc7bf25b20ed338",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": "falling"
+    },
+    {
+      "role": "pose",
+      "path": "poses/fighting.png",
+      "format": "png",
+      "checksum": "d0826c8d9370b46c821b4b7d2f0389c1f1f31a58d3ebdc99eb67fb09ff3aec08",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": "fighting"
+    },
+    {
+      "role": "pose",
+      "path": "poses/holding_object.png",
+      "format": "png",
+      "checksum": "7f0ff4fe386670d758fd8efc9ef749ad03352199133664370c21d27111f6b059",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": "holding_object"
+    },
+    {
+      "role": "pose",
+      "path": "poses/jumping.png",
+      "format": "png",
+      "checksum": "2eb45bda48225649c664fef8d3f9264d6f45cc65e87748b10f33c1b62eeda1fe",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": "jumping"
+    },
+    {
+      "role": "pose",
+      "path": "poses/kneeling.png",
+      "format": "png",
+      "checksum": "ef2d49b7ceb6e2712e018b2fe6ebdfcfe1eb4c27baaf3c87e291218bab3c9149",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": "kneeling"
+    },
+    {
+      "role": "pose",
+      "path": "poses/pointing.png",
+      "format": "png",
+      "checksum": "d320a83efdee428253ecc6b610fb6120a70aff8711cd959705ec91cb27c06be7",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": "pointing"
+    },
+    {
+      "role": "pose",
+      "path": "poses/running.png",
+      "format": "png",
+      "checksum": "8e6d8b434bd29884e658423843c4775eb5a4551b3f85b67075aa450d2b79c811",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": "running"
+    },
+    {
+      "role": "pose",
+      "path": "poses/sitting.png",
+      "format": "png",
+      "checksum": "e0cb54785dd85ea26a6741fd6bb131a94e265cb51afe7af5e382c6eae615c238",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": "sitting"
+    },
+    {
+      "role": "pose",
+      "path": "poses/sleeping.png",
+      "format": "png",
+      "checksum": "6614f7c91a553b550407c2c05883d6bacf7c889de4b1969c15949a1a12da4e83",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": "sleeping"
+    },
+    {
+      "role": "pose",
+      "path": "poses/standing.png",
+      "format": "png",
+      "checksum": "b0b3a8531075b88ec84e5125e763f5abd7102c0ff1e8282eefd9e5ff78972854",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": "standing"
+    },
+    {
+      "role": "pose",
+      "path": "poses/talking.png",
+      "format": "png",
+      "checksum": "4b385b420a191b90cef11768bc09ef665b0d29bda63bdd51c3dba10c08a1e928",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": "talking"
+    },
+    {
+      "role": "pose",
+      "path": "poses/walking.png",
+      "format": "png",
+      "checksum": "40246fe7b245b56ae9a687b438b540a61a42c27ed7a5570067d7e89b8100c1d2",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": "walking"
+    },
+    {
+      "role": "pose",
+      "path": "poses/waving.png",
+      "format": "png",
+      "checksum": "01d371c0d85ef5ed0ca4503b6ff523952e4ab4ae10cd8f09ef52a2ee66ef4cbd",
+      "width": 228,
+      "height": 156,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": "waving"
+    },
+    {
+      "role": "reference",
+      "path": "references/expression_sheet.jpg",
+      "format": "jpeg",
+      "checksum": "56e36a220aa9d91001f8830fd93f59b6249f9cb048fd6166264475db31349f4c",
+      "width": 1500,
+      "height": 984,
+      "duration_seconds": null,
+      "view": "front",
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "reference",
+      "path": "references/front.png",
+      "format": "png",
+      "checksum": "074ee7aeaca8e4ad37f2574947aba9de228981e3c9109a6ff2b1bb2abac7517a",
+      "width": 760,
+      "height": 520,
+      "duration_seconds": null,
+      "view": "front",
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "reference",
+      "path": "references/pose_sheet.jpg",
+      "format": "jpeg",
+      "checksum": "95731d0f761a03a9c9ac543244a1a69b826a8e17ab3ef4f45ac03a2fd458abe1",
+      "width": 1500,
+      "height": 984,
+      "duration_seconds": null,
+      "view": "front",
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "reference",
+      "path": "references/view_sheet.jpg",
+      "format": "jpeg",
+      "checksum": "def6f27aada86bfae7cdbbc9da776e5fb01d5a90adebe76b0388cdadca9d9ab3",
+      "width": 1200,
+      "height": 388,
+      "duration_seconds": null,
+      "view": "all",
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/body_base.png",
+      "format": "png",
+      "checksum": "3951429a028a28a3ea1139f375d6ce4cc43bd047376e5af0ec260cda68e2a2b2",
+      "width": 498,
+      "height": 224,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/body_base.svg",
+      "format": "svg",
+      "checksum": "f2c51ddb25ed32804984bf47e83d0cdde13c73a73b4d94d00cfb297a735d1ca5",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/brow_base.png",
+      "format": "png",
+      "checksum": "728d62d25de2aea8048ee2ee402725f27d5997603d548363b72e8b06260a3789",
+      "width": 64,
+      "height": 22,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/brow_base.svg",
+      "format": "svg",
+      "checksum": "10c45bbad5e24edad5bd63d978be92b5b1af02c82160f99d2ed517118283a460",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/eyes_angry.png",
+      "format": "png",
+      "checksum": "4fa676d079e2f1b5d8d29f2ce43d9909add314d777d7c52202243acfa2928c25",
+      "width": 60,
+      "height": 68,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/eyes_angry.svg",
+      "format": "svg",
+      "checksum": "bbb61a008cace56e29358abf0536277f29291e9d475667e370195f7ab7b1b9f8",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/eyes_closed.png",
+      "format": "png",
+      "checksum": "8db5f32a1a44cb24c4b6564e1193b0b818f4dc3c481fb23d97c4538df4429535",
+      "width": 62,
+      "height": 24,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/eyes_closed.svg",
+      "format": "svg",
+      "checksum": "471577a4aa705620420e1a41b5aea715d2a18e27cae6fa3e325c4cadbd001be4",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/eyes_half.png",
+      "format": "png",
+      "checksum": "2c1751bf02d82ce17921b61ef80e4fc28a3fb46c8c44731852b58014015ace46",
+      "width": 60,
+      "height": 68,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/eyes_half.svg",
+      "format": "svg",
+      "checksum": "fa45ed2440ae1a4031f92ce6ef934e5e845967777ffb2a519df47542452204cb",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/eyes_happy.png",
+      "format": "png",
+      "checksum": "1bb55237074e2f0073705b8f7e2d385ecb2cf37a35f32b243fbf950e75efab92",
+      "width": 62,
+      "height": 30,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/eyes_happy.svg",
+      "format": "svg",
+      "checksum": "917d8c12e65a172232f38db915dd2b824717e664fcad7204b43337638c7c9337",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/eyes_open.png",
+      "format": "png",
+      "checksum": "a27ec2b7370cb6acc97f28576b408574f656155ded9e0e6ffcbea89ba0ab8503",
+      "width": 60,
+      "height": 68,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/eyes_open.svg",
+      "format": "svg",
+      "checksum": "81c3fe9498315f70008ac28fce561254640fa538820ff3595d781322992b89f8",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/eyes_sad.png",
+      "format": "png",
+      "checksum": "3b7d6f747444d03eb1f60af0e4c6daae642ad6099231c7a5e59c6febf03f9d22",
+      "width": 60,
+      "height": 68,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/eyes_sad.svg",
+      "format": "svg",
+      "checksum": "b5ea160affe9106201635fd044f0b7492e5457b7f2d84154385240db7e20e2a9",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/eyes_tear.png",
+      "format": "png",
+      "checksum": "953142925b22123eb9271ee75f6136b053fd7d5f95ed73e4e08bfb50564e7bcb",
+      "width": 60,
+      "height": 109,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/eyes_tear.svg",
+      "format": "svg",
+      "checksum": "d8d9104558d740e61c7e69faf9e229d21c6e3d416fe1d9f18d56a559ab78147f",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/eyes_wide.png",
+      "format": "png",
+      "checksum": "33d9ddd5132ea6f717ee808c0a01226869edadfb9168371019fda11737ff052d",
+      "width": 64,
+      "height": 76,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/eyes_wide.svg",
+      "format": "svg",
+      "checksum": "9a4b2f46f2c705ff87a64623eb4d3ec916898aced41188ad652f847bd6d307e5",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/head_base.png",
+      "format": "png",
+      "checksum": "0638b0e88b83165dc0ba862a1c6ccb327b1ae229edb0203a0d526cdb57cb3b87",
+      "width": 154,
+      "height": 90,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/head_base.svg",
+      "format": "svg",
+      "checksum": "ebea86740248735ca9b5231df861bf67e6f7cb3a9d1259e066991e7e5bfcb4a8",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/jaw_base.png",
+      "format": "png",
+      "checksum": "d30570952f6598ea35d472d87009533bf62eb46ce06de5c43b5c7316ba122206",
+      "width": 131,
+      "height": 43,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/jaw_base.svg",
+      "format": "svg",
+      "checksum": "a92552a8acf6c5aa59d0bba6dd8008fc6b8e901099b70513ebf1c3ec281be516",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/leg_bl_base.png",
+      "format": "png",
+      "checksum": "d156a8011b98c113d35c574fda81093a3329eef8505d5ce5e34a7670e8a20528",
+      "width": 88,
+      "height": 104,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/leg_bl_base.svg",
+      "format": "svg",
+      "checksum": "ee4aa3a5b4e7070549cde09225dd2eb0756323279562b79d668c2a4e5c7de481",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/leg_br_base.png",
+      "format": "png",
+      "checksum": "a2c106e2aac8e5c68caef83177a447d9f4e9748c01140a8d0372ae7fd6a5f929",
+      "width": 88,
+      "height": 104,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/leg_br_base.svg",
+      "format": "svg",
+      "checksum": "ed637605c71c62c55f3f4f1c987c7818daad31ae96b6d3fb6e6d9ce564b66ac2",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/leg_fl_base.png",
+      "format": "png",
+      "checksum": "cee2ebfb871abe51f913fbf7849cfc4c3b253f0bfd221a784ae2a0857be1fa73",
+      "width": 88,
+      "height": 104,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/leg_fl_base.svg",
+      "format": "svg",
+      "checksum": "320ca00b95a3977d8f1b146f9bde7829d5bff0dd4d2721211ae95994cb9e26b1",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/leg_fr_base.png",
+      "format": "png",
+      "checksum": "0e8d8fc7304472abeed3b9b8b050770ed8816ec75edadf6892ad2ddf8a5228a5",
+      "width": 88,
+      "height": 104,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/leg_fr_base.svg",
+      "format": "svg",
+      "checksum": "478c10c2935c510ab0e4f4a1d4a25c227dbc7d4521da3c2b9114be7c44e98008",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/neck_base.png",
+      "format": "png",
+      "checksum": "c1942646c843a1c0ef944caf3b8a040c4cba95becdd7fe706257b3ff48880299",
+      "width": 118,
+      "height": 107,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/neck_base.svg",
+      "format": "svg",
+      "checksum": "6425aef2b42e793c668bd8d95bc19ab0363a3bc5a7e7426f985a63157a973444",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/pupils_normal.png",
+      "format": "png",
+      "checksum": "e4ccfd4f6481d3beb565edbe80f21c8a333c270742f2ecb007a03b90798a7bed",
+      "width": 42,
+      "height": 42,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/pupils_normal.svg",
+      "format": "svg",
+      "checksum": "4028f962234c53a6bff8c86798be4fc968bb77633d65bd534cd2e9658aa6149b",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/pupils_small.png",
+      "format": "png",
+      "checksum": "505dcebd8f05f8a08609dd04a894417aeadcf80c1ccd9b05babb87907532fc24",
+      "width": 30,
+      "height": 30,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/pupils_small.svg",
+      "format": "svg",
+      "checksum": "4a7375c758671d131d4da06c7a65ae0477a3e31d6fd4d9cf3a846f22410b9f86",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/shell_lip_base.png",
+      "format": "png",
+      "checksum": "a480cafa92200cd8178191472b68a8bc9220b9dec156396c9e307e12e085564d",
+      "width": 90,
+      "height": 124,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/shell_lip_base.svg",
+      "format": "svg",
+      "checksum": "73cb360e485b5325ef83b7a0b1859bd737e51c2984c83059ec57dbdc622e0939",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "rig_part",
+      "path": "rig/tail_base.png",
+      "format": "png",
+      "checksum": "d47398fb9d905de8bbcae1c56d9b62412e6c844ce7e34cfe8063679f8b56b79f",
+      "width": 100,
+      "height": 52,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "svg_master",
+      "path": "rig/tail_base.svg",
+      "format": "svg",
+      "checksum": "cb20f0b99342c39ddea9dceb543f30e17fffedcbdafd369722c8c0b44718536f",
+      "width": null,
+      "height": null,
+      "duration_seconds": null,
+      "view": null,
+      "expression": null,
+      "pose": null
+    },
+    {
+      "role": "view",
+      "path": "views/front.png",
+      "format": "png",
+      "checksum": "074ee7aeaca8e4ad37f2574947aba9de228981e3c9109a6ff2b1bb2abac7517a",
+      "width": 760,
+      "height": 520,
+      "duration_seconds": null,
+      "view": "front",
+      "expression": null,
+      "pose": null
+    }
+  ],
+  "created_at": "2026-11-18T17:46:22+00:00",
+  "change_summary": "Replaced the upright biped figure with the chelonian rig; the earlier version stays in versions/v1.",
+  "species": "tortoise",
+  "visual_identity": {
+    "skin": "#a8a060",
+    "belly": "#d8d0a0",
+    "accent": "#6a5a2a",
+    "iris": "#4a2a12",
+    "shell": "#a8a060",
+    "lashes": false,
+    "flower": null,
+    "family": "chelonian",
+    "outline": "dark tone of each fill"
+  },
+  "continuity_rules": [
+    "Seen from the side, facing right before any flip",
+    "Colours are fixed by visual_identity",
+    "Brown shell pattern",
+    "Wrinkled face"
+  ],
+  "default_voice": "elder_m_hi",
+  "rig": {
+    "template": "chelonian",
+    "canvas": [
+      760,
+      520
+    ],
+    "ground": [
+      380.0,
+      470.0
+    ],
+    "parts": [
+      {
+        "id": "root",
+        "component": "root",
+        "parent": null,
+        "pivot": [
+          380.0,
+          470.0
+        ],
+        "order": 0,
+        "variants": {},
+        "default_variant": null,
+        "rotation_limits": null
+      },
+      {
+        "id": "tail",
+        "component": "tail",
+        "parent": "body",
+        "pivot": [
+          166.0,
+          396.0
+        ],
+        "order": -3,
+        "variants": {
+          "base": {
+            "file": "rig/tail_base.png",
+            "svg": "rig/tail_base.svg",
+            "origin": [
+              74.0,
+              374.0
+            ],
+            "size": [
+              100.0,
+              52.0
+            ]
+          }
+        },
+        "default_variant": "base",
+        "rotation_limits": [
+          -40.0,
+          40.0
+        ]
+      },
+      {
+        "id": "leg_bl",
+        "component": "left_leg",
+        "parent": "body",
+        "pivot": [
+          230.0,
+          404.0
+        ],
+        "order": -2,
+        "variants": {
+          "base": {
+            "file": "rig/leg_bl_base.png",
+            "svg": "rig/leg_bl_base.svg",
+            "origin": [
+              190.0,
+              390.0
+            ],
+            "size": [
+              88.0,
+              104.0
+            ]
+          }
+        },
+        "default_variant": "base",
+        "rotation_limits": [
+          -60.0,
+          60.0
+        ]
+      },
+      {
+        "id": "leg_fl",
+        "component": "left_arm",
+        "parent": "body",
+        "pivot": [
+          500.0,
+          404.0
+        ],
+        "order": -2,
+        "variants": {
+          "base": {
+            "file": "rig/leg_fl_base.png",
+            "svg": "rig/leg_fl_base.svg",
+            "origin": [
+              460.0,
+              390.0
+            ],
+            "size": [
+              88.0,
+              104.0
+            ]
+          }
+        },
+        "default_variant": "base",
+        "rotation_limits": [
+          -60.0,
+          100.0
+        ]
+      },
+      {
+        "id": "neck",
+        "component": "neck",
+        "parent": "body",
+        "pivot": [
+          566.0,
+          372.0
+        ],
+        "order": -1,
+        "variants": {
+          "base": {
+            "file": "rig/neck_base.png",
+            "svg": "rig/neck_base.svg",
+            "origin": [
+              550.0,
+              305.0
+            ],
+            "size": [
+              118.0,
+              107.0
+            ]
+          }
+        },
+        "default_variant": "base",
+        "rotation_limits": [
+          -30.0,
+          30.0
+        ]
+      },
+      {
+        "id": "head",
+        "component": "head",
+        "parent": "neck",
+        "pivot": [
+          630.0,
+          330.0
+        ],
+        "order": 0,
+        "variants": {
+          "base": {
+            "file": "rig/head_base.png",
+            "svg": "rig/head_base.svg",
+            "origin": [
+              605.0,
+              252.0
+            ],
+            "size": [
+              154.0,
+              90.0
+            ]
+          }
+        },
+        "default_variant": "base",
+        "rotation_limits": [
+          -30.0,
+          30.0
+        ]
+      },
+      {
+        "id": "jaw",
+        "component": "mouth",
+        "parent": "head",
+        "pivot": [
+          632.0,
+          334.0
+        ],
+        "order": 1,
+        "variants": {
+          "base": {
+            "file": "rig/jaw_base.png",
+            "svg": "rig/jaw_base.svg",
+            "origin": [
+              622.0,
+              324.0
+            ],
+            "size": [
+              131.0,
+              43.0
+            ]
+          }
+        },
+        "default_variant": "base",
+        "rotation_limits": [
+          -30.0,
+          4.0
+        ]
+      },
+      {
+        "id": "body",
+        "component": "body",
+        "parent": "root",
+        "pivot": [
+          380.0,
+          410.0
+        ],
+        "order": 1,
+        "variants": {
+          "base": {
+            "file": "rig/body_base.png",
+            "svg": "rig/body_base.svg",
+            "origin": [
+              131.0,
+              220.0
+            ],
+            "size": [
+              498.0,
+              224.0
+            ]
+          }
+        },
+        "default_variant": "base",
+        "rotation_limits": [
+          -18.0,
+          18.0
+        ]
+      },
+      {
+        "id": "shell_lip",
+        "component": "body",
+        "parent": "body",
+        "pivot": [
+          570.0,
+          400.0
+        ],
+        "order": 3,
+        "variants": {
+          "base": {
+            "file": "rig/shell_lip_base.png",
+            "svg": "rig/shell_lip_base.svg",
+            "origin": [
+              534.0,
+              294.0
+            ],
+            "size": [
+              90.0,
+              124.0
+            ]
+          }
+        },
+        "default_variant": "base",
+        "rotation_limits": null
+      },
+      {
+        "id": "leg_br",
+        "component": "right_leg",
+        "parent": "body",
+        "pivot": [
+          270.0,
+          406.0
+        ],
+        "order": 4,
+        "variants": {
+          "base": {
+            "file": "rig/leg_br_base.png",
+            "svg": "rig/leg_br_base.svg",
+            "origin": [
+              230.0,
+              390.0
+            ],
+            "size": [
+              88.0,
+              104.0
+            ]
+          }
+        },
+        "default_variant": "base",
+        "rotation_limits": [
+          -60.0,
+          60.0
+        ]
+      },
+      {
+        "id": "leg_fr",
+        "component": "right_arm",
+        "parent": "body",
+        "pivot": [
+          540.0,
+          406.0
+        ],
+        "order": 4,
+        "variants": {
+          "base": {
+            "file": "rig/leg_fr_base.png",
+            "svg": "rig/leg_fr_base.svg",
+            "origin": [
+              500.0,
+              390.0
+            ],
+            "size": [
+              88.0,
+              104.0
+            ]
+          }
+        },
+        "default_variant": "base",
+        "rotation_limits": [
+          -60.0,
+          110.0
+        ]
+      },
+      {
+        "id": "eyes",
+        "component": "eyes",
+        "parent": "head",
+        "pivot": [
+          690.0,
+          290.0
+        ],
+        "order": 6,
+        "variants": {
+          "open": {
+            "file": "rig/eyes_open.png",
+            "svg": "rig/eyes_open.svg",
+            "origin": [
+              660.0,
+              256.0
+            ],
+            "size": [
+              60.0,
+              68.0
+            ]
+          },
+          "closed": {
+            "file": "rig/eyes_closed.png",
+            "svg": "rig/eyes_closed.svg",
+            "origin": [
+              659.0,
+              285.0
+            ],
+            "size": [
+              62.0,
+              24.0
+            ]
+          },
+          "happy": {
+            "file": "rig/eyes_happy.png",
+            "svg": "rig/eyes_happy.svg",
+            "origin": [
+              659.0,
+              277.0
+            ],
+            "size": [
+              62.0,
+              30.0
+            ]
+          },
+          "wide": {
+            "file": "rig/eyes_wide.png",
+            "svg": "rig/eyes_wide.svg",
+            "origin": [
+              658.0,
+              252.0
+            ],
+            "size": [
+              64.0,
+              76.0
+            ]
+          },
+          "sad": {
+            "file": "rig/eyes_sad.png",
+            "svg": "rig/eyes_sad.svg",
+            "origin": [
+              660.0,
+              256.0
+            ],
+            "size": [
+              60.0,
+              68.0
+            ]
+          },
+          "angry": {
+            "file": "rig/eyes_angry.png",
+            "svg": "rig/eyes_angry.svg",
+            "origin": [
+              660.0,
+              256.0
+            ],
+            "size": [
+              60.0,
+              68.0
+            ]
+          },
+          "half": {
+            "file": "rig/eyes_half.png",
+            "svg": "rig/eyes_half.svg",
+            "origin": [
+              660.0,
+              256.0
+            ],
+            "size": [
+              60.0,
+              68.0
+            ]
+          },
+          "tear": {
+            "file": "rig/eyes_tear.png",
+            "svg": "rig/eyes_tear.svg",
+            "origin": [
+              660.0,
+              256.0
+            ],
+            "size": [
+              60.0,
+              109.0
+            ]
+          }
+        },
+        "default_variant": "open",
+        "rotation_limits": null
+      },
+      {
+        "id": "pupils",
+        "component": "eyes",
+        "parent": "eyes",
+        "pivot": [
+          690.0,
+          290.0
+        ],
+        "order": 7,
+        "variants": {
+          "normal": {
+            "file": "rig/pupils_normal.png",
+            "svg": "rig/pupils_normal.svg",
+            "origin": [
+              673.0,
+              272.0
+            ],
+            "size": [
+              42.0,
+              42.0
+            ]
+          },
+          "small": {
+            "file": "rig/pupils_small.png",
+            "svg": "rig/pupils_small.svg",
+            "origin": [
+              679.0,
+              278.0
+            ],
+            "size": [
+              30.0,
+              30.0
+            ]
+          }
+        },
+        "default_variant": "normal",
+        "rotation_limits": null
+      },
+      {
+        "id": "brow",
+        "component": "eyebrows",
+        "parent": "head",
+        "pivot": [
+          690.0,
+          248.0
+        ],
+        "order": 8,
+        "variants": {
+          "base": {
+            "file": "rig/brow_base.png",
+            "svg": "rig/brow_base.svg",
+            "origin": [
+              659.0,
+              239.0
+            ],
+            "size": [
+              64.0,
+              22.0
+            ]
+          }
+        },
+        "default_variant": "base",
+        "rotation_limits": [
+          -40.0,
+          40.0
+        ]
+      }
+    ],
+    "attach_points": {
+      "back": {
+        "part": "body",
+        "point": [
+          380.0,
+          240.0
+        ]
+      },
+      "mouth": {
+        "part": "head",
+        "point": [
+          740.0,
+          340.0
+        ]
+      },
+      "hand": {
+        "part": "leg_fr",
+        "point": [
+          548.0,
+          470.0
+        ]
+      },
+      "head_top": {
+        "part": "head",
+        "point": [
+          690.0,
+          262.0
+        ]
+      }
+    },
+    "talk_part": "jaw",
+    "talk_mode": "jaw",
+    "talk_variants": [
+      "closed",
+      "small",
+      "open"
+    ],
+    "jaw_part": "jaw",
+    "jaw_open_degrees": -17.0
+  },
+  "views": {},
+  "expressions": {
+    "neutral": {
+      "variants": {
+        "eyes": "open",
+        "pupils": "normal"
+      },
+      "parts": {}
+    },
+    "happy": {
+      "variants": {
+        "eyes": "happy",
+        "pupils": "none"
+      },
+      "parts": {
+        "jaw": {
+          "rotation": -5.0,
+          "x": 0.0,
+          "y": 0.0,
+          "sx": 1.0,
+          "sy": 1.0
+        },
+        "brow": {
+          "rotation": 0.0,
+          "x": 0.0,
+          "y": 5.0,
+          "sx": 1.0,
+          "sy": 1.0
+        }
+      }
+    },
+    "sad": {
+      "variants": {
+        "eyes": "sad",
+        "pupils": "normal"
+      },
+      "parts": {
+        "brow": {
+          "rotation": 16.0,
+          "x": 0.0,
+          "y": 0.0,
+          "sx": 1.0,
+          "sy": 1.0
+        },
+        "pupils": {
+          "rotation": 0.0,
+          "x": 0.0,
+          "y": -4.0,
+          "sx": 1.0,
+          "sy": 1.0
+        },
+        "head": {
+          "rotation": -5.0,
+          "x": 0.0,
+          "y": 0.0,
+          "sx": 1.0,
+          "sy": 1.0
+        }
+      }
+    },
+    "surprised": {
+      "variants": {
+        "eyes": "wide",
+        "pupils": "small"
+      },
+      "parts": {
+        "jaw": {
+          "rotation": -13.0,
+          "x": 0.0,
+          "y": 0.0,
+          "sx": 1.0,
+          "sy": 1.0
+        },
+        "brow": {
+          "rotation": 0.0,
+          "x": 0.0,
+          "y": 12.0,
+          "sx": 1.0,
+          "sy": 1.0
+        }
+      }
+    },
+    "angry": {
+      "variants": {
+        "eyes": "angry",
+        "pupils": "normal"
+      },
+      "parts": {
+        "brow": {
+          "rotation": -18.0,
+          "x": 0.0,
+          "y": -6.0,
+          "sx": 1.0,
+          "sy": 1.0
+        }
+      }
+    },
+    "worried": {
+      "variants": {
+        "eyes": "wide",
+        "pupils": "small"
+      },
+      "parts": {
+        "brow": {
+          "rotation": 18.0,
+          "x": 0.0,
+          "y": 6.0,
+          "sx": 1.0,
+          "sy": 1.0
+        },
+        "jaw": {
+          "rotation": -4.0,
+          "x": 0.0,
+          "y": 0.0,
+          "sx": 1.0,
+          "sy": 1.0
+        }
+      }
+    },
+    "thinking": {
+      "variants": {
+        "eyes": "open",
+        "pupils": "normal"
+      },
+      "parts": {
+        "pupils": {
+          "rotation": 0.0,
+          "x": 6.0,
+          "y": 8.0,
+          "sx": 1.0,
+          "sy": 1.0
+        },
+        "brow": {
+          "rotation": 0.0,
+          "x": 0.0,
+          "y": 8.0,
+          "sx": 1.0,
+          "sy": 1.0
+        }
+      }
+    },
+    "laughing": {
+      "variants": {
+        "eyes": "happy",
+        "pupils": "none"
+      },
+      "parts": {
+        "jaw": {
+          "rotation": -16.0,
+          "x": 0.0,
+          "y": 0.0,
+          "sx": 1.0,
+          "sy": 1.0
+        },
+        "head": {
+          "rotation": 5.0,
+          "x": 0.0,
+          "y": 0.0,
+          "sx": 1.0,
+          "sy": 1.0
+        }
+      }
+    },
+    "speaking": {
+      "variants": {
+        "eyes": "open",
+        "pupils": "normal"
+      },
+      "parts": {
+        "jaw": {
+          "rotation": -6.0,
+          "x": 0.0,
+          "y": 0.0,
+          "sx": 1.0,
+          "sy": 1.0
+        }
+      }
+    },
+    "crying": {
+      "variants": {
+        "eyes": "tear",
+        "pupils": "none"
+      },
+      "parts": {
+        "jaw": {
+          "rotation": -9.0,
+          "x": 0.0,
+          "y": 0.0,
+          "sx": 1.0,
+          "sy": 1.0
+        },
+        "brow": {
+          "rotation": 20.0,
+          "x": 0.0,
+          "y": 4.0,
+          "sx": 1.0,
+          "sy": 1.0
+        },
+        "head": {
+          "rotation": -9.0,
+          "x": 0.0,
+          "y": 0.0,
+          "sx": 1.0,
+          "sy": 1.0
+        }
+      }
+    },
+    "frightened": {
+      "variants": {
+        "eyes": "wide",
+        "pupils": "small"
+      },
+      "parts": {
+        "brow": {
+          "rotation": 22.0,
+          "x": 0.0,
+          "y": 14.0,
+          "sx": 1.0,
+          "sy": 1.0
+        },
+        "jaw": {
+          "rotation": -7.0,
+          "x": 0.0,
+          "y": 0.0,
+          "sx": 1.0,
+          "sy": 1.0
+        },
+        "pupils": {
+          "rotation": 0.0,
+          "x": 0.0,
+          "y": -4.0,
+          "sx": 1.0,
+          "sy": 1.0
+        }
+      }
+    },
+    "suspicious": {
+      "variants": {
+        "eyes": "half",
+        "pupils": "normal"
+      },
+      "parts": {
+        "pupils": {
+          "rotation": 0.0,
+          "x": 8.0,
+          "y": 5.0,
+          "sx": 1.0,
+          "sy": 1.0
+        },
+        "brow": {
+          "rotation": -10.0,
+          "x": 0.0,
+          "y": -2.0,
+          "sx": 1.0,
+          "sy": 1.0
+        }
+      }
+    },
+    "excited": {
+      "variants": {
+        "eyes": "wide",
+        "pupils": "normal"
+      },
+      "parts": {
+        "jaw": {
+          "rotation": -12.0,
+          "x": 0.0,
+          "y": 0.0,
+          "sx": 1.0,
+          "sy": 1.0
+        },
+        "brow": {
+          "rotation": 0.0,
+          "x": 0.0,
+          "y": 12.0,
+          "sx": 1.0,
+          "sy": 1.0
+        },
+        "head": {
+          "rotation": 4.0,
+          "x": 0.0,
+          "y": 0.0,
+          "sx": 1.0,
+          "sy": 1.0
+        }
+      }
+    },
+    "disappointed": {
+      "variants": {
+        "eyes": "half",
+        "pupils": "normal"
+      },
+      "parts": {
+        "pupils": {
+          "rotation": 0.0,
+          "x": 0.0,
+          "y": 8.0,
+          "sx": 1.0,
+          "sy": 1.0
+        },
+        "brow": {
+          "rotation": 10.0,
+          "x": 0.0,
+          "y": 3.0,
+          "sx": 1.0,
+          "sy": 1.0
+        },
+        "head": {
+          "rotation": -7.0,
+          "x": 0.0,
+          "y": 0.0,
+          "sx": 1.0,
+          "sy": 1.0
+        }
+      }
+    },
+    "determined": {
+      "variants": {
+        "eyes": "angry",
+        "pupils": "small"
+      },
+      "parts": {
+        "brow": {
+          "rotation": -14.0,
+          "x": 0.0,
+          "y": -8.0,
+          "sx": 1.0,
+          "sy": 1.0
+        },
+        "jaw": {
+          "rotation": -2.0,
+          "x": 0.0,
+          "y": 0.0,
+          "sx": 1.0,
+          "sy": 1.0
+        }
+      }
+    }
+  },
+  "poses": {
+    "standing": {},
+    "walking": {
+      "leg_fl": {
+        "rotation": 20.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_br": {
+        "rotation": 20.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_fr": {
+        "rotation": -20.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_bl": {
+        "rotation": -20.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "body": {
+        "rotation": 0.0,
+        "x": 0.0,
+        "y": 4.0,
+        "sx": 1.0,
+        "sy": 1.0
+      }
+    },
+    "running": {
+      "leg_fl": {
+        "rotation": 34.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_br": {
+        "rotation": 34.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_fr": {
+        "rotation": -34.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_bl": {
+        "rotation": -34.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "neck": {
+        "rotation": 0.0,
+        "x": 14.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "root": {
+        "rotation": 0.0,
+        "x": 0.0,
+        "y": 6.0,
+        "sx": 1.0,
+        "sy": 1.0
+      }
+    },
+    "sitting": {
+      "root": {
+        "rotation": 0.0,
+        "x": 0.0,
+        "y": -8.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_bl": {
+        "rotation": 40.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_br": {
+        "rotation": 40.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      }
+    },
+    "sleeping": {
+      "neck": {
+        "rotation": 0.0,
+        "x": -70.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "head": {
+        "rotation": 0.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 0.9,
+        "sy": 1.0
+      },
+      "leg_fl": {
+        "rotation": 50.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_fr": {
+        "rotation": 50.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_bl": {
+        "rotation": 50.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_br": {
+        "rotation": 50.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "root": {
+        "rotation": 0.0,
+        "x": 0.0,
+        "y": -8.0,
+        "sx": 1.0,
+        "sy": 1.0
+      }
+    },
+    "jumping": {
+      "root": {
+        "rotation": 0.0,
+        "x": 0.0,
+        "y": 36.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_fl": {
+        "rotation": -40.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_fr": {
+        "rotation": -40.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_bl": {
+        "rotation": 40.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_br": {
+        "rotation": 40.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      }
+    },
+    "talking": {
+      "head": {
+        "rotation": 4.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "jaw": {
+        "rotation": -8.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "neck": {
+        "rotation": 0.0,
+        "x": 10.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      }
+    },
+    "pointing": {
+      "leg_fr": {
+        "rotation": 85.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "neck": {
+        "rotation": 0.0,
+        "x": 16.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      }
+    },
+    "waving": {
+      "leg_fr": {
+        "rotation": 105.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "neck": {
+        "rotation": 0.0,
+        "x": 10.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      }
+    },
+    "fighting": {
+      "neck": {
+        "rotation": 6.0,
+        "x": 24.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "jaw": {
+        "rotation": -24.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_fl": {
+        "rotation": 60.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_fr": {
+        "rotation": 60.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      }
+    },
+    "dancing": {
+      "body": {
+        "rotation": 6.0,
+        "x": 0.0,
+        "y": 6.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_fl": {
+        "rotation": 50.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_br": {
+        "rotation": -36.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "neck": {
+        "rotation": 0.0,
+        "x": 10.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "head": {
+        "rotation": 8.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      }
+    },
+    "kneeling": {
+      "leg_fl": {
+        "rotation": 60.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_fr": {
+        "rotation": 60.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "neck": {
+        "rotation": -6.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "root": {
+        "rotation": 0.0,
+        "x": 0.0,
+        "y": -6.0,
+        "sx": 1.0,
+        "sy": 1.0
+      }
+    },
+    "falling": {
+      "root": {
+        "rotation": -30.0,
+        "x": 0.0,
+        "y": -10.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_fl": {
+        "rotation": 60.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_fr": {
+        "rotation": 60.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_bl": {
+        "rotation": -50.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_br": {
+        "rotation": -50.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      }
+    },
+    "climbing": {
+      "body": {
+        "rotation": 18.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_fl": {
+        "rotation": 60.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_br": {
+        "rotation": 40.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_fr": {
+        "rotation": -10.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      },
+      "leg_bl": {
+        "rotation": -20.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      }
+    },
+    "holding_object": {
+      "leg_fr": {
+        "rotation": 60.0,
+        "x": 0.0,
+        "y": 0.0,
+        "sx": 1.0,
+        "sy": 1.0
+      }
+    }
+  },
+  "states": [
+    "standing",
+    "in_water",
+    "resting",
+    "retracted"
+  ]
+}

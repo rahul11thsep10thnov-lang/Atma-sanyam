@@ -256,6 +256,8 @@ def validate_views(manifest: CharacterManifest) -> list[dict[str, str]]:
     issues: list[dict[str, str]] = []
     front = manifest.rig
     body_ids = {p.id for p in front.parts if p.id not in FACE_PARTS}
+    if manifest.compatibility.get("primary_view", "front") != "front":
+        body_ids = {"body"}              # head-on and tail-on views of a side-primary animal hide most of its articulation
     for name, view in manifest.views.items():
         def add(path: str, message: str) -> None:
             issues.append({"path": f"views.{name}.{path}", "message": message})

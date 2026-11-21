@@ -49,7 +49,7 @@ def test_completion_register_is_counted_not_planned(client, auth):
     c = client.get(f"{API}/library/completion", headers=auth).json()
     ch, en = c["characters"], c["environments"]
     assert ch["total"] >= 119 and ch["with_svg_masters"] == ch["total"] and ch["with_15_expressions"] == ch["total"]
-    assert ch["with_four_views"] < ch["total"] and ch["original_nine_fully_upgraded"] < 9         # the reptiles have no extra views yet: the register says so
+    assert ch["with_four_views"] == ch["total"] and ch["original_nine_fully_upgraded"] == ch["original_total"] == 9
     assert en["wide"] >= 178 and en["medium"] == en["closeup"] and en["medium"] >= 40 and en["approved"] == 0
     assert any(r["template"] == "quadruped_mammal" and not r["defined"] for r in c["rigs"]["rigs"])
     assert c["story_research"]["available"] and c["story_research"]["unverified"] > 0

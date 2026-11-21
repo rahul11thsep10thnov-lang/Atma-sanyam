@@ -548,6 +548,7 @@ def build_rep(s: RepSpec, out: Path) -> dict:
         "visual_identity": {"skin": s.skin, "belly": s.belly, "accent": s.accent, "iris": s.iris, "shell": s.shell, "lashes": s.lashes, "flower": s.flower,
                             "family": s.family, "outline": "dark tone of each fill"},
         "continuity_rules": ["Seen from the side, facing right before any flip", "Colours are fixed by visual_identity", *s.identity_notes],
-        "compatibility": {"habitat": s.habitat, "stage_scale": s.stage_scale, "style": "premium_chibi_anime", "primary_view": "side", "rig_family": s.family},
+        "compatibility": {"habitat": s.habitat, "stage_scale": s.stage_scale, "style": "premium_chibi_anime", "primary_view": "side", "rig_family": s.family,
+                          "views": ["side", "front", "three_quarter", "back"]},
         "default_voice": s.voice, "states": states, "rig": rig, "expressions": faces, "poses": poses,
     }

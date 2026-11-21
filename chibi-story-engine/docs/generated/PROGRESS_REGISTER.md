@@ -9,23 +9,23 @@ Verifier result: **no problems**.
 - Components (SVG master + PNG each): **227**: barrier 15, building 35, bush 20, cloud 12, flower 20, grass 15, lamp 15, mountain 10, opening 20, rock 20, tree 30, water 15
 - Master backgrounds (wide): **178**; medium compositions **45**; close-up compositions **45**; 45 backgrounds have all three, 133 have the wide composition only
 - Characters: **119** (animal 29, bird 20, human 44, mythological 17 new, plus the original nine); rigs: biped_chibi 113, chelonian 2, quadruped_reptile 3, serpentine_reptile 1
-- Characters with SVG masters 119, four views 113, 15 expressions 119, 15 poses 119, validated rigs 119
-- Original nine: 9 upgraded to version 2 (version 1 intact), 7 fully upgraded (SVG, four views, 15 + 15, valid rig)
+- Characters with SVG masters 119, four views 119, 15 expressions 119, 15 poses 119, validated rigs 119
+- Original nine: 9 upgraded to version 2 (version 1 intact), 9 fully upgraded (SVG, four views, 15 + 15, valid rig)
 - Story research: 13 sources consulted, 1289 source records and 43 seed entries; verified 1308, cross-verified 8, unverified 11, research pending 3; 3 of 16 regions have any consulted source
 
 ## The five legacy gaps
 
 | Gap | Status |
 |---|---|
-| 1. Four views | **Partly closed.** 113 of 119 characters have front, side, three-quarter and back views (all biped-family characters, including seven of the original nine). Side and back are drawn separately for each angle; the three-quarter view is the front art turned about the vertical axis (near half kept, far half foreshortened). Not done: char-ani-0025, char-ani-0026, char-ani-0027, char-ani-0028, crocodile_001, crocodile_wife_001 (the six reptiles have only their primary side view). |
+| 1. Four views | **Closed.** 119 of 119 characters have front, side, three-quarter and back views. Side and back (and head-on / tail-on for reptiles) are drawn separately per angle; the three-quarter view of the biped characters is the front art turned about the vertical axis, and for reptiles it is the side body foreshortened with the head-on head turned toward the viewer. Head-on views of reptiles fix the jaw and omit parts that cannot be seen. |
 | 2. Three compositions | **Partly closed.** 45 important backgrounds have wide, medium and close-up compositions (re-arranged, larger, fewer elements, scaled anchors; sky, wall and ground are shared). 133 backgrounds, including the 7 original hand-drawn ones, have the wide composition only. |
-| 3. Original nine upgraded | **Partly closed.** All nine are at version 2 with SVG masters, 15 expressions and 15 poses; version 1 is intact. Seven have four views. The two crocodiles do not. Nothing is approved. |
-| 4. Reptile rigs | **Closed for rigs and clips, not for views.** Articulated `quadruped_reptile` (crocodile, crocodile's wife, lizard), `chelonian` (turtle, tortoise) and `serpentine_reptile` (snake) with 20 new clips; rig tests: 17 passed. The old upright turtle, tortoise, snake and lizard remain in version 1. |
+| 3. Original nine upgraded | **Closed** (9 of 9 fully upgraded): SVG masters, four views, 15 expressions, 15 poses, valid rig; version 1 intact and retrievable; nothing is approved. |
+| 4. Reptile rigs | **Closed.** Articulated `quadruped_reptile` (crocodile, crocodile's wife, lizard), `chelonian` (turtle, tortoise) and `serpentine_reptile` (snake) with 20 new clips; rig tests: 48 passed. The old upright turtle, tortoise, snake and lizard remain in version 1. |
 | 5. Story catalogue | **Partly closed.** 13 real sources were fetched and parsed (Ryder's Panchatantra, Arnold's Hitopadesa, a 547-row Jataka table, the Perry Index via Wikipedia, two regional collections). Vikram-Betal and Singhasan Battisi tale lists are pending (Project Gutenberg was down), Akbar-Birbal and Tenali Raman have no edition index, most regions are unresearched. The collection register says so. |
 
 ## Known gaps (not hidden)
 
-- Side, three-quarter and back views for the six reptiles; a quadruped *mammal* rig was not built (mammals use the biped chibi rig).
+- A quadruped *mammal* rig was not built (mammals use the biped chibi rig); the biped three-quarter views are a turn of the front art, not redrawn.
 - Medium and close-up compositions for the other 133 wide backgrounds and for the 7 original hand-drawn ones; the 7 original environments have no SVG masters.
 - Story catalogue: see `docs/generated/STORY_RESEARCH_REGISTER.md`.
 - No human review has happened: every new or upgraded asset is `pending`.

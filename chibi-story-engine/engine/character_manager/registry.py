@@ -110,7 +110,8 @@ class CharacterRegistry:
                 details={"animation": clip.code, "character": manifest.id, "rig": manifest.rig.template})
         template = self.library.rig_templates().get(manifest.rig.template)
         optional = set(template.optional_parts) if template else set()
-        missing = [p for p in clip.driven_parts() if manifest.rig.part(p) is None and (p in clip.required_parts or p not in optional)]
+        hidden = set(manifest.compatibility.get("hidden_in_view", []))          # parts of the primary rig that this viewing angle cannot show
+        missing = [p for p in clip.driven_parts() if manifest.rig.part(p) is None and p not in hidden and (p in clip.required_parts or p not in optional)]
         if missing:
             raise IncompatibleAsset(f"Animation '{clip.code}' drives parts that '{manifest.id}' does not have: {', '.join(missing)}",
                                     details={"animation": clip.code, "character": manifest.id, "missing_parts": missing})

@@ -20,7 +20,7 @@ VIEWS = {"side", "three_quarter", "back"}
 def test_original_nine_are_version_two_and_version_one_is_intact(library):
     for cid in ORIGINAL:
         v2, v1 = library.character(cid), library.character(cid, 1)
-        assert v2.version == 2 and v1.version == 1, cid
+        assert v2.version >= 2 and v1.version == 1, cid          # the reptiles later reached version 3 when their views were added
         assert v2.approval_status.value == "pending"
         assert library.verify(AssetType.character, cid) == [] and library.verify(AssetType.character, cid, 1) == [], cid
         assert len(v2.expressions) >= 15 and len(v2.poses) >= 15, cid

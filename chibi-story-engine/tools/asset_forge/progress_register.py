@@ -45,20 +45,20 @@ def main() -> None:
         "",
         "| Gap | Status |",
         "|---|---|",
-        f"| 1. Four views | **Partly closed.** {ch['with_four_views']} of {ch['total']} characters have front, side, three-quarter and back views (all biped-family characters, including seven of the original nine). "
-        "Side and back are drawn separately for each angle; the three-quarter view is the front art turned about the vertical axis (near half kept, far half foreshortened). "
-        f"Not done: {', '.join(ch['without_four_views'])} (the six reptiles have only their primary side view). |",
+        f"| 1. Four views | **{'Closed' if ch['with_four_views'] == ch['total'] else 'Partly closed'}.** {ch['with_four_views']} of {ch['total']} characters have front, side, three-quarter and back views. "
+        "Side and back (and head-on / tail-on for reptiles) are drawn separately per angle; the three-quarter view of the biped characters is the front art turned about the vertical axis, "
+        "and for reptiles it is the side body foreshortened with the head-on head turned toward the viewer. Head-on views of reptiles fix the jaw and omit parts that cannot be seen. |",
         f"| 2. Three compositions | **Partly closed.** {en['wide_with_all_three_compositions']} important backgrounds have wide, medium and close-up compositions (re-arranged, larger, fewer elements, scaled anchors; sky, wall and ground are shared). "
         f"{en['wide_without_variants']} backgrounds, including the 7 original hand-drawn ones, have the wide composition only. |",
-        f"| 3. Original nine upgraded | **Partly closed.** All nine are at version 2 with SVG masters, 15 expressions and 15 poses; version 1 is intact. Seven have four views. The two crocodiles do not. Nothing is approved. |",
-        "| 4. Reptile rigs | **Closed for rigs and clips, not for views.** Articulated `quadruped_reptile` (crocodile, crocodile's wife, lizard), `chelonian` (turtle, tortoise) and `serpentine_reptile` (snake) with 20 new clips; "
+        f"| 3. Original nine upgraded | **{'Closed' if ch['original_nine_fully_upgraded'] == ch['original_total'] else 'Partly closed'}** ({ch['original_nine_fully_upgraded']} of {ch['original_total']} fully upgraded): SVG masters, four views, 15 expressions, 15 poses, valid rig; version 1 intact and retrievable; nothing is approved. |",
+        "| 4. Reptile rigs | **Closed.** Articulated `quadruped_reptile` (crocodile, crocodile's wife, lizard), `chelonian` (turtle, tortoise) and `serpentine_reptile` (snake) with 20 new clips; "
         f"rig tests: {comp['rigs']['rig_test_results'].get('passed', 'not run')} passed. The old upright turtle, tortoise, snake and lizard remain in version 1. |",
         f"| 5. Story catalogue | **Partly closed.** {sr['sources_consulted']} real sources were fetched and parsed (Ryder's Panchatantra, Arnold's Hitopadesa, a 547-row Jataka table, the Perry Index via Wikipedia, two regional collections). "
         "Vikram-Betal and Singhasan Battisi tale lists are pending (Project Gutenberg was down), Akbar-Birbal and Tenali Raman have no edition index, most regions are unresearched. The collection register says so. |",
         "",
         "## Known gaps (not hidden)",
         "",
-        "- Side, three-quarter and back views for the six reptiles; a quadruped *mammal* rig was not built (mammals use the biped chibi rig).",
+        "- A quadruped *mammal* rig was not built (mammals use the biped chibi rig); the biped three-quarter views are a turn of the front art, not redrawn.",
         "- Medium and close-up compositions for the other 133 wide backgrounds and for the 7 original hand-drawn ones; the 7 original environments have no SVG masters.",
         "- Story catalogue: see `docs/generated/STORY_RESEARCH_REGISTER.md`.",
         "- No human review has happened: every new or upgraded asset is `pending`.",

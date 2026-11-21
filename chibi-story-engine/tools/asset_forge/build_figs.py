@@ -31,7 +31,7 @@ def draw_character(spec, work: Path, builder=None, views_builder=None) -> tuple[
     data = (builder or build_fig)(spec, work)
     vb = views_builder if builder is not None else build_views
     if vb is not None:
-        data["views"] = vb(spec, work)
+        data["views"] = vb(spec, work, data) if builder is not None else vb(spec, work)
     manifest = CharacterManifest.model_validate({**data, "files": []})
     rig = Rig(manifest.rig)
     rest = Pose()
