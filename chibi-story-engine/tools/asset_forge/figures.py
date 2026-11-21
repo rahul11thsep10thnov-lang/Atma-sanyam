@@ -48,13 +48,13 @@ human("royal", "emperor", "Emperor", ["सम्राट", "बादशाह"
       C("#1f6a4a", "#f0e8d0", "#e6b93c", "#3b2414", "#d8362a"), outfit="robe", hair="turban", hair_colour="#f3ead0", moustache=True, beard="goatee", belly_scale=1.15, headwear=None,
       held="sword", identity_notes=["White-gold turban with a ruby", "Green and gold robe", "Pointed beard"])
 human("royal", "queen", "Queen", ["रानी", "महारानी", "queen"], "A queen in a royal-blue dress with a gold tiara and long dark hair.", "queen_hi", "pahsvtn", "light",
-      C("#2a4aa8", "#f0e0e0", "#e6b93c", "#7a3a6a", "#d8362a"), outfit="dress", headwear="tiara", hair_colour="#1a1210", long_hair=True, ears="human", belly_scale=1.0,
+      C("#2a4aa8", "#f0e0e0", "#e6b93c", "#7a3a6a", "#d8362a"), outfit="dress", hair_style="bun", headwear="tiara", hair_colour="#1a1210", long_hair=True, ears="human", belly_scale=1.0,
       identity_notes=["Gold tiara with a ruby", "Blue dress with a gold sash"])
 human("royal", "prince", "Prince", ["राजकुमार", "शहज़ादा", "prince"], "A young prince in an orange jacket with a small gold cap.", "young_m_hi", "pahvsn", "wheat",
       C("#e07a2a", "#f3e9c8", "#e6b93c", "#6b4226", "#3a6ad8"), headwear="cap", headwear_colour="#e6b93c", hair_colour="#1a1210", stage_scale=0.62,
       identity_notes=["Small gold cap", "Orange jacket"])
 human("royal", "princess", "Princess", ["राजकुमारी", "शहज़ादी", "princess"], "A princess in a rose-pink dress with a jewelled band and long braided hair.", "young_f_hi", "pahsvn", "light",
-      C("#d8587a", "#f8e0e8", "#e6b93c", "#7a3a6a", "#3a6ad8"), outfit="dress", headwear="hair_long", hair_colour="#2b1a14", stage_scale=0.62,
+      C("#d8587a", "#f8e0e8", "#e6b93c", "#7a3a6a", "#3a6ad8"), outfit="dress", hair_style="braid", headwear="hair_long", hair_colour="#2b1a14", stage_scale=0.62,
       identity_notes=["Long dark hair", "Rose-pink dress with gold trim"])
 human("royal", "minister", "Minister", ["मंत्री", "वज़ीर", "दीवान", "minister", "vizier"], "A wise minister in a teal robe and a white turban, with a grey moustache.", "elder_m_hi", "pahsvtn", "tan",
       C("#2a7a8a", "#eadfc0", "#c9a030", "#3b2414", "#d8a23a"), outfit="robe", hair="turban", hair_colour="#efe8d8", moustache=True, belly_scale=1.05,
@@ -113,7 +113,7 @@ human("ordinary", "villager_man", "Villager", ["गाँव वाला", "ग
       C("#8aa8c8", "#f0ece0", "#6a8aa8", "#6b4226", "#8aa8c8"), hair="turban", hair_colour="#c8a040", moustache=True, barefoot=True,
       identity_notes=["Yellow head wrap", "Light blue kurta"])
 human("ordinary", "villager_woman", "Village Woman", ["गाँव की औरत", "ग्रामीण महिला", "village woman", "villager woman"], "A village woman in a bright green sari with red border, hair tied back and a nose-ring.", "young_f_hi", "pjfta", "brown",
-      C("#3aa85a", "#3aa85a", "#c0392b", "#6b4226", "#e6b93c"), outfit="dress", headwear="hair_long", hair_colour="#1a1210", tilak="#c0392b",
+      C("#3aa85a", "#3aa85a", "#c0392b", "#6b4226", "#e6b93c"), outfit="dress", hair_style="coil", headwear="hair_long", hair_colour="#1a1210", tilak="#c0392b",
       identity_notes=["Green sari with a red border", "Red bindi"])
 human("ordinary", "woodcutter", "Woodcutter", ["लकड़हारा", "woodcutter"], "A strong woodcutter in a torn vest and brown cloth, an axe-sized club on his shoulder.", "farmer_hi", "pjvf", "dark",
       C("#8a6a3a", "#5a4a3a", "#6a4a2a", "#3b2414", "#6a4a2a"), outfit="vest", hair="short", hair_colour="#1a1210", beard="stubble", held="club", barefoot=True, stage_scale=0.68,
@@ -146,7 +146,7 @@ human("ordinary", "child_boy", "Boy", ["बालक", "लड़का", "ब�
       C("#d8362a", "#3a5a8a", "#a8221a", "#6b4226", "#d8362a"), hair="tuft", barefoot=True, stage_scale=0.48, hair_colour="#1a1210",
       identity_notes=["Spiky tuft of hair", "Red shirt, blue shorts"])
 human("ordinary", "child_girl", "Girl", ["बालिका", "लड़की", "बच्ची", "girl"], "A bright young girl in a yellow frock with two black plaits.", "child_hi", "pjhatfn", "wheat",
-      C("#f2c230", "#f2c230", "#e0a020", "#c0392b", "#d8362a"), outfit="dress", headwear="hair_long", hair_colour="#1a1210", stage_scale=0.48, barefoot=False,
+      C("#f2c230", "#f2c230", "#e0a020", "#c0392b", "#d8362a"), outfit="dress", hair_style="pigtails", headwear="hair_long", hair_colour="#1a1210", stage_scale=0.48, barefoot=False,
       identity_notes=["Long black plaits", "Yellow frock"])
 human("ordinary", "elderly_man", "Elderly Man", ["बूढ़ा", "वृद्ध", "बुज़ुर्ग", "बूढ़ा आदमी", "elderly man", "old man"], "A kindly old man in a patched dhoti with a white moustache, bald head and a walking stick.", "elder_m_hi", "pjftahs", "tan",
       C("#d8d0c0", "#d8d0c0", "#a89a7a", "#6b4226", "#a89a7a"), outfit="vest", moustache=True, hair_colour="#f2efe8", held="staff", barefoot=True, stage_scale=0.58, belly_scale=0.9,
@@ -165,7 +165,7 @@ human("additional", "musician", "Musician", ["संगीतकार", "गा
       C("#7a3aa8", "#f0e8d0", "#e6b93c", "#6b4226", "#e6b93c"), headwear="cap", headwear_colour="#e8902a", moustache=True, hair_colour="#1a1210", held="flute",
       identity_notes=["Orange cap", "Violet kurta", "Flute"])
 human("additional", "dancer", "Dancer", ["नर्तकी", "नर्तक", "dancer"], "A dancer in a teal and gold costume with a jewelled headpiece and a long braid.", "young_f_hi", "nsa", "light",
-      C("#18a8a0", "#d8362a", "#e6b93c", "#d8362a", "#e6b93c"), outfit="dress", headwear="tiara", hair_colour="#1a1210", long_hair=True,
+      C("#18a8a0", "#d8362a", "#e6b93c", "#d8362a", "#e6b93c"), outfit="dress", hair_style="ponytail", headwear="tiara", hair_colour="#1a1210", long_hair=True,
       identity_notes=["Gold headpiece", "Teal top with red skirt"])
 human("additional", "physician", "Physician", ["वैद्य", "हकीम", "physician", "healer", "doctor"], "A physician in a green coat and a white turban with a bag of herbs and a grey beard.", "elder_m_hi", "ptahn", "wheat",
       C("#3a8a5a", "#f0e8d0", "#2a5a3a", "#6b4226", "#2a5a3a"), outfit="robe", hair="turban", hair_colour="#f0ece0", beard="short", beard_colour="#8a8a8a", held="bowl",

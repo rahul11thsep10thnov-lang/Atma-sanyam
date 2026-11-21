@@ -50,10 +50,44 @@ class FigSpec(BipedSpec):
     long_tail: str | None = None            # cow | horse | rat | fan | lizard | snake
     glow: str | None = None
     ridge: str | None = None                # horse/boar/camel crest of coarse hair
+    hair_style: str = "long"                # long | bun | braid | pigtails | ponytail | coil  (how long hair is worn)
     long_hair: bool = False                 # long hair shown with any headwear
 
 
 # ------------------------------------------------------------------------------------------------ helpers
+
+def hair_style_extras(b, s, cx: float, view: str) -> None:
+    """The part of a non-default hairstyle that sits behind the head. view: front | side (faces right) | back."""
+    c, o = b.shaded(s.hair_colour), _o(s.hair_colour)
+    dark = darken(s.hair_colour, 0.3)
+    bx = cx if view != "side" else cx - 40            # the side view faces right, so hair hangs toward the back of the head (left)
+    st = s.hair_style
+    if st == "bun":
+        b.circle(bx, 66, 58, c, o)
+        b.path(f"M {bx - 40} 66 Q {bx} 30 {bx + 40} 66", None, dark, 6)
+    elif st == "braid":
+        xs = (bx + (150 if view == "front" else -70), 0)
+        for i in range(6):
+            b.ellipse(xs[0] + (i % 2) * 8, 290 + i * 46, 30 - i * 2, 28, c, o)
+        b.ellipse(xs[0] + 4, 290 + 6 * 46, 12, 12, "#d8362a", _o("#d8362a"))
+    elif st == "pigtails":
+        sides = (-1, 1) if view != "side" else (-1,)
+        for sx in sides:
+            x = bx + (sx * 178 if view != "side" else 70)
+            b.circle(x, 250, 46, c, o)
+            b.path(f"M {x - 22} 270 Q {x + sx * 30} 400 {x} 470 Q {x - sx * 6} 400 {x + 22} 270 Z", c, o)
+            b.circle(x, 262, 12, "#d8362a", _o("#d8362a"))
+    elif st == "ponytail":
+        x = bx + (150 if view == "front" else -30)
+        sg = 1 if view == "front" else -1
+        b.path(f"M {x - 10} 130 Q {x + sg * 120} 140 {x + sg * 90} 360 Q {x + sg * 40} 250 {x - 30} 220 Z", c, o)
+        b.circle(x, 150, 14, "#e6b93c", _o("#e6b93c"))
+    elif st == "coil":
+        x = bx + (-120 if view == "front" else -50)
+        b.circle(x, 400, 62, c, o)
+        b.path(f"M {x - 40} 400 Q {x} 360 {x + 40} 400 M {x - 30} 425 Q {x} 390 {x + 30} 425", None, dark, 6)
+
+
 def _join(*arts: Art) -> Art:
     out = Art(BW, BH)
     for i, a in enumerate(arts):
@@ -143,9 +177,12 @@ def head_behind(s: FigSpec, b: Art) -> None:
     if hw == "hood":
         b.ellipse(300, 250, 188, 170, b.shaded(s.headwear_colour), _o(s.headwear_colour))
     if hw == "hair_long" or s.long_hair:
-        for sx in (-1, 1):
-            b.path(f"M {300 + sx * 174} 200 Q {300 + sx * 214} 380 {300 + sx * 176} 520 L {300 + sx * 100} 520 Q {300 + sx * 130} 380 {300 + sx * 120} 270 Z",
-                   b.shaded(s.hair_colour), _o(s.hair_colour))
+        if s.hair_style == "long":
+            for sx in (-1, 1):
+                b.path(f"M {300 + sx * 174} 200 Q {300 + sx * 214} 380 {300 + sx * 176} 520 L {300 + sx * 100} 520 Q {300 + sx * 130} 380 {300 + sx * 120} 270 Z",
+                       b.shaded(s.hair_colour), _o(s.hair_colour))
+        else:
+            hair_style_extras(b, s, 300, "front")
         b.ellipse(300, 214, 178, 152, b.shaded(s.hair_colour), _o(s.hair_colour))
     elif hw == "hair_long_unused":
         pass

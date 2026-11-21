@@ -13,7 +13,7 @@ import math
 from pathlib import Path
 
 from .characters import B_GROUND, BH, BW, INK, MOUTH_DARK, TONGUE, biped_body, biped_brow, biped_pupils
-from .characters_ext import (FigSpec, _base, _held, _join, _o, _save_part, _sub, fig_arm, fig_body, fig_eyes, fig_head, fig_leg, fig_mouth, fig_tail,
+from .characters_ext import (FigSpec, hair_style_extras, _base, _held, _join, _o, _save_part, _sub, fig_arm, fig_body, fig_eyes, fig_head, fig_leg, fig_mouth, fig_tail,
                              head_behind)
 from .svg import Art, darken, lighten
 
@@ -89,8 +89,11 @@ def side_head(s: FigSpec) -> Art:
             ang = math.pi * 0.5 + i * (math.pi * 1.5) / 13
             b.circle(HX + 150 * math.cos(ang) * 1.05, HY - 150 * math.sin(ang) * 0.95, 54, b.shaded(s.mane), _o(s.mane))
     hw = s.headwear
-    if hw == "hair_long" or s.long_hair or hw == "jata":
+    if (hw == "hair_long" or s.long_hair or hw == "jata") and getattr(s, "hair_style", "long") == "long":
         b.path("M 160 190 Q 100 420 190 530 L 290 530 Q 250 400 270 240 Z", b.shaded(s.hair_colour), _o(s.hair_colour))
+    elif hw == "hair_long" or s.long_hair:
+        hair_style_extras(b, s, 300, "side")
+        b.ellipse(262, 214, 150, 140, b.shaded(s.hair_colour), _o(s.hair_colour))
     if hw == "hood":
         b.ellipse(262, 246, 196, 172, b.shaded(s.headwear_colour), _o(s.headwear_colour))
     if hw == "crest":
@@ -476,6 +479,8 @@ def back_head(s: FigSpec) -> Art:
             f.path(f"M {220 + i * 40} 170 Q {226 + i * 40} 220 {220 + i * 40} 270", None, darken(fur, 0.2), 6, 0.6)
     if s.hair == "short" or (s.long_hair and hw not in ("hair_long", "jata")):
         f.path("M 136 260 Q 130 90 300 90 Q 470 90 464 260 Q 450 330 300 340 Q 150 330 136 260 Z", f.shaded(s.hair_colour), _o(s.hair_colour))
+        if s.long_hair and s.hair_style != "long":
+            hair_style_extras(f, s, 300, "back")
     if s.hair == "tuft":
         f.path("M 270 122 Q 280 80 300 112 Q 312 70 330 122 Z", fur, o)
     if s.hair == "turban":
@@ -484,7 +489,9 @@ def back_head(s: FigSpec) -> Art:
         for d in ("M 150 150 Q 300 96 450 150", "M 140 200 Q 300 140 460 200", "M 160 250 Q 300 200 440 250"):
             f.path(d, None, darken(t, 0.22), 6)
     c = s.headwear_colour
-    if hw in ("hair_long", "jata"):
+    if hw == "hair_long" and s.hair_style != "long":
+        f.path("M 134 260 Q 124 90 300 90 Q 476 90 466 260 Q 450 340 300 350 Q 150 340 134 260 Z", f.shaded(s.hair_colour), _o(s.hair_colour))
+    elif hw in ("hair_long", "jata"):
         f.path("M 134 250 Q 124 90 300 90 Q 476 90 466 250 Q 470 460 300 470 Q 130 460 134 250 Z", f.shaded(s.hair_colour), _o(s.hair_colour))
         f.path("M 300 100 L 300 460", None, darken(s.hair_colour, 0.3), 5, 0.7)
         if hw == "jata":
