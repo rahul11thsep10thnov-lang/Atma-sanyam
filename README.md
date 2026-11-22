@@ -18,6 +18,12 @@ rebuilding the website**.
 
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — components, data model, security
 - [docs/QUESTION_PIPELINE.md](docs/QUESTION_PIPELINE.md) — generation → validation → review → publish, step by step
+- Exam reliability and bank work: [ImplementationRegister](docs/ImplementationRegister.md) (status and go-live steps),
+  [ArchitectureAudit](docs/ArchitectureAudit.md), [BackendReliability](docs/BackendReliabilitySpecification.md),
+  [ExamEngine](docs/ExamEngineSpecification.md), [QuestionBank](docs/QuestionBankSpecification.md),
+  [QuestionVersioning](docs/QuestionVersioningSpecification.md), [MockTestBlueprint](docs/MockTestBlueprintSpecification.md),
+  [Migrations](docs/DatabaseMigrationRegister.md), [API](docs/APIDocumentation.md), [Security](docs/SecurityAudit.md),
+  [Testing](docs/TestingAndAcceptanceReport.md)
 
 ---
 

@@ -12,6 +12,8 @@ describe('question versioning, bulk edit and quality', () => {
   let admin: string;
   let ids: Awaited<ReturnType<typeof scopeIds>>;
   let bank: string[] = [];
+  /** Bank questions not in the generated test (no other test edits them). */
+  let spare: string[] = [];
   let testId = '';
 
   const getQ = async (id: string) => (await request(ctx.app).get(`/api/admin/questions/${id}`).set(auth(admin))).body;
@@ -68,6 +70,11 @@ describe('question versioning, bulk edit and quality', () => {
     expect(gen.status, JSON.stringify(gen.body)).toBe(201);
     testId = gen.body.test.id;
     await request(ctx.app).post(`/api/admin/mock-tests/${testId}/publish`).set(auth(admin));
+    const full = await request(ctx.app).get(`/api/admin/mock-tests/${testId}`).set(auth(admin));
+    const inTest = new Set((full.body.questions as { id: string }[]).map((q) => q.id));
+    expect(inTest.size).toBe(3);
+    spare = bank.filter((id) => !inTest.has(id));
+    expect(spare.length).toBeGreaterThanOrEqual(4);
   });
   afterAll(() => ctx.close());
 
@@ -109,7 +116,7 @@ describe('question versioning, bulk edit and quality', () => {
   });
 
   it('restores an earlier version as a new version', async () => {
-    const id = bank[1]!;
+    const id = spare[0]!;
     const v1 = await getQ(id);
     await edit(id, { explanation: 'Changed explanation for the test.' });
     const restored = await request(ctx.app).post(`/api/admin/questions/${id}/revisions/1/restore`).set(auth(admin));
@@ -125,7 +132,7 @@ describe('question versioning, bulk edit and quality', () => {
   });
 
   it('bulk-edits chapter and difficulty, with a revision each and clear skips', async () => {
-    const targets = bank.slice(2, 5);
+    const targets = spare.slice(1, 4);
     const res = await request(ctx.app)
       .post('/api/admin/questions/bulk-edit')
       .set(auth(admin))

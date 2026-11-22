@@ -283,7 +283,7 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: RateLimits) {
   });
 
   // Uploads queued progress events. Each event id is applied once.
-  r.post('/me/progress/events', limits.autosave, auth.requireUser, async (req, res) => {
+  r.post('/me/progress/events', limits.progress, auth.requireUser, async (req, res) => {
     const body = parse(z.object({ events: z.array(progressEventSchema).min(1).max(200) }), req.body);
     res.json(await applyProgressEvents(db, req.user!.id, body.events));
   });
