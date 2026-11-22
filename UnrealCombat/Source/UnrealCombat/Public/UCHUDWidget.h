@@ -113,6 +113,7 @@ private:
 	UPROPERTY() TObjectPtr<UHorizontalBox> AbilityStrip;
 
 	UPROPERTY() TObjectPtr<UBorder> ScorePanel;
+	UPROPERTY() TObjectPtr<UBorder> RevealCover;
 	UPROPERTY() TObjectPtr<UVerticalBox> ScoreRows;
 
 	FWeaponCard PrimaryCard;
@@ -128,6 +129,9 @@ private:
 	bool bAbilitiesDirty = true;
 	bool bMatchDirty = true;
 	float SlowTimer = 0.f;
+	/** Match-start reveal (PH-CINE-001): -1 idle, otherwise seconds into the 800 ms fade. Decoration only. */
+	float RevealTime = -1.f;
+	int32 LastPhase = -1;
 	float PulseTime = 0.f;
 	float VehicleHeightCurrent = 176.f;
 	float VehicleHeightTarget = 176.f;

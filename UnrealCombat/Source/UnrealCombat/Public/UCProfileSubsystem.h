@@ -114,6 +114,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Unreal Combat|Profile")
 	const UUCCatalog* GetCatalog() const { return Catalog; }
 
+	/** What the last applied match result granted. bApplied is false until a result has been applied. */
+	UFUNCTION(BlueprintPure, Category = "Unreal Combat|Profile")
+	const FUCMatchRewardSummary& GetLastReward() const { return LastReward; }
+
 	UPROPERTY(BlueprintAssignable, Category = "Unreal Combat|Profile")
 	FUCOnProfileChanged OnProfileChanged;
 
@@ -128,6 +132,7 @@ private:
 	uc::FPlayerProfile Profile;
 	uc::FCatalog CoreCatalog;
 	bool bLoaded = false;
+	FUCMatchRewardSummary LastReward;
 
 	UPROPERTY()
 	TObjectPtr<UUCCatalog> Catalog;

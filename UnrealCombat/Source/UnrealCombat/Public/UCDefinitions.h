@@ -10,6 +10,7 @@
 
 class AUCProjectile;
 class UTexture2D;
+class UWorld;
 class AUCVehiclePawn;
 
 /** Tuning for one weapon. All gameplay numbers live here, not in code. */
@@ -314,6 +315,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Mission")
 	FName MissionId;
 
+	/** Optional player-facing title. When empty the UI falls back to the id. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Presentation")
+	FText DisplayName;
+
+	/** Map to load for this mission. When empty the mode's default map from Project Settings is used. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Mission")
+	TSoftObjectPtr<UWorld> Map;
+
 	/** Mission or BossHunt. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Mission")
 	EUCMatchMode Mode = EUCMatchMode::Mission;
@@ -400,6 +409,18 @@ public:
 
 	UPROPERTY(Config, EditAnywhere, Category = "Economy")
 	TSoftObjectPtr<UUCCatalog> Catalog;
+
+	/** Front end: the main menu map. */
+	UPROPERTY(Config, EditAnywhere, Category = "Front End")
+	TSoftObjectPtr<UWorld> MainMenuMap;
+
+	/** Front end: map used to play each mode. Mission and BossHunt entries are the default for missions without their own map. */
+	UPROPERTY(Config, EditAnywhere, Category = "Front End")
+	TMap<EUCMatchMode, TSoftObjectPtr<UWorld>> ModeMaps;
+
+	/** Front end: every mission offered by Mission Select. */
+	UPROPERTY(Config, EditAnywhere, Category = "Front End")
+	TArray<TSoftObjectPtr<UUCMissionDefinition>> Missions;
 
 	uc::FProgressionSpec ToProgressionSpec() const;
 };

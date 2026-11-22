@@ -117,6 +117,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Unreal Combat|Input")
 	TObjectPtr<UInputAction> ReloadAction;
 
+	/** Digital: toggles the scoreboard. */
+	UPROPERTY(EditDefaultsOnly, Category = "Unreal Combat|Input")
+	TObjectPtr<UInputAction> ScoreboardAction;
+
 	/** One action per ability slot, in the order of the vehicle definition's Abilities. */
 	UPROPERTY(EditDefaultsOnly, Category = "Unreal Combat|Input")
 	TArray<TObjectPtr<UInputAction>> AbilityActions;
@@ -135,6 +139,7 @@ private:
 	void OnFirePrimaryInput(const FInputActionValue& Value);
 	void OnFireSecondaryInput(const FInputActionValue& Value);
 	void OnReloadInput(const FInputActionValue& Value);
+	void OnScoreboardInput(const FInputActionValue& Value);
 	void OnAbilityInput(const FInputActionValue& Value, int32 SlotIndex);
 	void PushPlayerDriveInput();
 

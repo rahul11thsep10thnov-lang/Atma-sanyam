@@ -19,6 +19,10 @@
 * Visual Delivery 02 implemented with placeholder art: touch controls (PH-TOUCH-001 v1.0) and in-match HUD
   (PH-HUD-001 v1.1), string table, theme tokens, boss/reload/cooldown/objective bindings. Debug HUD removed.
 
+* Visual Delivery 03/04 implemented with placeholder art: main menu, garage, store, mission select, scoreboard,
+  results and rewards, front-end shell (navigation stack, modal, toast, wipe), match-start reveal. Added the
+  front-end launch / mission catalogue APIs, scoreboard toggle, return-to-menu, draw outcome and a reward summary.
+
 ## Next, in order
 
 1. **First engine build** - compile the Unreal module on a machine with UE 5.7 and fix errors.

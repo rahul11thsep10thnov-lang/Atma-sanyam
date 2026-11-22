@@ -164,6 +164,14 @@ class UNREALCOMBAT_API AUCPlayerController : public APlayerController
 public:
 	virtual void BeginPlay() override;
 
+	/** Leave the match for the main menu (results screen action). */
+	UFUNCTION(BlueprintCallable, Category = "Unreal Combat|Front End")
+	void ReturnToMainMenu();
+
+	/** Scoreboard visibility (SCORE-FR-01). Wired to the pawn's ScoreboardAction. */
+	UFUNCTION(BlueprintCallable, Category = "Unreal Combat|Match")
+	void ToggleScoreboard();
+
 	/** Server -> owning client at the end of a match. Applies rewards to the local profile. */
 	UFUNCTION(Client, Reliable)
 	void ClientReceiveMatchResult(const FUCMatchResult& Result);

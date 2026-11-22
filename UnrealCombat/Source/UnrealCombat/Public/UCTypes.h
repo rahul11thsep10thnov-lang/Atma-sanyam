@@ -160,6 +160,15 @@ struct FUCHitInfo
 	float Penetration = 0.f;
 };
 
+UENUM(BlueprintType)
+enum class EUCMatchOutcome : uint8
+{
+	Won,
+	Lost,
+	/** Nobody won: tied top score in a competitive mode. */
+	Draw
+};
+
 /** What one player did in a finished match; the input to rewards. */
 USTRUCT(BlueprintType)
 struct FUCMatchResult
@@ -190,6 +199,53 @@ struct FUCMatchResult
 	UPROPERTY(BlueprintReadOnly, Category = "Match")
 	bool bWon = false;
 
+	/** Authoritative verdict from the match rules (the UI must not derive it from scores). */
+	UPROPERTY(BlueprintReadOnly, Category = "Match")
+	EUCMatchOutcome Outcome = EUCMatchOutcome::Lost;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Match")
+	EUCMatchMode Mode = EUCMatchMode::FreeForAll;
+
+	/** Match score of this player at the end (as in AUCPlayerState). */
+	UPROPERTY(BlueprintReadOnly, Category = "Match")
+	int32 Score = 0;
+
+	/** Team of this player; INDEX_NONE in free-for-all. */
+	UPROPERTY(BlueprintReadOnly, Category = "Match")
+	int32 TeamId = INDEX_NONE;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Match")
 	bool bMissionCompleted = false;
+};
+
+/**
+ * What the profile actually granted for the last match result it applied. Written only by
+ * UUCProfileSubsystem::ApplyMatchResult, so presentation can show earned amounts without calculating them.
+ */
+USTRUCT(BlueprintType)
+struct FUCMatchRewardSummary
+{
+	GENERATED_BODY()
+
+	/** True only when the profile applied this result (a repeat of an already-applied match is not applied). */
+	UPROPERTY(BlueprintReadOnly, Category = "Reward")
+	bool bApplied = false;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Reward")
+	FString MatchId;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Reward")
+	int64 Credits = 0;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Reward")
+	int64 Xp = 0;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Reward")
+	int32 LevelBefore = 1;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Reward")
+	int32 LevelAfter = 1;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Reward")
+	int64 XpBefore = 0;
 };

@@ -45,6 +45,18 @@ A flat greybox with several Player Starts, a `UCRepairZone` and, for missions, `
 Create a Blueprint of **UCGameMode**, set `DefaultVehicle` (and `Mission` or bot settings), and
 use it as the map's game mode. Set the map as *Game Default Map* in Project Settings.
 
+## 5b. Front end (menu, garage, store, missions)
+1. Create a Blueprint of **UCMenuGameMode** and a map `Content/Maps/MainMenu` that uses it (an empty level is enough).
+2. Project Settings > Unreal Combat: set *Main Menu Map*, add one map per mode under *Mode Maps*
+   (FreeForAll, TeamDeathmatch, and Mission / BossHunt as the default for missions), and list your
+   `UCMissionDefinition` assets under *Missions*. Also set *Catalog* and *Starter Items* (step 4).
+3. Every match map's World Settings must use `UCGameMode` (or your Blueprint of it). The menu passes
+   `?Mode=` and `?Mission=` as level options.
+4. Set the main menu map as the game default map. Run it: the menu, Garage, Store and Missions should open;
+   Play should launch free-for-all / team deathmatch; a mission should launch from Mission Select.
+5. In the vehicle Blueprint set *Scoreboard Action* (a Digital input action, e.g. Tab) to toggle the scoreboard.
+6. After a match the results screen appears; *Continue* returns to the menu.
+
 ## 6. Play
 Play in editor. The text read-out in the corner is placeholder PH-HUD-001. Check: driving,
 firing, bots patrol/attack, damage reduces engine power and grip, destroyed vehicles respawn,

@@ -5,6 +5,8 @@
 #include "GameFramework/PlayerStart.h"
 #include "TimerManager.h"
 #include "UCAIController.h"
+#include "Kismet/GameplayStatics.h"
+#include "UCFrontEnd.h"
 #include "UCHUD.h"
 #include "UCDefinitions.h"
 #include "UCGameFramework.h"
@@ -29,6 +31,29 @@ AUCGameMode::AUCGameMode()
 void AUCGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
 {
 	Super::InitGame(MapName, Options, ErrorMessage);
+
+	// Front-end launch options: ?Mode=<EUCMatchMode name>?Mission=<mission id>.
+	const FString ModeOption = UGameplayStatics::ParseOption(Options, TEXT("Mode"));
+	if (!ModeOption.IsEmpty())
+	{
+		const int64 Value = StaticEnum<EUCMatchMode>()->GetValueByNameString(ModeOption);
+		if (Value != INDEX_NONE)
+		{
+			Mode = static_cast<EUCMatchMode>(Value);
+		}
+	}
+	const FString MissionOption = UGameplayStatics::ParseOption(Options, TEXT("Mission"));
+	if (!MissionOption.IsEmpty())
+	{
+		if (UUCMissionDefinition* Found = UUCFrontEndSubsystem::FindMission(FName(*MissionOption)))
+		{
+			Mission = Found;
+		}
+		else
+		{
+			UE_LOG(LogUnrealCombat, Warning, TEXT("Mission '%s' is not in the configured mission list."), *MissionOption);
+		}
+	}
 
 	uc::FMatchConfig Config;
 	Config.Mode = static_cast<uc::EMatchMode>(Mission != nullptr ? Mission->Mode : Mode);
@@ -383,6 +408,11 @@ void AUCGameMode::HandleMatchFinished()
 		Result.BossesDefeated = Performance.BossesDefeated;
 		Result.DamageDealt = Performance.DamageDealt;
 		Result.bWon = Performance.bWon;
+		Result.Mode = static_cast<EUCMatchMode>(Match.GetConfig().Mode);
+		Result.Score = State->GetMatchScore();
+		Result.TeamId = Match.GetConfig().Mode == uc::EMatchMode::FreeForAll ? static_cast<int32>(INDEX_NONE) : State->GetTeamId();
+		// Draw only when a competitive match ended with nobody ahead; objective modes are won or lost.
+		Result.Outcome = Performance.bWon ? EUCMatchOutcome::Won : ((Match.GetWinner() == uc::NoWinner && !Match.IsObjectiveMode()) ? EUCMatchOutcome::Draw : EUCMatchOutcome::Lost);
 		Result.bMissionCompleted = Performance.bMissionCompleted;
 		Controller->ClientReceiveMatchResult(Result);
 	}

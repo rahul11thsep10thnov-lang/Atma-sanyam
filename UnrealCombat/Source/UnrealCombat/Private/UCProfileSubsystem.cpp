@@ -219,7 +219,19 @@ int32 UUCProfileSubsystem::ApplyMatchResult(const FUCMatchResult& Result)
 	Performance.bMissionCompleted = Result.bMissionCompleted;
 
 	const uc::FMatchReward Reward = uc::ComputeMatchReward(Performance, uc::FRewardSpec());
+	const int32 LevelBefore = Profile.Level;
+	const int64 XpBefore = Profile.Xp;
 	const int32 LevelsGained = uc::ApplyMatchReward(Profile, GetDefault<UUCGameSettings>()->ToProgressionSpec(), Reward, MatchId);
+
+	// Record exactly what was granted, for presentation. Never calculated by the UI.
+	LastReward = FUCMatchRewardSummary();
+	LastReward.bApplied = true;
+	LastReward.MatchId = Result.MatchId;
+	LastReward.Credits = Reward.Credits;
+	LastReward.Xp = Reward.Xp;
+	LastReward.LevelBefore = LevelBefore;
+	LastReward.LevelAfter = Profile.Level;
+	LastReward.XpBefore = XpBefore;
 
 	const uc::FId MissionId = UC::ToStd(Result.MissionId);
 	if (Result.bMissionCompleted && uc::IsValidId(MissionId) && !Profile.HasCompletedMission(MissionId))

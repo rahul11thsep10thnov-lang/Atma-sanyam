@@ -2,9 +2,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "UCTypes.h"
 #include "UCHUD.generated.h"
 
 class UUCHUDWidget;
+class UUCResultsWidget;
+class UUCScoreboardWidget;
+class AUCPlayerController;
 class UUCTouchControlsWidget;
 
 /**
@@ -22,6 +26,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Unreal Combat|UI")
 	bool bShowTouchControlsOnDesktop = false;
 
+	void ToggleScoreboard();
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
@@ -29,4 +35,10 @@ protected:
 private:
 	UPROPERTY() TObjectPtr<UUCHUDWidget> HudWidget;
 	UPROPERTY() TObjectPtr<UUCTouchControlsWidget> TouchWidget;
+	UPROPERTY() TObjectPtr<UUCScoreboardWidget> ScoreboardWidget;
+	UPROPERTY() TObjectPtr<UUCResultsWidget> ResultsWidget;
+	FString LastResultId;
+
+	UFUNCTION()
+	void HandleMatchResult(AUCPlayerController* Controller, const FUCMatchResult& Result);
 };

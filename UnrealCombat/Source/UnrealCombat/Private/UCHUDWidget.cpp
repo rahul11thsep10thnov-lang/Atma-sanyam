@@ -163,6 +163,14 @@ TSharedRef<SWidget> UUCHUDWidget::RebuildWidget()
 		BuildMatchStatus(Root);
 		BuildAbilityStrip(Root);
 		BuildScorePanel(Root);
+		// Match-start reveal cover: black, fades out when the phase changes to InProgress. Never takes touches.
+		RevealCover = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass());
+		RevealCover->SetBrush(PanelBrush(Graphite950, Graphite950));
+		RevealCover->SetVisibility(ESlateVisibility::HitTestInvisible);
+		RevealCover->SetRenderOpacity(0.f);
+		UCanvasPanelSlot* RevealSlot = Root->AddChildToCanvas(RevealCover);
+		RevealSlot->SetAnchors(FAnchors(0.f, 0.f, 1.f, 1.f));
+		RevealSlot->SetOffsets(FMargin(0.f));
 		PrimaryCard = BuildWeaponCard(Root, 1370.f, true);
 		SecondaryCard = BuildWeaponCard(Root, 1620.f, false);
 	}
@@ -496,6 +504,14 @@ void UUCHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	for (UWidget* Widget : PulseWidgets)
 	{
 		if (Widget != nullptr) { Widget->SetRenderOpacity(Pulse); }
+	}
+
+	if (RevealTime >= 0.f)
+	{
+		RevealTime += InDeltaTime;
+		const float T = FMath::Clamp(RevealTime / 0.8f, 0.f, 1.f);
+		RevealCover->SetRenderOpacity(0.85f * FMath::Square(1.f - T));
+		if (T >= 1.f) { RevealTime = -1.f; RevealCover->SetRenderOpacity(0.f); }
 	}
 
 	// Match over: the HUD steps back for the results screen.
@@ -856,6 +872,13 @@ void UUCHUDWidget::RefreshMatch()
 
 	static const TCHAR* ModeKeys[4] = { TEXT("HUD.Mode.FreeForAll"), TEXT("HUD.Mode.TeamDeathmatch"), TEXT("HUD.Mode.Mission"), TEXT("HUD.Mode.BossHunt") };
 	static const TCHAR* PhaseKeys[3] = { TEXT("HUD.Phase.Warmup"), TEXT("HUD.Phase.InProgress"), TEXT("HUD.Phase.Finished") };
+	// Real phase change Warmup -> InProgress starts the reveal; joining a match already under way does not.
+	const int32 PhaseNow = static_cast<int32>(State->Phase);
+	if (LastPhase == static_cast<int32>(EUCMatchPhase::Warmup) && PhaseNow == static_cast<int32>(EUCMatchPhase::InProgress))
+	{
+		RevealTime = 0.f;
+	}
+	LastPhase = PhaseNow;
 	MatchMode->SetText(UCStrings::Get(ModeKeys[FMath::Clamp(static_cast<int32>(State->Mode), 0, 3)]));
 	MatchPhase->SetText(UCStrings::Get(PhaseKeys[FMath::Clamp(static_cast<int32>(State->Phase), 0, 2)]));
 

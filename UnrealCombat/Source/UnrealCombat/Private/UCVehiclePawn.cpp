@@ -132,6 +132,10 @@ void AUCVehiclePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	{
 		Input->BindAction(ReloadAction, ETriggerEvent::Started, this, &AUCVehiclePawn::OnReloadInput);
 	}
+	if (ScoreboardAction != nullptr)
+	{
+		Input->BindAction(ScoreboardAction, ETriggerEvent::Started, this, &AUCVehiclePawn::OnScoreboardInput);
+	}
 	for (int32 Slot = 0; Slot < AbilityActions.Num(); ++Slot)
 	{
 		if (AbilityActions[Slot] != nullptr)
@@ -148,6 +152,14 @@ void AUCVehiclePawn::OnFirePrimaryInput(const FInputActionValue& Value) { SetPla
 void AUCVehiclePawn::OnFireSecondaryInput(const FInputActionValue& Value) { SetPlayerFire(false, Value.Get<bool>()); }
 void AUCVehiclePawn::OnReloadInput(const FInputActionValue& Value) { PlayerReload(); }
 void AUCVehiclePawn::OnAbilityInput(const FInputActionValue& Value, int32 SlotIndex) { PlayerActivateAbility(SlotIndex); }
+
+void AUCVehiclePawn::OnScoreboardInput(const FInputActionValue& Value)
+{
+	if (AUCPlayerController* Controller = Cast<AUCPlayerController>(GetController()))
+	{
+		Controller->ToggleScoreboard();
+	}
+}
 
 void AUCVehiclePawn::SetPlayerThrottle(float Value)
 {

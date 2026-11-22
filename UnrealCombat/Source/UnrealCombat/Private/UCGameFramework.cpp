@@ -2,6 +2,8 @@
 
 #include "Engine/GameInstance.h"
 #include "Net/UnrealNetwork.h"
+#include "UCFrontEnd.h"
+#include "UCHUD.h"
 #include "UCProfileSubsystem.h"
 #include "UCVehiclePawn.h"
 
@@ -59,6 +61,25 @@ void AUCPlayerController::BeginPlay()
 	{
 		// Remove the engine's default virtual joysticks; PH-TOUCH-001 provides the controls.
 		ActivateTouchInterface(nullptr);
+	}
+}
+
+void AUCPlayerController::ReturnToMainMenu()
+{
+	if (const UGameInstance* GameInstance = GetGameInstance())
+	{
+		if (UUCFrontEndSubsystem* FrontEnd = GameInstance->GetSubsystem<UUCFrontEndSubsystem>())
+		{
+			FrontEnd->ReturnToMainMenu();
+		}
+	}
+}
+
+void AUCPlayerController::ToggleScoreboard()
+{
+	if (AUCHUD* Hud = Cast<AUCHUD>(GetHUD()))
+	{
+		Hud->ToggleScoreboard();
 	}
 }
 
