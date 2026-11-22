@@ -14,7 +14,7 @@ import { assertCanStart, confirmOrder, createOrder, getEntitlement, handleRazorp
 import { getSiteSettings } from '../../services/siteSettingsService.js';
 import { clientSignals, recordAbuse } from '../../services/accessPolicyService.js';
 import { applyProgressEvents, getProgress, progressEventSchema } from '../../services/progressService.js';
-import { mockTests } from '../../database/schema.js';
+import { mockTests, testAttempts } from '../../database/schema.js';
 import type { AppDeps } from '../../types.js';
 import { idParam, optionalUuid, pageQuery } from '../util.js';
 
@@ -192,9 +192,22 @@ export function publicRouter(deps: AppDeps, auth: Auth, limits: RateLimits) {
   });
 
   // Questions and options — never the answer key or explanations.
-  r.get('/mock-tests/:id', async (req, res) => {
-    const test = await getMockTest(db, idParam(req), { includeAnswers: false, publicOnly: true });
-    res.set('Cache-Control', cache(60)).json(test);
+  // Test details for everyone; the question paper only for a signed-in user
+  // who has started this test (the start endpoint enforces the free quota
+  // and the paid plan). Never the answers.
+  r.get('/mock-tests/:id', auth.optionalUser, async (req, res) => {
+    const id = idParam(req);
+    const test = await getMockTest(db, id, { includeAnswers: false, publicOnly: true });
+    const [attempt] = req.user
+      ? await db
+          .select({ id: testAttempts.id })
+          .from(testAttempts)
+          .where(and(eq(testAttempts.userId, req.user.id), eq(testAttempts.mockTestId, id)))
+          .limit(1)
+      : [];
+    res.vary('Authorization');
+    if (attempt) return void res.set('Cache-Control', 'private, no-store').json({ ...test, paperLocked: false });
+    res.set('Cache-Control', cache(60)).json({ ...test, questions: [], paperLocked: true });
   });
 
   // Free quota (2 full + 2 subject-wise by default) and the paid plan are

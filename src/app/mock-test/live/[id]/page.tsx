@@ -14,13 +14,6 @@ export default function LiveInstructionsPage({ params }: { params: Promise<{ id:
   if (error) return <LiveState message={error} onRetry={reload} />;
   if (!test) return <LiveState message="Test load ho raha hai…" busy />;
 
-  const counts = new Map<string, { label: string; count: number }>();
-  for (const q of test.questions) {
-    const key = q.subjectId ?? "general";
-    const c = counts.get(key) ?? { label: q.subjectName, count: 0 };
-    c.count++;
-    counts.set(key, c);
-  }
 
   return (
     <InstructionsView
@@ -28,11 +21,11 @@ export default function LiveInstructionsPage({ params }: { params: Promise<{ id:
       startHref={`/mock-test/live/${id}/attempt`}
       title={test.title}
       subtitle={`${test.examName} · ${LANGUAGE_LABEL[test.language] ?? test.language}`}
-      questionCount={test.questions.length}
+      questionCount={test.totalQuestions}
       durationMinutes={test.durationMinutes}
       marksPerQuestion={test.marksPerQuestion}
       negativeMarks={test.negativeMarks}
-      subjects={[...counts.values()].map((c) => ({ key: c.label.toLowerCase(), label: c.label, count: c.count }))}
+      subjects={(test.sections ?? []).map((c) => ({ key: c.subjectName.toLowerCase(), label: c.subjectName, count: c.count }))}
     />
   );
 }

@@ -217,7 +217,7 @@ describe('editing and swapping questions in a mock test', () => {
     expect(blocked.status).toBe(409);
     expect(blocked.body.error.message).toMatch(/taking this test/);
 
-    const served = await request(ctx.app).get(`/api/mock-tests/${t.id}`);
+    const served = await request(ctx.app).get(`/api/mock-tests/${t.id}`).set(auth(user));
     const answers = (served.body.questions as { id: string }[]).map((q) => ({ questionId: q.id, selectedOption: 'A' }));
     const submit = await request(ctx.app).post(`/api/mock-tests/${t.id}/submit`).set(auth(user)).send({ attemptId: start.body.attemptId, answers });
     expect(submit.status).toBe(200);
@@ -232,7 +232,7 @@ describe('editing and swapping questions in a mock test', () => {
     expect((result.body.questions as { questionId: string; position: number }[]).map((q) => `${q.position}:${q.questionId}`)).toEqual(before);
     expect(result.body.sections.reduce((n: number, s: { total: number }) => n + s.total, 0)).toBe(10);
 
-    const live = await request(ctx.app).get(`/api/mock-tests/${t.id}`);
+    const live = await request(ctx.app).get(`/api/mock-tests/${t.id}`).set(auth(user));
     expect((live.body.questions as { id: string }[]).some((q) => q.id === swapped.body.addedId)).toBe(true);
     expect((live.body.questions as { id: string }[]).some((q) => q.id === target.id)).toBe(false);
     const attempts = await ctx.db.select().from(testAttempts).where(eq(testAttempts.mockTestId, t.id));

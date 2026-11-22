@@ -695,6 +695,16 @@ export async function listMockTests(
  * the public API never sends correct answers or explanations before submit.
  * Public reads only include questions that are still PUBLISHED.
  */
+function sectionSummary(qs: { subjectId: string | null; subjectName: string | null }[]) {
+  const out: { subjectId: string | null; subjectName: string; count: number }[] = [];
+  for (const q of qs) {
+    const s = out.find((x) => x.subjectId === q.subjectId);
+    if (s) s.count++;
+    else out.push({ subjectId: q.subjectId, subjectName: q.subjectName ?? 'General', count: 1 });
+  }
+  return out;
+}
+
 export async function getMockTest(db: Db, id: string, opts: { includeAnswers: boolean; publicOnly: boolean }) {
   const [row] = await db
     .select({ t: mockTests, examName: exams.name, stateCode: exams.stateCode, examType: exams.examType })
@@ -745,6 +755,7 @@ export async function getMockTest(db: Db, id: string, opts: { includeAnswers: bo
     status: row.t.status,
     durationMinutes: row.t.durationMinutes,
     totalQuestions: qs.length,
+    sections: sectionSummary(qs),
     marksPerQuestion: Number(row.t.marksPerQuestion),
     negativeMarks: Number(row.t.negativeMarks),
     publishedAt: row.t.publishedAt,

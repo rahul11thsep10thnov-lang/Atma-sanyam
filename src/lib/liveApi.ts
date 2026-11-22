@@ -163,7 +163,9 @@ export interface LiveTestSummary {
   sections: { subjectId: string | null; subjectName: string; count: number }[];
 }
 
-export interface LiveTest extends Omit<LiveTestSummary, "sections"> {
+export interface LiveTest extends LiveTestSummary {
+  /** True when the paper is withheld (no attempt started by this user yet). */
+  paperLocked?: boolean;
   questions: {
     id: string;
     position: number;
@@ -308,7 +310,10 @@ export const liveApi = {
     p.set("pageSize", "100");
     return request<{ items: LiveTestSummary[]; total: number }>(`/mock-tests?${p}`);
   },
+  /** Test details and section counts (the paper itself is withheld). */
   getTest: (id: string) => request<LiveTest>(`/mock-tests/${encodeURIComponent(id)}`),
+  /** The question paper — served only once this user has started the test. */
+  paper: (id: string) => authed<LiveTest>(`/mock-tests/${encodeURIComponent(id)}`),
   start: (id: string) => authed<StartedAttempt>(`/mock-tests/${encodeURIComponent(id)}/start`, { method: "POST" }),
   submit: (id: string, attemptId: string, answers: AnswerPayload[]) =>
     authed<LiveResult>(`/mock-tests/${encodeURIComponent(id)}/submit`, {

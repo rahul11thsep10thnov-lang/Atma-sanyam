@@ -103,8 +103,17 @@ describe('complete question pipeline', () => {
   it('serves the test to website users without the answer key', async () => {
     const list = await request(ctx.app).get('/api/mock-tests?state=up&examType=constable');
     expect(list.body.items.map((t: { id: string }) => t.id)).toContain(mockTestId);
-    const test = await request(ctx.app).get(`/api/mock-tests/${mockTestId}`);
+    // Anyone sees the details; the paper only after starting the test.
+    const outline = await request(ctx.app).get(`/api/mock-tests/${mockTestId}`);
+    expect(outline.status).toBe(200);
+    expect(outline.body).toMatchObject({ durationMinutes: 12, totalQuestions: 10, paperLocked: true, questions: [] });
+    expect(outline.body.sections.reduce((n: number, s: { count: number }) => n + s.count, 0)).toBe(10);
+    const reader = await userToken(ctx.app, 'Reader');
+    expect((await request(ctx.app).get(`/api/mock-tests/${mockTestId}`).set(auth(reader))).body.questions).toEqual([]);
+    expect((await request(ctx.app).post(`/api/mock-tests/${mockTestId}/start`).set(auth(reader))).status).toBe(201);
+    const test = await request(ctx.app).get(`/api/mock-tests/${mockTestId}`).set(auth(reader));
     expect(test.status).toBe(200);
+    expect(test.headers['cache-control']).toContain('no-store');
     expect(test.body.durationMinutes).toBe(12);
     expect(test.body.questions).toHaveLength(10);
     expect(test.body.questions[0].options).toHaveLength(4);

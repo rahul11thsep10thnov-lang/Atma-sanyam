@@ -30,7 +30,8 @@ export function createApp(deps: AppDeps, options: AppOptions = {}) {
     cors({
       origin: (origin, cb) => cb(null, !origin || deps.env.CORS_ORIGINS.includes(origin)),
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
+      // X-Device-Id: the website's random browser id (free-quota protection).
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Device-Id'],
       maxAge: 600,
     })
   );

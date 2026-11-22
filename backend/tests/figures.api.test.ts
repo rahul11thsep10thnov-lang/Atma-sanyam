@@ -139,7 +139,9 @@ describe('figure questions through the API', () => {
     const testId = gen.body.test.id as string;
     expect((await request(ctx.app).post(`/api/admin/mock-tests/${testId}/publish`).set(auth(admin))).status).toBe(200);
 
-    const pubTest = await request(ctx.app).get(`/api/mock-tests/${testId}`);
+    const user = await userToken(ctx.app, 'Figures');
+    const start = await request(ctx.app).post(`/api/mock-tests/${testId}/start`).set(auth(user));
+    const pubTest = await request(ctx.app).get(`/api/mock-tests/${testId}`).set(auth(user));
     expect(pubTest.status).toBe(200);
     const qs = pubTest.body.questions as { id: string; figureSvg: string | null; options: { label: string; svg: string | null }[]; correctOption?: string }[];
     expect(qs.every((q) => q.figureSvg !== undefined)).toBe(true);
@@ -147,8 +149,6 @@ describe('figure questions through the API', () => {
     expect(qs.every((q) => q.correctOption === undefined)).toBe(true);
     expect(JSON.stringify(pubTest.body)).not.toMatch(/"explanation"/);
 
-    const user = await userToken(ctx.app, 'Figures');
-    const start = await request(ctx.app).post(`/api/mock-tests/${testId}/start`).set(auth(user));
     const keyRows = await ctx.db.select({ id: questions.id, correct: questions.correctOption }).from(questions);
     const key = new Map(keyRows.map((r) => [r.id, r.correct]));
     const answers = qs.map((q) => ({ questionId: q.id, selectedOption: key.get(q.id)! }));

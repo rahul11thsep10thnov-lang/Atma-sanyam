@@ -2,7 +2,7 @@ import request from 'supertest';
 import { and, eq, inArray } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { abuseEvents, questions, users } from '../src/database/schema.js';
-import { auth, adminToken, scopeIds, setupTestApp } from './helpers.js';
+import { appWithEnv, auth, adminToken, scopeIds, setupTestApp } from './helpers.js';
 
 type Ctx = Awaited<ReturnType<typeof setupTestApp>>;
 
@@ -145,5 +145,17 @@ describe('guest free-quota protection', () => {
     // Reviewers (no settings permission) cannot read or change it.
     const reviewer = await adminToken(ctx.app, ctx.db, 'reviewer');
     expect((await request(ctx.app).get('/api/admin/access-policy').set(auth(reviewer))).status).toBe(403);
+  });
+
+  it('lets the website send its device id across origins (CORS preflight)', async () => {
+    const app = appWithEnv(ctx, { CORS_ORIGINS: 'https://site.example' });
+    const res = await request(app)
+      .options('/api/mock-tests')
+      .set('Origin', 'https://site.example')
+      .set('Access-Control-Request-Method', 'POST')
+      .set('Access-Control-Request-Headers', 'content-type,authorization,x-device-id');
+    expect(res.status).toBe(204);
+    expect(res.headers['access-control-allow-origin']).toBe('https://site.example');
+    expect(res.headers['access-control-allow-headers']!.toLowerCase()).toContain('x-device-id');
   });
 });

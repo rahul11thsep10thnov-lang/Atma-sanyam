@@ -10,7 +10,6 @@ import { LiveState } from "@/components/mock/LiveState";
 import { recordAnswer, saveAttempt } from "@/lib/localStore";
 import { cacheDelete, cacheGet, cacheSet, liveApi, liveApiEnabled, LiveApiError, type LiveResult, type LiveTest } from "@/lib/liveApi";
 import { changedQuestions, dirtyQuestions, dropLocal, loadLocal, mergeServer, storeLocal, toAnswerPayload, type LocalAttempt } from "@/lib/attemptSync";
-import { useLiveTest } from "@/lib/useLiveTest";
 
 type Phase = "starting" | "running" | "submitting" | "failed" | "done";
 
@@ -33,7 +32,9 @@ const RETRY_STEPS_MS = [2000, 5000, 10_000, 20_000, 30_000];
 
 export default function LiveAttemptPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const { test, error: loadError, reload } = useLiveTest(id);
+  // The paper is served only after the attempt has started (server rule).
+  const [test, setTest] = useState<LiveTest | null>(null);
+  const testRef = useRef<LiveTest | null>(null);
   const [phase, setPhase] = useState<Phase>("starting");
   const [clock, setClock] = useState<Clock | null>(null);
   const [initialAnswers, setInitialAnswers] = useState<RunnerAnswers | undefined>(undefined);
@@ -85,6 +86,7 @@ export default function LiveAttemptPage({ params }: { params: Promise<{ id: stri
   // ---- autosave -------------------------------------------------------------
   const flush = useCallback(async () => {
     const l = localRef.current;
+    const test = testRef.current;
     if (!l || !test || flushing.current) return;
     const dirty = dirtyQuestions(l);
     if (!dirty.length) {
@@ -127,7 +129,7 @@ export default function LiveAttemptPage({ params }: { params: Promise<{ id: stri
     } finally {
       flushing.current = false;
     }
-  }, [test, showResult]);
+  }, [showResult]);
   useEffect(() => {
     flushRef.current = flush;
   }, [flush]);
@@ -188,6 +190,7 @@ export default function LiveAttemptPage({ params }: { params: Promise<{ id: stri
   // ---- submit ---------------------------------------------------------------
   const submitNow = useCallback(
     async (attemptId: string) => {
+      const test = testRef.current;
       if (!test) return;
       setPhase("submitting");
       setSubmitError(null);
@@ -209,7 +212,7 @@ export default function LiveAttemptPage({ params }: { params: Promise<{ id: stri
         setPhase("failed");
       }
     },
-    [test, id, showResult]
+    [id, showResult]
   );
 
   const submit = useCallback(
@@ -232,18 +235,48 @@ export default function LiveAttemptPage({ params }: { params: Promise<{ id: stri
   }, [phase, id, submitNow]);
 
   // ---- start / resume -------------------------------------------------------
+  /** The paper for a started attempt; the last copy on this device if offline. */
+  const loadPaper = useCallback(async (): Promise<LiveTest | null> => {
+    try {
+      const t = await liveApi.paper(id);
+      if (t.questions.length) {
+        cacheSet(`test_${id}`, t);
+        testRef.current = t;
+        setTest(t);
+        return t;
+      }
+    } catch (e) {
+      if (e instanceof LiveApiError && e.status === 404) return null;
+    }
+    const cached = cacheGet<LiveTest>(`test_${id}`);
+    if (cached?.questions?.length) {
+      testRef.current = cached;
+      setTest(cached);
+      return cached;
+    }
+    return null;
+  }, [id]);
+
   const start = useCallback(async () => {
-    if (!test) return;
     setStartError(null);
     // A submission that did not reach the server earlier is finished first.
     const pending = cacheGet<Pending>(`pending_${id}`);
     if (pending?.attemptId) {
+      if (!(await loadPaper())) {
+        setStartError("Questions load nahi ho paaye. Internet check karke dobara try karein.");
+        return;
+      }
       await submitNow(pending.attemptId);
       return;
     }
     try {
       const sent = Date.now();
       const a = await liveApi.start(id);
+      const test = await loadPaper();
+      if (!test) {
+        setStartError("Questions load nahi ho paaye. Internet check karke dobara try karein.");
+        return;
+      }
       const offsetMs = Date.parse(a.serverTime) + (Date.now() - sent) / 2 - Date.now();
       let local = loadLocal(a.attemptId);
       if (a.resumed) {
@@ -281,14 +314,14 @@ export default function LiveAttemptPage({ params }: { params: Promise<{ id: stri
       }
       setStartError(e instanceof LiveApiError && e.status !== 0 ? e.message : "Unable to start the test. Check your connection and try again.");
     }
-  }, [id, test, submitNow, scheduleFlush]);
+  }, [id, loadPaper, submitNow, scheduleFlush]);
 
   useEffect(() => {
-    if (!liveApiEnabled || !test) return;
-    // Start (or resume) the attempt on the server once the test is loaded.
+    if (!liveApiEnabled) return;
+    // Start (or resume) the attempt on the server, then load its paper.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     void start();
-  }, [test, start]);
+  }, [start]);
 
   const runnerQuestions = useMemo(
     () =>
@@ -305,8 +338,6 @@ export default function LiveAttemptPage({ params }: { params: Promise<{ id: stri
   );
 
   if (!liveApiEnabled) return <LiveState message="Live mock tests abhi available nahi hain." />;
-  if (loadError) return <LiveState message={loadError} onRetry={reload} />;
-  if (!test) return <LiveState message="Questions load ho rahe hain…" busy />;
   if (startError) return <LiveState message={startError} onRetry={() => void start()} />;
   if (loginNeeded) {
     return (
@@ -393,7 +424,7 @@ export default function LiveAttemptPage({ params }: { params: Promise<{ id: stri
   }
   if (phase === "submitting") return <LiveState message="Answers server par bheje ja rahe hain…" busy />;
 
-  if (!clock || phase === "starting") return <LiveState message="Test shuru ho raha hai…" busy />;
+  if (!clock || !test || phase === "starting") return <LiveState message="Test shuru ho raha hai…" busy />;
 
   return (
     <ExamRunner

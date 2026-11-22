@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { cacheGet, cacheSet, liveApi, liveApiEnabled, LiveApiError, type LiveTest } from "@/lib/liveApi";
 
-/** Loads a published test; falls back to the last copy on this device when offline. */
+/** Loads a published test's details (not its paper); falls back to the last copy on this device when offline. */
 export function useLiveTest(id: string) {
   const [test, setTest] = useState<LiveTest | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -12,10 +12,10 @@ export function useLiveTest(id: string) {
     setError(null);
     try {
       const t = await liveApi.getTest(id);
-      cacheSet(`test_${id}`, t);
+      cacheSet(`outline_${id}`, t);
       setTest(t);
     } catch (e) {
-      const cached = cacheGet<LiveTest>(`test_${id}`);
+      const cached = cacheGet<LiveTest>(`outline_${id}`);
       if (cached && !(e instanceof LiveApiError && e.status === 404)) setTest(cached);
       else setError(e instanceof LiveApiError && e.status === 404 ? "Yeh mock test ab available nahi hai." : "Unable to load questions. Try again.");
     }
