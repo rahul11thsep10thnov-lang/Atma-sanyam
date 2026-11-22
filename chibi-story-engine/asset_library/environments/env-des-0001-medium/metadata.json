@@ -137,9 +137,9 @@
       "role": "layer",
       "path": "layers/main_scenery.png",
       "format": "png",
-      "checksum": "3122bcd89b905f26deacd6f9a592418b5f69dcf532e9eda326bda485ec1ea07e",
+      "checksum": "eea56d9f377732452e13ba452b4a3cf9d2f86878f8a69aff6c8ea768e3404dfc",
       "width": 1484,
-      "height": 511,
+      "height": 525,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -149,7 +149,7 @@
       "role": "svg_master",
       "path": "masters/main_scenery.svg",
       "format": "svg",
-      "checksum": "6162047d42a975c1cfc143d52ef2d6c6e66d56c855e501017a92e08281febdea",
+      "checksum": "d19ee1486721f5c9ac6cf674d1b1e57f8bca239b34b6f302b5aa638aa8c5c7d5",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -185,8 +185,8 @@
       "role": "layer",
       "path": "layers/foreground.png",
       "format": "png",
-      "checksum": "9bc77f7472873451247880c6a63282f3805b42b19d7a6573d6d9511108f1f55e",
-      "width": 1890,
+      "checksum": "75e5333d432df7eb87335d38808c9010131d868cc64b46291081b93f4ce14a6d",
+      "width": 1930,
       "height": 350,
       "duration_seconds": null,
       "view": null,
@@ -197,7 +197,7 @@
       "role": "svg_master",
       "path": "masters/foreground.svg",
       "format": "svg",
-      "checksum": "5d32b68abae1e43791526a1665a2e79fed897d68fc73f421842726aab9f9cf88",
+      "checksum": "1237dca679f5a6e71104bbcf7980b9b0861a47a7f8f7fb8a18c3d2fc44889447",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -209,7 +209,7 @@
       "role": "preview",
       "path": "previews/composite.jpg",
       "format": "jpeg",
-      "checksum": "1bd3c323337ab24c09f8661c9dac6ef6a0016784cb2ba94be17698e6f83f586c",
+      "checksum": "75fd9f0ef8942a0efd170524c14f4ba61bec1d9b2399dc9943b6a3a0eb9971ef",
       "width": 960,
       "height": 540,
       "duration_seconds": null,
@@ -218,7 +218,7 @@
       "pose": null
     }
   ],
-  "created_at": "2026-11-21T17:57:37+00:00",
+  "created_at": "2026-11-21T18:34:27+00:00",
   "change_summary": "",
   "stage": [
     1920,
@@ -288,9 +288,9 @@
       "file": "layers/main_scenery.png",
       "rect": [
         40.0,
-        300.0,
+        280.0,
         2120.0,
-        730.0
+        750.0
       ],
       "parallax": 1.0,
       "order": 40,
@@ -326,8 +326,8 @@
       "file": "layers/foreground.png",
       "rect": [
         250.0,
-        -80.0,
-        1890.0,
+        -90.0,
+        1930.0,
         350.0
       ],
       "parallax": 1.3,

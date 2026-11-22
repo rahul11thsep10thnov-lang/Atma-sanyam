@@ -756,7 +756,7 @@ def m_peak(v, x, y, s, rng, pal, w=1100, h=620, col="#8a96a8", snow=True, jag=0.
     else:
         v.P(ridge, v.G([(0, lighten(col, 0.1)), (1, darken(col, 0.1))]), ol(col, 0.35), 5)
         peak = max(range(len(ridge)), key=lambda i: ridge[i][1])
-        v.P([ridge[peak]] + ridge[peak:] + [(ridge[-1][0], y), (ridge[peak][0] + hw * 0.02, y)], darken(col, 0.18), None, 0, 0.55)
+        v.P([ridge[peak]] + ridge[peak:] + [(ridge[-1][0], y), (ridge[peak][0] - hw * 0.22, y)], darken(col, 0.18), None, 0, 0.55)
     if snow and not rolling:
         line = y + h * s * 0.64
         cap = [(px, py) for px, py in ridge if py > line]
@@ -782,11 +782,33 @@ def m_dune(v, x, y, s, rng, pal, w=1400, h=230, col="#e0b870"):
 
 
 def m_cliff(v, x, y, s, rng, pal, w=620, h=760, col="#8a7a6a"):
+    """A faceted cliff: jagged skyline, a lit plane and a shadowed plane, rock ledges with pale lips, cracks and a scree skirt."""
     hw = w * s / 2
-    v.P([(x - hw, y), (x - hw * 0.9, y + h * 0.6 * s), (x - hw * 0.55, y + h * s), (x + hw * 0.5, y + h * 0.94 * s), (x + hw * 0.95, y + h * 0.4 * s), (x + hw, y)], shade(v, col), ol(col), 6)
-    for k in range(7):
-        yy = y + h * s * (0.1 + 0.12 * k)
-        v.L([(x - hw * 0.8, yy), (x - hw * 0.1, yy + rng.uniform(-14, 14) * s), (x + hw * 0.7, yy + rng.uniform(-10, 10) * s)], darken(col, 0.3), 4, 0.5)
+    top = [(x - hw + i * (2 * hw) / 8, y + rng.uniform(-30, 14) * s + (18 * s if i in (0, 8) else 0)) for i in range(9)]
+    left = [(x - hw * 0.93, y + h * 0.35 * s), (x - hw * 0.86, y + h * 0.7 * s), (x - hw * 0.6, y + h * s)]
+    right = [(x + hw * 0.55, y + h * 0.97 * s), (x + hw * 0.9, y + h * 0.62 * s), (x + hw * 0.98, y + h * 0.3 * s)]
+    outline = top + right[::-1][::-1] if False else top + list(reversed(right)) + list(reversed(left))
+    v.P(outline, shade(v, col), ol(col), 6)
+    # shadowed plane on the right, lit plane on the left, split by a diagonal fault
+    v.P([(x + hw * 0.05, y - 10 * s), (x + hw * 0.28, y + h * 0.3 * s), (x + hw * 0.12, y + h * 0.62 * s), (x + hw * 0.5, y + h * 0.95 * s)] + list(reversed(right)) + [top[-1], top[-2], top[-3], top[-4]],
+        darken(col, 0.22), None, 0, 0.55)
+    v.P([top[0], top[1], (x - hw * 0.45, y + h * 0.25 * s), (x - hw * 0.6, y + h * 0.5 * s)] + [left[0]], lighten(col, 0.16), None, 0, 0.5)
+    for k in range(5):                                                                  # ledges: a dark underside and a pale lip
+        yy = y + h * s * (0.14 + 0.17 * k)
+        x0 = x - hw * rng.uniform(0.75, 0.9)
+        x1 = x + hw * rng.uniform(0.5, 0.85)
+        mid = (x0 + x1) / 2 + rng.uniform(-40, 40) * s
+        v.L([(x0, yy), (mid, yy + rng.uniform(-12, 12) * s), (x1, yy + rng.uniform(-8, 8) * s)], darken(col, 0.38), 5, 0.65)
+        v.L([(x0 + 10 * s, yy - 6 * s), (mid, yy - 6 * s + rng.uniform(-10, 10) * s), (x1 - 12 * s, yy - 5 * s)], lighten(col, 0.22), 3, 0.6)
+    for k in range(6):                                                                  # cracks
+        cx0 = x + rng.uniform(-0.7, 0.6) * hw
+        cy0 = y + rng.uniform(0.1, 0.6) * h * s
+        v.L([(cx0, cy0), (cx0 + rng.uniform(-18, 18) * s, cy0 + 40 * s), (cx0 + rng.uniform(-24, 24) * s, cy0 + 84 * s)], darken(col, 0.45), 3, 0.6)
+    for k in range(10):                                                                 # scree at the foot
+        bx = x + rng.uniform(-0.8, 0.7) * hw
+        by = y + h * s * rng.uniform(0.9, 0.99)
+        r = rng.uniform(10, 24) * s
+        v.E(bx, by, r * 1.3, r * 0.8, shade(v, darken(col, 0.1)), ol(col), 3)
 
 
 def _reg_mountains():

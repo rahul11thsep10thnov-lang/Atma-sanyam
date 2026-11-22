@@ -184,9 +184,9 @@
       "role": "layer",
       "path": "layers/foreground.png",
       "format": "png",
-      "checksum": "8cf271e53a53391d0da532577f73e3051783df89d62ee0f28178a8452a89fe78",
-      "width": 1250,
-      "height": 280,
+      "checksum": "ec407710fc97250ec2323f9584dde9d8e0f5874008901183edf0d8947ac23374",
+      "width": 1240,
+      "height": 270,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -196,7 +196,7 @@
       "role": "svg_master",
       "path": "masters/foreground.svg",
       "format": "svg",
-      "checksum": "120f3fdc76378ada20aecd5636992301d3c34077f87d29e6989a5b58e6892af3",
+      "checksum": "f31e02166933d0b09bdad25a0ba8339c7948233ae83aa811d95b5d293cf9b251",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -232,7 +232,7 @@
       "role": "preview",
       "path": "previews/composite.jpg",
       "format": "jpeg",
-      "checksum": "ba408c8e4bd01ebf9555fe33bbc8782c324e9f16f05da067d25f53933425833a",
+      "checksum": "f6502ede12cde61ff84dfeb52d9485797d61cacc849da063e2f1a30d31154c71",
       "width": 960,
       "height": 540,
       "duration_seconds": null,
@@ -241,7 +241,7 @@
       "pose": null
     }
   ],
-  "created_at": "2026-11-21T17:57:42+00:00",
+  "created_at": "2026-11-21T18:34:32+00:00",
   "change_summary": "",
   "stage": [
     1920,
@@ -348,10 +348,10 @@
       "type": "foreground",
       "file": "layers/foreground.png",
       "rect": [
-        1000.0,
+        1010.0,
         -50.0,
-        1250.0,
-        280.0
+        1240.0,
+        270.0
       ],
       "parallax": 1.3,
       "order": 800,

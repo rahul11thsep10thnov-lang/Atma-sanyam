@@ -184,9 +184,9 @@
       "role": "layer",
       "path": "layers/vegetation.png",
       "format": "png",
-      "checksum": "e66960a81e70f8715eb0a0d38e01dcdb886dd4a85b761fa1ec58df6541942e5f",
-      "width": 287,
-      "height": 189,
+      "checksum": "3a5b5b6b4b778bd311afbd6cc5d1502aeeeaad7d89fcbdff374de178620ab0a8",
+      "width": 315,
+      "height": 168,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -196,7 +196,7 @@
       "role": "svg_master",
       "path": "masters/vegetation.svg",
       "format": "svg",
-      "checksum": "652947daf63be4f0a47af1b2ae36bd6e7e17d489333be1079084027e1829b392",
+      "checksum": "1109b9353dacb1a6202104988c33b33d7ecc66401ea53d1f9a051cd4f4e39a57",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -208,9 +208,9 @@
       "role": "layer",
       "path": "layers/foreground.png",
       "format": "png",
-      "checksum": "8a69492224b659de349520370a3af6b2632d154baa81cb7949b2b577e1e295c2",
+      "checksum": "db4fdadcfcd02674858962bacb94fea4b0ef4441407a24233866f1208de87525",
       "width": 1650,
-      "height": 310,
+      "height": 280,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -220,7 +220,7 @@
       "role": "svg_master",
       "path": "masters/foreground.svg",
       "format": "svg",
-      "checksum": "81e86f96cb6f804d0417782ba3128bd774e480a07bd65a85e0e7751df198a9c9",
+      "checksum": "3a663d641941917b6a26f0eca498d39953a142f94f4769e85d6d75829a53c301",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -232,7 +232,7 @@
       "role": "preview",
       "path": "previews/composite.jpg",
       "format": "jpeg",
-      "checksum": "eac091a58588675f1cf828cec75a9040ae1aa66df6ad778302be4ad529d0af15",
+      "checksum": "b6c542154ca39d322be67bdc7927c0644e0e6d11d1340a5722657cdef113d322",
       "width": 960,
       "height": 540,
       "duration_seconds": null,
@@ -241,7 +241,7 @@
       "pose": null
     }
   ],
-  "created_at": "2026-11-21T17:57:38+00:00",
+  "created_at": "2026-11-21T18:34:28+00:00",
   "change_summary": "",
   "stage": [
     1920,
@@ -348,10 +348,10 @@
       "type": "middle",
       "file": "layers/vegetation.png",
       "rect": [
-        -30.0,
+        -40.0,
         280.0,
-        410.0,
-        270.0
+        450.0,
+        240.0
       ],
       "parallax": 1.0,
       "order": 45,
@@ -370,7 +370,7 @@
         670.0,
         -90.0,
         1650.0,
-        310.0
+        280.0
       ],
       "parallax": 1.3,
       "order": 800,

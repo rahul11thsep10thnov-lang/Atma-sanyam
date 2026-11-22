@@ -113,9 +113,9 @@
       "role": "layer",
       "path": "layers/main_scenery.png",
       "format": "png",
-      "checksum": "e9bcd9adb41ea69ae6b801b3618e7d9283577090520c0a10467faaa11cb29e74",
-      "width": 378,
-      "height": 210,
+      "checksum": "4c22bfe450919fb20c4fdbc6b3a677cd2346467956dd485588c9dc3f5038383e",
+      "width": 266,
+      "height": 224,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -125,7 +125,7 @@
       "role": "svg_master",
       "path": "masters/main_scenery.svg",
       "format": "svg",
-      "checksum": "2c768f96ce52757a19e236e26c62279b669cbc245b71d463072678c4f598283b",
+      "checksum": "f5ccb01fc8abe0962e603ebc718f7d88af71446b02ee55e48115aed65264490b",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -137,9 +137,9 @@
       "role": "layer",
       "path": "layers/foreground.png",
       "format": "png",
-      "checksum": "bd1f8c64a96e1e53941d906f872ce70aaf2435a2e157456df38005c88085b4ce",
-      "width": 1240,
-      "height": 370,
+      "checksum": "96fe2304aa01f3b26aef4fe36a05eeeaf7e09be8ba403556abe9baf803135acc",
+      "width": 1210,
+      "height": 450,
       "duration_seconds": null,
       "view": null,
       "expression": null,
@@ -149,7 +149,7 @@
       "role": "svg_master",
       "path": "masters/foreground.svg",
       "format": "svg",
-      "checksum": "70ab2ff832c297dd3913c15b295024177038eec085950adce3fd991dd2b317ab",
+      "checksum": "c5d4d8b4f2ad01eb5aff8766fdd5470a7ae50d6d27d675ff1424ff67cbb89ff9",
       "width": null,
       "height": null,
       "duration_seconds": null,
@@ -161,7 +161,7 @@
       "role": "preview",
       "path": "previews/composite.jpg",
       "format": "jpeg",
-      "checksum": "49ad5b96a99c9e70ea630671c42e3882b3357396929f28d1b2953ff0569ebbbf",
+      "checksum": "569daeb7b0953cee5df8a8cbc666b88bf841753c8f63e24b88690bb7d93703ad",
       "width": 960,
       "height": 540,
       "duration_seconds": null,
@@ -170,7 +170,7 @@
       "pose": null
     }
   ],
-  "created_at": "2026-11-21T17:57:37+00:00",
+  "created_at": "2026-11-21T18:34:28+00:00",
   "change_summary": "",
   "stage": [
     1920,
@@ -220,10 +220,10 @@
       "type": "middle",
       "file": "layers/main_scenery.png",
       "rect": [
-        860.0,
-        300.0,
-        540.0,
-        300.0
+        980.0,
+        270.0,
+        380.0,
+        320.0
       ],
       "parallax": 1.0,
       "order": 40,
@@ -241,8 +241,8 @@
       "rect": [
         -400.0,
         -130.0,
-        1240.0,
-        370.0
+        1210.0,
+        450.0
       ],
       "parallax": 1.3,
       "order": 800,
