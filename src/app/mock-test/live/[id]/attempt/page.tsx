@@ -51,9 +51,14 @@ export default function LiveAttemptPage({ params }: { params: Promise<{ id: stri
   const retryStep = useRef(0);
   const flushing = useRef(false);
   const flushRef = useRef<() => Promise<void>>(async () => {});
+  /** Set once the attempt is being submitted or finished: no more autosaves,
+   * and the result (with its local mirror) is applied only once. */
+  const finishedRef = useRef<string | null>(null);
 
   const showResult = useCallback(
     (r: LiveResult, attemptId: string) => {
+      if (finishedRef.current === `shown:${attemptId}`) return;
+      finishedRef.current = `shown:${attemptId}`;
       cacheDelete(`pending_${id}`);
       dropLocal(attemptId);
       // Mirror the server's result locally (dashboard, "Attempted" labels,
@@ -87,7 +92,7 @@ export default function LiveAttemptPage({ params }: { params: Promise<{ id: stri
   const flush = useCallback(async () => {
     const l = localRef.current;
     const test = testRef.current;
-    if (!l || !test || flushing.current) return;
+    if (!l || !test || flushing.current || finishedRef.current) return;
     const dirty = dirtyQuestions(l);
     if (!dirty.length) {
       setSync("saved");
@@ -192,6 +197,9 @@ export default function LiveAttemptPage({ params }: { params: Promise<{ id: stri
     async (attemptId: string) => {
       const test = testRef.current;
       if (!test) return;
+      // The submission carries every answer; pending autosaves are dropped.
+      if (flushTimer.current) clearTimeout(flushTimer.current);
+      if (!finishedRef.current) finishedRef.current = `submitting:${attemptId}`;
       setPhase("submitting");
       setSubmitError(null);
       cacheSet(`pending_${id}`, { attemptId } satisfies Pending);

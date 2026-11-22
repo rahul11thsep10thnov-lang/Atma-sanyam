@@ -184,7 +184,11 @@ export default function ExamResult({
                         {i + 1}. {q.text}
                       </p>
                       <button
-                        onClick={() => setMarks((m) => ({ ...m, [q.id]: toggleBookmark(q.id) }))}
+                        onClick={() => {
+                          // Side effect outside the state updater (React may run updaters twice).
+                          const on = toggleBookmark(q.id);
+                          setMarks((m) => ({ ...m, [q.id]: on }));
+                        }}
                         aria-pressed={bookmarked(q.id)}
                         aria-label={bookmarked(q.id) ? "Bookmark hatayein" : "Bookmark karein"}
                         className="-m-1 shrink-0 p-1"
