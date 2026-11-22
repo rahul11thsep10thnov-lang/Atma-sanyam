@@ -7,6 +7,7 @@ import { useCan } from '@/components/ConsoleShell';
 import { ScopePicker } from '@/components/ScopePicker';
 import { DifficultyBadge, ErrorAlert, OkAlert, PageHead, Pager, StatusBadge } from '@/components/ui';
 import { api, errorMessage, useApi } from '@/lib/api';
+import { BulkEditForm } from '@/components/BulkEditForm';
 import { relTime } from '@/lib/format';
 import type { Paged, QuestionFacets, QuestionRow } from '@/lib/types';
 import { languageName, useLanguages, useTaxonomy } from '@/lib/useTaxonomy';
@@ -149,6 +150,7 @@ function QuestionBank() {
   const [err, setErr] = useState<string | null>(null);
   const [shown, setShown] = useColumnChoice();
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [bulkEditing, setBulkEditing] = useState(false);
   const [fields, setFields] = useState({ externalId: f.externalId, subtopic: f.subtopic, concept: f.concept });
 
   const query = { ...f, page, pageSize: 50 };
@@ -369,12 +371,30 @@ function QuestionBank() {
                 </>
               )}
               {can('questions:write') && (
-                <button className="btn btn-sm" onClick={() => bulk('archive')}>
-                  Archive
-                </button>
+                <>
+                  <button className="btn btn-sm" onClick={() => setBulkEditing(true)}>
+                    Edit details…
+                  </button>
+                  <button className="btn btn-sm" onClick={() => bulk('archive')}>
+                    Archive
+                  </button>
+                </>
               )}
             </div>
           </div>
+        )}
+        {bulkEditing && selected.size > 0 && (
+          <BulkEditForm
+            ids={[...selected]}
+            tree={tree}
+            onCancel={() => setBulkEditing(false)}
+            onDone={async (m) => {
+              setMsg(m);
+              setBulkEditing(false);
+              setSelected(new Set());
+              await reload();
+            }}
+          />
         )}
 
         <div className="row" style={{ justifyContent: 'space-between', marginBottom: 8 }}>

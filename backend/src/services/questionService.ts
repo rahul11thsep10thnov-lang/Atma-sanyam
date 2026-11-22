@@ -6,14 +6,16 @@ import {
   mockTestQuestions,
   questionOptions,
   questionReviews,
+  questionRevisions,
   questions,
+  type QuestionSnapshot,
   subjects,
   testAnswers,
   topics,
   type ValidationIssue,
 } from '../database/schema.js';
 import { audit } from '../lib/audit.js';
-import { conflict, notFound, unprocessable } from '../lib/httpError.js';
+import { badRequest, conflict, notFound, unprocessable } from '../lib/httpError.js';
 import { OPTION_LABELS, type QuestionCandidate } from '../pipeline/questionSchema.js';
 import { bestMatch, fingerprint, normalizeText, type DuplicateMatch } from '../pipeline/similarity.js';
 import { sanitizeCandidate, validateQuestion, type ValidationResult } from '../pipeline/validator.js';
@@ -249,7 +251,13 @@ export async function createQuestion(db: Db, input: QuestionInput, adminId: stri
   return getQuestion(db, row.id);
 }
 
-export async function updateQuestion(db: Db, id: string, input: QuestionInput, adminId: string) {
+export async function updateQuestion(
+  db: Db,
+  id: string,
+  input: QuestionInput,
+  adminId: string,
+  change: { kind: 'edit' | 'restore'; summary?: string | null } = { kind: 'edit' }
+) {
   const [existing] = await db.select().from(questions).where(eq(questions.id, id)).limit(1);
   if (!existing) throw notFound('Question not found');
   if (existing.status === 'archived') throw conflict('Restore the question before editing it.');
@@ -277,9 +285,14 @@ export async function updateQuestion(db: Db, id: string, input: QuestionInput, a
   const c = ev.candidate;
   const before = await getQuestion(db, id);
   await db.transaction(async (tx) => {
+    // The version being replaced is kept as an immutable revision; results of
+    // tests that served it keep showing exactly that wording and answer.
+    const locked = await lockForRevision(tx, id);
+    await recordRevision(tx, locked, adminId, change.kind, change.summary ?? null);
     await tx
       .update(questions)
       .set({
+        version: locked.version + 1,
         examId: c.examId,
         subjectId: c.subjectId,
         chapterId: c.chapterId,
@@ -308,11 +321,177 @@ export async function updateQuestion(db: Db, id: string, input: QuestionInput, a
       .insert(questionOptions)
       .values(c.options.map((o, i) => ({ questionId: id, label: o.id, text: o.text, svg: svgFor(o.id), sortOrder: i })));
   });
-  await audit(db, adminId, 'question.edited', 'question', id, {
+  await audit(db, adminId, change.kind === 'restore' ? 'question.revision_restored' : 'question.edited', 'question', id, {
+    summary: change.summary ?? null,
     before: { questionText: before.questionText, options: before.options.map((o) => o.text), correctOption: before.correctOption },
     after: { questionText: c.question_text, options: c.options.map((o) => o.text), correctOption: c.correct_option },
   });
   return getQuestion(db, id);
+}
+
+// ---------------------------------------------------------------------------
+// Versioning: every change to a question's content or metadata stores the
+// version it replaces as an immutable snapshot (question_revisions). The
+// question row always holds the newest version.
+// ---------------------------------------------------------------------------
+
+type QuestionRow = typeof questions.$inferSelect;
+
+async function lockForRevision(tx: Db, id: string): Promise<QuestionRow> {
+  const [row] = await tx.select().from(questions).where(eq(questions.id, id)).for('update').limit(1);
+  if (!row) throw notFound('Question not found');
+  return row;
+}
+
+async function snapshotOf(tx: Db, q: QuestionRow): Promise<QuestionSnapshot> {
+  const options = await tx
+    .select({ label: questionOptions.label, text: questionOptions.text, svg: questionOptions.svg })
+    .from(questionOptions)
+    .where(eq(questionOptions.questionId, q.id))
+    .orderBy(asc(questionOptions.sortOrder));
+  return {
+    questionText: q.questionText,
+    explanation: q.explanation,
+    correctOption: q.correctOption,
+    difficulty: q.difficulty,
+    language: q.language,
+    examId: q.examId,
+    subjectId: q.subjectId,
+    chapterId: q.chapterId,
+    topicId: q.topicId,
+    computation: q.computation,
+    sourceName: q.sourceName,
+    sourceReference: q.sourceReference,
+    validAsOf: q.validAsOf,
+    figureSvg: q.figureSvg,
+    options,
+  };
+}
+
+async function recordRevision(tx: Db, q: QuestionRow, adminId: string | null, kind: 'edit' | 'restore' | 'bulk_edit', summary: string | null) {
+  await tx
+    .insert(questionRevisions)
+    .values({ questionId: q.id, version: q.version, snapshot: await snapshotOf(tx, q), changedBy: adminId, changeKind: kind, changeSummary: summary })
+    .onConflictDoNothing();
+}
+
+/** The question's earlier versions, newest first, and its current version. */
+export async function listRevisions(db: Db, id: string) {
+  const [q] = await db.select({ version: questions.version }).from(questions).where(eq(questions.id, id)).limit(1);
+  if (!q) throw notFound('Question not found');
+  const rows = await db
+    .select({
+      version: questionRevisions.version,
+      snapshot: questionRevisions.snapshot,
+      changeKind: questionRevisions.changeKind,
+      changeSummary: questionRevisions.changeSummary,
+      changedBy: questionRevisions.changedBy,
+      replacedAt: questionRevisions.createdAt,
+    })
+    .from(questionRevisions)
+    .where(eq(questionRevisions.questionId, id))
+    .orderBy(desc(questionRevisions.version));
+  return { currentVersion: q.version, revisions: rows };
+}
+
+/** Makes an earlier version current again, as a new version (history is
+ * never rewritten). It goes through the same validation as an edit. */
+export async function restoreRevision(db: Db, id: string, version: number, adminId: string) {
+  const [rev] = await db
+    .select()
+    .from(questionRevisions)
+    .where(and(eq(questionRevisions.questionId, id), eq(questionRevisions.version, version)))
+    .limit(1);
+  if (!rev) throw notFound('That version of the question was not found.');
+  const s = rev.snapshot;
+  return updateQuestion(
+    db,
+    id,
+    {
+      examId: s.examId,
+      subjectId: s.subjectId,
+      chapterId: s.chapterId,
+      topicId: s.topicId,
+      questionText: s.questionText,
+      options: s.options.map((o) => ({ label: o.label, text: o.text })),
+      correctOption: s.correctOption,
+      explanation: s.explanation,
+      difficulty: s.difficulty,
+      language: s.language,
+      computation: s.computation,
+      sourceName: s.sourceName,
+      sourceReference: s.sourceReference,
+      validAsOf: s.validAsOf,
+    },
+    adminId,
+    { kind: 'restore', summary: `Restored version ${version}` }
+  );
+}
+
+export interface BulkMetadata {
+  chapterId?: string;
+  topicId?: string | null;
+  difficulty?: 'easy' | 'medium' | 'hard';
+  sourceName?: string | null;
+  sourceReference?: string | null;
+  validAsOf?: string | null;
+}
+
+/**
+ * Changes taxonomy / difficulty / source on many questions at once. Each
+ * question gets its own revision. A question is skipped (with the reason)
+ * when the new chapter is not in its subject, or it is archived.
+ */
+export async function bulkEditMetadata(db: Db, ids: string[], set: BulkMetadata, adminId: string, summary?: string | null) {
+  if (!Object.keys(set).length) throw badRequest('Choose at least one field to change.');
+  let chapter: { id: string; subjectId: string } | undefined;
+  if (set.chapterId) {
+    [chapter] = await db.select({ id: chapters.id, subjectId: chapters.subjectId }).from(chapters).where(eq(chapters.id, set.chapterId)).limit(1);
+    if (!chapter) throw badRequest('Chapter not found.');
+  }
+  if (set.topicId) {
+    const [t] = await db.select({ chapterId: topics.chapterId }).from(topics).where(eq(topics.id, set.topicId)).limit(1);
+    if (!t) throw badRequest('Topic not found.');
+    if (set.chapterId && t.chapterId !== set.chapterId) throw badRequest('That topic is not in the chosen chapter.');
+  }
+  const updated: string[] = [];
+  const skipped: { id: string; reason: string }[] = [];
+  for (const id of [...new Set(ids)]) {
+    await db.transaction(async (tx) => {
+      const [q] = await tx.select().from(questions).where(eq(questions.id, id)).for('update').limit(1);
+      if (!q) return void skipped.push({ id, reason: 'not_found' });
+      if (q.status === 'archived') return void skipped.push({ id, reason: 'archived' });
+      if (chapter && chapter.subjectId !== q.subjectId) return void skipped.push({ id, reason: 'chapter_not_in_subject' });
+      const chapterId = set.chapterId ?? q.chapterId;
+      let topicId = set.topicId !== undefined ? set.topicId : q.topicId;
+      if (set.chapterId && set.topicId === undefined && q.topicId) {
+        // Moving chapter drops a topic that belongs to the old chapter.
+        const [t] = await tx.select({ chapterId: topics.chapterId }).from(topics).where(eq(topics.id, q.topicId)).limit(1);
+        if (t?.chapterId !== chapterId) topicId = null;
+      }
+      if (topicId && !set.chapterId) {
+        const [t] = await tx.select({ chapterId: topics.chapterId }).from(topics).where(eq(topics.id, topicId)).limit(1);
+        if (t?.chapterId !== chapterId) return void skipped.push({ id, reason: 'topic_not_in_chapter' });
+      }
+      await recordRevision(tx, q, adminId, 'bulk_edit', summary ?? null);
+      await tx
+        .update(questions)
+        .set({
+          version: q.version + 1,
+          chapterId,
+          topicId,
+          difficulty: set.difficulty ?? q.difficulty,
+          sourceName: set.sourceName !== undefined ? set.sourceName : q.sourceName,
+          sourceReference: set.sourceReference !== undefined ? set.sourceReference : q.sourceReference,
+          validAsOf: set.validAsOf !== undefined ? set.validAsOf : q.validAsOf,
+          updatedAt: new Date(),
+        })
+        .where(eq(questions.id, id));
+      updated.push(id);
+    });
+  }
+  await audit(db, adminId, 'question.bulk_edited', 'question', null, { fields: Object.keys(set), updated: updated.length, skipped: skipped.length, summary: summary ?? null });
+  return { updated, skipped };
 }
 
 // ---------------------------------------------------------------------------

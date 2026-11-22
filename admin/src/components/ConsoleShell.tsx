@@ -18,6 +18,7 @@ import {
   Sparkles,
   Users,
   type LucideIcon,
+  Gauge,
 } from 'lucide-react';
 import type { AdminMe } from '@/lib/server';
 import { api } from '@/lib/api';
@@ -48,6 +49,7 @@ const NAV: { group: string; items: NavItem[] }[] = [
       { href: '/questions', label: 'Question Bank', icon: Library, permission: 'questions:read' },
       { href: '/generate', label: 'Generate Questions', icon: Sparkles, permission: 'questions:read' },
       { href: '/figures', label: 'Figure Questions', icon: Shapes, permission: 'questions:read' },
+      { href: '/quality', label: 'Question Quality', icon: Gauge, permission: 'questions:read' },
       { href: '/review', label: 'Review Questions', icon: ClipboardCheck, permission: 'questions:review', badge: 'review' },
       { href: '/import', label: 'Import', icon: FileUp, permission: 'questions:write' },
       { href: '/sources', label: 'Source Material', icon: BookOpenCheck, permission: 'questions:read' },

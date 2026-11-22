@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useCan } from '@/components/ConsoleShell';
 import { useQuestionActions, type Action } from '@/components/QuestionActions';
 import { QuestionEditor } from '@/components/QuestionEditor';
+import { VersionHistory } from '@/components/VersionHistory';
 import { DuplicatePanel, QuestionBody, QuestionMeta, ReviewHistory, ValidationPanel } from '@/components/QuestionView';
 import { ErrorAlert, Loading, OkAlert, PageHead } from '@/components/ui';
 import { api, errorMessage, useApi } from '@/lib/api';
@@ -118,6 +119,17 @@ export default function QuestionPage() {
           <div className="card">
             <h3 style={{ marginBottom: 8 }}>History</h3>
             <ReviewHistory reviews={q.reviews} />
+          </div>
+          <div className="card">
+            <VersionHistory
+              key={q.version}
+              id={q.id}
+              canWrite={can('questions:write') && q.status !== 'archived'}
+              onRestored={async () => {
+                setMsg('Earlier version restored as a new version. All checks were re-run.');
+                await reload();
+              }}
+            />
           </div>
         </div>
       </div>

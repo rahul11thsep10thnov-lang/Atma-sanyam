@@ -105,6 +105,8 @@ export interface QuestionDetail extends Omit<QuestionRow, 'examName' | 'subjectN
   reviews: Review[];
   duplicateOf: { id: string; questionText: string; status: QuestionStatus; options: string[] } | null;
   usedInMockTests: number;
+  /** Content version; each edit stores the previous one as a revision. */
+  version: number;
   stats: { attempts: number; correct: number; accuracy: number | null };
   reviewedAt: string | null;
   publishedAt: string | null;

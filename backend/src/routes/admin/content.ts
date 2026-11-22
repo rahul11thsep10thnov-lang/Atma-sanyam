@@ -12,18 +12,22 @@ import { cancelJob, createJob, estimate, getJob, listJobs, retryFailed } from '.
 import { importQuestions } from '../../services/importService.js';
 import {
   approvePublishAll,
+  bulkEditMetadata,
   bulkTransition,
   createQuestion,
   deleteQuestion,
   getQuestion,
   listQuestions,
+  listRevisions,
   questionFacets,
+  restoreRevision,
   SORT_KEYS,
   transition,
   updateQuestion,
   type ReviewAction,
 } from '../../services/questionService.js';
 import { createNode, deleteNode, listTree, updateNode } from '../../services/taxonomyService.js';
+import { QUALITY_FLAGS, questionQuality, type QualityFlag } from '../../services/qualityService.js';
 import { generateFigureQuestions, listFigureGenerators, MAX_FIGURES_PER_REQUEST, MAX_PREVIEW, previewFigures } from '../../services/figureService.js';
 import type { AppDeps } from '../../types.js';
 import { idParam, optionalUuid, pageQuery } from '../util.js';
@@ -152,6 +156,54 @@ export function adminContentRouter(deps: AppDeps, auth: Auth, limits: RateLimits
   r.get('/questions/facets', A, auth.can('questions:read'), async (req, res) => {
     const q = parse(z.object({ examId: optionalUuid, subjectId: optionalUuid }), req.query);
     res.json(await questionFacets(db, q));
+  });
+
+  // Quality dashboard: bank health plus per-question performance flags
+  // (statistical flags only with at least minSample answers).
+  r.get('/questions/quality', A, auth.can('questions:read'), async (req, res) => {
+    const q = parse(
+      z.object({
+        examId: optionalUuid,
+        subjectId: optionalUuid,
+        chapterId: optionalUuid,
+        minSample: z.coerce.number().int().min(5).max(10_000).default(30),
+        flag: z.enum(Object.keys(QUALITY_FLAGS) as [QualityFlag, ...QualityFlag[]]).optional(),
+        limit: z.coerce.number().int().min(1).max(500).default(100),
+      }),
+      req.query
+    );
+    res.json(await questionQuality(db, q));
+  });
+
+  // Change taxonomy / difficulty / source on many questions; each gets a revision.
+  r.post('/questions/bulk-edit', A, auth.can('questions:write'), async (req, res) => {
+    const body = parse(
+      z.object({
+        ids: z.array(z.uuid()).min(1).max(500),
+        set: z
+          .object({
+            chapterId: z.uuid().optional(),
+            topicId: z.uuid().nullable().optional(),
+            difficulty: z.enum(['easy', 'medium', 'hard']).optional(),
+            sourceName: z.string().max(500).nullable().optional(),
+            sourceReference: z.string().max(1000).nullable().optional(),
+            validAsOf: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+          })
+          .strict(),
+        summary: z.string().max(500).nullable().optional(),
+      }),
+      req.body
+    );
+    res.json(await bulkEditMetadata(db, body.ids, body.set, req.admin!.id, body.summary));
+  });
+
+  r.get('/questions/:id/revisions', A, auth.can('questions:read'), async (req, res) => {
+    res.json(await listRevisions(db, idParam(req)));
+  });
+
+  r.post('/questions/:id/revisions/:version/restore', A, auth.can('questions:write'), async (req, res) => {
+    const { version } = parse(z.object({ version: z.coerce.number().int().min(1) }), req.params);
+    res.json(await restoreRevision(db, idParam(req), version, req.admin!.id));
   });
 
   r.get('/questions/:id', A, auth.can('questions:read'), async (req, res) => {
